@@ -1,0 +1,143 @@
+<project name="jKoolTrackingApi" default="jkoolapi" basedir=".">
+
+  <echo message="Processing ${ant.project.name}${line.separator}" level="info"/>
+
+  <condition property="jkoolroot" value="${basedir}/..">
+    <not><isset property="jkoolroot"/></not>
+  </condition>
+  
+  <!-- Import default properties for jKool builds --> 
+  <import file="${jkoolroot}/build-properties.xml"/>
+
+  <defaultexcludes add="**/*.scc"/>
+
+  <loadproperties srcFile="${jkoolroot}/build.properties"/>
+	
+  <property name="package"   value="com.nastel.jkool.*"/>
+  <property name="docpkg"    value="com.nastel.jkool.tnt4j.*"/>
+  <property name="src"       value="src"/>
+  <property name="lib"       value="lib"/>
+  <property name="bin"       value="bin"/>
+  <property name="doc"       value="doc"/>
+  <property name="extlib"    value="${jkoolroot}/lib"/>
+  <property name="pkg"       value="jkool-tnt4j-api"/>
+  <property name="jar"       value="jkool-tnt4j-api.jar"/>
+
+  <target name="init">
+    <tstamp/>
+    <mkdir dir="${bin}"/>
+    <mkdir dir="${lib}"/>
+    <copy todir="${lib}">
+      <fileset dir="${extlib}">
+        <include name="commons-lang*-*.jar"/>
+        <include name="commons-logging-*.jar"/>
+        <include name="commons-configuration-*.jar"/>
+        <include name="log4j-*.jar"/>
+      </fileset>
+    </copy>
+  </target>
+
+  <!-- Compile into ${bin} directory -->
+  <target name="compile" depends="init" description="compile the source">
+    <javac destdir="${bin}" debug="true" debuglevel="source,lines,vars" source="1.5" target="1.5">
+      <src path="${src}"/>
+      <classpath>
+        <fileset dir="${lib}">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
+    </javac>
+  </target>
+
+  <target name="clean" description="clean up">
+    <delete dir="${bin}"/>
+    <delete dir="${lib}"/>
+    <delete dir="${doc}"/>
+    <delete file="${jar}"/>
+    <delete>
+      <fileset dir="." includes="*.zip,*.gz,*.jar"/>
+    </delete>
+    <echo message="Clean of ${ant.project.name} Complete${line.separator}" level="info"/>
+  </target>
+
+  <target name="jkoolapi" depends="init,compile" description="build API">
+    <jar jarfile="${jar}" basedir="${bin}" update="false">
+      <manifest>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
+        <attribute name="Implementation-Title" value="${prodname} Tracking API"/>
+        <attribute name="Implementation-Version" value="${version}"/>
+		<attribute name="Premain-Class" value="com.nastel.jkool.tnt4j.utils.SizeOf"/>
+      </manifest>
+    </jar>
+    
+    <echo message="Build of ${ant.project.name} Complete${line.separator}" level="info"/>
+  </target>
+
+  <target name="doc" depends="jkoolapi" description="build javadoc">
+    <delete dir="${doc}"/>
+
+    <copy file="overview.html" todir="${src}"/>
+
+    <javadoc destdir="${doc}"
+             sourcepath="${src}"
+             source="1.5"
+             packagenames="${docpkg}"
+             Doctitle="Nastel&#8482; Track 'N Trace API (TNT4J); API Specification - Java"
+             Windowtitle="Nastel jKool Track And Trace API (TNT4J) - Java"
+             Overview="${src}/overview.html"
+             Header="Version ${version}"
+             bottom="${copyright.html}"
+             access="protected"
+             use="true"
+             notree="false"
+             nonavbar="false"
+             noindex="false"
+             splitindex="true"
+             author="true"
+             version="true"
+             nodeprecatedlist="false"
+             nodeprecated="false">
+      <classpath>
+        <fileset dir="${lib}">
+          <include name="**/*.jar"/>
+        </fileset>
+      </classpath>
+    </javadoc>
+	
+	<delete file="${src}/overview.html" quiet="true"/>
+  </target>
+
+  <target name="jkoolpkg" depends="doc" description="build package for distribution">
+    <echo message="Creating ${pkg}-${version}.zip" level="info"/>
+	   
+    <delete>
+      <fileset dir="." includes="*.zip,*.gz"/>
+    </delete>
+    
+ 	<zip destfile="${pkg}-${version}-all.jar">
+		<zipgroupfileset dir="lib" includes="*.jar"/>
+		<zipgroupfileset dir="." includes="${jar}"/>
+	</zip> 
+
+	<zip destfile="${pkg}-${version}.zip">
+      <zipfileset dir="." includes="${lib}/**, ${doc}/**"/>
+      <zipfileset dir="." prefix="${lib}" includes="${jar}"/>
+    </zip>
+    <delete file="${jksdkinstall}/${pkg}-*.zip"/>
+    <copy file="${pkg}-${version}.zip" todir="${jksdkinstall}"/>
+    
+    <tar destfile="${pkg}-${version}.tar.gz" compression="gzip">
+      <tarfileset dir="." includes="${lib}/**, ${doc}/**"/>
+      <tarfileset dir="." prefix="${lib}" includes="${jar}"/>
+    </tar>
+    <delete file="${jksdkinstall}/${pkg}-*.tar.gz"/>
+    <copy file="${pkg}-${version}.tar.gz" todir="${jksdkinstall}"/>    
+  </target>
+
+  <target name="jkool" depends="jkoolapi" description="build executables"/>
+  
+  <target name="all" depends="jkoolpkg" description="generate the distribution"/>
+
+  <target name="rebuild" depends="clean,all" description="clean and build"/>
+  
+</project>
