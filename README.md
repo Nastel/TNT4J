@@ -45,7 +45,7 @@ Verify TNT4J
 * Run a test program (com.nastel.jkool.tnt4j.examples.TNT4JTest) using the following:
 	* CD to ../build/tnt4j
 	* java -javaagent:tnt4j-api.jar -Dlog4j.configuration=file:log4j.properties -Dtnt4j.dump.on.vm.shutdown=true
-	-Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath tnt4j-api-0.5-all.jar
+	-Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath tnt4j-api-0.6-all.jar
 	com.nastel.jkool.tnt4j.examples.TNT4JTest com.myco.TestApp MYSERVER "Test log message" correlator1 "TestCommand" 		TestLocation
 
 -Dtnt4j.dump.provider.default=true java property allows application state dumps generated automatically upon VM shutdown.
