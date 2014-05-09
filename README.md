@@ -41,7 +41,7 @@ To build TNT4J:
 
 Verify TNT4J
 ===============================================
-Run a test program (com.nastel.jkool.tnt4j.examples.TNT4JTest) using the following (Windows):
+* Run a test program (com.nastel.jkool.tnt4j.examples.TNT4JTest) using the following (Windows):
 	* CD to build/
 	* java -javaagent:tnt4j-api.jar -Dlog4j.configuration=file:log4j.properties -Dtnt4j.dump.on.vm.shutdown=true
 	-Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath tnt4j-api-0.5-all.jar
