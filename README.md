@@ -36,7 +36,12 @@ To build TNT4J:
 * Download the above libraries and place into the tnt4j/lib folder
 * Compile and build using ANT: 
 	* ant all
-* Run a test program (com.nastel.jkool.tnt4j.examples.TNT4JTest) using the following (Windows):
+	* Check ../build for output
+	
+
+Verify TNT4J
+===============================================
+Run a test program (com.nastel.jkool.tnt4j.examples.TNT4JTest) using the following (Windows):
 	* CD to build/
 	* java -javaagent:tnt4j-api.jar -Dlog4j.configuration=file:log4j.properties -Dtnt4j.dump.on.vm.shutdown=true
 	-Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath tnt4j-api-0.5-all.jar
