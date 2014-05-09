@@ -17,15 +17,15 @@
   <property name="docpkg"    value="com.nastel.jkool.tnt4j.*"/>
   <property name="src"       value="src"/>
   <property name="lib"       value="lib"/>
-  <property name="bin"       value="bin"/>
-  <property name="doc"       value="doc"/>
-  <property name="extlib"    value="${tnt4jroot}/lib"/>
-  <property name="pkg"       value="tnt4j-api"/>
-  <property name="jar"       value="tnt4j-api.jar"/>
+  <property name="bin"       value="${tnt4j-build}/bin"/>
+  <property name="doc"       value="${tnt4j-build}/doc"/>
+  <property name="pkg"       value="${tnt4j-build}/tnt4j-api"/>
+  <property name="jar"       value="${tnt4j-build}/tnt4j-api.jar"/>
 
   <target name="init">
     <tstamp/>
     <mkdir dir="${bin}"/>
+    <mkdir dir="${tnt4j-build}/lib"/>
   </target>
 
   <!-- Compile into ${bin} directory -->
@@ -42,11 +42,11 @@
 
   <target name="clean" description="clean up">
     <delete dir="${bin}"/>
-    <delete dir="${lib}"/>
     <delete dir="${doc}"/>
+    <delete dir="${tnt4j-build}/lib"/>
     <delete file="${jar}"/>
     <delete>
-      <fileset dir="." includes="*.zip,*.gz,*.jar"/>
+      <fileset dir="${tnt4j-build}" includes="*.zip,*.gz,*.jar,*.properties"/>
     </delete>
     <echo message="Clean of ${ant.project.name} Complete${line.separator}" level="info"/>
   </target>
@@ -71,7 +71,7 @@
 
     <javadoc destdir="${doc}"
              sourcepath="${src}"
-             source="1.5"
+             source="1.6"
              packagenames="${docpkg}"
              Doctitle="Track 'N Trace API (TNT4J); API Specification - Java"
              Windowtitle="Track And Trace API (TNT4J) - Java"
@@ -99,30 +99,32 @@
   </target>
 
   <target name="tnt4j-pkg" depends="doc" description="build package for distribution">
-    <echo message="Creating ${pkg}-${version}.zip" level="info"/>
-	   
-    <delete>
-      <fileset dir="." includes="*.zip,*.gz"/>
-    </delete>
+    <echo message="Deleting old archives" level="info"/>
+    <delete file="${pkg}-${version}-all.jar"/>
+    <delete file="${pkg}-${version}-all.zip"/>
     
- 	<zip destfile="${pkg}-${version}-all.jar">
+    <echo message="Copying common libraries" level="info"/>
+	<copy todir="${tnt4j-build}/lib">
+      <fileset dir="${lib}">
+        <include name="commons-lang*-*.jar"/>
+        <include name="commons-logging-*.jar"/>
+        <include name="commons-configuration-*.jar"/>
+        <include name="log4j-*.jar"/>
+      </fileset>
+    </copy>
+    
+    <echo message="Copying common TNT4J properties" level="info"/>
+	<copy todir="${tnt4j-build}">
+      <fileset dir="${tnt4jroot}">
+        <include name="*4j.properties"/>
+      </fileset>
+    </copy>
+ 	
+    <echo message="Creating ${pkg}-${version}-all.jar" level="info"/>
+	<zip destfile="${pkg}-${version}-all.jar">
 		<zipgroupfileset dir="lib" includes="*.jar"/>
-		<zipgroupfileset dir="." includes="${jar}"/>
+		<zipgroupfileset dir="${tnt4j-build}" includes="*.jar"/>
 	</zip> 
-
-	<zip destfile="${pkg}-${version}.zip">
-      <zipfileset dir="." includes="${lib}/**, ${doc}/**"/>
-      <zipfileset dir="." prefix="${lib}" includes="${jar}"/>
-    </zip>
-    <delete file="${tnt4j-sdk-install}/${pkg}-*.zip"/>
-    <copy file="${pkg}-${version}.zip" todir="${tnt4j-sdk-install}"/>
-    
-    <tar destfile="${pkg}-${version}.tar.gz" compression="gzip">
-      <tarfileset dir="." includes="${lib}/**, ${doc}/**"/>
-      <tarfileset dir="." prefix="${lib}" includes="${jar}"/>
-    </tar>
-    <delete file="${tnt4j-sdk-install}/${pkg}-*.tar.gz"/>
-    <copy file="${pkg}-${version}.tar.gz" todir="${tnt4j-sdk-install}"/>    
   </target>
 
   <target name="tnt4j" depends="tnt4j-api" description="build executables"/>

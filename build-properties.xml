@@ -3,8 +3,8 @@
 -->
 <project name="TNT4JBuildProps">
   <!-- Installation package directories -->
-  <property name="tnt4j-install"     value="${tnt4jroot}/install/tnt4j"/>
-  <property name="tnt4j-sdk-install"     value="${tnt4j-install}/sdk"/>
+  <property name="tnt4j-build"       value="${basedir}/../build/tnt4j"/>
+  <property name="tnt4j-install"     value="${tnt4j-build}/install"/>
   
   <!-- Default compilation settings -->
   <property name="target"     value="1.6"/>
