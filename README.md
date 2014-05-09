@@ -37,6 +37,7 @@ To build TNT4J:
 * Compile and build using ANT: 
 	* ant all (run "ant clean" for clean builds)
 	* Check ../build/tnt4j for output
+	* JavaDoc will be located under ../build/tnt4j/doc
 	
 
 Verify TNT4J
