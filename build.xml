@@ -1,17 +1,17 @@
-<project name="jKoolTrackingApi" default="jkoolapi" basedir=".">
+<project name="TNT4J-API" default="tnt4j-api" basedir=".">
 
   <echo message="Processing ${ant.project.name}${line.separator}" level="info"/>
 
-  <condition property="jkoolroot" value="${basedir}/..">
-    <not><isset property="jkoolroot"/></not>
+  <condition property="tnt4jroot" value="${basedir}/.">
+    <not><isset property="tnt4jroot"/></not>
   </condition>
   
   <!-- Import default properties for jKool builds --> 
-  <import file="${jkoolroot}/build-properties.xml"/>
+  <import file="${tnt4jroot}/build-properties.xml"/>
 
   <defaultexcludes add="**/*.scc"/>
 
-  <loadproperties srcFile="${jkoolroot}/build.properties"/>
+  <loadproperties srcFile="${tnt4jroot}/build.properties"/>
 	
   <property name="package"   value="com.nastel.jkool.*"/>
   <property name="docpkg"    value="com.nastel.jkool.tnt4j.*"/>
@@ -19,22 +19,13 @@
   <property name="lib"       value="lib"/>
   <property name="bin"       value="bin"/>
   <property name="doc"       value="doc"/>
-  <property name="extlib"    value="${jkoolroot}/lib"/>
-  <property name="pkg"       value="jkool-tnt4j-api"/>
-  <property name="jar"       value="jkool-tnt4j-api.jar"/>
+  <property name="extlib"    value="${tnt4jroot}/lib"/>
+  <property name="pkg"       value="tnt4j-api"/>
+  <property name="jar"       value="tnt4j-api.jar"/>
 
   <target name="init">
     <tstamp/>
     <mkdir dir="${bin}"/>
-    <mkdir dir="${lib}"/>
-    <copy todir="${lib}">
-      <fileset dir="${extlib}">
-        <include name="commons-lang*-*.jar"/>
-        <include name="commons-logging-*.jar"/>
-        <include name="commons-configuration-*.jar"/>
-        <include name="log4j-*.jar"/>
-      </fileset>
-    </copy>
   </target>
 
   <!-- Compile into ${bin} directory -->
@@ -60,11 +51,11 @@
     <echo message="Clean of ${ant.project.name} Complete${line.separator}" level="info"/>
   </target>
 
-  <target name="jkoolapi" depends="init,compile" description="build API">
+  <target name="tnt4j-api" depends="init,compile" description="build API">
     <jar jarfile="${jar}" basedir="${bin}" update="false">
       <manifest>
         <attribute name="Implementation-Vendor" value="${vendor}"/>
-        <attribute name="Implementation-Title" value="${prodname} Tracking API"/>
+        <attribute name="Implementation-Title" value="${prodname} API"/>
         <attribute name="Implementation-Version" value="${version}"/>
 		<attribute name="Premain-Class" value="com.nastel.jkool.tnt4j.utils.SizeOf"/>
       </manifest>
@@ -73,7 +64,7 @@
     <echo message="Build of ${ant.project.name} Complete${line.separator}" level="info"/>
   </target>
 
-  <target name="doc" depends="jkoolapi" description="build javadoc">
+  <target name="doc" depends="tnt4j-api" description="build javadoc">
     <delete dir="${doc}"/>
 
     <copy file="overview.html" todir="${src}"/>
@@ -82,8 +73,8 @@
              sourcepath="${src}"
              source="1.5"
              packagenames="${docpkg}"
-             Doctitle="Nastel&#8482; Track 'N Trace API (TNT4J); API Specification - Java"
-             Windowtitle="Nastel jKool Track And Trace API (TNT4J) - Java"
+             Doctitle="Track 'N Trace API (TNT4J); API Specification - Java"
+             Windowtitle="Track And Trace API (TNT4J) - Java"
              Overview="${src}/overview.html"
              Header="Version ${version}"
              bottom="${copyright.html}"
@@ -107,7 +98,7 @@
 	<delete file="${src}/overview.html" quiet="true"/>
   </target>
 
-  <target name="jkoolpkg" depends="doc" description="build package for distribution">
+  <target name="tnt4j-pkg" depends="doc" description="build package for distribution">
     <echo message="Creating ${pkg}-${version}.zip" level="info"/>
 	   
     <delete>
@@ -123,20 +114,20 @@
       <zipfileset dir="." includes="${lib}/**, ${doc}/**"/>
       <zipfileset dir="." prefix="${lib}" includes="${jar}"/>
     </zip>
-    <delete file="${jksdkinstall}/${pkg}-*.zip"/>
-    <copy file="${pkg}-${version}.zip" todir="${jksdkinstall}"/>
+    <delete file="${tnt4j-sdk-install}/${pkg}-*.zip"/>
+    <copy file="${pkg}-${version}.zip" todir="${tnt4j-sdk-install}"/>
     
     <tar destfile="${pkg}-${version}.tar.gz" compression="gzip">
       <tarfileset dir="." includes="${lib}/**, ${doc}/**"/>
       <tarfileset dir="." prefix="${lib}" includes="${jar}"/>
     </tar>
-    <delete file="${jksdkinstall}/${pkg}-*.tar.gz"/>
-    <copy file="${pkg}-${version}.tar.gz" todir="${jksdkinstall}"/>    
+    <delete file="${tnt4j-sdk-install}/${pkg}-*.tar.gz"/>
+    <copy file="${pkg}-${version}.tar.gz" todir="${tnt4j-sdk-install}"/>    
   </target>
 
-  <target name="jkool" depends="jkoolapi" description="build executables"/>
+  <target name="tnt4j" depends="tnt4j-api" description="build executables"/>
   
-  <target name="all" depends="jkoolpkg" description="generate the distribution"/>
+  <target name="all" depends="tnt4j-pkg" description="generate the distribution"/>
 
   <target name="rebuild" depends="clean,all" description="clean and build"/>
   
