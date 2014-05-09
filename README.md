@@ -48,6 +48,7 @@ Verify TNT4J
 	com.nastel.jkool.tnt4j.examples.TNT4JTest com.myco.TestApp MYSERVER "Test log message" correlator1 "TestCommand" 		TestLocation
 
 -Dtnt4j.dump.provider.default=true java property allows application state dumps generated automatically upon VM shutdown.
+
 -Dtnt4j.formatter.json.newline=true java property directs JSONFormatter to appen new line when formatting log entries.
 
 See tnt4j.properties for TNT4J configuration: factories, formatters, listeners, etc. See Wiki for more information.
