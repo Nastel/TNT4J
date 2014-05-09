@@ -33,7 +33,7 @@ TNT4J depends on the following external packages:
 * Apache Log4J 1.2.17 (http://logging.apache.org/log4j/1.2/)
 
 To build TNT4J:
-* Download the above libraries and place into the tnt4j/lib folder
+* Download the above libraries and place into the tnt4j-master/lib folder
 * Compile and build using ANT: 
 	* ant all
 	* Check ../build for output
@@ -42,8 +42,8 @@ To build TNT4J:
 Verify TNT4J
 ===============================================
 * Run a test program (com.nastel.jkool.tnt4j.examples.TNT4JTest) using the following:
-	* CD to build/
+	* CD to ../build/tnt4j
 	* java -javaagent:tnt4j-api.jar -Dlog4j.configuration=file:log4j.properties -Dtnt4j.dump.on.vm.shutdown=true
 	-Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath tnt4j-api-0.5-all.jar
-	com.nastel.jkool.tnt4j.examples.TNT4JTest
+	com.nastel.jkool.tnt4j.examples.TNT4JTest com.myco.TestApp MYSERVER "Test log message" correlator1 "TestCommand" 		TestLocation
 
