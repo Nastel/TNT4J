@@ -51,6 +51,6 @@ Verify TNT4J
 
 -Dtnt4j.formatter.json.newline=true java property directs JSONFormatter to appen new line when formatting log entries.
 
-See tnt4j-event.log and pid@SERVER.dump files for output produced by TNT4JTest program.
+See tnt4j-event.log and pid@SERVER.dump files for output produced by com.nastel.jkool.tnt4j.examples.TNT4JTest program.
 
 See tnt4j.properties for TNT4J configuration: factories, formatters, listeners, etc. See Wiki for more information.
