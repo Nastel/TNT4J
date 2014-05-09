@@ -35,8 +35,8 @@ TNT4J depends on the following external packages:
 To build TNT4J:
 * Download the above libraries and place into the tnt4j-master/lib folder
 * Compile and build using ANT: 
-	* ant all
-	* Check ../build for output
+	* ant all (run "ant clean" for clean builds)
+	* Check ../build/tnt4j for output
 	
 
 Verify TNT4J
