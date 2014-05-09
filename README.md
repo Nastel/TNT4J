@@ -32,6 +32,7 @@ TNT4J depends on the following external packages:
 * Apache commons logging 1.2.17 (http://commons.apache.org/proper/commons-logging/)
 * Apache Log4J 1.2.17 (http://logging.apache.org/log4j/1.2/)
 
+To build TNT4J:
 * Download the above libraries and place into the tnt4j/lib folder
 * Compile and build using ANT:
 	ant all
