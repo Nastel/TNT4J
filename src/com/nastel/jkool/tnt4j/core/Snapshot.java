@@ -1,5 +1,4 @@
 /*
-/*
  * Copyright 2014 Nastel Technologies, Inc.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
