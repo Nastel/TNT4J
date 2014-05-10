@@ -51,7 +51,7 @@ Verify TNT4J
 
 -Dtnt4j.dump.provider.default=true java property allows application state dumps generated automatically upon VM shutdown.
 
--Dtnt4j.formatter.json.newline=true java property directs JSONFormatter to appen new line when formatting log entries.
+-Dtnt4j.formatter.json.newline=true java property directs JSONFormatter to append new line when formatting log entries.
 
 See tnt4j-event.log and pid@SERVER.dump files for output produced by com.nastel.jkool.tnt4j.examples.TNT4JTest program.
 
