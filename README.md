@@ -15,6 +15,7 @@ Here is short list of TNT4J features:
 * Event location tags such as GPS, server etc.
 * Message flow direction for composite applications that exchange messages (e.g. SOAP, JMS, and SQL etc.)
 * User defined properties such as CPU, memory logging, thread statistics per process/thread
+* Extensible activity, sink, error listeners for pre, post event processing
 * Granular context such as thread id, process id, server, application name
 
 
