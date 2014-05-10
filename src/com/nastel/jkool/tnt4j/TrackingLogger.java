@@ -1,20 +1,17 @@
 /*
- * Copyright (c) 2013 Nastel Technologies, Inc. All Rights Reserved.
+ * Copyright 2014 Nastel Technologies, Inc.
  *
- * This software is the confidential and proprietary information of Nastel
- * Technologies, Inc. ("Confidential Information").  You shall not disclose
- * such Confidential Information and shall use it only in accordance with
- * the terms of the license agreement you entered into with Nastel
- * Technologies.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
- * NASTEL MAKES NO REPRESENTATIONS OR WARRANTIES ABOUT THE SUITABILITY OF
- * THE SOFTWARE, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR
- * PURPOSE, OR NON-INFRINGEMENT. NASTEL SHALL NOT BE LIABLE FOR ANY DAMAGES
- * SUFFERED BY LICENSEE AS A RESULT OF USING, MODIFYING OR DISTRIBUTING
- * THIS SOFTWARE OR ITS DERIVATIVES.
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
- *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package com.nastel.jkool.tnt4j;
 
@@ -82,7 +79,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * TrackingActivity activity = TrackingLogger.newActivity(); // create a new activity instance
  * activity.start(); // start application activity timing
  * TrackingEvent event = TrackingLogger.newEvent(OpLevel.SUCCESS, &quot;SQL customer lookup&quot;, &quot;SQL-SELECT&quot;); // create a tracking event
- * TrackingEvent jms_event = TrackingLogger.newEvent(OpLevel.SUCCESS, OpType.SEND, “correlator”, &quot;Sending Message&quot;, &quot;JmsSend&quot;); // create a tracking event
+ * TrackingEvent jms_event = TrackingLogger.newEvent(OpLevel.SUCCESS, OpType.SEND, ï¿½correlatorï¿½, &quot;Sending Message&quot;, &quot;JmsSend&quot;); // create a tracking event
  * event.start(); // start timing a tracking event 
  * try {
  * 	...
@@ -115,7 +112,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * TrackingActivity activity = TrackingLogger.newActivity(); // create a new activity instance
  * activity.start(); // start application activity timing
  * TrackingEvent event = TrackingLogger.newEvent(OpLevel.SUCCESS, &quot;SQL customer lookup&quot;, &quot;SQL-SELECT&quot;); // create a tracking event
- * TrackingEvent jms_event = TrackingLogger.newEvent(OpLevel.SUCCESS, OpType.SEND, “correlator”, &quot;Sending Message&quot;, &quot;JmsSend&quot;); // create a tracking event
+ * TrackingEvent jms_event = TrackingLogger.newEvent(OpLevel.SUCCESS, OpType.SEND, ï¿½correlatorï¿½, &quot;Sending Message&quot;, &quot;JmsSend&quot;); // create a tracking event
  * event.start(); // start timing a tracking event 
  * try {
  * 	...
@@ -132,7 +129,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * } finally {
  * 	activity.stop(); // end activity timing
  *	// conditional logging using isSet() method to check if a given token matches
- *	if (TrackingLogger.isSet(OpLevel.INFO, "com.nastel.appl.corr", “correlator”)) {
+ *	if (TrackingLogger.isSet(OpLevel.INFO, "com.nastel.appl.corr", ï¿½correlatorï¿½)) {
  *		activity.tnt(event); // track and trace tracking event within given activity 
  *		activity.tnt(jms_event); // track and trace tracking event within given activity 
  *	}
