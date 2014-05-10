@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-ckage com.nastel.jkool.tnt4j.core;
+package com.nastel.jkool.tnt4j.core;
 
 import java.util.Date;
 
