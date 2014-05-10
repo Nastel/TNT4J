@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-ackage com.nastel.jkool.tnt4j.config;
+package com.nastel.jkool.tnt4j.config;
 
 import java.util.Map;
 
