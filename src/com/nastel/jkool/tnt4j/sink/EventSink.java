@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-ackage com.nastel.jkool.tnt4j.sink;
+package com.nastel.jkool.tnt4j.sink;
 
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
