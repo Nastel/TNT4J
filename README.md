@@ -1,15 +1,14 @@
 About TNT4J
 ======================================
 
-Track and Trace 4 Java API, Application logging framework for correlation, diagnostics and tracking of application activities. This API is specifically designed to troubleshoot concurrent, mutithreaded, multi-user applications and includes
-activity correlation, application state dumps, performance and user defined metrics.
+Track and Trace 4 Java API, Application logging framework for correlation, diagnostics and tracking of application activities within and across multiple applications, runtimes, servers, geo locations. This API is specifically designed to troubleshoot distributed, concurrent, mutithreaded, multi-user applications and includes activity correlation, application state dumps, performance and user defined metrics.
 
 Here is short list of TNT4J features:
 
 * Simple programming model to facilitate fast root-cause, log analysis
 * Automated timing of application activities and sub-activities (elapsed, idle time, message age)
 * Application state dump framework for reporting internal variables, data structures
-* Granular conditional logging based on application tokens, patterns
+* Granular conditional logging based on application tokens, patterns, that can be shared accross applications, runtimes
 * Inter-log correlation of log entries (correlators and tags) between multiple related applications
 * Intra-log correlation of related activities and sub-activities between multiple applications and threads
 * Event location tags such as GPS, server etc.
@@ -30,7 +29,7 @@ TNT4J is fully plug-in and play tracking, tracing and logging framework that con
 * Property snapshot -- a collection of properties with category, name and a timestamp associated with when snapshot is taked. Actvities may have one or more property snapshots.
 * Formatter -- an object responsible for formatting underlying TNT4J objects such as Activity, Tracking Event and convert into a formatted string.
 * Tracking Selector -- an object associated with a Tracker that allows developers to perform conditional logging based on a given set of severity, key, value combination. Such combinations are stored in token repository.
-* Token Repository -- an underlying storage used by tracking selector that actually stored and maintains severity, key, value combinations. Such repository can be backed by a file, cache, memory or any other desired medium. token repositories can be shared accross application boundaries and therefore conditional loggin can span multiple applications, runtimes, geo locations.
+* Token Repository -- an underlying storage used by tracking selector that actually stored and maintains severity, key, value combinations. Such repository can be backed by a file, cache, memory or any other desired medium. token repositories can be shared accross application boundaries and therefore conditional logging can span multiple applications, runtimes, geo locations.
 * Sink -- sink is a basic destination where obejcts can be written.
 * Event Sink -- destination where events, activities and messages are recorded. Such destination can be file, socket, etc.
 Sinks are usually associated with formatters which are called to format objects before writting to the sink.
