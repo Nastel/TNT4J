@@ -1,7 +1,7 @@
 About TNT4J
 ======================================
 
-Track and Trace 4 Java API, Application logging framework for correlation, diagnostics and tracking of application activities within and across multiple applications, runtimes, servers, geo locations. This API is specifically designed to troubleshoot distributed, concurrent, mutithreaded, multi-user applications and includes activity correlation, application state dumps, performance and user defined metrics.
+Track and Trace 4 Java API, Application logging framework for correlation, diagnostics and tracking of application activities within and across <b>multiple applications, runtimes, servers, geo locations. This API is specifically designed to troubleshoot distributed, concurrent, mutithreaded, multi-user applications</b> and includes activity correlation, application state dumps, performance and user defined metrics.
 
 Here is short list of TNT4J features:
 
