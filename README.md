@@ -22,13 +22,13 @@ Wiki is available at https://github.com/Nastel/TNT4J/wiki
 
 TNT4J Mission
 =======================================
-* Standard way to log, dump, correlate and analyze application traces accross threads, apps, servers, devices
-* Dramatically reduce time it takes to troubleshoot & debug application behavior using logging paradigm
-* performance metrics and application state to improve speed of manual analysis and enable automated log analysis
+* Standard to track application behavior accross users, apps, servers, devices, threads
+* Dramatically reduce time it takes to troubleshoot application behavior using logging paradigm
+* Performance metrics and application state to reduce diagnostic time
 * Simple to understand and use
 * Improve quality and readability of logs to accelerate diagnostics
-* Enrich log entries for automated log analysis
-* Decrease or eliminate development of custom diagnostic code
+* Enrich log entries for automated analysis
+* Decrease or eliminate development of custom code
 
 TNT4J Concepts
 ========================================
