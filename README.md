@@ -22,20 +22,20 @@ TNT4J Concepts
 ========================================
 TNT4J is fully plug-in and play tracking, tracing and logging framework that consits of the folliwng basic constructs:
 
-* Tracker -- high level object that allows developer to track, trace and log application activities
-* Actvity -- a collection of related tracking events (TrackingEvent) and other sub-activities, relation is established via a grouping specified by a developer or set of correlators (across thread, application boundaries). Activities may have a set of uder defined properties which are grouped into property snapshots (PropertySnapshot).
-* Tracking Event -- a message with associated start/stop time stamps, severity, user defined message, correlator, tag, location (such as GPS, server etc) and other event properties.
-* Property -- key, value pair
-* Property snapshot -- a collection of properties with category, name and a timestamp associated with when snapshot is taked. Actvities may have one or more property snapshots.
-* Formatter -- an object responsible for formatting underlying TNT4J objects such as Activity, Tracking Event and convert into a formatted string.
-* Tracking Selector -- an object associated with a Tracker that allows developers to perform conditional logging based on a given set of severity, key, value combination. Such combinations are stored in token repository.
-* Token Repository -- an underlying storage used by tracking selector that actually stored and maintains severity, key, value combinations. Such repository can be backed by a file, cache, memory or any other desired medium. token repositories can be shared accross application boundaries and therefore conditional logging can span multiple applications, runtimes, geo locations.
-* Sink -- sink is a basic destination where obejcts can be written.
-* Event Sink -- destination where events, activities and messages are recorded. Such destination can be file, socket, etc.
+* <b>Tracker</b> -- high level object that allows developer to track, trace and log application activities
+* <b>Actvity</b> -- a collection of related tracking events (TrackingEvent) and other sub-activities, relation is established via a grouping specified by a developer or set of correlators (across thread, application boundaries). Activities may have a set of uder defined properties which are grouped into property snapshots (PropertySnapshot).
+* <b>Tracking Event</b> -- a message with associated start/stop time stamps, severity, user defined message, correlator, tag, location (such as GPS, server etc) and other event properties.
+* <b>Property</b> -- key, value pair
+* <b>Property snapshot</b> -- a collection of properties with category, name and a timestamp associated with when snapshot is taked. Actvities may have one or more property snapshots.
+* <b>Formatter</b> -- an object responsible for formatting underlying TNT4J objects such as Activity, Tracking Event and convert into a formatted string.
+* <b>Tracking Selector</b> -- an object associated with a Tracker that allows developers to perform conditional logging based on a given set of severity, key, value combination. Such combinations are stored in token repository.
+* <b>Token Repository</b> -- an underlying storage used by tracking selector that actually stored and maintains severity, key, value combinations. Such repository can be backed by a file, cache, memory or any other desired medium. token repositories can be shared accross application boundaries and therefore conditional logging can span multiple applications, runtimes, geo locations.
+* <b>Sink</b> -- sink is a basic destination where obejcts can be written.
+* <b>Event Sink</b> -- destination where events, activities and messages are recorded. Such destination can be file, socket, etc.
 Sinks are usually associated with formatters which are called to format objects before writting to the sink.
-* Dump Sink -- sink where application dumps are recorded.
-* Dump -- a property snapshot that deals with application state (name, value pairs). Application can generate user defined dumps to report application specific metrics during diagnostics, on demand or VM shutdown.
-* Dump Provider -- user defined implmenetation that actually generated application Dumps.
+* <b>Dump Sink</b> -- sink where application dumps are recorded.
+* <b>Dump</b> -- a property snapshot that deals with application state (name, value pairs). Application can generate user defined dumps to report application specific metrics during diagnostics, on demand or VM shutdown.
+* <b>Dump Provider</b> -- user defined implmenetation that actually generated application Dumps.
 
 
 How to Build TNT4J
