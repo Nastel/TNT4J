@@ -17,6 +17,9 @@ Here is short list of TNT4J features:
 * Extensible activity, sink, error listeners for pre, post event processing
 * Granular context such as thread id, process id, server, application name
 
+See Getting Started (https://github.com/Nastel/TNT4J/wiki/Getting-Started) for quick reference on TNT4J.
+Wiki is available at https://github.com/Nastel/TNT4J/wiki
+
 TNT4J Mission
 =======================================
 * Standard way to log, dump, correlate and analyze application traces accross threads, apps, servers, devices
