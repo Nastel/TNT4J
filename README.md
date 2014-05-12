@@ -42,7 +42,7 @@ TNT4J is fully plug-in and play tracking, tracing and logging framework that con
 * <b>Property snapshot</b> -- a collection of properties with category, name and a timestamp associated with when snapshot is taked. Actvities may have one or more property snapshots.
 * <b>Formatter</b> -- an object responsible for formatting underlying TNT4J objects such as Activity, Tracking Event and convert into a formatted string.
 * <b>Tracking Selector</b> -- an object associated with a Tracker that allows developers to perform conditional logging based on a given set of severity, key, value combination. Such combinations are stored in token repository.
-* <b>Token Repository</b> -- an underlying storage used by tracking selector that actually stored and maintains severity, key, value combinations. Such repository can be backed by a file, cache, memory or any other desired medium. token repositories can be shared accross application boundaries and therefore conditional logging can span multiple applications, runtimes, geo locations.
+* <b>Token Repository</b> -- an underlying storage used by tracking selector that actually stores and maintains severity, key, value combinations. Such repository can be backed by a file, cache, memory or any other desired medium. Token repositories can be shared accross application boundaries and therefore conditional logging can span multiple applications, runtimes, geo locations.
 * <b>Sink</b> -- sink is a basic destination where obejcts can be written.
 * <b>Event Sink</b> -- destination where events, activities and messages are recorded. Such destination can be file, socket, etc.
 Sinks are usually associated with formatters which are called to format objects before writting to the sink.
