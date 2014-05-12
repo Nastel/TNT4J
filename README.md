@@ -17,6 +17,15 @@ Here is short list of TNT4J features:
 * Extensible activity, sink, error listeners for pre, post event processing
 * Granular context such as thread id, process id, server, application name
 
+TNT4J Mission
+=======================================
+* Standard way to log, dump, correlate and analyze application traces accross threads, apps, servers, devices
+* Dramatically reduce time it takes to troubleshoot & debug application behavior using logging paradigm
+* performance metrics and application state to improve speed of manual analysis and enable automated log analysis
+* Simple to understand and use
+* Improve quality and readability of logs to accelerate diagnostics
+* Enrich log entries for automated log analysis
+* Decrease or eliminate development of custom diagnostic code
 
 TNT4J Concepts
 ========================================
