@@ -197,6 +197,7 @@ public class TrackerConfigStore extends TrackerConfig {
 
 	private Properties loadProperties(Map<String, Properties> map) {
 		Properties defaultSet = null;
+		if (map == null) return defaultSet;
 		for (Entry<String, Properties> entry : map.entrySet()) {
 			if (entry.getKey().equals("*")) {
 				defaultSet = entry.getValue();
