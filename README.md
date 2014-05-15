@@ -9,6 +9,7 @@ Here is short list of TNT4J features:
 * Automated timing of application activities and sub-activities (elapsed, idle time, message age)
 * Application state dump framework for reporting internal variables, data structures
 * Granular conditional logging based on application tokens, patterns, that can be shared accross applications, runtimes
+* Share logging context across application, thread, runtime boundaries
 * Inter-log correlation of log entries (correlators and tags) between multiple related applications
 * Intra-log correlation of related activities and sub-activities between multiple applications and threads
 * Event location tags such as GPS, server etc.
