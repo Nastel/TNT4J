@@ -15,7 +15,6 @@
  */
 package com.nastel.jkool.tnt4j.dump;
 
-import java.util.Date;
 
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.UsecTimestamp;
