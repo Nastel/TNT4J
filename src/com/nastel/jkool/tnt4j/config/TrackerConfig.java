@@ -19,6 +19,7 @@ import java.util.Properties;
 
 import com.nastel.jkool.tnt4j.core.ActivityListener;
 import com.nastel.jkool.tnt4j.core.Source;
+import com.nastel.jkool.tnt4j.core.SourceType;
 import com.nastel.jkool.tnt4j.dump.DefaultDumpSinkFactory;
 import com.nastel.jkool.tnt4j.dump.DumpSinkFactory;
 import com.nastel.jkool.tnt4j.format.DefaultFormatter;
@@ -87,6 +88,18 @@ public class TrackerConfig {
 	}
 
 	/**
+	 * Create an empty configuration with a specific source name
+	 * 
+	 * @param source
+	 *            name of the source instance associated with the configuration
+	 * @param type
+	 *            source type associated with this configuration
+	 */
+	protected TrackerConfig(String source, SourceType type) {
+		this(new Source(source, type));
+	}
+
+	/**
 	 * Create an empty configuration with a specific source handle
 	 * 
 	 * @param source
@@ -113,15 +126,6 @@ public class TrackerConfig {
 	public TrackerConfig setSource(Source app) {
 		sourceHandle = app;
 		return this;
-	}
-
-	/**
-	 * Get configuration container name
-	 * 
-	 * @return current container name
-	 */
-	public String getContainerName() {
-		return sourceHandle.getContainer();
 	}
 
 	/**
