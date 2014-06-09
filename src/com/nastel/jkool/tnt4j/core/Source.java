@@ -15,202 +15,187 @@
  */
 package com.nastel.jkool.tnt4j.core;
 
+import java.util.StringTokenizer;
+
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
- * <p>Implements an Source entity.</p>
- *
- * <p>This is the root level object.  An instance of this object represents a single
- * instance of an application running within a specific container for a specific user.</p>
- *
- *
+ * <p>
+ * Implements an Source entity.
+ * </p>
+ * 
+ * <p>
+ * Source is an entity that generates events and activities. Sources can be nested. By default root source is defined by the
+ * following property:
+ * 
+ * <pre>
+ * {@code
+ *  tnt4j.source.root.fqname=JVM=?#SERVER=?#ADDRESS=?
+ * }
+ * </pre>
+ * Source above is interpreted as: JVM running on a SERVER, which in turn located at given ADDRESS (IP). "?" automatically maps to runtime
+ * values within a given runtime environment. All new source instantiations use <code>Source.defaultRootSource()</code> as the parent.
+ * 
+ * </p>
+ * 
+ * 
  * @version $Revision: 3 $
  */
-public class Source  {
+public class Source {
+	private static Source systemRootSource = fromFQN(System.getProperty("tnt4j.source.root.fqname",
+	        "JVM=?#SERVER=?#ADDRESS=?"));
 
-	/**
-	 * Maximum length of Source Name.
-	 * @since Revision 15
-	 */
-	public static final int MAX_NAME_LENGTH = 64;
-
-	/**
-	 * Maximum length of Container Name.
-	 * @since Revision 15
-	 */
-	public static final int MAX_CONTAINER_NAME_LENGTH = 256;
-
-	/**
-	 * Maximum length of Source User Name.
-	 * @since Revision 15
-	 */
-	public static final int MAX_USER_NAME_LENGTH = 64;
-
-	/**
-	 * Maximum length of Source URL.
-	 * @since Revision 26
-	 */
-	public static final int MAX_URL_LENGTH = 512;
-
-	/**
-	 * Maximum length of Container Address.
-	 * @since Revision 27
-	 */
-	public static final int MAX_CONTAINER_ADDRESS_LENGTH = 64;
-
-	/**
-	 * Maximum length of Container OS.
-	 * @since Revision 27
-	 */
-	public static final int MAX_CONTAINER_TYPE_LENGTH = 256;
-
-	private String name;
-	private String container;
-	private ContainerType containerType;
+	private Source parentSource;
+	private String sname;
+	private SourceType sourceType;
 	private String user;
-	private int    cpuCount;
-	private int    mipsCount;
 	private String url;
-	private String ip;
 	private String os;
 
 	/**
-	 * Creates an Source object with the specified name, deriving other attributes
-	 * from local environment.
-	 *
-	 * @param name Name used to identify the application
-	 * @throws NullPointerException if name is <code>null</code>
-	 * @throws IllegalArgumentException if name is empty
+	 * Creates an Source object with the specified name, deriving other attributes from local environment.
+	 * 
+	 * @param name
+	 *            Name used to identify the application
 	 */
 	public Source(String name) {
-		this(name, Utils.getLocalHostName(), Runtime.getRuntime().availableProcessors());
+		this(name, SourceType.APPL);
 	}
 
-
 	/**
-	 * Creates an Source object with the specified name, deriving other attributes
-	 * from local environment.
-	 *
-	 * @param name Name used to identify the application
-	 * @param container name that application is running on
-	 * @throws NullPointerException if name is <code>null</code>
-	 * @throws IllegalArgumentException if name is empty
+	 * Creates an Source object with the specified name, deriving other attributes from local environment.
+	 * 
+	 * @param name
+	 *            Name used to identify the application
+	 * @param type
+	 *            source type
 	 */
-	public Source(String name, String container) {
-		this(name, container, defaultContainerType(), Runtime.getRuntime().availableProcessors());
+	public Source(String name, SourceType type) {
+		this(name, type, defaultRootSource());
 	}
 
+	/**
+	 * Creates an Source object with the specified properties.
+	 * 
+	 * @param name
+	 *            Name used to identify the application
+	 * @param root
+	 *            parent source
+	 */
+	public Source(String name, SourceType type, Source root) {
+		setName(getSourceName(name, type));
+		setType(type);
+		setSource(root);
+		setUser(System.getProperty("user.name"));
+		setDefaultInfo();
+	}
 
 	/**
-	 * <p>Gets default container type. Application that derives from this class should
-	 * override this to return specific container type for the target environment.</p>
-	 *
+	 * <p>
+	 * Gets root source.
+	 * </p>
+	 * 
+	 * @return root source
+	 */
+	public static Source defaultRootSource() {
+		return systemRootSource;
+	}
+
+	/**
+	 * <p>
+	 * Obtains default name based on a given name/type pair ? name is converted into a runtime binding. Example: ?,
+	 * SERVER will return localhost name of the location server.
+	 * </p>
+	 * 
 	 * @return container type
 	 */
-	protected static ContainerType defaultContainerType() {
-	    return ContainerType.SERVER;
-    }
-
-
-	/**
-	 * Creates an Source object with the specified properties.
-	 *
-	 * @param name Name used to identify the application
-	 * @param container name that application is running on
-	 * @param procCount number of CPUs available to application
-	 * @throws NullPointerException if any arguments are <code>null</code>
-	 * @throws IllegalArgumentException if any arguments are empty
-	 *  or if cpuCount less than or equal to zero
-	 */
-	public Source(String name, String container, int procCount) {
-		setName(name);
-		setContainer(container);
-		setContainerType(defaultContainerType());
-		setCpuCount(procCount);
-		setUser(System.getProperty("user.name"));
-		setDefaultOsInfo();
-		setContainerAddress(Utils.getLocalHostAddress());
-	}
-
-	/**
-	 * Creates an Source object with the specified properties.
-	 *
-	 * @param name Name used to identify the application
-	 * @param container name that application is running on
-	 * @param contType container type associated with the source
-	 * @param procCount number of CPUs available to application
-	 * @throws NullPointerException if any arguments are <code>null</code>
-	 * @throws IllegalArgumentException if any arguments are empty
-	 *  or if cpuCount less than or equal to zero
-	 */
-	public Source(String name, String container, ContainerType contType, int procCount) {
-		setName(name);
-		setContainer(container);
-		setContainerType(contType);
-		setCpuCount(procCount);
-		setUser(System.getProperty("user.name"));
-		setDefaultOsInfo();
-		setContainerAddress(Utils.getLocalHostAddress());
-	}
-
-	/**
-	 * Gets the name used to identify the application.
-	 *
-	 * @return name of application
-	 */
-	public String getName() {
+	protected String getSourceName(String name, SourceType type) {
+		if (name.equals("?") && type == SourceType.SERVER)
+			name = Utils.getLocalHostName();
+		else if (name.equals("?") && type == SourceType.ADDRESS)
+			name = Utils.getLocalHostAddress();
+		else if (name.equals("?") && type == SourceType.JVM)
+			name = Utils.getVMName();
+		else if (name.equals("?"))
+			throw new RuntimeException("Unknown name for type=" + type);
 		return name;
 	}
 
 	/**
+	 * <p>
+	 * Create source from a given fully qualified name.
+	 * </p>
+	 * 
+	 * @return source name based on fqn
+	 */
+	public static Source fromFQN(String fq) {
+		StringTokenizer tk = new StringTokenizer(fq, "#");
+		Source child = null, root = null;
+		while (tk.hasMoreTokens()) {
+			String sName = tk.nextToken();
+			String[] pair = sName.split("=");
+			Source source = new Source(pair[1], SourceType.valueOf(pair[0]), null);
+			if (child != null)
+				child.setSource(source);
+			if (root == null)
+				root = source;
+			child = source;
+		}
+		return root;
+	}
+
+	/**
+	 * Gets the name used to identify the application.
+	 * 
+	 * @return name of application
+	 */
+	public String getName() {
+		return sname;
+	}
+
+	/**
+	 * Gets the fully qualified name used to identify this source type=source-name#parent-source
+	 * 
+	 * @return fully qualified name of this source
+	 */
+	public String getFQName() {
+		return (parentSource == null) ? sourceType + "=" + sname : sourceType + "=" + sname + "#"
+		        + parentSource.getFQName();
+	}
+
+	/**
 	 * Sets the name used to identify the application, truncating if necessary
-	 *
-	 * @param name Name used to identify the application
-	 * @throws NullPointerException if name is <code>null</code>
-	 * @throws IllegalArgumentException if name is empty
-	 * @see #MAX_NAME_LENGTH
+	 * 
+	 * @param name
+	 *            Name used to identify the application
 	 */
 	public void setName(String name) {
-		if (name == null)
-			throw new NullPointerException("application name must be a non-empty string");
-		if (name.length() == 0)
-			throw new IllegalArgumentException("application name must be a non-empty string");
-		if (name.length() > MAX_NAME_LENGTH)
-			name = name.substring(0, MAX_NAME_LENGTH);
-		this.name = name;
+		this.sname = name;
 	}
 
 	/**
-	 * Gets the container name that the application is running on.
-	 *
-	 * @return container name that application is running on
+	 * Gets parent source
+	 * 
+	 * @return parent source
 	 */
-	public String getContainer() {
-		return container;
+	public Source getSource() {
+		return parentSource;
 	}
 
 	/**
-	 * Sets the container name for the application, indicating where the application is running,
-	 * truncating if necessary.
-	 *
-	 * @param containerName name that application is running on
-	 * @throws NullPointerException if container is <code>null</code>
-	 * @throws IllegalArgumentException if container is empty
-	 * @see #MAX_CONTAINER_NAME_LENGTH
+	 * Sets the parent of this source indicating contains relationship
+	 * 
+	 * @param parent
+	 *            source associated with his source
 	 */
-	public void setContainer(String containerName) {
-		if (containerName == null)
-			throw new NullPointerException("container must be a non-empty string");
-		if (containerName.length() == 0)
-			throw new IllegalArgumentException("container must be a non-empty string");
-		if (containerName.length() > MAX_CONTAINER_NAME_LENGTH)
-			containerName = containerName.substring(0, MAX_CONTAINER_NAME_LENGTH);
-		this.container = containerName;
+	public Source setSource(Source parent) {
+		this.parentSource = parent;
+		return this;
 	}
 
 	/**
 	 * Gets the user name that the application is running under.
-	 *
+	 * 
 	 * @return name of user running application
 	 */
 	public String getUser() {
@@ -219,65 +204,17 @@ public class Source  {
 
 	/**
 	 * Sets the user name that the application is running under, truncating if necessary.
-	 *
-	 * @param user User name that application is running under
-	 * @see #MAX_USER_NAME_LENGTH
+	 * 
+	 * @param user
+	 *            User name that application is running under
 	 */
 	public void setUser(String user) {
-		if (user != null) {
-			if (user.length() > MAX_USER_NAME_LENGTH)
-				user = user.substring(0, MAX_USER_NAME_LENGTH);
-			else if (user.length() == 0)
-				user = null;
-		}
 		this.user = user;
 	}
 
 	/**
-	 * Gets the number of CPUs reported as being available to the application.
-	 *
-	 * @return number of CPUs
-	 */
-	public int getCpuCount() {
-		return cpuCount;
-	}
-
-	/**
-	 * Sets the number of CPUs which are available to the application.
-	 *
-	 * @param cpuCount number of CPUs available to application
-	 * @throws IllegalArgumentException if cpuCount is less than or equal to zero
-	 */
-	public void setCpuCount(int cpuCount) {
-		if (cpuCount <= 0)
-			throw new IllegalArgumentException("cpuCount must be a > 0");
-		this.cpuCount = cpuCount;
-	}
-
-	/**
-	 * Gets the number of MIPS reported as being available to the application.
-	 *
-	 * @return number of MIPS
-	 */
-	public int getMipsCount() {
-		return mipsCount;
-	}
-
-	/**
-	 * Sets the number of MIPS which are available to the application.
-	 *
-	 * @param mipsCount number of MIPS available to application
-	 * @throws IllegalArgumentException if mipsCount is less than or equal to zero
-	 */
-	public void setMipsCount(int mipsCount) {
-		if (mipsCount <= 0)
-			throw new IllegalArgumentException("mipsCount must be a > 0");
-		this.mipsCount = mipsCount;
-	}
-
-	/**
 	 * Gets the URL that the application is running at.
-	 *
+	 * 
 	 * @return URL that application is running at
 	 */
 	public String getUrl() {
@@ -286,101 +223,63 @@ public class Source  {
 
 	/**
 	 * Sets the URL that the application is running at, truncating if necessary.
-	 *
-	 * @param url URL that application is running at
-	 * @see #MAX_URL_LENGTH
+	 * 
+	 * @param url
+	 *            URL that application is running at
 	 */
 	public void setUrl(String url) {
-		if (url != null) {
-			if (url.length() > MAX_URL_LENGTH)
-				url = url.substring(0, MAX_URL_LENGTH);
-			else if (url.length() == 0)
-				url = null;
-		}
 		this.url = url;
 	}
 
 	/**
-	 * <p>Gets the IP Address of container that application is running on.</p>
-	 *
-	 * <p>If this attribute was not explicitly set, it defaults to the
-	 * IP address of the application's container name, or current host if
-	 * container name cannot be resolved to an IP Address.</p>
-	 *
-	 * @return IP Address of container that application is running on
+	 * <p>
+	 * Gets source info string.
+	 * </p>
+	 * 
+	 * <p>
+	 * If this attribute was not explicitly set, it defaults to the concatenation of the system properties "os.name" and
+	 * "os.version".
+	 * </p>
+	 * 
+	 * @return source info
 	 * @since Revision 27
 	 */
-	public String getContainerAddress() {
-		return ip;
-	}
-
-	/**
-	 * Sets the IP Address of container that application is running on, truncating if necessary.
-	 *
-	 * @param ip Address of container that application is running on
-	 * @see #MAX_CONTAINER_ADDRESS_LENGTH
-	 * @since Revision 27
-	 */
-	public void setContainerAddress(String ip) {
-		if (ip != null) {
-			if (ip.length() > MAX_CONTAINER_ADDRESS_LENGTH)
-				ip = ip.substring(0, MAX_CONTAINER_ADDRESS_LENGTH);
-			else if (ip.length() == 0)
-				ip = null;
-		}
-
-		if (!Utils.isEmpty(ip))
-			this.ip = ip;
-	}
-
-	/**
-	 * <p>Gets the operation system type that application is running on.</p>
-	 *
-	 * <p>If this attribute was not explicitly set, it defaults to the
-	 * concatenation of the system properties "os.name" and "os.version".</p>
-	 *
-	 * @return operation system type that application is running on
-	 * @since Revision 27
-	 */
-	public String getOsType() {
+	public String getInfo() {
 		return os;
 	}
 
 	/**
-	 * Sets the operation system type that application is running on.
-	 *
-	 * @param os operation system type that application is running on
-	 * @see #MAX_CONTAINER_TYPE_LENGTH
+	 * Sets source info associated with this source
+	 * 
+	 * @param inf
+	 *            info associated with the source
 	 * @since Revision 27
 	 */
-	public void setOsType(String os) {
-		if (os != null) {
-			if (os.length() > MAX_CONTAINER_TYPE_LENGTH)
-				os = os.substring(0, MAX_CONTAINER_TYPE_LENGTH);
-			else if (os.length() == 0)
-				os = null;
-		}
-
-		this.os = os;
+	public void setInfo(String inf) {
+		this.os = inf;
 	}
 
 	/**
-	 * <p>Gets container type.</p>
-	 *
+	 * <p>
+	 * Gets source type.
+	 * </p>
+	 * 
 	 * @return container type
 	 */
-	public ContainerType getContainerType() {
-		return containerType;
+	public SourceType getType() {
+		return sourceType;
 	}
-	
+
 	/**
-	 * <p>Set container type associated with this source.</p>
-	 *
+	 * <p>
+	 * Set source type associated with this source.
+	 * </p>
+	 * 
 	 */
-	public void setContainerType(ContainerType ct) {
-		containerType = ct;
+	public void setType(SourceType ct) {
+		sourceType = ct;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -389,9 +288,8 @@ public class Source  {
 		final int prime = 31;
 		int result = 1;
 
-		result = prime * result + ((name == null)   ? 0 : name.hashCode());
-		result = prime * result + ((container == null) ? 0 : container.hashCode());
-		result = prime * result + ((user == null)   ? 0 : user.hashCode());
+		result = prime * result + ((sname == null) ? 0 : sname.hashCode());
+		result = prime * result + ((user == null) ? 0 : user.hashCode());
 
 		return result;
 	}
@@ -410,27 +308,17 @@ public class Source  {
 
 		final Source other = (Source) obj;
 
-		if (container == null) {
-			if (other.container != null)
+		if (sname == null) {
+			if (other.sname != null)
 				return false;
-		}
-		else if (!container.equals(other.container)) {
-			return false;
-		}
-
-		if (name == null) {
-			if (other.name != null)
-				return false;
-		}
-		else if (!name.equals(other.name)) {
+		} else if (!sname.equals(other.sname)) {
 			return false;
 		}
 
 		if (user == null) {
 			if (other.user != null)
 				return false;
-		}
-		else if (!user.equals(other.user)) {
+		} else if (!user.equals(other.user)) {
 			return false;
 		}
 
@@ -444,21 +332,16 @@ public class Source  {
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 
-		str.append(super.toString()).append("{")
-			.append("Name: ").append(getName()).append(",")
-			.append("User: ").append(getUser()).append(",")
-			.append("Container: ").append(getContainer()).append(",")
-			.append("Type: ").append(getContainerType()).append(",")
-			.append("Address: ").append(getContainerAddress()).append(",")
-			.append("CPUS: ").append(getCpuCount()).append(",")
-			.append("MIPS: ").append(getMipsCount()).append(",")
-			.append("URL: ").append(getUrl()).append(",")
-			.append("OS: ").append(Utils.quote(getOsType())).append("}");
+		str.append(super.toString()).append("{").append("FQName: ").append(getFQName()).append(",").append("Name: ")
+		        .append(getName()).append(",").append("User: ").append(getUser()).append(",").append("Type: ").append(
+		                getType()).append(",").append("URL: ").append(getUrl()).append(",").append("OS: ").append(
+		                Utils.quote(getInfo())).append("}");
 
 		return str.toString();
 	}
 
-	private void setDefaultOsInfo() {
-		setOsType(System.getProperty("os.name") + ", Version: " + System.getProperty("os.version") + ", Arch: " + System.getProperty("os.arch"));
+	private void setDefaultInfo() {
+		setInfo(System.getProperty("os.name") + ", Version: " + System.getProperty("os.version") + ", Arch: "
+		        + System.getProperty("os.arch"));
 	}
 }

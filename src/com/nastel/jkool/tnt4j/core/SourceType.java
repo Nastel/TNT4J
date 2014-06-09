@@ -16,12 +16,12 @@
 package com.nastel.jkool.tnt4j.core;
 
 /**
- * Provides list of valid Container types. Container is a logical entity that contains/runs a specific
- * application.
+ * Provides list of valid source types. Source is a logical nested entity that expresses container
+ * of applications, servers, application servers, jvms, etc.
  *
  * @see Source
  * @version $Revision: 1 $
  */
-public enum ContainerType {
-	GENERIC, SERVER, VIRTUAL, ANDROID, IOS;
+public enum SourceType {
+	GENERIC, APPL, APPSERVER, SERVER, JVM, CLR, VIRTUAL, NETWORK, DEVICE, ADDRESS;
 }
