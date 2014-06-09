@@ -66,6 +66,7 @@ public class Source  {
 
 	private String name;
 	private String container;
+	private ContainerType containerType;
 	private String user;
 	private int    cpuCount;
 	private int    mipsCount;
@@ -96,8 +97,19 @@ public class Source  {
 	 * @throws IllegalArgumentException if name is empty
 	 */
 	public Source(String name, String container) {
-		this(name, container, Runtime.getRuntime().availableProcessors());
+		this(name, container, defaultContainerType(), Runtime.getRuntime().availableProcessors());
 	}
+
+
+	/**
+	 * <p>Gets default container type. Application that derives from this class should
+	 * override this to return specific container type for the target environment.</p>
+	 *
+	 * @return container type
+	 */
+	protected static ContainerType defaultContainerType() {
+	    return ContainerType.SERVER;
+    }
 
 
 	/**
@@ -105,15 +117,37 @@ public class Source  {
 	 *
 	 * @param name Name used to identify the application
 	 * @param container name that application is running on
-	 * @param cpuCount number of CPUs available to application
+	 * @param procCount number of CPUs available to application
 	 * @throws NullPointerException if any arguments are <code>null</code>
 	 * @throws IllegalArgumentException if any arguments are empty
 	 *  or if cpuCount less than or equal to zero
 	 */
-	public Source(String name, String container, int cpuCount) {
+	public Source(String name, String container, int procCount) {
 		setName(name);
 		setContainer(container);
-		setCpuCount(cpuCount);
+		setContainerType(defaultContainerType());
+		setCpuCount(procCount);
+		setUser(System.getProperty("user.name"));
+		setDefaultOsInfo();
+		setContainerAddress(Utils.getLocalHostAddress());
+	}
+
+	/**
+	 * Creates an Source object with the specified properties.
+	 *
+	 * @param name Name used to identify the application
+	 * @param container name that application is running on
+	 * @param contType container type associated with the source
+	 * @param procCount number of CPUs available to application
+	 * @throws NullPointerException if any arguments are <code>null</code>
+	 * @throws IllegalArgumentException if any arguments are empty
+	 *  or if cpuCount less than or equal to zero
+	 */
+	public Source(String name, String container, ContainerType contType, int procCount) {
+		setName(name);
+		setContainer(container);
+		setContainerType(contType);
+		setCpuCount(procCount);
 		setUser(System.getProperty("user.name"));
 		setDefaultOsInfo();
 		setContainerAddress(Utils.getLocalHostAddress());
@@ -300,26 +334,26 @@ public class Source  {
 	}
 
 	/**
-	 * <p>Gets the operation system type for container that application is running on.</p>
+	 * <p>Gets the operation system type that application is running on.</p>
 	 *
 	 * <p>If this attribute was not explicitly set, it defaults to the
 	 * concatenation of the system properties "os.name" and "os.version".</p>
 	 *
-	 * @return operation system type for container that application is running on
+	 * @return operation system type that application is running on
 	 * @since Revision 27
 	 */
-	public String getContainerType() {
+	public String getOsType() {
 		return os;
 	}
 
 	/**
-	 * Sets the operation system type for container that application is running on.
+	 * Sets the operation system type that application is running on.
 	 *
-	 * @param os operation system type for container that application is running on
+	 * @param os operation system type that application is running on
 	 * @see #MAX_CONTAINER_TYPE_LENGTH
 	 * @since Revision 27
 	 */
-	public void setContainerType(String os) {
+	public void setOsType(String os) {
 		if (os != null) {
 			if (os.length() > MAX_CONTAINER_TYPE_LENGTH)
 				os = os.substring(0, MAX_CONTAINER_TYPE_LENGTH);
@@ -330,6 +364,23 @@ public class Source  {
 		this.os = os;
 	}
 
+	/**
+	 * <p>Gets container type.</p>
+	 *
+	 * @return container type
+	 */
+	public ContainerType getContainerType() {
+		return containerType;
+	}
+	
+	/**
+	 * <p>Set container type associated with this source.</p>
+	 *
+	 */
+	public void setContainerType(ContainerType ct) {
+		containerType = ct;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -397,16 +448,17 @@ public class Source  {
 			.append("Name: ").append(getName()).append(",")
 			.append("User: ").append(getUser()).append(",")
 			.append("Container: ").append(getContainer()).append(",")
+			.append("Type: ").append(getContainerType()).append(",")
 			.append("Address: ").append(getContainerAddress()).append(",")
 			.append("CPUS: ").append(getCpuCount()).append(",")
 			.append("MIPS: ").append(getMipsCount()).append(",")
 			.append("URL: ").append(getUrl()).append(",")
-			.append("Type: ").append(Utils.quote(getContainerType())).append("}");
+			.append("OS: ").append(Utils.quote(getOsType())).append("}");
 
 		return str.toString();
 	}
 
 	private void setDefaultOsInfo() {
-		setContainerType(System.getProperty("os.name") + ", Version: " + System.getProperty("os.version") + ", Arch: " + System.getProperty("os.arch"));
+		setOsType(System.getProperty("os.name") + ", Version: " + System.getProperty("os.version") + ", Arch: " + System.getProperty("os.arch"));
 	}
 }

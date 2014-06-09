@@ -73,6 +73,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	public static final String JSON_USER_LABEL = "user";
 	public static final String JSON_CONTAINER_LABEL = "container-name";
 	public static final String JSON_CONTAINER_ADDR_LABEL = "container-addr";
+	public static final String JSON_CONTAINER_OS_LABEL = "container-os";
 	public static final String JSON_CONTAINER_TYPE_LABEL = "container-type";
 	public static final String JSON_CONTAINER_CPUS_LABEL = "container-cpus";
 	public static final String JSON_CONTAINER_MIPS_LABEL = "container-mips";
@@ -208,12 +209,14 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		jsonString.append(Utils.quote(JSON_USER_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getOperation().getUser()))
 		        .append(ATTR_JSON);
 		if (activity != null) {
+			jsonString.append(Utils.quote(JSON_CONTAINER_TYPE_LABEL)).append(ATTR_SEP).append(
+			        Utils.quote(activity.getSource().getContainerType())).append(ATTR_JSON);
 			jsonString.append(Utils.quote(JSON_CONTAINER_LABEL)).append(ATTR_SEP).append(
 			        Utils.quote(activity.getSource().getContainer())).append(ATTR_JSON);
 			jsonString.append(Utils.quote(JSON_CONTAINER_ADDR_LABEL)).append(ATTR_SEP).append(
 			        Utils.quote(activity.getSource().getContainerAddress())).append(ATTR_JSON);
-			jsonString.append(Utils.quote(JSON_CONTAINER_TYPE_LABEL)).append(ATTR_SEP).append(
-			        Utils.quote(activity.getSource().getContainerType())).append(ATTR_JSON);
+			jsonString.append(Utils.quote(JSON_CONTAINER_OS_LABEL)).append(ATTR_SEP).append(
+			        Utils.quote(activity.getSource().getOsType())).append(ATTR_JSON);
 			jsonString.append(Utils.quote(JSON_CONTAINER_CPUS_LABEL)).append(ATTR_SEP)
 			        .append(activity.getSource().getCpuCount()).append(ATTR_JSON);
 			if (activity.getSource().getMipsCount() > 0) {
@@ -314,12 +317,14 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		        ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_USER_LABEL)).append(ATTR_SEP).append(Utils.quote(activity.getSource().getUser()))
 		        .append(ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_CONTAINER_TYPE_LABEL)).append(ATTR_SEP).append(
+		        Utils.quote(activity.getSource().getContainerType())).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_CONTAINER_LABEL)).append(ATTR_SEP).append(
 		        Utils.quote(activity.getSource().getContainer())).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_CONTAINER_ADDR_LABEL)).append(ATTR_SEP).append(
 		        Utils.quote(activity.getSource().getContainerAddress())).append(ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_CONTAINER_TYPE_LABEL)).append(ATTR_SEP).append(
-		        Utils.quote(activity.getSource().getContainerType())).append(ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_CONTAINER_OS_LABEL)).append(ATTR_SEP).append(
+		        Utils.quote(activity.getSource().getOsType())).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_CONTAINER_CPUS_LABEL)).append(ATTR_SEP).append(activity.getSource().getCpuCount())
 		        .append(ATTR_JSON);
 		if (activity.getSource().getMipsCount() > 0) {
