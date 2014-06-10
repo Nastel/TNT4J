@@ -489,13 +489,10 @@ public class TrackingLogger {
 		if (logger == null)
 			throw new RuntimeException("register() never called for this thread");
 		long endTime = System.currentTimeMillis();
-		TrackingActivity activity = logger.newActivity();
 		TrackingEvent event = logger.newEvent(severity, OpType.CALL, correlator, msg, opName);
 		event.start(endTime - elapsed);
 		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
-		activity.start(event.getOperation().getStartTime());
-		activity.stop(event.getOperation().getEndTime());
-		logger.tnt(activity);
+		logger.tnt(event);
 	}
 
 	/**
