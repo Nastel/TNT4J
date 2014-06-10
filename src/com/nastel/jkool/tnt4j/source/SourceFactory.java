@@ -60,6 +60,17 @@ public interface SourceFactory {
 	public Source newSource(String name, SourceType type, Source parent);
 
 	/**
+	 * Create a new source given name and type
+	 * 
+	 * @param name source name
+	 * @param type source type
+	 * @param parent source
+	 * @param user user name associated with the source
+	 * @return source handle
+	 */
+	public Source newSource(String name, SourceType type, Source parent, String user);
+
+	/**
 	 * Create a new source based on a given fully qualified path. Format:
 	 * type=name|?#type=name...
 	 * Example: JVM=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?

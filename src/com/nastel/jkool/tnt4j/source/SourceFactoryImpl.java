@@ -43,6 +43,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	public final String DEFAULT_SOURCE_ROOT_FQN = System.getProperty("tnt4j.source.root.fqname", "JVM=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?");
 	public final String DEFAULT_SOURCE_GEO_LOCATION = System.getProperty("tnt4j.current.geo.location", "unknown");
 	public final String DEFAULT_SOURCE_DATACENTER = System.getProperty("tnt4j.current.geo.datacenter", "default");
+	public final String DEFAULT_SOURCE_USER = System.getProperty("user.name");
 	
 	private Map<String, Object> config = null;
 	private String rootFqn = DEFAULT_SOURCE_ROOT_FQN;
@@ -72,7 +73,12 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 
 	@Override
     public Source newSource(String name, SourceType tp, Source parent) {
-	    return new DefaultSource(getNameFromType(name, tp), tp, parent);
+	    return newSource(name, tp, parent, DEFAULT_SOURCE_USER);
+    }
+
+	@Override
+    public Source newSource(String name, SourceType tp, Source parent, String user) {
+	    return new DefaultSource(getNameFromType(name, tp), tp, parent, user);
     }
 
 	@Override
@@ -153,7 +159,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 			String sName = tk.nextToken();
 			String[] pair = sName.split("=");
 			SourceType type = SourceType.valueOf(pair[0]);
-			DefaultSource source = new DefaultSource(getNameFromType(pair[1], type), type, null);
+			DefaultSource source = new DefaultSource(getNameFromType(pair[1], type), type, null, DEFAULT_SOURCE_USER);
 			if (child != null)
 				child.setSource(source);
 			if (root == null)

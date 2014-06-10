@@ -32,21 +32,25 @@ public class DefaultSource implements Source {
 	private SourceType sourceType;
 	private String user;
 	private String url;
-	private String os;
+	private String info;
 
 	/**
 	 * Creates an Source object with the specified properties.
 	 * 
 	 * @param name
-	 *            Name used to identify the application
+	 *            Name used to identify the source
+	 * @param type
+	 *            source type
 	 * @param root
 	 *            parent source
+	 * @param userName
+	 *            user name associated with this source
 	 */
-	public DefaultSource(String name, SourceType type, Source root) {
+	public DefaultSource(String name, SourceType type, Source root, String userName) {
 		setName(name);
 		setType(type);
 		setSource(root);
-		setUser(System.getProperty("user.name"));
+		setUser(userName);
 		setDefaultInfo();
 	}
 
@@ -151,7 +155,7 @@ public class DefaultSource implements Source {
 	 * @since Revision 27
 	 */
 	public String getInfo() {
-		return os;
+		return info;
 	}
 
 	/**
@@ -162,7 +166,7 @@ public class DefaultSource implements Source {
 	 * @since Revision 27
 	 */
 	public void setInfo(String inf) {
-		this.os = inf;
+		this.info = inf;
 	}
 
 	/**
@@ -196,6 +200,7 @@ public class DefaultSource implements Source {
 
 		result = prime * result + ((sname == null) ? 0 : sname.hashCode());
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
+		result = prime * result + ((sourceType == null) ? 0 : sourceType.hashCode());
 
 		return result;
 	}
@@ -220,7 +225,11 @@ public class DefaultSource implements Source {
 		} else if (!sname.equals(other.getName())) {
 			return false;
 		}
-
+		
+		if (!sourceType.equals(other.getType())) {
+			return false;
+		}
+		
 		if (user == null) {
 			if (other.getUser() != null)
 				return false;
