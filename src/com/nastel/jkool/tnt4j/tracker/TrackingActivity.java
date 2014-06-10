@@ -98,7 +98,7 @@ public class TrackingActivity extends Activity {
 	 */
 	public void tnt(TrackingEvent event) {
 		add(event);
-		tracker.getEventSink().log(event);
+		tracker.tnt(event);
 	}
 
 	@Override

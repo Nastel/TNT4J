@@ -128,6 +128,16 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 	}
 
+	private void reportEvent(TrackingEvent event) throws IOException, URISyntaxException {
+		try {
+			if (!eventSink.isOpen()) {
+				eventSink.open();
+			}
+		} finally {
+			eventSink.log(event);						
+		}
+	}
+
 	@Override
 	public Source getSource() {
 		return tConfig.getSource();
@@ -169,11 +179,15 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public void tnt(TrackingEvent event) {
-		TrackingActivity activity = newActivity();
-		activity.start(event.getOperation().getStartTime());
-		activity.stop(event.getOperation().getEndTime());
-		activity.tnt(event);
-		tnt(activity);
+		try  { reportEvent(event); }
+		catch (Throwable ex) {
+			logger.log(OpLevel.ERROR, 
+					"Failed to report event {signature: " + event.getTrackingId() 
+					+ ", vm.pid: " + Utils.getVMPID() 
+					+ ", event.sink: " + eventSink 
+					+ ", source: " + getSource()
+					+ "}", ex);
+		}
 	}
 
 	@Override
