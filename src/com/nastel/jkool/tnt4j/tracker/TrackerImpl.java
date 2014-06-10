@@ -22,13 +22,13 @@ import java.util.UUID;
 import com.nastel.jkool.tnt4j.config.TrackerConfig;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
-import com.nastel.jkool.tnt4j.core.Source;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
 import com.nastel.jkool.tnt4j.sink.DefaultEventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.EventSink;
 import com.nastel.jkool.tnt4j.sink.Handle;
 import com.nastel.jkool.tnt4j.sink.SinkError;
 import com.nastel.jkool.tnt4j.sink.SinkErrorListener;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 

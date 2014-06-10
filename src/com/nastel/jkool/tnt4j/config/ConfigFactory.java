@@ -15,7 +15,7 @@
  */
 package com.nastel.jkool.tnt4j.config;
 
-import com.nastel.jkool.tnt4j.core.Source;
+import com.nastel.jkool.tnt4j.source.Source;
 
 /**
  * <p>

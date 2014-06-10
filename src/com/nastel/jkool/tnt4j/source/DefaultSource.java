@@ -13,66 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nastel.jkool.tnt4j.core;
-
-import java.util.StringTokenizer;
+package com.nastel.jkool.tnt4j.source;
 
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
- * Implements an Source entity.
- * </p>
- * 
- * <p>
- * Source is an entity that generates events and activities. Sources can be nested. By default root source is defined by the
- * following property:
- * 
- * <pre>
- * {@code
- *  tnt4j.source.root.fqname=JVM=?#SERVER=?#ADDRESS=?
- * }
- * </pre>
- * Source above is interpreted as: JVM running on a SERVER, which in turn located at given ADDRESS (IP). "?" automatically maps to runtime
- * values within a given runtime environment. All new source instantiations use <code>Source.defaultRootSource()</code> as the parent.
- * 
+ * Implements Source entity -- container of other sources. Each one identifies a specific entity such as an
+ * application, server, device etc.
  * </p>
  * 
  * 
  * @version $Revision: 3 $
  */
-public class Source {
-	private static Source systemRootSource = fromFQN(System.getProperty("tnt4j.source.root.fqname",
-	        "JVM=?#SERVER=?#ADDRESS=?"));
-
+public class DefaultSource implements Source {
 	private Source parentSource;
 	private String sname;
 	private SourceType sourceType;
 	private String user;
 	private String url;
 	private String os;
-
-	/**
-	 * Creates an Source object with the specified name, deriving other attributes from local environment.
-	 * 
-	 * @param name
-	 *            Name used to identify the application
-	 */
-	public Source(String name) {
-		this(name, SourceType.APPL);
-	}
-
-	/**
-	 * Creates an Source object with the specified name, deriving other attributes from local environment.
-	 * 
-	 * @param name
-	 *            Name used to identify the application
-	 * @param type
-	 *            source type
-	 */
-	public Source(String name, SourceType type) {
-		this(name, type, defaultRootSource());
-	}
 
 	/**
 	 * Creates an Source object with the specified properties.
@@ -82,66 +42,12 @@ public class Source {
 	 * @param root
 	 *            parent source
 	 */
-	public Source(String name, SourceType type, Source root) {
-		setName(getSourceName(name, type));
+	public DefaultSource(String name, SourceType type, Source root) {
+		setName(name);
 		setType(type);
 		setSource(root);
 		setUser(System.getProperty("user.name"));
 		setDefaultInfo();
-	}
-
-	/**
-	 * <p>
-	 * Gets root source.
-	 * </p>
-	 * 
-	 * @return root source
-	 */
-	public static Source defaultRootSource() {
-		return systemRootSource;
-	}
-
-	/**
-	 * <p>
-	 * Obtains default name based on a given name/type pair ? name is converted into a runtime binding. Example: ?,
-	 * SERVER will return localhost name of the location server.
-	 * </p>
-	 * 
-	 * @return container type
-	 */
-	protected String getSourceName(String name, SourceType type) {
-		if (name.equals("?") && type == SourceType.SERVER)
-			name = Utils.getLocalHostName();
-		else if (name.equals("?") && type == SourceType.ADDRESS)
-			name = Utils.getLocalHostAddress();
-		else if (name.equals("?") && type == SourceType.JVM)
-			name = Utils.getVMName();
-		else if (name.equals("?"))
-			throw new RuntimeException("Unknown name for type=" + type);
-		return name;
-	}
-
-	/**
-	 * <p>
-	 * Create source from a given fully qualified name.
-	 * </p>
-	 * 
-	 * @return source name based on fqn
-	 */
-	public static Source fromFQN(String fq) {
-		StringTokenizer tk = new StringTokenizer(fq, "#");
-		Source child = null, root = null;
-		while (tk.hasMoreTokens()) {
-			String sName = tk.nextToken();
-			String[] pair = sName.split("=");
-			Source source = new Source(pair[1], SourceType.valueOf(pair[0]), null);
-			if (child != null)
-				child.setSource(source);
-			if (root == null)
-				root = source;
-			child = source;
-		}
-		return root;
 	}
 
 	/**
@@ -309,16 +215,16 @@ public class Source {
 		final Source other = (Source) obj;
 
 		if (sname == null) {
-			if (other.sname != null)
+			if (other.getName() != null)
 				return false;
-		} else if (!sname.equals(other.sname)) {
+		} else if (!sname.equals(other.getName())) {
 			return false;
 		}
 
 		if (user == null) {
-			if (other.user != null)
+			if (other.getUser() != null)
 				return false;
-		} else if (!user.equals(other.user)) {
+		} else if (!user.equals(other.getUser())) {
 			return false;
 		}
 

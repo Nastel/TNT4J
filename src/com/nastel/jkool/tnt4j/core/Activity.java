@@ -17,8 +17,8 @@ package com.nastel.jkool.tnt4j.core;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -56,7 +56,7 @@ public class Activity extends Operation implements LinkedItem {
 	public static final int MAX_EXCEPTION_LENGTH = 512;
 
 	private Source   appl;
-	private String        tracking_id;
+	private String   tracking_id;
 	private ActivityStatus status = ActivityStatus.BEGIN;
 	
 	private ArrayList<LinkedItem> linkedItems;
@@ -68,28 +68,6 @@ public class Activity extends Operation implements LinkedItem {
 
 	private LinkedItem parent;
 
-
-	/**
-	 * Creates a Activity object with a generated, unique tracking id.
-	 * 
-	 * @param appName logical application name associated with this activity
-	 */
-	public Activity(String appName) {
-		this(appName, UUID.randomUUID().toString());
-	}
-
-	/**
-	 * Creates a Activity object with the specified tracking id.
-	 *
-	 * @param appName logical application name associated with this activity
-	 * @param id Activity tracking id
-	 * @throws NullPointerException if the tracking id is <code>null</code>
-	 * @throws IllegalArgumentException if the tracking id is empty or is too long
-	 * @see #setTrackingId(String)
-	 */
-	public Activity(String appName, String id) {
-		this(id, new Source(appName));
-	}
 
 	/**
 	 * Creates a Activity object with the specified tracking id.

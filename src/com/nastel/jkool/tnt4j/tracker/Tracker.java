@@ -17,12 +17,12 @@ package com.nastel.jkool.tnt4j.tracker;
 
 import com.nastel.jkool.tnt4j.config.TrackerConfig;
 import com.nastel.jkool.tnt4j.core.Activity;
-import com.nastel.jkool.tnt4j.core.Source;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
 import com.nastel.jkool.tnt4j.sink.EventSink;
 import com.nastel.jkool.tnt4j.sink.Handle;
+import com.nastel.jkool.tnt4j.source.Source;
 
 
 /**

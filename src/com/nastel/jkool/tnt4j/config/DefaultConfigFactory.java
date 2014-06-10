@@ -50,7 +50,7 @@ public class DefaultConfigFactory  {
 		factory = fac;
 		return factory;
 	}
-	
+	 
 	/**
 	 * Obtain a default tracking configuration factory
 	 * 

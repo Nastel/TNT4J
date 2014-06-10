@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nastel.jkool.tnt4j.core;
+package com.nastel.jkool.tnt4j.source;
 
 /**
  * Provides list of valid source types. Source is a logical nested entity that expresses container
@@ -23,5 +23,6 @@ package com.nastel.jkool.tnt4j.core;
  * @version $Revision: 1 $
  */
 public enum SourceType {
-	GENERIC, APPL, APPSERVER, SERVER, JVM, CLR, VIRTUAL, NETWORK, DEVICE, ADDRESS;
+	GENERIC, APPL, APPSERVER, SERVER, JVM, CLR, VIRTUAL, 
+	NETWORK, DEVICE, NETADDR, GEOADDR, DATACENTER;
 }

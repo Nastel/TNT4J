@@ -26,7 +26,6 @@ import java.util.Map.Entry;
 
 import com.nastel.jkool.tnt4j.core.ActivityListener;
 import com.nastel.jkool.tnt4j.core.OpLevel;
-import com.nastel.jkool.tnt4j.core.Source;
 import com.nastel.jkool.tnt4j.dump.DumpSinkFactory;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.repository.TokenRepository;
@@ -36,6 +35,8 @@ import com.nastel.jkool.tnt4j.sink.EventSink;
 import com.nastel.jkool.tnt4j.sink.EventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.SinkEventFilter;
 import com.nastel.jkool.tnt4j.sink.SinkLogEventListener;
+import com.nastel.jkool.tnt4j.source.Source;
+import com.nastel.jkool.tnt4j.source.SourceFactory;
 import com.nastel.jkool.tnt4j.tracker.TrackerFactory;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
@@ -57,6 +58,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * {
  * source: *
  * event.sink.factory: com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory
+ * event.source.factory: com.nastel.jkool.tnt4j.core.DefaultSourceFactory
  * event.formatter: com.nastel.jkool.tnt4j.format.DefaultFormatter
  * token.repository: com.nastel.jkool.tnt4j.repository.FileTokenRepository
  * tracking.selector: com.nastel.jkool.tnt4j.selector.DefaultTrackingSelector
@@ -113,6 +115,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 public class TrackerConfigStore extends TrackerConfig {
 	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerConfigStore.class.getName());
+	
 	private static final String SOURCE_KEY = "source";
 	private String configFile = null;
 
@@ -124,7 +127,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            name of the source instance associated with the configuration
 	 */
 	protected TrackerConfigStore(String source) {
-		this(new Source(source));
+		this(source, null);
 	}
 
 	/**
@@ -137,7 +140,8 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            configuration file name
 	 */
 	protected TrackerConfigStore(String source, String fileName) {
-		this(new Source(source), fileName);
+		super(source);
+		initConfig(fileName);		
 	}
 
 	/**
@@ -161,9 +165,13 @@ public class TrackerConfigStore extends TrackerConfig {
 	 */
 	protected TrackerConfigStore(Source source, String fileName) {
 		super(source);
+		initConfig(fileName);
+	}
+	
+	private void initConfig(String fileName) {
 		configFile = fileName == null ? System.getProperty("tnt4j.config", "tnt4j.properties") : fileName;
 		Map<String, Properties> configMap = loadConfiguration(configFile);
-		loadConfigProps(configMap);
+		loadConfigProps(configMap);		
 	}
 
 	private Object createConfigurableObject(String classProp, String prefix) {
@@ -180,9 +188,10 @@ public class TrackerConfigStore extends TrackerConfig {
 		setProperties(loadProperties(map));
 		if (props != null) {
 			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.DEBUG, "Loading configuration {source: " + this.getSource().getName() + ", properties: " + props + "}");
+				logger.log(OpLevel.DEBUG, "Loading configuration {source: " + srcName + ", properties: " + props + "}");
 			}
 			setDefaultEventSinkFactory((EventSinkFactory) createConfigurableObject("default.event.sink.factory", "default.event.sink.factory."));
+			setSourceFactory((SourceFactory) createConfigurableObject("source.factory", "source.factory."));
 			setTrackerFactory((TrackerFactory) createConfigurableObject("tracker.factory", "tracker.factory."));
 			setEventSinkFactory((EventSinkFactory) createConfigurableObject("event.sink.factory", "event.sink.factory."));
 			setEventFormatter((EventFormatter) createConfigurableObject("event.formatter", "event.formatter."));
@@ -203,7 +212,7 @@ public class TrackerConfigStore extends TrackerConfig {
 				defaultSet = entry.getValue();
 				continue;
 			}
-			int idx = this.getSource().getName().indexOf(entry.getKey());
+			int idx = this.srcName.indexOf(entry.getKey());
 			if (idx >= 0) {
 				return entry.getValue();
 			}

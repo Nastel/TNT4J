@@ -18,8 +18,6 @@ package com.nastel.jkool.tnt4j.config;
 import java.util.Properties;
 
 import com.nastel.jkool.tnt4j.core.ActivityListener;
-import com.nastel.jkool.tnt4j.core.Source;
-import com.nastel.jkool.tnt4j.core.SourceType;
 import com.nastel.jkool.tnt4j.dump.DefaultDumpSinkFactory;
 import com.nastel.jkool.tnt4j.dump.DumpSinkFactory;
 import com.nastel.jkool.tnt4j.format.DefaultFormatter;
@@ -34,6 +32,10 @@ import com.nastel.jkool.tnt4j.sink.EventSink;
 import com.nastel.jkool.tnt4j.sink.EventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.SinkEventFilter;
 import com.nastel.jkool.tnt4j.sink.SinkLogEventListener;
+import com.nastel.jkool.tnt4j.source.DefaultSourceFactory;
+import com.nastel.jkool.tnt4j.source.Source;
+import com.nastel.jkool.tnt4j.source.SourceFactory;
+import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.DefaultTrackerFactory;
 import com.nastel.jkool.tnt4j.tracker.TrackerFactory;
 
@@ -61,9 +63,12 @@ import com.nastel.jkool.tnt4j.tracker.TrackerFactory;
  */
 
 public class TrackerConfig {
+	String srcName;
+	SourceType srcType = SourceType.APPL;
 	Source sourceHandle;
-
+	
 	TrackerFactory trFactory;
+	SourceFactory sourceFactory;
 	EventSinkFactory defEvFactory;
 	EventSinkFactory evFactory;
 	DumpSinkFactory dpFactory;
@@ -84,7 +89,7 @@ public class TrackerConfig {
 	 *            name of the source instance associated with the configuration
 	 */
 	protected TrackerConfig(String source) {
-		this(new Source(source));
+		this(source, SourceType.APPL);
 	}
 
 	/**
@@ -96,7 +101,8 @@ public class TrackerConfig {
 	 *            source type associated with this configuration
 	 */
 	protected TrackerConfig(String source, SourceType type) {
-		this(new Source(source, type));
+		srcName = source;
+		srcType = type;
 	}
 
 	/**
@@ -138,6 +144,30 @@ public class TrackerConfig {
 	}
 
 	/**
+	 * Set default source factory to generate <code>Source</code> instances
+	 * 
+	 * @param sfac
+	 *            source factory instance
+	 * @see SourceFactory
+	 * 
+	 * @return current source factory
+	 */
+	public TrackerConfig setSourceFactory(SourceFactory sfac) {
+		sourceFactory = sfac;
+		return this;
+	}
+
+	/**
+	 * Set default source factory instance
+	 * 
+	 * @see SourceFactory
+	 * @return current source factory
+	 */
+	public SourceFactory getSourceFactory() {
+		return sourceFactory;
+	}
+
+	/**
 	 * Set default tracker factory to generate <code>Tracker</code> instances
 	 * 
 	 * @param tFactory
@@ -152,7 +182,7 @@ public class TrackerConfig {
 	}
 
 	/**
-	 * Set default dump sink factory instance
+	 * Set default tracker factory instance
 	 * 
 	 * @see TrackerFactory
 	 * @return current tracker factory
@@ -469,6 +499,7 @@ public class TrackerConfig {
 	public TrackerConfig cloneConfig() {
 		TrackerConfig config = new TrackerConfig(sourceHandle);
 		config.setProperties(this.props);
+		config.sourceFactory = this.sourceFactory;
 		config.trFactory = this.trFactory;
 		config.evFactory = this.evFactory;
 		config.defEvFactory = this.defEvFactory;
@@ -489,6 +520,10 @@ public class TrackerConfig {
 	 * @return <code>TrackerConfig</code> instance with initialized configuration elements
 	 */
 	public TrackerConfig build() {
+		if (sourceFactory == null)
+			sourceFactory = DefaultSourceFactory.getInstance();
+		
+		sourceHandle = sourceFactory.newSource(srcName, srcType);		
 		if (trFactory == null)
 			trFactory = new DefaultTrackerFactory();
 		if (evFactory == null) 
@@ -511,8 +546,9 @@ public class TrackerConfig {
 	public String toString() {
 		return super.toString() 
 			+ "{" 
-			+ "source: " + sourceHandle.getName()
+			+ "source: " + sourceHandle
 			+ ", event.factory: " + evFactory 
+			+ ", source.factory: " + sourceFactory 
 			+ ", default.event.factory: " + defEvFactory 
 			+ ", event.formatter: " + evFormatter 
 			+ ", tracker.factory: " + trFactory 
