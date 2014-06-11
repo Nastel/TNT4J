@@ -394,25 +394,6 @@ public class Activity extends Operation implements LinkedItem {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void clearChildren() {
-		if (linkedItems != null) {
-			for (LinkedItem msg : linkedItems) {
-				msg.clearChildren();
-				msg.setParentItem(null);
-			}
-			linkedItems.clear();
-		}
-
-		if (snapshots != null) {
-			snapshots.clear();
-		}
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public int hashCode() {
 		return 31 + ((tracking_id == null) ? 0 : tracking_id.hashCode());
 	}

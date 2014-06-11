@@ -120,12 +120,16 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	 */
 	public JSONFormatter(boolean newLine) {
 		newLineFormat = newLine;
+		initTags();
+	}
+
+	private void initTags() {
 		START_JSON = newLineFormat ? START_LINE : START;
 		END_JSON = newLineFormat ? END_LINE : END;
 		ATTR_JSON = newLineFormat ? ATTR_END_LINE : ATTR_END;
-		ARRAY_START_JSON = newLineFormat ? ARRAY_START_LINE : ARRAY_START;
+		ARRAY_START_JSON = newLineFormat ? ARRAY_START_LINE : ARRAY_START;		
 	}
-
+	
 	@Override
 	public String format(Object obj) {
 		if (obj instanceof TrackingActivity) {
@@ -446,5 +450,6 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		config = settings;
 		newLineFormat = config.get("Newline") != null ? Boolean.valueOf(config.get("Newline").toString())
 		        : newLineFormat;
+		initTags();
 	}
 }

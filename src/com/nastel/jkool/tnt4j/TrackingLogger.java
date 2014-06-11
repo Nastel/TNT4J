@@ -424,7 +424,7 @@ public class TrackingLogger {
 	 * @see OpLevel
 	 */
 	public static void tnt(OpLevel severity, String correlator, String msg) {
-		tnt(severity, correlator, msg, "NOOP", 0, null);
+		tnt(severity, OpType.CALL, correlator, msg, "NOOP", 0, null);
 	}
 
 	/**
@@ -442,7 +442,25 @@ public class TrackingLogger {
 	 * @see OpLevel
 	 */
 	public static void tnt(OpLevel severity, String correlator, String msg, String opName) {
-		tnt(severity, correlator, msg, opName, 0, null);
+		tnt(severity, OpType.CALL, correlator, msg, opName, 0, null);
+	}
+
+	/**
+	 * Report a single tracking event
+	 * 
+	 * @param severity
+	 *            severity level of the reported message
+	 * @param correlator
+	 *            event correlator
+	 * @param msg
+	 *            event text message
+	 * @param opName
+	 *            operation name associated with the event message
+	 * @see TrackingActivity
+	 * @see OpLevel
+	 */
+	public static void tnt(OpLevel severity, OpType type, String correlator, String msg, String opName) {
+		tnt(severity, type, correlator, msg, opName, 0, null);
 	}
 
 	/**
@@ -462,7 +480,7 @@ public class TrackingLogger {
 	 * @see OpLevel
 	 */
 	public static void tnt(OpLevel severity, String correlator, String msg, String opName, Throwable ex) {
-		tnt(severity, correlator, msg, opName, 0, ex);
+		tnt(severity, OpType.CALL, correlator, msg, opName, 0, ex);
 	}
 
 	/**
@@ -470,6 +488,8 @@ public class TrackingLogger {
 	 * 
 	 * @param severity
 	 *            severity level of the reported message
+	 * @param opType
+	 *            operation type
 	 * @param correlator
 	 *            event correlator
 	 * @param msg
@@ -483,13 +503,13 @@ public class TrackingLogger {
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
-	public static void tnt(OpLevel severity, String correlator, String msg, String opName, long elapsed,
+	public static void tnt(OpLevel severity, OpType opType, String correlator, String msg, String opName, long elapsed,
 	        Throwable ex) {
 		Tracker logger = loggers.get();
 		if (logger == null)
 			throw new RuntimeException("register() never called for this thread");
 		long endTime = System.currentTimeMillis();
-		TrackingEvent event = logger.newEvent(severity, OpType.CALL, correlator, msg, opName);
+		TrackingEvent event = logger.newEvent(severity, opType, correlator, msg, opName);
 		event.start(endTime - elapsed);
 		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
 		logger.tnt(event);

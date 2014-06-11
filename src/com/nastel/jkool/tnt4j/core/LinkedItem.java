@@ -50,10 +50,5 @@ public interface LinkedItem {
 	 * 
 	 * @return parent object
 	 */
-	public LinkedItem getParentItem();
-	
-	/**
-	 * Removes all children objects.
-	 */
-	public void clearChildren();
+	public LinkedItem getParentItem();	
 }

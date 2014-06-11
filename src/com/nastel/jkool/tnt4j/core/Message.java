@@ -266,14 +266,6 @@ public class Message implements LinkedItem {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void clearChildren() {
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public int hashCode() {
 		return 31 + ((signature == null) ? 0 : signature.hashCode());
 	}
