@@ -23,6 +23,42 @@ package com.nastel.jkool.tnt4j.source;
  * @version $Revision: 1 $
  */
 public enum SourceType {
-	GENERIC, APPL, APPSERVER, SERVER, JVM, CLR, VIRTUAL, 
+	GENERIC, APPL, APPSERVER, SERVER, JVM, CLR, VIRTUAL,
 	NETWORK, DEVICE, NETADDR, GEOADDR, DATACENTER;
+
+	private static SourceType[] enumList = SourceType.values();
+
+	/**
+	 * Converts the specified value to a member of the enumeration.
+	 *
+	 * @param value enumeration value to convert
+	 * @return enumeration member
+	 * @throws IllegalArgumentException if there is no
+	 *         member of the enumeration with the specified value
+	 */
+	public static SourceType valueOf(int value) {
+		int ordnl = value;
+		if (ordnl < 0 || ordnl >= enumList.length)
+			throw new IllegalArgumentException("value '" + value + "' is not valid for enumeration SourceType");
+		return enumList[ordnl];
+	}
+
+	/**
+	 * Converts the specified object to a member of the enumeration.
+	 *
+	 * @param value object to convert
+	 * @return enumeration member
+	 * @throws NullPointerException if value is <code>null</code>
+	 * @throws IllegalArgumentException if object cannot be matched to a
+	 *  member of the enumeration
+	 */
+	public static SourceType valueOf(Object value) {
+		if (value == null)
+			throw new NullPointerException("object must be non-null");
+		if (value instanceof Number)
+			return valueOf(((Number)value).intValue());
+		else if (value instanceof String)
+			return valueOf(value.toString());
+		throw new IllegalArgumentException("Cannot convert object of type '" + value.getClass().getName() + "' enum SourceType");
+	}
 }
