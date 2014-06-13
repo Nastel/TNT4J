@@ -165,6 +165,16 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 
 	@Override
+	public TrackingActivity newActivity(String signature, String name) {
+		TrackingActivity luw = new TrackingActivity(signature, name, this);
+		luw.setPID(Utils.getVMPID());
+		if (tConfig.getActivityListener() != null) {
+			luw.addActivityListener(tConfig.getActivityListener());
+		}
+		return luw;
+	}
+
+	@Override
     public void tnt(TrackingActivity activity) {
 		try  { reportActivity(activity); }
 		catch (Throwable ex) {

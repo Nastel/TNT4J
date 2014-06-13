@@ -88,6 +88,25 @@ public class Activity extends Operation implements LinkedItem {
 	}
 	
 	/**
+	 * Creates a Activity object with the specified tracking id.
+	 *
+	 * @param id Activity tracking id
+	 * @param name assign activity name
+	 * @param appl application handle associated with this activity
+	 * @throws NullPointerException if the tracking id is <code>null</code>
+	 * @throws IllegalArgumentException if the tracking id is empty or is too long
+	 * @see #setTrackingId(String)
+	 * @see #setSource(Source)
+	 */
+	public Activity(String id, String name, Source appl) {
+		super(name, OpType.ACTIVITY);
+		setTrackingId(id);
+		setTID(Thread.currentThread().getId());
+		setSource(appl);
+		setResource(Utils.getVMName());
+	}
+	
+	/**
 	 * Register an activity listener for notifications when activity timing 
 	 * events occur.
 	 * 
@@ -435,6 +454,7 @@ public class Activity extends Operation implements LinkedItem {
 		StringBuilder str = new StringBuilder();
 
 		str.append(getClass().getSimpleName()).append("(")
+			.append("Name:").append(getName()).append(",")
 			.append("ParentId:").append(parent != null? parent.getTrackingId(): "root").append(",")
 			.append("TrackId:").append(getTrackingId()).append(",")
 			.append("Status:").append(Status == null ? "null" : Status.toString()).append(",")

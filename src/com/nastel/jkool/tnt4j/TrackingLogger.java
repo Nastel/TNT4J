@@ -348,6 +348,20 @@ public class TrackingLogger {
 	}
 	
 	/**
+	 * Get value associated with a give key from the tracking selector repository. 
+	 * 
+	 * @param key key associated with tracking activity
+	 * 
+	 */
+	public static Object get(Object key) {
+		Tracker lg = loggers.get();
+		if (lg != null) {
+			return lg.getTrackingSelector().get(key);
+		}	
+		return null;
+	}
+	
+	/**
 	 * Register an instance of <code>Tracker</code> logger with the current thread. Existing <code>Tracker</code> logger
 	 * (if already registered) is closed and released. Only one registered <code>Tracker</code> logger instance is
 	 * active per thread.
@@ -540,7 +554,24 @@ public class TrackingLogger {
 		Tracker logger = loggers.get();
 		if (logger == null)
 			throw new RuntimeException("register() never called for this thread");
-		return logger.newActivity();
+		return logger.newActivity(signature);
+	}
+
+	/**
+	 * Create a new application activity via <code>TrackingActivity</code> object instance.
+	 * 
+	 * @param signature
+	 *            user defined activity signature (should be unique)
+	 * @param name
+	 *            user defined activity name 
+	 * @return a new application activity object instance
+	 * @see TrackingActivity
+	 */
+	public static TrackingActivity newActivity(String signature, String name) {
+		Tracker logger = loggers.get();
+		if (logger == null)
+			throw new RuntimeException("register() never called for this thread");
+		return logger.newActivity(signature, name);
 	}
 
 	/**

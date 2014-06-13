@@ -102,6 +102,16 @@ public interface Tracker extends Handle {
 	public TrackingActivity newActivity(String signature);
 
 	/**
+	 * Create a new application activity via <code>TrackingActivity</code> object instance.
+	 * 
+	 * @param signature user defined activity signature (should be unique)
+	 * @param name activity name
+	 * @return a new application activity object instance
+	 * @see TrackingActivity
+	 */
+	public TrackingActivity newActivity(String signature, String name);
+
+	/**
 	 * Track and Trace a single application tracking activity
 	 * 
 	 * @param activity application activity to be reported

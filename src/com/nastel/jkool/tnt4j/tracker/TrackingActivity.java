@@ -82,6 +82,27 @@ public class TrackingActivity extends Activity {
 		initJavaTiming();
 	}
 
+	/**
+	 * Creates a logical application activity object with the specified signature.
+	 * 
+	 * @param signature
+	 *            activity signature
+	 * @param name
+	 *            activity name
+	 * @param trk
+	 *            <code>Tracker</code> instance associated with this activity
+	 * @throws NullPointerException
+	 *             if the signature is <code>null</code>
+	 * @throws IllegalArgumentException
+	 *             if the signature is empty or is too long
+	 * @see #setTrackingId(String)
+	 */
+	protected TrackingActivity(String signature, String name, Tracker trk) {
+		super(signature, name, trk.getSource());
+		tracker = trk;
+		initJavaTiming();
+	}
+
 	private void initJavaTiming() {
 		cpuTimingSupported = tmbean.isCurrentThreadCpuTimeSupported();
 		if (cpuTimingSupported)
