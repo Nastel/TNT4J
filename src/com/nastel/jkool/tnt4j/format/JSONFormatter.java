@@ -262,8 +262,6 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		String END_JSON = newLineFormat ? END_LINE : END;
 		String ATTR_JSON = newLineFormat ? ATTR_END_LINE : ATTR_END;
 
-		jsonString.append(START_JSON).append(Utils.quote(JSON_NAME_LABEL)).append(ATTR_SEP).append(
-		        Utils.quote(activity.getName())).append(ATTR_JSON);
 		jsonString.append(START_JSON).append(Utils.quote(JSON_TRACK_ID_LABEL)).append(ATTR_SEP).append(
 		        Utils.quote(activity.getTrackingId())).append(ATTR_JSON);
 		if (activity.getParentItem() != null) {
