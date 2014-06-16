@@ -22,6 +22,7 @@ import com.nastel.jkool.tnt4j.core.OpCompCode;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Operation;
+import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -117,7 +118,7 @@ public class TrackingEvent extends Message {
 	public String toString() {
 		return 	"{" + operation.getSeverity()
 				+ ",[" + getStringMessage() + "],"
-				+ "[" + operation.getName() + "]," 
+				+ "[" + operation.getName() + "],"
 				+ super.toString()
 				+ "," + operation + "}";
 	}
@@ -237,6 +238,15 @@ public class TrackingEvent extends Message {
 	}
 
 	/**
+	 * Indicates that application tracking event has started at the specified startTime
+	 *
+	 * @param startTime start time of the tracking event (usec)
+	 */
+	public void start(UsecTimestamp startTime) {
+		operation.start(startTime);
+	}
+
+	/**
 	 * Indicates that application tracking event has started.
 	 *
 	 */
@@ -255,9 +265,18 @@ public class TrackingEvent extends Message {
 	/**
 	 * Indicates that application tracking event has ended.
 	 *
-	 * @param endTime ending time associated with the event
+	 * @param endTime ending time associated with the event (ms)
 	 */
 	public void stop(long endTime) {
+		operation.stop(endTime);
+	}
+
+	/**
+	 * Indicates that application tracking event has ended.
+	 *
+	 * @param endTime ending time associated with the event (usec)
+	 */
+	public void stop(UsecTimestamp endTime) {
 		operation.stop(endTime);
 	}
 
@@ -320,10 +339,26 @@ public class TrackingEvent extends Message {
 	 * @param ccode completion code of the tracking event
 	 * @param rcode reason code associated with this tracking event
 	 * @param opEx exception associated with this tracking event
-	 * @param endTime time when the tracking event has ended
+	 * @param endTime time when the tracking event has ended (ms)
 	 * @see OpCompCode
 	 */
 	public void stop(OpCompCode ccode, int rcode, Throwable opEx, long endTime) {
+		operation.stop(endTime);
+		operation.setException(opEx);
+		operation.setCompCode(ccode);
+		operation.setReasonCode(rcode);
+	}
+
+	/**
+	 * Indicates that application tracking event has ended.
+	 *
+	 * @param ccode completion code of the tracking event
+	 * @param rcode reason code associated with this tracking event
+	 * @param opEx exception associated with this tracking event
+	 * @param endTime time when the tracking event has ended (usec)
+	 * @see OpCompCode
+	 */
+	public void stop(OpCompCode ccode, int rcode, Throwable opEx, UsecTimestamp endTime) {
 		operation.stop(endTime);
 		operation.setException(opEx);
 		operation.setCompCode(ccode);

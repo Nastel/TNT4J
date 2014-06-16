@@ -24,9 +24,9 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 /**
  * <p>Implements a collection of related event and sub-activities.</p>
  *
- * <p>Represents a collection of linked items <code>LinkedItem</code> 
- * that should be considered to be a single related unit. These are generally 
- * delimited by BEGIN/END (or BEGIN/EXCEPTION)calls. 
+ * <p>Represents a collection of linked items <code>LinkedItem</code>
+ * that should be considered to be a single related unit. These are generally
+ * delimited by BEGIN/END (or BEGIN/EXCEPTION)calls.
  * </p>
  *
  * <p>A <code>Activity</code> is required to have its start time set,
@@ -58,7 +58,7 @@ public class Activity extends Operation implements LinkedItem {
 	private Source   appl;
 	private String   tracking_id;
 	private ActivityStatus status = ActivityStatus.BEGIN;
-	
+
 	private ArrayList<LinkedItem> linkedItems;
 	private ArrayList<PropertySnapshot> snapshots;
 	private ArrayList<ActivityListener> activityListeners = null;
@@ -86,7 +86,7 @@ public class Activity extends Operation implements LinkedItem {
 		setSource(appl);
 		setResource(Utils.getVMName());
 	}
-	
+
 	/**
 	 * Creates a Activity object with the specified tracking id.
 	 *
@@ -105,11 +105,11 @@ public class Activity extends Operation implements LinkedItem {
 		setSource(appl);
 		setResource(Utils.getVMName());
 	}
-	
+
 	/**
-	 * Register an activity listener for notifications when activity timing 
+	 * Register an activity listener for notifications when activity timing
 	 * events occur.
-	 * 
+	 *
 	 * @see ActivityListener
 	 */
 	public void addActivityListener(ActivityListener listener) {
@@ -118,11 +118,11 @@ public class Activity extends Operation implements LinkedItem {
 		}
 		activityListeners.add(listener);
 	}
-	
+
 	/**
-	 * Remove an activity listener for notifications when activity timing 
+	 * Remove an activity listener for notifications when activity timing
 	 * events occur.
-	 * 
+	 *
 	 * @see ActivityListener
 	 */
 	public void removeActivityListener(ActivityListener listener) {
@@ -130,10 +130,10 @@ public class Activity extends Operation implements LinkedItem {
 			activityListeners.remove(listener);
 		}
 	}
-	
+
 	/**
 	 * Subclasses should use this helper class to trigger start notifications
-	 * 
+	 *
 	 * @see ActivityListener
 	 */
 	protected void notifyStarted() {
@@ -142,10 +142,10 @@ public class Activity extends Operation implements LinkedItem {
 			listener.started(this);
 		}
 	}
-	
+
 	/**
 	 * Subclasses should use this helper class to trigger stop notifications
-	 * 
+	 *
 	 * @see ActivityListener
 	 */
 	protected void notifyStopped() {
@@ -154,10 +154,16 @@ public class Activity extends Operation implements LinkedItem {
 			listener.stopped(this);
 		}
 	}
-	
+
 	@Override
 	public void start(long startTime, int startTimeUsec) {
 		super.start(startTime, startTimeUsec);
+		notifyStarted();
+	}
+
+	@Override
+	public void start(UsecTimestamp startTime) {
+		super.start(startTime);
 		notifyStarted();
 	}
 
@@ -167,9 +173,15 @@ public class Activity extends Operation implements LinkedItem {
 		notifyStopped();
 	}
 
+	@Override
+	public void stop(UsecTimestamp stopTime) {
+		super.stop(stopTime);
+		notifyStopped();
+	}
+
 	/**
 	 * Set current/active <code>Source</code> with the current activity
-	 * 
+	 *
 	 * @see Source
 	 */
 	public void setSource(Source source) {
@@ -177,9 +189,9 @@ public class Activity extends Operation implements LinkedItem {
 	}
 
 	/**
-	 * Obtains current/active <code>Source</code> handle associated 
+	 * Obtains current/active <code>Source</code> handle associated
 	 * with the current activity
-	 * 
+	 *
 	 * @return current active application handle associated with this activity
 	 * @see Source
 	 */
