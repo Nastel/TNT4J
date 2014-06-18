@@ -105,7 +105,7 @@ public class FileTokenRepository implements TokenRepository {
 	}
 
 	@Override
-    public Iterator<String> getKeys() {
+    public Iterator<? extends Object> getKeys() {
 	    return config.getKeys();
     }
 

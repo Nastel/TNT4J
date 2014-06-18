@@ -98,9 +98,9 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 
 	protected void reloadConfig() {
 		clear();
-		Iterator<String> keys = tokenRepository.getKeys();
+		Iterator<? extends Object> keys = tokenRepository.getKeys();
 		while (keys.hasNext()) {
-			String key = keys.next();
+			String key = String.valueOf(keys.next());
 			putKey(key, tokenRepository.get(key).toString());
 		}
 	}

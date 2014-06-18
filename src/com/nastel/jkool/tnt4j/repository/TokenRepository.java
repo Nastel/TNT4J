@@ -95,7 +95,7 @@ public interface TokenRepository  extends Handle {
 	 * 
 	 * @return iterator containing all available keys
 	 */
-	public Iterator<String> getKeys();
+	public Iterator<? extends Object> getKeys();
 
 	/**
 	 * Register a repository listener for notifications in change of state of
