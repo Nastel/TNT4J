@@ -15,14 +15,18 @@
  */
 package com.nastel.jkool.tnt4j.format;
 
+import java.util.List;
+
+import com.nastel.jkool.tnt4j.core.Property;
+import com.nastel.jkool.tnt4j.core.PropertySnapshot;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
 /**
  * <p>
- * Simple implementation of <code>Formatter</code> interface provides
- * simple/minimal formatting of <code>TrackingActvity</code> and <code>TrackingEvent</code>
- * as well as any object passed to <code>format()</code> method call.
+ * Simple implementation of <code>Formatter</code> interface provides simple/minimal formatting of
+ * <code>TrackingActvity</code> and <code>TrackingEvent</code> as well as any object passed to <code>format()</code>
+ * method call.
  * </p>
  * 
  * 
@@ -35,7 +39,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
 public class SimpleFormatter extends DefaultFormatter {
 	private static final String SEPARATOR = System.getProperty("tnt4j.formatter.simple.separator", "' | ");
-	
+
 	@Override
 	public String format(TrackingEvent event) {
 		StringBuffer msg = new StringBuffer(1024);
@@ -67,11 +71,44 @@ public class SimpleFormatter extends DefaultFormatter {
 		}
 		msg.append("track-id='").append(event.getTrackingId()).append("'");
 		msg.append("}");
-		return 	msg.toString();
+		return msg.toString();
 	}
-	
+
 	@Override
 	public String format(TrackingActivity activity) {
-		return activity.getStatus() + "-" + activity.toString();
+		StringBuffer msg = new StringBuffer(1024);
+		msg.append("{'").append(activity.getStatus()).append(SEPARATOR);
+		msg.append("name='").append(activity.getName()).append(SEPARATOR);
+		if (activity.getElapsedTime() != 0) {
+			msg.append("usec='").append(activity.getElapsedTime()).append(SEPARATOR);
+		}
+		if (activity.getStartTime() != null) {
+			msg.append("start.time='").append(activity.getStartTime()).append(SEPARATOR);
+		}
+		if (activity.getEndTime() != null) {
+			msg.append("end.time='").append(activity.getEndTime()).append(SEPARATOR);
+		}
+		if (activity.getThrowable() != null) {
+			msg.append("error='").append(activity.getExceptionString()).append(SEPARATOR);
+		}
+		msg.append("pid='").append(activity.getPID()).append(SEPARATOR);
+		msg.append("tid='").append(activity.getTID()).append(SEPARATOR);
+		msg.append("source='").append(activity.getSource().getFQName()).append(SEPARATOR);
+		if (activity.getParentItem() != null) {
+			msg.append("parent-id='").append(activity.getParentItem().getTrackingId()).append(SEPARATOR);
+		}
+		msg.append("track-id='").append(activity.getTrackingId()).append("'");
+		if (activity.getSnapshotCount() > 0) {
+			List<PropertySnapshot> snapshots = activity.getSnapshots();
+			for (PropertySnapshot snap : snapshots) {
+				msg.append("\n\tSnapshot(").append(snap.getName()).append("@").append(snap.getCategory()).append(") {");
+				for (Property prop : snap) {
+					msg.append("\n\t\t").append(prop.getKey()).append("=").append(prop.getValue());
+				}
+				msg.append("\n\t}");
+			}
+		}
+		msg.append("}");
+		return msg.toString();
 	}
 }
