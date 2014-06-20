@@ -474,6 +474,7 @@ public class Activity extends Operation implements LinkedItem {
 			.append("PID:").append(getPID()).append(",")
 			.append("TID:").append(getTID()).append(",")
 		    .append("ElapsedUsec:").append(getElapsedTime()).append(",")
+		    .append("FQName:").append(getSource().getFQName()).append(",")
 			.append("ItemCount=").append(getItemCount()).append(",")
 			.append("SnapCount=").append(getSnapshotCount()).append(",")
 			.append("StartTime:[").append(sTime == null ? "null" : sTime.toString()).append("],")

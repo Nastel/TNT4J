@@ -28,10 +28,10 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * 
  * <pre>
  * {@code
- * 	source.factory: com.nastel.jkool.tnt4j.source.SourceFactoryImpl
- *	source.factory.GeoLocation: New York
- *	source.factory.Datacenter: MyDC
- *	source.factory.RootFQN: JVM=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?	
+ *  source.factory: com.nastel.jkool.tnt4j.source.SourceFactoryImpl
+ *  source.factory.GeoLocation: New York
+ *  source.factory.Datacenter: MyDC
+ *  source.factory.RootFQN: JVM=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?	
  * }
  * </pre>
  * 
