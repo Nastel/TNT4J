@@ -133,7 +133,7 @@ public class PropertySnapshot extends ArrayList<Property> implements Snapshot<Pr
 	@Override
 	public String toString() {
 		StringBuilder str = new StringBuilder(512);
-		str.append("PropertySnapshot{Category: " + category
+		str.append(this.getClass().getSimpleName()).append("{Category: " + category
 				+ ", Name: " + snapName).append(", TimeStamp: ").append(timeStamp).append(
 		        ", Count: " + this.size()).append(", List: [");
 		for (Property item : this) {

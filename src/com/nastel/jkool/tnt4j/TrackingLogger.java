@@ -189,7 +189,7 @@ public class TrackingLogger {
 
 	private static TrackerFactory factory = null;
 	private static DumpSinkFactory dumpFactory = null;
-	private static DumpSink defaultDumpDestination = null;
+	private static DumpSink defaultDumpSink = null;
 	private static DumpHook dumpHook = new DumpHook();
 
 	static {
@@ -200,15 +200,15 @@ public class TrackingLogger {
 		dumpFactory = config.getDumpSinkFactory();
 		
 		String dumpLocation = System.getProperty("tnt4j.dump.location", "./" + Utils.VM_NAME + ".dump");
-		defaultDumpDestination = dumpFactory.getInstance(dumpLocation);
+		defaultDumpSink = dumpFactory.getInstance(dumpLocation);
 		boolean enableDefaultDumpProviders = Boolean.getBoolean("tnt4j.dump.provider.default");
 		boolean dumpOnVmHook = Boolean.getBoolean("tnt4j.dump.on.vm.shutdown");
 		
 		if (enableDefaultDumpProviders) {
-			addDumpProvider(defaultDumpDestination, new PropertiesDumpProvider(Utils.VM_NAME));
-			addDumpProvider(defaultDumpDestination, new MXBeanDumpProvider(Utils.VM_NAME));
-			addDumpProvider(defaultDumpDestination, new ThreadDumpProvider(Utils.VM_NAME));
-			addDumpProvider(defaultDumpDestination, new ThreadDeadlockDumpProvider(Utils.VM_NAME));
+			addDumpProvider(defaultDumpSink, new PropertiesDumpProvider(Utils.VM_NAME));
+			addDumpProvider(defaultDumpSink, new MXBeanDumpProvider(Utils.VM_NAME));
+			addDumpProvider(defaultDumpSink, new ThreadDumpProvider(Utils.VM_NAME));
+			addDumpProvider(defaultDumpSink, new ThreadDeadlockDumpProvider(Utils.VM_NAME));
 		}
 		if (dumpOnVmHook) dumpOnShutdown(dumpOnVmHook);
 	}
@@ -242,18 +242,18 @@ public class TrackingLogger {
 	 */
 	public static void setDefaultDumpConfig(DumpSinkFactory defFac, DumpSink defDest) {
 		dumpFactory = (defFac != null ? defFac : dumpFactory);
-		defaultDumpDestination = (defDest != null ? defDest : defaultDumpDestination);		
+		defaultDumpSink = (defDest != null ? defDest : defaultDumpSink);		
 	}
 
 	/**
-	 * Return currently registered dump destination factory.
-	 * Default is <code>DefaultDumpSinkFactory</code>.
+	 * Return currently registered dump sink factory.
+	 * Default is <code>DefaultDumpSinkFactory</code>. 
 	 * 
-	 * @return currently registered dump destination factory
+	 * @return currently registered dump sink factory
 	 * @see DumpSinkFactory
 	 * @see DefaultDumpSinkFactory
 	 */
-	public static DumpSinkFactory getDumpDestinationFactory() {
+	public static DumpSinkFactory getDumpSinkFactory() {
 		return dumpFactory;
 	}
 
@@ -737,7 +737,9 @@ public class TrackingLogger {
 	
 	/**
 	 * Add and register a sink filter, which is used to filter
-	 * out events written to the underlying sink.
+	 * out events written to the underlying sink. Sink event listeners
+	 * get called every time an event/activity or message is written to the
+	 * underlying event sink.
 	 * 
 	 * @param filter user supplied sink filter
 	 * @see SinkEventFilter
@@ -797,7 +799,7 @@ public class TrackingLogger {
 	 * @see DumpSink
 	 */
 	public static void addDumpProvider(DumpProvider dp) {
-		addDumpProvider(defaultDumpDestination, dp);
+		addDumpProvider(defaultDumpSink, dp);
 	}
 
 	/**

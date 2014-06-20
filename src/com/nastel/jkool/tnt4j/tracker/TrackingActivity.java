@@ -57,6 +57,24 @@ import com.nastel.jkool.tnt4j.core.PropertySnapshot;
  * @version $Revision: 9 $
  */
 public class TrackingActivity extends Activity {
+	public	static final String DEFAULT_SNAPSHOT_CATEGORY = "JAVA";
+	public	static final String DEFAULT_SNAPSHOT_NAME = "SYSTEM";
+	
+	public	static final String DEFAULT_PROPERTY_CPU_USED = "CPU_USED_USEC";
+	public	static final String DEFAULT_PROPERTY_CPU_TOTAL_TIME = "CPU_USED_USEC";
+	public	static final String DEFAULT_PROPERTY_CPU_PERCENT_USAGE = "CPU_PERCENT_USAGE";
+	
+	public	static final String DEFAULT_PROPERTY_THREAD_BLOCKED_COUNT = "THREAD_BLOCKED_COUNT";
+	public	static final String DEFAULT_PROPERTY_THREAD_WAITED_COUNT = "THREAD_WAITED_COUNT";
+	public	static final String DEFAULT_PROPERTY_THREAD_BLOCKED_TIME = "THREAD_BLOCKED_TIME_USEC";
+	public	static final String DEFAULT_PROPERTY_THREAD_WAITED_TIME = "THREAD_WAITED_TIME_USEC";
+
+	public	static final String DEFAULT_PROPERTY_MEMORY_MAX_BYTES = "MEMORY_MAX_BYTES";
+	public	static final String DEFAULT_PROPERTY_MEMORY_TOTAL_BYTES = "MEMORY_TOTAL_BYTES";
+	public	static final String DEFAULT_PROPERTY_MEMORY_FREE_BYTES = "MEMORY_FREE_BYTES";
+	public	static final String DEFAULT_PROPERTY_MEMORY_USED_BYTES = "MEMORY_USED_BYTES";
+	public	static final String DEFAULT_PROPERTY_MEMORY_PERCENT_USAGE = "MEMORY_PERCENT_USAGE";
+
 	private long startCPUTime = 0, stopCPUTime = 0;
 	private int startStopCount = 0;
 	ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
@@ -176,9 +194,12 @@ public class TrackingActivity extends Activity {
 	
 	/**
 	 * Enable/disable appending of default snapshot when
-	 * activity stops.
+	 * activity stops. When set to true <code>takePropertySnapshot()</code>
+	 * is called when activity is stopped using <code>stop()</code> method. 
+	 * This can be useful when you want to append a defined set of default
+	 * properties every time an activity is stopped.
 	 * 
-	 * @param flag append default snapshot ("DEFAULT")
+	 * @param flag append default snapshot with name "SYSTEM"
 	 */
 	public TrackingActivity appendDefaultSnapshot(boolean flag) {
 		appendProps = flag;
@@ -194,34 +215,37 @@ public class TrackingActivity extends Activity {
 		}
 	}
 
+	
 	/**
-	 * This method appends default set of properties when activity timing stops.
+	 * This method appends a default set of properties when activity timing stops.
 	 * Developers should override this method to add user defined set of properties.
-	 * 
+	 * By default this method appends default set of properties defined by
+	 * <code>DEFAULT_PROPERTY_XXX</code> property values. Example:
+	 * <code>TrackingActivity.DEFAULT_PROPERTY_CPU_USED</code>.
 	 */
 	protected void takePropertySnapshot() {
-		PropertySnapshot snap = new PropertySnapshot("JAVA", "SYSTEM");
+		PropertySnapshot snap = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, DEFAULT_SNAPSHOT_NAME);
 		if (cpuTimingSupported) {
 			double cpuUsed = (double) (stopCPUTime - startCPUTime) / 1000.0f;
 			double cpuPctUsed = getElapsedTime() > 0? ((((double) cpuUsed) / (double)getElapsedTime()) * 100.0f): 0;
-			snap.add(new Property("CPU_USED_USEC", cpuUsed));
-			snap.add(new Property("CPU_TOTAL_TIME_USEC", stopCPUTime / 1000.0f));
-			snap.add(new Property("CPU_PERCENT_USAGE", cpuPctUsed));
+			snap.add(new Property(DEFAULT_PROPERTY_CPU_USED, cpuUsed));
+			snap.add(new Property(DEFAULT_PROPERTY_CPU_TOTAL_TIME, stopCPUTime / 1000.0f));
+			snap.add(new Property(DEFAULT_PROPERTY_CPU_PERCENT_USAGE, cpuPctUsed));
 		}
 		ThreadInfo tinfo = tmbean.getThreadInfo(Thread.currentThread().getId());
-		snap.add(new Property("THREAD_BLOCKED_COUNT", tinfo.getBlockedCount()));
-		snap.add(new Property("THREAD_WAITED_COUNT", tinfo.getWaitedCount()));
+		snap.add(new Property(DEFAULT_PROPERTY_THREAD_BLOCKED_COUNT, tinfo.getBlockedCount()));
+		snap.add(new Property(DEFAULT_PROPERTY_THREAD_WAITED_COUNT, tinfo.getWaitedCount()));
 		if (contTimingSupported) {
-			snap.add(new Property("THREAD_BLOCKED_TIME_USEC", tinfo.getBlockedTime()*1000));
-			snap.add(new Property("THREAD_WAITED_TIME_USEC", tinfo.getWaitedTime()*1000));
+			snap.add(new Property(DEFAULT_PROPERTY_THREAD_BLOCKED_TIME, tinfo.getBlockedTime()*1000));
+			snap.add(new Property(DEFAULT_PROPERTY_THREAD_WAITED_TIME, tinfo.getWaitedTime()*1000));
 		}
 		long usedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		long memPct = (long) (((double) usedMem / (double) Runtime.getRuntime().totalMemory()) * 100.0f);
-		snap.add(new Property("MEMORY_MAX_BYTES", Runtime.getRuntime().maxMemory()));
-		snap.add(new Property("MEMORY_TOTAL_BYTES", Runtime.getRuntime().totalMemory()));
-		snap.add(new Property("MEMORY_FREE_BYTES", Runtime.getRuntime().freeMemory()));
-		snap.add(new Property("MEMORY_USED_BYTES", usedMem));
-		snap.add(new Property("MEMORY_PERCENT_USAGE", memPct));	
+		snap.add(new Property(DEFAULT_PROPERTY_MEMORY_MAX_BYTES, Runtime.getRuntime().maxMemory()));
+		snap.add(new Property(DEFAULT_PROPERTY_MEMORY_TOTAL_BYTES, Runtime.getRuntime().totalMemory()));
+		snap.add(new Property(DEFAULT_PROPERTY_MEMORY_FREE_BYTES, Runtime.getRuntime().freeMemory()));
+		snap.add(new Property(DEFAULT_PROPERTY_MEMORY_USED_BYTES, usedMem));
+		snap.add(new Property(DEFAULT_PROPERTY_MEMORY_PERCENT_USAGE, memPct));	
 		this.add(snap);
 	}
 	

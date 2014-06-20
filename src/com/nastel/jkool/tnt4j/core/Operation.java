@@ -633,7 +633,7 @@ public class Operation {
 		final UsecTimestamp eTime = getEndTime();
 		StringBuilder str = new StringBuilder();
 
-		str.append(getClass().getSimpleName()).append("(")
+		str.append(getClass().getSimpleName()).append("{")
 		   .append("Name:").append(getName()).append(",")
 		   .append("Type:").append(type == null ? "null" : type.toString()).append(",")
 		   .append("Correlator:").append(getCorrelator()).append(",")
@@ -649,7 +649,7 @@ public class Operation {
 		   .append("MsgAgeUsec:").append(getMessageAge()).append(",")
 		   .append("StartTime:[").append(sTime == null ? "null" : sTime.toString()).append("],")
 		   .append("EndTime:[").append(eTime == null ? "null" : eTime.toString()).append("],")
-		   .append("Exception:").append(getExceptionString()).append(")");
+		   .append("Exception:").append(getExceptionString()).append("}");
 
 		return str.toString();
 	}

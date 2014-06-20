@@ -465,7 +465,7 @@ public class Activity extends Operation implements LinkedItem {
 		final UsecTimestamp eTime = getEndTime();
 		StringBuilder str = new StringBuilder();
 
-		str.append(getClass().getSimpleName()).append("(")
+		str.append(getClass().getSimpleName()).append("{")
 			.append("Name:").append(getName()).append(",")
 			.append("ParentId:").append(parent != null? parent.getTrackingId(): "root").append(",")
 			.append("TrackId:").append(getTrackingId()).append(",")
@@ -478,7 +478,7 @@ public class Activity extends Operation implements LinkedItem {
 			.append("ItemCount=").append(getItemCount()).append(",")
 			.append("SnapCount=").append(getSnapshotCount()).append(",")
 			.append("StartTime:[").append(sTime == null ? "null" : sTime.toString()).append("],")
-			.append("EndTime:[").append(eTime == null ? "null" : eTime.toString()).append("])");
+			.append("EndTime:[").append(eTime == null ? "null" : eTime.toString()).append("]}");
 
 		return str.toString();
 	}

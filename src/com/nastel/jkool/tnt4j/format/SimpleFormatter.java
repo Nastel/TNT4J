@@ -36,17 +36,36 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 public class SimpleFormatter extends DefaultFormatter {
 	@Override
 	public String format(TrackingEvent event) {
-		return 	"{'" + event.getSeverity() + "',"
-		+ "event='" + event.getStringMessage() + "',"
-		+ "name='" + event.getOperation().getName() + "',"
-		+ "usec='" + event.getOperation().getElapsedTime() + "',"
-		+ "ccode='" + event.getOperation().getCompCode() + "',"
-		+ "rcode='" + event.getOperation().getReasonCode() + "',"
-		+ "corr-id='" + event.getCorrelator() + "',"
-		+ "error='" + event.getOperation().getExceptionString() + "',"
-		+ "track-id='" + event.getTrackingId() + "',"
-		+ "parent-id='" + (event.getParentItem() != null? event.getParentItem().getTrackingId(): "none") + "'"
-		+ "}";
+		StringBuffer msg = new StringBuffer(1024);
+		msg.append("{'").append(event.getSeverity()).append("',");
+		msg.append("event='").append(event.getStringMessage()).append("',");
+		msg.append("name='").append(event.getOperation().getName()).append("',");
+		msg.append("ccode='").append(event.getOperation().getCompCode()).append("',");
+		if (event.getOperation().getReasonCode() != 0) {
+			msg.append("rcode='").append(event.getOperation().getReasonCode()).append("',");
+		}
+		if (event.getOperation().getElapsedTime() != 0) {
+			msg.append("usec='").append(event.getOperation().getElapsedTime()).append("',");
+		}
+		if (event.getOperation().getMessageAge() != 0) {
+			msg.append("age.usec='").append(event.getOperation().getMessageAge()).append("',");
+		}
+		if (event.getTag() != null) {
+			msg.append("tag='").append(event.getTag()).append("',");
+		}
+		if (event.getOperation().getCorrelator() != null) {
+			msg.append("corr-id='").append(event.getOperation().getCorrelator()).append("',");
+		}
+		if (event.getOperation().getThrowable() != null) {
+			msg.append("error='").append(event.getOperation().getExceptionString()).append("',");
+		}
+		msg.append("type='").append(event.getOperation().getType()).append("',");
+		msg.append("track-id='").append(event.getTrackingId()).append("',");
+		if (event.getParentItem() != null) {
+			msg.append("parent-id='").append(event.getParentItem().getTrackingId()).append("'");
+		}
+		msg.append("}");
+		return 	msg.toString();
 	}
 	
 	@Override

@@ -145,8 +145,8 @@ public class Property {
 
 		str.append(getClass().getSimpleName()).append("{")
 		   .append("Name:").append(key).append(",")
-		   .append("Type:").append(getValueType()).append(",")
-		   .append("Value:").append(getValue()).append("}");
+		   .append("Value:").append(getValue()).append(",")
+		   .append("Type:").append(getValueType()).append("}");
 
 		return str.toString();
 	}
