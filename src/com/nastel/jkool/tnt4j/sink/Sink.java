@@ -40,7 +40,9 @@ public interface Sink extends Handle {
 	/**
 	 * This method allows writing to the underlying message destination
 	 * 
+	 * @param msg message to be written to the sink
+	 * @param args arguments associated with the message
 	 * @throws IOException
 	 */
-	public void write(Object msg) throws IOException;
+	public void write(Object msg, Object...args) throws IOException;
 }

@@ -91,35 +91,22 @@ public class SocketEventSink extends DefaultEventSink {
 	}
 
 	@Override
-	public void log(OpLevel sev, String msg) {
+	public void log(OpLevel sev, String msg, Object...args) {
 		if (!acceptEvent(sev, msg)) return;
 
 		if (logSink != null) {
-			logSink.log(sev, msg);
+			logSink.log(sev, msg, args);
 		}
 		if (isOpen()) {
-			writeLine(formatter.format(sev, msg));
-			super.log(sev, msg);
+			writeLine(formatter.format(sev, msg, args));
+			super.log(sev, msg, args);
 		}
 	}
 
 	@Override
-	public void log(OpLevel sev, String msg, Throwable ex) {
-		if (!acceptEvent(sev, msg, ex)) return;
-		
-		if (logSink != null) {
-			logSink.log(sev, msg, ex);
-		}
+	public void write(Object msg, Object...args) throws IOException {
 		if (isOpen()) {
-			writeLine(formatter.format(sev, msg, ex));
-			super.log(sev, msg, ex);
-		}
-	}
-
-	@Override
-	public void write(Object msg) throws IOException {
-		if (isOpen()) {
-			writeLine(formatter.format(msg));
+			writeLine(formatter.format(msg, args));
 		}
 	}
 

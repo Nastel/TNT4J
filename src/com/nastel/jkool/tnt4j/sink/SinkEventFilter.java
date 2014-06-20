@@ -15,6 +15,10 @@
  */
 package com.nastel.jkool.tnt4j.sink;
 
+import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
+import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
+
 /**
  * <p>
  * A simple event filter interface. Implementations of this interface are used with <code>EventSink</code> to filter out
@@ -22,7 +26,9 @@ package com.nastel.jkool.tnt4j.sink;
  * </p>
  * 
  * @see EventSink
- * @see SinkLogEvent
+ * @see OpLevel
+ * @see TrackingEvent
+ * @see TrackingActivity
  * 
  * @version $Revision: 2 $
  * 
@@ -31,10 +37,43 @@ public interface SinkEventFilter {
 	/**
 	 * Returns true if a given logging event passes the filter, false otherwise
 	 * 
+	 * @param sink
+	 *            event sink where filter request is coming from
 	 * @param event
-	 *            to be checked with registered filters
+	 *            tracking event
 	 * @return true if event passed all filters, false otherwise
-	 * @see SinkLogEvent
+	 * @see OpLevel
+	 * @see EventSink
 	 */
-	public boolean acceptEvent(SinkLogEvent event);
+	public boolean acceptEvent(EventSink sink, TrackingEvent event);
+
+	/**
+	 * Returns true if a given logging event passes the filter, false otherwise
+	 * 
+	 * @param sink
+	 *            event sink where filter request is coming from
+	 * @param activity
+	 *            tracking activity
+	 * @return true if event passed all filters, false otherwise
+	 * @see EventSink
+	 * @see TrackingActivity
+	 */
+	public boolean acceptEvent(EventSink sink, TrackingActivity activity);
+
+	/**
+	 * Returns true if a given logging event passes the filter, false otherwise
+	 * 
+	 * @param sink
+	 *            event sink where filter request is coming from
+	 * @param level
+	 *            severity level
+	 * @param msg
+	 *            event message
+	 * @param args
+	 *            arguments passed along side event message
+	 * @return true if event passed all filters, false otherwise
+	 * @see OpLevel
+	 * @see EventSink
+	 */
+	public boolean acceptEvent(EventSink sink, OpLevel level, String msg, Object... args);
 }

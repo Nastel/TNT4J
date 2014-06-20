@@ -36,7 +36,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * @see SinkLogEvent
  * @see SinkLogEventListener
  */
-public abstract class DefaultEventSink implements EventSink, SinkEventFilter {
+public abstract class DefaultEventSink implements EventSink {
 
 	private ArrayList<SinkErrorListener> errorListeners = new ArrayList<SinkErrorListener>(10);
 	private ArrayList<SinkLogEventListener> logListeners = new ArrayList<SinkLogEventListener>(10);
@@ -133,90 +133,69 @@ public abstract class DefaultEventSink implements EventSink, SinkEventFilter {
 
 	/**
 	 * Subclasses should use this helper class to filter out
-	 * unwanted log events.
+	 * unwanted log events before writing to the underlying sink
 	 * 
-	 * @param event
-	 *            to be checked with registered filters
+	 * @param level
+	 *            severity level of the event message
+	 * @param msg
+	 *            event message
+	 * @param args
+	 *            argument list passed along with the message
 	 * @return true if event passed all filters, false otherwise           
-	 * @see SinkLogEvent
+	 * @see OpLevel
 	 */
-	public boolean acceptEvent(SinkLogEvent event) {
+	protected boolean acceptEvent(OpLevel level, String msg, Object...args) {
 		boolean pass = true;
-		synchronized (filters) {
-			for (SinkEventFilter filter : filters) {
-				pass = (pass && filter.acceptEvent(event));
-				if (!pass) break;
-			}
+		if (filters.size() > 0) return pass;
+		
+		for (SinkEventFilter filter : filters) {
+			pass = (pass && filter.acceptEvent(this, level, msg, args));
+			if (!pass) break;
 		}
 		return pass;
 	}
 
 	/**
 	 * Subclasses should use this helper class to filter out
-	 * unwanted log activities.
+	 * unwanted log events before writing to the underlying sink
 	 * 
 	 * @param activity
 	 *            to be checked with registered filters
 	 * @return true if tracking activity passed all filters, false otherwise           
 	 * @see TrackingActivity
 	 */
-	public boolean acceptEvent(TrackingActivity activity) {
-		if (filters.size() > 0) {
-			return acceptEvent(new SinkLogEvent(this, activity));
+	protected boolean acceptEvent(TrackingActivity activity) {
+		boolean pass = true;
+		if (filters.size() > 0) return pass;
+		
+		for (SinkEventFilter filter : filters) {
+			pass = (pass && filter.acceptEvent(this, activity));
+			if (!pass) break;
 		}
-		return true;
+		return pass;
 	}
 	
 	
 	/**
 	 * Subclasses should use this helper class to filter out
-	 * unwanted log events.
+	 * unwanted log events before writing to the underlying sink
 	 * 
 	 * @param event
 	 *            to be checked with registered filters
 	 * @return true if trackign event passed all filters, false otherwise           
 	 * @see TrackingEvent
 	 */
-	public boolean acceptEvent(TrackingEvent event) {
-		if (filters.size() > 0) {
-			return acceptEvent(new SinkLogEvent(this, event));
+	protected boolean acceptEvent(TrackingEvent event) {
+		boolean pass = true;
+		if (filters.size() > 0) return pass;
+		
+		for (SinkEventFilter filter : filters) {
+			pass = (pass && filter.acceptEvent(this, event));
+			if (!pass) break;
 		}
-		return true;
+		return pass;
 	}
 	
-	
-	/**
-	 * Subclasses should use this helper class to filter out
-	 * unwanted log messages
-	 * 
-	 * @param sev message severity to log
-	 * @param msg string message to be logged
-	 * @return true if log event passed all filters, false otherwise           
-	 * @see OpLevel
-	 */
-	public boolean acceptEvent(OpLevel sev, String msg) {
-		if (filters.size() > 0) {
-			return acceptEvent(new SinkLogEvent(this, sev, msg));
-		}
-		return true;
-	}
-	
-	/**
-	 * Subclasses should use this helper class to filter out
-	 * unwanted log messages
-	 * 
-	 * @param sev message severity to log
-	 * @param msg string message to be logged
-	 * @param ex exception associated with this message
-	 * @return true if log event passed all filters, false otherwise           
-	 * @see OpLevel
-	 */
-	public boolean acceptEvent(OpLevel sev, String msg, Throwable ex) {
-		if (filters.size() > 0) {
-			return acceptEvent(new SinkLogEvent(this, sev, msg, ex));
-		}
-		return true;
-	}
 	
 	
 	@Override
@@ -248,16 +227,9 @@ public abstract class DefaultEventSink implements EventSink, SinkEventFilter {
 	}
 
 	@Override
-	public void log(OpLevel sev, String msg) {
+	public void log(OpLevel sev, String msg, Object...args) {
 		if (logListeners.size() > 0) {
-			notifyListeners(new SinkLogEvent(this, sev, msg));
-		}
-	}
-
-	@Override
-	public void log(OpLevel sev, String msg, Throwable ex) {
-		if (logListeners.size() > 0) {
-			notifyListeners(new SinkLogEvent(this, sev, msg, ex));
+			notifyListeners(new SinkLogEvent(this, sev, msg, args));
 		}
 	}
 }

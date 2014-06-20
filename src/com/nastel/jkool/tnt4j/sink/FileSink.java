@@ -101,9 +101,9 @@ public class FileSink implements Sink {
     }	
 
 	@Override
-    public void write(Object msg) throws IOException {
+    public void write(Object msg, Object...args) throws IOException {
 		if (isOpen()) {
-			printer.println(formatter.format(msg));		
+			printer.println(formatter.format(msg, args));		
 			printer.flush();
 		} else {
 			throw new IOException("Sink is closed, sink.file=" + file);

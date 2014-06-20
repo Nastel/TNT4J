@@ -37,7 +37,6 @@ import com.nastel.jkool.tnt4j.dump.ObjectDumpProvider;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
 import com.nastel.jkool.tnt4j.sink.SinkError;
 import com.nastel.jkool.tnt4j.sink.SinkErrorListener;
-import com.nastel.jkool.tnt4j.sink.SinkEventFilter;
 import com.nastel.jkool.tnt4j.sink.SinkLogEvent;
 import com.nastel.jkool.tnt4j.sink.SinkLogEventListener;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
@@ -85,7 +84,7 @@ public class TNT4JTest {
 		// by default dumps are generated on JVM shutdown
 		TrackingLogger.addDumpListener(new DumpNotify());
 		TrackingLogger.addDumpProvider(new MyDumpProvider(args[0], "ApplRuntime"));
-		
+
 		// create and start an activity
 		TrackingActivity activity = TrackingLogger.newActivity();
 		TrackingLogger.addDumpProvider(new ObjectDumpProvider(args[0], activity));
@@ -202,14 +201,6 @@ class MySinkErrorHandler implements SinkErrorListener {
 class MySinkLogHandler implements SinkLogEventListener {
 	public void sinkLogEvent(SinkLogEvent event) {
 	    System.out.println("sink.LOG: sev=" + event.getSeverity() + ", source=" + event.getSource() + ", msg=" + event.getSinkObject());
-	}
-}
-
-class MySinkEventFilter implements SinkEventFilter {
-	public boolean acceptEvent(SinkLogEvent event) {
-	   boolean pass = event.getSeverity().ordinal() > OpLevel.INFO.ordinal()? true: false;
-	   System.out.println("sink.FILTER: accept=" + pass + ", sev=" + event.getSeverity() + ", source=" + event.getSource());
-	   return pass;
 	}
 }
 

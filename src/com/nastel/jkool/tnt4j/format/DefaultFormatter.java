@@ -15,9 +15,11 @@
  */
 package com.nastel.jkool.tnt4j.format;
 
+
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
@@ -36,13 +38,13 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 public class DefaultFormatter implements EventFormatter {
 
 	@Override
-	public String format(Object obj) {
+	public String format(Object obj, Object...args) {
 		if (obj instanceof TrackingActivity) {
 			return format((TrackingActivity) obj);
 		} else if (obj instanceof TrackingEvent) {
 			return format((TrackingEvent) obj);
 		} else {
-			return String.valueOf(obj);
+			return Utils.format(obj.toString(), args);
 		}
 	}
 
@@ -57,12 +59,7 @@ public class DefaultFormatter implements EventFormatter {
 	}
 
 	@Override
-    public String format(OpLevel level, Object msg) {
-	    return format(msg);
-    }
-
-	@Override
-    public String format(OpLevel level, Object msg, Throwable ex) {
-	    return format(msg);
+    public String format(OpLevel level, Object msg, Object...args) {
+	    return format(msg, args);
     }
 }

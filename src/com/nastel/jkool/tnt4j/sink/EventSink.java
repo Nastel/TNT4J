@@ -66,18 +66,8 @@ public interface EventSink extends Sink {
 	 * @param msg string message to be logged
 	 * @see OpLevel
 	 */
-	public void log(OpLevel sev, String msg);
-	
-	/**
-	 * Log a given string message with a specified severity
-	 *
-	 * @param sev message severity to log
-	 * @param msg string message to be logged
-	 * @param ex exception associated with this message
-	 * @see OpLevel
-	 */
-	public void log(OpLevel sev, String msg, Throwable ex);
-	
+	public void log(OpLevel sev, String msg, Object...args);
+		
 	/**
 	 * Register an event sink listener for notifications when errors 
 	 * occur when writing to event sink. 

@@ -53,17 +53,8 @@ public interface EventFormatter extends Formatter {
 	 *
 	 * @param level severity level
 	 * @param msg message to be formatted
+	 * @param args arguments associated with the object
 	 * @see OpLevel
 	 */
-	public String format(OpLevel level, Object msg);
-	
-	/**
-	 * Format a given message, severity, exception combo
-	 *
-	 * @param level severity level
-	 * @param msg message to be formatted
-	 * @param ex exception to be formatted
-	 * @see OpLevel
-	 */
-	public String format(OpLevel level, Object msg, Throwable ex);
+	public String format(OpLevel level, Object msg, Object...args);
 }

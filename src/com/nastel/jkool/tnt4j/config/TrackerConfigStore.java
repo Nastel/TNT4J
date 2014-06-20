@@ -188,7 +188,7 @@ public class TrackerConfigStore extends TrackerConfig {
 		setProperties(loadProperties(map));
 		if (props != null) {
 			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.DEBUG, "Loading configuration {source: " + srcName + ", properties: " + props + "}");
+				logger.log(OpLevel.DEBUG, "Loading configuration source: {0}, properties: {1}", srcName, props);
 			}
 			setDefaultEventSinkFactory((EventSinkFactory) createConfigurableObject("default.event.sink.factory", "default.event.sink.factory."));
 			setSourceFactory((SourceFactory) createConfigurableObject("source.factory", "source.factory."));

@@ -41,6 +41,7 @@ public class SinkLogEvent extends EventObject {
 	private Object logObj = null;
 	private Throwable error = null;
 	private OpLevel level = OpLevel.UNKNOWN;
+	private Object [] argList = null;
 
 	/**
 	 * Create a new log event instance
@@ -72,7 +73,7 @@ public class SinkLogEvent extends EventObject {
     }
 	
 	/**
-	 * Create a new log event instance
+	 * Create a new log event instance. 
 	 * 
 	 * @param source
 	 *            sink associated with the event
@@ -80,29 +81,27 @@ public class SinkLogEvent extends EventObject {
 	 *            log severity
 	 * @param msg
 	 *            log message
+	 * @param args
+	 *            argument list associated with the message
 	 */
-	public SinkLogEvent(EventSink source, OpLevel sev, String msg) {
-		this(source, sev, msg, null);
-	}
-	
-	/**
-	 * Create a new log event instance
-	 * 
-	 * @param source
-	 *            sink associated with the event
-	 * @param sev
-	 *            log severity
-	 * @param msg
-	 *            log message
-	 * @param ex
-	 *            exception associated with the log message
-	 */
-	public SinkLogEvent(EventSink source, OpLevel sev, String msg, Throwable ex) {
+	public SinkLogEvent(EventSink source, OpLevel sev, String msg, Object...args) {
 	    super(source);
 	    logObj = msg;
-	    error = ex;
+	    if (args != null && args.length > 0) {
+	    	argList = args;
+	    	error = Utils.getThrowable(args);
+	    }    
 	    level = sev;
-    }
+	}
+		
+	/**
+	 * Return list of arguments supplied with the logging message
+	 *
+	 * @return array of objects
+	 */
+	public Object [] getArguments() {
+		return argList;
+	}
 	
 	/**
 	 * Return current severity level associated with this event

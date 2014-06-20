@@ -131,7 +131,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	}
 	
 	@Override
-	public String format(Object obj) {
+	public String format(Object obj, Object...args) {
 		if (obj instanceof TrackingActivity) {
 			return format((TrackingActivity) obj);
 		} else if (obj instanceof TrackingEvent) {
@@ -141,7 +141,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		} else {
 			StringBuilder jsonString = new StringBuilder(1024);
 			jsonString.append(START_JSON);
-			jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(obj));
+			jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(Utils.format(obj.toString(), args)));
 			jsonString.append(END_JSON);
 			return jsonString.toString();
 		}
@@ -398,13 +398,9 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		return jsonString.toString();
 	}
 
-	@Override
-	public String format(OpLevel level, Object msg) {
-		return format(level, msg, null);
-	}
 
 	@Override
-	public String format(OpLevel level, Object msg, Throwable ex) {
+	public String format(OpLevel level, Object msg, Object...args) {
 		StringBuilder jsonString = new StringBuilder(1024);
 		jsonString.append(START_JSON);
 		jsonString.append(Utils.quote(JSON_SEVERITY_LABEL)).append(ATTR_SEP).append(Utils.quote(level)).append(
@@ -412,6 +408,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		jsonString.append(Utils.quote(JSON_SEVERITY_NO_LABEL)).append(ATTR_SEP).append(level.ordinal()).append(
 		        ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(msg));
+		Throwable ex = Utils.getThrowable(args);
 		if (ex != null) {
 			jsonString.append(ATTR_JSON);
 			jsonString.append(Utils.quote(JSON_EXCEPTION_LABEL)).append(ATTR_SEP).append(Utils.quote(ex));

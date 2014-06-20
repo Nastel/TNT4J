@@ -16,6 +16,8 @@
 package com.nastel.jkool.tnt4j.dump;
 
 
+import java.text.MessageFormat;
+
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -102,8 +104,8 @@ public class DefaultDumpFormatter implements DumpFormatter {
 	}
 
 	@Override
-	public String format(Object obj) {
-		return String.valueOf(obj);
+	public String format(Object obj, Object...args) {
+		return Utils.format(String.valueOf(obj), args);
 	}
 
 	@Override

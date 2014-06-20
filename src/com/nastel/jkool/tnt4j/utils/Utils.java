@@ -29,6 +29,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -82,6 +83,33 @@ public class Utils {
 		return 0;
 	}
 
+	/**
+	 * Format a given string pattern and a list of arguments 
+	 * as defined by <code>MessageFormat</code>
+	 * 
+	 * @return formatted string
+	 */
+	public static String format(String pattern, Object...args) {
+		if (args != null && args.length > 0) {
+			return MessageFormat.format(pattern, args);	
+		} else return String.valueOf(pattern);
+	}
+	
+	/**
+	 * Return a <code>Throwable</code> object if it is the last element 
+	 * in the object array
+	 * 
+	 * @return throwable exception
+	 */
+	public static Throwable getThrowable(Object args[]) {
+    	if ((args != null) 
+    			&& (args.length > 0)
+    			&& (args[args.length-1] instanceof Throwable)) {
+    		return (Throwable) args[args.length-1];
+    	}	
+    	return null;
+	}
+	
 	/**
 	 * Return process ID associated with the current VM.
 	 * 

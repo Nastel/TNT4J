@@ -32,6 +32,7 @@ public interface Formatter {
 	 * Format a given object and return a string
 	 *
 	 * @param obj object to be formatted as string
+	 * @param args arguments associated with the object
 	 */
-	public String format(Object obj);
+	public String format(Object obj, Object...args);
 }

@@ -28,6 +28,7 @@ import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.sink.DefaultEventSink;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p><code>EventSink</code> implementation that routes log messages to log4j. This implementation
@@ -112,18 +113,12 @@ public class Log4jEventSink extends DefaultEventSink {
 	}
 
 	@Override
-    public void log(OpLevel sev, String msg) {
-		if (!acceptEvent(sev, msg)) return;
-		logger.log(getL4JLevel(sev), formatter.format(sev, msg));
-		super.log(sev, msg);
+    public void log(OpLevel sev, String msg, Object...args) {
+		if (!acceptEvent(sev, msg, args)) return;
+		logger.log(getL4JLevel(sev), formatter.format(sev, msg, args), Utils.getThrowable(args));
+		super.log(sev, msg, args);
 	}
 
-	@Override
-    public void log(OpLevel sev, String msg, Throwable ex) {
-		if (!acceptEvent(sev, msg, ex)) return;
-		logger.log(getL4JLevel(sev), formatter.format(sev, msg, ex), ex);
-		super.log(sev, msg, ex);
-    }
 
 	@Override
     public Object getSinkHandle() {
@@ -136,8 +131,8 @@ public class Log4jEventSink extends DefaultEventSink {
     }
 
 	@Override
-    public void write(Object msg) throws IOException {
-		logger.info(formatter.format(msg));
+    public void write(Object msg, Object...args) throws IOException {
+		logger.info(formatter.format(msg, args));
     }
 
 	@Override
