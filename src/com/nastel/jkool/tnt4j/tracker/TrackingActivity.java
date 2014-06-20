@@ -61,7 +61,7 @@ public class TrackingActivity extends Activity {
 	public	static final String DEFAULT_SNAPSHOT_NAME = "SYSTEM";
 	
 	public	static final String DEFAULT_PROPERTY_CPU_USED = "CPU_USED_USEC";
-	public	static final String DEFAULT_PROPERTY_CPU_TOTAL_TIME = "CPU_USED_USEC";
+	public	static final String DEFAULT_PROPERTY_CPU_TOTAL_TIME = "CPU_TOTAL_TIME";
 	public	static final String DEFAULT_PROPERTY_CPU_PERCENT_USAGE = "CPU_PERCENT_USAGE";
 	
 	public	static final String DEFAULT_PROPERTY_THREAD_BLOCKED_COUNT = "THREAD_BLOCKED_COUNT";
@@ -226,8 +226,8 @@ public class TrackingActivity extends Activity {
 	protected void takePropertySnapshot() {
 		PropertySnapshot snap = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, DEFAULT_SNAPSHOT_NAME);
 		if (cpuTimingSupported) {
-			double cpuUsed = (double) (stopCPUTime - startCPUTime) / 1000.0f;
-			double cpuPctUsed = getElapsedTime() > 0? ((((double) cpuUsed) / (double)getElapsedTime()) * 100.0f): 0;
+			double cpuUsed = ((double) (stopCPUTime - startCPUTime)) / 1000.0d;
+			double cpuPctUsed = getElapsedTime() > 0? ((((double) cpuUsed) / (double)getElapsedTime()) * 100.0d): 0;
 			snap.add(new Property(DEFAULT_PROPERTY_CPU_USED, cpuUsed));
 			snap.add(new Property(DEFAULT_PROPERTY_CPU_TOTAL_TIME, stopCPUTime / 1000.0f));
 			snap.add(new Property(DEFAULT_PROPERTY_CPU_PERCENT_USAGE, cpuPctUsed));
