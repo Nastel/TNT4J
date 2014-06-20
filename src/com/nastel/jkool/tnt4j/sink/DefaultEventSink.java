@@ -144,12 +144,12 @@ public abstract class DefaultEventSink implements EventSink {
 	 * @return true if event passed all filters, false otherwise           
 	 * @see OpLevel
 	 */
-	protected boolean acceptEvent(OpLevel level, String msg, Object...args) {
+	protected boolean filterEvent(OpLevel level, String msg, Object...args) {
 		boolean pass = true;
 		if (filters.size() > 0) return pass;
 		
 		for (SinkEventFilter filter : filters) {
-			pass = (pass && filter.acceptEvent(this, level, msg, args));
+			pass = (pass && filter.filter(this, level, msg, args));
 			if (!pass) break;
 		}
 		return pass;
@@ -164,12 +164,12 @@ public abstract class DefaultEventSink implements EventSink {
 	 * @return true if tracking activity passed all filters, false otherwise           
 	 * @see TrackingActivity
 	 */
-	protected boolean acceptEvent(TrackingActivity activity) {
+	protected boolean filterEvent(TrackingActivity activity) {
 		boolean pass = true;
 		if (filters.size() > 0) return pass;
 		
 		for (SinkEventFilter filter : filters) {
-			pass = (pass && filter.acceptEvent(this, activity));
+			pass = (pass && filter.filter(this, activity));
 			if (!pass) break;
 		}
 		return pass;
@@ -185,12 +185,12 @@ public abstract class DefaultEventSink implements EventSink {
 	 * @return true if trackign event passed all filters, false otherwise           
 	 * @see TrackingEvent
 	 */
-	protected boolean acceptEvent(TrackingEvent event) {
+	protected boolean filterEvent(TrackingEvent event) {
 		boolean pass = true;
 		if (filters.size() > 0) return pass;
 		
 		for (SinkEventFilter filter : filters) {
-			pass = (pass && filter.acceptEvent(this, event));
+			pass = (pass && filter.filter(this, event));
 			if (!pass) break;
 		}
 		return pass;

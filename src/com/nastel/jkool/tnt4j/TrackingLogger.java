@@ -394,6 +394,74 @@ public class TrackingLogger {
 
 
 	/**
+	 * Log a single message with a given severity level and a number of
+	 * user supplied arguments. Message pattern is based on the format defined
+	 * by <code>MessageFormat</code>. This logging type is more efficient than 
+	 * string concatenation.
+	 *  <pre>
+	 * {@code
+	 * TrackingLogger.log(OpLevel.DEBUG, "My message arg{0}, arg{1}", parm1, parm2);
+	 * }
+	 * </pre>
+	 * @param level
+	 *            severity level
+	 * @param msg
+	 *            message or message pattern
+	 * @param args
+	 *            user defined arguments supplied along side given message
+	 * @see OpLevel
+	 * @see java.text.MessageFormat
+	 */
+	public static void log(OpLevel level, String msg, Object...args) {
+		Tracker logger = loggers.get();
+		if (logger == null)
+			throw new RuntimeException("register() never called for this thread");
+		logger.getEventSink().log(level, msg, args);
+	}
+
+	/**
+	 * Log a single DEBUG message and a number of user supplied arguments.
+	 * Message pattern is based on the format defined
+	 * by <code>MessageFormat</code>. This logging type is more efficient than 
+	 * string concatenation.
+	 *  <pre>
+	 * {@code
+	 * TrackingLogger.debug("My message arg{0}, arg{1}", parm1, parm2);
+	 * }
+	 * </pre>
+	 * @param msg
+	 *            message or message pattern
+	 * @param args
+	 *            user defined arguments supplied along side given message
+	 * @see OpLevel
+	 * @see java.text.MessageFormat
+	 */
+	public static void debug(String msg, Object...args) {
+		log(OpLevel.DEBUG, msg, args);
+	}
+
+	/**
+	 * Log a single ERROR message a number of user supplied arguments. 
+	 * Message pattern is based on the format defined
+	 * by <code>MessageFormat</code>. This logging type is more efficient than 
+	 * string concatenation.
+	 *  <pre>
+	 * {@code
+	 * TrackingLogger.error("My error message arg{0}, arg{1}", parm1, parm2);
+	 * }
+	 * </pre>
+	 * @param msg
+	 *            message or message pattern
+	 * @param args
+	 *            user defined arguments supplied along side given message
+	 * @see OpLevel
+	 * @see java.text.MessageFormat
+	 */
+	public static void error(String msg, Object...args) {
+		log(OpLevel.ERROR, msg, args);
+	}
+
+	/**
 	 * Report a single tracking activity. Call after instance of <code>TrackingActivity</code>
 	 * has been completed using <code>TrackingActivity.stop()</code> and <code>TrackingActivity.tnt()</code>
 	 * calls.

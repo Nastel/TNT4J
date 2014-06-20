@@ -66,7 +66,7 @@ public class SocketEventSink extends DefaultEventSink {
 
 	@Override
 	public void log(TrackingActivity activity) {
-		if (!acceptEvent(activity)) return;
+		if (!filterEvent(activity)) return;
 		
 		if (logSink != null) {
 			logSink.log(activity);
@@ -79,7 +79,7 @@ public class SocketEventSink extends DefaultEventSink {
 
 	@Override
 	public void log(TrackingEvent event) {
-		if (!acceptEvent(event)) return;
+		if (!filterEvent(event)) return;
 		
 		if (logSink != null) {
 			logSink.log(event);
@@ -92,7 +92,7 @@ public class SocketEventSink extends DefaultEventSink {
 
 	@Override
 	public void log(OpLevel sev, String msg, Object...args) {
-		if (!acceptEvent(sev, msg)) return;
+		if (!filterEvent(sev, msg)) return;
 
 		if (logSink != null) {
 			logSink.log(sev, msg, args);

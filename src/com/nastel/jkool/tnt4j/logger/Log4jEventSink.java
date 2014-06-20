@@ -69,14 +69,14 @@ public class Log4jEventSink extends DefaultEventSink {
 
 	@Override
     public void log(TrackingEvent event) {
-		if (!acceptEvent(event)) return;
+		if (!filterEvent(event)) return;
 		logger.log(getL4JLevel(event), formatter.format(event), event.getOperation().getThrowable());
 		super.log(event);
     }
 
 	@Override
 	public void log(TrackingActivity activity) {
-		if (!acceptEvent(activity)) return;
+		if (!filterEvent(activity)) return;
 		Throwable ex = activity.getThrowable();
 		logger.log(getL4JLevel(activity.getStatus()), formatter.format(activity), ex);
 		super.log(activity);
@@ -114,7 +114,7 @@ public class Log4jEventSink extends DefaultEventSink {
 
 	@Override
     public void log(OpLevel sev, String msg, Object...args) {
-		if (!acceptEvent(sev, msg, args)) return;
+		if (!filterEvent(sev, msg, args)) return;
 		logger.log(getL4JLevel(sev), formatter.format(sev, msg, args), Utils.getThrowable(args));
 		super.log(sev, msg, args);
 	}
