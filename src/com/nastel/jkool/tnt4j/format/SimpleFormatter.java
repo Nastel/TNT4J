@@ -34,36 +34,38 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  */
 
 public class SimpleFormatter extends DefaultFormatter {
+	private static final String SEPARATOR = System.getProperty("tnt4j.formatter.simple.separator", "' | ");
+	
 	@Override
 	public String format(TrackingEvent event) {
 		StringBuffer msg = new StringBuffer(1024);
-		msg.append("{'").append(event.getSeverity()).append("',");
-		msg.append("event='").append(event.getStringMessage()).append("',");
-		msg.append("name='").append(event.getOperation().getName()).append("',");
-		msg.append("ccode='").append(event.getOperation().getCompCode()).append("',");
+		msg.append("{'").append(event.getSeverity()).append(SEPARATOR);
+		msg.append("event='").append(event.getStringMessage()).append(SEPARATOR);
+		msg.append("name='").append(event.getOperation().getName()).append(SEPARATOR);
+		msg.append("ccode='").append(event.getOperation().getCompCode()).append(SEPARATOR);
 		if (event.getOperation().getReasonCode() != 0) {
-			msg.append("rcode='").append(event.getOperation().getReasonCode()).append("',");
+			msg.append("rcode='").append(event.getOperation().getReasonCode()).append(SEPARATOR);
 		}
 		if (event.getOperation().getElapsedTime() != 0) {
-			msg.append("usec='").append(event.getOperation().getElapsedTime()).append("',");
+			msg.append("usec='").append(event.getOperation().getElapsedTime()).append(SEPARATOR);
 		}
 		if (event.getOperation().getMessageAge() != 0) {
-			msg.append("age.usec='").append(event.getOperation().getMessageAge()).append("',");
+			msg.append("age.usec='").append(event.getOperation().getMessageAge()).append(SEPARATOR);
 		}
 		if (event.getTag() != null) {
-			msg.append("tag='").append(event.getTag()).append("',");
+			msg.append("tag='").append(event.getTag()).append(SEPARATOR);
 		}
 		if (event.getOperation().getCorrelator() != null) {
-			msg.append("corr-id='").append(event.getOperation().getCorrelator()).append("',");
+			msg.append("corr-id='").append(event.getOperation().getCorrelator()).append(SEPARATOR);
 		}
 		if (event.getOperation().getThrowable() != null) {
-			msg.append("error='").append(event.getOperation().getExceptionString()).append("',");
+			msg.append("error='").append(event.getOperation().getExceptionString()).append(SEPARATOR);
 		}
-		msg.append("type='").append(event.getOperation().getType()).append("',");
-		msg.append("track-id='").append(event.getTrackingId()).append("',");
+		msg.append("type='").append(event.getOperation().getType()).append(SEPARATOR);
 		if (event.getParentItem() != null) {
-			msg.append("parent-id='").append(event.getParentItem().getTrackingId()).append("'");
+			msg.append("parent-id='").append(event.getParentItem().getTrackingId()).append(SEPARATOR);
 		}
+		msg.append("track-id='").append(event.getTrackingId()).append("'");
 		msg.append("}");
 		return 	msg.toString();
 	}
