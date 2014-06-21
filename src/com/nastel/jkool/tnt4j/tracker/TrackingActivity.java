@@ -61,7 +61,7 @@ public class TrackingActivity extends Activity {
 	public	static final String DEFAULT_SNAPSHOT_NAME = "SYSTEM";
 	
 	public	static final String DEFAULT_PROPERTY_CPU_USED = "CPU_USED_USEC";
-	public	static final String DEFAULT_PROPERTY_CPU_TOTAL_TIME = "CPU_TOTAL_TIME";
+	public	static final String DEFAULT_PROPERTY_CPU_TOTAL_TIME = "CPU_TOTAL_TIME_USEC";
 	public	static final String DEFAULT_PROPERTY_CPU_PERCENT_USAGE = "CPU_PERCENT_USAGE";
 	
 	public	static final String DEFAULT_PROPERTY_THREAD_BLOCKED_COUNT = "THREAD_BLOCKED_COUNT";
