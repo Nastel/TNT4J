@@ -331,7 +331,7 @@ public class Operation {
 	 * @param wTime idle time for operation, in microseconds
 	 * @throws IllegalArgumentException if waitTime is negative
 	 */
-	public void getWaitTime(long wTime) {
+	public void setWaitTime(long wTime) {
 		if (wTime < 0)
 			throw new IllegalArgumentException("waitTime must be non-negative");
 		this.waitTime = wTime;

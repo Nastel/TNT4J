@@ -56,6 +56,9 @@ public class SimpleFormatter extends DefaultFormatter {
 		if (event.getOperation().getMessageAge() != 0) {
 			msg.append("age.usec='").append(event.getOperation().getMessageAge()).append(SEPARATOR);
 		}
+		if (event.getOperation().getWaitTime() != 0) {
+			msg.append("wait.usec='").append(event.getOperation().getWaitTime()).append(SEPARATOR);
+		}
 		if (event.getTag() != null) {
 			msg.append("tag='").append(event.getTag()).append(SEPARATOR);
 		}
@@ -81,6 +84,9 @@ public class SimpleFormatter extends DefaultFormatter {
 		msg.append("name='").append(activity.getName()).append(SEPARATOR);
 		if (activity.getElapsedTime() != 0) {
 			msg.append("usec='").append(activity.getElapsedTime()).append(SEPARATOR);
+		}
+		if (activity.getWaitTime() != 0) {
+			msg.append("wait.usec='").append(activity.getWaitTime()).append(SEPARATOR);
 		}
 		if (activity.getStartTime() != null) {
 			msg.append("start.time='").append(activity.getStartTime()).append(SEPARATOR);
