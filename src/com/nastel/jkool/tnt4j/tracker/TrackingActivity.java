@@ -249,7 +249,7 @@ public class TrackingActivity extends Activity {
 	 * Developers should override this method to add user defined set of properties.
 	 * By default this method appends default set of properties defined by
 	 * <code>DEFAULT_PROPERTY_XXX</code> property values. Example:
-	 * <code>TrackingActivity.DEFAULT_PROPERTY_CPU_USED</code>.
+	 * <code>TrackingActivity.DEFAULT_PROPERTY_CPU_TOTAL_TIME</code>.
 	 */
 	protected void appendProperties() {
 		PropertySnapshot snap = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, DEFAULT_SNAPSHOT_NAME);
