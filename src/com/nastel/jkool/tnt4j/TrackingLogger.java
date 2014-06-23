@@ -155,7 +155,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * TrackingLogger.addDumpProvider(TrackinLogger.getDumpDestinationFactory().getInstance("my-dump.log"), new MyDumpProvider()); 
  * TrackingLogger.dumpOnShutdown(true);
  * ...
- * TrackingLogger.dump(); // MyDumpProvider will be called when dump() is called.
+ * TrackingLogger.dumpState(); // MyDumpProvider will be called when dumpState() is called.
  * }
  * </pre>
  * 
@@ -398,7 +398,7 @@ public class TrackingLogger {
 	 * user supplied arguments. Message pattern is based on the format defined
 	 * by <code>MessageFormat</code>. This logging type is more efficient than 
 	 * string concatenation.
-	 *  <pre>
+	 * <pre>
 	 * {@code
 	 * TrackingLogger.log(OpLevel.DEBUG, "My message arg{0}, arg{1}", parm1, parm2);
 	 * }
@@ -424,7 +424,7 @@ public class TrackingLogger {
 	 * Message pattern is based on the format defined
 	 * by <code>MessageFormat</code>. This logging type is more efficient than 
 	 * string concatenation.
-	 *  <pre>
+	 * <pre>
 	 * {@code
 	 * TrackingLogger.debug("My message arg{0}, arg{1}", parm1, parm2);
 	 * }
@@ -441,11 +441,11 @@ public class TrackingLogger {
 	}
 
 	/**
-	 * Log a single ERROR message a number of user supplied arguments. 
+	 * Log a single ERROR message and a number of user supplied arguments. 
 	 * Message pattern is based on the format defined
 	 * by <code>MessageFormat</code>. This logging type is more efficient than 
 	 * string concatenation.
-	 *  <pre>
+	 * <pre>
 	 * {@code
 	 * TrackingLogger.error("My error message arg{0}, arg{1}", parm1, parm2);
 	 * }
@@ -459,6 +459,69 @@ public class TrackingLogger {
 	 */
 	public static void error(String msg, Object...args) {
 		log(OpLevel.ERROR, msg, args);
+	}
+
+	/**
+	 * Log a single WARNING message and a number of user supplied arguments. 
+	 * Message pattern is based on the format defined
+	 * by <code>MessageFormat</code>. This logging type is more efficient than 
+	 * string concatenation.
+	 *  <pre>
+	 * {@code
+	 * TrackingLogger.warn("My error message arg{0}, arg{1}", parm1, parm2);
+	 * }
+	 * </pre>
+	 * @param msg
+	 *            message or message pattern
+	 * @param args
+	 *            user defined arguments supplied along side given message
+	 * @see OpLevel
+	 * @see java.text.MessageFormat
+	 */
+	public static void warn(String msg, Object...args) {
+		log(OpLevel.WARNING, msg, args);
+	}
+
+	/**
+	 * Log a single INFO message and a number of user supplied arguments. 
+	 * Message pattern is based on the format defined
+	 * by <code>MessageFormat</code>. This logging type is more efficient than 
+	 * string concatenation.
+	 * <pre>
+	 * {@code
+	 * TrackingLogger.info("My error message arg{0}, arg{1}", parm1, parm2);
+	 * }
+	 * </pre>
+	 * @param msg
+	 *            message or message pattern
+	 * @param args
+	 *            user defined arguments supplied along side given message
+	 * @see OpLevel
+	 * @see java.text.MessageFormat
+	 */
+	public static void info(String msg, Object...args) {
+		log(OpLevel.INFO, msg, args);
+	}
+
+	/**
+	 * Log a single SUCCESS message and a number of user supplied arguments. 
+	 * Message pattern is based on the format defined
+	 * by <code>MessageFormat</code>. This logging type is more efficient than 
+	 * string concatenation.
+	 *  <pre>
+	 * {@code
+	 * TrackingLogger.success("My error message arg{0}, arg{1}", parm1, parm2);
+	 * }
+	 * </pre>
+	 * @param msg
+	 *            message or message pattern
+	 * @param args
+	 *            user defined arguments supplied along side given message
+	 * @see OpLevel
+	 * @see java.text.MessageFormat
+	 */
+	public static void success(String msg, Object...args) {
+		log(OpLevel.SUCCESS, msg, args);
 	}
 
 	/**
