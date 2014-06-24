@@ -60,30 +60,41 @@ import com.nastel.jkool.tnt4j.core.PropertySnapshot;
  */
 public class TrackingActivity extends Activity {
 	public	static final String DEFAULT_SNAPSHOT_CATEGORY = "Java";
-	public	static final String DEFAULT_SNAPSHOT_NAME = "System";
+	public	static final String SNAPSHOT_CATEGORY_GC = "GarbageCollector";
+
+	public	static final String SNAPSHOT_CPU = "CPU";
+	public	static final String SNAPSHOT_ACTIVITY = "Activity";
+	public	static final String SNAPSHOT_MEMORY = "Memory";
+	public	static final String SNAPSHOT_THREAD = "Thread";
+
+	public	static final String DEFAULT_PROPERTY_LOAD_AVG = "SystemLoadAvg";
+	public	static final String DEFAULT_PROPERTY_TOTAL_TIME = "TotalUsec";
+	public	static final String DEFAULT_PROPERTY_TOTAL_USER_TIME = "UserTotalUsec";
+
+	public	static final String DEFAULT_PROPERTY_COUNT = "Count";
+	public	static final String DEFAULT_PROPERTY_DAEMON_COUNT = "DaemonCount";
+	public	static final String DEFAULT_PROPERTY_STARTED_COUNT = "StartedCount";
+	public	static final String DEFAULT_PROPERTY_PEAK_COUNT = "PeakCount";
 	
-	public	static final String DEFAULT_PROPERTY_SYSTEM_LOAD_AVG = "SystemLoadAvg";
-	public	static final String DEFAULT_PROPERTY_ACTIVITY_CPU_USED = "ActivityCpuUsedUsec";
-	public	static final String DEFAULT_PROPERTY_CPU_TOTAL_TIME = "ThreadCpuTotalUsec";
-	public	static final String DEFAULT_PROPERTY_CPU_TOTAL_USER_TIME = "ThreadCpuUserTotalUsec";
+	public	static final String DEFAULT_PROPERTY_BLOCKED_COUNT = "BlockedCount";
+	public	static final String DEFAULT_PROPERTY_WAITED_COUNT = "WaitedCount";
+	public	static final String DEFAULT_PROPERTY_BLOCKED_TIME = "BlockedTimeUsec";
+	public	static final String DEFAULT_PROPERTY_WAITED_TIME = "WaitTimeUsec";
 
-	public	static final String DEFAULT_PROPERTY_THREAD_COUNT = "ThreadCount";
-	public	static final String DEFAULT_PROPERTY_THREAD_DAEMON_COUNT = "ThreadDaemonCount";
-	public	static final String DEFAULT_PROPERTY_THREAD_STARTED_COUNT = "ThreadStartedCount";
-	public	static final String DEFAULT_PROPERTY_THREAD_PEAK_COUNT = "ThreadPeakCount";
+	public	static final String DEFAULT_PROPERTY_MAX_BYTES = "MaxBytes";
+	public	static final String DEFAULT_PROPERTY_TOTAL_BYTES = "TotalBytes";
+	public	static final String DEFAULT_PROPERTY_FREE_BYTES = "FreeBytes";
+	public	static final String DEFAULT_PROPERTY_USED_BYTES = "UsedBytes";
+	public	static final String DEFAULT_PROPERTY_USAGE = "Usage";
 	
-	public	static final String DEFAULT_PROPERTY_THREAD_BLOCKED_COUNT = "ThreadBlockedCount";
-	public	static final String DEFAULT_PROPERTY_THREAD_WAITED_COUNT = "ThreadWaitedCount";
-	public	static final String DEFAULT_PROPERTY_THREAD_BLOCKED_TIME = "ThreadBlockedTimeUsec";
-	public	static final String DEFAULT_PROPERTY_THREAD_WAITED_TIME = "ThreadWaitTimeUsec";
+	public	static final String DEFAULT_PROPERTY_GC_COUNT = "GcCount";
+	public	static final String DEFAULT_PROPERTY_GC_TIME = "GcTime";
+	public	static final String DEFAULT_PROPERTY_VALID = "isValid";
 
-	public	static final String DEFAULT_PROPERTY_MEMORY_MAX_BYTES = "MemoryMaxBytes";
-	public	static final String DEFAULT_PROPERTY_MEMORY_TOTAL_BYTES = "MemoryTotalBytes";
-	public	static final String DEFAULT_PROPERTY_MEMORY_FREE_BYTES = "MemoryFreeBytes";
-	public	static final String DEFAULT_PROPERTY_MEMORY_USED_BYTES = "MemoryUsedBytes";
-	public	static final String DEFAULT_PROPERTY_MEMORY_PERCENT_USAGE = "MemoryUsage";
 
-	private long startCPUTime = 0, stopCPUTime = 0;
+	private long startCPUTime = 0, stopCPUTime = 0, 
+		startBlockTime = 0, stopBlockTime = 0, startWaitTime = 0, stopWaitTime = 0,
+		startBlockCount = 0, stopBlockCount = 0, startWaitCount = 0, stopWaitCount = 0;
 	private int startStopCount = 0;
 	private ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
 	private boolean appendProps = true, cpuTimingSupported = false, contTimingSupported = false;
@@ -152,8 +163,15 @@ public class TrackingActivity extends Activity {
 	public void start(long startTime, int startTimeUsec) {
 		super.start(startTime, startTimeUsec);
 		startStopCount++;
-		startCPUTime = cpuTimingSupported? tmbean.getCurrentThreadCpuTime(): 0;
 		if (startStopCount == 1) {
+			startCPUTime = cpuTimingSupported? tmbean.getCurrentThreadCpuTime(): 0;			
+			ThreadInfo tinfo = tmbean.getThreadInfo(Thread.currentThread().getId());
+			startBlockCount = tinfo.getBlockedCount();
+			startWaitCount = tinfo.getWaitedCount();
+			if (contTimingSupported) {
+				startBlockTime = tinfo.getBlockedTime();
+				startWaitTime = tinfo.getWaitedTime();
+			}			
 			tracker.getEventSink().log(this);
 		}
 	}
@@ -216,9 +234,17 @@ public class TrackingActivity extends Activity {
 	
 	@Override
 	public void stop(long stopTime, int stopTimeUsec) {
-		stopCPUTime = getCurrentCpuTimeNanos();
 		super.stop(stopTime, stopTimeUsec);
+		stopCPUTime = getCurrentCpuTimeNanos();
+		
 		if (appendProps && (startStopCount == 2)) {
+			ThreadInfo tinfo = tmbean.getThreadInfo(Thread.currentThread().getId());
+			stopBlockCount = tinfo.getBlockedCount();
+			stopWaitCount = tinfo.getWaitedCount();
+			if (contTimingSupported) {
+				stopBlockTime = tinfo.getBlockedTime();
+				stopWaitTime = tinfo.getWaitedTime();
+			}
 			appendProperties();
 		}
 	}
@@ -252,44 +278,60 @@ public class TrackingActivity extends Activity {
 	 * <code>TrackingActivity.DEFAULT_PROPERTY_CPU_TOTAL_TIME</code>.
 	 */
 	protected void appendProperties() {
-		PropertySnapshot snap = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, DEFAULT_SNAPSHOT_NAME);
-		double load = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
-		if (load >= 0) {
-			snap.add(new Property(DEFAULT_PROPERTY_SYSTEM_LOAD_AVG, load));
-		}
+		PropertySnapshot activity = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_ACTIVITY);
 		if (cpuTimingSupported) {
 			long cpuUsed = getUsedCpuTimeNanos();
-			snap.add(new Property(DEFAULT_PROPERTY_ACTIVITY_CPU_USED, ((double)cpuUsed / 1000.0d)));
-			snap.add(new Property(DEFAULT_PROPERTY_CPU_TOTAL_TIME, ((double)stopCPUTime / 1000.0d)));
-			snap.add(new Property(DEFAULT_PROPERTY_CPU_TOTAL_USER_TIME, 
+			activity.add(new Property(DEFAULT_PROPERTY_TOTAL_TIME, ((double)cpuUsed / 1000.0d)));
+		}
+		activity.add(new Property(DEFAULT_PROPERTY_BLOCKED_COUNT, (stopBlockCount - startBlockCount)));
+		activity.add(new Property(DEFAULT_PROPERTY_WAITED_COUNT, (stopWaitCount - startWaitCount)));
+		if (contTimingSupported) {
+			activity.add(new Property(DEFAULT_PROPERTY_BLOCKED_TIME, ((stopBlockTime - startBlockTime)*1000)));
+			activity.add(new Property(DEFAULT_PROPERTY_WAITED_TIME, ((stopWaitTime - startWaitTime)*1000)));
+		}
+		this.add(activity);
+		
+		PropertySnapshot cpu = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_CPU);
+		double load = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
+		if (load >= 0) {
+			cpu.add(new Property(DEFAULT_PROPERTY_LOAD_AVG, load));
+		}
+		if (cpuTimingSupported) {
+			cpu.add(new Property(DEFAULT_PROPERTY_TOTAL_TIME, ((double)stopCPUTime / 1000.0d)));
+			cpu.add(new Property(DEFAULT_PROPERTY_TOTAL_USER_TIME, 
 					((double)tmbean.getThreadUserTime(Thread.currentThread().getId())/ 1000.0d)));
 		}
-		ThreadInfo tinfo = tmbean.getThreadInfo(Thread.currentThread().getId());
-		snap.add(new Property(DEFAULT_PROPERTY_THREAD_COUNT, tmbean.getThreadCount()));
-		snap.add(new Property(DEFAULT_PROPERTY_THREAD_DAEMON_COUNT, tmbean.getDaemonThreadCount()));
-		snap.add(new Property(DEFAULT_PROPERTY_THREAD_STARTED_COUNT, tmbean.getTotalStartedThreadCount()));
-		snap.add(new Property(DEFAULT_PROPERTY_THREAD_PEAK_COUNT, tmbean.getPeakThreadCount()));
-		snap.add(new Property(DEFAULT_PROPERTY_THREAD_BLOCKED_COUNT, tinfo.getBlockedCount()));
-		snap.add(new Property(DEFAULT_PROPERTY_THREAD_WAITED_COUNT, tinfo.getWaitedCount()));
+		this.add(cpu);
+		
+		PropertySnapshot thread = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_THREAD);		
+		thread.add(new Property(DEFAULT_PROPERTY_COUNT, tmbean.getThreadCount()));
+		thread.add(new Property(DEFAULT_PROPERTY_DAEMON_COUNT, tmbean.getDaemonThreadCount()));
+		thread.add(new Property(DEFAULT_PROPERTY_STARTED_COUNT, tmbean.getTotalStartedThreadCount()));
+		thread.add(new Property(DEFAULT_PROPERTY_PEAK_COUNT, tmbean.getPeakThreadCount()));
+		thread.add(new Property(DEFAULT_PROPERTY_BLOCKED_COUNT, stopBlockCount));
+		thread.add(new Property(DEFAULT_PROPERTY_WAITED_COUNT, stopWaitCount));
 		if (contTimingSupported) {
-			snap.add(new Property(DEFAULT_PROPERTY_THREAD_BLOCKED_TIME, tinfo.getBlockedTime()*1000));
-			snap.add(new Property(DEFAULT_PROPERTY_THREAD_WAITED_TIME, tinfo.getWaitedTime()*1000));
+			thread.add(new Property(DEFAULT_PROPERTY_BLOCKED_TIME, stopBlockTime*1000));
+			thread.add(new Property(DEFAULT_PROPERTY_WAITED_TIME, stopWaitTime*1000));
 		}
+		this.add(thread);
+
+		PropertySnapshot mem = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_MEMORY);
 		long usedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		long memPct = (long) (((double) usedMem / (double) Runtime.getRuntime().totalMemory()) * 100.0d);
-		snap.add(new Property(DEFAULT_PROPERTY_MEMORY_MAX_BYTES, Runtime.getRuntime().maxMemory()));
-		snap.add(new Property(DEFAULT_PROPERTY_MEMORY_TOTAL_BYTES, Runtime.getRuntime().totalMemory()));
-		snap.add(new Property(DEFAULT_PROPERTY_MEMORY_FREE_BYTES, Runtime.getRuntime().freeMemory()));
-		snap.add(new Property(DEFAULT_PROPERTY_MEMORY_USED_BYTES, usedMem));
-		snap.add(new Property(DEFAULT_PROPERTY_MEMORY_PERCENT_USAGE, memPct));	
-		this.add(snap);
+		mem.add(new Property(DEFAULT_PROPERTY_MAX_BYTES, Runtime.getRuntime().maxMemory()));
+		mem.add(new Property(DEFAULT_PROPERTY_TOTAL_BYTES, Runtime.getRuntime().totalMemory()));
+		mem.add(new Property(DEFAULT_PROPERTY_FREE_BYTES, Runtime.getRuntime().freeMemory()));
+		mem.add(new Property(DEFAULT_PROPERTY_USED_BYTES, usedMem));
+		mem.add(new Property(DEFAULT_PROPERTY_USAGE, memPct));	
+		this.add(mem);
 		
 		List<GarbageCollectorMXBean> gcList = ManagementFactory.getGarbageCollectorMXBeans();
 		for (GarbageCollectorMXBean gc: gcList) {
-			PropertySnapshot gcSnap = new PropertySnapshot("GarbageCollector", gc.getName());
-			gcSnap.add(new Property("GcCount", gc.getCollectionCount()));
-			gcSnap.add(new Property("GcTime", gc.getCollectionTime()));
-			gcSnap.add(new Property("isValid", gc.isValid()));
+			PropertySnapshot gcSnap = new PropertySnapshot(SNAPSHOT_CATEGORY_GC, gc.getName());
+			gcSnap.add(new Property(DEFAULT_PROPERTY_GC_COUNT, gc.getCollectionCount()));
+			gcSnap.add(new Property(DEFAULT_PROPERTY_GC_TIME, gc.getCollectionTime()));
+			gcSnap.add(new Property(DEFAULT_PROPERTY_VALID, gc.isValid()));
 			this.add(gcSnap);
 		}
 	}
