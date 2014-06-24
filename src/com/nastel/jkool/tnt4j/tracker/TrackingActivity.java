@@ -87,8 +87,7 @@ public class TrackingActivity extends Activity {
 	public	static final String DEFAULT_PROPERTY_USED_BYTES = "UsedBytes";
 	public	static final String DEFAULT_PROPERTY_USAGE = "Usage";
 	
-	public	static final String DEFAULT_PROPERTY_GC_COUNT = "Count";
-	public	static final String DEFAULT_PROPERTY_GC_TIME = "Time";
+	public	static final String DEFAULT_PROPERTY_TIME = "Time";
 	public	static final String DEFAULT_PROPERTY_VALID = "isValid";
 
 
@@ -297,6 +296,7 @@ public class TrackingActivity extends Activity {
 			cpu.add(new Property(DEFAULT_PROPERTY_LOAD_AVG, load));
 		}
 		if (cpuTimingSupported) {
+			cpu.add(DEFAULT_PROPERTY_COUNT, ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors());
 			cpu.add(new Property(DEFAULT_PROPERTY_TOTAL_TIME, ((double)stopCPUTime / 1000.0d)));
 			cpu.add(new Property(DEFAULT_PROPERTY_TOTAL_USER_TIME, 
 					((double)tmbean.getThreadUserTime(Thread.currentThread().getId())/ 1000.0d)));
@@ -329,8 +329,8 @@ public class TrackingActivity extends Activity {
 		List<GarbageCollectorMXBean> gcList = ManagementFactory.getGarbageCollectorMXBeans();
 		for (GarbageCollectorMXBean gc: gcList) {
 			PropertySnapshot gcSnap = new PropertySnapshot(SNAPSHOT_CATEGORY_GC, gc.getName());
-			gcSnap.add(new Property(DEFAULT_PROPERTY_GC_COUNT, gc.getCollectionCount()));
-			gcSnap.add(new Property(DEFAULT_PROPERTY_GC_TIME, gc.getCollectionTime()));
+			gcSnap.add(new Property(DEFAULT_PROPERTY_COUNT, gc.getCollectionCount()));
+			gcSnap.add(new Property(DEFAULT_PROPERTY_TIME, gc.getCollectionTime()));
 			gcSnap.add(new Property(DEFAULT_PROPERTY_VALID, gc.isValid()));
 			this.add(gcSnap);
 		}
