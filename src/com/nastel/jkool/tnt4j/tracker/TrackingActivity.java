@@ -69,7 +69,7 @@ public class TrackingActivity extends Activity {
 
 	public	static final String DEFAULT_PROPERTY_LOAD_AVG = "SystemLoadAvg";
 	public	static final String DEFAULT_PROPERTY_TOTAL_TIME = "TotalUsec";
-	public	static final String DEFAULT_PROPERTY_TOTAL_USER_TIME = "UserTotalUsec";
+	public	static final String DEFAULT_PROPERTY_TOTAL_USER_TIME = "TotalUserUsec";
 
 	public	static final String DEFAULT_PROPERTY_COUNT = "Count";
 	public	static final String DEFAULT_PROPERTY_DAEMON_COUNT = "DaemonCount";
@@ -87,8 +87,8 @@ public class TrackingActivity extends Activity {
 	public	static final String DEFAULT_PROPERTY_USED_BYTES = "UsedBytes";
 	public	static final String DEFAULT_PROPERTY_USAGE = "Usage";
 	
-	public	static final String DEFAULT_PROPERTY_GC_COUNT = "GcCount";
-	public	static final String DEFAULT_PROPERTY_GC_TIME = "GcTime";
+	public	static final String DEFAULT_PROPERTY_GC_COUNT = "Count";
+	public	static final String DEFAULT_PROPERTY_GC_TIME = "Time";
 	public	static final String DEFAULT_PROPERTY_VALID = "isValid";
 
 
