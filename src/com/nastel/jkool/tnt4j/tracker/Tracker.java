@@ -181,4 +181,19 @@ public interface Tracker extends Handle {
 	 * @see OpType
 	 */
 	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String msg, Object...args);	
+	
+	/**
+	 * Create a new instance of tracking event that can be timed and reported.
+	 *
+	 * @param severity severity level
+	 * @param opType operation type
+	 * @param opName operation name associated with this event (tracking event name)
+	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
+	 * @param tag associated with this event 
+	 * @param msg text message associated with this event
+	 * @param args argument list passed along with the message
+	 * @see OpLevel
+	 * @see OpType
+	 */
+	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag, String msg, Object...args);	
 }

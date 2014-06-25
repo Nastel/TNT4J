@@ -229,6 +229,13 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
    }
 	
 	@Override
+    public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag, String msg, Object...args) {
+		TrackingEvent event = new TrackingEvent(severity, opType, opName, correlator, tag, msg, args);
+		event.getOperation().setUser(tConfig.getSource().getUser());
+		return event;
+   }
+	
+	@Override
 	protected void finalize() throws Throwable {
 		try {
 			close();

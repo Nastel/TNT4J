@@ -638,11 +638,38 @@ public class TrackingLogger {
 	 */
 	public static void tnt(OpLevel severity, OpType opType, String opName, String correlator, long elapsed,
 			 String msg, Object...args) {
+		tnt(severity, opType, opName, correlator, null, elapsed, msg, args);
+	}
+
+	/**
+	 * Report a single tracking event
+	 * 
+	 * @param severity
+	 *            severity level of the reported message
+	 * @param opType
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with the event message
+	 * @param correlator
+	 *            event correlator
+	 * @param tag
+	 *            message tag
+	 * @param elapsed
+	 *            elapsed time of the event in milliseconds.
+	 * @param msg
+	 *            event text message
+	 * @param args
+	 *            argument list, exception passed along side given message
+	 * @see TrackingActivity
+	 * @see OpLevel
+	 */
+	public static void tnt(OpLevel severity, OpType opType, String opName, String correlator, String tag, long elapsed,
+			 String msg, Object...args) {
 		Tracker logger = loggers.get();
 		if (logger == null)
 			throw new RuntimeException("register() never called for this thread");
 		long endTime = System.currentTimeMillis();		
-		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, msg, args);
+		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 		event.start(endTime - elapsed);
 		Throwable ex = Utils.getThrowable(args);
 		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
@@ -788,6 +815,35 @@ public class TrackingLogger {
 		if (logger == null)
 			throw new RuntimeException("register() never called for this thread");
 		return logger.newEvent(severity, opType, opName, correlator, msg, args);
+	}
+
+	/**
+	 * Create a new instance of tracking event that can be timed and reported. This constructor will assign a unique
+	 * event signature using newUUID() call
+	 * 
+	 * @param severity
+	 *            severity level
+	 * @param opType
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with this event (tracking event name)
+	 * @param correlator
+	 *            associated with this event (could be unique or passed from a correlated activity)
+	 * @param tag
+	 *            associated with this event
+	 * @param msg
+	 *            text message associated with this event
+	 * @param args argument list passed along the message
+	 * @see TrackingEvent
+	 * @see OpType
+	 * @see OpLevel
+	 */
+	public static TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator,
+	        String tag, String msg, Object...args) {
+		Tracker logger = loggers.get();
+		if (logger == null)
+			throw new RuntimeException("register() never called for this thread");
+		return logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 	}
 
 	/**
