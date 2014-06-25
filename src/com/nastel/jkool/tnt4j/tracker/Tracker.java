@@ -135,22 +135,24 @@ public interface Tracker extends Handle {
 	 * This constructor will assign a unique event signature using newUUID() call
 	 *
 	 * @param severity severity level
-	 * @param msg text message associated with this event
 	 * @param opName operation name associated with this event (tracking event name)
+	 * @param msg text message associated with this event
+	 * @param args argument list passed along with the message
 	 * @see OpLevel
 	 */
-	public TrackingEvent newEvent(OpLevel severity, String msg, String opName);
+	public TrackingEvent newEvent(OpLevel severity, String opName, String msg, Object...args);
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 * This constructor will assign a unique event signature using newUUID() call
 	 *
 	 * @param severity severity level
+	 * @param opName operation name associated with this event (tracking event name)
 	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
 	 * @param msg text message associated with this event
-	 * @param opName operation name associated with this event (tracking event name)
+	 * @param args argument list passed along with the message
 	 */
-	public TrackingEvent newEvent(OpLevel severity, String correlator, String msg, String opName);
+	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object...args);
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
@@ -158,23 +160,25 @@ public interface Tracker extends Handle {
 	 *
 	 * @param severity severity level
 	 * @param opType operation type
-	 * @param msg text message associated with this event
 	 * @param opName operation name associated with this event (tracking event name)
+	 * @param msg text message associated with this event
+	 * @param args argument list passed along with the message
 	 * @see OpType
 	 * @see OpLevel
 	 */
-	public TrackingEvent newEvent(OpLevel severity, OpType opType, String msg, String opName);
+	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String msg, Object...args);
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 *
 	 * @param severity severity level
 	 * @param opType operation type
+	 * @param opName operation name associated with this event (tracking event name)
 	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
 	 * @param msg text message associated with this event
-	 * @param opName operation name associated with this event (tracking event name)
+	 * @param args argument list passed along with the message
 	 * @see OpLevel
 	 * @see OpType
 	 */
-	public TrackingEvent newEvent(OpLevel severity, OpType opType, String correlator, String msg, String opName);	
+	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String msg, Object...args);	
 }

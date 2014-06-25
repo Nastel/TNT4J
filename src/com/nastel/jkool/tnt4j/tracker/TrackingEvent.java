@@ -52,7 +52,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * {@code
  * TrackingLogger.register("com.nastel.appl.name", "myserver"); // register and obtain Tracker logger instance
  * TrackingActivity activity = TrackingLogger.newActivity(); // create a new application activity timing
- * TrackingEvent event = TrackingLogger.newEvent(OpLevel.INFO, OpType.SEND, "Sending order", "SendOrder"); // create a sender tracking event
+ * TrackingEvent event = TrackingLogger.newEvent(OpLevel.INFO, OpType.SEND, "SendOrder", "Sending order"); // create a sender tracking event
  * activity.start(); // start application activity timing
  * event.start(); // start timing a tracking event
  * String order_id = null;
@@ -77,7 +77,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * {@code
  * TrackingLogger.register("com.nastel.appl.name", "myserver"); // register and obtain Tracker logger instance
  * TrackingActivity activity = TrackingLogger.newActivity(); // create a new application activity timing
- * TrackingEvent event = TrackingLogger.newEvent(OpLevel.INFO, OpType.RECEIVE, "Received order", "RecvOrder"); // create a receiver tracking event
+ * TrackingEvent event = TrackingLogger.newEvent(OpLevel.INFO, OpType.RECEIVE, "RecvOrder", "Received order"); // create a receiver tracking event
  * activity.start(); // start application activity timing
  * event.start(); // start timing a tracking event
  * String order_id = null;
@@ -117,7 +117,7 @@ public class TrackingEvent extends Message {
 	@Override
 	public String toString() {
 		return 	"{" + operation.getSeverity()
-				+ ",[" + getStringMessage() + "],"
+				+ ",[" + getMessage() + "],"
 				+ "[" + operation.getName() + "],"
 				+ super.toString()
 				+ "," + operation + "}";
@@ -146,12 +146,13 @@ public class TrackingEvent extends Message {
 	 * This constructor will assign a unique event signature using newUUID() call
 	 *
 	 * @param severity severity level
-	 * @param msg text message associated with this event
 	 * @param opName operation name associated with this event (tracking event name)
+	 * @param msg text message associated with this event
+	 * @param args argument list passed along side the message
 	 * @see OpLevel
 	 */
-	protected TrackingEvent(OpLevel severity, String msg, String opName) {
-		this(severity, OpType.EVENT, null, msg, opName);
+	protected TrackingEvent(OpLevel severity, String opName, String msg, Object...args) {
+		this(severity, OpType.EVENT, opName, null, msg, args);
 	}
 
 	/**
@@ -159,12 +160,13 @@ public class TrackingEvent extends Message {
 	 * This constructor will assign a unique event signature using newUUID() call
 	 *
 	 * @param severity severity level
+	 * @param opName operation name associated with this event (tracking event name)
 	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
 	 * @param msg text message associated with this event
-	 * @param opName operation name associated with this event (tracking event name)
+	 * @param args argument list passed along side the message
 	 */
-	protected TrackingEvent(OpLevel severity, String correlator, String msg, String opName) {
-		this(severity, OpType.EVENT, correlator, msg, opName);
+	protected TrackingEvent(OpLevel severity, String opName, String correlator, String msg, Object...args) {
+		this(severity, OpType.EVENT, opName, correlator, msg, args);
 	}
 
 	/**
@@ -173,13 +175,14 @@ public class TrackingEvent extends Message {
 	 *
 	 * @param severity severity level
 	 * @param opType operation type
-	 * @param msg text message associated with this event
 	 * @param opName operation name associated with this event (tracking event name)
+	 * @param msg text message associated with this event
+	 * @param args argument list passed along side the message
 	 * @see OpType
 	 * @see OpLevel
 	 */
-	protected TrackingEvent(OpLevel severity, OpType opType, String msg, String opName) {
-		this(severity, opType, null, msg, opName);
+	protected TrackingEvent(OpLevel severity, OpType opType, String opName, String msg, Object...args) {
+		this(severity, opType, opName, null, msg, args);
 	}
 
 
@@ -188,18 +191,20 @@ public class TrackingEvent extends Message {
 	 *
 	 * @param severity severity level
 	 * @param opType operation type
+	 * @param opName operation name associated with this event (tracking event name)
 	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
 	 * @param msg text message associated with this event
-	 * @param opName operation name associated with this event (tracking event name)
+	 * @param args argument list passed along side the message
 	 * @see OpLevel
 	 * @see OpType
 	 */
-	protected TrackingEvent(OpLevel severity, OpType opType, String correlator, String msg, String opName) {
-		super(newUUID(), msg);
+	protected TrackingEvent(OpLevel severity, OpType opType, String opName, String correlator, String msg, Object...args) {
+		super(newUUID(), msg, args);
 		operation = new Operation(opName, opType);
 		operation.setSeverity(severity);
 		operation.setCorrelator(correlator);
 		operation.setResource(Utils.getVMName());
+		operation.setException(Utils.getThrowable(args));
 	}
 
 	public void setCorrelator(String cid) {

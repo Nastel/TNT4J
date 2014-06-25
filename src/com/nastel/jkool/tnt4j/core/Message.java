@@ -17,6 +17,8 @@ package com.nastel.jkool.tnt4j.core;
 
 import java.util.UUID;
 
+import com.nastel.jkool.tnt4j.utils.Utils;
+
 /**
  * <p>Implements a Message entity .</p>
  *
@@ -55,7 +57,7 @@ public class Message implements LinkedItem {
 	private int               size;
 	private String            tag;
 	private String            strData;
-	private byte[]            binData;
+	private Object[]          argList;
 
 	private LinkedItem  parent;
 
@@ -85,12 +87,13 @@ public class Message implements LinkedItem {
 	 *
 	 * @param signature unique signature identifying message
 	 * @param msg actual string message associated with this instance
+	 * @param args argument list passed along the message
 	 * @throws NullPointerException if any arguments are <code>null</code>
 	 * @throws IllegalArgumentException if signature is empty or too long
 	 */
-	public Message(String signature, String msg) {
+	public Message(String signature, String msg, Object...args) {
 		setTrackingId(signature);
-		setMessage(msg);
+		setMessage(msg, args);
 	}
 
 	/**
@@ -171,74 +174,44 @@ public class Message implements LinkedItem {
 
 
 	/**
-	 * Returns an indication of whether the current message data is represented
-	 * as a binary sequence of bytes.
-	 *
-	 * @return <code>true</code> if message data is binary,
-	 *         <code>false</code> if message data is character
-	 */
-	public boolean isDataBinary() {
-		return (binData != null);
-	}
-
-	/**
-	 * Gets the current message data as a string, regardless of its internal
-	 * representation.
+	 * Gets the current formatted message with formatted arguments
 	 *
 	 * @return string message data, or <code>null</code> if there is no data
-	 * @see #isDataBinary()
 	 */
-	public String getStringMessage() {
-		if (strData != null)
-			return strData;
-
-		if (binData != null)
-			return new String(binData);
-
-		return null;
+	public String getMessage() {
+		return Utils.format(strData, argList);
 	}
 
 	/**
-	 * Gets the current message data as a binary sequence of bytes, regardless of
-	 * its internal representation.
+	 * Gets the current non formatted message
 	 *
-	 * @return binary message data, or <code>null</code> if there is no data
-	 * @see #isDataBinary()
+	 * @return string non formatted message, or <code>null</code> if there is no data
 	 */
-	public byte[] getBinaryMessage() {
-		if (binData != null)
-			return binData;
+	public String getMessagePattern() {
+		return strData;
+	}
 
-		if (strData != null)
-			return strData.getBytes();
-
-		return null;
+	/**
+	 * Gets the current message argument list
+	 *
+	 * @return message argument list
+	 */
+	public Object[] getMessageArgs() {
+		return argList;
 	}
 
 	/**
 	 * Sets the data for the message.  This is usually the message body.
 	 *
-	 * @param msgData string message data
+	 * @param pattern message pattern
+	 * @param args list of arguments
 	 */
-	public void setMessage(String msgData) {
-		strData = msgData;
-		binData = null;
+	public void setMessage(String pattern, Object...args) {
+		strData = pattern;
 		if (strData != null) {
 			setSize(strData.length());
 		} else setSize(0);
-	}
-
-	/**
-	 * Sets the data for the message.  This is usually the message body.
-	 *
-	 * @param msgData binary message data
-	 */
-	public void setMessage(byte[] msgData) {
-		binData = msgData;
-		strData = null;
-		if (binData != null) {
-			setSize(binData.length);
-		} else setSize(0);
+		argList = args;
 	}
 
 	/**

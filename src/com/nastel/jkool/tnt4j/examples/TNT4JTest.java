@@ -91,7 +91,7 @@ public class TNT4JTest {
 		activityCount++;
 		activity.start();
 		for (int i=0; i < 10; i++) {
-			TrackingEvent event = TrackingLogger.newEvent(OpLevel.DEBUG, "Running sample=" + i, "runSampleActivity");
+			TrackingEvent event = TrackingLogger.newEvent(OpLevel.DEBUG, "runSampleActivity", "Running sample={0}", i);
 			eventCount++;
 			event.start(); // start timing current event
 			try {
@@ -135,12 +135,12 @@ public class TNT4JTest {
 	}
 	
 	static private TrackingEvent runTNT4JEvent(String msg, String opName, OpLevel sev, String location, int limit) {
-		TrackingEvent event = TrackingLogger.newEvent(sev, msg, opName);
+		TrackingEvent event = TrackingLogger.newEvent(sev, opName, msg);
 		eventCount++;
 		TrackingSelector selector = TrackingLogger.getTracker().getTrackingSelector();
 		try {
 			event.setTag(String.valueOf(Utils.getVMName()));
-			event.setMessage(msg + ", tnt4j.run.count=" + limit);
+			event.setMessage("{0}, tnt4j.run.count={1}", msg, limit);
 			event.start();
 			for (int i = 0; i < limit; i++) {
 				selector.isSet(OpLevel.INFO, "tnt4j.test.location", location);
@@ -152,11 +152,11 @@ public class TNT4JTest {
 	}
 	
 	static private TrackingEvent runLog4JEvent(String msg, String opName, OpLevel sev, String location, int limit) {
-		TrackingEvent event = TrackingLogger.newEvent(sev, msg, opName);
+		TrackingEvent event = TrackingLogger.newEvent(sev, opName, msg);
 		eventCount++;
 		try {
 			event.setTag(String.valueOf(Utils.getVMName()));
-			event.setMessage(msg + ", log4j.run.count=" + limit);
+			event.setMessage("{0}, log4j.run.count={1}", msg, limit);
 			event.start();
 			for (int i = 0; i < limit; i++) {
 				logger.isDebugEnabled();

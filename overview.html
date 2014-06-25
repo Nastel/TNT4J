@@ -8,12 +8,6 @@
 <!--
  /* Font Definitions */
  @font-face
-	{font-family:Wingdings;
-	panose-1:5 0 0 0 0 0 0 0 0 0;}
-@font-face
-	{font-family:Wingdings;
-	panose-1:5 0 0 0 0 0 0 0 0 0;}
-@font-face
 	{font-family:Cambria;
 	panose-1:2 4 5 3 5 4 6 3 2 4;}
 @font-face
@@ -178,11 +172,6 @@ span.apple-converted-space
 	margin:1.0in 1.0in 1.0in 1.0in;}
 div.WordSection1
 	{page:WordSection1;}
- /* List Definitions */
- ol
-	{margin-bottom:0in;}
-ul
-	{margin-bottom:0in;}
 -->
 </style>
 
@@ -196,8 +185,8 @@ ul
 
 <p class=MsoNormal>This document describes <b>jKool Track &amp; Trace API
 (TNT4J)</b> specification for tracking and tracing application activities and
-behavior for rapid diagnostics and root cause analysis. The framework
-encapsulates the following key elements essential during diagnostics:</p>
+behavior for rapid diagnostics and root cause analysis. The framework encapsulates
+the following key elements essential during diagnostics:</p>
 
 <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
 style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -288,38 +277,37 @@ color:black'>&nbsp;</span></p>
 <p class=MsoNormal>&nbsp;</p>
 
 <p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
-Symbol'>&middot;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span><b>Application Activity</b> (<span style='font-size:10.0pt;
-font-family:"Courier New"'>TrackingActivity</span>) &#8211; a logical grouping
-of related events and messages, which has start/end time</p>
+Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b>Application Activity</b> (<span style='font-size:10.0pt;font-family:
+"Courier New"'>TrackingActivity</span>) &#8211; a logical grouping of related
+events and messages, which has start/end time</p>
 
 <p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
-Symbol'>&middot;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span><b>Tracking Event</b> (<span style='font-size:10.0pt;font-family:
-"Courier New"'>TrackingEvent</span>) &#8211; an event emitted about a step in
-processing or execution, which has severity, start/stop time, location,
-correlator as well as message payload (text)</p>
+Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b>Tracking Event</b> (<span style='font-size:10.0pt;font-family:"Courier New"'>TrackingEvent</span>)
+&#8211; an event emitted about a step in processing or execution, which has
+severity, start/stop time, location, correlator as well as message payload
+(text)</p>
 
 <p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
-Symbol'>&middot;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span><b>Event Sink</b> (<span style='font-size:10.0pt;font-family:
-"Courier New"'>EventSink</span>) &#8211; a generic destination where activities
-and events are routed for recording such as event log, or central service that
-analyzes log entries.</p>
+Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b>Event Sink</b> (<span style='font-size:10.0pt;font-family:"Courier New"'>EventSink</span>)
+&#8211; a generic destination where activities and events are routed for
+recording such as event log, or central service that analyzes log entries.</p>
 
 <p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
-Symbol'>&middot;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span><b>Dump Provider </b><span style='font-family:"Courier New"'>(</span><span
+Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b>Dump Provider </b><span style='font-family:"Courier New"'>(</span><span
 style='font-size:10.0pt;font-family:"Courier New"'>DumpProvider) </span>&#8211;
 application supplied dump handlers that generate collections of key/value pairs
 describing application&#8217;s state, internal variables, data structures.</p>
 
 <p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
-Symbol'>&middot;<span style='font:7.0pt "Times New Roman"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-</span></span><b>Snapshot </b><span style='font-family:"Courier New"'>(</span><span
-style='font-size:10.0pt;font-family:"Courier New"'>Snapshot)</span> &#8211; a
-collection of items such as properties, metrics. Snapshots are used to report
-user defined properties associated with events.</p>
+Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b>Snapshot </b><span style='font-family:"Courier New"'>(</span><span
+style='font-size:10.0pt;font-family:"Courier New"'>Snapshot)</span> &#8211; a collection
+of items such as properties, metrics. Snapshots are used to report user defined
+properties associated with events.</p>
 
 <p class=MsoNormal>&nbsp;</p>
 
@@ -346,9 +334,10 @@ create instances of&nbsp;<span style='font-size:10.0pt;font-family:"Courier New"
 use <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingLogger.tnt()</span>
 to report tracking activities. Alternatively use <span style='font-size:10.0pt;
 font-family:"Courier New"'>TrackerFactory </span>directly to interface with
-logging facilities without the need to obtain a logger instance. Simply register
-application thread using <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingLogger.register()</span>
-call and report tracking events as shown in the example below.</p>
+logging facilities without the need to obtain a logger instance. Simply
+register application thread using <span style='font-size:10.0pt;font-family:
+"Courier New"'>TrackingLogger.register()</span> call and report tracking events
+as shown in the example below.</p>
 
 <p class=MsoNormal><b><span style='font-size:13.5pt;color:black'>&nbsp;</span></b></p>
 
@@ -391,8 +380,8 @@ font-family:"Courier New";color:black'>activity.start();</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingEvent event =
-TrackingLogger.newEvent(OpLevel.SUCCESS, &quot;SQL customer lookup&quot;,
-&quot;SQL-SELECT&quot;); // create a tracking event</span></p>
+TrackingLogger.newEvent(OpLevel.SUCCESS, &quot;SQL-SELECT&quot;, &quot;SQL
+customer lookup&quot;); // create a tracking event</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>event.start(); // start timing a
@@ -540,8 +529,8 @@ font-family:"Courier New";color:black'>activity.start();</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingEvent event =
-TrackingLogger.newEvent(OpLevel.SUCCESS, &quot;SQL customer lookup&quot;,
-&quot;SQL-SELECT&quot;); // create a tracking event</span></p>
+TrackingLogger.newEvent(OpLevel.SUCCESS, &quot;SQL-SELECT&quot;, &quot;SQL
+customer lookup&quot;); // create a tracking event</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:#0070C0'>event.setCorrelator(&#8220;7271292&#8221;);
@@ -635,11 +624,11 @@ font-family:"Courier New";color:black'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingEvent event = <b>TrackingLogger.newEvent(</b>OpLevel.INFO,
-OpType.SEND, </span><b><span style='font-size:10.0pt;font-family:"Courier New";
-color:#0070C0'>&#8220;7271292&#8221;</span></b><b><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>,</span></b><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'> &quot;Sending Purchase Order&quot;,
-&quot;SendOrder&#8221;); // create a tracking event with a correlator and an associated
+OpType.SEND, &quot;SendOrder&#8221;, </span><b><span style='font-size:10.0pt;
+font-family:"Courier New";color:#0070C0'>&#8220;7271292&#8221;</span></b><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>,</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> &quot;Sending
+Purchase Order&quot;); // create a tracking event with a correlator and an associated
 operation type</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
@@ -725,12 +714,12 @@ font-family:"Courier New";color:black'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingEvent event = <b>TrackingLogger.newEvent(</b>OpLevel.INFO,
-OpType.RECEIVE, </span><b><span style='font-size:10.0pt;font-family:"Courier New";
-color:#0070C0'>order_id</span></b><b><span style='font-size:10.0pt;font-family:
-"Courier New";color:black'>,</span></b><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'> &quot;Receiving order&quot;,
-&quot;RecvOrder&quot;); // create a tracking event with a correlator and an
-associated operation type</span></p>
+OpType.RECEIVE, &quot;RecvOrder&quot;, </span><b><span style='font-size:10.0pt;
+font-family:"Courier New";color:#0070C0'>order_id</span></b><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>,</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> &quot;Receiving
+order&quot;); // create a tracking event with a correlator and an associated
+operation type</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>event.start(); // start timing a
@@ -851,9 +840,9 @@ font-family:"Courier New";color:black'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingEvent event = <b>TrackingLogger.newEvent(</b>OpLevel.INFO,
-OpType.RECEIVE, <b>order_id,</b> &quot;Receiving order&quot;,
-&quot;RecvOrder&quot;); // create a tracking event with a correlator and an
-associated operation type</span></p>
+OpType.RECEIVE, &quot;RecvOrder&quot;, <b>order_id,</b> &quot;Receiving
+order&quot;); // create a tracking event with a correlator and an associated
+operation type</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>event.start(); // start timing a
@@ -948,8 +937,8 @@ style='font-size:10.0pt;font-family:"Courier New";color:black'>
 ActivityListener {</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#646464'>@Override</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style='font-size:10.0pt;font-family:"Courier New";color:#646464'>@Override</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;
@@ -960,104 +949,107 @@ style='font-size:10.0pt;font-family:"Courier New";color:black'>
 started(Activity activity) {</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.</span><i><span
-style='font-size:10.0pt;font-family:"Courier New";color:#0000C0'>out</span></i><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>.println(</span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;activity.id=&quot;</span><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> +
-activity.getTrackingId() </span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+System.</span><i><span style='font-size:10.0pt;font-family:"Courier New";
+color:#0000C0'>out</span></i><span style='font-size:10.0pt;font-family:"Courier New";
+color:black'>.println(</span><span style='font-size:10.0pt;font-family:"Courier New";
+color:#2A00FF'>&quot;activity.id=&quot;</span><span style='font-size:10.0pt;
+font-family:"Courier New";color:black'> + activity.getTrackingId() </span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +
-</span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++ </span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
 activity.name=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> + activity.getName() </span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +
-</span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++ </span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
 started=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> + activity.getStartTime());</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
 style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#646464'>@Override</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style='font-size:10.0pt;font-family:"Courier New";color:#646464'>@Override</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;
 </span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>void</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
-stopped(Activity activity) {</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'> stopped(Activity
+activity) {</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>// post
-processing of activity: enrich activity with application metrics</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>//
+post processing of activity: enrich activity with application metrics</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertySnapshot
-snapshot = </span><b><span style='font-size:10.0pt;font-family:"Courier New";
-color:#7F0055'>new</span></b><span style='font-size:10.0pt;font-family:"Courier New";
-color:black'> PropertySnapshot(</span><span style='font-size:10.0pt;font-family:
-"Courier New";color:#2A00FF'>&quot;APPL_METRICS&quot;</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+PropertySnapshot snapshot = </span><b><span style='font-size:10.0pt;font-family:
+"Courier New";color:#7F0055'>new</span></b><span style='font-size:10.0pt;
+font-family:"Courier New";color:black'> PropertySnapshot(</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;APPL_METRICS&quot;</span><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>);</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; snapshot.add(</span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;appl.activity.count&quot;</span><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>, </span><i><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+snapshot.add(</span><span style='font-size:10.0pt;font-family:"Courier New";
+color:#2A00FF'>&quot;appl.activity.count&quot;</span><span style='font-size:
+10.0pt;font-family:"Courier New";color:black'>, </span><i><span
 style='font-size:10.0pt;font-family:"Courier New";color:#0000C0'>activityCount</span></i><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>);</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; snapshot.add(</span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;appl.event.count&quot;</span><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>, </span><i><span
-style='font-size:10.0pt;font-family:"Courier New";color:#0000C0'>eventCount</span></i><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+snapshot.add(</span><span style='font-size:10.0pt;font-family:"Courier New";
+color:#2A00FF'>&quot;appl.event.count&quot;</span><span style='font-size:10.0pt;
+font-family:"Courier New";color:black'>, </span><i><span style='font-size:10.0pt;
+font-family:"Courier New";color:#0000C0'>eventCount</span></i><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>);</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; activity.add(snapshot);
-</span><span style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>//
-add property snapshot to activity</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+activity.add(snapshot); </span><span style='font-size:10.0pt;font-family:"Courier New";
+color:#3F7F5F'>// add property snapshot to activity</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.</span><i><span
-style='font-size:10.0pt;font-family:"Courier New";color:#0000C0'>out</span></i><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>.println(</span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;activity.id=&quot;</span><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> +
-activity.getTrackingId() </span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+System.</span><i><span style='font-size:10.0pt;font-family:"Courier New";
+color:#0000C0'>out</span></i><span style='font-size:10.0pt;font-family:"Courier New";
+color:black'>.println(</span><span style='font-size:10.0pt;font-family:"Courier New";
+color:#2A00FF'>&quot;activity.id=&quot;</span><span style='font-size:10.0pt;
+font-family:"Courier New";color:black'> + activity.getTrackingId() </span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +
-</span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++ </span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
 activity.name=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> + activity.getName() </span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +
-</span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++ </span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
 elasped.usec=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> + activity.getElapsedTime() </span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +
-</span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++ </span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
 snap.count=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> + activity.getSnapshotCount() </span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; +
-</span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
++ </span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
 item.count=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> + activity.getItemCount());</span></p>
 
@@ -1074,23 +1066,24 @@ style='font-size:10.0pt;font-family:"Courier New";color:black'>}</span></p>
 example:</p>
 
 <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>// register
-with the TNT4J framework</span></p>
+font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>//
+register with the TNT4J framework</span></p>
 
 <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TrackerConfig
-config = DefaultConfigFactory.<i>getInstance</i>().getConfig(args[0]);</span></p>
+font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TrackerConfig config = DefaultConfigFactory.<i>getInstance</i>().getConfig(args[0]);</span></p>
 
 <p class=MsoNormal style='text-autospace:none'><b><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; config.setActivityListener(</span></b><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>new</span></b><b><span
+font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+config.setActivityListener(</span></b><b><span style='font-size:10.0pt;
+font-family:"Courier New";color:#7F0055'>new</span></b><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>
 MyActivityHandler());</span></b></p>
 
 <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TrackingLogger.<i>register</i>(config.build());
-</span></p>
+font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TrackingLogger.<i>register</i>(config.build()); </span></p>
 
 <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New"'>&nbsp;</span></p>
@@ -1110,39 +1103,42 @@ written to the underlying event sink. Each of the listener instances can be
 registered using the following methods.</p>
 
 <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>// register
-with the TNT4J framework</span></p>
+font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>//
+register with the TNT4J framework</span></p>
 
 <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span
-style='background:silver'>TrackerConfig</span> config = DefaultConfigFactory.<i>getInstance</i>().getConfig(args[0]);</span></p>
+font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style='background:silver'>TrackerConfig</span> config = DefaultConfigFactory.<i>getInstance</i>().getConfig(args[0]);</span></p>
 
 <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; config.setActivityListener(</span><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>new</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
-MyActivityHandler());</span></p>
+font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+config.setActivityListener(</span><b><span style='font-size:10.0pt;font-family:
+"Courier New";color:#7F0055'>new</span></b><span style='font-size:10.0pt;
+font-family:"Courier New";color:black'> MyActivityHandler());</span></p>
 
 <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TrackingLogger.<i>register</i>(config.build());
-</span></p>
+font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TrackingLogger.<i>register</i>(config.build()); </span></p>
 
 <p class=MsoNormal style='text-autospace:none'><b><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TrackingLogger.<i>addSinkErrorListener</i>(</span></b><b><span
+font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TrackingLogger.<i>addSinkErrorListener</i>(</span></b><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>new</span></b><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>
 MySinkErrorHandler());</span></b></p>
 
 <p class=MsoNormal style='text-autospace:none'><b><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TrackingLogger.<i>addSinkLogEventListener</i>(</span></b><b><span
+font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TrackingLogger.<i>addSinkLogEventListener</i>(</span></b><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>new</span></b><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>
 MySinkLogHandler());</span></b></p>
 
 <p class=MsoNormal style='text-autospace:none'><b><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TrackingLogger.<i>addSinkEventFilter</i>(</span></b><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>new</span></b><b><span
+font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+TrackingLogger.<i>addSinkEventFilter</i>(</span></b><b><span style='font-size:
+10.0pt;font-family:"Courier New";color:#7F0055'>new</span></b><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>
 MySinkEventFilter());</span></b></p>
 
@@ -1150,9 +1146,9 @@ MySinkEventFilter());</span></b></p>
 font-family:"Courier New";color:black'>&nbsp;</span></b></p>
 
 <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>// SinkErrorListener
-is called when a failure writing to the sink occurs</span></p>
+font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>//
+SinkErrorListener is called when a failure writing to the sink occurs</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>class</span></b><span
@@ -1162,32 +1158,35 @@ color:#7F0055'>implements</span></b><span style='font-size:10.0pt;font-family:
 "Courier New";color:black'> SinkErrorListener {</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>void</span></b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>
 sinkError(SinkError <span style='background:yellow'>event</span>) {</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-System.</span><i><span style='font-size:10.0pt;font-family:"Courier New";
-color:#0000C0'>out</span></i><span style='font-size:10.0pt;font-family:"Courier New";
-color:black'>.println(</span><span style='font-size:10.0pt;font-family:"Courier New";
-color:#2A00FF'>&quot;onSinkError: &quot;</span><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'> + <span style='background:silver'>event</span>);</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; System.</span><i><span style='font-size:10.0pt;font-family:
+"Courier New";color:#0000C0'>out</span></i><span style='font-size:10.0pt;
+font-family:"Courier New";color:black'>.println(</span><span style='font-size:
+10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;onSinkError: &quot;</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> + <span
+style='background:silver'>event</span>);</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-</span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>if</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> (<span
-style='background:silver'>event</span>.getCause() != </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </span><b><span style='font-size:10.0pt;font-family:"Courier New";
+color:#7F0055'>if</span></b><span style='font-size:10.0pt;font-family:"Courier New";
+color:black'> (<span style='background:silver'>event</span>.getCause() != </span><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>null</span></b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>) <span
-style='background:silver'>event</span>.getCause().printStackTrace();&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+style='background:silver'>event</span>.getCause().printStackTrace();&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>}</span></p>
@@ -1196,13 +1195,14 @@ style='font-size:10.0pt;font-family:"Courier New";color:black'>}</span></p>
 style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></p>
 
 <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>// SinkLogEventListener
-is called on every event that is actually written to the sink</span></p>
+font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>//
+SinkLogEventListener is called on every event that is actually written to the
+sink</span></p>
 
 <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
-font-family:"Courier New";color:#3F7F5F'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //
-won&#8217;t be called if filtered out using SinkEventFilter</span></p>
+font-family:"Courier New";color:#3F7F5F'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+// won&#8217;t be called if filtered out using SinkEventFilter</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>class</span></b><span
@@ -1212,29 +1212,30 @@ color:#7F0055'>implements</span></b><span style='font-size:10.0pt;font-family:
 "Courier New";color:black'> SinkLogEventListener {</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>void</span></b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>
 sinkLogEvent(SinkLogEvent event) {</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-System.</span><i><span style='font-size:10.0pt;font-family:"Courier New";
-color:#0000C0'>out</span></i><span style='font-size:10.0pt;font-family:"Courier New";
-color:black'>.println(</span><span style='font-size:10.0pt;font-family:"Courier New";
-color:#2A00FF'>&quot;sink.LOG: sev=&quot;</span><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'> + event.getSeverity() + </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
-source=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
-color:black'> + event.getSource() + </span><span style='font-size:10.0pt;
-font-family:"Courier New";color:#2A00FF'>&quot;, msg=&quot;</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; System.</span><i><span style='font-size:10.0pt;font-family:
+"Courier New";color:#0000C0'>out</span></i><span style='font-size:10.0pt;
+font-family:"Courier New";color:black'>.println(</span><span style='font-size:
+10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;sink.LOG: sev=&quot;</span><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'> +
-event.getLogObject());</span></p>
+event.getSeverity() + </span><span style='font-size:10.0pt;font-family:"Courier New";
+color:#2A00FF'>&quot;, source=&quot;</span><span style='font-size:10.0pt;
+font-family:"Courier New";color:black'> + event.getSource() + </span><span
+style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
+msg=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
+color:black'> + event.getLogObject());</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>}</span></p>
@@ -1243,32 +1244,32 @@ style='font-size:10.0pt;font-family:"Courier New";color:black'>}</span></p>
 style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></p>
 
 <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>// SinkEventFilter
-is called on every event. The filter determines if the event is accepted or not
-by the sink</span></p>
+font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>//
+SinkEventFilter is called on every event. The filter determines if the event is
+accepted or not by the sink</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>class</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> MySinkEventFilter
-</span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>implements</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> SinkEventFilter
-{</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>
+MySinkEventFilter </span><b><span style='font-size:10.0pt;font-family:"Courier New";
+color:#7F0055'>implements</span></b><span style='font-size:10.0pt;font-family:
+"Courier New";color:black'> SinkEventFilter {</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>boolean</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
-acceptEvent(SinkLogEvent event) {</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'> filter(EventSink
+sink, TrackingEvent event) {</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
-</span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>boolean</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> pass =
-event.getSeverity().ordinal() &gt; OpLevel.</span><i><span style='font-size:
-10.0pt;font-family:"Courier New";color:#0000C0'>INFO</span></i><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; </span><b><span style='font-size:10.0pt;font-family:"Courier New";
+color:#7F0055'>boolean</span></b><span style='font-size:10.0pt;font-family:
+"Courier New";color:black'> pass = event.getSeverity().ordinal() &gt; OpLevel.</span><i><span
+style='font-size:10.0pt;font-family:"Courier New";color:#0000C0'>INFO</span></i><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>.ordinal()? </span><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>true</span></b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>: </span><b><span
@@ -1276,8 +1277,8 @@ style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>false</span></b
 style='font-size:10.0pt;font-family:"Courier New";color:black'>;</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
-System.</span><i><span style='font-size:10.0pt;font-family:"Courier New";
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; System.</span><i><span style='font-size:10.0pt;font-family:"Courier New";
 color:#0000C0'>out</span></i><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'>.println(</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:#2A00FF'>&quot;sink.FILTER: accept=&quot;</span><span style='font-size:
@@ -1285,17 +1286,42 @@ color:#2A00FF'>&quot;sink.FILTER: accept=&quot;</span><span style='font-size:
 style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
 sev=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> + event.getSeverity() + </span><span style='font-size:10.0pt;
-font-family:"Courier New";color:#2A00FF'>&quot;, source=&quot;</span><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> +
-event.getSource());</span></p>
+font-family:"Courier New";color:#2A00FF'>&quot;, sink=&quot;</span><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> + sink);</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;
-</span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>return</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> pass;</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp; </span><b><span style='font-size:10.0pt;font-family:"Courier New";
+color:#7F0055'>return</span></b><span style='font-size:10.0pt;font-family:"Courier New";
+color:black'> pass;</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>boolean</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> filter(EventSink
+sink, TrackingActivity event) {</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>boolean</span></b><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'> filter(EventSink
+sink, OpLevel level, String msg, Object&#8230;args) {</span></p>
+
+<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>}</span></p>
@@ -1317,8 +1343,8 @@ activity end message will also include a set of properties measured between
 activity <span style='font-size:10.0pt;font-family:"Courier New"'>start/stop()</span>
 calls such as (<span style='font-size:8.0pt;font-family:"Courier New";
 color:#E46C0A'>Property(Type:6,Name:CPU_USAGE_USEC,Value:3400821.8,SampleTime:[10:25:34.767000])</span>),
-which shows&nbsp; the number of CPU microseconds used during execution of the
-given activity as well as the time the measurement was sampled (<span
+which shows&nbsp; the number of CPU microseconds used during execution of the given
+activity as well as the time the measurement was sampled (<span
 style='font-size:8.0pt;font-family:"Courier New";color:#E46C0A'>SampleTime:[10:25:34.767000]</span>).
 These properties are measured per thread per activity and can be used to
 identify activities with high CPU/memory utilization. <b>TNT4J</b> will also

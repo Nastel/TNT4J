@@ -201,29 +201,29 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 
 	@Override
-    public TrackingEvent newEvent(OpLevel severity, String msg, String opName) {
-		TrackingEvent event = new TrackingEvent(severity, msg, opName);
+    public TrackingEvent newEvent(OpLevel severity, String opName, String msg, Object...args) {
+		TrackingEvent event = new TrackingEvent(severity, opName, msg, args);
 		event.getOperation().setUser(tConfig.getSource().getUser());
 		return event;
     }
 
 	@Override
-    public TrackingEvent newEvent(OpLevel severity, String correlator, String msg, String opName) {
-		TrackingEvent event = new TrackingEvent(severity, correlator, msg, opName);
+    public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object...args) {
+		TrackingEvent event = new TrackingEvent(severity, opName, correlator, msg, args);
 		event.getOperation().setUser(tConfig.getSource().getUser());
 		return event;
    }
 
 	@Override
-    public TrackingEvent newEvent(OpLevel severity, OpType opType, String msg, String opName) {
-		TrackingEvent event = new TrackingEvent(severity, opType, msg, opName);
+    public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String msg, Object...args) {
+		TrackingEvent event = new TrackingEvent(severity, opType, opName, msg, args);
+		event.getOperation().setUser(tConfig.getSource().getUser());
 		return event;
    }
 
 	@Override
-    public TrackingEvent newEvent(OpLevel severity, OpType opType, String correlator, String msg,
-            String opName) {
-		TrackingEvent event = new TrackingEvent(severity, opType, correlator, msg, opName);
+    public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String msg, Object...args) {
+		TrackingEvent event = new TrackingEvent(severity, opType, opName, correlator, msg, args);
 		event.getOperation().setUser(tConfig.getSource().getUser());
 		return event;
    }

@@ -237,7 +237,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		}
 		jsonString.append(Utils.quote(JSON_MSG_SIZE_LABEL)).append(ATTR_SEP).append(event.getSize()).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(
-		        Utils.quote(event.getStringMessage()));
+		        Utils.quote(event.getMessage()));
 
 		String exStr = event.getOperation().getExceptionString();
 		if (exStr != null) {

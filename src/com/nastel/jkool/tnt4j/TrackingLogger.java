@@ -78,8 +78,8 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * TrackingLogger.register(config.build()); // register and obtain Tracker logger instance
  * TrackingActivity activity = TrackingLogger.newActivity(); // create a new activity instance
  * activity.start(); // start application activity timing
- * TrackingEvent event = TrackingLogger.newEvent(OpLevel.SUCCESS, &quot;SQL customer lookup&quot;, &quot;SQL-SELECT&quot;); // create a tracking event
- * TrackingEvent jms_event = TrackingLogger.newEvent(OpLevel.SUCCESS, OpType.SEND, �correlator�, &quot;Sending Message&quot;, &quot;JmsSend&quot;); // create a tracking event
+ * TrackingEvent event = TrackingLogger.newEvent(OpLevel.SUCCESS, "SQL-SELECT", "SQL customer lookup"); // create a tracking event
+ * TrackingEvent jms_event = TrackingLogger.newEvent(OpLevel.SUCCESS, OpType.SEND, "JmsSend", "correlator", "Sending Message"); // create a tracking event
  * event.start(); // start timing a tracking event 
  * try {
  * 	...
@@ -111,8 +111,8 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * TrackingLogger.register(config.build()); // register and obtain Tracker logger instance
  * TrackingActivity activity = TrackingLogger.newActivity(); // create a new activity instance
  * activity.start(); // start application activity timing
- * TrackingEvent event = TrackingLogger.newEvent(OpLevel.SUCCESS, &quot;SQL customer lookup&quot;, &quot;SQL-SELECT&quot;); // create a tracking event
- * TrackingEvent jms_event = TrackingLogger.newEvent(OpLevel.SUCCESS, OpType.SEND, �correlator�, &quot;Sending Message&quot;, &quot;JmsSend&quot;); // create a tracking event
+ * TrackingEvent event = TrackingLogger.newEvent(OpLevel.SUCCESS, "SQL-SELECT", "SQL customer lookup"); // create a tracking event
+ * TrackingEvent jms_event = TrackingLogger.newEvent(OpLevel.SUCCESS, OpType.SEND, "JmsSend", "correlator", "Sending Message"); // create a tracking event
  * event.start(); // start timing a tracking event 
  * try {
  * 	...
@@ -129,7 +129,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * } finally {
  * 	activity.stop(); // end activity timing
  *	// conditional logging using isSet() method to check if a given token matches
- *	if (TrackingLogger.isSet(OpLevel.INFO, "com.nastel.appl.corr", �correlator�)) {
+ *	if (TrackingLogger.isSet(OpLevel.INFO, "com.nastel.appl.corr", "correlator")) {
  *		activity.tnt(event); // track and trace tracking event within given activity 
  *		activity.tnt(jms_event); // track and trace tracking event within given activity 
  *	}
@@ -565,11 +565,13 @@ public class TrackingLogger {
 	 *            event correlator
 	 * @param msg
 	 *            event text message
+	 * @param args
+	 *            argument list, exception passed along side given message
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
-	public static void tnt(OpLevel severity, String correlator, String msg) {
-		tnt(severity, OpType.CALL, correlator, msg, "NOOP", 0, null);
+	public static void tnt(OpLevel severity, String correlator, String msg, Object...args) {
+		tnt(severity, OpType.CALL, "NOOP", correlator, 0, msg,  args);
 	}
 
 	/**
@@ -577,17 +579,19 @@ public class TrackingLogger {
 	 * 
 	 * @param severity
 	 *            severity level of the reported message
+	 * @param opName
+	 *            operation name associated with the event message
 	 * @param correlator
 	 *            event correlator
 	 * @param msg
 	 *            event text message
-	 * @param opName
-	 *            operation name associated with the event message
+	 * @param args
+	 *            argument list, exception passed along side given message
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
-	public static void tnt(OpLevel severity, String correlator, String msg, String opName) {
-		tnt(severity, OpType.CALL, correlator, msg, opName, 0, null);
+	public static void tnt(OpLevel severity, String opName, String correlator, String msg, Object...args) {
+		tnt(severity, OpType.CALL, opName, correlator,  0, msg, args);
 	}
 
 	/**
@@ -595,37 +599,21 @@ public class TrackingLogger {
 	 * 
 	 * @param severity
 	 *            severity level of the reported message
+	 * @param type
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with the event message
 	 * @param correlator
 	 *            event correlator
 	 * @param msg
 	 *            event text message
-	 * @param opName
-	 *            operation name associated with the event message
+	 * @param args
+	 *            argument list, exception passed along side given message
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
-	public static void tnt(OpLevel severity, OpType type, String correlator, String msg, String opName) {
-		tnt(severity, type, correlator, msg, opName, 0, null);
-	}
-
-	/**
-	 * Report a single tracking event
-	 * 
-	 * @param severity
-	 *            severity level of the reported message
-	 * @param correlator
-	 *            event correlator
-	 * @param msg
-	 *            event text message
-	 * @param opName
-	 *            operation name associated with the event message
-	 * @param ex
-	 *            exception associated with the event, or null of none.
-	 * @see TrackingActivity
-	 * @see OpLevel
-	 */
-	public static void tnt(OpLevel severity, String correlator, String msg, String opName, Throwable ex) {
-		tnt(severity, OpType.CALL, correlator, msg, opName, 0, ex);
+	public static void tnt(OpLevel severity, OpType type, String opName, String correlator, String msg, Object...args) {
+		tnt(severity, type, opName, correlator, 0, msg, args);
 	}
 
 	/**
@@ -635,27 +623,28 @@ public class TrackingLogger {
 	 *            severity level of the reported message
 	 * @param opType
 	 *            operation type
-	 * @param correlator
-	 *            event correlator
-	 * @param msg
-	 *            event text message
 	 * @param opName
 	 *            operation name associated with the event message
+	 * @param correlator
+	 *            event correlator
 	 * @param elapsed
 	 *            elapsed time of the event in milliseconds.
-	 * @param ex
-	 *            exception associated with the event, or null of none.
+	 * @param msg
+	 *            event text message
+	 * @param args
+	 *            argument list, exception passed along side given message
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
-	public static void tnt(OpLevel severity, OpType opType, String correlator, String msg, String opName, long elapsed,
-	        Throwable ex) {
+	public static void tnt(OpLevel severity, OpType opType, String opName, String correlator, long elapsed,
+			 String msg, Object...args) {
 		Tracker logger = loggers.get();
 		if (logger == null)
 			throw new RuntimeException("register() never called for this thread");
-		long endTime = System.currentTimeMillis();
-		TrackingEvent event = logger.newEvent(severity, opType, correlator, msg, opName);
+		long endTime = System.currentTimeMillis();		
+		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, msg, args);
 		event.start(endTime - elapsed);
+		Throwable ex = Utils.getThrowable(args);
 		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
 		logger.tnt(event);
 	}
@@ -711,20 +700,21 @@ public class TrackingLogger {
 	 * 
 	 * @param severity
 	 *            severity level
+	 * @param opName
+	 *            operation name associated with this event (tracking event name)
 	 * @param correlator
 	 *            associated with this event (could be unique or passed from a correlated activity)
 	 * @param msg
 	 *            text message associated with this event
-	 * @param opName
-	 *            operation name associated with this event (tracking event name)
+	 * @param args argument list passed along the message
 	 * @see OpLevel
 	 * @see TrackingEvent
 	 */
-	public static TrackingEvent newEvent(OpLevel severity, String correlator, String msg, String opName) {
+	public static TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object...args) {
 		Tracker logger = loggers.get();
 		if (logger == null)
 			throw new RuntimeException("register() never called for this thread");
-		return logger.newEvent(severity, correlator, msg, opName);
+		return logger.newEvent(severity, opName, correlator, msg, args);
 	}
 
 	/**
@@ -737,15 +727,16 @@ public class TrackingLogger {
 	 *            text message associated with this event
 	 * @param opName
 	 *            operation name associated with this event (tracking event name)
+	 * @param args argument list passed along the message
 	 * @see TrackingEvent
 	 * @see OpType
 	 * @see OpLevel
 	 */
-	public static TrackingEvent newEvent(OpLevel severity, String msg, String opName) {
+	public static TrackingEvent newEvent(OpLevel severity, String opName, String msg, Object...args) {
 		Tracker logger = loggers.get();
 		if (logger == null)
 			throw new RuntimeException("register() never called for this thread");
-		return logger.newEvent(severity, msg, opName);
+		return logger.newEvent(severity, opName, msg, args);
 	}
 
 	/**
@@ -760,15 +751,16 @@ public class TrackingLogger {
 	 *            text message associated with this event
 	 * @param opName
 	 *            operation name associated with this event (tracking event name)
+	 * @param args argument list passed along the message
 	 * @see TrackingEvent
 	 * @see OpType
 	 * @see OpLevel
 	 */
-	public static TrackingEvent newEvent(OpLevel severity, OpType opType, String msg, String opName) {
+	public static TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String msg, Object...args) {
 		Tracker logger = loggers.get();
 		if (logger == null)
 			throw new RuntimeException("register() never called for this thread");
-		return logger.newEvent(severity, opType, msg, opName);
+		return logger.newEvent(severity, opType, opName, msg, args);
 	}
 
 	/**
@@ -779,22 +771,23 @@ public class TrackingLogger {
 	 *            severity level
 	 * @param opType
 	 *            operation type
+	 * @param opName
+	 *            operation name associated with this event (tracking event name)
 	 * @param correlator
 	 *            associated with this event (could be unique or passed from a correlated activity)
 	 * @param msg
 	 *            text message associated with this event
-	 * @param opName
-	 *            operation name associated with this event (tracking event name)
+	 * @param args argument list passed along the message
 	 * @see TrackingEvent
 	 * @see OpType
 	 * @see OpLevel
 	 */
-	public static TrackingEvent newEvent(OpLevel severity, OpType opType, String correlator,
-	        String msg, String opName) {
+	public static TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator,
+	        String msg, Object...args) {
 		Tracker logger = loggers.get();
 		if (logger == null)
 			throw new RuntimeException("register() never called for this thread");
-		return logger.newEvent(severity, opType, correlator, msg, opName);
+		return logger.newEvent(severity, opType, opName, correlator, msg, args);
 	}
 
 	/**
