@@ -195,7 +195,6 @@ public class TrackerConfigStore extends TrackerConfig {
 			setTrackerFactory((TrackerFactory) createConfigurableObject("tracker.factory", "tracker.factory."));
 			setEventSinkFactory((EventSinkFactory) createConfigurableObject("event.sink.factory", "event.sink.factory."));
 			setEventFormatter((EventFormatter) createConfigurableObject("event.formatter", "event.formatter."));
-			setTokenRepository((TokenRepository) createConfigurableObject("tracking.selector.Repository", "tracking.selector.Repository."));
 			setTrackingSelector((TrackingSelector) createConfigurableObject("tracking.selector", "tracking.selector."));
 			setDumpSinkFactory((DumpSinkFactory) createConfigurableObject("dump.sink.factory", "dump.sink.factory."));
 			setActivityListener((ActivityListener) createConfigurableObject("activity.listener", "activity.listener."));

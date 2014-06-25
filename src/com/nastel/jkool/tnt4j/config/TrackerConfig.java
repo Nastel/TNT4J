@@ -24,7 +24,6 @@ import com.nastel.jkool.tnt4j.format.DefaultFormatter;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.format.Formatter;
 import com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory;
-import com.nastel.jkool.tnt4j.repository.FileTokenRepository;
 import com.nastel.jkool.tnt4j.repository.TokenRepository;
 import com.nastel.jkool.tnt4j.selector.DefaultTrackingSelector;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
@@ -78,7 +77,6 @@ public class TrackerConfig {
 	SinkEventFilter sinkFilter;
 
 	TrackingSelector tSelector = null;
-	TokenRepository tRepo = null;
 
 	Properties props = new Properties();
 
@@ -333,19 +331,6 @@ public class TrackerConfig {
 		return this;
 	}
 
-	/**
-	 * Set configuration token repository. Token repository is used to hold logging tokens for conditional logging.
-	 * 
-	 * @param trepo
-	 *            token repository instance
-	 * @see TokenRepository
-	 * 
-	 * @return current configuration instance
-	 */
-	public TrackerConfig setTokenRepository(TokenRepository trepo) {
-		tRepo = trepo;
-		return this;
-	}
 
 	/**
 	 * Set configuration tracking selector. Tracking selectors allow loggers to test weather a specific sev/key/value is
@@ -449,16 +434,6 @@ public class TrackerConfig {
 	}
 
 	/**
-	 * Get configuration token repository instance
-	 * 
-	 * @see TokenRepository
-	 * @return current token repository instance
-	 */
-	public TokenRepository getTokenRepository() {
-		return tRepo;
-	}
-
-	/**
 	 * Get configuration tracking selector instance
 	 * 
 	 * @see TrackingSelector
@@ -505,7 +480,6 @@ public class TrackerConfig {
 		config.defEvFactory = this.defEvFactory;
 		config.dpFactory = this.dpFactory;
 		config.evFormatter = this.evFormatter;
-		config.tRepo = this.tRepo;
 		config.tSelector = this.tSelector;
 		config.activityListener = this.activityListener;
 		config.sinkLogEventListener = this.sinkLogEventListener;
@@ -534,10 +508,8 @@ public class TrackerConfig {
 			dpFactory = new DefaultDumpSinkFactory();
 		if (evFormatter == null)
 			evFormatter = new DefaultFormatter();
-		if (tRepo == null)
-			tRepo = new FileTokenRepository();
 		if (tSelector == null) {
-			tSelector = new DefaultTrackingSelector(tRepo);
+			tSelector = new DefaultTrackingSelector();
 		}
 		return this;
 	}
@@ -553,7 +525,6 @@ public class TrackerConfig {
 			+ ", event.formatter: " + evFormatter 
 			+ ", tracker.factory: " + trFactory 
 			+ ", dump.factory: " + dpFactory 
-			+ ", repository: " + tRepo 
 			+ ", selector: " + tSelector 
 			+ ", activity.listener: " + activityListener 
 			+ ", sink.log.listener: " + sinkLogEventListener 
