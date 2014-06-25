@@ -72,6 +72,9 @@ public class SimpleFormatter extends DefaultFormatter implements Configurable  {
 		if (event.getOperation().getCorrelator() != null) {
 			msg.append("corr-id: '").append(event.getOperation().getCorrelator()).append("'").append(separator);
 		}
+		if (event.getOperation().getLocation() != null) {
+			msg.append("location: '").append(event.getOperation().getLocation()).append("'").append(separator);
+		}
 		if (event.getOperation().getThrowable() != null) {
 			msg.append("error: '").append(event.getOperation().getExceptionString()).append("'").append(separator);
 		}
@@ -100,6 +103,9 @@ public class SimpleFormatter extends DefaultFormatter implements Configurable  {
 		}
 		if (activity.getEndTime() != null) {
 			msg.append("end.time: '").append(activity.getEndTime()).append("'").append(separator);
+		}
+		if (activity.getLocation() != null) {
+			msg.append("location: '").append(activity.getLocation()).append("'").append(separator);
 		}
 		if (activity.getThrowable() != null) {
 			msg.append("error: '").append(activity.getExceptionString()).append("'").append(separator);

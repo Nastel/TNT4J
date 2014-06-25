@@ -243,6 +243,7 @@ public class TrackingActivity extends Activity {
 			if (contTimingSupported) {
 				stopBlockTime = tinfo.getBlockedTime();
 				stopWaitTime = tinfo.getWaitedTime();
+				setWaitTime(((stopWaitTime - startWaitTime) + (stopBlockTime - startBlockTime))*1000);
 			}
 			appendProperties();
 		}

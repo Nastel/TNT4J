@@ -91,7 +91,7 @@ public class TNT4JTest {
 		activityCount++;
 		activity.start();
 		for (int i=0; i < 10; i++) {
-			TrackingEvent event = TrackingLogger.newEvent(OpLevel.DEBUG, "runSampleActivity", "Running sample={0}", i);
+			TrackingEvent event = TrackingLogger.newEvent(OpLevel.DEBUG, "runSampleActivity", args[3], "Running sample={0}", i);
 			eventCount++;
 			event.start(); // start timing current event
 			try {
@@ -116,11 +116,11 @@ public class TNT4JTest {
 		int sev = rand.nextInt(OpLevel.values().length);
 		for (int i = 0; i < runs; i++) {
 			int limit = rand.nextInt(10000000);
-			TrackingEvent ev4j = runTNT4JEvent(msg, opName, OpLevel.valueOf(sev), location, limit);
+			TrackingEvent ev4j = runTNT4JEvent(msg, opName, OpLevel.valueOf(sev), cid, location, limit);
 			ev4j.setCorrelator(cid);
 			ev4j.setLocation(location);
 
-			TrackingEvent log4j = runLog4JEvent(msg, opName, OpLevel.valueOf(sev), location, limit);
+			TrackingEvent log4j = runLog4JEvent(msg, opName, OpLevel.valueOf(sev), cid, location, limit);
 			log4j.setCorrelator(cid);
 			log4j.setLocation(location);
 		
@@ -134,8 +134,8 @@ public class TNT4JTest {
 		return activity;
 	}
 	
-	static private TrackingEvent runTNT4JEvent(String msg, String opName, OpLevel sev, String location, int limit) {
-		TrackingEvent event = TrackingLogger.newEvent(sev, opName, msg);
+	static private TrackingEvent runTNT4JEvent(String msg, String opName, OpLevel sev, String cid, String location, int limit) {
+		TrackingEvent event = TrackingLogger.newEvent(sev, opName, cid, msg);
 		eventCount++;
 		TrackingSelector selector = TrackingLogger.getTracker().getTrackingSelector();
 		try {
@@ -151,8 +151,8 @@ public class TNT4JTest {
 		return event;
 	}
 	
-	static private TrackingEvent runLog4JEvent(String msg, String opName, OpLevel sev, String location, int limit) {
-		TrackingEvent event = TrackingLogger.newEvent(sev, opName, msg);
+	static private TrackingEvent runLog4JEvent(String msg, String opName, OpLevel sev, String cid, String location, int limit) {
+		TrackingEvent event = TrackingLogger.newEvent(sev, opName, cid, msg);
 		eventCount++;
 		try {
 			event.setTag(String.valueOf(Utils.getVMName()));

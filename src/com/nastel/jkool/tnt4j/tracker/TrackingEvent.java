@@ -141,19 +141,6 @@ public class TrackingEvent extends Message {
 		return UUID.randomUUID().toString();
 	}
 
-	/**
-	 * Create a new instance of tracking event that can be timed and reported.
-	 * This constructor will assign a unique event signature using newUUID() call
-	 *
-	 * @param severity severity level
-	 * @param opName operation name associated with this event (tracking event name)
-	 * @param msg text message associated with this event
-	 * @param args argument list passed along side the message
-	 * @see OpLevel
-	 */
-	protected TrackingEvent(OpLevel severity, String opName, String msg, Object...args) {
-		this(severity, OpType.EVENT, opName, null, msg, args);
-	}
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
@@ -166,40 +153,7 @@ public class TrackingEvent extends Message {
 	 * @param args argument list passed along side the message
 	 */
 	protected TrackingEvent(OpLevel severity, String opName, String correlator, String msg, Object...args) {
-		this(severity, OpType.EVENT, opName, correlator, msg, args);
-	}
-
-	/**
-	 * Create a new instance of tracking event that can be timed and reported.
-	 * This constructor will assign a unique event signature using newUUID() call
-	 *
-	 * @param severity severity level
-	 * @param opType operation type
-	 * @param opName operation name associated with this event (tracking event name)
-	 * @param msg text message associated with this event
-	 * @param args argument list passed along side the message
-	 * @see OpType
-	 * @see OpLevel
-	 */
-	protected TrackingEvent(OpLevel severity, OpType opType, String opName, String msg, Object...args) {
-		this(severity, opType, opName, null, msg, args);
-	}
-
-
-	/**
-	 * Create a new instance of tracking event that can be timed and reported.
-	 *
-	 * @param severity severity level
-	 * @param opType operation type
-	 * @param opName operation name associated with this event (tracking event name)
-	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
-	 * @param msg text message associated with this event
-	 * @param args argument list passed along side the message
-	 * @see OpLevel
-	 * @see OpType
-	 */
-	protected TrackingEvent(OpLevel severity, OpType opType, String opName, String correlator, String msg, Object...args) {
-		this(severity, opType, opName, correlator, null, msg, args);
+		this(severity, OpType.EVENT, opName, correlator, null, msg, args);
 	}
 
 	/**
