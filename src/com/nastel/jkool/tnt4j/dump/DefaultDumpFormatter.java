@@ -16,8 +16,6 @@
 package com.nastel.jkool.tnt4j.dump;
 
 
-import java.text.MessageFormat;
-
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.utils.Utils;
