@@ -36,7 +36,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	private static final long serialVersionUID = 3658590467907047916L;
 
 	private long msecs;
-	private int  usecs;
+	private long  usecs;
 
 	/**
 	 * Creates UsecTimestamp based on current time.
@@ -70,7 +70,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 * @throws IllegalArgumentException if any arguments are negative,
 	 *  or if usecs is greater than 999
 	 */
-	public UsecTimestamp(long msecs, int usecs) {
+	public UsecTimestamp(long msecs, long usecs) {
 		setTimestampValues(msecs, usecs);
 	}
 
@@ -83,7 +83,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 * @throws NullPointerException if timestamp is <code>null</code>
 	 * @throws IllegalArgumentException if usecs is greater than 999999
 	 */
-	public UsecTimestamp(Timestamp timestamp, int usecs) {
+	public UsecTimestamp(Timestamp timestamp, long usecs) {
 		initFromTimestamp(timestamp, usecs);
 	}
 
@@ -184,7 +184,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	/**
 	 * @see #UsecTimestamp(Timestamp, int)
 	 */
-	private void initFromTimestamp(Timestamp timestamp, int usecs) {
+	private void initFromTimestamp(Timestamp timestamp, long usecs) {
 		if (timestamp == null)
 			throw new NullPointerException("timestamp must be non-null");
 		if (usecs < 0 || usecs > 999999)
@@ -209,7 +209,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 * @throws IllegalArgumentException if any arguments are negative,
 	 *  or if usecs is greater than 999
 	 */
-	protected void setTimestampValues(long msecs, int usecs) {
+	protected void setTimestampValues(long msecs, long usecs) {
 		if (msecs < 0)
 			throw new IllegalArgumentException("msecs must be non-negative");
 		if (usecs < 0 || usecs > 999)
@@ -271,7 +271,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 *
 	 * @return fractional microseconds
 	 */
-	public int getUsecPart() {
+	public long getUsecPart() {
 		return usecs;
 	}
 
@@ -284,9 +284,9 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 *
 	 * @return fractional microseconds
 	 */
-	public int getSecUsecPart() {
+	public long getSecUsecPart() {
 		int msec = (int)(msecs - (msecs/1000)*1000);
-		int usec = (msec * 1000) + usecs;
+		long usec = (msec * 1000) + usecs;
 
 		return usec;
 	}
@@ -326,7 +326,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 		this.usecs += usecs;
 
 		if (this.usecs > 999) {
-			int ms = (this.usecs / 1000);
+			long ms = (this.usecs / 1000);
 
 			this.msecs += ms;
 			this.usecs -= ms * 1000;
@@ -365,7 +365,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 		}
 
 		long thisMsecs = this.msecs;
-		int  thisUsecs = this.usecs;
+		long thisUsecs = this.usecs;
 
 		if (thisUsecs < usecs) {
 			thisMsecs--;
@@ -516,12 +516,12 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = 1;
+		long result = 1;
 
 		result = prime * result + (int) (msecs ^ (msecs >>> 32));
 		result = prime * result + usecs;
 
-		return result;
+		return (int) result;
 	}
 
 	/**

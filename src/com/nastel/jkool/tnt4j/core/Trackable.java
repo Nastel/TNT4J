@@ -15,20 +15,53 @@
  */
 package com.nastel.jkool.tnt4j.core;
 
+import com.nastel.jkool.tnt4j.source.Source;
+
 /**
  * Classes that implement this interface support of parent/child relationship
  * of related items.
  * 
  * @version $Revision: 2 $
  */
-public interface LinkedItem {
+public interface Trackable {
 		
+	/**
+	 * Obtains current/active <code>Source</code> handle associated
+	 * with the current trackable objects
+	 *
+	 * @return current active application handle
+	 * @see Source
+	 */
+	public Source getSource();
+
+	/**
+	 * Gets the correlator, which is a user-defined value to relate two separate
+	 * trackable objects.
+	 *
+	 * @return user-defined correlator
+	 */
+	public String getCorrelator();
+	
+	/**
+	 * Gets the type of operation.
+	 *
+	 * @return operation type
+	 */
+	public OpType getType();
+	
 	/**
 	 * Gets item tracking signature
 	 *
 	 * @return item tracking signature
 	 */
 	public String getTrackingId();
+	
+	/**
+	 * Gets parent's tracking signature
+	 *
+	 * @return parent's tracking signature
+	 */
+	public String getParentId();
 	
 	/**
 	 * Sets item tracking signature
@@ -43,12 +76,5 @@ public interface LinkedItem {
 	 * @param parentObject parent object
 	 * @throws IllegalArgumentException if parentObject is not a valid type of parent
 	 */
-	public void setParentItem(LinkedItem parentObject);
-	
-	/**
-	 * Gets the parent object for this object.
-	 * 
-	 * @return parent object
-	 */
-	public LinkedItem getParentItem();	
+	public void setParentId(Trackable parentObject);
 }

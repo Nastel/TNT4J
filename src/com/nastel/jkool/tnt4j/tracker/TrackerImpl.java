@@ -70,10 +70,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			handle.open();
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, 
-					"Failed to open {handle: " + handle 
-					+ ", vm.pid: " + Utils.getVMPID() 
-					+ ", source: " + getSource()
-					+ "}", e);
+					"Failed to open handle={4}, vm.name={0}, vm.pid={1}, event.sink={2}, source={3}",
+					Utils.getVMName(), Utils.getVMPID(), eventSink, getSource(), handle, e);
 		} 
 	}
 	
@@ -89,10 +87,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			eventSink.open();
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, 
-					"Failed to open sink {event.sink: " + eventSink 
-					+ ", vm.pid: " + Utils.getVMPID() 
-					+ ", source: " + getSource()
-					+ "}", e);
+					"Failed to open event sink vm.name={0}, vm.pid={1}, event.sink={2}, source={3}",
+					Utils.getVMName(), Utils.getVMPID(), eventSink, getSource(), e);
 		} 
 	}
 	
@@ -110,11 +106,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			}	
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, 
-					"Failed to close event sink {vm.name: " + Utils.getVMName() 
-					+ ", vm.pid: " + Utils.getVMPID() 
-					+ ", event.sink: " + eventSink
-					+ ", source: " + getSource()
-					+ "}", e);
+					"Failed to close event sink vm.name={0}, vm.pid={1}, event.sink={2}, source={3}",
+					Utils.getVMName(), Utils.getVMPID(), eventSink, getSource(), e);
 		}
 	}
 	
@@ -179,11 +172,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		try  { reportActivity(activity); }
 		catch (Throwable ex) {
 			logger.log(OpLevel.ERROR, 
-					"Failed to report activity {signature: " + activity.getTrackingId() 
-					+ ", vm.pid: " + Utils.getVMPID() 
-					+ ", event.sink: " + eventSink 
-					+ ", source: " + getSource()
-					+ "}", ex);
+					"Failed to report activity signature={0}, vm.pid={1}, event.sink={2}, source={3}",
+					activity.getTrackingId(), Utils.getVMPID(), eventSink, getSource(), ex);
 		}
 	}
 
@@ -192,18 +182,15 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		try  { reportEvent(event); }
 		catch (Throwable ex) {
 			logger.log(OpLevel.ERROR, 
-					"Failed to report event {signature: " + event.getTrackingId() 
-					+ ", vm.pid: " + Utils.getVMPID() 
-					+ ", event.sink: " + eventSink 
-					+ ", source: " + getSource()
-					+ "}", ex);
+					"Failed to report event signature={0}, vm.pid={1}, event.sink={2}, source={3}",
+					event.getTrackingId(), Utils.getVMPID(), eventSink, getSource(), ex);
 		}
 	}
 
 
 	@Override
     public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object...args) {
-		TrackingEvent event = new TrackingEvent(severity, opName, correlator, msg, args);
+		TrackingEvent event = new TrackingEvent(getSource(), severity, opName, correlator, msg, args);
 		event.getOperation().setUser(tConfig.getSource().getUser());
 		return event;
    }
@@ -211,7 +198,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	
 	@Override
     public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag, String msg, Object...args) {
-		TrackingEvent event = new TrackingEvent(severity, opType, opName, correlator, tag, msg, args);
+		TrackingEvent event = new TrackingEvent(getSource(), severity, opType, opName, correlator, tag, msg, args);
 		event.getOperation().setUser(tConfig.getSource().getUser());
 		return event;
    }
@@ -245,12 +232,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		openIOHandle(selector);
 		openEventSink();		
 		logger.log(OpLevel.DEBUG, 
-				"Tracker opened {vm.name: " + Utils.getVMName() 
-				+ ", vm.pid: " + Utils.getVMPID() 
-				+ ", event.sink: " + eventSink
-				+ ", source: " + getSource() 
-				+ "}"
-				);
+			"Tracker opened vm.name={0}, vm.pid={1}, event.sink={2}, source={3}",
+			Utils.getVMName(), Utils.getVMPID(), eventSink, getSource());
     }
 
 	@Override
@@ -259,31 +242,20 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			closeEventSink();
 			Utils.close(selector);
 			logger.log(OpLevel.DEBUG, 
-					"Tracker closed {vm.name: " + Utils.getVMName() 
-					+ ", vm.pid: " + Utils.getVMPID() 
-					+ ", event.sink: " + eventSink
-					+ ", source: " + getSource() 
-					+ "}"
-					);
+					"Tracker closed vm.name={0}, vm.pid={1}, event.sink={2}, source={3}",
+					Utils.getVMName(), Utils.getVMPID(), eventSink, getSource());
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, 
-					"Failed to close tracker {vm.name: " + Utils.getVMName() 
-					+ ", vm.pid: " + Utils.getVMPID() 
-					+ ", event.sink: " + eventSink
-					+ ", source: " + getSource()
-					+ "}"
-					, e);
+					"Failed to close tracker vm.name={0}, vm.pid={1}, event.sink={2}, source={3}",
+					Utils.getVMName(), Utils.getVMPID(), eventSink, getSource(), e);
 		}
 	}
 
 	@Override
     public void sinkError(SinkError ev) {
 		logger.log(OpLevel.ERROR, 
-			"Sink write error {vm.name: " + Utils.getVMName() 
-			+ ", vm.pid: " + Utils.getVMPID() 
-			+ ", event.sink: " + eventSink
-			+ ", source: " + getSource() 
-			+ "}", ev.getCause());
+				"Sink write error vm.name={0}, vm.pid={1}, event.sink={2}, source={3}",
+				Utils.getVMName(), Utils.getVMPID(), eventSink, getSource(), ev.getCause());
 		closeEventSink();
 	}
 }

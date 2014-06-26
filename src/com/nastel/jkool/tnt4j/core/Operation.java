@@ -33,7 +33,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @see OpCompCode
  * @see Activity
  * @see Message
- * @see LinkedItem
+ * @see Trackable
  *
  * @version $Revision: 12 $
  */
@@ -78,6 +78,7 @@ public class Operation {
 	private String			    resource;
 	private String				user;
 	private long				elapsedTime;
+	private long				elapsedTimeNano, startTimeNano, stopTimeNano;
 	private long				messageAge;
 	private long				waitTime;
 	private int					opRC = 0;
@@ -284,6 +285,16 @@ public class Operation {
 	}
 
 	/**
+	 * Gets the total time for the operation in nanoseconds.
+	 * Time is measured between a pair of start/stop calls.
+	 *
+	 * @return elapsed time for operation, in nanoseconds
+	 */
+	public long getElapsedTimeNano() {
+		return elapsedTimeNano;
+	}
+
+	/**
 	 * Gets the age of the message that the operation applies to.  This is only
 	 * relevant for operations whose type is <code>OpType.RECEIVE</code>.
 	 * This value represents the time between when the message was sent (put/write)
@@ -475,7 +486,8 @@ public class Operation {
 	 * @param startTimeUsec microsecond fractional portion of start time
 	 * @throws IllegalArgumentException if startTime or startTimeUsec is negative
 	 */
-	public void start(long startTime, int startTimeUsec) {
+	public void start(long startTime, long startTimeUsec) {
+		this.startTimeNano = System.nanoTime();
 		this.startTime = new UsecTimestamp(startTime, startTimeUsec);
 	}
 
@@ -527,7 +539,7 @@ public class Operation {
 	 * @throws IllegalArgumentException if stopTime or stopTimeUsec is negative,
 	 *  or if the stop time is less than the previously specified start time
 	 */
-	public void stop(long stopTime, int stopTimeUsec) {
+	public void stop(long stopTime, long stopTimeUsec) {
 		endTime = new UsecTimestamp(stopTime, stopTimeUsec);
 
 		if (startTime == null)
@@ -537,6 +549,8 @@ public class Operation {
 			throw new IllegalArgumentException("stop time is less than start time");
 
 		elapsedTime = endTime.difference(startTime);
+		stopTimeNano = System.nanoTime();	
+		elapsedTimeNano = stopTimeNano - startTimeNano;
 	}
 
 	/**

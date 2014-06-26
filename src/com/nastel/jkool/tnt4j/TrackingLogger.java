@@ -15,6 +15,8 @@
  */
 package com.nastel.jkool.tnt4j;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -191,9 +193,11 @@ public class TrackingLogger {
 	private static DumpSinkFactory dumpFactory = null;
 	private static DumpSink defaultDumpSink = null;
 	private static DumpHook dumpHook = new DumpHook();
+	private static ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
 
 	static {
 		// load configuration and initialize default factories
+		initJavaTiming(); 
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(TRACKER_SOURCE, TRACKER_CONFIG).build();
 		DefaultEventSinkFactory.setDefaultEventSinkFactory(config.getDefaultEvenSinkFactory());
 		factory = config.getTrackerFactory();
@@ -213,7 +217,20 @@ public class TrackingLogger {
 		if (dumpOnVmHook) dumpOnShutdown(dumpOnVmHook);
 	}
 
-    /** Cannot instantiate. */
+	/**
+	 * Check and enable java timing for use by activities
+	 * 
+	 */
+	private static void initJavaTiming() {
+		boolean cpuTimingSupported = tmbean.isCurrentThreadCpuTimeSupported();
+		if (cpuTimingSupported)
+			tmbean.setThreadCpuTimeEnabled(cpuTimingSupported);
+		boolean contTimingSupported = tmbean.isThreadContentionMonitoringSupported();
+		if (contTimingSupported)
+			tmbean.setThreadContentionMonitoringEnabled(contTimingSupported);
+	}
+
+	/** Cannot instantiate. */
     private TrackingLogger() {}
     
 	/**

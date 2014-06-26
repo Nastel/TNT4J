@@ -22,7 +22,9 @@ import com.nastel.jkool.tnt4j.core.OpCompCode;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Operation;
+import com.nastel.jkool.tnt4j.core.Trackable;
 import com.nastel.jkool.tnt4j.core.UsecTimestamp;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -106,7 +108,10 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 7 $
  *
  */
-public class TrackingEvent extends Message {
+public class TrackingEvent extends Message implements Trackable {
+
+	private Source	source;
+	private String	parent;
 	Operation operation;
 
 	/**
@@ -152,8 +157,8 @@ public class TrackingEvent extends Message {
 	 * @param msg text message associated with this event
 	 * @param args argument list passed along side the message
 	 */
-	protected TrackingEvent(OpLevel severity, String opName, String correlator, String msg, Object...args) {
-		this(severity, OpType.EVENT, opName, correlator, null, msg, args);
+	protected TrackingEvent(Source src, OpLevel severity, String opName, String correlator, String msg, Object...args) {
+		this(src, severity, OpType.EVENT, opName, correlator, null, msg, args);
 	}
 
 	/**
@@ -169,20 +174,50 @@ public class TrackingEvent extends Message {
 	 * @see OpLevel
 	 * @see OpType
 	 */
-	protected TrackingEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag, String msg, Object...args) {
+	protected TrackingEvent(Source src, OpLevel severity, OpType opType, String opName, String correlator, String tag, String msg, Object...args) {
 		super(newUUID(), msg, args);
 		operation = new Operation(opName, opType);
 		operation.setSeverity(severity);
 		operation.setCorrelator(correlator);
 		operation.setResource(Utils.getVMName());
 		operation.setException(Utils.getThrowable(args));
+		source = src;
 		setTag(tag);
 	}
 
+	@Override
+	public void setParentId(Trackable parentObject) {
+		parent = parentObject.getTrackingId();
+		source = parentObject.getSource();
+	}
+
+	@Override
+	public String getParentId() {
+		return parent;
+	}
+
+	@Override
+    public Source getSource() {
+	    return source;
+    }
+
+	/**
+	 * Sets the operation correlator, which is a user-defined value to relate two separate
+	 * operations as belonging to the same transaction, truncating if necessary.
+	 *
+	 * @param cid user-defined operation correlator
+	 * @throws IllegalArgumentException if correlator is too long
+	 */
 	public void setCorrelator(String cid) {
 		operation.setCorrelator(cid);
 	}
 
+	/**
+	 * Gets the operation correlator, which is a user-defined value to relate two separate
+	 * operations as belonging to the same transaction.
+	 *
+	 * @return user-defined operation correlator
+	 */
 	public String getCorrelator() {
 		return operation.getCorrelator();
 	}
@@ -215,15 +250,6 @@ public class TrackingEvent extends Message {
 	}
 
 	/**
-	 * Indicates that application tracking event has started at the specified startTime
-	 *
-	 * @param startTime start time of the tracking event (usec)
-	 */
-	public void start(UsecTimestamp startTime) {
-		operation.start(startTime);
-	}
-
-	/**
 	 * Indicates that application tracking event has started.
 	 *
 	 */
@@ -245,15 +271,6 @@ public class TrackingEvent extends Message {
 	 * @param endTime ending time associated with the event (ms)
 	 */
 	public void stop(long endTime) {
-		operation.stop(endTime);
-	}
-
-	/**
-	 * Indicates that application tracking event has ended.
-	 *
-	 * @param endTime ending time associated with the event (usec)
-	 */
-	public void stop(UsecTimestamp endTime) {
 		operation.stop(endTime);
 	}
 
@@ -304,10 +321,10 @@ public class TrackingEvent extends Message {
 	 * @see OpCompCode
 	 */
 	public void stop(OpCompCode ccode, int rcode, Throwable opEx) {
-		operation.stop();
 		operation.setException(opEx);
 		operation.setCompCode(ccode);
 		operation.setReasonCode(rcode);
+		operation.stop();
 	}
 
 	/**
@@ -320,10 +337,10 @@ public class TrackingEvent extends Message {
 	 * @see OpCompCode
 	 */
 	public void stop(OpCompCode ccode, int rcode, Throwable opEx, long endTime) {
-		operation.stop(endTime);
 		operation.setException(opEx);
 		operation.setCompCode(ccode);
 		operation.setReasonCode(rcode);
+		operation.stop(endTime);
 	}
 
 	/**
@@ -336,10 +353,10 @@ public class TrackingEvent extends Message {
 	 * @see OpCompCode
 	 */
 	public void stop(OpCompCode ccode, int rcode, Throwable opEx, UsecTimestamp endTime) {
-		operation.stop(endTime);
 		operation.setException(opEx);
 		operation.setCompCode(ccode);
 		operation.setReasonCode(rcode);
+		operation.stop(endTime);
 	}
 
 	/**
@@ -350,4 +367,9 @@ public class TrackingEvent extends Message {
 	public Operation getOperation() {
 		return operation;
 	}
+
+	@Override
+    public OpType getType() {
+	    return operation.getType();
+    }
 }

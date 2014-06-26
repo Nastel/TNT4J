@@ -16,7 +16,9 @@
 package com.nastel.jkool.tnt4j.core;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -37,11 +39,11 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @see Message
  * @see Operation
  * @see Property
- * @see LinkedItem
+ * @see Trackable
  *
  * @version $Revision: 11 $
  */
-public class Activity extends Operation implements LinkedItem {
+public class Activity extends Operation implements Trackable {
 
 	/**
 	 * Maximum length of an Activity Signature.
@@ -55,18 +57,19 @@ public class Activity extends Operation implements LinkedItem {
 	 */
 	public static final int MAX_EXCEPTION_LENGTH = 512;
 
-	private Source   appl;
-	private String   tracking_id;
+	private Source appl;
+	private String tracking_id;
+	private String parentId;
 	private ActivityStatus status = ActivityStatus.BEGIN;
 
-	private ArrayList<LinkedItem> linkedItems;
+	private HashSet<String> linkedItems;
+	private HashSet<String> correlators;
 	private ArrayList<PropertySnapshot> snapshots;
 	private ArrayList<ActivityListener> activityListeners = null;
 
 	private int msgCapacity  = 100;
 	private int snapCapacity = 32;
 
-	private LinkedItem parent;
 
 
 	/**
@@ -156,7 +159,7 @@ public class Activity extends Operation implements LinkedItem {
 	}
 
 	@Override
-	public void start(long startTime, int startTimeUsec) {
+	public void start(long startTime, long startTimeUsec) {
 		super.start(startTime, startTimeUsec);
 		notifyStarted();
 	}
@@ -168,7 +171,7 @@ public class Activity extends Operation implements LinkedItem {
 	}
 
 	@Override
-	public void stop(long stopTime, int stopTimeUsec) {
+	public void stop(long stopTime, long stopTimeUsec) {
 		super.stop(stopTime, stopTimeUsec);
 		notifyStopped();
 	}
@@ -188,13 +191,7 @@ public class Activity extends Operation implements LinkedItem {
 		appl = source;
 	}
 
-	/**
-	 * Obtains current/active <code>Source</code> handle associated
-	 * with the current activity
-	 *
-	 * @return current active application handle associated with this activity
-	 * @see Source
-	 */
+	@Override
 	public Source getSource() {
 		return appl;
 	}
@@ -253,16 +250,16 @@ public class Activity extends Operation implements LinkedItem {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void setParentItem(LinkedItem parentObject) {
-		this.parent = parentObject;
+	public void setParentId(Trackable parentObject) {
+		this.parentId = parentObject.getTrackingId();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public LinkedItem getParentItem() {
-		return parent;
+	public String getParentId() {
+		return parentId;
 	}
 
 	/**
@@ -271,53 +268,72 @@ public class Activity extends Operation implements LinkedItem {
 	 *
 	 * @param item linked item referenced in Activity
 	 * @throws NullPointerException if item is <code>null</code>
-	 * @see #contains(LinkedItem)
+	 * @see #containsId(String)
+	 * @see #containsCid(String)
 	 */
-	public void add(LinkedItem item) {
+	public void add(Trackable item) {
 		if (item == null)
 			throw new NullPointerException("msg must be non-null");
 
 		if (linkedItems == null)
-			linkedItems = new ArrayList<LinkedItem>(msgCapacity);
+			linkedItems = new HashSet<String>(msgCapacity);
 
-		linkedItems.add(item);
-		item.setParentItem(this);
+		if (correlators == null)
+			correlators = new HashSet<String>(msgCapacity);
+
+		linkedItems.add(item.getTrackingId());
+		if (item.getCorrelator() != null) {
+			correlators.add(item.getCorrelator());
+		}
+		item.setParentId(this);
 	}
 
 	/**
-	 * Checks whether the specified linked item has been added to the list of
+	 * Checks whether the specified tracking id has been added to the list of
 	 * items referenced in this Activity.
 	 *
-	 * @param item linked item to test for
+	 * @param id linked item to test for
 	 * @return <code>true</code> if the Activity contains specified item,
 	 *         <code>false</code> otherwise
 	 */
-	public boolean contains(LinkedItem item) {
-		if (linkedItems == null || item == null)
+	public boolean containsId(String id) {
+		if (linkedItems == null || id == null)
 			return false;
 
-		return linkedItems.contains(item);
+		return linkedItems.contains(id);
 	}
 
 	/**
-	 * Removes the specified operation from the list of items referenced in this Activity.
+	 * Checks whether the specified correlator has been added to the list of
+	 * correlators referenced in this Activity.
 	 *
-	 * @param item to be removed
+	 * @param cid correlator id
+	 * @return <code>true</code> if the Activity contains specified correlator,
+	 *         <code>false</code> otherwise
 	 */
-	public void remove(LinkedItem item) {
-		if (linkedItems != null && item != null) {
-			linkedItems.remove(item);
-			item.setParentItem(null);
-		}
+	public boolean containsCid(String cid) {
+		if (correlators == null || cid == null)
+			return false;
+
+		return correlators.contains(cid);
 	}
 
 	/**
-	 * Gets the list of linked items referenced in this Activity.
+	 * Gets the list of tracking ids referenced in this Activity.
 	 *
-	 * @return list of linked items referenced
+	 * @return list of tracking ids
 	 */
-	public List<LinkedItem> getItems() {
+	public Set<String> getIds() {
 		return linkedItems;
+	}
+
+	/**
+	 * Gets the list of tracking correlators referenced in this Activity.
+	 *
+	 * @return list of tracking correlators
+	 */
+	public Set<String> getCids() {
+		return correlators;
 	}
 
 	/**
@@ -325,24 +341,20 @@ public class Activity extends Operation implements LinkedItem {
 	 *
 	 * @return number of linked items
 	 */
-	public int getItemCount() {
+	public int getIdCount() {
 		return linkedItems != null ? linkedItems.size() : 0;
 	}
 
+
 	/**
-	 * Sets the expected number of linked items referenced in this Activity.
-	 * This can be used to set the size of the linked items list to improve performance.
+	 * Gets the number of correlator items referenced in this Activity.
 	 *
-	 * @param lCount expected number of linked items
-	 * @throws IllegalArgumentException if lCount is <= 0
+	 * @return number of correlator items
 	 */
-	public void setItemCount(int lCount) {
-		if (lCount <= 0)
-			throw new IllegalArgumentException("msgsCount must be > 0");
-		msgCapacity = lCount;
-		if (linkedItems != null)
-			linkedItems.ensureCapacity(msgCapacity);
+	public int getCidCount() {
+		return correlators != null ? correlators.size() : 0;
 	}
+
 
 	/**
 	 * Adds the specified snapshot to the list of snapshots for this Activity.
@@ -467,7 +479,7 @@ public class Activity extends Operation implements LinkedItem {
 
 		str.append(getClass().getSimpleName()).append("{")
 			.append("Name:").append(getName()).append(",")
-			.append("ParentId:").append(parent != null? parent.getTrackingId(): "root").append(",")
+			.append("ParentId:").append(parentId != null? parentId: "root").append(",")
 			.append("TrackId:").append(getTrackingId()).append(",")
 			.append("Status:").append(Status == null ? "null" : Status.toString()).append(",")
 			.append("Type:").append(sType == null ? "null" : sType.toString()).append(",")
@@ -475,7 +487,8 @@ public class Activity extends Operation implements LinkedItem {
 			.append("TID:").append(getTID()).append(",")
 		    .append("ElapsedUsec:").append(getElapsedTime()).append(",")
 		    .append("FQName:").append(getSource().getFQName()).append(",")
-			.append("ItemCount=").append(getItemCount()).append(",")
+			.append("IdCount=").append(getIdCount()).append(",")
+			.append("CidCount=").append(getCidCount()).append(",")
 			.append("SnapCount=").append(getSnapshotCount()).append(",")
 			.append("StartTime:[").append(sTime == null ? "null" : sTime.toString()).append("],")
 			.append("EndTime:[").append(eTime == null ? "null" : eTime.toString()).append("]}");

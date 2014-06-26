@@ -124,7 +124,12 @@
     <echo message="Creating ${pkg}-${version}-all.jar" level="info"/>
 	<zip destfile="${pkg}-${version}-all.jar">
 		<zipgroupfileset dir="lib" includes="*.jar"/>
-		<zipgroupfileset dir="${tnt4j-build}" includes="*.jar"/>
+		<zipgroupfileset dir="${tnt4j-build}" includes="*api.jar"/>
+	</zip> 
+    <echo message="Creating ${pkg}-final-all.jar" level="info"/>
+	<zip destfile="${pkg}-final-all.jar">
+		<zipgroupfileset dir="lib" includes="*.jar"/>
+		<zipgroupfileset dir="${tnt4j-build}" includes="*api.jar"/>
 	</zip> 
   </target>
 

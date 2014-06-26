@@ -79,8 +79,8 @@ public class SimpleFormatter extends DefaultFormatter implements Configurable  {
 			msg.append("error: '").append(event.getOperation().getExceptionString()).append("'").append(separator);
 		}
 		msg.append("type: '").append(event.getOperation().getType()).append("'").append(separator);
-		if (event.getParentItem() != null) {
-			msg.append("parent-id: '").append(event.getParentItem().getTrackingId()).append("'").append(separator);
+		if (event.getParentId() != null) {
+			msg.append("parent-id: '").append(event.getParentId()).append("'").append(separator);
 		}
 		msg.append("track-id: '").append(event.getTrackingId()).append("'");
 		msg.append("}");
@@ -113,8 +113,8 @@ public class SimpleFormatter extends DefaultFormatter implements Configurable  {
 		msg.append("pid: '").append(activity.getPID()).append("'").append(separator);
 		msg.append("tid: '").append(activity.getTID()).append("'").append(separator);
 		msg.append("source: '").append(activity.getSource().getFQName()).append("'").append(separator);
-		if (activity.getParentItem() != null) {
-			msg.append("parent-id: '").append(activity.getParentItem().getTrackingId()).append("'").append(separator);
+		if (activity.getParentId() != null) {
+			msg.append("parent-id: '").append(activity.getParentId()).append("'").append(separator);
 		}
 		msg.append("track-id: '").append(activity.getTrackingId()).append("'");
 		if (activity.getSnapshotCount() > 0) {

@@ -17,6 +17,7 @@ package com.nastel.jkool.tnt4j.core;
 
 import java.util.UUID;
 
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -28,11 +29,11 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  * @see Activity
  * @see Operation
- * @see LinkedItem
+ * @see Trackable
  *
  * @version $Revision: 7 $
  */
-public class Message implements LinkedItem {
+public class Message {
 
 	/**
 	 * Maximum length of a Message Signature.
@@ -54,12 +55,13 @@ public class Message implements LinkedItem {
 	public static final int MAX_VALUE_LENGTH = 256;
 
 	private String            signature;
+	private Source			  source;
+	private String			  parent;
 	private int               size;
 	private String            tag;
 	private String            strData;
 	private Object[]          argList;
 
-	private LinkedItem  parent;
 
 
 	/**
@@ -214,26 +216,6 @@ public class Message implements LinkedItem {
 		argList = args;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setParentItem(LinkedItem parentObject) {
-		if (parentObject != null &&	!(parentObject instanceof Activity)) {
-			throw new IllegalArgumentException("parent object (" + parentObject.getClass().getName() +
-											   ") for " + getClass().getName() + " must be 'Activity'");
-		}
-		parent = parentObject;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public LinkedItem getParentItem() {
-		return parent;
-	}
-
 
 	/**
 	 * {@inheritDoc}
@@ -275,11 +257,12 @@ public class Message implements LinkedItem {
 		StringBuilder str = new StringBuilder();
 
 		str.append(getClass().getSimpleName()).append("(")
-			.append("ParentId:").append(parent != null? parent.getTrackingId(): "root").append(",")
+			.append("ParentId:").append(parent != null? parent: "root").append(",")
 			.append("TrackId:").append(getTrackingId()).append(",")
 			.append("Tag:").append(getTag()).append(",")
 			.append("Size:").append(getSize()).append(")");
 
 		return str.toString();
 	}
+
 }

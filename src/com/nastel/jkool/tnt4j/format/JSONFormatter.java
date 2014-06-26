@@ -15,12 +15,10 @@
  */
 package com.nastel.jkool.tnt4j.format;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import com.nastel.jkool.tnt4j.config.Configurable;
-import com.nastel.jkool.tnt4j.core.Activity;
-import com.nastel.jkool.tnt4j.core.LinkedItem;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
@@ -81,10 +79,13 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	public static final String JSON_MSG_SIZE_LABEL = "msg-size";
 	public static final String JSON_MSG_TAG_LABEL = "msg-tag";
 	public static final String JSON_MSG_TEXT_LABEL = "msg-text";
-	public static final String JSON_ITEM_COUNT_LABEL = "item-count";
+	public static final String JSON_ID_COUNT_LABEL = "id-count";
+	public static final String JSON_CID_COUNT_LABEL = "cid-count";
 	public static final String JSON_SNAPSHOT_COUNT_LABEL = "snap-count";
 	public static final String JSON_EXCEPTION_LABEL = "exception";
 	public static final String JSON_SNAPSHOTS_LABEL = "snapshots";
+	public static final String JSON_ID_SET_LABEL = "id-set";
+	public static final String JSON_CID_SET_LABEL = "cid-set";
 
 	protected static final String START = "{";
 	protected static final String START_LINE = "{\n";
@@ -157,28 +158,23 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	@Override
 	public String format(TrackingEvent event) {
 		StringBuilder jsonString = new StringBuilder(1024);
-		LinkedItem parent = event.getParentItem();
-		Activity activity = parent instanceof Activity ? (Activity) parent : null;
 
 		jsonString.append(START_JSON).append(Utils.quote(JSON_TRACK_ID_LABEL)).append(ATTR_SEP).append(
 		        Utils.quote(event.getTrackingId())).append(ATTR_JSON);
-		if (event.getParentItem() != null) {
+		if (event.getParentId() != null) {
 			jsonString.append(Utils.quote(JSON_PARENT_TRACK_ID_LABEL)).append(ATTR_SEP).append(
-			        Utils.quote(event.getParentItem().getTrackingId())).append(ATTR_JSON);
+			        Utils.quote(event.getParentId())).append(ATTR_JSON);
 		}
-		if (activity != null) {
-			jsonString.append(Utils.quote(JSON_SOURCE_LABEL)).append(ATTR_SEP).append(
-			        Utils.quote(activity.getSource().getName())).append(ATTR_JSON);
-			jsonString.append(Utils.quote(JSON_SOURCE_FQN_LABEL)).append(ATTR_SEP).append(
-			        Utils.quote(activity.getSource().getFQName())).append(ATTR_JSON);
-			jsonString.append(Utils.quote(JSON_SOURCE_INFO_LABEL)).append(ATTR_SEP).append(
-			        Utils.quote(activity.getSource().getInfo())).append(ATTR_JSON);
-			if (activity.getSource().getUrl() != null) {
-				jsonString.append(Utils.quote(JSON_SOURCE_URL_LABEL)).append(ATTR_SEP).append(
-				        Utils.quote(activity.getSource().getUrl())).append(ATTR_JSON);
-			}
+		jsonString.append(Utils.quote(JSON_SOURCE_LABEL)).append(ATTR_SEP).append(
+		        Utils.quote(event.getSource().getName())).append(ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_SOURCE_FQN_LABEL)).append(ATTR_SEP).append(
+		        Utils.quote(event.getSource().getFQName())).append(ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_SOURCE_INFO_LABEL)).append(ATTR_SEP).append(
+		        Utils.quote(event.getSource().getInfo())).append(ATTR_JSON);
+		if (event.getSource().getUrl() != null) {
+			jsonString.append(Utils.quote(JSON_SOURCE_URL_LABEL)).append(ATTR_SEP).append(
+			        Utils.quote(event.getSource().getUrl())).append(ATTR_JSON);
 		}
-
 		jsonString.append(Utils.quote(JSON_SEVERITY_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getSeverity()))
 		        .append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_SEVERITY_NO_LABEL)).append(ATTR_SEP).append(event.getSeverity().ordinal())
@@ -264,9 +260,9 @@ public class JSONFormatter implements EventFormatter, Configurable {
 
 		jsonString.append(START_JSON).append(Utils.quote(JSON_TRACK_ID_LABEL)).append(ATTR_SEP).append(
 		        Utils.quote(activity.getTrackingId())).append(ATTR_JSON);
-		if (activity.getParentItem() != null) {
+		if (activity.getParentId() != null) {
 			jsonString.append(Utils.quote(JSON_PARENT_TRACK_ID_LABEL)).append(ATTR_SEP).append(
-			        Utils.quote(activity.getParentItem().getTrackingId())).append(ATTR_JSON);
+			        Utils.quote(activity.getParentId())).append(ATTR_JSON);
 		}
 		jsonString.append(Utils.quote(JSON_SOURCE_LABEL)).append(ATTR_SEP).append(
 		        Utils.quote(activity.getSource().getName())).append(ATTR_JSON);
@@ -329,7 +325,9 @@ public class JSONFormatter implements EventFormatter, Configurable {
 				        activity.getMessageAge()).append(ATTR_JSON);
 			}
 		}
-		jsonString.append(Utils.quote(JSON_ITEM_COUNT_LABEL)).append(ATTR_SEP).append(activity.getItemCount()).append(
+		jsonString.append(Utils.quote(JSON_ID_COUNT_LABEL)).append(ATTR_SEP).append(activity.getIdCount()).append(
+		        ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_CID_COUNT_LABEL)).append(ATTR_SEP).append(activity.getCidCount()).append(
 		        ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_SNAPSHOT_COUNT_LABEL)).append(ATTR_SEP).append(activity.getSnapshotCount());
 
@@ -337,6 +335,16 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		if (exStr != null) {
 			jsonString.append(ATTR_JSON);
 			jsonString.append(Utils.quote(JSON_EXCEPTION_LABEL)).append(ATTR_SEP).append(Utils.quote(exStr));
+		}
+		if (activity.getIdCount() > 0) {
+			jsonString.append(ATTR_JSON);
+			jsonString.append(Utils.quote(JSON_ID_SET_LABEL)).append(ATTR_SEP).append(ARRAY_START_JSON).append(
+			        itemsToJSON(activity.getIds())).append(ARRAY_END);			
+		}
+		if (activity.getCidCount() > 0) {
+			jsonString.append(ATTR_JSON);
+			jsonString.append(Utils.quote(JSON_CID_SET_LABEL)).append(ATTR_SEP).append(ARRAY_START_JSON).append(
+			        itemsToJSON(activity.getCids())).append(ARRAY_END);			
 		}
 		if (activity.getSnapshotCount() > 0) {
 			jsonString.append(ATTR_JSON);
@@ -417,7 +425,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		return jsonString.toString();
 	}
 
-	private String itemsToJSON(List<?> items) {
+	private String itemsToJSON(Collection<?> items) {
 		if (items == null)
 			return "";
 		StringBuilder json = new StringBuilder(2048);
@@ -432,6 +440,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 				json.append(format((PropertySnapshot) item));
 			} else if (item instanceof Property) {
 				json.append(format((Property) item));
+			} else {
+				json.append(Utils.quote(String.valueOf(item)));
 			}
 		}
 		return json.toString();

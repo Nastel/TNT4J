@@ -67,8 +67,10 @@ public class TrackingActivity extends Activity {
 	public static final String SNAPSHOT_THREAD = "Thread";
 
 	public static final String DEFAULT_PROPERTY_LOAD_AVG = "SystemLoadAvg";
-	public static final String DEFAULT_PROPERTY_TOTAL_TIME = "TotalUsec";
-	public static final String DEFAULT_PROPERTY_TOTAL_USER_TIME = "TotalUserUsec";
+	public static final String DEFAULT_PROPERTY_CPU_TIME = "TotalCpuUsec";
+	public static final String DEFAULT_PROPERTY_TOTAL_USER_TIME = "TotalCpuUserUsec";
+	public static final String DEFAULT_PROPERTY_SLACK_TIME = "SlackUsec";
+	public static final String DEFAULT_PROPERTY_WALL_TIME = "WallUsec";
 	public static final String DEFAULT_PROPERTY_OVERHEAD_TIME = "OverheadUsec";
 
 	public static final String DEFAULT_PROPERTY_COUNT = "Count";
@@ -78,8 +80,8 @@ public class TrackingActivity extends Activity {
 
 	public static final String DEFAULT_PROPERTY_BLOCKED_COUNT = "BlockedCount";
 	public static final String DEFAULT_PROPERTY_WAITED_COUNT = "WaitedCount";
-	public static final String DEFAULT_PROPERTY_BLOCKED_TIME = "BlockedTimeUsec";
-	public static final String DEFAULT_PROPERTY_WAITED_TIME = "WaitTimeUsec";
+	public static final String DEFAULT_PROPERTY_BLOCKED_TIME = "BlockedUsec";
+	public static final String DEFAULT_PROPERTY_WAITED_TIME = "WaitUsec";
 
 	public static final String DEFAULT_PROPERTY_MAX_BYTES = "MaxBytes";
 	public static final String DEFAULT_PROPERTY_TOTAL_BYTES = "TotalBytes";
@@ -90,9 +92,11 @@ public class TrackingActivity extends Activity {
 	public static final String DEFAULT_PROPERTY_TIME = "Time";
 	public static final String DEFAULT_PROPERTY_VALID = "isValid";
 
-	private long startCPUTime = 0, stopCPUTime = 0, startBlockTime = 0, stopBlockTime = 0, startWaitTime = 0,
-	        stopWaitTime = 0, startBlockCount = 0, stopBlockCount = 0, startWaitCount = 0, stopWaitCount = 0;
+	private boolean reportStarts = false;
 	private int startStopCount = 0;
+	private long startCPUTime = 0, stopCPUTime = 0, startBlockTime = 0, stopBlockTime = 0, startWaitTime = 0,
+	        stopWaitTime = 0, startBlockCount = 0, stopBlockCount = 0, startWaitCount = 0, stopWaitCount = 0,
+	        overHeadTimeNano = 0;
 	private ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
 	private boolean appendProps = true, cpuTimingSupported = false, contTimingSupported = false, enableTiming = false;
 	private Tracker tracker = null;
@@ -138,12 +142,8 @@ public class TrackingActivity extends Activity {
 	}
 
 	private void initJavaTiming() {
-		cpuTimingSupported = tmbean.isCurrentThreadCpuTimeSupported();
-		if (cpuTimingSupported)
-			tmbean.setThreadCpuTimeEnabled(cpuTimingSupported);
-		contTimingSupported = tmbean.isThreadContentionMonitoringSupported();
-		if (contTimingSupported)
-			tmbean.setThreadContentionMonitoringEnabled(contTimingSupported);
+		cpuTimingSupported = tmbean.isThreadCpuTimeEnabled();
+		contTimingSupported = tmbean.isThreadContentionMonitoringEnabled();
 	}
 
 	/**
@@ -157,6 +157,7 @@ public class TrackingActivity extends Activity {
 
 	private void initActivity() {
 		if (startStopCount == 0) {
+			long start = System.nanoTime();
 			startStopCount++;
 			if (enableTiming) {
 				startCPUTime = cpuTimingSupported ? tmbean.getCurrentThreadCpuTime() : 0;
@@ -168,8 +169,22 @@ public class TrackingActivity extends Activity {
 					startWaitTime = tinfo.getWaitedTime();
 				}
 			}
-			tracker.getEventSink().log(this);
+			if (reportStarts) {
+				tracker.getEventSink().log(this);
+			}
+			overHeadTimeNano += (System.nanoTime() - start);
 		}
+	}
+
+	/**
+	 * Instruct activity to report start activity events into the underlying tracker associated with this activity. An
+	 * tracking event will be logged when <code>start(..)</code> method call is made.
+	 * 
+	 * @param flag
+	 *            enable reporting on start (default is false).
+	 */
+	public void reportStart(boolean flag) {
+		reportStarts = flag;
 	}
 
 	@Override
@@ -239,11 +254,11 @@ public class TrackingActivity extends Activity {
 	}
 
 	@Override
-	public void stop(long stopTime, int stopTimeUsec) {
+	public void stop(long stopTime, long stopTimeUsec) {
 		finishTiming();
 		super.stop(stopTime, stopTimeUsec);
 		finishActivity();
-	}	
+	}
 
 	/**
 	 * Enable/disable appending of default snapshot when activity stops. When set to true
@@ -260,6 +275,7 @@ public class TrackingActivity extends Activity {
 
 	private void finishTiming() {
 		if (startStopCount == 1) {
+			long start = System.nanoTime();
 			startStopCount++;
 			if (startCPUTime > 0) {
 				ThreadInfo tinfo = tmbean.getThreadInfo(Thread.currentThread().getId());
@@ -272,6 +288,7 @@ public class TrackingActivity extends Activity {
 				}
 				stopCPUTime = getCurrentCpuTimeNanos();
 			}
+			overHeadTimeNano += (System.nanoTime() - start);
 		}
 	}
 
@@ -286,7 +303,7 @@ public class TrackingActivity extends Activity {
 	 * This method returns total CPU time in nanoseconds currently used by the current thread.
 	 */
 	public long getCurrentCpuTimeNanos() {
-		return (cpuTimingSupported ? tmbean.getCurrentThreadCpuTime() : 0);
+		return (cpuTimingSupported ? tmbean.getCurrentThreadCpuTime() : -1);
 	}
 
 	/**
@@ -299,8 +316,39 @@ public class TrackingActivity extends Activity {
 			return (stopCPUTime - startCPUTime);
 		else if (startCPUTime > 0) {
 			return (getCurrentCpuTimeNanos() - startCPUTime);
-		} else
-			return 0;
+		} else {
+			return -1;
+		}
+	}
+
+	/**
+	 * This method returns total wall time computed after activity has stopped.
+	 * wall-time is computed as total used cpu + blocked time + wait time.
+	 */
+	public long getWallTimeUsec() {
+		long wallTime = -1;
+		if (stopCPUTime > 0) {
+			long cpuUsed = getUsedCpuTimeNanos();
+			double cpuUsec = ((double) cpuUsed / 1000.0d);
+			wallTime = (long) (cpuUsec + getWaitTime());
+		}
+		return wallTime;
+	}
+
+	/**
+	 * This method returns total block time computed after activity has stopped.
+	 * @return total blocked time in microseconds, -1 if not stopped yet
+	 */
+	public long getBlockedTimeUsec() {
+		return stopBlockTime > 0? ((stopBlockTime - startBlockTime) * 1000): -1;
+	}
+
+	/**
+	 * This method returns total wait time computed after activity has stopped.
+	 * @return total waited time in microseconds, -1 if not stopped yet
+	 */
+	public long getWaitedTimeUsec() {
+		return stopWaitTime > 0? ((stopWaitTime - startWaitTime) * 1000): -1;
 	}
 
 	/**
@@ -310,23 +358,7 @@ public class TrackingActivity extends Activity {
 	 * <code>TrackingActivity.DEFAULT_PROPERTY_CPU_TOTAL_TIME</code>.
 	 */
 	protected void appendProperties() {
-		if (startCPUTime > 0) {
-			PropertySnapshot activity = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_ACTIVITY);
-			if (cpuTimingSupported) {
-				long cpuUsed = getUsedCpuTimeNanos();
-				activity.add(new Property(DEFAULT_PROPERTY_TOTAL_TIME, ((double) cpuUsed / 1000.0d)));
-				long overHead = getElapsedTime() - getWaitTime() - (cpuUsed/1000);
-				activity.add(new Property(DEFAULT_PROPERTY_OVERHEAD_TIME, overHead));
-			}
-			activity.add(new Property(DEFAULT_PROPERTY_BLOCKED_COUNT, (stopBlockCount - startBlockCount)));
-			activity.add(new Property(DEFAULT_PROPERTY_WAITED_COUNT, (stopWaitCount - startWaitCount)));
-			if (contTimingSupported) {
-				activity.add(new Property(DEFAULT_PROPERTY_BLOCKED_TIME, ((stopBlockTime - startBlockTime) * 1000)));
-				activity.add(new Property(DEFAULT_PROPERTY_WAITED_TIME, ((stopWaitTime - startWaitTime) * 1000)));
-			}
-			this.add(activity);
-		}
-		
+		long start = System.nanoTime();
 		PropertySnapshot cpu = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_CPU);
 		double load = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
 		if (load >= 0) {
@@ -334,7 +366,7 @@ public class TrackingActivity extends Activity {
 		}
 		if (cpuTimingSupported) {
 			cpu.add(DEFAULT_PROPERTY_COUNT, ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors());
-			cpu.add(new Property(DEFAULT_PROPERTY_TOTAL_TIME, ((double) tmbean.getCurrentThreadCpuTime() / 1000.0d)));
+			cpu.add(new Property(DEFAULT_PROPERTY_CPU_TIME, ((double) tmbean.getCurrentThreadCpuTime() / 1000.0d)));
 			cpu.add(new Property(DEFAULT_PROPERTY_TOTAL_USER_TIME, ((double) tmbean.getThreadUserTime(Thread
 			        .currentThread().getId()) / 1000.0d)));
 		}
@@ -350,7 +382,7 @@ public class TrackingActivity extends Activity {
 		thread.add(new Property(DEFAULT_PROPERTY_WAITED_COUNT, tinfo.getWaitedCount()));
 		if (contTimingSupported) {
 			thread.add(new Property(DEFAULT_PROPERTY_BLOCKED_TIME, tinfo.getBlockedTime() * 1000));
-			thread.add(new Property(DEFAULT_PROPERTY_WAITED_TIME, tinfo.getBlockedTime() * 1000));
+			thread.add(new Property(DEFAULT_PROPERTY_WAITED_TIME, tinfo.getWaitedTime() * 1000));
 		}
 		this.add(thread);
 
@@ -371,6 +403,27 @@ public class TrackingActivity extends Activity {
 			gcSnap.add(new Property(DEFAULT_PROPERTY_TIME, gc.getCollectionTime()));
 			gcSnap.add(new Property(DEFAULT_PROPERTY_VALID, gc.isValid()));
 			this.add(gcSnap);
+		}
+
+		if (startCPUTime > 0) {
+			PropertySnapshot activity = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_ACTIVITY);
+			if (cpuTimingSupported) {
+				long cpuUsed = getUsedCpuTimeNanos();
+				double cpuUsec = ((double) cpuUsed / 1000.0d);
+				activity.add(new Property(DEFAULT_PROPERTY_CPU_TIME, cpuUsec));
+				long slackTime = (long) (getElapsedTime() - getWaitTime() - cpuUsec);
+				activity.add(new Property(DEFAULT_PROPERTY_SLACK_TIME, slackTime));
+				activity.add(new Property(DEFAULT_PROPERTY_WALL_TIME, (cpuUsec + getWaitTime())));
+			}
+			activity.add(new Property(DEFAULT_PROPERTY_BLOCKED_COUNT, (stopBlockCount - startBlockCount)));
+			activity.add(new Property(DEFAULT_PROPERTY_WAITED_COUNT, (stopWaitCount - startWaitCount)));
+			if (contTimingSupported) {
+				activity.add(new Property(DEFAULT_PROPERTY_BLOCKED_TIME, ((stopBlockTime - startBlockTime) * 1000)));
+				activity.add(new Property(DEFAULT_PROPERTY_WAITED_TIME, ((stopWaitTime - startWaitTime) * 1000)));
+			}
+			overHeadTimeNano += (System.nanoTime() - start);
+			activity.add(new Property(DEFAULT_PROPERTY_OVERHEAD_TIME, ((double) overHeadTimeNano / 1000.0d)));
+			this.add(activity);
 		}
 	}
 
