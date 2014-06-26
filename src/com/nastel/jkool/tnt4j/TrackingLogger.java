@@ -577,27 +577,6 @@ public class TrackingLogger {
 		tnt(severity, OpType.CALL, opName, correlator,  0, msg, args);
 	}
 
-	/**
-	 * Report a single tracking event
-	 * 
-	 * @param severity
-	 *            severity level of the reported message
-	 * @param type
-	 *            operation type
-	 * @param opName
-	 *            operation name associated with the event message
-	 * @param correlator
-	 *            event correlator
-	 * @param msg
-	 *            event text message
-	 * @param args
-	 *            argument list, exception passed along side given message
-	 * @see TrackingActivity
-	 * @see OpLevel
-	 */
-	public static void tnt(OpLevel severity, OpType type, String opName, String correlator, String msg, Object...args) {
-		tnt(severity, type, opName, correlator, 0, msg, args);
-	}
 
 	/**
 	 * Report a single tracking event
