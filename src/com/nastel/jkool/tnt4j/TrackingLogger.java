@@ -182,16 +182,13 @@ public class TrackingLogger {
 	
 	private static Vector<DumpProvider> DUMP_PROVIDERS = new Vector<DumpProvider>(10, 10);
 	private static Vector<DumpSink> DUMP_DESTINATIONS = new Vector<DumpSink>(10, 10);
-	private static ConcurrentHashMap<DumpProvider, List<DumpSink>> DUMP_DEST_TABLE = new ConcurrentHashMap<DumpProvider, List<DumpSink>>(
-	        49);
-
-	private static Vector<DumpListener> dumpListeners = new Vector<DumpListener>(10, 10);
+	private static Vector<DumpListener> DUMP_LISTENERS = new Vector<DumpListener>(10, 10);
+	private static ConcurrentHashMap<DumpProvider, List<DumpSink>> DUMP_DEST_TABLE = new ConcurrentHashMap<DumpProvider, List<DumpSink>>(49);
 
 	private static TrackerFactory factory = null;
 	private static DumpSinkFactory dumpFactory = null;
 	private static DumpSink defaultDumpSink = null;
 	private static DumpHook dumpHook = new DumpHook();
-	private static ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
 	
 	private Tracker logger;
 
@@ -222,6 +219,7 @@ public class TrackingLogger {
 	 * 
 	 */
 	private static void initJavaTiming() {
+		ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
 		boolean cpuTimingSupported = tmbean.isCurrentThreadCpuTimeSupported();
 		if (cpuTimingSupported)
 			tmbean.setThreadCpuTimeEnabled(cpuTimingSupported);
@@ -846,7 +844,7 @@ public class TrackingLogger {
 	 * @see DumpListener
 	 */
 	public static void addDumpListener(DumpListener lst) {
-		dumpListeners.add(lst);
+		DUMP_LISTENERS.add(lst);
 	}
 
 	/**
@@ -857,7 +855,7 @@ public class TrackingLogger {
 	 * @see DumpListener
 	 */
 	public static void removeDumpListener(DumpListener lst) {
-		dumpListeners.remove(lst);
+		DUMP_LISTENERS.remove(lst);
 	}
 
 	/**
@@ -1025,8 +1023,8 @@ public class TrackingLogger {
 
 	private static void notifyDumpListeners(int type, Object source, DumpCollection dump, List<DumpSink> dlist,
 	        Throwable ex) {
-		synchronized (dumpListeners) {
-			for (DumpListener dls : dumpListeners) {
+		synchronized (DUMP_LISTENERS) {
+			for (DumpListener dls : DUMP_LISTENERS) {
 				dls.onDumpEvent(new DumpEvent(source, type, dump, dlist, ex));
 			}
 		}
