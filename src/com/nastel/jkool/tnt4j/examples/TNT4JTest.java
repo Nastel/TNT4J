@@ -204,7 +204,7 @@ class MySinkErrorHandler implements SinkErrorListener {
 
 class MySinkLogHandler implements SinkLogEventListener {
 	public void sinkLogEvent(SinkLogEvent event) {
-	    System.out.println("sink.LOG: sev=" + event.getSeverity() + ", source=" + event.getSource() + ", msg=" + event.getSinkObject());
+	    // System.out.println("sink.LOG: sev=" + event.getSeverity() + ", source=" + event.getSource() + ", msg=" + event.getSinkObject());
 	}
 }
 

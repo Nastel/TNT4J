@@ -92,7 +92,7 @@ public class FileSink implements Sink {
 
 	@Override
     public synchronized void open() throws IOException {
-		if (printer != null) {
+		if (printer == null) {
 			printer = new PrintStream(new FileOutputStream(file, append));
 		}
     }

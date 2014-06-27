@@ -66,7 +66,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * 
  * <p>
  * <code>TrackingActivity</code> <code>start()/stop()</code> method calls used to mark application activity boundaries.
- * Source create instances of <code>TrackingEvent</code> using <code>TrackingLogger.newEvent()</code> method to
+ * Applications must create instances of <code>TrackingEvent</code> using <code>TrackingLogger.newEvent()</code> method to
  * time individual sub-activities and report them using <code>TrackerLogger.tnt()</code> method call.
  * </p>
  * 
@@ -955,7 +955,6 @@ public class TrackingLogger {
 			for (DumpProvider dumpProvider : DUMP_PROVIDERS) {
 				List<DumpSink> dlist = DUMP_DEST_TABLE.get(dumpProvider);
 				DumpCollection dump = null;
-				DumpSink cDest = null;
 				Throwable error = reason;
 				try {
 					dump = dumpProvider.getDump();
@@ -965,8 +964,8 @@ public class TrackingLogger {
 					notifyDumpListeners(DumpProvider.DUMP_BEFORE, dumpProvider, dump, dlist, reason);
 					if (dump != null) {
 						for (DumpSink dest : dlist) {
-							cDest = dest;
-							cDest.write(dump);
+							System.out.println("write sink=" + dest + ", isopen=" + dest.isOpen());
+							dest.write(dump);
 						}
 					}
 				} catch (Throwable ex) {
@@ -996,6 +995,7 @@ public class TrackingLogger {
 		for (DumpSink dest : DUMP_DESTINATIONS) {
 			try {
 				dest.open();
+				System.out.println("Opened sink=" + dest + ", isopen=" + dest.isOpen());
 			} catch (Throwable ex) {
 				notifyDumpListeners(DumpProvider.DUMP_ERROR, dest, null, DUMP_DESTINATIONS, ex);
 			}
