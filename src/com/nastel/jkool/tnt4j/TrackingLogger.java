@@ -185,10 +185,10 @@ public class TrackingLogger {
 	private static Vector<DumpListener> DUMP_LISTENERS = new Vector<DumpListener>(10, 10);
 	private static ConcurrentHashMap<DumpProvider, List<DumpSink>> DUMP_DEST_TABLE = new ConcurrentHashMap<DumpProvider, List<DumpSink>>(49);
 
-	private static TrackerFactory factory = null;
+	private static final DumpHook dumpHook = new DumpHook();
 	private static DumpSinkFactory dumpFactory = null;
 	private static DumpSink defaultDumpSink = null;
-	private static DumpHook dumpHook = new DumpHook();
+	private static TrackerFactory factory = null;
 	
 	private Tracker logger;
 
@@ -456,7 +456,7 @@ public class TrackingLogger {
 	 * string concatenation.
 	 * <pre>
 	 * {@code
-	 * TrackingLogger.debug("My message arg{0}, arg{1}", parm1, parm2);
+	 * logger.debug("My message arg{0}, arg{1}", parm1, parm2);
 	 * }
 	 * </pre>
 	 * @param msg
@@ -477,7 +477,7 @@ public class TrackingLogger {
 	 * string concatenation.
 	 * <pre>
 	 * {@code
-	 * TrackingLogger.error("My error message arg{0}, arg{1}", parm1, parm2);
+	 * logger.error("My error message arg{0}, arg{1}", parm1, parm2);
 	 * }
 	 * </pre>
 	 * @param msg
@@ -492,13 +492,55 @@ public class TrackingLogger {
 	}
 
 	/**
+	 * Log a single FATAL message and a number of user supplied arguments. 
+	 * Message pattern is based on the format defined
+	 * by <code>MessageFormat</code>. This logging type is more efficient than 
+	 * string concatenation.
+	 * <pre>
+	 * {@code
+	 * logger.fatal("My error message arg{0}, arg{1}", parm1, parm2);
+	 * }
+	 * </pre>
+	 * @param msg
+	 *            message or message pattern
+	 * @param args
+	 *            user defined arguments supplied along side given message
+	 * @see OpLevel
+	 * @see java.text.MessageFormat
+	 */
+	public void fatal(String msg, Object...args) {
+		log(OpLevel.FATAL, msg, args);
+	}
+
+	/**
+	 * Log a single HALT message and a number of user supplied arguments. 
+	 * Message pattern is based on the format defined
+	 * by <code>MessageFormat</code>. This logging type is more efficient than 
+	 * string concatenation.
+	 * <pre>
+	 * {@code
+	 * logger.halt("My error message arg{0}, arg{1}", parm1, parm2);
+	 * }
+	 * </pre>
+	 * @param msg
+	 *            message or message pattern
+	 * @param args
+	 *            user defined arguments supplied along side given message
+	 * @see OpLevel
+	 * @see java.text.MessageFormat
+	 */
+	public void halt(String msg, Object...args) {
+		log(OpLevel.HALT, msg, args);
+	}
+
+	/**
 	 * Log a single WARNING message and a number of user supplied arguments. 
 	 * Message pattern is based on the format defined
 	 * by <code>MessageFormat</code>. This logging type is more efficient than 
 	 * string concatenation.
 	 *  <pre>
 	 * {@code
-	 * TrackingLogger.warn("My error message arg{0}, arg{1}", parm1, parm2);
+	 * logger.warn("My message arg{0}, arg{1}", parm1, parm2);
 	 * }
 	 * </pre>
 	 * @param msg
@@ -519,7 +561,7 @@ public class TrackingLogger {
 	 * string concatenation.
 	 * <pre>
 	 * {@code
-	 * TrackingLogger.info("My error message arg{0}, arg{1}", parm1, parm2);
+	 * logger.info("My message arg{0}, arg{1}", parm1, parm2);
 	 * }
 	 * </pre>
 	 * @param msg
@@ -540,7 +582,7 @@ public class TrackingLogger {
 	 * string concatenation.
 	 *  <pre>
 	 * {@code
-	 * TrackingLogger.success("My error message arg{0}, arg{1}", parm1, parm2);
+	 * logger.success("My message arg{0}, arg{1}", parm1, parm2);
 	 * }
 	 * </pre>
 	 * @param msg
