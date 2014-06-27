@@ -272,6 +272,19 @@ public class TrackingLogger {
 		return new TrackingLogger(factory.getInstance(config.build()));
 	}
 
+	/**
+	 * Obtain an instance of <code>TrackingLogger</code> logger based on
+	 * a given class.
+	 * 
+	 * @param clazz
+	 *            application class used as source name
+	 * @see TrackerConfig
+	 */
+	public static TrackingLogger getInstance(Class<?> clazz) {
+		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(clazz);
+		return new TrackingLogger(factory.getInstance(config.build()));
+	}
+
 
 	/**
 	 * Register a user defined tracker factory. Default is <code>DefaultTrackerFactory</code>.
