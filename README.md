@@ -2,13 +2,13 @@ Why TNT4J
 =====================================
 Several key features make TNT4J a prime logging choice for java applications:
 * <b>Performance</b>: No need to concatenate messages before logging. Simply log using message patterns as follows:
-	* `TrackingLogger.info("My message {0}, {1}, {2}", arg1, arg2, arg3);`. 
+	* `logger.info("My message {0}, {1}, {2}", arg1, arg2, arg3);`. 
 * <b>Simplicity</b>: No need to check for `isDebugEnabled()` before logging messages. Just register your own `SinkEventFilter` and consolidate all checking into a single listener.
-	* `TrackingLogger.addSinkEventFilter(new MyLogFilter());` All conditional logging can be consolidated into a single listener object. 
+	* `logger.addSinkEventFilter(new MyLogFilter());` All conditional logging can be consolidated into a single listener object. 
 * <b>Granular conditional logging</b>: Log only what is matters. Increase performance of your apps by decreasing the amount of logging your app produces and yet increasing relevance and quality of the output.
-	*  `TrackingLogger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);` Checking a global debug level is not granular enough for most applications. Many java apps require granular logging to log only what matters.
+	*  `logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);` Checking a global debug level is not granular enough for most applications. Many java apps require granular logging to log only what matters.
 * <b>Share logging context across apps</b>. Pass logging context across apps programatically or via a shared cache.
-	* `TrackingLogger.set(OpLevel.DEBUG, "myapp.mykey", myvalue);` Imagine writing an application that has to pass logging flag to apps downstream, how would you do that? TNT lets you do that using this method.
+	* `logger.set(OpLevel.DEBUG, "myapp.mykey", myvalue);` Imagine writing an application that has to pass logging flag to apps downstream, how would you do that? TNT lets you do that using this method.
 * <b>State logging</b>: log application state to improve diagnostics of performance, resource and other problems which are hard to trace using standard event logging techniques. Simply register you dump listener and export state variables specific to you application. Dump listeners can be called on VM shutdown or on demand.
 
 Embed TNT4J into application and realize the benefits in matter if minutes. TNT4J can take advantage of other lower level logging frameworks such as log4j.
@@ -95,7 +95,7 @@ Verify TNT4J
 * Run a test program (com.nastel.jkool.tnt4j.examples.TNT4JTest) using the following:
 	* CD to ../build/tnt4j
 	* `java -javaagent:tnt4j-api.jar -Dlog4j.configuration=file:log4j.properties -Dtnt4j.dump.on.vm.shutdown=true
-	-Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath tnt4j-api-{version}-all.jar
+	-Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath tnt4j-api-final-all.jar
 	com.nastel.jkool.tnt4j.examples.TNT4JTest com.myco.TestApp MYSERVER "Test log message" correlator1 "TestCommand"  TestLocation`
 
 `-javaagent:tnt4j-api.jar` command line option is required by `ObjectDumpProvider` to calculate object deep and shallow memory sizes. Use this only if your application makes use of ObjectDumpProvider to dump object state.
