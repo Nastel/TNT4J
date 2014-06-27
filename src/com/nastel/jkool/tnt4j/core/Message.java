@@ -17,7 +17,6 @@ package com.nastel.jkool.tnt4j.core;
 
 import java.util.UUID;
 
-import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -55,8 +54,6 @@ public class Message {
 	public static final int MAX_VALUE_LENGTH = 256;
 
 	private String            signature;
-	private Source			  source;
-	private String			  parent;
 	private int               size;
 	private String            tag;
 	private String            strData;
@@ -257,7 +254,6 @@ public class Message {
 		StringBuilder str = new StringBuilder();
 
 		str.append(getClass().getSimpleName()).append("(")
-			.append("ParentId:").append(parent != null? parent: "root").append(",")
 			.append("TrackId:").append(getTrackingId()).append(",")
 			.append("Tag:").append(getTag()).append(",")
 			.append("Size:").append(getSize()).append(")");

@@ -18,8 +18,12 @@ package com.nastel.jkool.tnt4j.core;
 import com.nastel.jkool.tnt4j.source.Source;
 
 /**
- * Classes that implement this interface support of parent/child relationship
- * of related items.
+ * Classes that implement this interface support define trackable objects.
+ * Trackable are objects which can be tracked and related to one another using
+ * tracking id and correlation id. Each trackable objects has a tracking id
+ * which uniquely identifies this instance, parent id -- tracking id of the parent
+ * trackable instance and correlator which is a user defined token which could be
+ * another tracking id from another trackable source.
  * 
  * @version $Revision: 2 $
  */
@@ -35,36 +39,43 @@ public interface Trackable {
 	public Source getSource();
 
 	/**
-	 * Gets the correlator, which is a user-defined value to relate two separate
-	 * trackable objects.
+	 * Returns user defined correlator, which are used to relate any
+	 * pair of trackable instances.
 	 *
 	 * @return user-defined correlator
 	 */
 	public String getCorrelator();
 	
 	/**
-	 * Gets the type of operation.
+	 * Sets tracking correlator
+	 *
+	 * @param cid tracking correlator
+	 */
+	public void setCorrelator(String cid);
+	
+	/**
+	 * Gets operation type associated with the trackable instance
 	 *
 	 * @return operation type
 	 */
 	public OpType getType();
 	
 	/**
-	 * Gets item tracking signature
+	 * Gets tracking signature associated with this trackable instance.
 	 *
 	 * @return item tracking signature
 	 */
 	public String getTrackingId();
 	
 	/**
-	 * Gets parent's tracking signature
+	 * Gets parent's tracking id.
 	 *
-	 * @return parent's tracking signature
+	 * @return parent's tracking id
 	 */
 	public String getParentId();
 	
 	/**
-	 * Sets item tracking signature
+	 * Sets tracking signature
 	 *
 	 * @param signature tracking signature
 	 */
