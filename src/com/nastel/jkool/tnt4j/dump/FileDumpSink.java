@@ -73,7 +73,7 @@ public class FileDumpSink extends FileSink implements DumpSink {
 	}
 	
 	@Override
-    public void close() {
+    public synchronized void close() {
 		if (isOpen()) {
 			printer.println(formatter.getCloseStanza(this));
 			printer.flush();			
@@ -82,7 +82,7 @@ public class FileDumpSink extends FileSink implements DumpSink {
 	}
 
 	@Override
-    public void open() throws IOException {
+    public synchronized void open() throws IOException {
 		super.open();
 		if (isOpen()) {
 			printer.println(formatter.getOpenStanza(this));
@@ -91,7 +91,7 @@ public class FileDumpSink extends FileSink implements DumpSink {
     }
 
 	@Override
-    public void write(DumpCollection dump) throws IOException {
+    public synchronized void write(DumpCollection dump) throws IOException {
 		if (isOpen()) {
 			printer.println(formatter.getHeader(dump));
 			printer.println(formatter.format(dump));

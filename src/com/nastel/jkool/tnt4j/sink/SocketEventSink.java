@@ -121,7 +121,7 @@ public class SocketEventSink extends DefaultEventSink {
 	}
 
 	@Override
-	public void open() throws IOException {
+	public synchronized void open() throws IOException {
 		socketSink = new Socket(hostName, portNo);
 		outStream = new DataOutputStream(socketSink.getOutputStream());
 		if (logSink != null) {
@@ -130,7 +130,7 @@ public class SocketEventSink extends DefaultEventSink {
 	}
 	
 	@Override
-	public void close() throws IOException {
+	public synchronized void close() throws IOException {
 		try {
 			if (isOpen()) {
 				if (logSink != null) {

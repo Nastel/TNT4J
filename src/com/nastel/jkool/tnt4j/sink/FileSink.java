@@ -80,19 +80,21 @@ public class FileSink implements Sink {
 	}
 	
 	@Override
-    public void close() {
-		if (printer != null) printer.close();
-		printer = null;
-	}
-
-	@Override
     public Object getSinkHandle() {
 	    return file;
     }
 
 	@Override
-    public void open() throws IOException {
-		printer = new PrintStream(new FileOutputStream(file, append));
+    public synchronized void close() {
+		if (printer != null) printer.close();
+		printer = null;
+	}
+
+	@Override
+    public synchronized void open() throws IOException {
+		if (printer != null) {
+			printer = new PrintStream(new FileOutputStream(file, append));
+		}
     }
 
 	@Override

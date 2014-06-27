@@ -75,7 +75,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		} 
 	}
 	
-	private void openEventSink() {
+	private synchronized void openEventSink() {
 		try {
 			if (tConfig.getSinkLogEventListener() != null) {
 				eventSink.addSinkLogEventListener(tConfig.getSinkLogEventListener());
@@ -92,7 +92,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		} 
 	}
 	
-	private void closeEventSink() {
+	private synchronized void closeEventSink() {
 		try {
 			if (eventSink != null) {
 				if (tConfig.getSinkLogEventListener() != null) {
@@ -228,7 +228,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
     }
 
 	@Override
-    public void open() {
+    public synchronized void open() {
 		openIOHandle(selector);
 		openEventSink();		
 		logger.log(OpLevel.DEBUG, 
@@ -237,7 +237,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
     }
 
 	@Override
-	public void close() {
+	public synchronized void close() {
 		try {
 			closeEventSink();
 			Utils.close(selector);

@@ -77,9 +77,9 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * <p>Below is example of corresponding receiver application:
  * <pre>
  * {@code
- * TrackingLogger.register("com.nastel.appl.name", "myserver"); // register and obtain Tracker logger instance
- * TrackingActivity activity = TrackingLogger.newActivity(); // create a new application activity timing
- * TrackingEvent event = TrackingLogger.newEvent(OpLevel.INFO, OpType.RECEIVE, "RecvOrder", "Received order"); // create a receiver tracking event
+ * TrackingLogger tracker = TrackingLogger.getInstance("com.nastel.appl.name"); // register and obtain Tracker logger instance
+ * TrackingActivity activity = tracker.newActivity(); // create a new application activity timing
+ * TrackingEvent event = tracker.newEvent(OpLevel.INFO, OpType.RECEIVE, "RecvOrder", "Received order"); // create a receiver tracking event
  * activity.start(); // start application activity timing
  * event.start(); // start timing a tracking event
  * String order_id = null;
@@ -95,7 +95,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * } finally {
  *	activity.stop();
  *	activity.tnt(event); // report a tracking event
- *	TrackingLogger.tnt(activity); // end activity timing
+ *	tracker.tnt(activity); // end activity timing
  * }
  * }
  * </pre>

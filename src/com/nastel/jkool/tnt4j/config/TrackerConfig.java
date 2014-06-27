@@ -47,7 +47,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackerFactory;
  * <pre>
  * {@code
  * TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(source);
- * TrackingLogger.register(config.build());
+ * TrackingLogger tracker = TrackingLogger.getInstance(config.build());
  * ...
  * }
  * </pre>

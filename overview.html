@@ -3,7 +3,7 @@
 <head>
 <meta http-equiv=Content-Type content="text/html; charset=us-ascii">
 <meta name=Generator content="Microsoft Word 14 (filtered)">
-<title>jKool Track and Trace 4J API (TNT4J) JavaDoc</title>
+<title>Track and Trace 4J API (TNT4J) JavaDoc</title>
 <style>
 <!--
  /* Font Definitions */
@@ -185,8 +185,8 @@ div.WordSection1
 
 <p class=MsoNormal>This document describes <b>jKool Track &amp; Trace API
 (TNT4J)</b> specification for tracking and tracing application activities and
-behavior for rapid diagnostics and root cause analysis. The framework encapsulates
-the following key elements essential during diagnostics:</p>
+behavior for rapid diagnostics and root cause analysis. The framework
+encapsulates the following key elements essential during diagnostics:</p>
 
 <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
 style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -305,9 +305,9 @@ describing application&#8217;s state, internal variables, data structures.</p>
 <p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
 Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><b>Snapshot </b><span style='font-family:"Courier New"'>(</span><span
-style='font-size:10.0pt;font-family:"Courier New"'>Snapshot)</span> &#8211; a collection
-of items such as properties, metrics. Snapshots are used to report user defined
-properties associated with events.</p>
+style='font-size:10.0pt;font-family:"Courier New"'>Snapshot)</span> &#8211; a
+collection of items such as properties, metrics. Snapshots are used to report
+user defined properties associated with events.</p>
 
 <p class=MsoNormal>&nbsp;</p>
 
@@ -341,13 +341,9 @@ as shown in the example below.</p>
 
 <p class=MsoNormal><b><span style='font-size:13.5pt;color:black'>&nbsp;</span></b></p>
 
-<p class=MsoNormal><b>NOTE</b>: <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingLogger.register()</span>must
-be called first per thread before making any other call into <span
-style='font-size:10.0pt;font-family:"Courier New"'>TrackingLogger. </span>This
-call allows the API to maintain related thread activities. Inter-thread or
-inter-application/process activities are tied via <span style='font-size:10.0pt;
-font-family:"Courier New"'>TrackingEvent</span>&nbsp;correlators. Make sure to
-use <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingEvent</span>&nbsp;correlators
+<p class=MsoNormal><b>NOTE</b>: Inter-thread or inter-application/process
+activities are tied via <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingEvent</span>&nbsp;correlators.
+Make sure to use <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingEvent</span>&nbsp;correlators
 as a way to interconnect related inter-application activities.</p>
 
 <p class=MsoNormal><span style='font-size:13.5pt;color:black'>&nbsp;</span></p>
@@ -368,20 +364,20 @@ font-family:"Courier New";color:black'>TrackingConfig config =
 DefaultConfigFactory.getInstance().getConfig(&quot;com.nastel.appl.name&quot;).build();</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>TrackingLogger.register(config); //
-register and obtain Tracker logger instance</span></p>
+font-family:"Courier New";color:black'>TrackingLogger tracker = TrackingLogger.getInstance(config);
+// register and obtain Tracker logger instance</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>TrackingActivity activity =
-TrackingLogger.newActivity(); // create a new application activity</span></p>
+font-family:"Courier New";color:black'>TrackingActivity activity = tracker.newActivity();
+// create a new application activity</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>activity.start();</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>TrackingEvent event =
-TrackingLogger.newEvent(OpLevel.SUCCESS, &quot;SQL-SELECT&quot;, &quot;SQL
-customer lookup&quot;); // create a tracking event</span></p>
+font-family:"Courier New";color:black'>TrackingEvent event = tracker.newEvent(OpLevel.SUCCESS,
+&quot;SQL-SELECT&quot;, &quot;SQL customer lookup&quot;); // create a tracking
+event</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>event.start(); // start timing a
@@ -427,7 +423,8 @@ event with the given activity </span></b></p>
 
 <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-TrackingLogger.tnt(activity); // track and trace application activity</span></b></p>
+</span></b><span style='font-size:10.0pt;font-family:"Courier New";color:black'>tracker<b>.tnt(activity);
+// track and trace application activity</b></span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>}</span></p>
@@ -459,7 +456,7 @@ call.</p>
 style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
 style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
 class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>instances
-are related when event correlators match.<span class=apple-converted-space><span
+is related when event correlators match.<span class=apple-converted-space><span
 style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
 style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
 class=apple-converted-space><span style='font-size:10.0pt;font-family:"Courier New";
@@ -517,20 +514,20 @@ font-family:"Courier New";color:black'>TrackingConfig config =
 DefaultConfigFactory.getInstance().getConfig(&quot;com.nastel.appl.name&quot;).build();</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>TrackingLogger.register(config); //
-register and obtain Tracker logger instance</span></p>
+font-family:"Courier New";color:black'>TrackingLogger tracker = TrackingLogger.getInstance(config);
+// register and obtain Tracker logger instance</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>TrackingActivity activity =
-TrackingLogger.newActivity(); // create a new application activity</span></p>
+font-family:"Courier New";color:black'>TrackingActivity activity = tracker.newActivity();
+// create a new application activity</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>activity.start();</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>TrackingEvent event =
-TrackingLogger.newEvent(OpLevel.SUCCESS, &quot;SQL-SELECT&quot;, &quot;SQL
-customer lookup&quot;); // create a tracking event</span></p>
+font-family:"Courier New";color:black'>TrackingEvent event = tracker.newEvent(OpLevel.SUCCESS,
+&quot;SQL-SELECT&quot;, &quot;SQL customer lookup&quot;); // create a tracking
+event</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:#0070C0'>event.setCorrelator(&#8220;7271292&#8221;);
@@ -585,7 +582,8 @@ event with the given activity </span></b></p>
 
 <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-TrackingLogger.tnt(activity); // track and trace application activity</span></b></p>
+</span></b><span style='font-size:10.0pt;font-family:"Courier New";color:black'>tracker<b>.tnt(activity);
+// track and trace application activity</b></span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>}</span></p>
@@ -609,11 +607,11 @@ font-family:"Courier New";color:black'>TrackingConfig config =
 DefaultConfigFactory.getInstance().getConfig(&quot;com.nastel.appl.Sender&quot;).build();</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>TrackingLogger.register(config); //
-register and obtain Tracker logger instance</span></p>
+font-family:"Courier New";color:black'>TrackingLogger tracker = TrackingLogger.getInstance(config);
+// register and obtain Tracker logger instance</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>TrackingActivity activity = TrackingLogger.newActivity();
+font-family:"Courier New";color:black'>TrackingActivity activity = tracker.newActivity();
 // create a new application activity</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
@@ -623,7 +621,7 @@ font-family:"Courier New";color:black'>activity.start();&nbsp;</span></p>
 font-family:"Courier New";color:black'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>TrackingEvent event = <b>TrackingLogger.newEvent(</b>OpLevel.INFO,
+font-family:"Courier New";color:black'>TrackingEvent event = tracker<b>.newEvent(</b>OpLevel.INFO,
 OpType.SEND, &quot;SendOrder&#8221;, </span><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:#0070C0'>&#8220;7271292&#8221;</span></b><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>,</span></b><span
@@ -679,7 +677,8 @@ event with the given activity </span></b></p>
 
 <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-TrackingLogger.tnt(activity); // track and trace application activity</span></b></p>
+</span></b><span style='font-size:10.0pt;font-family:"Courier New";color:black'>tracker<b>.tnt(activity);
+// track and trace application activity</b></span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>}</span></p>
@@ -699,12 +698,12 @@ font-family:"Courier New";color:black'>TrackingConfig config =
 DefaultConfigFactory.getInstance().getConfig(&quot;com.nastel.appl.Receiver&quot;).build();</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>TrackingLogger.register(config); //
-register and obtain Tracker logger instance</span></p>
+font-family:"Courier New";color:black'>TrackingLogger tracker = TrackingLogger.getInstance(config);
+// register and obtain Tracker logger instance</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>TrackingActivity activity =
-TrackingLogger.newActivity(); // create a new application activity</span></p>
+font-family:"Courier New";color:black'>TrackingActivity activity = tracker.newActivity();
+// create a new application activity</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>activity.start();&nbsp;</span></p>
@@ -713,7 +712,7 @@ font-family:"Courier New";color:black'>activity.start();&nbsp;</span></p>
 font-family:"Courier New";color:black'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>TrackingEvent event = <b>TrackingLogger.newEvent(</b>OpLevel.INFO,
+font-family:"Courier New";color:black'>TrackingEvent event = tracker<b>.newEvent(</b>OpLevel.INFO,
 OpType.RECEIVE, &quot;RecvOrder&quot;, </span><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:#0070C0'>order_id</span></b><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>,</span></b><span
@@ -783,7 +782,8 @@ event with the given activity </span></b></p>
 
 <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-TrackingLogger.tnt(activity); // track and trace application activity</span></b></p>
+</span></b><span style='font-size:10.0pt;font-family:"Courier New";color:black'>tracker<b>.tnt(activity);
+// track and trace application activity</b></span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>}</span></p>
@@ -825,12 +825,12 @@ font-family:"Courier New";color:black'>TrackingConfig config =
 DefaultConfigFactory.getInstance().getConfig(&quot;com.nastel.appl.Receiver&quot;).build();</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>TrackingLogger.register(config); //
-register and obtain Tracker logger instance</span></p>
+font-family:"Courier New";color:black'>TrackingLogger tracker = TrackingLogger.getInstance(config);
+// register and obtain Tracker logger instance</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>TrackingActivity activity =
-TrackingLogger.newActivity(); // create a new application activity</span></p>
+font-family:"Courier New";color:black'>TrackingActivity activity = tracker.newActivity();
+// create a new application activity</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>activity.start();&nbsp;</span></p>
@@ -839,7 +839,7 @@ font-family:"Courier New";color:black'>activity.start();&nbsp;</span></p>
 font-family:"Courier New";color:black'>&nbsp;</span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
-font-family:"Courier New";color:black'>TrackingEvent event = <b>TrackingLogger.newEvent(</b>OpLevel.INFO,
+font-family:"Courier New";color:black'>TrackingEvent event = tracker<b>.newEvent(</b>OpLevel.INFO,
 OpType.RECEIVE, &quot;RecvOrder&quot;, <b>order_id,</b> &quot;Receiving
 order&quot;); // create a tracking event with a correlator and an associated
 operation type</span></p>
@@ -910,7 +910,8 @@ event with the given activity </span></b></p>
 
 <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-TrackingLogger.tnt(activity); // track and trace application activity</span></b></p>
+</span></b><span style='font-size:10.0pt;font-family:"Courier New";color:black'>tracker<b>.tnt(activity);
+// track and trace application activity</b></span></p>
 
 <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>}</span></p>
@@ -1083,7 +1084,7 @@ MyActivityHandler());</span></b></p>
 
 <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-TrackingLogger.<i>register</i>(config.build()); </span></p>
+TrackingLogger tracker = TrackingLogger.<i>getInstance</i>(config.build()); </span></p>
 
 <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New"'>&nbsp;</span></p>
@@ -1119,7 +1120,7 @@ font-family:"Courier New";color:black'> MyActivityHandler());</span></p>
 
 <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-TrackingLogger.<i>register</i>(config.build()); </span></p>
+TrackingLogger tracker = TrackingLogger.getInstance(config); &nbsp;</span></p>
 
 <p class=MsoNormal style='text-autospace:none'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -1261,8 +1262,8 @@ style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp
 </span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>boolean</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> filter(EventSink
-sink, TrackingEvent event) {</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>
+filter(EventSink sink, TrackingEvent event) {</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -1304,8 +1305,8 @@ style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp
 </span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>boolean</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> filter(EventSink
-sink, TrackingActivity event) {</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>
+filter(EventSink sink, TrackingActivity event) {</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -1316,8 +1317,8 @@ style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp
 </span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
 style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>boolean</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> filter(EventSink
-sink, OpLevel level, String msg, Object&#8230;args) {</span></p>
+style='font-size:10.0pt;font-family:"Courier New";color:black'>
+filter(EventSink sink, OpLevel level, String msg, Object&#8230;args) {</span></p>
 
 <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
 style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -1343,8 +1344,8 @@ activity end message will also include a set of properties measured between
 activity <span style='font-size:10.0pt;font-family:"Courier New"'>start/stop()</span>
 calls such as (<span style='font-size:8.0pt;font-family:"Courier New";
 color:#E46C0A'>Property(Type:6,Name:CPU_USAGE_USEC,Value:3400821.8,SampleTime:[10:25:34.767000])</span>),
-which shows&nbsp; the number of CPU microseconds used during execution of the given
-activity as well as the time the measurement was sampled (<span
+which shows&nbsp; the number of CPU microseconds used during execution of the
+given activity as well as the time the measurement was sampled (<span
 style='font-size:8.0pt;font-family:"Courier New";color:#E46C0A'>SampleTime:[10:25:34.767000]</span>).
 These properties are measured per thread per activity and can be used to
 identify activities with high CPU/memory utilization. <b>TNT4J</b> will also
@@ -1416,8 +1417,7 @@ style='color:#C00000'>ElapsedUsec:48000</span></b>,OpsCount=0,MsgCount=45,PropCo
 style='color:#E46C0A'>[Property(Type:6,Name:CPU_USAGE_USEC,Value:3400821.8,SampleTime:[10:25:34.767000]),
 Property(Type:4,Name:CPU_PERCENT_USAGE,Value:9.7500625E-5,SampleTime:[10:25:34.767000]),
 Property(Type:12,Name:BLOCKED_COUNT,Value:0,SampleTime:[10:25:34.767000]),
-Property(Type:14,Name:WAITED_COUNT,Value:0,SampleTime:[10:25:34.767000]),
-Property(Type:13,Name:BLOCKED_TIME_MSEC,Value:0,SampleTime:[10:25:34.767000]),
+Property(Type:14,Name:WAITED_COUNT,Value:0,SampleTime:[10:25:34.767000]), Property(Type:13,Name:BLOCKED_TIME_MSEC,Value:0,SampleTime:[10:25:34.767000]),
 Property(Type:15,Name:WAITED_TIME_MSEC,Value:0,SampleTime:[10:25:34.767000]),
 Property(Type:1,Name:TOTAL_MEMORY,Value:513933312,SampleTime:[10:25:34.767000]),
 Property(Type:3,Name:USED_MEMORY,Value:104798608,SampleTime:[10:25:34.767000]),
@@ -1460,8 +1460,7 @@ style='color:#C00000'>ElapsedUsec:37000</span>,OpsCount=0,MsgCount=44,PropCount=
 style='color:#E46C0A'>[Property(Type:6,Name:CPU_USAGE_USEC,Value:3478822.5,SampleTime:[16:35:48.069000]),
 Property(Type:4,Name:CPU_PERCENT_USAGE,Value:4.216243243243243E-5,SampleTime:[16:35:48.069000]),
 Property(Type:12,Name:BLOCKED_COUNT,Value:0,SampleTime:[16:35:48.069000]),
-Property(Type:14,Name:WAITED_COUNT,Value:0,SampleTime:[16:35:48.069000]),
-Property(Type:13,Name:BLOCKED_TIME_MSEC,Value:0,SampleTime:[16:35:48.069000]),
+Property(Type:14,Name:WAITED_COUNT,Value:0,SampleTime:[16:35:48.069000]), Property(Type:13,Name:BLOCKED_TIME_MSEC,Value:0,SampleTime:[16:35:48.069000]),
 Property(Type:15,Name:WAITED_TIME_MSEC,Value:0,SampleTime:[16:35:48.069000]),
 Property(Type:1,Name:TOTAL_MEMORY,Value:513933312,SampleTime:[16:35:48.069000]),
 Property(Type:3,Name:USED_MEMORY,Value:107463800,SampleTime:[16:35:48.069000]),

@@ -52,17 +52,17 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
- * <code>TrackingLogger</code> is a helper class with static calls to <code>Tracker</code> logging interface.
+ * <code>TrackingLogger</code> is a helper class with calls to <code>Tracker</code> logging interface.
  * </p>
- * Source may this helper class instead of obtaining a <code>Tracker</code> logger instance per thread using
+ * Application should use this helper class instead of obtaining a <code>Tracker</code> logger instance per thread using
  * <code>TrackerFactory</code>. <code>TrackingLogger</code> obtains the <code>Tracker</code> logger instance and stores
  * it in thread local associated for each thread.
  * 
  * <p>
  * A <code>TrackingEvent</code> represents a specific tracking event that application creates for every discrete
- * activity such as JDBC, JMS, SOAP or any other relevant application activity. Source developers must obtain a
+ * activity such as JDBC, JMS, SOAP or any other relevant application activity. Application developers must obtain a
  * <code>Tracker</code> instance via <code>TrackerFactory</code>, create instances of <code>TrackingEvent</code> and use
- * report() to report tracking activities.
+ * <code>log()</code> calls to report tracking activities, events and log messages.
  * 
  * <p>
  * <code>TrackingActivity</code> <code>start()/stop()</code> method calls used to mark application activity boundaries.
@@ -77,11 +77,11 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * <pre>
  * {@code
  * TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(source);
- * TrackingLogger.register(config.build()); // register and obtain Tracker logger instance
- * TrackingActivity activity = TrackingLogger.newActivity(); // create a new activity instance
+ * TrackingLogger tracker = TrackingLogger.getInstance(config.build()); // register and obtain Tracker logger instance
+ * TrackingActivity activity = tracker.newActivity(); // create a new activity instance
  * activity.start(); // start application activity timing
- * TrackingEvent event = TrackingLogger.newEvent(OpLevel.SUCCESS, "SQL-SELECT", "SQL customer lookup"); // create a tracking event
- * TrackingEvent jms_event = TrackingLogger.newEvent(OpLevel.SUCCESS, OpType.SEND, "JmsSend", "correlator", "Sending Message"); // create a tracking event
+ * TrackingEvent event = tracker.newEvent(OpLevel.SUCCESS, "SQL-SELECT", "SQL customer lookup"); // create a tracking event
+ * TrackingEvent jms_event = tracker.newEvent(OpLevel.SUCCESS, OpType.SEND, "JmsSend", "correlator", "Sending Message"); // create a tracking event
  * event.start(); // start timing a tracking event 
  * try {
  * 	...
@@ -99,7 +99,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * 	activity.stop(); // end activity timing
  * 	activity.tnt(event); // track and trace tracking event within given activity 
  * 	activity.tnt(jms_event); // track and trace tracking event within given activity 
- * 	TrackingLogger.tnt(activity); // report a tracking activity
+ * 	tracker.tnt(activity); // report a tracking activity
  * }
  * }
  * </pre>
@@ -110,11 +110,11 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * <pre>
  * {@code
  * TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(source);
- * TrackingLogger.register(config.build()); // register and obtain Tracker logger instance
- * TrackingActivity activity = TrackingLogger.newActivity(); // create a new activity instance
+ * TrackingLogger tracker = TrackingLogger.getInstance(config.build()); // register and obtain Tracker logger instance
+ * TrackingActivity activity = tracker.newActivity(); // create a new activity instance
  * activity.start(); // start application activity timing
- * TrackingEvent event = TrackingLogger.newEvent(OpLevel.SUCCESS, "SQL-SELECT", "SQL customer lookup"); // create a tracking event
- * TrackingEvent jms_event = TrackingLogger.newEvent(OpLevel.SUCCESS, OpType.SEND, "JmsSend", "correlator", "Sending Message"); // create a tracking event
+ * TrackingEvent event = tracker.newEvent(OpLevel.SUCCESS, "SQL-SELECT", "SQL customer lookup"); // create a tracking event
+ * TrackingEvent jms_event = tracker.newEvent(OpLevel.SUCCESS, OpType.SEND, "JmsSend", "correlator", "Sending Message"); // create a tracking event
  * event.start(); // start timing a tracking event 
  * try {
  * 	...
@@ -135,7 +135,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *		activity.tnt(event); // track and trace tracking event within given activity 
  *		activity.tnt(jms_event); // track and trace tracking event within given activity 
  *	}
- * 	TrackingLogger.tnt(activity); // report a tracking activity
+ * 	tracker.tnt(activity); // report a tracking activity
  * }
  * }
  * </pre>
@@ -177,8 +177,6 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * 
  */
 public class TrackingLogger {
-	private static ThreadLocal<Tracker> loggers = new ThreadLocal<Tracker>();
-
 	private static final String TRACKER_SOURCE = System.getProperty("tnt4j.tracking.logger.source", TrackingLogger.class.getName());
 	private static final String TRACKER_CONFIG = System.getProperty("tnt4j.tracking.logger.config");
 	
@@ -194,6 +192,8 @@ public class TrackingLogger {
 	private static DumpSink defaultDumpSink = null;
 	private static DumpHook dumpHook = new DumpHook();
 	private static ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
+	
+	private Tracker logger;
 
 	static {
 		// load configuration and initialize default factories
@@ -230,9 +230,50 @@ public class TrackingLogger {
 			tmbean.setThreadContentionMonitoringEnabled(contTimingSupported);
 	}
 
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			close();
+		} finally {
+			super.finalize();
+		}
+	}
+	
+	private void checkState() {
+		if (logger == null)
+			throw new IllegalStateException("logger closed");		
+	}
+	
 	/** Cannot instantiate. */
-    private TrackingLogger() {}
+    private TrackingLogger(Tracker trg) {
+    	logger = trg;
+    }
     
+	/**
+	 * Obtain an instance of <code>TrackingLogger</code> logger. 
+	 * 
+	 * @param config
+	 *            tracking configuration to be used to create a tracker instance
+	 * @see TrackerConfig
+	 */
+	public static TrackingLogger getInstance(TrackerConfig config) {
+		return new TrackingLogger(factory.getInstance(config));
+	}
+
+
+	/**
+	 * Obtain an instance of <code>TrackingLogger</code> logger. 
+	 * 
+	 * @param sourceName
+	 *            application source name associated with this logger
+	 * @see TrackerConfig
+	 */
+	public static TrackingLogger getInstance(String sourceName) {
+		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName);
+		return new TrackingLogger(factory.getInstance(config.build()));
+	}
+
+
 	/**
 	 * Register a user defined tracker factory. Default is <code>DefaultTrackerFactory</code>.
 	 * 
@@ -289,10 +330,9 @@ public class TrackingLogger {
 	 * 
 	 * @see OpLevel
 	 */
-	public static boolean isSet(OpLevel sev, Object key, Object value) {
-		Tracker lg = loggers.get();
-		if (lg != null)
-			return lg.getTrackingSelector().isSet(sev, key, value);
+	public boolean isSet(OpLevel sev, Object key, Object value) {
+		if (logger != null)
+			return logger.getTrackingSelector().isSet(sev, key, value);
 		return false;
 	}
 
@@ -305,10 +345,9 @@ public class TrackingLogger {
 	 * 
 	 * @see OpLevel
 	 */
-	public static boolean isSet(OpLevel sev, Object key) {
-		Tracker lg = loggers.get();
-		if (lg != null) {
-			return lg.getTrackingSelector().isSet(sev, key);
+	public boolean isSet(OpLevel sev, Object key) {
+		if (logger != null) {
+			return logger.getTrackingSelector().isSet(sev, key);
 		}
 		return false;
 	}
@@ -324,10 +363,9 @@ public class TrackingLogger {
 	 * 
 	 * @see OpLevel
 	 */
-	public static boolean isSet(OpLevel sev) {
-		Tracker lg = loggers.get();
-		if (lg != null) {
-			return lg.getTrackingSelector().isSet(sev, lg.getSource().getName());
+	public boolean isSet(OpLevel sev) {
+		if (logger != null) {
+			return logger.getTrackingSelector().isSet(sev, logger.getSource().getName());
 		}
 		return false;
 	}
@@ -341,10 +379,9 @@ public class TrackingLogger {
 	 * 
 	 * @see OpLevel
 	 */
-	public static void set(OpLevel sev, Object key, Object value){
-		Tracker lg = loggers.get();
-		if (lg != null) {
-			lg.getTrackingSelector().set(sev, key, value);
+	public void set(OpLevel sev, Object key, Object value){
+		if (logger != null) {
+			logger.getTrackingSelector().set(sev, key, value);
 		}
 	}
 
@@ -357,10 +394,9 @@ public class TrackingLogger {
 	 * 
 	 * @see OpLevel
 	 */
-	public static void set(OpLevel sev, Object key) {
-		Tracker lg = loggers.get();
-		if (lg != null) {
-			lg.getTrackingSelector().set(sev, key);
+	public void set(OpLevel sev, Object key) {
+		if (logger != null) {
+			logger.getTrackingSelector().set(sev, key);
 		}		
 	}
 	
@@ -370,31 +406,13 @@ public class TrackingLogger {
 	 * @param key key associated with tracking activity
 	 * 
 	 */
-	public static Object get(Object key) {
-		Tracker lg = loggers.get();
-		if (lg != null) {
-			return lg.getTrackingSelector().get(key);
+	public Object get(Object key) {
+		if (logger != null) {
+			return logger.getTrackingSelector().get(key);
 		}	
 		return null;
 	}
 	
-	/**
-	 * Register an instance of <code>Tracker</code> logger with the current thread. Existing <code>Tracker</code> logger
-	 * (if already registered) is closed and released. Only one registered <code>Tracker</code> logger instance is
-	 * active per thread.
-	 * 
-	 * @param config
-	 *            tracking configuration to be used to create a tracker instance
-	 * @see TrackerConfig
-	 */
-	public static void register(TrackerConfig config) {
-		Tracker lg = loggers.get();
-		if (lg != null)
-			factory.close(lg);
-		loggers.set(factory.getInstance(config));
-	}
-
-
 	/**
 	 * Deregister an instance of <code>Tracker</code> logger with the current thread. Existing <code>Tracker</code> logger
 	 * (if already registered) is closed and released. Only one registered <code>Tracker</code> logger instance is
@@ -402,11 +420,10 @@ public class TrackingLogger {
 	 * 
 	 * @see TrackerConfig
 	 */
-	public static void deregister() {
-		Tracker lg = loggers.get();
-		if (lg != null)
-			factory.close(lg);
-		loggers.remove();
+	public void close() {
+		if (logger != null) {
+			factory.close(logger);
+		}
 	}
 
 
@@ -429,10 +446,8 @@ public class TrackingLogger {
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
 	 */
-	public static void log(OpLevel level, String msg, Object...args) {
-		Tracker logger = loggers.get();
-		if (logger == null)
-			throw new RuntimeException("register() never called for this thread");
+	public void log(OpLevel level, String msg, Object...args) {
+		checkState();
 		logger.getEventSink().log(level, msg, args);
 	}
 
@@ -453,7 +468,7 @@ public class TrackingLogger {
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
 	 */
-	public static void debug(String msg, Object...args) {
+	public void debug(String msg, Object...args) {
 		log(OpLevel.DEBUG, msg, args);
 	}
 
@@ -474,7 +489,7 @@ public class TrackingLogger {
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
 	 */
-	public static void error(String msg, Object...args) {
+	public void error(String msg, Object...args) {
 		log(OpLevel.ERROR, msg, args);
 	}
 
@@ -495,7 +510,7 @@ public class TrackingLogger {
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
 	 */
-	public static void warn(String msg, Object...args) {
+	public void warn(String msg, Object...args) {
 		log(OpLevel.WARNING, msg, args);
 	}
 
@@ -516,7 +531,7 @@ public class TrackingLogger {
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
 	 */
-	public static void info(String msg, Object...args) {
+	public void info(String msg, Object...args) {
 		log(OpLevel.INFO, msg, args);
 	}
 
@@ -537,7 +552,7 @@ public class TrackingLogger {
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
 	 */
-	public static void success(String msg, Object...args) {
+	public void success(String msg, Object...args) {
 		log(OpLevel.SUCCESS, msg, args);
 	}
 
@@ -550,11 +565,9 @@ public class TrackingLogger {
 	 *            tracking activity to be reported
 	 * @see TrackingActivity
 	 */
-	public static void tnt(TrackingActivity activity) {
+	public void tnt(TrackingActivity activity) {
 		if (activity == null) return;
-		Tracker logger = loggers.get();
-		if (logger == null)
-			throw new RuntimeException("register() never called for this thread");
+		checkState();
 		logger.tnt(activity);
 	}
 
@@ -565,11 +578,9 @@ public class TrackingLogger {
 	 *            tracking event to be reported as a single activity
 	 * @see TrackingEvent
 	 */
-	public static void tnt(TrackingEvent event) {
+	public void tnt(TrackingEvent event) {
 		if (event == null) return;
-		Tracker logger = loggers.get();
-		if (logger == null)
-			throw new RuntimeException("register() never called for this thread");
+		checkState();
 		logger.tnt(event);
 	}
 
@@ -590,7 +601,7 @@ public class TrackingLogger {
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
-	public static void tnt(OpLevel severity, String opName, String correlator, String msg, Object...args) {
+	public void tnt(OpLevel severity, String opName, String correlator, String msg, Object...args) {
 		tnt(severity, OpType.CALL, opName, correlator,  0, msg, args);
 	}
 
@@ -615,7 +626,7 @@ public class TrackingLogger {
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
-	public static void tnt(OpLevel severity, OpType opType, String opName, String correlator, long elapsed,
+	public void tnt(OpLevel severity, OpType opType, String opName, String correlator, long elapsed,
 			 String msg, Object...args) {
 		tnt(severity, opType, opName, correlator, null, elapsed, msg, args);
 	}
@@ -642,11 +653,9 @@ public class TrackingLogger {
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
-	public static void tnt(OpLevel severity, OpType opType, String opName, String correlator, String tag, long elapsed,
+	public void tnt(OpLevel severity, OpType opType, String opName, String correlator, String tag, long elapsed,
 			 String msg, Object...args) {
-		Tracker logger = loggers.get();
-		if (logger == null)
-			throw new RuntimeException("register() never called for this thread");
+		checkState();
 		long endTime = System.currentTimeMillis();		
 		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 		event.start(endTime - elapsed);
@@ -661,10 +670,8 @@ public class TrackingLogger {
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
 	 */
-	public static TrackingActivity newActivity() {
-		Tracker logger = loggers.get();
-		if (logger == null)
-			throw new RuntimeException("register() never called for this thread");
+	public TrackingActivity newActivity() {
+		checkState();
 		return logger.newActivity();
 	}
 
@@ -676,10 +683,8 @@ public class TrackingLogger {
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
 	 */
-	public static TrackingActivity newActivity(String signature) {
-		Tracker logger = loggers.get();
-		if (logger == null)
-			throw new RuntimeException("register() never called for this thread");
+	public TrackingActivity newActivity(String signature) {
+		checkState();
 		return logger.newActivity(signature);
 	}
 
@@ -693,10 +698,8 @@ public class TrackingLogger {
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
 	 */
-	public static TrackingActivity newActivity(String signature, String name) {
-		Tracker logger = loggers.get();
-		if (logger == null)
-			throw new RuntimeException("register() never called for this thread");
+	public TrackingActivity newActivity(String signature, String name) {
+		checkState();
 		return logger.newActivity(signature, name);
 	}
 
@@ -716,10 +719,8 @@ public class TrackingLogger {
 	 * @see OpLevel
 	 * @see TrackingEvent
 	 */
-	public static TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object...args) {
-		Tracker logger = loggers.get();
-		if (logger == null)
-			throw new RuntimeException("register() never called for this thread");
+	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object...args) {
+		checkState();
 		return logger.newEvent(severity, opName, correlator, msg, args);
 	}
 
@@ -745,11 +746,9 @@ public class TrackingLogger {
 	 * @see OpType
 	 * @see OpLevel
 	 */
-	public static TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator,
+	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator,
 	        String tag, String msg, Object...args) {
-		Tracker logger = loggers.get();
-		if (logger == null)
-			throw new RuntimeException("register() never called for this thread");
+		checkState();
 		return logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 	}
 
@@ -761,8 +760,7 @@ public class TrackingLogger {
 	 * @return <code>Tracker</code> logger associated with the current thread or null of non available.
 	 * @see Tracker
 	 */
-	public static Tracker getTracker() {
-		Tracker logger = loggers.get();
+	public Tracker getTracker() {
 		return logger;
 	}
 
@@ -773,10 +771,8 @@ public class TrackingLogger {
 	 * @param listener user supplied sink log listener
 	 * @see SinkErrorListener
 	 */
-	public static void addSinkLogEventListener(SinkLogEventListener listener) {
-		Tracker logger = loggers.get();
-		if (logger == null)
-			throw new RuntimeException("register() never called for this thread");
+	public void addSinkLogEventListener(SinkLogEventListener listener) {
+		checkState();
 		logger.getEventSink().addSinkLogEventListener(listener);
 	}
 	
@@ -787,10 +783,8 @@ public class TrackingLogger {
 	 * @param listener user supplied sink log listener
 	 * @see SinkErrorListener
 	 */
-	public static void removeSinkLogEventListener(SinkLogEventListener listener) {
-		Tracker logger = loggers.get();
-		if (logger == null)
-			throw new RuntimeException("register() never called for this thread");
+	public void removeSinkLogEventListener(SinkLogEventListener listener) {
+		checkState();
 		logger.getEventSink().removeSinkLogEventListener(listener);
 	}
 	
@@ -801,10 +795,8 @@ public class TrackingLogger {
 	 * @param listener user supplied sink error listener
 	 * @see SinkErrorListener
 	 */
-	public static void addSinkErrorListener(SinkErrorListener listener) {
-		Tracker logger = loggers.get();
-		if (logger == null)
-			throw new RuntimeException("register() never called for this thread");
+	public void addSinkErrorListener(SinkErrorListener listener) {
+		checkState();
 		logger.getEventSink().addSinkErrorListener(listener);
 	}
 	
@@ -815,10 +807,8 @@ public class TrackingLogger {
 	 * @param listener user supplied sink error listener
 	 * @see SinkErrorListener
 	 */
-	public static void removeSinkErrorListener(SinkErrorListener listener) {
-		Tracker logger = loggers.get();
-		if (logger == null)
-			throw new RuntimeException("register() never called for this thread");
+	public void removeSinkErrorListener(SinkErrorListener listener) {
+		checkState();
 		logger.getEventSink().removeSinkErrorListener(listener);
 	}
 	
@@ -831,10 +821,8 @@ public class TrackingLogger {
 	 * @param filter user supplied sink filter
 	 * @see SinkEventFilter
 	 */
-	public static void addSinkEventFilter(SinkEventFilter filter) {
-		Tracker logger = loggers.get();
-		if (logger == null)
-			throw new RuntimeException("register() never called for this thread");
+	public void addSinkEventFilter(SinkEventFilter filter) {
+		checkState();
 		logger.getEventSink().addSinkEventFilter(filter);
 	}
 	
@@ -845,10 +833,8 @@ public class TrackingLogger {
 	 * @param filter user supplied sink filter
 	 * @see SinkEventFilter
 	 */
-	public static void removeSinkEventFilter(SinkEventFilter filter) {
-		Tracker logger = loggers.get();
-		if (logger == null)
-			throw new RuntimeException("register() never called for this thread");
+	public void removeSinkEventFilter(SinkEventFilter filter) {
+		checkState();
 		logger.getEventSink().removeSinkEventFilter(filter);
 	}
 	
