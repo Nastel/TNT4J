@@ -78,6 +78,15 @@ public class FileSink implements Sink {
 		file = new File(filename);
 		formatter = format;
 	}
+
+	/**
+	 * Return the file name associated with this sink
+	 * 
+	 * @return return file name
+	 */
+	public String getFileName() {
+		return file.getName();
+	}
 	
 	@Override
     public Object getSinkHandle() {

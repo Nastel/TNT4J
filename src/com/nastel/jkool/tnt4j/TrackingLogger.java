@@ -964,7 +964,6 @@ public class TrackingLogger {
 					notifyDumpListeners(DumpProvider.DUMP_BEFORE, dumpProvider, dump, dlist, reason);
 					if (dump != null) {
 						for (DumpSink dest : dlist) {
-							System.out.println("write sink=" + dest + ", isopen=" + dest.isOpen());
 							dest.write(dump);
 						}
 					}
@@ -995,7 +994,6 @@ public class TrackingLogger {
 		for (DumpSink dest : DUMP_DESTINATIONS) {
 			try {
 				dest.open();
-				System.out.println("Opened sink=" + dest + ", isopen=" + dest.isOpen());
 			} catch (Throwable ex) {
 				notifyDumpListeners(DumpProvider.DUMP_ERROR, dest, null, DUMP_DESTINATIONS, ex);
 			}

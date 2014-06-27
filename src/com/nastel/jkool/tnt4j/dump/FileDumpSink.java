@@ -98,7 +98,7 @@ public class FileDumpSink extends FileSink implements DumpSink {
 			printer.println(formatter.getFooter(dump));
 			printer.flush();
 		} else {
-			throw new IOException("Dump sink is closed");
+			throw new IOException("Dump sink is closed, file=" + getFileName());
 		}
 	}
 }
