@@ -18,6 +18,7 @@ package com.nastel.jkool.tnt4j;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
@@ -412,9 +413,20 @@ public class TrackingLogger {
 	}
 	
 	/**
-	 * Deregister an instance of <code>Tracker</code> logger with the current thread. Existing <code>Tracker</code> logger
-	 * (if already registered) is closed and released. Only one registered <code>Tracker</code> logger instance is
-	 * active per thread.
+	 * Obtain a list of keys available in the selector
+	 * 
+	 * @return iterator containing all available keys
+	 */
+	public Iterator<? extends Object> getKeys() {
+		if (logger != null) {
+			return logger.getTrackingSelector().getKeys();
+		}	
+		return null;		
+	}
+
+	/**
+	 * Close this instance of <code>TrackingLogger</code>. Existing <code>Tracker</code> logger
+	 * (if already opened) is closed and released.
 	 * 
 	 * @see TrackerConfig
 	 */

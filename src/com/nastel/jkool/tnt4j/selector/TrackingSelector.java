@@ -15,6 +15,8 @@
  */
 package com.nastel.jkool.tnt4j.selector;
 
+import java.util.Iterator;
+
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.repository.TokenRepository;
 import com.nastel.jkool.tnt4j.sink.Handle;
@@ -98,6 +100,13 @@ public interface TrackingSelector extends Handle {
 	 */
 	public void remove(Object key);
 	
+	/**
+	 * Obtain a list of keys available in the selector
+	 * 
+	 * @return iterator containing all available keys
+	 */
+	public Iterator<? extends Object> getKeys();
+
 	/**
 	 * Obtain an instance of the token repository associated with this selector
 	 * 

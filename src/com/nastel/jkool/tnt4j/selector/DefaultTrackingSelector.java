@@ -182,6 +182,11 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	}
 
 	@Override
+    public Iterator<? extends Object> getKeys() {
+	    return tokenRepository.getKeys();
+    }
+
+	@Override
 	public TokenRepository getRepository() {
 		return tokenRepository;
 	}
