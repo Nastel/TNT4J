@@ -132,7 +132,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * } finally {
  * 	activity.stop(); // end activity timing
  *	// conditional logging using isSet() method to check if a given token matches
- *	if (TrackingLogger.isSet(OpLevel.INFO, "com.nastel.appl.corr", "correlator")) {
+ *	if (tracker.isSet(OpLevel.INFO, "com.nastel.appl.corr", "correlator")) {
  *		activity.tnt(event); // track and trace tracking event within given activity 
  *		activity.tnt(jms_event); // track and trace tracking event within given activity 
  *	}
@@ -318,7 +318,7 @@ public class TrackingLogger {
 	 * Determine of a particular sev/key/value combination is trackable Use this method to determine if tracking is
 	 * enabled/disabled for a specific key/value pair. Example, checking if order id "723772" is trackable:
 	 * 
-	 * <code>TrackingLogger.isSet(OpLevel.INFO, "orderapp.order.id", "723772");</code>
+	 * <code>logger.isSet(OpLevel.INFO, "orderapp.order.id", "723772");</code>
 	 * 
 	 * @param sev
 	 *            severity of to be checked
@@ -337,7 +337,7 @@ public class TrackingLogger {
 
 	/**
 	 * Determine of a particular sev/key is trackable Use this method to determine if tracking is enabled/disabled for a
-	 * specific severity. This call is equivalent to <code>TrackingLogger.isSet(sev, key, null);</code>
+	 * specific severity. This call is equivalent to <code>logger.isSet(sev, key, null);</code>
 	 * 
 	 * @param sev
 	 *            severity of to be checked
@@ -352,10 +352,10 @@ public class TrackingLogger {
 	}
 
 	/**
-	 * Determine of a particular sev for the registered application name used in <code>TrackingLogger.register()</code> call.
+	 * Determine of a particular sev for the registered application name used in <code>TrackingLogger.getInstance()</code> call.
 	 * Use this method to determine if tracking is enabled/disabled for a
 	 * specific severity. This call is equivalent to 
-	 * <code>TrackingLogger.isSet(sev, TrackingLogger.getTracker().getSource().getName(), null);</code>
+	 * <code>logger.isSet(sev, logger.getTracker().getSource().getName(), null);</code>
 	 * 
 	 * @param sev
 	 *            severity of to be checked
@@ -444,7 +444,7 @@ public class TrackingLogger {
 	 * string concatenation.
 	 * <pre>
 	 * {@code
-	 * TrackingLogger.log(OpLevel.DEBUG, "My message arg{0}, arg{1}", parm1, parm2);
+	 * logger.log(OpLevel.DEBUG, "My message arg{0}, arg{1}", parm1, parm2);
 	 * }
 	 * </pre>
 	 * @param level
