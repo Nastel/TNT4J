@@ -11,7 +11,18 @@ Several key features make TNT4J a prime logging choice for java applications:
 	* `logger.set(OpLevel.DEBUG, "myapp.mykey", myvalue);` Imagine writing an application that has to pass logging flag to apps downstream, how would you do that? TNT lets you do that using this method.
 * <b>State logging</b>: log application state to improve diagnostics of performance, resource and other problems which are hard to trace using standard event logging techniques. Simply register you dump listener and export state variables specific to you application. Dump listeners can be called on VM shutdown or on demand.
 
-Embed TNT4J into application and realize the benefits in matter if minutes. TNT4J can take advantage of other lower level logging frameworks such as log4j.
+Here is a simple example of using TNT4J:
+
+```java
+TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
+try {
+   ...
+} catch (Exception e) {
+   logger.error("Failed to process request={0}", request_id, ex);
+}
+```
+
+Embed TNT4J into your application and realize the benefits in matter if minutes. TNT4J can take advantage of other lower level logging frameworks such as log4j. Default TNT4J binding is based on log4j.
 
 About TNT4J
 ======================================
