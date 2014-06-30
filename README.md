@@ -10,6 +10,8 @@ Several key features make TNT4J a prime logging choice for java applications:
 * <b>Share logging context across apps</b>. Pass logging context across apps programatically or via a shared cache.
 	* `logger.set(OpLevel.DEBUG, "myapp.mykey", myvalue);` Imagine writing an application that has to pass logging flag to apps downstream, how would you do that? TNT lets you do that using this method.
 * <b>State logging</b>: log application state to improve diagnostics of performance, resource and other problems which are hard to trace using standard event logging techniques. Simply register you dump listener and export state variables specific to you application. Dump listeners can be called on VM shutdown or on demand.
+* <b>Measurements</b>: TNT4J is not just about logging messages, it is also about taking measurements while doing logging. Measurements such as elpased time, CPU, memory, block/wait times as well as user defined measurements. TNT4J allows you to asnwer what was performance at the time of the logged event or message.
+* <b>Correlation</b>: Relate event message together bu grouping or passing context (correlator). Most of not all logging frameworks completely miss the correlation angle.
 
 Here is a simple example of using TNT4J:
 
@@ -19,6 +21,41 @@ try {
    ...
 } catch (Exception e) {
    logger.error("Failed to process request={0}", request_id, ex);
+}
+```
+Colnsolidate all conditional logging checks into a single listener. Why call `isDebugEnabled()' before each log entry?
+
+```java
+TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
+logger.addSinkEventFilter(new MyEventFilter(logger));
+try {
+   logger.debug("My debug message {0}, {1}", arg0, arg1); // no need to gate this call
+   ...
+} catch (Exception e) {
+   logger.error("Failed to process request={0}", request_id, ex);
+}
+
+class MyEventFilter implements SinkEventFilter {
+	TaskLogger logger;
+
+	MyEventFilter(TaskLogger lg) {
+		logger = lg;
+	}
+
+	@Override
+    public boolean filter(EventSink arg0, TrackingEvent arg1) {
+	    return logger.isSet(arg1.getSeverity(), "myappl.token");
+    }
+
+	@Override
+    public boolean filter(EventSink arg0, TrackingActivity arg1) {
+	    return logger.isSet(arg1.getSeverity(), "myappl.token");
+    }
+
+	@Override
+    public boolean filter(EventSink arg0, OpLevel arg1, String arg2, Object... arg3) {
+	    return logger.isSet(arg1, "myappl.token");
+    }
 }
 ```
 
