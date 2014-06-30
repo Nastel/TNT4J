@@ -200,7 +200,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	@Override
     public void tnt(TrackingActivity activity) {
 		try  { 
-			if (activity.getType() != OpType.NOOP) {
+			if (!activity.isNoop()) {
 				reportActivity(activity); 
 			}
 		}
@@ -214,7 +214,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	@Override
 	public void tnt(TrackingEvent event) {
 		try  { 
-			if (event.getType() != OpType.NOOP) {
+			if (!event.isNoop()) {
 				reportEvent(event);
 			}
 		}

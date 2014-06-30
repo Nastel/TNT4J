@@ -129,6 +129,15 @@ public class TrackingEvent extends Message implements Trackable {
 	}
 
 	/**
+	 * Returns true of operation is a NOOP
+	 *
+	 * @return true if operation is a NOOP, false otherwise
+	 */
+	public boolean isNoop() {
+		return operation.isNoop();
+	}
+	
+	/**
 	 * Return current severity level associated with this event
 	 *
 	 * @return severity level

@@ -195,6 +195,15 @@ public class Operation {
 	}
 
 	/**
+	 * Returns true of operation is a NOOP
+	 *
+	 * @return true if operation is a NOOP, false otherwise
+	 */
+	public boolean isNoop() {
+		return (this.opType == OpType.NOOP);
+	}
+
+	/**
 	 * Gets the completion code for the operation.
 	 *
 	 * @return function completion code
