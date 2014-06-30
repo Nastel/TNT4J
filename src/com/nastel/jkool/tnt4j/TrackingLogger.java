@@ -39,6 +39,7 @@ import com.nastel.jkool.tnt4j.dump.MXBeanDumpProvider;
 import com.nastel.jkool.tnt4j.dump.PropertiesDumpProvider;
 import com.nastel.jkool.tnt4j.dump.ThreadDeadlockDumpProvider;
 import com.nastel.jkool.tnt4j.dump.ThreadDumpProvider;
+import com.nastel.jkool.tnt4j.selector.TrackingSelector;
 import com.nastel.jkool.tnt4j.sink.DefaultEventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.SinkErrorListener;
 import com.nastel.jkool.tnt4j.sink.SinkEventFilter;
@@ -48,6 +49,7 @@ import com.nastel.jkool.tnt4j.tracker.Tracker;
 import com.nastel.jkool.tnt4j.tracker.TrackerFactory;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
+import com.nastel.jkool.tnt4j.tracker.TrackingFilter;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 
@@ -192,6 +194,7 @@ public class TrackingLogger {
 	private static TrackerFactory factory = null;
 	
 	private Tracker logger;
+	private TrackingSelector selector;
 
 	static {
 		// load configuration and initialize default factories
@@ -246,6 +249,7 @@ public class TrackingLogger {
 	/** Cannot instantiate. */
     private TrackingLogger(Tracker trg) {
     	logger = trg;
+    	selector = logger.getTrackingSelector();
     }
     
 	/**
@@ -344,7 +348,7 @@ public class TrackingLogger {
 	 */
 	public boolean isSet(OpLevel sev, Object key, Object value) {
 		if (logger != null)
-			return logger.getTrackingSelector().isSet(sev, key, value);
+			return selector.isSet(sev, key, value);
 		return false;
 	}
 
@@ -359,7 +363,7 @@ public class TrackingLogger {
 	 */
 	public boolean isSet(OpLevel sev, Object key) {
 		if (logger != null) {
-			return logger.getTrackingSelector().isSet(sev, key);
+			return selector.isSet(sev, key);
 		}
 		return false;
 	}
@@ -377,7 +381,7 @@ public class TrackingLogger {
 	 */
 	public boolean isSet(OpLevel sev) {
 		if (logger != null) {
-			return logger.getTrackingSelector().isSet(sev, logger.getSource().getName());
+			return selector.isSet(sev, logger.getSource().getName());
 		}
 		return false;
 	}
@@ -393,7 +397,7 @@ public class TrackingLogger {
 	 */
 	public void set(OpLevel sev, Object key, Object value){
 		if (logger != null) {
-			logger.getTrackingSelector().set(sev, key, value);
+			selector.set(sev, key, value);
 		}
 	}
 
@@ -408,7 +412,7 @@ public class TrackingLogger {
 	 */
 	public void set(OpLevel sev, Object key) {
 		if (logger != null) {
-			logger.getTrackingSelector().set(sev, key);
+			selector.set(sev, key);
 		}		
 	}
 	
@@ -420,7 +424,7 @@ public class TrackingLogger {
 	 */
 	public Object get(Object key) {
 		if (logger != null) {
-			return logger.getTrackingSelector().get(key);
+			return selector.get(key);
 		}	
 		return null;
 	}
@@ -432,7 +436,7 @@ public class TrackingLogger {
 	 */
 	public Iterator<? extends Object> getKeys() {
 		if (logger != null) {
-			return logger.getTrackingSelector().getKeys();
+			return selector.getKeys();
 		}	
 		return null;		
 	}
@@ -737,25 +741,39 @@ public class TrackingLogger {
 	 */
 	public TrackingActivity newActivity() {
 		checkState();
-		return logger.newActivity();
+		return logger.newActivity(OpLevel.INFO);
 	}
 
 	/**
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.
 	 * 
+	 * @param level activity severity level
+	 * @return a new application activity object instance
+	 * @see TrackingActivity
+	 */
+	public TrackingActivity newActivity(OpLevel level) {
+		checkState();
+		return logger.newActivity(level);
+	}
+
+	/**
+	 * Create a new application activity via <code>TrackingActivity</code> object instance.
+	 * 
+	 * @param level activity severity level
 	 * @param signature
 	 *            user defined activity signature (should be unique)
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
 	 */
-	public TrackingActivity newActivity(String signature) {
+	public TrackingActivity newActivity(OpLevel level, String signature) {
 		checkState();
-		return logger.newActivity(signature);
+		return logger.newActivity(level, signature);
 	}
 
 	/**
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.
 	 * 
+	 * @param level activity severity level
 	 * @param signature
 	 *            user defined activity signature (should be unique)
 	 * @param name
@@ -763,9 +781,9 @@ public class TrackingLogger {
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
 	 */
-	public TrackingActivity newActivity(String signature, String name) {
+	public TrackingActivity newActivity(OpLevel level, String signature, String name) {
 		checkState();
-		return logger.newActivity(signature, name);
+		return logger.newActivity(level, signature, name);
 	}
 
 	/**
@@ -829,6 +847,17 @@ public class TrackingLogger {
 		return logger;
 	}
 
+	/**
+	 * Register a tracking filter associated with the tracker.
+	 * Tracking filter allows consolidation of all conditional tracking
+	 * logic into a single class.
+	 * 
+	 * @see TrackingFilter
+	 */
+	public void setTrackingFilter(TrackingFilter filter) {
+		logger.setTrackingFilter(filter);
+	}
+	
 	/**
 	 * Add a sink log listener, which is triggered log activities
 	 * occurs when writing to the event sink.

@@ -86,33 +86,53 @@ public interface Tracker extends Handle {
 
 	/**
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.
+	 * NOOP activity instance <code>NullActivity</code> is returned 
+	 * when <code>TrackingFilter</code> is set and returns false.
 	 * 
-	 * @return a new application activity object instance
+	 * @return a new application activity object instance with severity set to OpLevel.INFO.
 	 * @see TrackingActivity
 	 */
 	public TrackingActivity newActivity();
 
 	/**
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.
+	 * NOOP activity instance <code>NullActivity</code> is returned 
+	 * when <code>TrackingFilter</code> is set and returns false.
 	 * 
+	 * @param level activity severity level
+	 * @return a new application activity object instance
+	 * @see TrackingActivity
+	 */
+	public TrackingActivity newActivity(OpLevel level);
+
+	/**
+	 * Create a new application activity via <code>TrackingActivity</code> object instance.
+	 * NOOP activity instance <code>NullActivity</code> is returned 
+	 * when <code>TrackingFilter</code> is set and returns false.
+	 * 
+	 * @param level activity severity level
 	 * @param signature user defined activity signature (should be unique)
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
 	 */
-	public TrackingActivity newActivity(String signature);
+	public TrackingActivity newActivity(OpLevel level, String signature);
 
 	/**
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.
+	 * NOOP activity instance <code>NullActivity</code> is returned 
+	 * when <code>TrackingFilter</code> is set and returns false.
 	 * 
+	 * @param level activity severity level
 	 * @param signature user defined activity signature (should be unique)
 	 * @param name activity name
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
 	 */
-	public TrackingActivity newActivity(String signature, String name);
+	public TrackingActivity newActivity(OpLevel level, String signature, String name);
 
 	/**
 	 * Track and Trace a single application tracking activity
+	 * Activities of type <code>OpType.NOOP</code> are ignored.
 	 * 
 	 * @param activity application activity to be reported
 	 * @see TrackingActivity
@@ -121,9 +141,8 @@ public interface Tracker extends Handle {
 	
 	/**
 	 * Track and Trace a single application tracking event as 
-	 * a separate application activity. This method creates a 
-	 * new <code>TrackingActivity</code> and associates given
-	 * event with the newly created activity. 
+	 * a separate application activity.
+	 * Events of type <code>OpType.NOOP</code> are ignored.
 	 * 
 	 * @param event application tracking event to be reported
 	 * @see TrackingEvent
@@ -132,8 +151,20 @@ public interface Tracker extends Handle {
 	
 
 	/**
+	 * Register a tracking filter associated with the tracker.
+	 * Tracking filter allows consolidation of all conditional tracking
+	 * logic into a single class. Setting the value to null disables the tracking
+	 * filter check and none of newly created activities and events are filtered out.
+	 * 
+	 * @see TrackingFilter
+	 */
+	public void setTrackingFilter(TrackingFilter filter);
+	
+	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 * This constructor will assign a unique event signature using newUUID() call
+	 * NOOP event instance <code>NullEvent</code> is returned 
+	 * when <code>TrackingFilter</code> is set and returns false.
 	 *
 	 * @param severity severity level
 	 * @param opName operation name associated with this event (tracking event name)
@@ -145,6 +176,8 @@ public interface Tracker extends Handle {
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
+	 * NOOP event instance <code>NullEvent</code> is returned 
+	 * when <code>TrackingFilter</code> is set and returns false.
 	 *
 	 * @param severity severity level
 	 * @param opType operation type

@@ -53,10 +53,13 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 public class TrackerImpl implements Tracker, SinkErrorListener {	
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerImpl.class.getName());
-		
+	public static final NullActivity NULL_ACTIVITY = new NullActivity();	
+	public static final NullEvent NULL_EVENT = new NullEvent();	
+	
 	private EventSink eventSink;
 	private TrackerConfig tConfig;
 	private TrackingSelector selector;
+	private TrackingFilter filter;
 	
 	protected TrackerImpl(TrackerConfig config) {
 		tConfig = config;
@@ -131,6 +134,16 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 	}
 
+	private boolean isTrackingEnabled(OpLevel level, Object...args) {
+		if (filter == null) return true;
+		return filter.isTrackingEnabled(this, level, args);
+	}
+
+	@Override
+	public void setTrackingFilter(TrackingFilter tfilt) {
+		filter = tfilt;
+	}
+	
 	@Override
 	public Source getSource() {
 		return tConfig.getSource();
@@ -144,12 +157,26 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	
 	@Override
 	public TrackingActivity newActivity() {
-		return newActivity(UUID.randomUUID().toString());
+		if (!isTrackingEnabled(OpLevel.INFO)) {
+			return NULL_ACTIVITY;
+		}
+		return newActivity(OpLevel.INFO, UUID.randomUUID().toString());
 	}
 
 	@Override
-	public TrackingActivity newActivity(String signature) {
-		TrackingActivity luw = new TrackingActivity(signature, this);
+	public TrackingActivity newActivity(OpLevel level) {
+		if (!isTrackingEnabled(level)) {
+			return NULL_ACTIVITY;
+		}
+		return newActivity(level, UUID.randomUUID().toString());
+	}
+
+	@Override
+	public TrackingActivity newActivity(OpLevel level, String signature) {
+		if (!isTrackingEnabled(level, signature)) {
+			return NULL_ACTIVITY;
+		}
+		TrackingActivity luw = new TrackingActivity(level, signature, this);
 		luw.setPID(Utils.getVMPID());
 		if (tConfig.getActivityListener() != null) {
 			luw.addActivityListener(tConfig.getActivityListener());
@@ -158,8 +185,11 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 
 	@Override
-	public TrackingActivity newActivity(String signature, String name) {
-		TrackingActivity luw = new TrackingActivity(signature, name, this);
+	public TrackingActivity newActivity(OpLevel level, String signature, String name) {
+		if (!isTrackingEnabled(level, signature, name)) {
+			return NULL_ACTIVITY;
+		}
+		TrackingActivity luw = new TrackingActivity(level, signature, name, this);
 		luw.setPID(Utils.getVMPID());
 		if (tConfig.getActivityListener() != null) {
 			luw.addActivityListener(tConfig.getActivityListener());
@@ -169,7 +199,11 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
     public void tnt(TrackingActivity activity) {
-		try  { reportActivity(activity); }
+		try  { 
+			if (activity.getType() != OpType.NOOP) {
+				reportActivity(activity); 
+			}
+		}
 		catch (Throwable ex) {
 			logger.log(OpLevel.ERROR, 
 					"Failed to report activity signature={0}, vm.pid={1}, event.sink={2}, source={3}",
@@ -179,7 +213,11 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public void tnt(TrackingEvent event) {
-		try  { reportEvent(event); }
+		try  { 
+			if (event.getType() != OpType.NOOP) {
+				reportEvent(event);
+			}
+		}
 		catch (Throwable ex) {
 			logger.log(OpLevel.ERROR, 
 					"Failed to report event signature={0}, vm.pid={1}, event.sink={2}, source={3}",
@@ -190,6 +228,9 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
     public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object...args) {
+		if (!isTrackingEnabled(severity, opName, correlator, msg, args)) {
+			return NULL_EVENT;
+		}
 		TrackingEvent event = new TrackingEvent(getSource(), severity, opName, correlator, msg, args);
 		event.getOperation().setUser(tConfig.getSource().getUser());
 		return event;
@@ -198,6 +239,9 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	
 	@Override
     public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag, String msg, Object...args) {
+		if (!isTrackingEnabled(severity, opName, correlator, tag, msg, args)) {
+			return NULL_EVENT;
+		}
 		TrackingEvent event = new TrackingEvent(getSource(), severity, opType, opName, correlator, tag, msg, args);
 		event.getOperation().setUser(tConfig.getSource().getUser());
 		return event;

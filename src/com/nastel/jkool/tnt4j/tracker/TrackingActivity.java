@@ -27,6 +27,7 @@ import com.nastel.jkool.tnt4j.core.ActivityListener;
 import com.nastel.jkool.tnt4j.core.ActivityStatus;
 import com.nastel.jkool.tnt4j.core.Message;
 import com.nastel.jkool.tnt4j.core.OpCompCode;
+import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Operation;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
@@ -104,6 +105,24 @@ public class TrackingActivity extends Activity {
 	/**
 	 * Creates a logical application activity object with the specified signature.
 	 * 
+	 * @param level activity severity level
+	 * @param signature
+	 *            activity signature
+	 * @throws NullPointerException
+	 *             if the signature is <code>null</code>
+	 * @throws IllegalArgumentException
+	 *             if the signature is empty or is too long
+	 * @see #setTrackingId(String)
+	 */
+	protected TrackingActivity(OpLevel level, String signature) {
+		super(signature);
+		setSeverity(level);
+	}
+
+	/**
+	 * Creates a logical application activity object with the specified signature.
+	 * 
+	 * @param level activity severity level
 	 * @param signature
 	 *            activity signature
 	 * @param trk
@@ -114,8 +133,9 @@ public class TrackingActivity extends Activity {
 	 *             if the signature is empty or is too long
 	 * @see #setTrackingId(String)
 	 */
-	protected TrackingActivity(String signature, Tracker trk) {
+	protected TrackingActivity(OpLevel level, String signature, Tracker trk) {
 		super(signature, trk.getSource());
+		setSeverity(level);
 		tracker = trk;
 		initJavaTiming();
 	}
@@ -123,6 +143,7 @@ public class TrackingActivity extends Activity {
 	/**
 	 * Creates a logical application activity object with the specified signature.
 	 * 
+	 * @param level activity severity level
 	 * @param signature
 	 *            activity signature
 	 * @param name
@@ -135,8 +156,9 @@ public class TrackingActivity extends Activity {
 	 *             if the signature is empty or is too long
 	 * @see #setTrackingId(String)
 	 */
-	protected TrackingActivity(String signature, String name, Tracker trk) {
+	protected TrackingActivity(OpLevel level, String signature, String name, Tracker trk) {
 		super(signature, name, trk.getSource());
+		setSeverity(level);
 		tracker = trk;
 		initJavaTiming();
 	}

@@ -62,15 +62,26 @@ public class Activity extends Operation implements Trackable {
 	private String parentId;
 	private ActivityStatus status = ActivityStatus.BEGIN;
 
-	private HashSet<String> linkedItems;
-	private HashSet<String> correlators;
-	private ArrayList<PropertySnapshot> snapshots;
+	private HashSet<String> linkedItems = new HashSet<String>(89);
+	private HashSet<String> correlators = new HashSet<String>(89);
+	private ArrayList<PropertySnapshot> snapshots =  new ArrayList<PropertySnapshot>(32);
 	private ArrayList<ActivityListener> activityListeners = null;
 
-	private int msgCapacity  = 100;
-	private int snapCapacity = 32;
-
-
+	/**
+	 * Creates a Activity object with the specified tracking id.
+	 *
+	 * @param id Activity tracking id
+	 * @throws NullPointerException if the tracking id is <code>null</code>
+	 * @throws IllegalArgumentException if the tracking id is empty or is too long
+	 * @see #setTrackingId(String)
+	 */
+	public Activity(String id) {
+		super(Operation.NOOP, OpType.ACTIVITY);
+		setTrackingId(id);
+		setTID(Thread.currentThread().getId());
+		setSource(appl);
+		setResource(Utils.getVMName());
+	}
 
 	/**
 	 * Creates a Activity object with the specified tracking id.
@@ -275,12 +286,6 @@ public class Activity extends Operation implements Trackable {
 		if (item == null)
 			throw new NullPointerException("msg must be non-null");
 
-		if (linkedItems == null)
-			linkedItems = new HashSet<String>(msgCapacity);
-
-		if (correlators == null)
-			correlators = new HashSet<String>(msgCapacity);
-
 		linkedItems.add(item.getTrackingId());
 		if (item.getCorrelator() != null) {
 			correlators.add(item.getCorrelator());
@@ -367,10 +372,6 @@ public class Activity extends Operation implements Trackable {
 	public void add(PropertySnapshot snapshot) {
 		if (snapshot == null)
 			throw new NullPointerException("snapshot must be non-null");
-
-		if (snapshots == null)
-			snapshots = new ArrayList<PropertySnapshot>(snapCapacity);
-
 		snapshots.add(snapshot);
 	}
 
@@ -418,20 +419,6 @@ public class Activity extends Operation implements Trackable {
 		return snapshots != null ? snapshots.size() : 0;
 	}
 
-	/**
-	 * Sets the expected number of snapshots for this Activity.
-	 * This can be used to set the size of the snapshot list to improve performance.
-	 *
-	 * @param count expected number of snapshots
-	 * @throws IllegalArgumentException if count is <= 0
-	 */
-	public void setSnapshotCount(int count) {
-		if (count <= 0)
-			throw new IllegalArgumentException("count must be > 0");
-		snapCapacity = count;
-		if (snapshots != null)
-			snapshots.ensureCapacity(snapCapacity);
-	}
 
 	/**
 	 * {@inheritDoc}

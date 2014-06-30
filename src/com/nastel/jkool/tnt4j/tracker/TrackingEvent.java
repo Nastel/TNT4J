@@ -148,6 +148,15 @@ public class TrackingEvent extends Message implements Trackable {
 
 
 	/**
+	 * Create a new NOOP tracking event
+	 * This constructor will assign a unique event signature using newUUID() call
+	 *
+	 */
+	protected TrackingEvent() {
+		this(null, OpLevel.UNKNOWN, OpType.NOOP, Operation.NOOP, null, null, null);
+	}
+
+	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 * This constructor will assign a unique event signature using newUUID() call
 	 *

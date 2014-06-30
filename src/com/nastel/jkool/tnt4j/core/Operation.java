@@ -40,6 +40,11 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 public class Operation {
 
 	/**
+	 * Noop operation name
+	 */
+	public static final String NOOP = "NOOP";
+
+	/**
 	 * Maximum length of Operation Function Name.
 	 * @since Revision 14
 	 */
@@ -68,6 +73,7 @@ public class Operation {
 	 * @since Revision 43
 	 */
 	public static final int MAX_CORRELATOR_LENGTH = 256;
+
 
 	private String		opName;
 	private OpType		opType;
