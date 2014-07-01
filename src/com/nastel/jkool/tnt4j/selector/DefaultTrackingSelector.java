@@ -115,13 +115,13 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 				String sevValue = value.substring(0, index);
 				String valuePattern = value.substring(index + 1);
 				OpLevel sevLimit = OpLevel.valueOf(sevValue.toUpperCase());
-				tntToken = new TntToken(key, value, sevLimit, Pattern.compile(valuePattern));
+				tntToken = new TntToken(sevLimit, key, value, valuePattern);
 			} else {
 				// token only has severity limit specified
 				String sevValue = value.trim();
 				if (sevValue.length() > 0) {
 					OpLevel sevLimit = OpLevel.valueOf(sevValue.toUpperCase());
-					tntToken = new TntToken(key, value, sevLimit, null);
+					tntToken = new TntToken(sevLimit, key, value, null);
 				}
 			}
 			if (tntToken != null) {
@@ -251,14 +251,18 @@ class PropertyListener implements TokenRepositoryListener {
 class TntToken {
 	Object key;
 	String value;
+	String vPattern;
 	OpLevel sevLimit;
 	Pattern valuePatten;
 
-	public TntToken(Object k, String v, OpLevel sev, Pattern val) {
+	public TntToken(OpLevel sev, Object k, String v, String vPtn) {
 		value = v;
 		key = k;
 		sevLimit = sev;
-		valuePatten = val;
+		vPattern = vPtn;
+		if (vPattern != null) {
+			valuePatten = Pattern.compile(vPattern);
+		}
 	}
 
 	public String getValue() {
@@ -275,9 +279,9 @@ class TntToken {
 
 	public String toString() {
 		return "Token{"
-			+ key + ": " + value
-			+ ", sev.limit: " + sevLimit
-			+ ", pattern: " + valuePatten
+			+ key + ":" + value
+			+ ", sev.level: " + sevLimit
+			+ ", value.pattern: " + vPattern
 			+ "}";
 	}
 }
