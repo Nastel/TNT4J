@@ -178,8 +178,7 @@ public class TrackerConfigStore extends TrackerConfig {
 		try {
 			return Utils.createConfigurableObject(classProp, prefix, getProperties());
 		} catch (Throwable e) {
-			logger.log(OpLevel.ERROR, "Failed to create configurable instance {class: " 
-					+ classProp + ", prefix: " + prefix + "}", e);
+			logger.log(OpLevel.ERROR, "Failed to create configurable instance class={0}, prefix={1}", classProp, prefix, e);
 		}
 		return null;
 	}
@@ -188,7 +187,7 @@ public class TrackerConfigStore extends TrackerConfig {
 		setProperties(loadProperties(map));
 		if (props != null) {
 			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.DEBUG, "Loading configuration source: {0}, properties: {1}", srcName, props);
+				logger.log(OpLevel.DEBUG, "Loaded properties source={0}, tid={1}, properties={2}", srcName, Thread.currentThread().getId(), props);
 			}
 			setDefaultEventSinkFactory((EventSinkFactory) createConfigurableObject("default.event.sink.factory", "default.event.sink.factory."));
 			setSourceFactory((SourceFactory) createConfigurableObject("source.factory", "source.factory."));
@@ -223,14 +222,17 @@ public class TrackerConfigStore extends TrackerConfig {
 		Map<String, Properties> map = null;
 		try {
 			map = loadConfigFile(configFile);
-			logger.log(OpLevel.DEBUG, "Loaded configuration {file: " + configFile + ", config.size: " + map.size() + "}");
+			if (logger.isSet(OpLevel.DEBUG)) {
+				logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, file={1}, config.size={2}, tid={3}", 
+						srcName, configFile, map.size(), Thread.currentThread().getId());
+			}
 		} catch (Throwable e) {
-			logger.log(OpLevel.ERROR, "Unable to load configuration: file=" + configFile, e);
+			logger.log(OpLevel.ERROR, "Unable to load configuration: source={0}, file={1}", srcName, configFile, e);
 		}
 		return map;
 	}
 
-	private static Map<String, Properties> loadConfigFile(String fileName) throws IOException {
+	private Map<String, Properties> loadConfigFile(String fileName) throws IOException {
 		LinkedHashMap<String, Properties> map = new LinkedHashMap<String, Properties>(111);
 		File file = new File(fileName);
 		BufferedReader reader = null;
@@ -250,7 +252,7 @@ public class TrackerConfigStore extends TrackerConfig {
 		return map;
 	}
 
-	private static Properties readStanza(BufferedReader reader) throws IOException {
+	private Properties readStanza(BufferedReader reader) throws IOException {
 		String line = null;
 		Properties props = new Properties();
 		do {
@@ -267,7 +269,7 @@ public class TrackerConfigStore extends TrackerConfig {
 				}
 				int sepIndex = line.indexOf(":");
 				if (sepIndex <= 0) {
-					logger.log(OpLevel.WARNING, "Skipping invalid entry=" + Utils.quote(line));
+					logger.log(OpLevel.WARNING, "Skipping invalid source={0}, file={1}, entry='{2}'", srcName, configFile, line);
 					continue;
 				}
 				String key = line.substring(0, sepIndex).trim();

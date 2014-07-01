@@ -21,6 +21,7 @@ import com.nastel.jkool.tnt4j.core.ActivityStatus;
 import com.nastel.jkool.tnt4j.core.OpCompCode;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
+import com.nastel.jkool.tnt4j.core.Trackable;
 
 /**
  * This class represents an empty Null/NOOP activity returned by tracker
@@ -80,5 +81,9 @@ public class NullActivity extends TrackingActivity {
 
 	@Override
 	public void tnt(TrackingEvent event) {
+	}
+	
+	@Override
+	public void add(Trackable item) {
 	}
 }

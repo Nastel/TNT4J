@@ -112,6 +112,9 @@ public class SimpleFormatter extends DefaultFormatter implements Configurable  {
 		}
 		msg.append("pid: '").append(activity.getPID()).append("'").append(separator);
 		msg.append("tid: '").append(activity.getTID()).append("'").append(separator);
+		msg.append("id-count: '").append(activity.getIdCount()).append("'").append(separator);
+		msg.append("cid-count: '").append(activity.getCidCount()).append("'").append(separator);
+		msg.append("snap-count: '").append(activity.getSnapshotCount()).append("'").append(separator);
 		msg.append("source: '").append(activity.getSource().getFQName()).append("'").append(separator);
 		if (activity.getParentId() != null) {
 			msg.append("parent-id: '").append(activity.getParentId()).append("'").append(separator);

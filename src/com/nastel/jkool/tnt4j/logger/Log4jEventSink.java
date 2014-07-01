@@ -20,6 +20,7 @@ import java.util.Properties;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 
 import com.nastel.jkool.tnt4j.core.ActivityStatus;
 import com.nastel.jkool.tnt4j.core.OpLevel;
@@ -70,16 +71,24 @@ public class Log4jEventSink extends DefaultEventSink {
 	@Override
     public void log(TrackingEvent event) {
 		if (!filterEvent(event)) return;
-		logger.log(getL4JLevel(event), formatter.format(event), event.getOperation().getThrowable());
-		super.log(event);
+		
+		Priority level = getL4JLevel(event);
+		if (logger.isEnabledFor(level)) {
+			logger.log(getL4JLevel(event), formatter.format(event), event.getOperation().getThrowable());
+			super.log(event);
+		}
     }
 
 	@Override
 	public void log(TrackingActivity activity) {
 		if (!filterEvent(activity)) return;
-		Throwable ex = activity.getThrowable();
-		logger.log(getL4JLevel(activity.getStatus()), formatter.format(activity), ex);
-		super.log(activity);
+
+		Priority level = getL4JLevel(activity.getStatus());
+		if (logger.isEnabledFor(level)) {
+			Throwable ex = activity.getThrowable();
+			logger.log(level, formatter.format(activity), ex);
+			super.log(activity);
+		}
 	}
 	
 	/**
@@ -115,8 +124,12 @@ public class Log4jEventSink extends DefaultEventSink {
 	@Override
     public void log(OpLevel sev, String msg, Object...args) {
 		if (!filterEvent(sev, msg, args)) return;
-		logger.log(getL4JLevel(sev), formatter.format(sev, msg, args), Utils.getThrowable(args));
-		super.log(sev, msg, args);
+
+		Priority level = getL4JLevel(sev);
+		if (logger.isEnabledFor(level)) {
+			logger.log(level, formatter.format(sev, msg, args), Utils.getThrowable(args));
+			super.log(sev, msg, args);
+		}
 	}
 
 

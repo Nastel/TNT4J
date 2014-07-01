@@ -45,7 +45,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(DefaultTrackingSelector.class);
-	private HashMap<Object, TntToken> tokenMap = new HashMap<Object, TntToken>(111);
+	private HashMap<Object, TntToken> tokenMap = new HashMap<Object, TntToken>(89);
 	private Map<String, Object> config = null;
 	private TokenRepository tokenRepository = null;
 	private PropertyListener listener = null;
@@ -82,7 +82,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 			tokenRepository.addRepositoryListener(listener);
 			reloadConfig();
 		} catch (IOException e) {
-			logger.log(OpLevel.ERROR, "Unable to load repository=" + tokenRepository, e);
+			logger.log(OpLevel.ERROR, "Unable to load repository={0}", tokenRepository, e);
 			throw e;
 		}
 	}
@@ -127,16 +127,13 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 			if (tntToken != null) {
 				if (logger.isSet(OpLevel.DEBUG)) {
 					logger.log(OpLevel.DEBUG, 
-							"putkey: repository=" + tokenRepository 
-							+ ", token=" + tntToken);
+							"putkey: repository={0}, token={1}", tokenRepository, tntToken);
 				}
 				tokenMap.put(key, tntToken);
 			}
 		} catch (Throwable ex) {
 			logger.log(OpLevel.ERROR, 
-					"Failed to process key=" + key 
-					+ ", value=" + value 
-					+ ", repository=" + tokenRepository, ex);
+					"Failed to process key={0}, value={1}, repository={2}", key, value, tokenRepository, ex);
 		}
 	}
 
@@ -147,17 +144,9 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 
 	@Override
 	public boolean isSet(OpLevel sev, Object key, Object value) {
-		boolean match = false;
-		if (tokenRepository == null)
-			return match;
-
+		if (tokenRepository == null) return false;
 		TntToken token = tokenMap.get(key);
-		if (token != null) {
-			boolean sevMatch = (sev.ordinal() >= token.sevLimit.ordinal());
-			match = sevMatch
-			        && ((value != null && token.valuePatten != null)? token.valuePatten.matcher(value.toString()).matches(): true);
-		}
-		return match;
+		return (token != null? token.isMatch(sev, key, value): false);
 	}
 
 	@Override
@@ -213,7 +202,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 			Object obj = Utils.createConfigurableObject("Repository", "Repository.", config);
 			setRepository((TokenRepository) obj);
 		} catch (Throwable e) {
-			logger.log(OpLevel.ERROR, "Unable to process settings=" + props, e);
+			logger.log(OpLevel.ERROR, "Unable to process settings={0}", props, e);
 		}
 	}
 }
@@ -229,17 +218,14 @@ class PropertyListener implements TokenRepositoryListener {
 
 	@Override
 	public void repositoryError(TokenRepositoryEvent event) {
-		logger.log(OpLevel.ERROR, "Repository error detected, event=" + event, event.getCause());
+		logger.log(OpLevel.ERROR, "Repository error detected, event={0}", event, event.getCause());
 	}
 
 	@Override
 	public void repositoryChanged(TokenRepositoryEvent event) {
 		if (logger.isSet(OpLevel.DEBUG)) {
-			logger.log(OpLevel.DEBUG, "repositoryChanged {source: " + event.getSource() 
-					+ ", type: " + event.getType()
-			        + ", " + event.getKey() 
-			        + ": " + event.getValue()
-			        + "}");
+			logger.log(OpLevel.DEBUG, "repositoryChanged source={0}, type={1}, {2}={3}",
+					event.getSource(), event.getType(), event.getKey(), event.getValue());
 		}
 		switch (event.getType()) {
 		case TokenRepository.EVENT_ADD_KEY:
@@ -256,7 +242,7 @@ class PropertyListener implements TokenRepositoryListener {
 			selector.reloadConfig();
 			break;
 		case TokenRepository.EVENT_EXCEPTION:
-			logger.log(OpLevel.ERROR, "Repository error detected, event=" + event, event.getCause());
+			logger.log(OpLevel.ERROR, "Repository error detected, event={0}", event, event.getCause());
 			break;
 		}
 	}
@@ -279,7 +265,19 @@ class TntToken {
 		return value;
 	}
 
+	public boolean isMatch(OpLevel sev, Object key, Object value) {
+		boolean match = false;
+		boolean sevMatch = (sev.ordinal() >= sevLimit.ordinal());
+		match = sevMatch
+		        && ((value != null && valuePatten != null)? valuePatten.matcher(value.toString()).matches(): true);		
+		return match;
+	}
+
 	public String toString() {
-		return "Token{" + key + ": " + value + ", sev.limit: " + sevLimit + ", pattern: " + valuePatten + "}";
+		return "Token{"
+			+ key + ": " + value
+			+ ", sev.limit: " + sevLimit
+			+ ", pattern: " + valuePatten
+			+ "}";
 	}
 }

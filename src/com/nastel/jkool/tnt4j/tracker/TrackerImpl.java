@@ -53,6 +53,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 public class TrackerImpl implements Tracker, SinkErrorListener {	
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerImpl.class.getName());
+
 	public static final NullActivity NULL_ACTIVITY = new NullActivity();	
 	public static final NullEvent NULL_EVENT = new NullEvent();	
 	
@@ -274,10 +275,12 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	@Override
     public synchronized void open() {
 		openIOHandle(selector);
-		openEventSink();		
-		logger.log(OpLevel.DEBUG, 
-			"Tracker opened vm.name={0}, vm.pid={1}, event.sink={2}, source={3}",
-			Utils.getVMName(), Utils.getVMPID(), eventSink, getSource());
+		openEventSink();
+		if (logger.isSet(OpLevel.DEBUG)) {
+			logger.log(OpLevel.DEBUG, 
+					"Tracker opened vm.name={0}, vm.pid={1}, event.sink={2}, source={3}",
+					Utils.getVMName(), Utils.getVMPID(), eventSink, getSource());
+		}
     }
 
 	@Override
@@ -285,9 +288,11 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		try {
 			closeEventSink();
 			Utils.close(selector);
-			logger.log(OpLevel.DEBUG, 
+			if (logger.isSet(OpLevel.DEBUG)) {
+				logger.log(OpLevel.DEBUG, 
 					"Tracker closed vm.name={0}, vm.pid={1}, event.sink={2}, source={3}",
 					Utils.getVMName(), Utils.getVMPID(), eventSink, getSource());
+			}
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, 
 					"Failed to close tracker vm.name={0}, vm.pid={1}, event.sink={2}, source={3}",
