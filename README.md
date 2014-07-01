@@ -3,7 +3,7 @@ Why TNT4J
 Several key features make TNT4J a prime logging choice for java applications:
 * <b>Performance</b>: No need to concatenate messages before logging. Simply log using message patterns as follows:
 	* `logger.info("My message {0}, {1}, {2}", arg1, arg2, arg3);`. 
-* <b>Simplicity</b>: No need to check for `isDebugEnabled()` before logging messages. Just register your own `SinkEventFilter` and consolidate all checking into a single listener.
+* <b>Simplicity & Clean Code</b>: No need to check for `isDebugEnabled()` before logging messages. Just register your own `SinkEventFilter` and consolidate all checking into a single listener.
 	* `logger.addSinkEventFilter(new MyLogFilter());` All conditional logging can be consolidated into a single listener object. 
 * <b>Granular conditional logging</b>: Log only what is matters. Increase performance of your apps by decreasing the amount of logging your app produces and yet increasing relevance and quality of the output.
 	*  `logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);` Checking a global debug level is not granular enough for most applications. Many java apps require granular logging to log only what matters.
