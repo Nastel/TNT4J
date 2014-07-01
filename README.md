@@ -13,7 +13,7 @@ Several key features make TNT4J a prime logging choice for java applications:
 * <b>State logging</b>: log application state to improve diagnostics of performance, resource and other problems which are hard to trace using standard event logging techniques. Simply register your state dump listener and export state variables specific to you application. State dump listeners can be called on VM shutdown or on demand.
 	* Call `TrackingLogger.dumpState();` to generate application dump on demand.
 * <b>Measurements</b>: TNT4J is not just about logging messages, it is also about taking measurements while doing logging. Measurements such as elpased time, CPU, memory, block/wait times as well as user defined measurements. TNT4J allows you to asnwer what was performance at the time of the logged event or message.
-* <b>Correlation</b>: Relate event message together bu grouping or passing context (correlator). Most of not all logging frameworks completely miss the correlation angle.
+* <b>Correlation</b>: Relate event message together by grouping or passing context (correlator). Most of not all logging frameworks completely miss the correlation angle.
 
 Here is a simple example of using TNT4J:
 
