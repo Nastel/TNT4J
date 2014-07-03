@@ -52,6 +52,7 @@ public class Log4jEventSink extends DefaultEventSink {
 
 	private static final String[] log4JStatusMap = { "INFO", "INFO", "INFO", "ERROR" };
 
+	private String logName;
 	private Logger logger = null;
 	private EventFormatter formatter = null;
 	
@@ -64,12 +65,14 @@ public class Log4jEventSink extends DefaultEventSink {
 	 *
 	 */
 	public Log4jEventSink(String name, Properties props, EventFormatter frmt) {
-		logger = Logger.getLogger(name);	
+		logName = name;	
 		formatter = frmt;
+		open();
 	}
 
 	@Override
     public void log(TrackingEvent event) {
+		if (logger == null) throw new IllegalStateException("Sink closed");
 		if (!filterEvent(event)) return;
 		
 		Priority level = getL4JLevel(event);
@@ -81,6 +84,7 @@ public class Log4jEventSink extends DefaultEventSink {
 
 	@Override
 	public void log(TrackingActivity activity) {
+		if (logger == null) throw new IllegalStateException("Sink closed");
 		if (!filterEvent(activity)) return;
 
 		Priority level = getL4JLevel(activity.getStatus());
@@ -123,8 +127,8 @@ public class Log4jEventSink extends DefaultEventSink {
 
 	@Override
     public void log(OpLevel sev, String msg, Object...args) {
+		if (logger == null) throw new IllegalStateException("Sink closed");
 		if (!filterEvent(sev, msg, args)) return;
-
 		Priority level = getL4JLevel(sev);
 		if (logger.isEnabledFor(level)) {
 			logger.log(level, formatter.format(sev, msg, args), Utils.getThrowable(args));
@@ -145,15 +149,19 @@ public class Log4jEventSink extends DefaultEventSink {
 
 	@Override
     public void write(Object msg, Object...args) throws IOException {
+		if (logger == null) throw new IllegalStateException("Sink closed");
 		logger.info(formatter.format(msg, args));
     }
 
 	@Override
-    public void open() throws IOException {
+    public synchronized void open() {
+		if (logger == null) {
+			logger = Logger.getLogger(logName);	
+		}
     }
 
 	@Override
-    public void close() throws IOException {
+    public synchronized void close() throws IOException {
     }
 
 	@Override

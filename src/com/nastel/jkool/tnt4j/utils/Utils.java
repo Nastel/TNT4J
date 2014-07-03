@@ -69,7 +69,21 @@ public class Utils {
 	 */
 	public static final long VM_PID = initVMID();
 
-	private static long initVMID() {
+	private static final int CLIENT_CODE_STACK_INDEX;
+
+    static {
+        int index = 0;
+		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+		for (StackTraceElement frame: stack) {
+        	index++;
+            if (frame.getClassName().equals(Utils.class.getName())) {
+                break;
+            }
+        }
+        CLIENT_CODE_STACK_INDEX = index;
+    }
+    
+    private static long initVMID() {
 		String _vm_pid_del = System.getProperty("tnt4j.java.vm.pid.dlm", "@");
 		String vm_name = ManagementFactory.getRuntimeMXBean().getName();
 		try {
@@ -83,6 +97,66 @@ public class Utils {
 		return 0;
 	}
 
+	/**
+	 * Return current stack frame which is executing this call
+	 * 
+	 * @return return current stack frame
+	 */
+	public static StackTraceElement getCurrentStackFrame() {
+		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+		int index = CLIENT_CODE_STACK_INDEX;
+		return stack.length > index? stack[index]: stack[stack.length-1];
+	}
+
+	/**
+	 * Return calling stack frame, which is right
+	 * above in the current stack frame.
+	 * 
+	 * @return return calling stack frame, right above the current call.
+	 */
+	public static StackTraceElement getCallingStackFrame() {
+		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+		int index = CLIENT_CODE_STACK_INDEX + 1;
+		return stack.length > index? stack[index]: stack[stack.length-1];
+	}
+	
+	/**
+	 * Return a specific stack frame with a given stack offset.
+	 * offset 0 -- current, 1 -- calling, and so on.
+	 * 
+	 * @param offset offset index within the calling stack
+	 * @return return current stack frame
+	 */
+	public static StackTraceElement getStackFrame(int offset) {
+		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+		int index = CLIENT_CODE_STACK_INDEX + offset;
+		return stack.length > index? stack[index]: stack[stack.length-1];
+	}
+
+	/**
+	 * Return calling stack frame which is right above a given class marker plus
+	 * the offset.
+	 * 
+	 * @param classMarker class marker on the stack
+	 * @param offset offset on the stack from the marker
+	 * @return Return calling stack frame which is right above a given class marker
+	 */
+	public static StackTraceElement getStackFrame(String classMarker, int offset) {
+		int index = 0;
+		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
+		StackTraceElement first = null, found = stack[stack.length-1];
+		for (StackTraceElement item: stack) {
+			if (first == null && item.getClassName().startsWith(classMarker)) {
+				first = item;
+			} else if (first != null && !item.getClassName().startsWith(classMarker)) {
+				found = stack[index+offset];
+				break;
+			}
+			index++;
+		}
+		return found;
+	}
+	
 	/**
 	 * Format a given string pattern and a list of arguments 
 	 * as defined by <code>MessageFormat</code>

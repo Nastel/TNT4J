@@ -38,17 +38,15 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 12 $
  */
 public class Operation {
-
+	/**
+	 * Current stack frame class marker prefix
+	 */
+	public static final String OP_STACK_MARKER_PREFIX = "$";
+	
 	/**
 	 * Noop operation name
 	 */
 	public static final String NOOP = "NOOP";
-
-	/**
-	 * Maximum length of Operation Function Name.
-	 * @since Revision 14
-	 */
-	public static final int MAX_FUNCTION_NAME_LENGTH = 256;
 
 	/**
 	 * Maximum length of Operation User Name.
@@ -74,7 +72,6 @@ public class Operation {
 	 */
 	public static final int MAX_CORRELATOR_LENGTH = 256;
 
-
 	private String		opName;
 	private OpType		opType;
 	private OpCompCode	opCC = OpCompCode.SUCCESS;
@@ -85,7 +82,6 @@ public class Operation {
 	private String				user;
 	private long				elapsedTime;
 	private long				elapsedTimeNano, startTimeNano, stopTimeNano;
-	private long				messageAge;
 	private long				waitTime;
 	private int					opRC = 0;
 	private String				exceptionStr;
@@ -97,11 +93,16 @@ public class Operation {
 
 	/**
 	 * Creates a Operation with the specified properties.
-	 *
+	 * Operation name can be any name or a relative name based 
+	 * on the current thread stack trace. The relative operation name
+	 * must be specified as follows: <code>$class-marker:offset</code>. 
+	 * Example: <code>$com.nastel.jkool.tnt4j.tracker:0</code>
+	 * This name results in the actual operation name computed at runtime based on
+	 * current thread stack at the time when <code>getResolvedName</code> is called.
+	 * 
 	 * @param opname function name triggering operation
 	 * @param opType operation type
-	 * @throws NullPointerException if any arguments are null
-	 * @throws IllegalArgumentException if opName is empty
+	 * @see #getResolvedName()
 	 */
 	public Operation(String opname, OpType opType) {
 		setName(opname);
@@ -120,20 +121,41 @@ public class Operation {
 	}
 
 	/**
+	 * Gets resolved name of the operation. Runtime stack resolution
+	 * occurs when the operation name is of the form:
+	 * <code>$class-marker:offset</code>. 
+	 * Example: <code>$com.nastel.jkool.tnt4j.tracker:0</code>
+	 *
+	 * @return name triggering operation
+	 * @see #OP_STACK_MARKER_PREFIX
+	 */
+	public String getResolvedName() {
+		return getResolvedName(opName);
+	}
+
+	/**
+	 * Gets resolved name of the method that triggered the operation.
+	 * 
+	 * @return name triggering operation
+	 */
+	public static String getResolvedName(String opName) {
+		if (!opName.startsWith(OP_STACK_MARKER_PREFIX)) {
+			return opName;
+		} else {
+			String marker = opName.substring(1);
+			String[] pair = marker.split(":");
+			int offset = pair.length == 2? Integer.parseInt(pair[1]): 0;
+			StackTraceElement item = Utils.getStackFrame(pair[0], offset);
+			return item.toString();
+		}
+	}
+
+	/**
 	 * Sets the name of the method that triggered the operation, truncating if necessary.
 	 *
 	 * @param opname function name triggering operation
-	 * @throws NullPointerException if opName is <code>null</code>
-	 * @throws IllegalArgumentException if opName is empty
-	 * @see #MAX_FUNCTION_NAME_LENGTH
 	 */
 	public void setName(String opname) {
-		if (opname == null)
-			throw new NullPointerException("opName must be a non-empty string");
-		if (opname.length() == 0)
-			throw new IllegalArgumentException("opName must be a non-empty string");
-		if (opname.length() > MAX_FUNCTION_NAME_LENGTH)
-			opname = opname.substring(0, MAX_FUNCTION_NAME_LENGTH);
 		this.opName = opname;
 	}
 
@@ -307,33 +329,6 @@ public class Operation {
 	 */
 	public long getElapsedTimeNano() {
 		return elapsedTimeNano;
-	}
-
-	/**
-	 * Gets the age of the message that the operation applies to.  This is only
-	 * relevant for operations whose type is <code>OpType.RECEIVE</code>.
-	 * This value represents the time between when the message was sent (put/write)
-	 * and received (get/read).
-	 *
-	 * @return age of message, in microseconds
-	 */
-	public long getMessageAge() {
-		return messageAge;
-	}
-
-	/**
-	 * Sets the age of the message that the operation applies to.  This is only
-	 * relevant for operations whose type is <code>OpType.RECEIVE</code>.
-	 * This value represents the time between when the message was sent (put/write)
-	 * and received (get/read).
-	 *
-	 * @param messageAge age of message, in microseconds
-	 * @throws IllegalArgumentException if messageAge is negative
-	 */
-	public void setMessageAge(long messageAge) {
-		if (messageAge < 0)
-			throw new IllegalArgumentException("messageAge must be non-negative");
-		this.messageAge = messageAge;
 	}
 
 	/**
@@ -675,7 +670,6 @@ public class Operation {
 		   .append("ReasonCode:").append(getReasonCode()).append(",")
 		   .append("ElapsedUsec:").append(getElapsedTime()).append(",")
 		   .append("WaitUsec:").append(getWaitTime()).append(",")
-		   .append("MsgAgeUsec:").append(getMessageAge()).append(",")
 		   .append("StartTime:[").append(sTime == null ? "null" : sTime.toString()).append("],")
 		   .append("EndTime:[").append(eTime == null ? "null" : eTime.toString()).append("],")
 		   .append("Exception:").append(getExceptionString()).append("}");

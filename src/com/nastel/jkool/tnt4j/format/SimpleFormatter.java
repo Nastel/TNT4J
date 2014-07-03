@@ -52,7 +52,7 @@ public class SimpleFormatter extends DefaultFormatter implements Configurable  {
 		StringBuffer msg = new StringBuffer(1024);
 		msg.append(event.getMessage()).append(" ");
 		msg.append("{sev: '").append(event.getSeverity()).append("'").append(separator);
-		msg.append("name: '").append(event.getOperation().getName()).append("'").append(separator);
+		msg.append("name: '").append(event.getOperation().getResolvedName()).append("'").append(separator);
 		msg.append("ccode: '").append(event.getOperation().getCompCode()).append("'").append(separator);
 		if (event.getOperation().getReasonCode() != 0) {
 			msg.append("rcode: '").append(event.getOperation().getReasonCode()).append("'").append(separator);
@@ -60,8 +60,8 @@ public class SimpleFormatter extends DefaultFormatter implements Configurable  {
 		if (event.getOperation().getElapsedTime() != 0) {
 			msg.append("usec: '").append(event.getOperation().getElapsedTime()).append("'").append(separator);
 		}
-		if (event.getOperation().getMessageAge() != 0) {
-			msg.append("age.usec: '").append(event.getOperation().getMessageAge()).append("'").append(separator);
+		if (event.getMessageAge() != 0) {
+			msg.append("age.usec: '").append(event.getMessageAge()).append("'").append(separator);
 		}
 		if (event.getOperation().getWaitTime() != 0) {
 			msg.append("wait.usec: '").append(event.getOperation().getWaitTime()).append("'").append(separator);
@@ -91,7 +91,7 @@ public class SimpleFormatter extends DefaultFormatter implements Configurable  {
 	public String format(TrackingActivity activity) {
 		StringBuffer msg = new StringBuffer(1024);
 		msg.append("{'").append(activity.getStatus()).append("'").append(separator);
-		msg.append("name: '").append(activity.getName()).append("'").append(separator);
+		msg.append("name: '").append(activity.getResolvedName()).append("'").append(separator);
 		if (activity.getElapsedTime() != 0) {
 			msg.append("usec: '").append(activity.getElapsedTime()).append("'").append(separator);
 		}

@@ -203,7 +203,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			        Utils.quote(event.getLocation())).append(ATTR_JSON);
 		}
 		jsonString.append(Utils.quote(JSON_OPERATION_LABEL)).append(ATTR_SEP).append(
-		        Utils.quote(event.getOperation().getName())).append(ATTR_JSON);
+		        Utils.quote(event.getOperation().getResolvedName())).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_RESOURCE_LABEL)).append(ATTR_SEP).append(
 		        Utils.quote(event.getOperation().getResource())).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_USER_LABEL)).append(ATTR_SEP).append(
@@ -221,9 +221,9 @@ public class JSONFormatter implements EventFormatter, Configurable {
 				jsonString.append(Utils.quote(JSON_WAIT_TIME_USEC_LABEL)).append(ATTR_SEP).append(
 				        event.getOperation().getWaitTime()).append(ATTR_JSON);
 			}
-			if (event.getOperation().getMessageAge() > 0) {
+			if (event.getMessageAge() > 0) {
 				jsonString.append(Utils.quote(JSON_MSG_AGE_USEC_LABEL)).append(ATTR_SEP).append(
-				        event.getOperation().getMessageAge()).append(ATTR_JSON);
+				        event.getMessageAge()).append(ATTR_JSON);
 			}
 		}
 
@@ -300,7 +300,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			jsonString.append(Utils.quote(JSON_LOCATION_LABEL)).append(ATTR_SEP).append(
 			        Utils.quote(activity.getLocation())).append(ATTR_JSON);
 		}
-		jsonString.append(Utils.quote(JSON_OPERATION_LABEL)).append(ATTR_SEP).append(Utils.quote(activity.getName()))
+		jsonString.append(Utils.quote(JSON_OPERATION_LABEL)).append(ATTR_SEP).append(Utils.quote(activity.getResolvedName()))
 		        .append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_RESOURCE_LABEL)).append(ATTR_SEP)
 		        .append(Utils.quote(activity.getResource())).append(ATTR_JSON);
@@ -319,10 +319,6 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			if (activity.getWaitTime() > 0) {
 				jsonString.append(Utils.quote(JSON_WAIT_TIME_USEC_LABEL)).append(ATTR_SEP).append(
 				        activity.getWaitTime()).append(ATTR_JSON);
-			}
-			if (activity.getMessageAge() > 0) {
-				jsonString.append(Utils.quote(JSON_MSG_AGE_USEC_LABEL)).append(ATTR_SEP).append(
-				        activity.getMessageAge()).append(ATTR_JSON);
 			}
 		}
 		jsonString.append(Utils.quote(JSON_ID_COUNT_LABEL)).append(ATTR_SEP).append(activity.getIdCount()).append(

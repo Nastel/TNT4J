@@ -72,6 +72,7 @@ public class TNT4JTest {
 			System.out.println("Usage: appl server msg correlator opname location");
 			System.exit(-1);
 		}
+		System.out.println("Current call=" + Utils.getCurrentStackFrame() + ", caller=" + Utils.getCallingStackFrame());
 		// register with the TNT4J framework
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(args[0]);
 		config.setSinkLogEventListener(new MySinkLogHandler());
@@ -166,7 +167,11 @@ public class TNT4JTest {
 			}
 		} finally {
 			event.stop();
-			tlogger.info("runLog4JEvent: runs={0}, elapsed.nsec={1}, nsec/call={2}", limit, event.getOperation().getElapsedTimeNano(), (event.getOperation().getElapsedTimeNano()/limit));
+			tlogger.info("runLog4JEvent: runs={0}, elapsed.nsec={1}, nsec/call={2}, method={3}, caller={4}",
+						limit, event.getOperation().getElapsedTimeNano(),
+						(event.getOperation().getElapsedTimeNano()/limit),
+						Utils.getCurrentStackFrame(), 
+						Utils.getCallingStackFrame());
 		}
 		return event;
 	}

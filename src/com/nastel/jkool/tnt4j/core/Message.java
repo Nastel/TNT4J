@@ -22,9 +22,10 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 /**
  * <p>Implements a Message entity .</p>
  *
- * <p>A <code>Message</code> represents a physical message being transported
- * between a set of entities.  It also will contain the operation(s) that have
- * directly acted upon it.</p>
+ * <p>A <code>Message</code> represents a logical message being transported
+ * between a set of entities. Message has id, size, content with a set of arguments
+ * and age.
+ * </p>
  *
  * @see Activity
  * @see Operation
@@ -53,11 +54,12 @@ public class Message {
 	 */
 	public static final int MAX_VALUE_LENGTH = 256;
 
-	private String            signature;
-	private int               size;
-	private String            tag;
-	private String            strData;
-	private Object[]          argList;
+	private String		signature;
+	private int			size;
+	private String		tag;
+	private String		strData;
+	private Object[]	argList;
+	private long		messageAge;
 
 
 
@@ -121,6 +123,32 @@ public class Message {
 		if (signature.length() > MAX_SIGNATURE_LENGTH)
 			throw new IllegalArgumentException("signature length must be <= " + MAX_SIGNATURE_LENGTH);
 		this.signature = signature;
+	}
+
+	/**
+	 * Gets the age of the message that the operation applies to.  This is only
+	 * relevant for operations whose type is <code>OpType.RECEIVE</code>.
+	 * This value represents the time between when the message was sent (put/write)
+	 * and received (get/read).
+	 *
+	 * @return age of message, in microseconds
+	 */
+	public long getMessageAge() {
+		return messageAge;
+	}
+
+	/**
+	 * Sets the age of the message in microseconds. Age represents the relative
+	 * time that the message was idle. Typically this applies to messages that
+	 * are sent or received.
+	 *
+	 * @param messageAge age of message, in microseconds
+	 * @throws IllegalArgumentException if messageAge is negative
+	 */
+	public void setMessageAge(long messageAge) {
+		if (messageAge < 0)
+			throw new IllegalArgumentException("messageAge must be non-negative");
+		this.messageAge = messageAge;
 	}
 
 	/**
