@@ -151,6 +151,41 @@ public class Operation {
 	}
 
 	/**
+	 * Gets resolved name of the method that triggered the operation.
+	 * 
+	 * @param marker class marker to be used to locate the stack frame
+	 * @param offset offset from the located stack frame (must be >= 0)
+	 * @return name triggering operation
+	 */
+	public static String getResolvedName(String marker, int offset) {
+		StackTraceElement item = Utils.getStackFrame(marker, offset);
+		return item.toString();
+	}
+
+	/**
+	 * Gets resolved name of the method that triggered the operation.
+	 * 
+	 * @param classMarker class marker to be used to locate the stack frame
+	 * @return name triggering operation
+	 */
+	public static String getResolvedName(Class<?> classMarker) {
+		StackTraceElement item = Utils.getStackFrame(classMarker.getName(), 0);
+		return item.toString();
+	}
+
+	/**
+	 * Gets resolved name of the method that triggered the operation.
+	 * 
+	 * @param classMarker class marker to be used to locate the stack frame
+	 * @param offset offset from the located stack frame (must be >= 0)
+	 * @return name triggering operation
+	 */
+	public static String getResolvedName(Class<?> classMarker, int offset) {
+		StackTraceElement item = Utils.getStackFrame(classMarker.getName(), offset);
+		return item.toString();
+	}
+
+	/**
 	 * Sets the name of the method that triggered the operation, truncating if necessary.
 	 *
 	 * @param opname function name triggering operation
