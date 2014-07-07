@@ -136,7 +136,7 @@ public class TrackingEvent extends Message implements Trackable {
 	public boolean isNoop() {
 		return operation.isNoop();
 	}
-	
+
 	/**
 	 * Return current severity level associated with this event
 	 *
@@ -276,7 +276,7 @@ public class TrackingEvent extends Message implements Trackable {
 	}
 
 	/**
-	 * Indicates that application tracking event has started given a 
+	 * Indicates that application tracking event has started given a
 	 * specific time stamp.
 	 *
 	 * @param time when operation started
@@ -291,6 +291,15 @@ public class TrackingEvent extends Message implements Trackable {
 	 */
 	public void stop() {
 		operation.stop();
+	}
+
+	/**
+	 * Indicates that application tracking event has ended.
+	 *
+	 * @param time when operation stopped
+	 */
+	public void stop(UsecTimestamp time) {
+		operation.stop(time);
 	}
 
 	/**
