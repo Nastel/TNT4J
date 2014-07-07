@@ -80,12 +80,10 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	public static final String JSON_MSG_TAG_LABEL = "msg-tag";
 	public static final String JSON_MSG_TEXT_LABEL = "msg-text";
 	public static final String JSON_ID_COUNT_LABEL = "id-count";
-	public static final String JSON_CID_COUNT_LABEL = "cid-count";
 	public static final String JSON_SNAPSHOT_COUNT_LABEL = "snap-count";
 	public static final String JSON_EXCEPTION_LABEL = "exception";
 	public static final String JSON_SNAPSHOTS_LABEL = "snapshots";
 	public static final String JSON_ID_SET_LABEL = "id-set";
-	public static final String JSON_CID_SET_LABEL = "cid-set";
 
 	protected static final String START = "{";
 	protected static final String START_LINE = "{\n";
@@ -323,8 +321,6 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		}
 		jsonString.append(Utils.quote(JSON_ID_COUNT_LABEL)).append(ATTR_SEP).append(activity.getIdCount()).append(
 		        ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_CID_COUNT_LABEL)).append(ATTR_SEP).append(activity.getCidCount()).append(
-		        ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_SNAPSHOT_COUNT_LABEL)).append(ATTR_SEP).append(activity.getSnapshotCount());
 
 		String exStr = activity.getExceptionString();
@@ -336,11 +332,6 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			jsonString.append(ATTR_JSON);
 			jsonString.append(Utils.quote(JSON_ID_SET_LABEL)).append(ATTR_SEP).append(ARRAY_START_JSON).append(
 			        itemsToJSON(activity.getIds())).append(ARRAY_END);			
-		}
-		if (activity.getCidCount() > 0) {
-			jsonString.append(ATTR_JSON);
-			jsonString.append(Utils.quote(JSON_CID_SET_LABEL)).append(ATTR_SEP).append(ARRAY_START_JSON).append(
-			        itemsToJSON(activity.getCids())).append(ARRAY_END);			
 		}
 		if (activity.getSnapshotCount() > 0) {
 			jsonString.append(ATTR_JSON);

@@ -62,7 +62,6 @@ public class Activity extends Operation implements Trackable {
 	private String parentId;
 	private ActivityStatus status = ActivityStatus.BEGIN;
 
-	private HashSet<String> linkedItems = new HashSet<String>(89);
 	private HashSet<String> correlators = new HashSet<String>(89);
 	private ArrayList<PropertySnapshot> snapshots =  new ArrayList<PropertySnapshot>(32);
 	private ArrayList<ActivityListener> activityListeners = null;
@@ -280,15 +279,15 @@ public class Activity extends Operation implements Trackable {
 	 * @param item linked item referenced in Activity
 	 * @throws NullPointerException if item is <code>null</code>
 	 * @see #containsId(String)
-	 * @see #containsCid(String)
 	 */
 	public void add(Trackable item) {
 		if (item == null)
 			throw new NullPointerException("msg must be non-null");
 
-		linkedItems.add(item.getTrackingId());
-		if (item.getCorrelator() != null) {
-			correlators.add(item.getCorrelator());
+		correlators.add(item.getTrackingId());
+		String cid = item.getCorrelator();
+		if (cid != null) {
+			correlators.add(cid);
 		}
 		item.setParentId(this);
 	}
@@ -302,26 +301,10 @@ public class Activity extends Operation implements Trackable {
 	 *         <code>false</code> otherwise
 	 */
 	public boolean containsId(String id) {
-		if (linkedItems == null || id == null)
-			return false;
-
-		return linkedItems.contains(id);
+		if (id == null) return false;
+		return correlators.contains(id);
 	}
 
-	/**
-	 * Checks whether the specified correlator has been added to the list of
-	 * correlators referenced in this Activity.
-	 *
-	 * @param cid correlator id
-	 * @return <code>true</code> if the Activity contains specified correlator,
-	 *         <code>false</code> otherwise
-	 */
-	public boolean containsCid(String cid) {
-		if (correlators == null || cid == null)
-			return false;
-
-		return correlators.contains(cid);
-	}
 
 	/**
 	 * Gets the list of tracking ids referenced in this Activity.
@@ -329,15 +312,6 @@ public class Activity extends Operation implements Trackable {
 	 * @return list of tracking ids
 	 */
 	public Set<String> getIds() {
-		return linkedItems;
-	}
-
-	/**
-	 * Gets the list of tracking correlators referenced in this Activity.
-	 *
-	 * @return list of tracking correlators
-	 */
-	public Set<String> getCids() {
 		return correlators;
 	}
 
@@ -347,19 +321,8 @@ public class Activity extends Operation implements Trackable {
 	 * @return number of linked items
 	 */
 	public int getIdCount() {
-		return linkedItems != null ? linkedItems.size() : 0;
-	}
-
-
-	/**
-	 * Gets the number of correlator items referenced in this Activity.
-	 *
-	 * @return number of correlator items
-	 */
-	public int getCidCount() {
 		return correlators != null ? correlators.size() : 0;
 	}
-
 
 	/**
 	 * Adds the specified snapshot to the list of snapshots for this Activity.
@@ -475,7 +438,6 @@ public class Activity extends Operation implements Trackable {
 		    .append("ElapsedUsec:").append(getElapsedTime()).append(",")
 		    .append("FQName:").append(getSource().getFQName()).append(",")
 			.append("IdCount=").append(getIdCount()).append(",")
-			.append("CidCount=").append(getCidCount()).append(",")
 			.append("SnapCount=").append(getSnapshotCount()).append(",")
 			.append("StartTime:[").append(sTime == null ? "null" : sTime.toString()).append("],")
 			.append("EndTime:[").append(eTime == null ? "null" : eTime.toString()).append("]}");
