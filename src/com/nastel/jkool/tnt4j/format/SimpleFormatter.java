@@ -28,7 +28,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <p>
  * Simple implementation of <code>Formatter</code> interface provides simple/minimal formatting of
  * <code>TrackingActvity</code> and <code>TrackingEvent</code> as well as any object passed to <code>format()</code>
- * method call. Event entries are formatte as follows:
+ * method call. Event entries are formatted as follows:
  * <code>event-text-msg {event-tracking-info}</code>
  * where <code>event-tracking-info</code> consists of <code>"name: value"</code> pairs.
  * </p>
@@ -52,6 +52,7 @@ public class SimpleFormatter extends DefaultFormatter implements Configurable  {
 		StringBuffer msg = new StringBuffer(1024);
 		msg.append(event.getMessage()).append(" ");
 		msg.append("{sev: '").append(event.getSeverity()).append("'").append(separator);
+		msg.append("type: '").append(event.getOperation().getType()).append("'").append(separator);
 		msg.append("name: '").append(event.getOperation().getResolvedName()).append("'").append(separator);
 		msg.append("ccode: '").append(event.getOperation().getCompCode()).append("'").append(separator);
 		if (event.getOperation().getReasonCode() != 0) {
@@ -78,7 +79,6 @@ public class SimpleFormatter extends DefaultFormatter implements Configurable  {
 		if (event.getOperation().getThrowable() != null) {
 			msg.append("error: '").append(event.getOperation().getExceptionString()).append("'").append(separator);
 		}
-		msg.append("type: '").append(event.getOperation().getType()).append("'").append(separator);
 		if (event.getParentId() != null) {
 			msg.append("parent-id: '").append(event.getParentId()).append("'").append(separator);
 		}
@@ -91,6 +91,8 @@ public class SimpleFormatter extends DefaultFormatter implements Configurable  {
 	public String format(TrackingActivity activity) {
 		StringBuffer msg = new StringBuffer(1024);
 		msg.append("{'").append(activity.getStatus()).append("'").append(separator);
+		msg.append("sev: '").append(activity.getSeverity()).append("'").append(separator);
+		msg.append("type: '").append(activity.getType()).append("'").append(separator);
 		msg.append("name: '").append(activity.getResolvedName()).append("'").append(separator);
 		if (activity.getElapsedTime() != 0) {
 			msg.append("usec: '").append(activity.getElapsedTime()).append("'").append(separator);
