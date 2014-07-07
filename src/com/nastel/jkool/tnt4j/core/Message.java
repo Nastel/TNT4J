@@ -34,26 +34,6 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 7 $
  */
 public class Message {
-
-	/**
-	 * Maximum length of a Message Signature.
-	 * @since Revision 20
-	 */
-	public static final int MAX_SIGNATURE_LENGTH = 36;
-
-	/**
-	 * Maximum length of Message Tag.
-	 * @since Revision 22
-	 */
-	public static final int MAX_TAG_LENGTH = 256;
-
-
-	/**
-	 * Maximum length of Message Value.
-	 * @since Revision 22
-	 */
-	public static final int MAX_VALUE_LENGTH = 256;
-
 	private String		signature;
 	private int			size;
 	private String		tag;
@@ -113,23 +93,19 @@ public class Message {
 	 * @param signature unique signature identifying message
 	 * @throws NullPointerException if signature is <code>null</code>
 	 * @throws IllegalArgumentException if signature is empty or is too long
-	 * @see #MAX_SIGNATURE_LENGTH
 	 */
 	public void setTrackingId(String signature) {
 		if (signature == null)
 			throw new NullPointerException("signature must be a non-empty string");
 		if (signature.length() == 0)
 			throw new IllegalArgumentException("signature must be a non-empty string");
-		if (signature.length() > MAX_SIGNATURE_LENGTH)
-			throw new IllegalArgumentException("signature length must be <= " + MAX_SIGNATURE_LENGTH);
 		this.signature = signature;
 	}
 
 	/**
-	 * Gets the age of the message that the operation applies to.  This is only
-	 * relevant for operations whose type is <code>OpType.RECEIVE</code>.
-	 * This value represents the time between when the message was sent (put/write)
-	 * and received (get/read).
+	 * Gets the age of the message that the operation applies to. 
+	 * This value represents the time between when the message was sent/created
+	 * and time is was consumed.
 	 *
 	 * @return age of message, in microseconds
 	 */
@@ -165,15 +141,8 @@ public class Message {
 	 * truncating if necessary.
 	 *
 	 * @param tag user-defined message tag
-	 * @see #MAX_TAG_LENGTH
 	 */
 	public void setTag(String tag) {
-		if (tag != null) {
-			if (tag.length() > MAX_TAG_LENGTH)
-				tag = tag.substring(0, MAX_TAG_LENGTH);
-			else if (tag.length() == 0)
-				tag = null;
-		}
 		this.tag = tag;
 	}
 

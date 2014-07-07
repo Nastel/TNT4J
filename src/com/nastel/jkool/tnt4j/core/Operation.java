@@ -48,29 +48,6 @@ public class Operation {
 	 */
 	public static final String NOOP = "NOOP";
 
-	/**
-	 * Maximum length of Operation User Name.
-	 * @since Revision 14
-	 */
-	public static final int MAX_USER_NAME_LENGTH = 64;
-
-	/**
-	 * Maximum length of Operation Exception string.
-	 * @since Revision 25
-	 */
-	public static final int MAX_EXCEPTION_LENGTH = 512;
-
-	/**
-	 * Maximum length of Operation Location string.
-	 * @since Revision 42
-	 */
-	public static final int MAX_LOCATION_LENGTH = 512;
-
-	/**
-	 * Maximum length of Operation Correlator.
-	 * @since Revision 43
-	 */
-	public static final int MAX_CORRELATOR_LENGTH = 256;
 
 	private String		opName;
 	private OpType		opType;
@@ -335,15 +312,8 @@ public class Operation {
 	 * Sets the user whose context the operation is running in, truncating if necessary.
 	 *
 	 * @param user name of user
-	 * @see #MAX_USER_NAME_LENGTH
 	 */
 	public void setUser(String user) {
-		if (user != null) {
-			if (user.length() > MAX_USER_NAME_LENGTH)
-				user = user.substring(0, MAX_USER_NAME_LENGTH);
-			else if (user.length() == 0)
-				user = null;
-		}
 		this.user = user;
 	}
 
@@ -367,10 +337,8 @@ public class Operation {
 	}
 
 	/**
-	 * Gets the wait time for the operation.  This is only relevant for operations
-	 * whose type is <code>OpType.RECEIVE</code>.
-	 * This value represents the time the operation spent waiting for a message
-	 * to be available.
+	 * Gets the wait time for the operation.
+	 * This value represents the time the operation spent waiting.
 	 *
 	 * @return wait time for operation, in microseconds
 	 */
@@ -379,10 +347,8 @@ public class Operation {
 	}
 
 	/**
-	 * Sets the wait time for the operation.  This is only relevant for operations
-	 * whose type is <code>OpType.RECEIVE</code>.
-	 * This value represents the time the operation spent waiting for a message
-	 * to be available.
+	 * Sets the wait time for the operation. 
+	 * This value represents the time the operation spent waiting.
 	 *
 	 * @param wTime idle time for operation, in microseconds
 	 * @throws IllegalArgumentException if waitTime is negative
@@ -435,14 +401,11 @@ public class Operation {
 	 *
 	 * @param exceptionStr operation's exception message
 	 * @see #setCompCode(OpCompCode)
-	 * @see #MAX_EXCEPTION_LENGTH
 	 */
 	public void setException(String exceptionStr) {
 		if (exceptionStr != null && exceptionStr.length() == 0)
 			exceptionStr = null;
 		this.exceptionStr = exceptionStr;
-		if (this.exceptionStr != null && this.exceptionStr.length() > MAX_EXCEPTION_LENGTH)
-			this.exceptionStr = this.exceptionStr.substring(0, MAX_EXCEPTION_LENGTH);
 	}
 
 	/**
@@ -483,8 +446,6 @@ public class Operation {
 		if (location != null && location.length() == 0)
 			location = null;
 		this.location = location;
-		if (this.location != null && this.location.length() > MAX_LOCATION_LENGTH)
-			this.location = this.location.substring(0, MAX_LOCATION_LENGTH);
 	}
 
 	/**
@@ -503,15 +464,8 @@ public class Operation {
 	 *
 	 * @param correlator user-defined operation correlator
 	 * @throws IllegalArgumentException if correlator is too long
-	 * @see #MAX_CORRELATOR_LENGTH
 	 */
 	public void setCorrelator(String correlator) {
-		if (correlator != null) {
-			if (correlator.length() > MAX_CORRELATOR_LENGTH)
-				throw new IllegalArgumentException("correlator length must be <= " + MAX_CORRELATOR_LENGTH);
-			else if (correlator.length() == 0)
-				correlator = null;
-		}
 		this.correlator = correlator;
 	}
 
