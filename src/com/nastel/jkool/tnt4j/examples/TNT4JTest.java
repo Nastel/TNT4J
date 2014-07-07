@@ -197,7 +197,6 @@ class MyActivityHandler implements ActivityListener {
 				+ ", elasped.usec=" + activity.getElapsedTime() 
 				+ ", snap.count=" + activity.getSnapshotCount() 
 				+ ", id.count=" + activity.getIdCount()
-				+ ", cid.count=" + activity.getCidCount()
 				);
     }
 }

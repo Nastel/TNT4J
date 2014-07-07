@@ -276,6 +276,16 @@ public class TrackingEvent extends Message implements Trackable {
 	}
 
 	/**
+	 * Indicates that application tracking event has started given a 
+	 * specific time stamp.
+	 *
+	 * @param time when operation started
+	 */
+	public void start(UsecTimestamp time) {
+		operation.start(time);
+	}
+
+	/**
 	 * Indicates that application tracking event has ended.
 	 *
 	 */
