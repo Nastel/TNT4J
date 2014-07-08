@@ -16,7 +16,11 @@
 package com.nastel.jkool.tnt4j.format;
 
 
+import java.util.Map;
+
+import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -35,8 +39,14 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @see TrackingActivity
  * @see TrackingEvent
  */
-public class DefaultFormatter implements EventFormatter {
+public class DefaultFormatter implements EventFormatter, Configurable   {
+	public static final String SEPARATOR = System.getProperty("tnt4j.formatter.default.separator", " | ");
 
+	protected String separator = SEPARATOR;
+	protected String formatString = "{2} | {1} | {0}";
+
+	private Map<String, Object> config = null;
+	
 	@Override
 	public String format(Object obj, Object...args) {
 		if (obj instanceof TrackingActivity) {
@@ -55,11 +65,25 @@ public class DefaultFormatter implements EventFormatter {
 	
 	@Override
 	public String format(TrackingActivity activity) {
-		return activity.getStatus() + "-" + activity + "," + activity.getSource();
+		return activity.getStatus() + separator + activity + separator + activity.getSource();
 	}
 
 	@Override
     public String format(OpLevel level, String msg, Object...args) {
-	    return format(msg, args);
+		return Utils.format(formatString, UsecTimestamp.getTimeStamp(), level, Utils.format(msg, args));
     }
+	
+	@Override
+	public Map<String, Object> getConfiguration() {
+		return config;
+	}
+
+	@Override
+	public void setConfiguration(Map<String, Object> settings) {
+		config = settings;
+		Object sep = config.get("Separator");
+		Object format = config.get("Format");
+		separator = (sep != null? sep.toString(): SEPARATOR);
+		formatString = format != null? format.toString(): formatString;
+	}	
 }

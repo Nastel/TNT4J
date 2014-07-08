@@ -16,7 +16,6 @@
 package com.nastel.jkool.tnt4j.format;
 
 import java.util.List;
-import java.util.Map;
 
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.core.Property;
@@ -42,11 +41,6 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  */
 
 public class SimpleFormatter extends DefaultFormatter implements Configurable  {
-	private static final String SEPARATOR = System.getProperty("tnt4j.formatter.simple.separator", " | ");
-
-	private Map<String, Object> config = null;
-	private String separator = SEPARATOR;
-
 	@Override
 	public String format(TrackingEvent event) {
 		StringBuffer msg = new StringBuffer(1024);
@@ -133,18 +127,5 @@ public class SimpleFormatter extends DefaultFormatter implements Configurable  {
 		}
 		msg.append("}");
 		return msg.toString();
-	}
-	
-	@Override
-	public Map<String, Object> getConfiguration() {
-		return config;
-	}
-
-	@Override
-	public void setConfiguration(Map<String, Object> settings) {
-		config = settings;
-		Object sep = config.get("Separator");
-		separator = (sep != null? sep.toString(): SEPARATOR);
-	}
-	
+	}	
 }
