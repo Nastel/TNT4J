@@ -395,14 +395,14 @@ public class JSONFormatter implements EventFormatter, Configurable {
 
 
 	@Override
-	public String format(OpLevel level, Object msg, Object...args) {
+	public String format(OpLevel level, String msg, Object...args) {
 		StringBuilder jsonString = new StringBuilder(1024);
 		jsonString.append(START_JSON);
 		jsonString.append(Utils.quote(JSON_SEVERITY_LABEL)).append(ATTR_SEP).append(Utils.quote(level)).append(
 		        ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_SEVERITY_NO_LABEL)).append(ATTR_SEP).append(level.ordinal()).append(
 		        ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(msg));
+		jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(Utils.format(msg, args)));
 		Throwable ex = Utils.getThrowable(args);
 		if (ex != null) {
 			jsonString.append(ATTR_JSON);

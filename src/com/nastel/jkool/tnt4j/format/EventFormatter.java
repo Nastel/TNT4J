@@ -56,5 +56,5 @@ public interface EventFormatter extends Formatter {
 	 * @param args arguments associated with the object
 	 * @see OpLevel
 	 */
-	public String format(OpLevel level, Object msg, Object...args);
+	public String format(OpLevel level, String msg, Object...args);
 }

@@ -59,7 +59,7 @@ public class DefaultFormatter implements EventFormatter {
 	}
 
 	@Override
-    public String format(OpLevel level, Object msg, Object...args) {
+    public String format(OpLevel level, String msg, Object...args) {
 	    return format(msg, args);
     }
 }
