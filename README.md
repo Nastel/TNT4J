@@ -13,7 +13,7 @@ Several key features make TNT4J a prime logging choice for java applications:
 * <b>State logging</b>: log application state to improve diagnostics of performance, resource and other problems which are hard to trace using standard event logging techniques. Simply register your state dump listener and export state variables specific to you application. State dump listeners can be called on VM shutdown or on demand.
 	* Call `TrackingLogger.dumpState();` to generate application dump on demand.
 * <b>Measurements & Metrics</b>: TNT4J is not just about logging messages, it is also about measurements and metrics. Metrics such as elpased time, CPU, memory, block/wait times as well as user defined metrics. TNT4J allows you to asnwer what was performance at the time of the logged event or what was the value of a user defined metric.
-* <b>Correlation</b>: Relate event message together by grouping or passing context (correlator). Most of not all logging frameworks completely miss the correlation angle. TNT4J allows attachement of correlators when reporting tracking events see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and server boundaries using the same paradigm.
+* <b>Correlation</b>: Relate event message together by grouping or passing context (correlator). Most if not all logging frameworks completely miss the correlation angle. TNT4J allows attachement of correlators when reporting tracking events see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same paradigm. 
 
 Here is a simple example of using TNT4J:
 
@@ -25,6 +25,19 @@ try {
    logger.error("Failed to process request={0}", request_id, ex);
 }
 ```
+Below is an example of using correlator and a relative class marker to locate caller's method call on the stack -- `$my.package.myclass:0`. This marker will resolve to the caller's method name above all the calls that start with `$my.package.myclass`.
+
+```java
+TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
+try {
+   ...
+} catch (Exception e) {
+   logger.tnt(OpLevel.ERROR, "$my.package.myclass:0", myCorrelator, 
+   	"Failed to process request={0}", request_id, ex);
+}
+```
+
+
 Colnsolidate all conditional logging checks into a single listener. Why call `isDebugEnabled()' before each log entry?
 
 ```java
