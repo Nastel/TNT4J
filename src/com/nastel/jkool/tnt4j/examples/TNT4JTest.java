@@ -80,9 +80,7 @@ public class TNT4JTest {
 		
 		tlogger = TrackingLogger.getInstance(config.build()); 
 		tlogger.addSinkErrorListener(new MySinkErrorHandler());
-		// TrackingLogger.addSinkEventFilter(new MySinkEventFilter());
 		
-
 		// optionally register application state dump
 		// by default dumps are generated on JVM shutdown
 		TrackingLogger.addDumpListener(new DumpNotify());
