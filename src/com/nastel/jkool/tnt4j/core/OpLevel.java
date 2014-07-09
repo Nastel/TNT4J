@@ -23,7 +23,7 @@ package com.nastel.jkool.tnt4j.core;
  * @version $Revision: 2 $
  */
 public enum OpLevel {
-	UNKNOWN, TRACE, DEBUG, INFO, SUCCESS, WARNING, ERROR, FAILURE, CRITICAL, FATAL, HALT;
+	NONE, TRACE, DEBUG, INFO, SUCCESS, WARNING, ERROR, FAILURE, CRITICAL, FATAL, HALT;
 
 	private static OpLevel[] enumList = OpLevel.values();
 /*

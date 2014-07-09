@@ -74,7 +74,7 @@ public class Log4jEventSink extends DefaultEventSink {
     public void log(TrackingEvent event) {
 		if (logger == null) throw new IllegalStateException("Sink closed");
 		if (!filterEvent(event)) return;
-		
+
 		Priority level = getL4JLevel(event);
 		if (logger.isEnabledFor(level)) {
 			logger.log(getL4JLevel(event), formatter.format(event), event.getOperation().getThrowable());
@@ -87,7 +87,7 @@ public class Log4jEventSink extends DefaultEventSink {
 		if (logger == null) throw new IllegalStateException("Sink closed");
 		if (!filterEvent(activity)) return;
 
-		Priority level = getL4JLevel(activity.getStatus());
+		Priority level = getL4JLevel(activity.getSeverity());
 		if (logger.isEnabledFor(level)) {
 			Throwable ex = activity.getThrowable();
 			logger.log(level, formatter.format(activity), ex);
@@ -129,6 +129,7 @@ public class Log4jEventSink extends DefaultEventSink {
     public void log(OpLevel sev, String msg, Object...args) {
 		if (logger == null) throw new IllegalStateException("Sink closed");
 		if (!filterEvent(sev, msg, args)) return;
+
 		Priority level = getL4JLevel(sev);
 		if (logger.isEnabledFor(level)) {
 			logger.log(level, formatter.format(sev, msg, args), Utils.getThrowable(args));

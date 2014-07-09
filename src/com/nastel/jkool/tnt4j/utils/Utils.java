@@ -36,6 +36,7 @@ import java.util.Properties;
 import java.util.Map.Entry;
 
 import com.nastel.jkool.tnt4j.config.Configurable;
+import com.nastel.jkool.tnt4j.config.ConfigurationException;
 
 /**
  * General utility methods.
@@ -538,15 +539,23 @@ public class Utils {
 	 *@param prefix
 	 *            property prefix to be used for configuring a new object
 	 *@param config
-	 *            a map containing all configuraion including class name
+	 *            a map containing all configuration including class name
 	 * 
 	 */
 	public static Object createConfigurableObject(String classProp, String prefix, Map<String, Object> config)
-	        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	        throws ConfigurationException {
 		Object className = config.get(classProp);
 		if (className == null) return null;
-		Object obj = Utils.createInstance(className.toString());
-		return Utils.applyConfiguration(prefix, config, obj);
+		try { 
+			Object obj = Utils.createInstance(className.toString());
+			return Utils.applyConfiguration(prefix, config, obj);
+		} catch (ConfigurationException ce) {
+			throw ce;
+		} catch (Throwable e) {
+			ConfigurationException ce = new ConfigurationException(e.getMessage(), config);
+			ce.initCause(e);
+			throw ce;
+		}
 	}
 
 	/**
@@ -557,15 +566,23 @@ public class Utils {
 	 *@param prefix
 	 *            property prefix to be used for configuring a new object
 	 *@param config
-	 *            a map containing all configuraion including class name
-	 * 
+	 *            a map containing all configuration including class name
+	 *@throws ConfigurationException
 	 */
 	public static Object createConfigurableObject(String classProp, String prefix, Properties config)
-	        throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+	        throws  ConfigurationException {
 		Object className = config.get(classProp);
 		if (className == null) return null;
-		Object obj = Utils.createInstance(className.toString());
-		return Utils.applyConfiguration(prefix, config, obj);
+		try { 
+			Object obj = Utils.createInstance(className.toString());
+			return Utils.applyConfiguration(prefix, config, obj);
+		} catch (ConfigurationException ce) {
+			throw ce;
+		} catch (Throwable e) {
+			ConfigurationException ce = new ConfigurationException(e.getMessage(), config);
+			ce.initCause(e);
+			throw ce;
+		}
 	}
 
 	/**
@@ -577,9 +594,9 @@ public class Utils {
 	 *            list of properties used for patter matching
 	 *@param obj
 	 *            configurable object to apply settings to
-	 * 
+	 *@throws ConfigurationException
 	 */
-	public static Object applyConfiguration(String prefix, Map<String, Object> prop, Object obj) {
+	public static Object applyConfiguration(String prefix, Map<String, Object> prop, Object obj)  throws ConfigurationException {
 		if (obj instanceof Configurable) {
 			return applyConfiguration(prefix, prop, (Configurable) obj);
 		}
@@ -595,9 +612,9 @@ public class Utils {
 	 *            list of properties used for patter matching
 	 *@param obj
 	 *            configurable object to apply settings to
-	 * 
+	 *@throws ConfigurationException
 	 */
-	public static Object applyConfiguration(String prefix, Properties prop, Object obj) {
+	public static Object applyConfiguration(String prefix, Properties prop, Object obj)  throws ConfigurationException {
 		if (obj instanceof Configurable) {
 			return applyConfiguration(prefix, prop, (Configurable) obj);
 		}
@@ -613,9 +630,9 @@ public class Utils {
 	 *            list of properties used for patter matching
 	 *@param cfg
 	 *            configurable object to apply settings to
-	 * 
+	 *@throws ConfigurationException
 	 */
-	public static Configurable applyConfiguration(String prefix, Map<String, Object> prop, Configurable cfg) {
+	public static Configurable applyConfiguration(String prefix, Map<String, Object> prop, Configurable cfg) throws ConfigurationException {
 		cfg.setConfiguration(getAttributes(prefix, prop));
 		return cfg;
 	}
@@ -629,9 +646,9 @@ public class Utils {
 	 *            list of properties used for patter matching
 	 *@param cfg
 	 *            configurable object to apply settings to
-	 * 
+	 *@throws ConfigurationException
 	 */
-	public static Configurable applyConfiguration(String prefix, Properties prop, Configurable cfg) {
+	public static Configurable applyConfiguration(String prefix, Properties prop, Configurable cfg) throws ConfigurationException {
 		cfg.setConfiguration(getAttributes(prefix, prop));
 		return cfg;
 	}

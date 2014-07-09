@@ -40,7 +40,7 @@ public class SinkLogEvent extends EventObject {
 
 	private Object logObj = null;
 	private Throwable error = null;
-	private OpLevel level = OpLevel.UNKNOWN;
+	private OpLevel level = OpLevel.NONE;
 	private Object [] argList = null;
 
 	/**

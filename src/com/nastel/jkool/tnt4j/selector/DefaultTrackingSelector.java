@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.nastel.jkool.tnt4j.config.Configurable;
+import com.nastel.jkool.tnt4j.config.ConfigurationException;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.repository.TokenRepository;
 import com.nastel.jkool.tnt4j.repository.TokenRepositoryEvent;
@@ -125,10 +126,8 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 				}
 			}
 			if (tntToken != null) {
-				if (logger.isSet(OpLevel.DEBUG)) {
-					logger.log(OpLevel.DEBUG, 
+				logger.log(OpLevel.DEBUG, 
 							"putkey: repository={0}, token={1}", tokenRepository, tntToken);
-				}
 				tokenMap.put(key, tntToken);
 			}
 		} catch (Throwable ex) {
@@ -196,13 +195,15 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> props) {
+	public void setConfiguration(Map<String, Object> props) throws ConfigurationException {
 		config = props;
 		try {
 			Object obj = Utils.createConfigurableObject("Repository", "Repository.", config);
 			setRepository((TokenRepository) obj);
 		} catch (Throwable e) {
-			logger.log(OpLevel.ERROR, "Unable to process settings={0}", props, e);
+			ConfigurationException ce = new ConfigurationException(e.getMessage(), props);
+			ce.initCause(e);
+			throw ce;
 		}
 	}
 }
@@ -223,10 +224,8 @@ class PropertyListener implements TokenRepositoryListener {
 
 	@Override
 	public void repositoryChanged(TokenRepositoryEvent event) {
-		if (logger.isSet(OpLevel.DEBUG)) {
-			logger.log(OpLevel.DEBUG, "repositoryChanged source={0}, type={1}, {2}={3}",
+		logger.log(OpLevel.DEBUG, "repositoryChanged source={0}, type={1}, {2}={3}",
 					event.getSource(), event.getType(), event.getKey(), event.getValue());
-		}
 		switch (event.getType()) {
 		case TokenRepository.EVENT_ADD_KEY:
 		case TokenRepository.EVENT_SET_KEY:

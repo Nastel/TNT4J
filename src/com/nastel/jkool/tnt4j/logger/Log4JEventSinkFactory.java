@@ -19,8 +19,8 @@ import java.util.Properties;
 
 import com.nastel.jkool.tnt4j.format.DefaultFormatter;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
+import com.nastel.jkool.tnt4j.sink.AbstractEventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.EventSink;
-import com.nastel.jkool.tnt4j.sink.EventSinkFactory;
 
 /**
  * <p>Concrete implementation of <code>EventSinkFactory</code> interface, which
@@ -34,22 +34,22 @@ import com.nastel.jkool.tnt4j.sink.EventSinkFactory;
  * @version $Revision: 1 $
  *
  */
-public class Log4JEventSinkFactory implements EventSinkFactory {
+public class Log4JEventSinkFactory extends AbstractEventSinkFactory {
 	
 	@Override
 	public EventSink getEventSink(String name) {
-		return new Log4jEventSink(name, System.getProperties(), new DefaultFormatter());
+		return configureSink(new Log4jEventSink(name, System.getProperties(), new DefaultFormatter()));
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
-		return new Log4jEventSink(name, props, new DefaultFormatter());
+		return configureSink(new Log4jEventSink(name, props, new DefaultFormatter()));
 	}
 
 	@Override
     public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-		return new Log4jEventSink(name, props, frmt);
-    }
+		return configureSink(new Log4jEventSink(name, props, frmt));
+   }
 	
 	/**
 	 * Static method to obtain default event sink

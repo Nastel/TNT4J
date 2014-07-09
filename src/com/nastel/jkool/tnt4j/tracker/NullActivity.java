@@ -37,7 +37,7 @@ import com.nastel.jkool.tnt4j.core.Trackable;
  */
 public class NullActivity extends TrackingActivity {
 	protected NullActivity() {
-		super(OpLevel.UNKNOWN, UUID.randomUUID().toString());
+		super(OpLevel.NONE, UUID.randomUUID().toString());
 		super.setType(OpType.NOOP);
 	}
 	

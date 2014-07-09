@@ -175,10 +175,11 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	private Object createConfigurableObject(String classProp, String prefix) {
+		Properties props = getProperties();
 		try {
-			return Utils.createConfigurableObject(classProp, prefix, getProperties());
+			return Utils.createConfigurableObject(classProp, prefix, props);
 		} catch (Throwable e) {
-			logger.log(OpLevel.ERROR, "Failed to create configurable instance class={0}, prefix={1}", classProp, prefix, e);
+			logger.log(OpLevel.ERROR, "Failed to create configurable instance class={0}, property={1}, prefix={2}", props.get(classProp), classProp, prefix, e);
 		}
 		return null;
 	}
@@ -222,10 +223,8 @@ public class TrackerConfigStore extends TrackerConfig {
 		Map<String, Properties> map = null;
 		try {
 			map = loadConfigFile(configFile);
-			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, file={1}, config.size={2}, tid={3}", 
+			logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, file={1}, config.size={2}, tid={3}", 
 						srcName, configFile, map.size(), Thread.currentThread().getId());
-			}
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, "Unable to load configuration: source={0}, file={1}", srcName, configFile, e);
 		}

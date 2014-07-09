@@ -162,7 +162,7 @@ public class TrackingEvent extends Message implements Trackable {
 	 *
 	 */
 	protected TrackingEvent() {
-		this(null, OpLevel.UNKNOWN, OpType.NOOP, Operation.NOOP, null, null, null);
+		this(null, OpLevel.NONE, OpType.NOOP, Operation.NOOP, null, null, null);
 	}
 
 	/**

@@ -280,11 +280,9 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		openIOHandle(selector);
 		openEventSink();
 		openFlag = true;
-		if (logger.isSet(OpLevel.DEBUG)) {
-			logger.log(OpLevel.DEBUG, 
-					"Tracker opened vm.name={0}, tid={1}, event.sink={2}, source={3}",
-					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource());
-		}
+		logger.log(OpLevel.DEBUG, 
+				"Tracker opened vm.name={0}, tid={1}, event.sink={2}, source={3}",
+				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource());
     }
 
 	@Override
@@ -292,11 +290,9 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		try {
 			closeEventSink();
 			Utils.close(selector);
-			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.DEBUG, 
-					"Tracker closed vm.name={0}, tid={1}, event.sink={2}, source={3}",
-					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource());
-			}
+			logger.log(OpLevel.DEBUG, 
+				"Tracker closed vm.name={0}, tid={1}, event.sink={2}, source={3}",
+				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource());
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, 
 					"Failed to close tracker vm.name={0}, tid={1}, event.sink={2}, source={3}",

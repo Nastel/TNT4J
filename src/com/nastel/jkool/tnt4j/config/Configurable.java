@@ -38,5 +38,5 @@ public interface Configurable {
 	 *  
 	 *  @param settings apply given settings as configuration (name, value pairs)
 	 */
-	public void setConfiguration(Map<String, Object> settings);
+	public void setConfiguration(Map<String, Object> settings) throws ConfigurationException;
 }

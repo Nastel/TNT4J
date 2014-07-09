@@ -18,7 +18,7 @@ package com.nastel.jkool.tnt4j.sink;
 import java.util.Map;
 import java.util.Properties;
 
-import com.nastel.jkool.tnt4j.config.Configurable;
+import com.nastel.jkool.tnt4j.config.ConfigurationException;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.format.JSONFormatter;
@@ -39,12 +39,11 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 5 $
  *
  */
-public class SocketEventSinkFactory implements EventSinkFactory, Configurable {
+public class SocketEventSinkFactory  extends AbstractEventSinkFactory  {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(DefaultTrackingSelector.class);
 	private String hostName = System.getProperty("tnt4j.sink.factory.socket.host", "localhost");
 	private int port = Integer.getInteger("tnt4j.sink.factory.socket.port", 6400);
 	
-	private Map<String, Object> config = null;
 	private EventSinkFactory eventSinkFactory = DefaultEventSinkFactory.getInstance();
 	/**
 	 * Create a socket event sink factory.
@@ -79,20 +78,20 @@ public class SocketEventSinkFactory implements EventSinkFactory, Configurable {
 	
 	@Override
     public EventSink getEventSink(String name) {
-	    return new SocketEventSink(hostName, port, new JSONFormatter(false), 
-	    		eventSinkFactory.getEventSink(name, System.getProperties(), new JSONFormatter()));
+	    return configureSink(new SocketEventSink(hostName, port, new JSONFormatter(false), 
+	    		eventSinkFactory.getEventSink(name, System.getProperties(), new JSONFormatter())));
     }
 
 	@Override
     public EventSink getEventSink(String name, Properties props) {
-	    return new SocketEventSink(hostName, port, new JSONFormatter(false),
-	    		eventSinkFactory.getEventSink(name, props, new JSONFormatter()));
+	    return configureSink(new SocketEventSink(hostName, port, new JSONFormatter(false),
+	    		eventSinkFactory.getEventSink(name, props, new JSONFormatter())));
     }
 
 	@Override
     public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-	    return new SocketEventSink(hostName, port, frmt, 
-	    		eventSinkFactory.getEventSink(name, props, new JSONFormatter()));
+	    return configureSink(new SocketEventSink(hostName, port, frmt, 
+	    		eventSinkFactory.getEventSink(name, props, new JSONFormatter())));
     }
 
 	/**
@@ -108,22 +107,17 @@ public class SocketEventSinkFactory implements EventSinkFactory, Configurable {
 	 * @see EventFormatter
 	 */
     public EventSink getEventSink(String name, Properties props, EventFormatter frmt, EventSink pipedSink) {
-	    return new SocketEventSink(hostName, port, frmt, pipedSink);
+	    return configureSink(new SocketEventSink(hostName, port, frmt, pipedSink));
     }
 
 	@Override
-    public Map<String, Object> getConfiguration() {
-	    return config;
-    }
-
-	@Override
-    public void setConfiguration(Map<String, Object> settings) {
-		config = settings;
-		hostName = config.get("Host") != null? config.get("Host").toString(): hostName;
-		port = config.get("Port") != null? Integer.parseInt(config.get("Port").toString()): port;
+    public void setConfiguration(Map<String, Object> settings) throws ConfigurationException {
+		super.setConfiguration(settings);
+		hostName = settings.get("Host") != null? settings.get("Host").toString(): hostName;
+		port = settings.get("Port") != null? Integer.parseInt(settings.get("Port").toString()): port;
 		try {
 			eventSinkFactory = (EventSinkFactory) Utils.createConfigurableObject("eventSinkFactory", 
-					"eventSinkFactory.", config);
+					"eventSinkFactory.", settings);
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, "Unable to process settings=" + settings, e);
 		}

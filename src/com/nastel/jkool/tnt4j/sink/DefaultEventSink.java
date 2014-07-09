@@ -38,9 +38,9 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  */
 public abstract class DefaultEventSink implements EventSink {
 
-	private ArrayList<SinkErrorListener> errorListeners = new ArrayList<SinkErrorListener>(10);
-	private ArrayList<SinkLogEventListener> logListeners = new ArrayList<SinkLogEventListener>(10);
-	private ArrayList<SinkEventFilter> filters = new ArrayList<SinkEventFilter>(10);
+	protected ArrayList<SinkErrorListener> errorListeners = new ArrayList<SinkErrorListener>(10);
+	protected ArrayList<SinkLogEventListener> logListeners = new ArrayList<SinkLogEventListener>(10);
+	protected ArrayList<SinkEventFilter> filters = new ArrayList<SinkEventFilter>(10);
 
 	/**
 	 * Register an event sink listener for notifications when logging events occur when writing to event sink.
@@ -146,7 +146,7 @@ public abstract class DefaultEventSink implements EventSink {
 	 */
 	protected boolean filterEvent(OpLevel level, String msg, Object...args) {
 		boolean pass = true;
-		if (filters.size() > 0) return pass;
+		if (filters.size() == 0) return pass;
 		
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, level, msg, args));
@@ -166,7 +166,7 @@ public abstract class DefaultEventSink implements EventSink {
 	 */
 	protected boolean filterEvent(TrackingActivity activity) {
 		boolean pass = true;
-		if (filters.size() > 0) return pass;
+		if (filters.size() == 0) return pass;
 		
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, activity));
@@ -182,12 +182,12 @@ public abstract class DefaultEventSink implements EventSink {
 	 * 
 	 * @param event
 	 *            to be checked with registered filters
-	 * @return true if trackign event passed all filters, false otherwise           
+	 * @return true if tracking event passed all filters, false otherwise           
 	 * @see TrackingEvent
 	 */
 	protected boolean filterEvent(TrackingEvent event) {
 		boolean pass = true;
-		if (filters.size() > 0) return pass;
+		if (filters.size() == 0) return pass;
 		
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, event));
