@@ -61,7 +61,7 @@ public class ConfigurationException extends Exception {
 	 *
 	 * @return configuration settings
 	 */
-    public Map<?, ?> getSettings() {
+    public Map<?, ?> getConfiguration() {
     	return config;
     }
 }

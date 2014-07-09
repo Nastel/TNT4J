@@ -28,9 +28,9 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * </p>
  *<pre>
  *{@code
- *public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
- *	return configureSink(new MyEventSinkImpl(name, props, frmt));
- *}
+ *	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
+ *		return configureSink(new MyEventSinkImpl(name, props, frmt));
+ *	}
  *}
  *</pre>
  *
