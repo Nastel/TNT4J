@@ -19,6 +19,7 @@ import com.nastel.jkool.tnt4j.config.TrackerConfig;
 import com.nastel.jkool.tnt4j.core.Activity;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
+import com.nastel.jkool.tnt4j.core.VarStats;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
 import com.nastel.jkool.tnt4j.sink.EventSink;
 import com.nastel.jkool.tnt4j.sink.Handle;
@@ -46,7 +47,13 @@ import com.nastel.jkool.tnt4j.source.Source;
  * @version $Revision: 5 $
  *
  */
-public interface Tracker extends Handle {
+public interface Tracker extends Handle, VarStats {
+	static final String KEY_REPORTED_ACTIVITY_COUNT = "reported-activity-count";
+	static final String KEY_REPORTED_EVENT_COUNT = "reported-event-count";
+	static final String KEY_ACTIVITIES_STARTED = "started-activity-count";
+	static final String KEY_ACTIVITIES_STOPPED = "stopped-activity-count";
+	static final String KEY_TRACK_NOOP_COUNT = "track-noop-count";
+	static final String KEY_TRACK_ERROR_COUNT = "track-error-count";
 	
 	/**
 	 * Obtains current/active <code>Source</code> handle associated 
@@ -187,6 +194,16 @@ public interface Tracker extends Handle {
 	 */
 	public void tnt(TrackingEvent event);
 	
+
+	/**
+	 * Log a given string message with a specified severity
+	 *
+	 * @param sev message severity to log
+	 * @param msg string message to be logged
+	 * @param args arguments passed along the message
+	 * @see OpLevel
+	 */
+	public void log(OpLevel sev, String msg, Object...args);
 
 	/**
 	 * Register a tracking filter associated with the tracker.

@@ -21,6 +21,7 @@ import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -478,7 +479,7 @@ public class TrackingLogger implements Tracker {
 	 */
 	public void log(OpLevel level, String msg, Object...args) {
 		checkState();
-		logger.getEventSink().log(level, msg, args);
+		logger.log(level, msg, args);
 	}
 
 	/**
@@ -1167,6 +1168,12 @@ public class TrackingLogger implements Tracker {
     }
 
 	@Override
+    public TrackingActivity getRootActivity() {
+		checkState();
+		return logger.getRootActivity();
+    }
+
+	@Override
     public EventSink getEventSink() {
 		checkState();
 		return logger.getEventSink();
@@ -1206,6 +1213,18 @@ public class TrackingLogger implements Tracker {
     public void open() throws IOException {
 		checkState();
 		logger.open();
+    }
+
+	@Override
+    public Map<String, Object> getStats() {
+		checkState();
+		return logger.getStats();
+    }
+
+	@Override
+    public void resetStats() {
+		checkState();
+		logger.resetStats();
     }
 }
 

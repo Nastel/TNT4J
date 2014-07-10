@@ -16,6 +16,7 @@
 package com.nastel.jkool.tnt4j.sink;
 
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.core.VarStats;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -33,7 +34,13 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * @version $Revision: 7 $
  *
  */
-public interface EventSink extends Sink {
+public interface EventSink extends Sink, VarStats {
+	static final String KEY_SINK_ERROR_COUNT = "sink-error-count";
+	static final String KEY_LOGGED_MSGS = "logged-messages";
+	static final String KEY_LOGGED_EVENTS = "logged-events";
+	static final String KEY_LOGGED_ACTIVITIES = "logged-activities";
+	static final String KEY_FILTERED_COUNT = "filtered-count";
+
 	/**
 	 * This method allows writing of <code>TrackingActivity</code> objects
 	 * to the underlying destination.
@@ -64,6 +71,7 @@ public interface EventSink extends Sink {
 	 *
 	 * @param sev message severity to log
 	 * @param msg string message to be logged
+	 * @param args arguments passed along the message
 	 * @see OpLevel
 	 */
 	public void log(OpLevel sev, String msg, Object...args);

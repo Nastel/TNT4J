@@ -17,11 +17,9 @@ package com.nastel.jkool.tnt4j.repository;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.configuration.AbstractConfiguration;
 import org.apache.commons.configuration.AbstractFileConfiguration;
@@ -32,6 +30,8 @@ import org.apache.commons.configuration.event.ConfigurationEvent;
 import org.apache.commons.configuration.event.ConfigurationListener;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
 
+import com.nastel.jkool.tnt4j.config.Configurable;
+import com.nastel.jkool.tnt4j.config.ConfigurationException;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.sink.DefaultEventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.EventSink;
@@ -48,13 +48,13 @@ import com.nastel.jkool.tnt4j.sink.EventSink;
  *
  */
 
-public class FileTokenRepository implements TokenRepository {
+public class FileTokenRepository implements TokenRepository, Configurable {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(FileTokenRepository.class);	
-	private static ScheduledExecutorService reloadService = Executors.newScheduledThreadPool(Integer.getInteger("tnt4j.repository.file.reload.pool.size", 5));
-	private static HashMap<TokenRepositoryListener, TokenConfigurationListener> LISTEN_MAP = new HashMap<TokenRepositoryListener, TokenConfigurationListener>(49);
+	private static ConcurrentHashMap<TokenRepositoryListener, TokenConfigurationListener> LISTEN_MAP = new ConcurrentHashMap<TokenRepositoryListener, TokenConfigurationListener>(49);
 	
 	private String urlName = null;
 	private PropertiesConfiguration config = null;
+	protected Map<String, Object> settings = null;
 	private long refDelay = 20000;
 	
 	/**
@@ -70,7 +70,7 @@ public class FileTokenRepository implements TokenRepository {
 
 	/**
 	 * Create file/property based token repository instance given 
-	 * a specific filename or url. File name is autoreloaded based on 
+	 * a specific filename or url. File name is auto-loaded based on 
 	 * <code>tnt4j.file.respository.refresh</code> property which is set to 20000 (ms) 
 	 * by default.
 	 * 
@@ -144,7 +144,6 @@ public class FileTokenRepository implements TokenRepository {
 	        	FileChangedReloadingStrategy reloadConfig = new FileChangedReloadingStrategy();
 	        	reloadConfig.setRefreshDelay(refDelay);
 	        	config.setReloadingStrategy(reloadConfig);	
-	        	reloadService.scheduleAtFixedRate(new ReloadFileRepository(config), refDelay, refDelay, TimeUnit.MILLISECONDS);
 	        }
         }  catch (IOException e) {
         	logger.log(OpLevel.ERROR, "Unable to open token repository url={0}, reload.ms={1}", urlName, refDelay, e);
@@ -160,6 +159,22 @@ public class FileTokenRepository implements TokenRepository {
 	@Override
     public void close() throws IOException {
 	}
+	
+	@Override
+	public Map<String, Object> getConfiguration() {
+		return settings;
+	}
+
+	@Override
+	public void setConfiguration(Map<String, Object> props) throws ConfigurationException {
+		settings = props;
+		Object fileUrl = props.get("Url");
+		urlName = fileUrl != null? fileUrl.toString(): urlName;
+		
+		Object delay = props.get("RefreshTime");
+		refDelay = delay != null? Long.parseLong(delay.toString()): refDelay;
+	}
+	
 }
 
 class ReloadFileRepository implements Runnable {

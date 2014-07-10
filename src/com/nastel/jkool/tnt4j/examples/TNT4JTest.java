@@ -104,8 +104,8 @@ public class TNT4JTest {
 		}
 		activity.stop(); // stop activity timing
 		tlogger.tnt(activity);	// log and report activity	
+		System.out.println("Logging stats: " + tlogger.getStats());
 		tlogger.close(); //deregister and release all logging resources
-		System.exit(0);
 	}
 
 	static private TrackingActivity runSampleActivity(String msg, String cid, String opName, String location) {

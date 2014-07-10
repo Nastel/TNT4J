@@ -18,6 +18,8 @@ package com.nastel.jkool.tnt4j.tracker;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.EmptyStackException;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.nastel.jkool.tnt4j.config.TrackerConfig;
 import com.nastel.jkool.tnt4j.core.OpLevel;
@@ -56,7 +58,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 public class TrackerImpl implements Tracker, SinkErrorListener {	
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerImpl.class.getName());
 	private static ThreadLocal<LightStack<TrackingActivity>> ACTIVITY_STACK = new ThreadLocal<LightStack<TrackingActivity>>();
-
+	
 	public static final NullActivity NULL_ACTIVITY = new NullActivity();	
 	public static final NullEvent NULL_EVENT = new NullEvent();	
 	
@@ -65,6 +67,12 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	private TrackingSelector selector;
 	private TrackingFilter filter;
 	private volatile boolean openFlag = false;
+	private AtomicLong activityCount = new AtomicLong(0); 
+	private AtomicLong eventCount = new AtomicLong(0); 
+	private AtomicLong errorCount = new AtomicLong(0); 
+	private AtomicLong pushCount = new AtomicLong(0); 
+	private AtomicLong popCount = new AtomicLong(0); 
+	private AtomicLong noopCount = new AtomicLong(0); 
 	
 	protected TrackerImpl(TrackerConfig config) {
 		tConfig = config;
@@ -125,7 +133,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 				eventSink.open();
 			}
 		} finally {
-			eventSink.log(activity);						
+			eventSink.log(activity);	
+			activityCount.incrementAndGet();
 		}
 	}
 
@@ -136,6 +145,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			}
 		} finally {
 			eventSink.log(event);						
+			eventCount.incrementAndGet();
 		}
 	}
 
@@ -163,6 +173,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			parent.add(item);
 		}
 		stack.push(item);
+		pushCount.incrementAndGet();
 		return this;
 	}
 	
@@ -181,10 +192,33 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
 		if (stack != null) {
 			stack.pop(item);
+			popCount.incrementAndGet();
 		}
 		return this;
 	}
 	
+	@Override
+	public Map<String, Object> getStats() {
+		Map<String, Object> stats = eventSink.getStats();
+		stats.put(KEY_REPORTED_ACTIVITY_COUNT, activityCount.get());
+		stats.put(KEY_REPORTED_EVENT_COUNT, eventCount.get());
+		stats.put(KEY_TRACK_ERROR_COUNT, errorCount.get());
+		stats.put(KEY_TRACK_NOOP_COUNT, noopCount.get());
+		stats.put(KEY_ACTIVITIES_STARTED, pushCount.get());
+		stats.put(KEY_ACTIVITIES_STOPPED, popCount.get());
+		return stats;
+	}
+	
+	@Override
+	public void resetStats() {
+		activityCount.set(0);
+		eventCount.set(0);
+		errorCount.set(0);
+		pushCount.set(0);
+		popCount.set(0);
+		noopCount.set(0);
+	}
+
 	@Override
 	public TrackingActivity getCurrentActivity() {
 		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
@@ -294,6 +328,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		try  { 
 			if (!activity.isNoop()) {
 				reportActivity(activity); 
+			} else {
+				noopCount.incrementAndGet();
 			}
 		}
 		catch (Throwable ex) {
@@ -308,6 +344,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		try  { 
 			if (!event.isNoop()) {
 				reportEvent(event);
+			} else {
+				noopCount.incrementAndGet();
 			}
 		}
 		catch (Throwable ex) {
@@ -395,9 +433,15 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
     public void sinkError(SinkError ev) {
+		errorCount.incrementAndGet();
 		logger.log(OpLevel.ERROR, 
-				"Sink write error vm.name={0}, tid={1}, event.sink={2}, source={3}",
-				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), ev.getCause());
+				"Sink write error: count={4}, vm.name={0}, tid={1}, event.sink={2}, source={3}",
+				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), errorCount.get(), ev.getCause());
 		closeEventSink();
+	}
+
+	@Override
+    public void log(OpLevel sev, String msg, Object... args) {
+		eventSink.log(sev, msg, args);
 	}
 }

@@ -16,6 +16,9 @@
 package com.nastel.jkool.tnt4j.sink;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
@@ -37,11 +40,36 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * @see SinkLogEventListener
  */
 public abstract class DefaultEventSink implements EventSink {
-
 	protected ArrayList<SinkErrorListener> errorListeners = new ArrayList<SinkErrorListener>(10);
 	protected ArrayList<SinkLogEventListener> logListeners = new ArrayList<SinkLogEventListener>(10);
 	protected ArrayList<SinkEventFilter> filters = new ArrayList<SinkEventFilter>(10);
 
+	private AtomicLong loggedActivities = new AtomicLong(0);
+	private AtomicLong loggedEvents = new AtomicLong(0);
+	private AtomicLong loggedMsgs = new AtomicLong(0);
+	private AtomicLong errorCount = new AtomicLong(0);
+	private AtomicLong filteredCount = new AtomicLong(0);
+	
+	@Override
+	public Map<String, Object> getStats() {
+		HashMap<String, Object> stats = new HashMap<String, Object>();
+		stats.put(KEY_LOGGED_ACTIVITIES, loggedActivities.get());
+		stats.put(KEY_LOGGED_EVENTS, loggedEvents.get());
+		stats.put(KEY_SINK_ERROR_COUNT, errorCount.get());
+		stats.put(KEY_LOGGED_MSGS, loggedMsgs.get());
+		stats.put(KEY_FILTERED_COUNT, filteredCount.get());
+		return stats;
+	}
+	
+	@Override
+	public void resetStats() {
+		loggedActivities.set(0);
+		loggedEvents.set(0);
+		errorCount.set(0);
+		loggedMsgs.set(0);
+		filteredCount.set(0);
+	}
+	
 	/**
 	 * Register an event sink listener for notifications when logging events occur when writing to event sink.
 	 * 
@@ -108,7 +136,7 @@ public abstract class DefaultEventSink implements EventSink {
 	 *            sink error event to be sent to all listeners
 	 * @see SinkError
 	 */
-	protected void notifyListeners(SinkError event) {
+	private void notifyListeners(SinkError event) {
 		synchronized (errorListeners) {
 			for (SinkErrorListener listener : errorListeners) {
 				listener.sinkError(event);
@@ -125,6 +153,7 @@ public abstract class DefaultEventSink implements EventSink {
 	 *            exception to be reported to all registered event listeners
 	 */
 	protected void notifyListeners(Object msg, Throwable ex) {
+		errorCount.incrementAndGet();
 		if (errorListeners.size() > 0) {
 			SinkError event = new SinkError(this, msg, ex);
 			notifyListeners(event);
@@ -150,7 +179,10 @@ public abstract class DefaultEventSink implements EventSink {
 		
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, level, msg, args));
-			if (!pass) break;
+			if (!pass) {
+				filteredCount.incrementAndGet();
+				break;
+			}
 		}
 		return pass;
 	}
@@ -170,7 +202,10 @@ public abstract class DefaultEventSink implements EventSink {
 		
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, activity));
-			if (!pass) break;
+			if (!pass) {
+				filteredCount.incrementAndGet();
+				break;
+			}
 		}
 		return pass;
 	}
@@ -191,7 +226,10 @@ public abstract class DefaultEventSink implements EventSink {
 		
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, event));
-			if (!pass) break;
+			if (!pass) {
+				filteredCount.incrementAndGet();
+				break;
+			}
 		}
 		return pass;
 	}
@@ -214,6 +252,7 @@ public abstract class DefaultEventSink implements EventSink {
 
 	@Override
 	public void log(TrackingActivity activity) {
+		loggedActivities.incrementAndGet();
 		if (logListeners.size() > 0) {
 			notifyListeners(new SinkLogEvent(this, activity));
 		}
@@ -221,6 +260,7 @@ public abstract class DefaultEventSink implements EventSink {
 
 	@Override
 	public void log(TrackingEvent event) {
+		loggedEvents.incrementAndGet();
 		if (logListeners.size() > 0) {
 			notifyListeners(new SinkLogEvent(this, event));
 		}
@@ -228,6 +268,7 @@ public abstract class DefaultEventSink implements EventSink {
 
 	@Override
 	public void log(OpLevel sev, String msg, Object...args) {
+		loggedMsgs.incrementAndGet();
 		if (logListeners.size() > 0) {
 			notifyListeners(new SinkLogEvent(this, sev, msg, args));
 		}
