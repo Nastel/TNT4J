@@ -26,55 +26,65 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
 /**
  * <p>
- * This class implements a simple event filter based on severity level threshold & time performance
- * such as elapsed and wait times. 
- * Use this class to filter out events/messages based time/level combination.
- * A given severity must be greater than or equal to the given level threshold to 
- * pass this filter. A given activity must be greater or equal to the given elapsed/waited 
- * time. Set time objectives to -1 to disable time based filtering.
+ * This class implements a simple event filter based on severity level threshold & time performance such as elapsed and
+ * wait times. Use this class to filter out events/messages based time/level combination. A given severity must be
+ * greater than or equal to the given level threshold to pass this filter. A given activity must be greater or equal to
+ * the given elapsed/wait/wall time. Set time objectives to -1 to disable time based filtering.
  * </p>
- *
+ * 
  * @see OpLevel
  * @see EventSink
- *
+ * @see SinkEventFilter
+ * @see Configurable
+ * 
  * @version $Revision: 1 $
- *
+ * 
  */
 public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
-	OpLevel sevLimit;
-	long	elapsedUsec = -1;
-	long	waitUsec = -1;
-	private Map<String, Object> config = null;
+	public static final String LEVEL = "Level";
+	public static final String ELAPSED_USEC = "ElapsedUsec";
+	public static final String WAIT_USEC = "WaitUsec";
+	public static final String WALL_USEC = "WallUsec";
 	
+	OpLevel sevLimit;
+	long elapsedUsec = -1;
+	long waitUsec = -1;
+	long wallUsec = -1;
+	Map<String, Object> config = null;
+
 	/**
-	 * Create a default filter with <code>OpLevel.INFO</code> as default
-	 * threshold.
-	 *
+	 * Create a default filter with <code>OpLevel.INFO</code> as default threshold.
+	 * 
 	 */
 	public EventLevelTimeFilter() {
-		sevLimit = OpLevel.INFO;		
+		sevLimit = OpLevel.INFO;
 	}
-	
+
 	/**
 	 * Create a default filter with a given level threshold.
-	 *
-	 *@param threshold severity level threshold
-	 *@param elapsedUsc elapsed time threshold (-1 disable)
-	 *@param waitUsc wait time threshold (-1 disable)
+	 * 
+	 * @param threshold
+	 *            severity level threshold
+	 * @param elapsedUsc
+	 *            elapsed time threshold (-1 disable)
+	 * @param waitUsc
+	 *            wait time threshold (-1 disable)
 	 */
 	public EventLevelTimeFilter(OpLevel threshold, long elapsedUsc, long waitUsc) {
-		sevLimit = threshold;	
+		sevLimit = threshold;
 		elapsedUsec = elapsedUsc;
 		waitUsec = waitUsc;
 	}
-	
+
 	@Override
 	public boolean filter(EventSink sink, TrackingEvent event) {
 		if (elapsedUsec >= 0) {
-			if (event.getOperation().getElapsedTime() < elapsedUsec) return false;
+			if (event.getOperation().getElapsedTime() < elapsedUsec)
+				return false;
 		}
 		if (waitUsec >= 0) {
-			if (event.getOperation().getWaitTime() < waitUsec) return false;
+			if (event.getOperation().getWaitTime() < waitUsec)
+				return false;
 		}
 		return (event.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(event.getSeverity());
 	}
@@ -82,10 +92,16 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	@Override
 	public boolean filter(EventSink sink, TrackingActivity activity) {
 		if (elapsedUsec >= 0) {
-			if (activity.getElapsedTime() < elapsedUsec) return false;
+			if (activity.getElapsedTime() < elapsedUsec)
+				return false;
 		}
 		if (waitUsec >= 0) {
-			if (activity.getWaitTime() < waitUsec) return false;
+			if (activity.getWaitTime() < waitUsec)
+				return false;
+		}
+		if (wallUsec >= 0) {
+			if (activity.getWallTimeUsec() < wallUsec)
+				return false;
 		}
 		return (activity.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(activity.getSeverity());
 	}
@@ -103,13 +119,16 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	@Override
 	public void setConfiguration(Map<String, Object> settings) {
 		config = settings;
-		Object levelString = config.get("Level");
-		sevLimit = (levelString != null? OpLevel.valueOf(levelString): sevLimit);
+		Object levelString = config.get(LEVEL);
+		sevLimit = (levelString != null ? OpLevel.valueOf(levelString) : sevLimit);
+
+		Object elaspedStr = config.get(ELAPSED_USEC);
+		elapsedUsec = (elaspedStr != null ? Long.parseLong(elaspedStr.toString()) : elapsedUsec);
+
+		Object waitStr = config.get(WAIT_USEC);
+		waitUsec = (waitStr != null ? Long.parseLong(waitStr.toString()) : waitUsec);
 		
-		Object elaspedStr = config.get("ElapsedUsec");
-		elapsedUsec = (elaspedStr != null? Long.parseLong(elaspedStr.toString()): elapsedUsec);
-		
-		Object waitStr = config.get("WaitUsec");
-		waitUsec = (waitStr != null? Long.parseLong(waitStr.toString()): waitUsec);
-	}	
+		Object wallStr = config.get(WALL_USEC);
+		wallUsec = (wallStr != null ? Long.parseLong(wallStr.toString()) : wallUsec);
+	}
 }

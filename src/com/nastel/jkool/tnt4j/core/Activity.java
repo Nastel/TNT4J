@@ -44,19 +44,6 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 11 $
  */
 public class Activity extends Operation implements Trackable {
-
-	/**
-	 * Maximum length of an Activity Signature.
-	 * @since Revision 19
-	 */
-	public static final int MAX_SIGNATURE_LENGTH = 36;
-
-	/**
-	 * Maximum length of Activity Exception string.
-	 * @since Revision 38
-	 */
-	public static final int MAX_EXCEPTION_LENGTH = 512;
-
 	private Source appl;
 	private String tracking_id;
 	private String parentId;
@@ -114,8 +101,8 @@ public class Activity extends Operation implements Trackable {
 	public Activity(String id, String name, Source appl) {
 		super(name, OpType.ACTIVITY);
 		setTrackingId(id);
-		setTID(Thread.currentThread().getId());
 		setSource(appl);
+		setTID(Thread.currentThread().getId());
 		setResource(Utils.getVMName());
 	}
 
@@ -222,15 +209,12 @@ public class Activity extends Operation implements Trackable {
 	 * @param id Activity tracking id
 	 * @throws NullPointerException if tracking id is <code>null</code>
 	 * @throws IllegalArgumentException if tracking id is empty or too long
-	 * @see #MAX_SIGNATURE_LENGTH
 	 */
 	public void setTrackingId(String id) {
 		if (id == null)
 			throw new NullPointerException("tracking id must be a non-empty string");
 		if (id.length() == 0)
 			throw new IllegalArgumentException("tracking id must be a non-empty string");
-		if (id.length() > MAX_SIGNATURE_LENGTH)
-			throw new IllegalArgumentException("tracking id length must be <= " + MAX_SIGNATURE_LENGTH);
 		this.tracking_id = id;
 	}
 
