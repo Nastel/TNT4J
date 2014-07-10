@@ -196,6 +196,17 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 	
 	@Override
+	public TrackingActivity getRootActivity() {
+		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
+		if (stack != null) {
+			TrackingActivity root = stack.get(0);
+			return root != null? root: NULL_ACTIVITY;
+		} else {
+			return NULL_ACTIVITY;
+		}
+	}
+	
+	@Override
 	public StackTraceElement[] getStackTrace() {
 		StackTraceElement[] activityTrace = null;
 		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
@@ -262,20 +273,12 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public TrackingActivity newActivity(OpLevel level, String name) {
-		if (!isTrackingEnabled(level, name)) {
-			return NULL_ACTIVITY;
-		}
-		TrackingActivity luw = new TrackingActivity(level, name, this);
-		luw.setPID(Utils.getVMPID());
-		if (tConfig.getActivityListener() != null) {
-			luw.addActivityListener(tConfig.getActivityListener());
-		}
-		return luw;
+		return newActivity(level, name, TrackingEvent.newUUID());
 	}
 
 	@Override
 	public TrackingActivity newActivity(OpLevel level, String name, String signature) {
-		if (!isTrackingEnabled(level, signature, name)) {
+		if (!isTrackingEnabled(level, name, signature)) {
 			return NULL_ACTIVITY;
 		}
 		TrackingActivity luw = new TrackingActivity(level, name, signature, this);
@@ -309,8 +312,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 		catch (Throwable ex) {
 			logger.log(OpLevel.ERROR, 
-					"Failed to report event signature={0}, tid={1}, event.sink={2}, source={3}",
-					event.getTrackingId(), Thread.currentThread().getId(), eventSink, getSource(), ex);
+				"Failed to report event signature={0}, tid={1}, event.sink={2}, source={3}",
+				event.getTrackingId(), Thread.currentThread().getId(), eventSink, getSource(), ex);
 		}
 	}
 

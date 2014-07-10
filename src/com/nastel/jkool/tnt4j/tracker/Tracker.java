@@ -85,12 +85,21 @@ public interface Tracker extends Handle {
 	public TrackerConfig getConfiguration();
 
 	/**
-	 * Obtains the top most active <code>TrackingActivity</code> 
-	 * at the top of the stack, <code>NullActivity</code> if not none is available.
+	 * Obtains the top most active <code>TrackingActivity</code> instance
+	 * at the top of the stack, <code>NullActivity</code> if none is available.
 	 * 
 	 * @return current active tracking activity
 	 */
 	public TrackingActivity getCurrentActivity();
+
+	/**
+	 * Obtains the bottom most active <code>TrackingActivity</code> instance
+	 * at the bottom of the stack, <code>NullActivity</code> if none is available.
+	 * This represents the root (first) activity.
+	 * 
+	 * @return root tracking activity
+	 */
+	public TrackingActivity getRootActivity();
 
 	/**
 	 * Obtains current stack trace based on nested activity execution.
