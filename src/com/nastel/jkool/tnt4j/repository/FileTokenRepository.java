@@ -147,10 +147,13 @@ public class FileTokenRepository implements TokenRepository {
 	        	reloadService.scheduleAtFixedRate(new ReloadFileRepository(config), refDelay, refDelay, TimeUnit.MILLISECONDS);
 	        }
         }  catch (IOException e) {
-        	logger.log(OpLevel.ERROR, "Unable to open token repository url=" + urlName + ", reload.ms=" + refDelay, e);
+        	logger.log(OpLevel.ERROR, "Unable to open token repository url={0}, reload.ms={1}", urlName, refDelay, e);
 			throw e;
         } catch (Throwable e) {
-        	logger.log(OpLevel.ERROR, "Unable to open token repository url=" + urlName + ", reload.ms=" + refDelay, e);
+        	logger.log(OpLevel.FAILURE, "Unable to open token repository url={0}, reload.ms={1}", urlName, refDelay, e);
+        	IOException ioe = new IOException(e.toString());
+        	ioe.initCause(e);
+        	throw ioe;
         }	
     }
 
@@ -185,12 +188,8 @@ class TokenConfigurationListener implements ConfigurationListener, Configuration
 	@Override
     public void configurationChanged(ConfigurationEvent event) {	
 		if (event.isBeforeUpdate()) return;
-		if (logger.isSet(OpLevel.DEBUG)) {
-			logger.log(OpLevel.DEBUG, "configurationChanged{type: " + event.getType() 
-					+ ", " + event.getPropertyName()
-					+ ": " + event.getPropertyValue()
-					+ "}");
-		}
+		logger.log(OpLevel.DEBUG, "configurationChanged: type={0}, {1}:{2}", 
+				event.getType(), event.getPropertyName(), event.getPropertyValue());
 		switch (event.getType()) {
 			case AbstractConfiguration.EVENT_ADD_PROPERTY:
 				repListener.repositoryChanged(new TokenRepositoryEvent(event.getSource(), 
@@ -217,7 +216,7 @@ class TokenConfigurationListener implements ConfigurationListener, Configuration
 
 	@Override
     public void configurationError(ConfigurationErrorEvent event) {
-		logger.log(OpLevel.ERROR, "Configuration error detected, event=" + event, event.getCause());
+		logger.log(OpLevel.ERROR, "Configuration error detected, event={0}", event, event.getCause());
 		repListener.repositoryError(new TokenRepositoryEvent(event.getSource(), 
 				TokenRepository.EVENT_EXCEPTION, event.getPropertyName(), event.getPropertyValue(), event.getCause()));
     }

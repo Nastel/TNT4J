@@ -15,12 +15,11 @@
  */
 package com.nastel.jkool.tnt4j.tracker;
 
-import java.util.UUID;
-
 import com.nastel.jkool.tnt4j.core.ActivityStatus;
 import com.nastel.jkool.tnt4j.core.OpCompCode;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
+import com.nastel.jkool.tnt4j.core.Operation;
 import com.nastel.jkool.tnt4j.core.Trackable;
 
 /**
@@ -37,7 +36,7 @@ import com.nastel.jkool.tnt4j.core.Trackable;
  */
 public class NullActivity extends TrackingActivity {
 	protected NullActivity() {
-		super(OpLevel.NONE, UUID.randomUUID().toString());
+		super(OpLevel.NONE, Operation.NOOP);
 		super.setType(OpType.NOOP);
 	}
 	

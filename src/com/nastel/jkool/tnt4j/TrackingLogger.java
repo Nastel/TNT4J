@@ -15,6 +15,7 @@
  */
 package com.nastel.jkool.tnt4j;
 
+import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
@@ -41,9 +42,11 @@ import com.nastel.jkool.tnt4j.dump.ThreadDeadlockDumpProvider;
 import com.nastel.jkool.tnt4j.dump.ThreadDumpProvider;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
 import com.nastel.jkool.tnt4j.sink.DefaultEventSinkFactory;
+import com.nastel.jkool.tnt4j.sink.EventSink;
 import com.nastel.jkool.tnt4j.sink.SinkErrorListener;
 import com.nastel.jkool.tnt4j.sink.SinkEventFilter;
 import com.nastel.jkool.tnt4j.sink.SinkLogEventListener;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.DefaultTrackerFactory;
 import com.nastel.jkool.tnt4j.tracker.Tracker;
 import com.nastel.jkool.tnt4j.tracker.TrackerFactory;
@@ -179,7 +182,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 21 $
  *
  */
-public class TrackingLogger {
+public class TrackingLogger implements Tracker {
 	private static final String TRACKER_SOURCE = System.getProperty("tnt4j.tracking.logger.source", TrackingLogger.class.getName());
 	private static final String TRACKER_CONFIG = System.getProperty("tnt4j.tracking.logger.config");
 
@@ -781,30 +784,30 @@ public class TrackingLogger {
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.
 	 *
 	 * @param level activity severity level
-	 * @param signature
-	 *            user defined activity signature (should be unique)
+	 * @param name
+	 *            user defined activity name
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
 	 */
-	public TrackingActivity newActivity(OpLevel level, String signature) {
+	public TrackingActivity newActivity(OpLevel level, String name) {
 		checkState();
-		return logger.newActivity(level, signature);
+		return logger.newActivity(level, name);
 	}
 
 	/**
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.
 	 *
 	 * @param level activity severity level
-	 * @param signature
-	 *            user defined activity signature (should be unique)
 	 * @param name
 	 *            user defined activity name
+	 * @param signature
+	 *            user defined activity signature (should be unique)
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
 	 */
-	public TrackingActivity newActivity(OpLevel level, String signature, String name) {
+	public TrackingActivity newActivity(OpLevel level, String name, String signature) {
 		checkState();
-		return logger.newActivity(level, signature, name);
+		return logger.newActivity(level, name, signature);
 	}
 
 	/**
@@ -1144,6 +1147,66 @@ public class TrackingLogger {
 			}
 		}
 	}
+
+	@Override
+    public TrackingActivity[] getActivityStack() {
+		checkState();
+		return logger.getActivityStack();
+    }
+
+	@Override
+    public TrackerConfig getConfiguration() {
+		checkState();
+		return logger.getConfiguration();
+    }
+
+	@Override
+    public TrackingActivity getCurrentActivity() {
+		checkState();
+		return logger.getCurrentActivity();
+    }
+
+	@Override
+    public EventSink getEventSink() {
+		checkState();
+		return logger.getEventSink();
+    }
+
+	@Override
+    public Source getSource() {
+		checkState();
+		return logger.getSource();
+    }
+
+	@Override
+    public int getStackSize() {
+		checkState();
+		return logger.getStackSize();
+    }
+
+	@Override
+    public StackTraceElement[] getStackTrace() {
+		checkState();
+		return logger.getStackTrace();
+    }
+
+	@Override
+    public TrackingSelector getTrackingSelector() {
+		checkState();
+		return logger.getTrackingSelector();
+    }
+
+	@Override
+    public boolean isOpen() {
+		checkState();
+		return logger.isOpen();
+    }
+
+	@Override
+    public void open() throws IOException {
+		checkState();
+		logger.open();
+    }
 }
 
 class DumpHook extends Thread {

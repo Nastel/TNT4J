@@ -20,6 +20,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.util.List;
+import java.util.UUID;
 
 import com.nastel.jkool.tnt4j.TrackingLogger;
 import com.nastel.jkool.tnt4j.core.Activity;
@@ -100,22 +101,22 @@ public class TrackingActivity extends Activity {
 	        overHeadTimeNano = 0;
 	private ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
 	private boolean appendProps = true, cpuTimingSupported = false, contTimingSupported = false, enableTiming = false;
-	private Tracker tracker = null;
+	private TrackerImpl tracker = null;
 
 	/**
 	 * Creates a logical application activity object with the specified signature.
 	 * 
 	 * @param level activity severity level
-	 * @param signature
-	 *            activity signature
+	 * @param name
+	 *            activity name
 	 * @throws NullPointerException
 	 *             if the signature is <code>null</code>
 	 * @throws IllegalArgumentException
 	 *             if the signature is empty or is too long
 	 * @see #setTrackingId(String)
 	 */
-	protected TrackingActivity(OpLevel level, String signature) {
-		super(signature);
+	protected TrackingActivity(OpLevel level, String name) {
+		super(UUID.randomUUID().toString(), name);
 		setSeverity(level);
 	}
 
@@ -123,29 +124,6 @@ public class TrackingActivity extends Activity {
 	 * Creates a logical application activity object with the specified signature.
 	 * 
 	 * @param level activity severity level
-	 * @param signature
-	 *            activity signature
-	 * @param trk
-	 *            <code>Tracker</code> instance associated with this activity
-	 * @throws NullPointerException
-	 *             if the signature is <code>null</code>
-	 * @throws IllegalArgumentException
-	 *             if the signature is empty or is too long
-	 * @see #setTrackingId(String)
-	 */
-	protected TrackingActivity(OpLevel level, String signature, Tracker trk) {
-		super(signature, trk.getSource());
-		setSeverity(level);
-		tracker = trk;
-		initJavaTiming();
-	}
-
-	/**
-	 * Creates a logical application activity object with the specified signature.
-	 * 
-	 * @param level activity severity level
-	 * @param signature
-	 *            activity signature
 	 * @param name
 	 *            activity name
 	 * @param trk
@@ -156,10 +134,33 @@ public class TrackingActivity extends Activity {
 	 *             if the signature is empty or is too long
 	 * @see #setTrackingId(String)
 	 */
-	protected TrackingActivity(OpLevel level, String signature, String name, Tracker trk) {
-		super(signature, name, trk.getSource());
-		setSeverity(level);
+	protected TrackingActivity(OpLevel level, String name, TrackerImpl trk) {
+		super(UUID.randomUUID().toString(), name, trk.getSource());
 		tracker = trk;
+		setSeverity(level);
+		initJavaTiming();
+	}
+
+	/**
+	 * Creates a logical application activity object with the specified signature.
+	 * 
+	 * @param level activity severity level
+	 * @param name
+	 *            activity name
+	 * @param signature
+	 *            activity signature
+	 * @param trk
+	 *            <code>Tracker</code> instance associated with this activity
+	 * @throws NullPointerException
+	 *             if the signature is <code>null</code>
+	 * @throws IllegalArgumentException
+	 *             if the signature is empty or is too long
+	 * @see #setTrackingId(String)
+	 */
+	protected TrackingActivity(OpLevel level, String name, String signature, TrackerImpl trk) {
+		super(signature, name, trk.getSource());
+		tracker = trk;
+		setSeverity(level);
 		initJavaTiming();
 	}
 
@@ -181,6 +182,7 @@ public class TrackingActivity extends Activity {
 		if (startStopCount == 0) {
 			long start = System.nanoTime();
 			startStopCount++;
+			tracker.push(this);
 			if (enableTiming) {
 				startCPUTime = cpuTimingSupported ? tmbean.getCurrentThreadCpuTime() : 0;
 				ThreadInfo tinfo = tmbean.getThreadInfo(Thread.currentThread().getId());
@@ -310,6 +312,7 @@ public class TrackingActivity extends Activity {
 				}
 				stopCPUTime = getCurrentCpuTimeNanos();
 			}
+			tracker.pop(this);
 			overHeadTimeNano += (System.nanoTime() - start);
 		}
 	}

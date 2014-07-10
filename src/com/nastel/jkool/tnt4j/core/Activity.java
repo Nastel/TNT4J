@@ -65,7 +65,22 @@ public class Activity extends Operation implements Trackable {
 		super(Operation.NOOP, OpType.ACTIVITY);
 		setTrackingId(id);
 		setTID(Thread.currentThread().getId());
-		setSource(appl);
+		setResource(Utils.getVMName());
+	}
+
+	/**
+	 * Creates a Activity object with the specified tracking id and name.
+	 *
+	 * @param id Activity tracking id
+	 * @param name activity name
+	 * @throws NullPointerException if the tracking id is <code>null</code>
+	 * @throws IllegalArgumentException if the tracking id is empty or is too long
+	 * @see #setTrackingId(String)
+	 */
+	public Activity(String id, String name) {
+		super(name, OpType.ACTIVITY);
+		setTrackingId(id);
+		setTID(Thread.currentThread().getId());
 		setResource(Utils.getVMName());
 	}
 

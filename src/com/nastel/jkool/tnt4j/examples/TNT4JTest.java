@@ -87,7 +87,7 @@ public class TNT4JTest {
 		TrackingLogger.addDumpProvider(new MyDumpProvider(args[0], "ApplRuntime"));
 
 		// create and start an activity
-		TrackingActivity activity = tlogger.newActivity();
+		TrackingActivity activity = tlogger.newActivity(OpLevel.INFO, "LoggingBenchmark");
 		TrackingLogger.addDumpProvider(new ObjectDumpProvider(args[0], activity));
 		activityCount++;
 		activity.start();
@@ -96,7 +96,7 @@ public class TNT4JTest {
 			eventCount++;
 			event.start(); // start timing current event
 			try {
-				runSampleActivity(activity, args[2], args[3], args[4], args[5]);
+				runSampleActivity(args[2], args[3], args[4], args[5]);
 			} finally {
 				event.stop();
 				activity.tnt(event); // associate current event with the current activity
@@ -108,10 +108,9 @@ public class TNT4JTest {
 		System.exit(0);
 	}
 
-	static private TrackingActivity runSampleActivity(TrackingActivity parent, String msg, String cid, String opName, String location) {
-		TrackingActivity activity = tlogger.newActivity();
+	static private TrackingActivity runSampleActivity(String msg, String cid, String opName, String location) {
+		TrackingActivity activity = tlogger.newActivity(OpLevel.INFO, "runSampleActivity");
 		activityCount++;
-		parent.add(activity);
 		activity.start();
 		int runs = rand.nextInt(50);
 		int sev = rand.nextInt(OpLevel.values().length);

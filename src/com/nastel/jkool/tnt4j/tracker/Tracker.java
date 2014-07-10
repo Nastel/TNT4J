@@ -85,6 +85,35 @@ public interface Tracker extends Handle {
 	public TrackerConfig getConfiguration();
 
 	/**
+	 * Obtains the top most active <code>TrackingActivity</code> 
+	 * at the top of the stack, <code>NullActivity</code> if not none is available.
+	 * 
+	 * @return current active tracking activity
+	 */
+	public TrackingActivity getCurrentActivity();
+
+	/**
+	 * Obtains current stack trace based on nested activity execution.
+	 * 
+	 * @return stack trace of nested tracking activities
+	 */
+	public StackTraceElement[] getStackTrace();
+
+	/**
+	 * Obtains current stack of nested tracking activities
+	 * 
+	 * @return current stack of nested tracking activities
+	 */
+	public TrackingActivity[] getActivityStack();
+	
+	/**
+	 * Obtains current size of nested activity stack
+	 * 
+	 * @return current size of nested activity stack
+	 */
+	public int getStackSize();
+	
+	/**
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.
 	 * NOOP activity instance <code>NullActivity</code> is returned 
 	 * when <code>TrackingFilter</code> is set and returns false.
@@ -111,11 +140,11 @@ public interface Tracker extends Handle {
 	 * when <code>TrackingFilter</code> is set and returns false.
 	 * 
 	 * @param level activity severity level
-	 * @param signature user defined activity signature (should be unique)
+	 * @param name user defined logical name of the activity
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
 	 */
-	public TrackingActivity newActivity(OpLevel level, String signature);
+	public TrackingActivity newActivity(OpLevel level, String name);
 
 	/**
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.
@@ -123,12 +152,12 @@ public interface Tracker extends Handle {
 	 * when <code>TrackingFilter</code> is set and returns false.
 	 * 
 	 * @param level activity severity level
-	 * @param signature user defined activity signature (should be unique)
 	 * @param name activity name
+	 * @param signature user defined activity signature (should be unique)
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
 	 */
-	public TrackingActivity newActivity(OpLevel level, String signature, String name);
+	public TrackingActivity newActivity(OpLevel level, String name, String signature);
 
 	/**
 	 * Track and Trace a single application tracking activity

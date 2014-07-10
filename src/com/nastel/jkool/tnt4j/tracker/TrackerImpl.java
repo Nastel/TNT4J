@@ -17,11 +17,12 @@ package com.nastel.jkool.tnt4j.tracker;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.UUID;
+import java.util.EmptyStackException;
 
 import com.nastel.jkool.tnt4j.config.TrackerConfig;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
+import com.nastel.jkool.tnt4j.core.Operation;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
 import com.nastel.jkool.tnt4j.sink.DefaultEventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.EventSink;
@@ -29,6 +30,7 @@ import com.nastel.jkool.tnt4j.sink.Handle;
 import com.nastel.jkool.tnt4j.sink.SinkError;
 import com.nastel.jkool.tnt4j.sink.SinkErrorListener;
 import com.nastel.jkool.tnt4j.source.Source;
+import com.nastel.jkool.tnt4j.utils.LightStack;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 
@@ -36,8 +38,8 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * <p>
  * Concrete class that implements <code>Tracker</code> interface. This class implements integration with
  * <code>EventSink</code>. Do not use this class directly. This class is instantiated by the 
- * <code>DefaultTrackerFactory.getInstance(...)</code> or <code>TrackingLogger.register(...)</code> calls. 
- * Access to this class is not thread safe. <code>TrackingLogger.tnt(...)</code> method will trigger 
+ * <code>DefaultTrackerFactory.getInstance(...)</code> or <code>TrackingLogger.getInstance(...)</code> calls. 
+ * Access to this class is thread safe. <code>TrackingLogger.tnt(...)</code> method will trigger 
  * logging to <code>EventSink</code> configured in <code>TrackingConfig</code>.
  * </p>
  * 
@@ -53,15 +55,16 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 public class TrackerImpl implements Tracker, SinkErrorListener {	
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerImpl.class.getName());
+	private static ThreadLocal<LightStack<TrackingActivity>> ACTIVITY_STACK = new ThreadLocal<LightStack<TrackingActivity>>();
 
 	public static final NullActivity NULL_ACTIVITY = new NullActivity();	
 	public static final NullEvent NULL_EVENT = new NullEvent();	
 	
-	private boolean openFlag = false;
 	private EventSink eventSink;
 	private TrackerConfig tConfig;
 	private TrackingSelector selector;
 	private TrackingFilter filter;
+	private boolean openFlag = false;
 	
 	protected TrackerImpl(TrackerConfig config) {
 		tConfig = config;
@@ -141,6 +144,96 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		return filter.isTrackingEnabled(this, level, args);
 	}
 
+	/**
+	 * Push an instance of <code>TrackingActivity</code> on top of the stack.
+	 * Invoke this when activity starts. The stack is maintained per thread in
+	 * thread local.
+	 * 
+	 * @return current tracker instance
+	 */
+	protected Tracker push(TrackingActivity item) {
+		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
+		if (stack == null) {
+			stack = new LightStack<TrackingActivity>();
+			ACTIVITY_STACK.set(stack);
+		}
+		// associate with the parent activity if there is any
+		TrackingActivity parent = stack.peek(null);
+		if (parent != null) {
+			parent.add(item);
+		}
+		stack.push(item);
+		return this;
+	}
+	
+	/**
+	 * Pop an instance of <code>TrackingActivity</code> from the top the stack.
+	 * Invoke this method when activity stops. The stack is maintained per thread in
+	 * thread local.
+	 * 
+	 * @return current tracker instance
+	 * @exception EmptyStackException
+	 *                if this stack is empty.
+	 * @exception IllegalStateException
+	 *                if the top of the stack is not the item
+	 */
+	protected Tracker pop(TrackingActivity item) {
+		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
+		if (stack != null) {
+			stack.pop(item);
+		}
+		return this;
+	}
+	
+	@Override
+	public TrackingActivity getCurrentActivity() {
+		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
+		if (stack != null) {
+			return stack.peek(NULL_ACTIVITY);
+		} else {
+			return NULL_ACTIVITY;
+		}
+	}
+	
+	@Override
+	public StackTraceElement[] getStackTrace() {
+		StackTraceElement[] activityTrace = null;
+		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
+		if ((stack != null) && (stack.size() > 0)) {
+			activityTrace = new StackTraceElement[stack.size()];
+			int index = 0;
+			for (int i = (stack.size()-1); i >=0; i--) {
+				TrackingActivity act = stack.get(i);
+				activityTrace[index++] = new StackTraceElement(act.getSource().getName(), 
+						act.getResolvedName(), 
+						act.getTrackingId() + ":" + act.getParentId(),
+						act.getIdCount());
+			}
+		}
+		return activityTrace;		
+	}
+	
+	@Override
+	public TrackingActivity[] getActivityStack() {
+		TrackingActivity[] activityTrace = null;
+		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
+		if ((stack != null) && (stack.size() > 0)) {
+			activityTrace = new TrackingActivity[stack.size()];
+			int index = 0;
+			for (int i = (stack.size()-1); i >=0; i--) {
+				TrackingActivity act = stack.get(i);
+				activityTrace[index++] = act;
+			}
+		}
+		return activityTrace;		
+	}
+	
+	@Override
+	public int getStackSize() {
+		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
+		return stack != null? stack.size(): 0;
+	}
+	
 	@Override
 	public void setTrackingFilter(TrackingFilter tfilt) {
 		filter = tfilt;
@@ -159,26 +252,20 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	
 	@Override
 	public TrackingActivity newActivity() {
-		if (!isTrackingEnabled(OpLevel.INFO)) {
-			return NULL_ACTIVITY;
-		}
-		return newActivity(OpLevel.INFO, UUID.randomUUID().toString());
+		return newActivity(OpLevel.INFO, Operation.NOOP);
 	}
 
 	@Override
 	public TrackingActivity newActivity(OpLevel level) {
-		if (!isTrackingEnabled(level)) {
-			return NULL_ACTIVITY;
-		}
-		return newActivity(level, UUID.randomUUID().toString());
+		return newActivity(level, Operation.NOOP);
 	}
 
 	@Override
-	public TrackingActivity newActivity(OpLevel level, String signature) {
-		if (!isTrackingEnabled(level, signature)) {
+	public TrackingActivity newActivity(OpLevel level, String name) {
+		if (!isTrackingEnabled(level, name)) {
 			return NULL_ACTIVITY;
 		}
-		TrackingActivity luw = new TrackingActivity(level, signature, this);
+		TrackingActivity luw = new TrackingActivity(level, name, this);
 		luw.setPID(Utils.getVMPID());
 		if (tConfig.getActivityListener() != null) {
 			luw.addActivityListener(tConfig.getActivityListener());
@@ -187,11 +274,11 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 
 	@Override
-	public TrackingActivity newActivity(OpLevel level, String signature, String name) {
+	public TrackingActivity newActivity(OpLevel level, String name, String signature) {
 		if (!isTrackingEnabled(level, signature, name)) {
 			return NULL_ACTIVITY;
 		}
-		TrackingActivity luw = new TrackingActivity(level, signature, name, this);
+		TrackingActivity luw = new TrackingActivity(level, name, signature, this);
 		luw.setPID(Utils.getVMPID());
 		if (tConfig.getActivityListener() != null) {
 			luw.addActivityListener(tConfig.getActivityListener());
@@ -277,12 +364,14 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
     public synchronized void open() {
-		openIOHandle(selector);
-		openEventSink();
-		openFlag = true;
-		logger.log(OpLevel.DEBUG, 
+		if (!isOpen()) {
+			openIOHandle(selector);
+			openEventSink();
+			openFlag = true;
+			logger.log(OpLevel.DEBUG, 
 				"Tracker opened vm.name={0}, tid={1}, event.sink={2}, source={3}",
 				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource());
+		}
     }
 
 	@Override

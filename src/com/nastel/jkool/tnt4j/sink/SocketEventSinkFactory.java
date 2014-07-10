@@ -19,10 +19,8 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.nastel.jkool.tnt4j.config.ConfigurationException;
-import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.format.JSONFormatter;
-import com.nastel.jkool.tnt4j.selector.DefaultTrackingSelector;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -40,7 +38,6 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  */
 public class SocketEventSinkFactory  extends AbstractEventSinkFactory  {
-	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(DefaultTrackingSelector.class);
 	private String hostName = System.getProperty("tnt4j.sink.factory.socket.host", "localhost");
 	private int port = Integer.getInteger("tnt4j.sink.factory.socket.port", 6400);
 	
@@ -115,12 +112,8 @@ public class SocketEventSinkFactory  extends AbstractEventSinkFactory  {
 		super.setConfiguration(settings);
 		hostName = settings.get("Host") != null? settings.get("Host").toString(): hostName;
 		port = settings.get("Port") != null? Integer.parseInt(settings.get("Port").toString()): port;
-		try {
-			eventSinkFactory = (EventSinkFactory) Utils.createConfigurableObject("eventSinkFactory", 
+		eventSinkFactory = (EventSinkFactory) Utils.createConfigurableObject("eventSinkFactory", 
 					"eventSinkFactory.", settings);
-		} catch (Throwable e) {
-			logger.log(OpLevel.ERROR, "Unable to process settings=" + settings, e);
-		}
 		eventSinkFactory = eventSinkFactory == null? DefaultEventSinkFactory.getInstance(): eventSinkFactory;
     }
 }
