@@ -64,7 +64,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	private TrackerConfig tConfig;
 	private TrackingSelector selector;
 	private TrackingFilter filter;
-	private boolean openFlag = false;
+	private volatile boolean openFlag = false;
 	
 	protected TrackerImpl(TrackerConfig config) {
 		tConfig = config;
@@ -339,9 +339,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	@Override
 	protected void finalize() throws Throwable {
 		try {
-			if (isOpen()) {
-				close();
-			}
+			close();
 		} finally {
 			super.finalize();
 		}
@@ -376,6 +374,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public synchronized void close() {
+		if (!isOpen()) return;
 		try {
 			closeEventSink();
 			Utils.close(selector);
@@ -384,8 +383,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource());
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, 
-					"Failed to close tracker vm.name={0}, tid={1}, event.sink={2}, source={3}",
-					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
+				"Failed to close tracker vm.name={0}, tid={1}, event.sink={2}, source={3}",
+				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
 		} finally {
 			openFlag = false;
 		}
