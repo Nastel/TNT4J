@@ -62,8 +62,12 @@ Relate event message together by grouping or passing context (correlator). Most 
 
 ### Logging Statistics
 TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors if any and many more.
-	* Call `logger.getStats();` to obtain a map of all available key/value pairs.
-	* Call `logger.resetStats();` to reset all counters.
+
+Obtain a map of all available key/value pairs:
+
+	logger.getStats();
+	...
+	logger.resetStats();
 
 ## Quick Examples
 Here is a simple example of using TNT4J:
