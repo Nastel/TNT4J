@@ -44,7 +44,7 @@ try {
 ```
 
 
-Colnsolidate all conditional logging checks into a single listener. Why call `isDebugEnabled()' before each log entry?
+Consolidate all conditional logging checks into a single listener. Why call `isDebugEnabled()' before each log entry?
 
 ```java
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
