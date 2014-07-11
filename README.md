@@ -11,6 +11,8 @@ No need to concatenate messages before logging. String concatenation is expensiv
 No need to check for `isDebugEnabled()` before logging messages. Just register your own `SinkEventFilter` and consolidate all checking into a single listener.
 	
 	logger.addSinkEventFilter(new MyLogFilter()); 
+	...
+	logger.debug("My message {0}, {1}, {2}", arg1, arg2, arg3); 
 
 All conditional logging can be consolidated into a single listener object. 
 
@@ -18,7 +20,8 @@ All conditional logging can be consolidated into a single listener object.
 Filter out not only based on category/severity (as log4j), but also based on performance objectives. Example: log events only if their elapsed time or wait times are greater than a ceratin value. TNT4J allows users to register filters within `tnt4j.properties` without changing application code. Create your own filters which would allow you to filter events out based on user defined criteria and inject filters using `tnt4j.properties`.
 
 * See  `tnt4j.properties` and `com.nastel.jkool.tnt4j.filters.EventLevelTimeFilter` for details.
-* Register filters via declarations in `tnt4j.properties` or in your application by creating your own filter object and calling `logger.addSinkEventFilter(new MyLogFilter());`
+* Register filters via declarations in `tnt4j.properties` or in your application by creating your own event filter
+	* `logger.addSinkEventFilter(new MyLogFilter());` to register your event filter
 
 ### Granular conditional logging
 Log only what matters. Increase performance of your apps by decreasing the amount of logging your app produces and yet increasing relevance and quality of the output.
@@ -29,9 +32,11 @@ Checking a global debug level is not granular enough for most applications. Many
 
 ### Share logging context across apps
 Pass logging context across apps programatically or via a shared cache.
+	
 	logger.set(OpLevel.DEBUG, "myapp.mykey", myvalue);
 	
-Imagine writing an application that has to pass logging flag to apps downstream, how would you do that? TNT lets you do that using this method.
+Imagine writing an application that has to pass logging flag to apps downstream, how would you do that?
+TNT lets you do that using this method.
 	
 * Check log context by calling:
 	* `logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);`
