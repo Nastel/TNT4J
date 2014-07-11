@@ -182,7 +182,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	}
 
 	/**
-	 * @see #UsecTimestamp(Timestamp, int)
+	 * @see #UsecTimestamp(Timestamp, long)
 	 */
 	private void initFromTimestamp(Timestamp timestamp, long usecs) {
 		if (timestamp == null)
