@@ -53,6 +53,7 @@ TNT4J keeps detailed statistics about logging activities. Each logger instance m
 	* Call `logger.getStats();` to obtain a map of all available key/value pairs.
 	* Call `logger.resetStats();` to reset all counters.
 
+## Quick Examples
 Here is a simple example of using TNT4J:
 
 ```java
