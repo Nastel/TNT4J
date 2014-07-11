@@ -14,9 +14,12 @@ Several key features make TNT4J a prime logging choice for java applications:
 	* `logger.set(OpLevel.DEBUG, "myapp.mykey", myvalue);` Imagine writing an application that has to pass logging flag to apps downstream, how would you do that? TNT lets you do that using this method.
 	* Check log context by calling `logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);`
 * <b>State logging</b>: log application state to improve diagnostics of performance, resource and other problems which are hard to trace using standard event logging techniques. Simply register your state dump listener and export state variables specific to you application. State dump listeners can be called on VM shutdown or on demand.
-	* Call ``TrackingLogger.dumpState();` to generate application dump on demand.
+	* Call `TrackingLogger.dumpState();` to generate application dump on demand.
 * <b>Measurements & Metrics</b>: TNT4J is not just about logging messages, it is also about measurements and metrics. Metrics such as elpased time, CPU, memory, block/wait times as well as user defined metrics. TNT4J allows you to asnwer what was performance at the time of the logged event or what was the value of a user defined metric.
 * <b>Correlation</b>: Relate event message together by grouping or passing context (correlator). Most if not all logging frameworks completely miss the correlation angle. TNT4J allows attachement of correlators when reporting tracking events see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same paradigm. 
+* <b>Logging Statistics</b>: TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors if any and many more.
+	* Call `logger.getStats();` to obtain a map of all available key/value pairs.
+	* Call `logger.resetStats();` to reset all counters.
 
 Here is a simple example of using TNT4J:
 
@@ -138,7 +141,7 @@ How to Build TNT4J
 =========================================
 
 Requirements
-* JDK 1.6
+* JDK 1.6+
 * ANT (http://ant.apache.org/)
 
 TNT4J depends on the following external packages:
