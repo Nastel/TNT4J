@@ -18,9 +18,8 @@ All conditional logging can be consolidated into a single listener object.
 
 ### Flexible Filtering
 Filter out not only based on category/severity (as log4j), but also based on performance objectives. Example: log events only if their elapsed time or wait times are greater than a ceratin value. TNT4J allows users to register filters within `tnt4j.properties` without changing application code. Create your own filters which would allow you to filter events out based on user defined criteria and inject filters using `tnt4j.properties`.
-
-* See  `tnt4j.properties` and `com.nastel.jkool.tnt4j.filters.EventLevelTimeFilter` for details.
-* Register filters via declarations in `tnt4j.properties` or in your application by creating your own event filter
+See  `tnt4j.properties` and `com.nastel.jkool.tnt4j.filters.EventLevelTimeFilter` for details.
+Register filters via declarations in `tnt4j.properties` or in your application by creating your own event filter.
 
 	logger.addSinkEventFilter(new MyLogFilter());
 
@@ -42,13 +41,16 @@ Pass logging context across apps programatically or via a shared cache.
 Imagine writing an application that has to pass logging flag to apps downstream, how would you do that?
 TNT lets you do that using this method.
 	
-* Check log context by calling:
-	* `logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);`
+Check log context by calling:
+	
+	logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);
 
 ### State logging
 log application state to improve diagnostics of performance, resource and other problems which are hard to trace using standard event logging techniques. Simply register your state dump listener and export state variables specific to you application. State dump listeners can be called on VM shutdown or on demand.
 
-* Call `TrackingLogger.dumpState();` to generate application dump on demand.
+Generate application dump on demand.
+
+	TrackingLogger.dumpState();
 
 ### Measurements & Metrics
 TNT4J is not just about logging messages, it is also about measurements and metrics. Metrics such as elpased time, CPU, memory, block/wait times as well as user defined metrics. TNT4J allows you to asnwer what was performance at the time of the logged event or what was the value of a user defined metric.
