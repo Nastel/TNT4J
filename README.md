@@ -1,23 +1,41 @@
 Why TNT4J 
 =====================================
 Several key features make TNT4J a prime logging choice for java applications:
-* <b>Performance</b>: No need to concatenate messages before logging. String concatenation is expensive especialy in loops. Simply log using message patterns as follows and TNT4J will resolve the message only if it actually gets logged:
+
+### Performance
+No need to concatenate messages before logging. String concatenation is expensive especialy in loops. Simply log using message patterns as follows and TNT4J will resolve the message only if it actually gets logged:
 	* `logger.debug("My message {0}, {1}, {2}", arg1, arg2, arg3);`. 
-* <b>Simplicity & Clean Code</b>: No need to check for `isDebugEnabled()` before logging messages. Just register your own `SinkEventFilter` and consolidate all checking into a single listener.
+
+### Simplicity & Clean Code
+No need to check for `isDebugEnabled()` before logging messages. Just register your own `SinkEventFilter` and consolidate all checking into a single listener.
 	* `logger.addSinkEventFilter(new MyLogFilter());` All conditional logging can be consolidated into a single listener object. 
-* <b>Flexible Filtering</b>. Filter out not only based on category/severity (as log4j), but also based on performance objectives. Example: log events only if their elapsed time or wait times are greater than a ceratin value. TNT4J allows users to register filters within `tnt4j.properties` without changing application code. Create your own filters which would allow you to filter events out based on user defined criteria and inject filters using `tnt4j.properties`.
+
+### Flexible Filtering
+Filter out not only based on category/severity (as log4j), but also based on performance objectives. Example: log events only if their elapsed time or wait times are greater than a ceratin value. TNT4J allows users to register filters within `tnt4j.properties` without changing application code. Create your own filters which would allow you to filter events out based on user defined criteria and inject filters using `tnt4j.properties`.
 	* See  `tnt4j.properties` and `com.nastel.jkool.tnt4j.filters.EventLevelTimeFilter` for details.
 	* Register filters via declarations in `tnt4j.properties` or in your application by creating your own filter object and calling `logger.addSinkEventFilter(new MyLogFilter());`
-* <b>Granular conditional logging</b>: Log only what matters. Increase performance of your apps by decreasing the amount of logging your app produces and yet increasing relevance and quality of the output.
+
+### Granular conditional logging
+Log only what matters. Increase performance of your apps by decreasing the amount of logging your app produces and yet increasing relevance and quality of the output.
 	*  `logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);` Checking a global debug level is not granular enough for most applications. Many java apps require granular logging to log only what matters.
-* <b>Share logging context across apps</b>. Pass logging context across apps programatically or via a shared cache.
+
+### Share logging context across apps
+Pass logging context across apps programatically or via a shared cache.
 	* `logger.set(OpLevel.DEBUG, "myapp.mykey", myvalue);` Imagine writing an application that has to pass logging flag to apps downstream, how would you do that? TNT lets you do that using this method.
 	* Check log context by calling `logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);`
-* <b>State logging</b>: log application state to improve diagnostics of performance, resource and other problems which are hard to trace using standard event logging techniques. Simply register your state dump listener and export state variables specific to you application. State dump listeners can be called on VM shutdown or on demand.
+
+### State logging
+log application state to improve diagnostics of performance, resource and other problems which are hard to trace using standard event logging techniques. Simply register your state dump listener and export state variables specific to you application. State dump listeners can be called on VM shutdown or on demand.
 	* Call `TrackingLogger.dumpState();` to generate application dump on demand.
-* <b>Measurements & Metrics</b>: TNT4J is not just about logging messages, it is also about measurements and metrics. Metrics such as elpased time, CPU, memory, block/wait times as well as user defined metrics. TNT4J allows you to asnwer what was performance at the time of the logged event or what was the value of a user defined metric.
-* <b>Correlation</b>: Relate event message together by grouping or passing context (correlator). Most if not all logging frameworks completely miss the correlation angle. TNT4J allows attachement of correlators when reporting tracking events see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same paradigm. 
-* <b>Logging Statistics</b>: TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors if any and many more.
+
+### Measurements & Metrics
+TNT4J is not just about logging messages, it is also about measurements and metrics. Metrics such as elpased time, CPU, memory, block/wait times as well as user defined metrics. TNT4J allows you to asnwer what was performance at the time of the logged event or what was the value of a user defined metric.
+
+### Correlation & Topology
+Relate event message together by grouping or passing context (correlator). Most if not all logging frameworks completely miss the correlation angle. TNT4J allows attachement of correlators when reporting tracking events see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same paradigm. 
+
+### Logging Statistics
+TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors if any and many more.
 	* Call `logger.getStats();` to obtain a map of all available key/value pairs.
 	* Call `logger.resetStats();` to reset all counters.
 
