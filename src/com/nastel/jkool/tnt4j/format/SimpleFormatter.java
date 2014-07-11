@@ -40,7 +40,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * @see TrackingEvent
  */
 
-public class SimpleFormatter extends DefaultFormatter implements Configurable  {
+public class SimpleFormatter extends DefaultFormatter {
 	@Override
 	public String format(TrackingEvent event) {
 		StringBuffer msg = new StringBuffer(1024);

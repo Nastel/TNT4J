@@ -197,14 +197,8 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	@Override
 	public void setConfiguration(Map<String, Object> props) throws ConfigurationException {
 		config = props;
-		try {
-			Object obj = Utils.createConfigurableObject("Repository", "Repository.", config);
-			setRepository((TokenRepository) obj);
-		} catch (Throwable e) {
-			ConfigurationException ce = new ConfigurationException(e.getMessage(), props);
-			ce.initCause(e);
-			throw ce;
-		}
+		Object obj = Utils.createConfigurableObject("Repository", "Repository.", config);
+		setRepository((TokenRepository) obj);
 	}
 }
 

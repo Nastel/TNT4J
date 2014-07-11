@@ -74,12 +74,6 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	@Override
 	public void setConfiguration(Map<String, Object> props) throws ConfigurationException {
 		config = props;
-		try {
-			eventFilter = (SinkEventFilter) Utils.createConfigurableObject("Filter", "Filter.", config);
-		} catch (Throwable e) {
-			ConfigurationException ce = new ConfigurationException(e.getMessage(), props);
-			ce.initCause(e);
-			throw ce;
-		}
+		eventFilter = (SinkEventFilter) Utils.createConfigurableObject("Filter", "Filter.", config);
 	}
 }
