@@ -194,9 +194,11 @@ public class TrackingActivity extends Activity {
 				}
 			}
 			if (reportStarts) {
-				tracker.getEventSink().log(this);
+				tracker.tnt(this);
 			}
-			overHeadTimeNano += (System.nanoTime() - start);
+			long delta = (System.nanoTime() - start);
+			overHeadTimeNano += delta;
+			tracker.countOverheadNanos(delta);
 		}
 	}
 
@@ -313,7 +315,9 @@ public class TrackingActivity extends Activity {
 				stopCPUTime = getCurrentCpuTimeNanos();
 			}
 			tracker.pop(this);
-			overHeadTimeNano += (System.nanoTime() - start);
+			long delta = (System.nanoTime() - start);
+			overHeadTimeNano += delta;
+			tracker.countOverheadNanos(delta);
 		}
 	}
 

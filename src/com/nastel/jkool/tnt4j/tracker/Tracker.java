@@ -54,6 +54,7 @@ public interface Tracker extends Handle, VarStats {
 	static final String KEY_ACTIVITIES_STOPPED = "stopped-activity-count";
 	static final String KEY_TRACK_NOOP_COUNT = "track-noop-count";
 	static final String KEY_TRACK_ERROR_COUNT = "track-error-count";
+	static final String KEY_TOTAL_OVERHEAD_USEC = "total-overhead-usec";
 	
 	/**
 	 * Obtains current/active <code>Source</code> handle associated 

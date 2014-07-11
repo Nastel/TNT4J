@@ -73,6 +73,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	private AtomicLong pushCount = new AtomicLong(0); 
 	private AtomicLong popCount = new AtomicLong(0); 
 	private AtomicLong noopCount = new AtomicLong(0); 
+	private AtomicLong overheadNanos = new AtomicLong(0); 
 	
 	protected TrackerImpl(TrackerConfig config) {
 		tConfig = config;
@@ -197,6 +198,17 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		return this;
 	}
 	
+	/**
+	 * Add a given number of nanoseconds to overhead count.
+	 * Should be called by package members to account for tracking
+	 * overhead.
+	 * 
+	 * @return current tracker instance
+	 */
+	protected long countOverheadNanos(long delta) {
+		return overheadNanos.addAndGet(delta);
+	}
+	
 	@Override
 	public Map<String, Object> getStats() {
 		Map<String, Object> stats = eventSink.getStats();
@@ -206,6 +218,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		stats.put(KEY_TRACK_NOOP_COUNT, noopCount.get());
 		stats.put(KEY_ACTIVITIES_STARTED, pushCount.get());
 		stats.put(KEY_ACTIVITIES_STOPPED, popCount.get());
+		stats.put(KEY_TOTAL_OVERHEAD_USEC, overheadNanos.get()/1000);
 		return stats;
 	}
 	
@@ -217,6 +230,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		pushCount.set(0);
 		popCount.set(0);
 		noopCount.set(0);
+		overheadNanos.set(0);
 	}
 
 	@Override
@@ -312,19 +326,25 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public TrackingActivity newActivity(OpLevel level, String name, String signature) {
-		if (!isTrackingEnabled(level, name, signature)) {
-			return NULL_ACTIVITY;
+		long start = System.nanoTime();
+		try {
+			if (!isTrackingEnabled(level, name, signature)) {
+				return NULL_ACTIVITY;
+			}
+			TrackingActivity luw = new TrackingActivity(level, name, signature, this);
+			luw.setPID(Utils.getVMPID());
+			if (tConfig.getActivityListener() != null) {
+				luw.addActivityListener(tConfig.getActivityListener());
+			}
+			return luw;
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
 		}
-		TrackingActivity luw = new TrackingActivity(level, name, signature, this);
-		luw.setPID(Utils.getVMPID());
-		if (tConfig.getActivityListener() != null) {
-			luw.addActivityListener(tConfig.getActivityListener());
-		}
-		return luw;
 	}
 
 	@Override
     public void tnt(TrackingActivity activity) {
+		long start = System.nanoTime();
 		try  { 
 			if (!activity.isNoop()) {
 				reportActivity(activity); 
@@ -336,11 +356,14 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			logger.log(OpLevel.ERROR, 
 					"Failed to report activity signature={0}, tid={1}, event.sink={2}, source={3}",
 					activity.getTrackingId(), Thread.currentThread().getId(), eventSink, getSource(), ex);
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
 		}
 	}
 
 	@Override
 	public void tnt(TrackingEvent event) {
+		long start = System.nanoTime();
 		try  { 
 			if (!event.isNoop()) {
 				reportEvent(event);
@@ -352,30 +375,43 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			logger.log(OpLevel.ERROR, 
 				"Failed to report event signature={0}, tid={1}, event.sink={2}, source={3}",
 				event.getTrackingId(), Thread.currentThread().getId(), eventSink, getSource(), ex);
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
 		}
 	}
 
 
 	@Override
-    public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object...args) {
-		if (!isTrackingEnabled(severity, opName, correlator, msg, args)) {
-			return NULL_EVENT;
+	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object... args) {
+		long start = System.nanoTime();
+		try {
+			if (!isTrackingEnabled(severity, opName, correlator, msg, args)) {
+				return NULL_EVENT;
+			}
+			TrackingEvent event = new TrackingEvent(getSource(), severity, opName, correlator, msg, args);
+			event.getOperation().setUser(tConfig.getSource().getUser());
+			return event;
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
 		}
-		TrackingEvent event = new TrackingEvent(getSource(), severity, opName, correlator, msg, args);
-		event.getOperation().setUser(tConfig.getSource().getUser());
-		return event;
-   }
+	}
 
 	
 	@Override
-    public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag, String msg, Object...args) {
-		if (!isTrackingEnabled(severity, opName, correlator, tag, msg, args)) {
-			return NULL_EVENT;
+	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag,
+	        String msg, Object... args) {
+		long start = System.nanoTime();
+		try {
+			if (!isTrackingEnabled(severity, opName, correlator, tag, msg, args)) {
+				return NULL_EVENT;
+			}
+			TrackingEvent event = new TrackingEvent(getSource(), severity, opType, opName, correlator, tag, msg, args);
+			event.getOperation().setUser(tConfig.getSource().getUser());
+			return event;
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
 		}
-		TrackingEvent event = new TrackingEvent(getSource(), severity, opType, opName, correlator, tag, msg, args);
-		event.getOperation().setUser(tConfig.getSource().getUser());
-		return event;
-   }
+	}
 	
 	@Override
 	protected void finalize() throws Throwable {
@@ -442,6 +478,11 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
     public void log(OpLevel sev, String msg, Object... args) {
-		eventSink.log(sev, msg, args);
+		long start = System.nanoTime();
+		try {
+			eventSink.log(sev, msg, args);
+		} finally {
+			this.countOverheadNanos(System.nanoTime() - start);
+		}
 	}
 }
