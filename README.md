@@ -65,8 +65,10 @@ TNT4J keeps detailed statistics about logging activities. Each logger instance m
 
 Obtain a map of all available key/value pairs:
 
-	logger.getStats();
+	Map<String, Object> stats = logger.getStats();
+	System.out.println("Logger stats: " + stats);
 	...
+	System.out.println("Resetting logger stats");
 	logger.resetStats();
 
 ## Quick Examples
