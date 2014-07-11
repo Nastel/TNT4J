@@ -21,14 +21,18 @@ Filter out not only based on category/severity (as log4j), but also based on per
 
 * See  `tnt4j.properties` and `com.nastel.jkool.tnt4j.filters.EventLevelTimeFilter` for details.
 * Register filters via declarations in `tnt4j.properties` or in your application by creating your own event filter
-	* `logger.addSinkEventFilter(new MyLogFilter());` to register your event filter
+
+	logger.addSinkEventFilter(new MyLogFilter());
 
 ### Granular conditional logging
 Log only what matters. Increase performance of your apps by decreasing the amount of logging your app produces and yet increasing relevance and quality of the output.
 
+	logger.isSet(OpLevel.DEBUG);
 	logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);
 
-Checking a global debug level is not granular enough for most applications. Many java apps require granular logging to log only what matters.
+Checking a global debug level is not granular enough for most applications. Many java apps require granular logging to log only what matters. Consolidate these checks into `SinkEventFilter` implementation and register with the logger instance.
+
+	logger.addSinkEventFilter(new MyLogFilter());
 
 ### Share logging context across apps
 Pass logging context across apps programatically or via a shared cache.
