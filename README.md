@@ -46,7 +46,7 @@ Check log context by calling:
 	logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);
 
 ### State logging
-log application state to improve diagnostics of performance, resource and other problems which are hard to trace using standard event logging techniques. Simply register your state dump listener and export state variables specific to you application. State dump listeners can be called on VM shutdown or on demand.
+Log application state to improve diagnostics of performance, resource utilization and other tough problems which are difficult  to trace using standard event logging techniques. Simply register your state dump listener and export state variables specific to you application. State dump listeners can be called on VM shutdown or on demand.
 
 Generate application dump on demand.
 
@@ -86,8 +86,6 @@ try {
    	"Failed to process request={0}", request_id, ex);
 }
 ```
-
-
 Consolidate all conditional logging checks into a single listener. Why call `isDebugEnabled()' before each log entry?
 
 ```java
@@ -123,7 +121,6 @@ class MyEventFilter implements SinkEventFilter {
     }
 }
 ```
-
 Embed TNT4J into your application and realize the benefits in matter if minutes. TNT4J can take advantage of other lower level logging frameworks such as log4j. Default TNT4J binding is based on log4j.
 
 About TNT4J
@@ -205,11 +202,13 @@ To build TNT4J:
 
 Verify TNT4J
 ===============================================
-* Run a test program (com.nastel.jkool.tnt4j.examples.TNT4JTest) using the following:
-	* CD to ../build/tnt4j
-	* `java -javaagent:tnt4j-api.jar -Dlog4j.configuration=file:log4j.properties -Dtnt4j.dump.on.vm.shutdown=true
+Run a sample program (`com.nastel.jkool.tnt4j.examples.TNT4JTest`):
+	
+	CD to ../build/tnt4j
+	
+	java -javaagent:tnt4j-api.jar -Dlog4j.configuration=file:log4j.properties -Dtnt4j.dump.on.vm.shutdown=true
 	-Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath tnt4j-api-final-all.jar
-	com.nastel.jkool.tnt4j.examples.TNT4JTest com.myco.TestApp MYSERVER "Test log message" correlator1 "TestCommand"  TestLocation`
+	com.nastel.jkool.tnt4j.examples.TNT4JTest com.myco.TestApp MYSERVER "Test log message" correlator1 "TestCommand"  TestLocation
 
 `-javaagent:tnt4j-api.jar` command line option is required by `ObjectDumpProvider` to calculate object deep and shallow memory sizes. Use this only if your application makes use of ObjectDumpProvider to dump object state.
 
