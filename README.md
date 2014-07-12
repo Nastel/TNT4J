@@ -61,7 +61,7 @@ Relate event message together by grouping or passing context (correlator). Most 
 `TrackingLogger.tnt(..)` also allows developers to specify the flow of messages using `OpType.SEND` and `OpType.RECEIVE` modifiers. These modifiers allows developer understand information flow and topology.
 
 ### Logging Statistics
-TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors if any and many more.
+TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors, overhead in usec and more. Do you know the overhead of your logging framework on your application?
 
 Obtain a map of all available key/value pairs:
 
