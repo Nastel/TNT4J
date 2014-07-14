@@ -482,7 +482,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		try {
 			eventSink.log(sev, msg, args);
 		} finally {
-			this.countOverheadNanos(System.nanoTime() - start);
+			countOverheadNanos(System.nanoTime() - start);
 		}
 	}
 }
