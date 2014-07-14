@@ -30,7 +30,7 @@
 
   <!-- Compile into ${bin} directory -->
   <target name="compile" depends="init" description="compile the source">
-    <javac destdir="${bin}" debug="true" debuglevel="source,lines,vars">
+    <javac destdir="${bin}" debug="true" debuglevel="source,lines,vars" includeAntRuntime="false">
       <src path="${src}"/>
       <classpath>
         <fileset dir="${lib}">
