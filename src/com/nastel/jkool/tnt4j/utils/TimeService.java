@@ -40,18 +40,23 @@ public class TimeService {
 	private static final String TIME_SERVER = System.getProperty("tnt4j.time.server");
 	private static final int TIME_SERVER_TIMEOUT = Integer.getInteger("tnt4j.time.server.timeout", 10000);
 
-	static long timeOverheadNanos;
-	static long timeOverheadMillis;
-	static long offset = 0, delay = 0;
+	static long timeOverheadNanos = 0;
+	static long timeOverheadMillis = 0;
 	static long adjustment = 0;
 	static long updatedTime = 0;
+	
 	static NTPUDPClient timeServer = new NTPUDPClient();
+	static TimeInfo timeInfo;
 		
 	static {
 		try {
 			timeOverheadNanos = calculateOverhead(1000000);
 			timeOverheadMillis = (timeOverheadNanos/1000000);
 			updateTime();
+			logger.log(OpLevel.INFO, "Time server={0}, timeout.ms={1}, offset.ms={2}, delay.ms={3}, clock.adjust.ms={4}, overhead.nsec={5}",
+					TIME_SERVER, TIME_SERVER_TIMEOUT, 
+					timeInfo.getOffset(), timeInfo.getDelay(),
+					adjustment, timeOverheadNanos);
 		} catch (IOException e) {
 			logger.log(OpLevel.ERROR, 
 					"Unable to obtain NTP time: time.server={0}, timeout={1}",
@@ -92,14 +97,10 @@ public class TimeService {
 			timeServer.setDefaultTimeout(TIME_SERVER_TIMEOUT);		
 			String [] pair = TIME_SERVER.split(":");
 			InetAddress hostAddr = InetAddress.getByName(pair[0]);
-			TimeInfo timeInfo = pair.length < 2? timeServer.getTime(hostAddr): timeServer.getTime(hostAddr, Integer.parseInt(pair[1]));
+			timeInfo = pair.length < 2? timeServer.getTime(hostAddr): timeServer.getTime(hostAddr, Integer.parseInt(pair[1]));
 			timeInfo.computeDetails();     
-			offset = timeInfo.getOffset();
-			delay = timeInfo.getDelay();
-			adjustment = offset - timeOverheadMillis;
+			adjustment = timeInfo.getOffset() - timeOverheadMillis;
 			updatedTime = currentTimeMillis();
-			logger.log(OpLevel.INFO, "Time server={0}, timeout.ms={1}, offset.ms={2}, delay.ms={3}, clock.adjust.ms={4}, overhead.nsec={5}",
-					TIME_SERVER, TIME_SERVER_TIMEOUT, offset, delay, adjustment, timeOverheadNanos);
 		}
 	}
 	
