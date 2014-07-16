@@ -210,8 +210,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 	
 	@Override
-	public Map<String, Object> getStats() {
-		Map<String, Object> stats = eventSink.getStats();
+	public Map<String, Long> getStats() {
+		Map<String, Long> stats = eventSink.getStats();
 		stats.put(KEY_REPORTED_ACTIVITY_COUNT, activityCount.get());
 		stats.put(KEY_REPORTED_EVENT_COUNT, eventCount.get());
 		stats.put(KEY_TRACK_ERROR_COUNT, errorCount.get());

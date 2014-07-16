@@ -91,11 +91,27 @@ TNT4J keeps detailed statistics about logging activities. Each logger instance m
 
 Obtain a map of all available key/value pairs:
 ```java
-Map<String, Object> stats = logger.getStats();
+Map<String, Long> stats = logger.getStats();
 System.out.println("Logger stats: " + stats);
 ...
 System.out.println("Resetting logger stats");
 logger.resetStats();
+```
+Here is an example to obtain metrics for all available loggers:
+```java
+List<TrackingLogger> loggers = TrackingLogger.getAllTrackers();
+for (TrackingLogger lg: loggers) {
+	Map<String, Long> stats = lg.getStats();
+	...
+}
+```
+TNT4J also keeps track of stack traces for all `TrackingLogger` allocations. Below is an example of how to get stack frames for a specific `TrackingLogger` instance:
+```java
+List<TrackingLogger> loggers = TrackingLogger.getAllTrackers();
+for (TrackingLogger lg: loggers) {
+	StackTraceElement[] stack = TrackingLogger.getTrackerStackTrace(lg);
+	...
+}
 ```
 
 ## Quick Examples

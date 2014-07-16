@@ -17,6 +17,7 @@ package com.nastel.jkool.tnt4j.format;
 
 
 import java.util.Map;
+import java.util.TimeZone;
 
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.core.OpLevel;
@@ -43,6 +44,7 @@ public class DefaultFormatter implements EventFormatter, Configurable   {
 	public static final String SEPARATOR = System.getProperty("tnt4j.formatter.default.separator", " | ");
 
 	protected String separator = SEPARATOR;
+	protected TimeZone timeZone = TimeZone.getTimeZone("UTC");
 	protected String formatString = "{2} | {1} | {0}";
 
 	private Map<String, Object> config = null;
@@ -70,7 +72,7 @@ public class DefaultFormatter implements EventFormatter, Configurable   {
 
 	@Override
     public String format(OpLevel level, String msg, Object...args) {
-		return Utils.format(formatString, UsecTimestamp.getTimeStamp(), level, Utils.format(msg, args));
+		return Utils.format(formatString, UsecTimestamp.getTimeStamp(timeZone), level, Utils.format(msg, args));
     }
 	
 	@Override
@@ -83,7 +85,9 @@ public class DefaultFormatter implements EventFormatter, Configurable   {
 		config = settings;
 		Object sep = config.get("Separator");
 		Object format = config.get("Format");
+		Object tz = config.get("TimeZone");
 		separator = (sep != null? sep.toString(): SEPARATOR);
 		formatString = format != null? format.toString(): formatString;
+		timeZone = (tz != null? TimeZone.getTimeZone(tz.toString()): timeZone);
 	}	
 }
