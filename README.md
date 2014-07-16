@@ -54,6 +54,16 @@ Generate application dump on demand.
 
 ### Measurements & Metrics
 TNT4J is not just about logging messages, it is also about measurements and metrics. Metrics such as elpased time, CPU, memory, block/wait times as well as user defined metrics. TNT4J allows you to asnwer what was performance at the time of the logged event or what was the value of a user defined metric.
+```java
+// post processing of activity: enrich activity with application metrics
+TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
+TrackingActivity activity = logger.newActivity(OpLevel.INFO, "MyActivity");
+...
+PropertySnapshot snapshot = new PropertySnapshot("Metrics", "MyMetricGroup");
+snapshot.add("metric1", myMetric1);
+snapshot.add("metric2", myMetric2);
+activity.add(snapshot); // add property snapshot to activity
+```
 
 ### Correlation & Topology
 Relate event message together by grouping or passing context (correlator). Most if not all logging frameworks completely miss the correlation angle. TNT4J allows attachement of correlators when reporting tracking events see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same paradigm.
