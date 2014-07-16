@@ -110,6 +110,7 @@ TNT4J also keeps track of stack traces for all `TrackingLogger` allocations. Bel
 List<TrackingLogger> loggers = TrackingLogger.getAllTrackers();
 for (TrackingLogger lg: loggers) {
 	StackTraceElement[] stack = TrackingLogger.getTrackerStackTrace(lg);
+	Utils.printStackTrace("Tracker stack trace", stack, System.out);
 	...
 }
 ```

@@ -255,6 +255,10 @@ public class TrackingLogger implements Tracker {
 			throw new IllegalStateException("logger closed");
 	}
 
+	private static void registerTracker(TrackingLogger tracker) {
+		TRACKERS.put(tracker, Thread.currentThread().getStackTrace());		
+	}
+	
 	/** Cannot instantiate. */
     private TrackingLogger(Tracker trg) {
     	logger = trg;
@@ -316,7 +320,7 @@ public class TrackingLogger implements Tracker {
 	 */
 	public static TrackingLogger getInstance(TrackerConfig config) {
 		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config));
-		TRACKERS.put(tracker, Thread.currentThread().getStackTrace());
+		registerTracker(tracker);
 		return tracker;
 	}
 
@@ -331,7 +335,7 @@ public class TrackingLogger implements Tracker {
 	public static TrackingLogger getInstance(String sourceName) {
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName);
 		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
-		TRACKERS.put(tracker, Thread.currentThread().getStackTrace());
+		registerTracker(tracker);
 		return tracker;
 	}
 
@@ -346,7 +350,7 @@ public class TrackingLogger implements Tracker {
 	public static TrackingLogger getInstance(Class<?> clazz) {
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(clazz);
 		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
-		TRACKERS.put(tracker, Thread.currentThread().getStackTrace());
+		registerTracker(tracker);
 		return tracker;
 	}
 
@@ -511,6 +515,7 @@ public class TrackingLogger implements Tracker {
 	public void close() {
 		if (logger != null) {
 			factory.close(logger);
+			TRACKERS.remove(this);
 		}
 	}
 

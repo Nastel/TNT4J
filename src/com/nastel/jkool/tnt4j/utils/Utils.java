@@ -16,6 +16,8 @@
 package com.nastel.jkool.tnt4j.utils;
 
 import java.io.Closeable;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
@@ -70,7 +72,7 @@ public class Utils {
 	 */
 	public static final long VM_PID = initVMID();
 
-	private static final int CLIENT_CODE_STACK_INDEX;
+	public static final int CLIENT_CODE_STACK_INDEX;
 
     static {
         int index = 0;
@@ -98,6 +100,43 @@ public class Utils {
 		return 0;
 	}
 
+    
+	/**
+	 * Return current client stack index that identifies the
+	 * calling stack frame return by <code>Thread.currentThread().getStackTrace()</code>
+	 * 
+	 * @return return current stack frame
+	 */
+    public int getClientCodeStackIndex() {
+    	return CLIENT_CODE_STACK_INDEX;
+    }
+    
+	/**
+	 * Print given message, stack trace to the underlying print stream
+	 * 
+	 * @param msg user defined message
+	 * @param trace stack trace
+	 * @param out print stream where output is written
+	 */
+   public static void printStackTrace(String msg, StackTraceElement[] trace, PrintStream out) {
+    	Exception ex = new Exception(msg);
+    	ex.setStackTrace(trace);
+    	ex.printStackTrace(out);
+    }
+    
+	/**
+	 * Print given message, stack trace to the underlying print writer
+	 * 
+	 * @param msg user defined message
+	 * @param trace stack trace
+	 * @param out print writer where output is written
+	 */
+    public static void printStackTrace(String msg, StackTraceElement[] trace, PrintWriter out) {
+    	Exception ex = new Exception(msg);
+    	ex.setStackTrace(trace);
+    	ex.printStackTrace(out);
+    }
+    
 	/**
 	 * Return current stack frame which is executing this call
 	 * 
@@ -174,7 +213,7 @@ public class Utils {
 	 * Return a <code>Throwable</code> object if it is the last element 
 	 * in the object array
 	 * 
-	 * @return throwable exception
+	 * @return Throwable exception
 	 */
 	public static Throwable getThrowable(Object args[]) {
     	if ((args != null) 
