@@ -56,9 +56,13 @@ Generate application dump on demand.
 TNT4J is not just about logging messages, it is also about measurements and metrics. Metrics such as elpased time, CPU, memory, block/wait times as well as user defined metrics. TNT4J allows you to asnwer what was performance at the time of the logged event or what was the value of a user defined metric.
 
 ### Correlation & Topology
-Relate event message together by grouping or passing context (correlator). Most if not all logging frameworks completely miss the correlation angle. TNT4J allows attachement of correlators when reporting tracking events see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same paradigm. 
+Relate event message together by grouping or passing context (correlator). Most if not all logging frameworks completely miss the correlation angle. TNT4J allows attachement of correlators when reporting tracking events see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same paradigm.
 
 `TrackingLogger.tnt(..)` also allows developers to specify the flow of messages using `OpType.SEND` and `OpType.RECEIVE` modifiers. These modifiers allows developer understand information flow and topology.
+
+<b>NOTE:</b>TNT4J uses NTP natively to synchtronze times across servers to enable cross server event, log correlation in time. To enable NTP time synchronization define java property `-Dtnt4j.time.server=ntp-server:123`. 
+
+<b>TIP:</b>Developers should use `TimeServer.currentTimeMillis()` instead of `System.currentTimeMillis()` to obtain time adjusted to NTP time server.
 
 ### Logging Statistics
 TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors, overhead in usec and more. Do you know the overhead of your logging framework on your application?
@@ -197,6 +201,7 @@ TNT4J depends on the following external packages:
 * Apache commons lang 2.6 (http://commons.apache.org/proper/commons-lang/)
 * Apache commons lang3 3.0.1 (http://commons.apache.org/proper/commons-lang/)
 * Apache commons logging 1.2.17 (http://commons.apache.org/proper/commons-logging/)
+* Apache commons net 3.3 (http://commons.apache.org/proper/commons-net/)
 * Apache Log4J 1.2.17 (http://logging.apache.org/log4j/1.2/)
 
 To build TNT4J:
