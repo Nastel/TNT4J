@@ -35,12 +35,12 @@ logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);
 ```
 
 Checking a global debug level is not granular enough for most applications. Many java apps require granular logging to log only what matters. Consolidate these checks into `SinkEventFilter` implementation and register with the logger instance.
-
-	logger.addSinkEventFilter(new MyLogFilter());
+```java
+logger.addSinkEventFilter(new MyLogFilter());
+```
 
 ### Share logging context across apps
 Pass logging context across apps programatically or via a shared cache.
-	
 ```java
 logger.set(OpLevel.DEBUG, "myapp.mykey", myvalue);
 ```
