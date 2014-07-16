@@ -54,6 +54,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackerFactory;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.tracker.TrackingFilter;
+import com.nastel.jkool.tnt4j.utils.TimeService;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 
@@ -750,7 +751,7 @@ public class TrackingLogger implements Tracker {
 	public void tnt(OpLevel severity, OpType opType, String opName, String correlator, String tag, long elapsed,
 			 String msg, Object...args) {
 		checkState();
-		long endTime = System.currentTimeMillis();
+		long endTime = TimeService.currentTimeMillis();
 		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 		event.start(endTime - elapsed);
 		Throwable ex = Utils.getThrowable(args);

@@ -17,7 +17,6 @@ package com.nastel.jkool.tnt4j.format;
 
 import java.util.List;
 
-import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;

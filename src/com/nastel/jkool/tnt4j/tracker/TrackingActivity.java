@@ -32,6 +32,7 @@ import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Operation;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
+import com.nastel.jkool.tnt4j.utils.TimeService;
 
 /**
  * <p>
@@ -276,7 +277,7 @@ public class TrackingActivity extends Activity {
 		setStatus(status);
 		setCompCode(ccode);
 		finishTiming();
-		stop(System.currentTimeMillis(), 0);
+		stop(TimeService.currentTimeMillis(), 0);
 	}
 
 	@Override

@@ -41,6 +41,7 @@ import com.nastel.jkool.tnt4j.sink.SinkLogEvent;
 import com.nastel.jkool.tnt4j.sink.SinkLogEventListener;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
+import com.nastel.jkool.tnt4j.utils.TimeService;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 
@@ -73,6 +74,8 @@ public class TNT4JTest {
 			System.exit(-1);
 		}
 		System.out.println("Current call=" + Utils.getCurrentStackFrame() + ", caller=" + Utils.getCallingStackFrame());
+		System.out.println("Time overhead: " + TimeService.getOverheadNanos());
+		
 		// register with the TNT4J framework
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(args[0]);
 		config.setSinkLogEventListener(new MySinkLogHandler());
@@ -215,14 +218,14 @@ class MyDumpProvider extends DefaultDumpProvider {
 	private long startTime = 0;
 	public MyDumpProvider(String name, String cat) {
 	    super(name, cat);
-	    startTime = System.currentTimeMillis();
+	    startTime = TimeService.currentTimeMillis();
     }
 
 	@Override
 	public DumpCollection getDump() {
 		Dump dump = new Dump("runtimeMetrics", this);
 		dump.add("appl.start.time", new Date(startTime));
-		dump.add("appl.elapsed.ms", (System.currentTimeMillis() - startTime));
+		dump.add("appl.elapsed.ms", (TimeService.currentTimeMillis() - startTime));
 		dump.add("appl.activity.count", TNT4JTest.activityCount);
 		dump.add("appl.event.count", TNT4JTest.eventCount);
 		return dump;		

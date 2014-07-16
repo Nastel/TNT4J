@@ -18,6 +18,7 @@ package com.nastel.jkool.tnt4j.dump;
 
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.UsecTimestamp;
+import com.nastel.jkool.tnt4j.utils.TimeService;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -117,7 +118,7 @@ public class DefaultDumpFormatter implements DumpFormatter {
 	@Override
 	public String getFooter(DumpCollection dump) {
 		StringBuilder buffer = new StringBuilder(1024);
-		buffer.append(Utils.quote("dump.elapsed.ms")).append(": ").append((System.currentTimeMillis() - dump.getTime()));
+		buffer.append(Utils.quote("dump.elapsed.ms")).append(": ").append((TimeService.currentTimeMillis() - dump.getTime()));
 		buffer.append("\n}");
 		return buffer.toString();
 	}
@@ -133,7 +134,7 @@ public class DefaultDumpFormatter implements DumpFormatter {
 		buffer.append(Utils.quote("vm.pid")).append(": ").append(Utils.getVMPID()).append(",\n");
 		buffer.append(Utils.quote("dump.sink")).append(": ").append(Utils.quote(sink)).append(",\n");
 		buffer.append(Utils.quote("dump.time.string")).append(": ").append(Utils.quote(UsecTimestamp.getTimeStamp())).append(",\n");
-		long elapsed_ms = System.currentTimeMillis() - TIME_TABLE.get();
+		long elapsed_ms = TimeService.currentTimeMillis() - TIME_TABLE.get();
 		buffer.append(Utils.quote("dump.elapsed.ms")).append(": ").append(elapsed_ms);
 		buffer.append("\n}");
 		return buffer.toString();
@@ -142,7 +143,7 @@ public class DefaultDumpFormatter implements DumpFormatter {
 	@Override
     public String getOpenStanza(DumpSink sink) {
 		StringBuilder buffer = new StringBuilder(1024);
-		TIME_TABLE.set(System.currentTimeMillis());
+		TIME_TABLE.set(TimeService.currentTimeMillis());
 		buffer.append("{\n");
 		buffer.append(Utils.quote("dump.status")).append(": ").append(Utils.quote("START")).append(",\n");
 		buffer.append(Utils.quote("server.name")).append(": ").append(Utils.quote(Utils.getLocalHostName())).append(",\n");

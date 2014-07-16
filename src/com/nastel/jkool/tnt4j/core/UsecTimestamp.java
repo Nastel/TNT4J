@@ -24,6 +24,8 @@ import java.util.TimeZone;
 
 import org.apache.commons.lang3.StringUtils;
 
+import com.nastel.jkool.tnt4j.utils.TimeService;
+
 /**
  * <p>Represents a timestamp that has microsecond accuracy.</p>
  *
@@ -44,7 +46,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 * @see com.nastel.jkool.tnt4j.utils.Utils#currentTimeUsec
 	 */
 	public UsecTimestamp() {
-		setTimestampValues(System.currentTimeMillis(), 0);
+		setTimestampValues(TimeService.currentTimeMillis(), 0);
 	}
 
 	/**
@@ -409,7 +411,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 * @return formatted date/time string based on default pattern
 	 */
 	public static String getTimeStamp() {
-		return getTimeStamp(null, System.currentTimeMillis(), 0);
+		return getTimeStamp(null, TimeService.currentTimeMillis(), 0);
 	}
 	
 	/**
@@ -420,7 +422,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(String pattern) {
-		return getTimeStamp(pattern, System.currentTimeMillis(), 0);
+		return getTimeStamp(pattern, TimeService.currentTimeMillis(), 0);
 	}
 	
 	/**
