@@ -54,10 +54,13 @@ logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);
 ```
 
 ### State logging
-Log application state to improve diagnostics of performance, resource utilization and other tough problems which are difficult  to trace using standard event logging techniques. Simply register your state dump listener and export state variables specific to you application. State dump listeners can be called on VM shutdown or on demand.
+Log application state to improve diagnostics of performance, resource utilization and other tough problems which are difficult  to trace using standard event logging techniques. Simply register your state dump provider (see `DumpProvider` interface) and export state variables specific to you application. Dump providers can be called on VM shutdown or on demand.
 
 Generate application dump on demand.
 ```java
+// register your dump provider
+TrackingLogger.addDumpProvider(new MyDumpProvider());
+...
 TrackingLogger.dumpState();
 ```
 
