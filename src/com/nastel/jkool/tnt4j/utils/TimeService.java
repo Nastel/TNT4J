@@ -43,7 +43,7 @@ public class TimeService {
 	static long timeOverheadNanos = 0;
 	static long timeOverheadMillis = 0;
 	static long adjustment = 0;
-	static long updatedTime = 0;
+	static long updatedTime = 0, now;
 	
 	static NTPUDPClient timeServer = new NTPUDPClient();
 	static TimeInfo timeInfo;
@@ -117,7 +117,7 @@ public class TimeService {
 	 * 
 	 */
 	public static long currentTimeMillis() {
-		return adjustment != 0? System.currentTimeMillis() + adjustment: System.currentTimeMillis();
+		return System.currentTimeMillis();
 	}
 	
 	/**
@@ -131,7 +131,7 @@ public class TimeService {
 		long start = System.nanoTime();
 		_calculateOverheadCost(runs);
 		for (int i=0; i < runs; i++) {
-			currentTimeMillis();
+			now = currentTimeMillis();
 		}
 		return ((System.nanoTime() - start)/runs);
 	}

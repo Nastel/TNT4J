@@ -19,10 +19,12 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.nastel.jkool.tnt4j.config.DefaultConfigFactory;
@@ -188,6 +190,8 @@ public class TrackingLogger implements Tracker {
 	private static final String TRACKER_SOURCE = System.getProperty("tnt4j.tracking.logger.source", TrackingLogger.class.getName());
 	private static final String TRACKER_CONFIG = System.getProperty("tnt4j.tracking.logger.config");
 
+	private static Map<TrackingLogger, StackTraceElement[]> TRACKERS = Collections.synchronizedMap(new WeakHashMap<TrackingLogger, StackTraceElement[]>(89));
+	
 	private static Vector<DumpProvider> DUMP_PROVIDERS = new Vector<DumpProvider>(10, 10);
 	private static Vector<DumpSink> DUMP_DESTINATIONS = new Vector<DumpSink>(10, 10);
 	private static Vector<DumpListener> DUMP_LISTENERS = new Vector<DumpListener>(10, 10);
@@ -258,6 +262,52 @@ public class TrackingLogger implements Tracker {
     }
 
 	/**
+	 * Obtain an allocation stack trace for the specified logger instance
+	 *
+	 * @param logger instance
+	 *  
+	 * @return an allocation stack trace for the logger instance
+	 */
+    public static StackTraceElement[] getTrackerStackTrace(TrackingLogger logger) {
+    	return TRACKERS.get(logger);
+    }
+    
+	/**
+	 * Obtain an a list of all registered/active logger instances.
+	 *
+	 * @return a list of all active tracking logger instances
+	 */
+    public static List<TrackingLogger> getAllTrackers() {
+    	synchronized(TRACKERS) {
+    		ArrayList<TrackingLogger> copy = new ArrayList<TrackingLogger>(TRACKERS.size());
+    		for (TrackingLogger logger: TRACKERS.keySet()) {
+    			if (logger != null)	{
+    				copy.add(logger);
+    			}
+    		}
+    		return copy;
+    	}
+    }
+    
+	/**
+	 * Obtain a stack trace list for all tracker allocations to 
+	 * determine where the tracker instances have been instantiated
+	 *
+	 * @return a list of stack traces for each allocated tracker
+	 */
+    public static List<StackTraceElement[]> getAllTrackerStackTrace() {
+    	synchronized(TRACKERS) {
+    		ArrayList<StackTraceElement[]> copy = new ArrayList<StackTraceElement[]>(TRACKERS.size());
+    		for (StackTraceElement[] trace: TRACKERS.values()) {
+    			if (trace != null) {
+    				copy.add(trace);
+    			}
+    		}
+    		return copy;
+    	}
+    }
+    
+	/**
 	 * Obtain an instance of <code>TrackingLogger</code> logger.
 	 *
 	 * @param config
@@ -265,7 +315,9 @@ public class TrackingLogger implements Tracker {
 	 * @see TrackerConfig
 	 */
 	public static TrackingLogger getInstance(TrackerConfig config) {
-		return new TrackingLogger(factory.getInstance(config));
+		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config));
+		TRACKERS.put(tracker, Thread.currentThread().getStackTrace());
+		return tracker;
 	}
 
 
@@ -278,7 +330,9 @@ public class TrackingLogger implements Tracker {
 	 */
 	public static TrackingLogger getInstance(String sourceName) {
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName);
-		return new TrackingLogger(factory.getInstance(config.build()));
+		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
+		TRACKERS.put(tracker, Thread.currentThread().getStackTrace());
+		return tracker;
 	}
 
 	/**
@@ -291,7 +345,9 @@ public class TrackingLogger implements Tracker {
 	 */
 	public static TrackingLogger getInstance(Class<?> clazz) {
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(clazz);
-		return new TrackingLogger(factory.getInstance(config.build()));
+		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
+		TRACKERS.put(tracker, Thread.currentThread().getStackTrace());
+		return tracker;
 	}
 
 
