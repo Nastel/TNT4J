@@ -406,6 +406,16 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	}
 
 	/**
+	 * Returns the string representation of the current timestamp, with a given time zone.
+	 * 
+	 * @param tz format current time based on a given timezone.
+	 * @return formatted date/time string based on default pattern and given timezone
+	 */
+	public static String getTimeStamp(TimeZone tz) {
+		return getTimeStamp(null, tz, TimeService.currentTimeMillis(), 0);
+	}
+	
+	/**
 	 * Returns the string representation of the current timestamp.
 	 *
 	 * @return formatted date/time string based on default pattern
@@ -462,7 +472,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	
 	/**
 	 * Returns the string representation of the timestamp based on the specified
-	 * format pattern, milliseconds and microseconds.
+	 * format pattern, milliseconds and microseconds, default timezone.
 	 *
 	 * @param pattern format pattern
 	 * @param msecs milliseconds
@@ -470,20 +480,37 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(String pattern, long msecs, long usecs) {
+		return getTimeStamp(pattern, TimeZone.getDefault(), msecs, usecs);
+	}
+	
+	/**
+	 * Returns the string representation of the timestamp based on the specified
+	 * format pattern, milliseconds and microseconds.
+	 *
+	 * @param pattern format pattern
+	 * @param tz time zone
+	 * @param msecs milliseconds
+	 * @param usecs microseconds
+	 * @return formatted date/time string based on pattern
+	 */
+	public static String getTimeStamp(String pattern, TimeZone tz, long msecs, long usecs) {
 		if (pattern == null) {
 			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS" + String.format("%03d",usecs) + " z");
+			df.setTimeZone(tz);
 			return df.format(new Date(msecs));
 		}
 
 		int fracSecPos = pattern.indexOf('S');
 		if (fracSecPos < 0) {
 			SimpleDateFormat df = new SimpleDateFormat(pattern);
+			df.setTimeZone(tz);
 			return df.format(new Date(msecs));
 		}
 
 		String usecStr = String.format("%03d", usecs);
 		pattern = pattern.replaceFirst("SS*", "SSS" + usecStr);
 		SimpleDateFormat df = new SimpleDateFormat(pattern);
+		df.setTimeZone(tz);
 		return df.format(new Date(msecs));		
 	}
 	

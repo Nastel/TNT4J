@@ -19,6 +19,7 @@ import java.util.List;
 
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
+import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -40,11 +41,13 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  */
 
 public class SimpleFormatter extends DefaultFormatter {
+		
 	@Override
 	public String format(TrackingEvent event) {
 		StringBuffer msg = new StringBuffer(1024);
 		msg.append(event.getMessage()).append(" ");
-		msg.append("{sev: '").append(event.getSeverity()).append("'").append(separator);
+		msg.append("{time: '").append(UsecTimestamp.getTimeStamp(timeZone)).append("'").append(separator);
+		msg.append("sev: '").append(event.getSeverity()).append("'").append(separator);
 		msg.append("type: '").append(event.getOperation().getType()).append("'").append(separator);
 		msg.append("name: '").append(event.getOperation().getResolvedName()).append("'").append(separator);
 		msg.append("ccode: '").append(event.getOperation().getCompCode()).append("'").append(separator);
@@ -83,7 +86,8 @@ public class SimpleFormatter extends DefaultFormatter {
 	@Override
 	public String format(TrackingActivity activity) {
 		StringBuffer msg = new StringBuffer(1024);
-		msg.append("{'").append(activity.getStatus()).append("'").append(separator);
+		msg.append("{status: '").append(activity.getStatus()).append("'").append(separator);
+		msg.append("time: '").append(UsecTimestamp.getTimeStamp(timeZone)).append("'").append(separator);
 		msg.append("sev: '").append(activity.getSeverity()).append("'").append(separator);
 		msg.append("type: '").append(activity.getType()).append("'").append(separator);
 		msg.append("name: '").append(activity.getResolvedName()).append("'").append(separator);
@@ -126,5 +130,5 @@ public class SimpleFormatter extends DefaultFormatter {
 		}
 		msg.append("}");
 		return msg.toString();
-	}	
+	}		
 }
