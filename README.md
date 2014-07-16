@@ -60,9 +60,9 @@ Relate event message together by grouping or passing context (correlator). Most 
 
 `TrackingLogger.tnt(..)` also allows developers to specify the flow of messages using `OpType.SEND` and `OpType.RECEIVE` modifiers. These modifiers allows developer understand information flow and topology.
 
-<b>NOTE:</b>TNT4J uses NTP natively to synchtronze times across servers to enable cross server event, log correlation in time. To enable NTP time synchronization define java property `-Dtnt4j.time.server=ntp-server:123`. 
+<b>NOTE:</b> TNT4J uses NTP natively to synchtronze times across servers to enable cross server event, log correlation in time. To enable NTP time synchronization define java property `-Dtnt4j.time.server=ntp-server:123`. 
 
-<b>TIP:</b>Developers should use `TimeServer.currentTimeMillis()` instead of `System.currentTimeMillis()` to obtain time adjusted to NTP time server.
+<b>TIP:</b> Developers should use `TimeServer.currentTimeMillis()` instead of `System.currentTimeMillis()` to obtain time adjusted to NTP time.
 
 ### Logging Statistics
 TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors, overhead in usec and more. Do you know the overhead of your logging framework on your application?
