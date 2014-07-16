@@ -92,6 +92,7 @@ public class TNT4JTest {
 		// create and start an activity
 		TrackingActivity activity = tlogger.newActivity(OpLevel.INFO, "LoggingBenchmark");
 		TrackingLogger.addDumpProvider(new ObjectDumpProvider(args[0], activity));
+		
 		activityCount++;
 		activity.start();
 		for (int i=0; i < 10; i++) {
@@ -107,10 +108,14 @@ public class TNT4JTest {
 		}
 		activity.stop(); // stop activity timing
 		tlogger.tnt(activity);	// log and report activity	
+		
 		System.out.println("Logging stats: " + tlogger.getStats());
 		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size());
-		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size() + ", stack.size=" + TrackingLogger.getAllTrackerStackTrace().size());		
+		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size() + ", stack.size=" + TrackingLogger.getAllTrackerStackTrace().size());	
+		Utils.printStackTrace("Tracker stack trace", TrackingLogger.getTrackerStackTrace(tlogger), System.out);	
+		
 		tlogger.close(); //deregister and release all logging resources
+		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size());
 	}
 
 	static private TrackingActivity runSampleActivity(String msg, String cid, String opName, String location) {
