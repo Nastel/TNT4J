@@ -91,7 +91,7 @@ TNT4J keeps detailed statistics about logging activities. Each logger instance m
 
 Obtain a map of all available key/value pairs:
 ```java
-Map<String, Object> stats = logger.getStats();
+Map<String, Long> stats = logger.getStats();
 System.out.println("Logger stats: " + stats);
 ...
 System.out.println("Resetting logger stats");
@@ -101,7 +101,7 @@ Here is an example to obtain metrics for all available loggers:
 ```java
 List<TrackingLogger> loggers = TrackingLogger.getAllTrackers();
 for (TrackingLogger lg: loggers) {
-	Map<String, Object> stats = lg.getStats();
+	Map<String, Long> stats = lg.getStats();
 	...
 }
 ```
