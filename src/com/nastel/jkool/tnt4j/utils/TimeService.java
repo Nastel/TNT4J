@@ -53,10 +53,12 @@ public class TimeService {
 			timeOverheadNanos = calculateOverhead(1000000);
 			timeOverheadMillis = (timeOverheadNanos/1000000);
 			updateTime();
-			logger.log(OpLevel.INFO, "Time server={0}, timeout.ms={1}, offset.ms={2}, delay.ms={3}, clock.adjust.ms={4}, overhead.nsec={5}",
+			if (timeInfo != null) {
+				logger.log(OpLevel.INFO, "Time server={0}, timeout.ms={1}, offset.ms={2}, delay.ms={3}, clock.adjust.ms={4}, overhead.nsec={5}",
 					TIME_SERVER, TIME_SERVER_TIMEOUT, 
 					timeInfo.getOffset(), timeInfo.getDelay(),
 					adjustment, timeOverheadNanos);
+			}
 		} catch (IOException e) {
 			logger.log(OpLevel.ERROR, 
 					"Unable to obtain NTP time: time.server={0}, timeout={1}",
