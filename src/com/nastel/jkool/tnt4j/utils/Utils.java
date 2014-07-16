@@ -513,7 +513,7 @@ public class Utils {
 	 * @see java.lang.System#currentTimeMillis()
 	 */
 	public static long currentTimeUsec() {
-		return System.currentTimeMillis() * 1000;
+		return TimeService.currentTimeMillis() * 1000;
 	}
 
 	/**

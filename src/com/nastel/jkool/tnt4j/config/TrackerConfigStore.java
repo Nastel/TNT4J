@@ -116,7 +116,10 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 public class TrackerConfigStore extends TrackerConfig {
 	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerConfigStore.class.getName());
 	
+	private static final String DEFAULT_SOURCE = "*";
 	private static final String SOURCE_KEY = "source";
+	private static final String LIKE_KEY = "like";
+	
 	private String configFile = null;
 
 	/**
@@ -207,7 +210,7 @@ public class TrackerConfigStore extends TrackerConfig {
 		Properties defaultSet = null;
 		if (map == null) return defaultSet;
 		for (Entry<String, Properties> entry : map.entrySet()) {
-			if (entry.getKey().equals("*")) {
+			if (entry.getKey().equals(DEFAULT_SOURCE)) {
 				defaultSet = entry.getValue();
 				continue;
 			}
@@ -241,6 +244,16 @@ public class TrackerConfigStore extends TrackerConfig {
 			do {
 				props = readStanza(reader);
 				String key = props.getProperty(SOURCE_KEY);
+				String like = props.getProperty(LIKE_KEY);
+				if (like != null) {
+					props = map.get(like);
+					if (props == null) {
+						props = map.get(DEFAULT_SOURCE);
+						logger.log(OpLevel.WARNING, 
+								"Properties for source={0}, like={1} not found, assigning default set={2}",
+								key, like, DEFAULT_SOURCE);
+					}
+				}
 				if (key != null) {
 					map.put(key, props);
 				}

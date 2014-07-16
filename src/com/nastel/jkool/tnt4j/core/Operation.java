@@ -15,6 +15,7 @@
  */
 package com.nastel.jkool.tnt4j.core;
 
+import com.nastel.jkool.tnt4j.utils.TimeService;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 
@@ -517,7 +518,7 @@ public class Operation {
 	 * Indicates that the operation has started immediately.
 	 */
 	public void start() {
-		start(System.currentTimeMillis(), 0);
+		start(TimeService.currentTimeMillis(), 0);
 	}
 
 	/**
@@ -581,7 +582,7 @@ public class Operation {
 	 * Indicates that the operation has stopped immediately.
 	 */
 	public void stop() {
-		stop(System.currentTimeMillis(), 0);
+		stop(TimeService.currentTimeMillis(), 0);
 	}
 
 	/**

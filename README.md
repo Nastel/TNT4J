@@ -4,15 +4,17 @@ Several key features make TNT4J a prime logging choice for java applications:
 
 ### Performance
 No need to concatenate messages before logging. String concatenation is expensive especialy in loops. Simply log using message patterns as follows and TNT4J will resolve the message only if it actually gets logged:
-
-	logger.debug("My message {0}, {1}, {2}", arg1, arg2, arg3); 
+```java
+logger.debug("My message {0}, {1}, {2}", arg1, arg2, arg3);
+```
 
 ### Simplicity & Clean Code
 No need to check for `isDebugEnabled()` before logging messages. Just register your own `SinkEventFilter` and consolidate all checking into a single listener.
-	
-	logger.addSinkEventFilter(new MyLogFilter()); 
-	...
-	logger.debug("My message {0}, {1}, {2}", arg1, arg2, arg3); 
+```java	
+logger.addSinkEventFilter(new MyLogFilter()); 
+...
+logger.debug("My message {0}, {1}, {2}", arg1, arg2, arg3);
+```
 
 All conditional logging can be consolidated into a single listener object. 
 
@@ -20,14 +22,17 @@ All conditional logging can be consolidated into a single listener object.
 Filter out not only based on category/severity (as log4j), but also based on performance objectives. Example: log events only if their elapsed time or wait times are greater than a ceratin value. TNT4J allows users to register filters within `tnt4j.properties` without changing application code. Create your own filters which would allow you to filter events out based on user defined criteria and inject filters using `tnt4j.properties`.
 See  `tnt4j.properties` and `com.nastel.jkool.tnt4j.filters.EventLevelTimeFilter` for details.
 Register filters via declarations in `tnt4j.properties` or in your application by creating your own event filter.
-
-	logger.addSinkEventFilter(new MyLogFilter());
+```java
+logger.addSinkEventFilter(new MyLogFilter());
+```
 
 ### Granular conditional logging
 Log only what matters. Increase performance of your apps by decreasing the amount of logging your app produces and yet increasing relevance and quality of the output.
 
-	logger.isSet(OpLevel.DEBUG);
-	logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);
+```java
+logger.isSet(OpLevel.DEBUG);
+logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);
+```
 
 Checking a global debug level is not granular enough for most applications. Many java apps require granular logging to log only what matters. Consolidate these checks into `SinkEventFilter` implementation and register with the logger instance.
 
@@ -36,40 +41,62 @@ Checking a global debug level is not granular enough for most applications. Many
 ### Share logging context across apps
 Pass logging context across apps programatically or via a shared cache.
 	
-	logger.set(OpLevel.DEBUG, "myapp.mykey", myvalue);
-	
+```java
+logger.set(OpLevel.DEBUG, "myapp.mykey", myvalue);
+```
+
 Imagine writing an application that has to pass logging flag to apps downstream, how would you do that?
 TNT lets you do that using this method.
 	
 Check log context by calling:
-	
-	logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);
+```java
+logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);
+```
 
 ### State logging
-Log application state to improve diagnostics of performance, resource utilization and other tough problems which are difficult  to trace using standard event logging techniques. Simply register your state dump listener and export state variables specific to you application. State dump listeners can be called on VM shutdown or on demand.
+Log application state to improve diagnostics of performance, resource utilization and other tough problems which are difficult  to trace using standard event logging techniques. Simply register your state dump provider (see `DumpProvider` interface) and export state variables specific to you application. Dump providers can be called on VM shutdown or on demand.
 
 Generate application dump on demand.
-
-	TrackingLogger.dumpState();
+```java
+// register your dump provider
+TrackingLogger.addDumpProvider(new MyDumpProvider());
+...
+TrackingLogger.dumpState();
+```
 
 ### Measurements & Metrics
 TNT4J is not just about logging messages, it is also about measurements and metrics. Metrics such as elpased time, CPU, memory, block/wait times as well as user defined metrics. TNT4J allows you to asnwer what was performance at the time of the logged event or what was the value of a user defined metric.
+```java
+// post processing of activity: enrich activity with application metrics
+TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
+TrackingActivity activity = logger.newActivity(OpLevel.INFO, "MyActivity");
+...
+PropertySnapshot snapshot = new PropertySnapshot("Metrics", "MyMetricGroup");
+snapshot.add("metric1", myMetric1);
+snapshot.add("metric2", myMetric2);
+activity.add(snapshot); // add property snapshot to activity
+```
 
 ### Correlation & Topology
-Relate event message together by grouping or passing context (correlator). Most if not all logging frameworks completely miss the correlation angle. TNT4J allows attachement of correlators when reporting tracking events see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same paradigm. 
+Relate event message together by grouping or passing context (correlator). Most if not all logging frameworks completely miss the correlation angle. TNT4J allows attachement of correlators when reporting tracking events see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same paradigm.
 
 `TrackingLogger.tnt(..)` also allows developers to specify the flow of messages using `OpType.SEND` and `OpType.RECEIVE` modifiers. These modifiers allows developer understand information flow and topology.
+
+<b>NOTE:</b> TNT4J uses NTP natively to synchtronze times across servers to enable cross server event, log correlation in time. To enable NTP time synchronization define java property `-Dtnt4j.time.server=ntp-server:123`. 
+
+<b>TIP:</b> Developers should use `TimeServer.currentTimeMillis()` instead of `System.currentTimeMillis()` to obtain time adjusted to NTP time.
 
 ### Logging Statistics
 TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors, overhead in usec and more. Do you know the overhead of your logging framework on your application?
 
 Obtain a map of all available key/value pairs:
-
-	Map<String, Object> stats = logger.getStats();
-	System.out.println("Logger stats: " + stats);
-	...
-	System.out.println("Resetting logger stats");
-	logger.resetStats();
+```java
+Map<String, Object> stats = logger.getStats();
+System.out.println("Logger stats: " + stats);
+...
+System.out.println("Resetting logger stats");
+logger.resetStats();
+```
 
 ## Quick Examples
 Here is a simple example of using TNT4J:
@@ -197,6 +224,7 @@ TNT4J depends on the following external packages:
 * Apache commons lang 2.6 (http://commons.apache.org/proper/commons-lang/)
 * Apache commons lang3 3.0.1 (http://commons.apache.org/proper/commons-lang/)
 * Apache commons logging 1.2.17 (http://commons.apache.org/proper/commons-logging/)
+* Apache commons net 3.3 (http://commons.apache.org/proper/commons-net/)
 * Apache Log4J 1.2.17 (http://logging.apache.org/log4j/1.2/)
 
 To build TNT4J:
