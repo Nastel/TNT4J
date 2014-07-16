@@ -31,7 +31,7 @@ public interface VarStats {
 	 * 
 	 * @return a map of key/value statistic pairs
 	 */
-	public Map<String, Object> getStats();
+	public Map<String, Long> getStats();
 
 	/**
 	 * Reset all statistics to their initial values.
