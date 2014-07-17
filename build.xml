@@ -9,10 +9,6 @@
   <!-- Import default properties for jKool builds --> 
   <import file="${tnt4jroot}/build-properties.xml"/>
 
-  <defaultexcludes add="**/*.scc"/>
-
-  <loadproperties srcFile="${tnt4jroot}/build.properties"/>
-	
   <property name="package"   value="com.nastel.jkool.*"/>
   <property name="docpkg"    value="com.nastel.jkool.tnt4j.*"/>
   <property name="src"       value="src"/>
@@ -26,28 +22,29 @@
     <tstamp/>
     <mkdir dir="${bin}"/>
     <mkdir dir="${tnt4j-build}/lib"/>
+	<copy todir="${tnt4j-build}/lib">
+      <fileset dir="${lib}">
+        <include name="commons-configuration-*.jar"/>
+        <include name="commons-lang*-*.jar"/>
+        <include name="commons-logging-*.jar"/>
+        <include name="commons-net-*.jar"/>
+        <include name="log4j-*.jar"/>
+      </fileset>
+    </copy>
   </target>
 
   <!-- Compile into ${bin} directory -->
   <target name="compile" depends="init" description="compile the source">
-    <javac destdir="${bin}" debug="true" debuglevel="source,lines,vars" includeAntRuntime="false">
+    <javac destdir="${bin}" debug="true" debuglevel="${debuglevel}" source="${source}" target="${target}">
       <src path="${src}"/>
       <classpath>
-        <fileset dir="${lib}">
-          <include name="**/*.jar"/>
-        </fileset>
+        <fileset dir="${tnt4j-build}/lib"/>
       </classpath>
     </javac>
   </target>
 
   <target name="clean" description="clean up">
-    <delete dir="${bin}"/>
-    <delete dir="${doc}"/>
-    <delete dir="${tnt4j-build}/lib"/>
-    <delete file="${jar}"/>
-    <delete>
-      <fileset dir="${tnt4j-build}" includes="*.zip,*.gz,*.jar,*.properties"/>
-    </delete>
+    <delete dir="${tnt4j-build}"/>
     <echo message="Clean of ${ant.project.name} Complete${line.separator}" level="info"/>
   </target>
 
@@ -101,17 +98,6 @@
     <echo message="Deleting old archives" level="info"/>
     <delete file="${pkg}-${version}-all.jar"/>
     <delete file="${pkg}-${version}-all.zip"/>
-    
-    <echo message="Copying common libraries" level="info"/>
-	<copy todir="${tnt4j-build}/lib">
-      <fileset dir="${lib}">
-        <include name="commons-net-*.jar"/>
-        <include name="commons-lang*-*.jar"/>
-        <include name="commons-logging-*.jar"/>
-        <include name="commons-configuration-*.jar"/>
-        <include name="log4j-*.jar"/>
-      </fileset>
-    </copy>
     
     <echo message="Copying common TNT4J properties" level="info"/>
 	<copy todir="${tnt4j-build}">

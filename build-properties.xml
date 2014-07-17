@@ -11,9 +11,6 @@
   <property name="source"     value="1.6"/>
   <property name="debuglevel" value="source,lines,vars"/>
 
-  <!-- Common settings -->
-  <property name="log4jjar" value="log4j.jar"/>
-  
   <!-- loads project version and build information -->
   <loadproperties srcFile="${tnt4jroot}/build.properties"/>
 
