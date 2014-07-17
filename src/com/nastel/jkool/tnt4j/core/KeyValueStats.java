@@ -19,19 +19,20 @@ import java.util.Map;
 
 /**
  * <p>
- * This interface defines a way to obtain and reset statistics.
+ * This interface defines a way to obtain and reset statistics represented by
+ * key/value pair.
  * </p>
  *
  * @version $Revision: 7 $
  *
  */
-public interface VarStats {
+public interface KeyValueStats {
 	/**
 	 * Obtain all available statistics
 	 * 
 	 * @return a map of key/value statistic pairs
 	 */
-	public Map<String, Long> getStats();
+	public Map<String, Object> getStats();
 
 	/**
 	 * Reset all statistics to their initial values.

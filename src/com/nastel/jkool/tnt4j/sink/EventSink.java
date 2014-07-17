@@ -16,7 +16,7 @@
 package com.nastel.jkool.tnt4j.sink;
 
 import com.nastel.jkool.tnt4j.core.OpLevel;
-import com.nastel.jkool.tnt4j.core.VarStats;
+import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -34,7 +34,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * @version $Revision: 7 $
  *
  */
-public interface EventSink extends Sink, VarStats {
+public interface EventSink extends Sink, KeyValueStats {
 	static final String KEY_SINK_ERROR_COUNT = "sink-error-count";
 	static final String KEY_LOGGED_MSGS = "logged-messages";
 	static final String KEY_LOGGED_EVENTS = "logged-events";

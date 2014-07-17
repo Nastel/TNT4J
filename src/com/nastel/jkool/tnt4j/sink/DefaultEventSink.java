@@ -51,8 +51,8 @@ public abstract class DefaultEventSink implements EventSink {
 	private AtomicLong filteredCount = new AtomicLong(0);
 	
 	@Override
-	public Map<String, Long> getStats() {
-		HashMap<String, Long> stats = new HashMap<String, Long>();
+	public Map<String, Object> getStats() {
+		HashMap<String, Object> stats = new HashMap<String, Object>();
 		stats.put(KEY_LOGGED_ACTIVITIES, loggedActivities.get());
 		stats.put(KEY_LOGGED_EVENTS, loggedEvents.get());
 		stats.put(KEY_SINK_ERROR_COUNT, errorCount.get());

@@ -19,7 +19,7 @@ import com.nastel.jkool.tnt4j.config.TrackerConfig;
 import com.nastel.jkool.tnt4j.core.Activity;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
-import com.nastel.jkool.tnt4j.core.VarStats;
+import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
 import com.nastel.jkool.tnt4j.sink.EventSink;
 import com.nastel.jkool.tnt4j.sink.Handle;
@@ -47,7 +47,7 @@ import com.nastel.jkool.tnt4j.source.Source;
  * @version $Revision: 5 $
  *
  */
-public interface Tracker extends Handle, VarStats {
+public interface Tracker extends Handle, KeyValueStats {
 	static final String KEY_REPORTED_ACTIVITY_COUNT = "reported-activity-count";
 	static final String KEY_REPORTED_EVENT_COUNT = "reported-event-count";
 	static final String KEY_ACTIVITIES_STARTED = "started-activity-count";

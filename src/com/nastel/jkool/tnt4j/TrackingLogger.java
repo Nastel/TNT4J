@@ -1278,7 +1278,7 @@ public class TrackingLogger implements Tracker {
     }
 
 	@Override
-    public Map<String, Long> getStats() {
+    public Map<String, Object> getStats() {
 		checkState();
 		return logger.getStats();
     }
