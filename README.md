@@ -81,7 +81,7 @@ activity.add(snapshot); // add property snapshot to activity
 Relate event message together by grouping or passing context (correlator). Most if not all logging frameworks completely miss the correlation angle. TNT4J allows attachement of correlators when reporting tracking events see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same paradigm.
 
 `TrackingLogger.tnt(..)` also allows developers to specify the flow of messages using `OpType.SEND` and `OpType.RECEIVE` modifiers. These modifiers let developers specify message flow, direction.
-Below is an example of the sender application:
+Below is an example of a sender application:
 ```java
 // post processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
@@ -93,7 +93,7 @@ logger.tnt(OpLevel.INFO, OpType.SEND, "SendOrder", order_id,
 ....
 ....
 ```
-Below is an example of the receiver application:
+Below is an example of a receiver application:
 ```java
 // post processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
