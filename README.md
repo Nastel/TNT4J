@@ -93,7 +93,7 @@ logger.tnt(OpLevel.INFO, OpType.SEND, "SendOrder", order_id,
 ....
 ....
 ```
-Below is an example of the sender application:
+Below is an example of the receiver application:
 ```java
 // post processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
