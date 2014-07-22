@@ -213,8 +213,7 @@ public class TrackingLogger implements Tracker {
 		factory = config.getTrackerFactory();
 		dumpFactory = config.getDumpSinkFactory();
 
-		String dumpLocation = System.getProperty("tnt4j.dump.location", "./" + Utils.VM_NAME + ".dump");
-		defaultDumpSink = dumpFactory.getInstance(dumpLocation);
+		defaultDumpSink = dumpFactory.getInstance();
 		boolean enableDefaultDumpProviders = Boolean.getBoolean("tnt4j.dump.provider.default");
 		boolean dumpOnVmHook = Boolean.getBoolean("tnt4j.dump.on.vm.shutdown");
 

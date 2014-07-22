@@ -15,7 +15,11 @@
  */
 package com.nastel.jkool.tnt4j.dump;
 
-import java.lang.management.ManagementFactory;
+import java.util.Map;
+
+import com.nastel.jkool.tnt4j.config.Configurable;
+import com.nastel.jkool.tnt4j.config.ConfigurationException;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 
 
@@ -23,7 +27,9 @@ import java.lang.management.ManagementFactory;
  * <p>
  * This class implements a default dump destination factory based on file based dump destination
  * backed by <code>FileDumpSink</code> implementation. By default dump destinations are 
- * name using this convention: ManagementFactory.getRuntimeMXBean().getName() + ".dump".
+ * name using this convention: <code>DEFAULT_DUMP_FOLDER + Utils.VM_NAME + ".dump"</code>.
+ * Default dump directory location can be specified using <code>DumpLocation</code> configuration
+ * attribute or java property <code>tnt4j.dump.folder=./</code>.
  * </p>
  * 
  * 
@@ -31,11 +37,24 @@ import java.lang.management.ManagementFactory;
  * 
  * @see FileDumpSink
  */
-public class DefaultDumpSinkFactory implements DumpSinkFactory {
+public class DefaultDumpSinkFactory implements DumpSinkFactory, Configurable {
+	public static final String DEFAULT_DUMP_FOLDER = System.getProperty("tnt4j.dump.folder", "./");
 
+	protected Map<String, Object> config = null;
+	private String dumpLocation = DEFAULT_DUMP_FOLDER + Utils.VM_NAME + ".dump";
+	
+	/**
+	 * Obtain default dump location URL.
+	 *
+	 * @return default dump location URL.
+	 */
+	public  String getDefaultLocation() {
+		return dumpLocation;
+	}
+	
 	@Override
     public DumpSink getInstance() {
-	    return new FileDumpSink(ManagementFactory.getRuntimeMXBean().getName() + ".dump");
+	    return new FileDumpSink(dumpLocation);
     }
 
 	@Override
@@ -52,4 +71,16 @@ public class DefaultDumpSinkFactory implements DumpSinkFactory {
     public DumpSink getInstance(String url, boolean append, DumpFormatter frm) {
 	    return new FileDumpSink(url, append, frm);
     }
+
+	@Override
+	public Map<String, Object> getConfiguration() {
+		return config;
+	}
+
+	@Override
+	public void setConfiguration(Map<String, Object> props) throws ConfigurationException {
+		config = props;
+		Object dumpUrl = config.get("DumpLocation");
+		dumpLocation = dumpUrl != null? dumpUrl.toString(): dumpLocation;
+	}
 }
