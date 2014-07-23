@@ -290,6 +290,6 @@ Run a sample program (`com.nastel.jkool.tnt4j.examples.TNT4JTest`):
 
 `-Dtnt4j.formatter.json.newline=true` java property directs `JSONFormatter` to append new line when formatting log entries.
 
-See `tnt4j-event.log` and vmid.dump files for output produced by `com.nastel.jkool.tnt4j.examples.TNT4JTest` program.
+See `tnt4j-event.log` and `<vmid>.dump` file for output produced by `com.nastel.jkool.tnt4j.examples.TNT4JTest`.
 
 See `tnt4j.properties` for TNT4J configuration: factories, formatters, listeners, etc. See Wiki for more information.
