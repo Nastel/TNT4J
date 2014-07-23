@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -53,12 +54,18 @@ public abstract class DefaultEventSink implements EventSink {
 	@Override
 	public Map<String, Object> getStats() {
 		HashMap<String, Object> stats = new HashMap<String, Object>();
+		getStats(stats);
+		return stats;
+	}
+	
+	@Override
+	public KeyValueStats getStats(Map<String, Object> stats) {
 		stats.put(KEY_LOGGED_ACTIVITIES, loggedActivities.get());
 		stats.put(KEY_LOGGED_EVENTS, loggedEvents.get());
 		stats.put(KEY_SINK_ERROR_COUNT, errorCount.get());
 		stats.put(KEY_LOGGED_MSGS, loggedMsgs.get());
 		stats.put(KEY_FILTERED_COUNT, filteredCount.get());
-		return stats;
+		return this;
 	}
 	
 	@Override

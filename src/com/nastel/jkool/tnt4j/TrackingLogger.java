@@ -29,6 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import com.nastel.jkool.tnt4j.config.DefaultConfigFactory;
 import com.nastel.jkool.tnt4j.config.TrackerConfig;
+import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpCompCode;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
@@ -1280,6 +1281,12 @@ public class TrackingLogger implements Tracker {
     public Map<String, Object> getStats() {
 		checkState();
 		return logger.getStats();
+    }
+
+	@Override
+    public KeyValueStats getStats(Map<String, Object> stats) {
+		checkState();
+		return logger.getStats(stats);
     }
 
 	@Override

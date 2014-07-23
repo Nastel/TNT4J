@@ -18,10 +18,12 @@ package com.nastel.jkool.tnt4j.tracker;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.EmptyStackException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.nastel.jkool.tnt4j.config.TrackerConfig;
+import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Operation;
@@ -211,7 +213,13 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	
 	@Override
 	public Map<String, Object> getStats() {
-		Map<String, Object> stats = eventSink.getStats();
+		HashMap<String, Object> stats = new HashMap<String, Object>();
+		getStats(stats);
+		return stats;
+	}
+
+	@Override
+	public  KeyValueStats getStats(Map<String, Object> stats) {
 		stats.put(KEY_REPORTED_ACTIVITY_COUNT, activityCount.get());
 		stats.put(KEY_REPORTED_EVENT_COUNT, eventCount.get());
 		stats.put(KEY_TRACK_ERROR_COUNT, errorCount.get());
@@ -219,7 +227,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		stats.put(KEY_ACTIVITIES_STARTED, pushCount.get());
 		stats.put(KEY_ACTIVITIES_STOPPED, popCount.get());
 		stats.put(KEY_TOTAL_OVERHEAD_USEC, overheadNanos.get()/1000);
-		return stats;
+		return this;
 	}
 	
 	@Override

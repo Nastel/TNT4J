@@ -35,6 +35,14 @@ public interface KeyValueStats {
 	public Map<String, Object> getStats();
 
 	/**
+	 * Obtain all available statistics into a given map
+	 * 
+	 * @param stats map where key/values pairs are added (existing replaced)
+	 * @return current <code>KeyValueStats</code> handle
+	 */
+	public KeyValueStats getStats(Map<String, Object> stats);
+
+	/**
 	 * Reset all statistics to their initial values.
 	 * All counters are set to 0.
 	 * 
