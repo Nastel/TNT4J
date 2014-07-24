@@ -84,12 +84,10 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * tracking.selector: com.nastel.jkool.tnt4j.selector.DefaultTrackingSelector
  * tracking.selector.Repository: com.nastel.jkool.tnt4j.repository.FileTokenRepository
  * }
+ * ; define source based on configuration from another source defined above
  * {
  * source: org
- * event.sink.factory: com.nastel.jkool.tnt4j.sink.SocketEventSinkFactory
- * event.formatter: com.nastel.jkool.tnt4j.format.JSONFormatter
- * token.repository: com.nastel.jkool.tnt4j.repository.FileTokenRepository
- * tracking.selector: com.nastel.jkool.tnt4j.selector.DefaultTrackingSelector
+ * like: com.nastel
  * }
  * }
  * </pre>
