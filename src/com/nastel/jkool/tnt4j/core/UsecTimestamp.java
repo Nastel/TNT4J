@@ -109,6 +109,29 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 * @since Revision: 10
 	 */
 	public UsecTimestamp(String timeStampStr, String formatStr, String timeZoneId) throws ParseException {
+		this(timeStampStr, formatStr, (StringUtils.isEmpty(timeZoneId) ? null : TimeZone.getTimeZone(timeZoneId)));
+	}
+
+	/**
+	 * <p>Creates UsecTimestamp from string representation of timestamp in the
+	 * specified format.</p>
+	 * <p>This is based on {@link SimpleDateFormat}, but extends its support to
+	 * recognize microsecond fractional seconds.  If number of fractional second
+	 * characters is greater than 3, then it's assumed to be microseconds.
+	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of
+	 * {@link SimpleDateFormat}.
+	 *
+	 * @param timeStampStr timestamp string
+	 * @param formatStr format specification for timestamp string
+	 * @param timeZone time zone that timeStampStr represents. This is only needed when formatStr does not include
+	 *                   time zone specification and timeStampStr does not represent a string in local time zone.
+	 * @throws NullPointerException if timeStampStr is {@code null}
+	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
+	 * @throws ParseException if failed to parse string based on specified format
+	 * @see java.util.TimeZone
+	 * @since Revision: 10
+	 */
+	public UsecTimestamp(String timeStampStr, String formatStr, TimeZone timeZone) throws ParseException {
 		if (timeStampStr == null)
 			throw new NullPointerException("timeStampStr must be non-null");
 
@@ -174,8 +197,8 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 
 		dateFormat.setLenient(true);
 
-		if (!StringUtils.isEmpty(timeZoneId))
-			dateFormat.setTimeZone(TimeZone.getTimeZone(timeZoneId));
+		if (timeZone != null)
+			dateFormat.setTimeZone(timeZone);
 
 		Date date = dateFormat.parse(timeStampStr);
 
