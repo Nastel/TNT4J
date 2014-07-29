@@ -407,14 +407,14 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 
 	/**
 	 * Returns the string representation of the current timestamp, with a given time zone.
-	 * 
+	 *
 	 * @param tz format current time based on a given timezone.
 	 * @return formatted date/time string based on default pattern and given timezone
 	 */
 	public static String getTimeStamp(TimeZone tz) {
 		return getTimeStamp(null, tz, TimeService.currentTimeMillis(), 0);
 	}
-	
+
 	/**
 	 * Returns the string representation of the current timestamp.
 	 *
@@ -423,7 +423,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	public static String getTimeStamp() {
 		return getTimeStamp(null, TimeService.currentTimeMillis(), 0);
 	}
-	
+
 	/**
 	 * Returns the string representation of the current timestamp based on the given
 	 * format pattern.
@@ -434,7 +434,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	public static String getTimeStamp(String pattern) {
 		return getTimeStamp(pattern, TimeService.currentTimeMillis(), 0);
 	}
-	
+
 	/**
 	 * Returns the string representation of the timestamp based on the given
 	 * format pattern, milliseconds.
@@ -446,7 +446,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	public static String getTimeStamp(String pattern, long msecs) {
 		return getTimeStamp(pattern, msecs, 0);
 	}
-	
+
 	/**
 	 * Returns the string representation of the timestamp based on the default
 	 * format pattern, milliseconds.
@@ -457,7 +457,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	public static String getTimeStamp(long msecs) {
 		return getTimeStamp(null, msecs, 0);
 	}
-	
+
 	/**
 	 * Returns the string representation of the timestamp based on the default
 	 * format pattern, milliseconds and microseconds.
@@ -469,7 +469,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	public static String getTimeStamp(long msecs, long usecs) {
 		return getTimeStamp(null, msecs, usecs);
 	}
-	
+
 	/**
 	 * Returns the string representation of the timestamp based on the specified
 	 * format pattern, milliseconds and microseconds, default timezone.
@@ -482,7 +482,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	public static String getTimeStamp(String pattern, long msecs, long usecs) {
 		return getTimeStamp(pattern, TimeZone.getDefault(), msecs, usecs);
 	}
-	
+
 	/**
 	 * Returns the string representation of the timestamp based on the specified
 	 * format pattern, milliseconds and microseconds.
@@ -511,9 +511,9 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 		pattern = pattern.replaceFirst("SS*", "SSS" + usecStr);
 		SimpleDateFormat df = new SimpleDateFormat(pattern);
 		df.setTimeZone(tz);
-		return df.format(new Date(msecs));		
+		return df.format(new Date(msecs));
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -578,6 +578,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 
 	/**
 	 * {@inheritDoc}
+	 * <p>Returns the string representation of this timestamp in the default timezone.</p>
 	 */
 	@Override
 	public String toString() {
@@ -585,13 +586,35 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	}
 
 	/**
+	 * Returns the string representation of this timestamp in the specified timezone.
+	 *
+	 * @param tz timezone
+	 * @return formatted date/time string in specified timezone
+	 */
+	public String toString(TimeZone tz) {
+		return getTimeStamp(null, tz, msecs, usecs);
+	}
+
+	/**
 	 * Returns the string representation of this timestamp based on the specified
-	 * format pattern.
+	 * format pattern in the default timezone.
 	 *
 	 * @param pattern format pattern
 	 * @return formatted date/time string based on pattern
 	 */
 	public String toString(String pattern) {
 		return getTimeStamp(pattern, msecs, usecs);
+	}
+
+	/**
+	 * Returns the string representation of this timestamp based on the specified
+	 * format pattern in the specified timezone.
+	 *
+	 * @param pattern format pattern
+	 * @param tz timezone
+	 * @return formatted date/time string based on pattern
+	 */
+	public String toString(String pattern, TimeZone tz) {
+		return getTimeStamp(pattern, tz, msecs, usecs);
 	}
 }
