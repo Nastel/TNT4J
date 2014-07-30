@@ -437,7 +437,7 @@ public class TrackingLogger implements Tracker {
 	 * Determine of a particular sev for the registered application name used in <code>TrackingLogger.getInstance()</code> call.
 	 * Use this method to determine if tracking is enabled/disabled for a
 	 * specific severity. This call is equivalent to
-	 * <code>logger.isSet(sev, logger.getTracker().getSource().getName(), null);</code>
+	 * <code>logger.getEventSink().isSet(sev)</code>
 	 *
 	 * @param sev
 	 *            severity of to be checked
@@ -446,7 +446,7 @@ public class TrackingLogger implements Tracker {
 	 */
 	public boolean isSet(OpLevel sev) {
 		if (logger != null) {
-			return selector.isSet(sev, logger.getSource().getName());
+			return logger.getEventSink().isSet(sev);
 		}
 		return false;
 	}

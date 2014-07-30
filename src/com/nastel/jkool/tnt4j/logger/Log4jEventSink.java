@@ -130,9 +130,8 @@ public class Log4jEventSink extends DefaultEventSink {
 		if (logger == null) throw new IllegalStateException("Sink closed");
 		if (!filterEvent(sev, msg, args)) return;
 
-		Priority level = getL4JLevel(sev);
-		if (logger.isEnabledFor(level)) {
-			logger.log(level, formatter.format(sev, msg, args), Utils.getThrowable(args));
+		if (isSet(sev)) {
+			logger.log(getL4JLevel(sev), formatter.format(sev, msg, args), Utils.getThrowable(args));
 			super.log(sev, msg, args);
 		}
 	}
