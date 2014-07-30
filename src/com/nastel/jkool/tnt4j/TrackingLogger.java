@@ -397,7 +397,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Determine of a particular sev/key/value combination is trackable Use this method to determine if tracking is
+	 * Determine of a particular sev/key/value combination is trackable. Use this method to determine if tracking is
 	 * enabled/disabled for a specific key/value pair. Example, checking if order id "723772" is trackable:
 	 *
 	 * <code>logger.isSet(OpLevel.INFO, "orderapp.order.id", "723772");</code>
@@ -418,7 +418,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Determine of a particular sev/key is trackable Use this method to determine if tracking is enabled/disabled for a
+	 * Determine of a particular sev/key is trackable. Use this method to determine if tracking is enabled/disabled for a
 	 * specific severity. This call is equivalent to <code>logger.isSet(sev, key, null);</code>
 	 *
 	 * @param sev
@@ -437,7 +437,7 @@ public class TrackingLogger implements Tracker {
 	 * Determine of a particular sev for the registered application name used in <code>TrackingLogger.getInstance()</code> call.
 	 * Use this method to determine if tracking is enabled/disabled for a
 	 * specific severity. This call is equivalent to
-	 * <code>logger.getEventSink().isSet(sev)</code>
+	 * <code>logger.getTracker().getEventSink().isSet(sev)</code>
 	 *
 	 * @param sev
 	 *            severity of to be checked
