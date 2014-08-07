@@ -101,6 +101,7 @@ public class TrackingActivity extends Activity {
 	        stopWaitTime = 0, startBlockCount = 0, stopBlockCount = 0, startWaitCount = 0, stopWaitCount = 0,
 	        overHeadTimeNano = 0;
 	private ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
+	private ThreadInfo ownerThread = null;
 	private boolean appendProps = true, cpuTimingSupported = false, contTimingSupported = false, enableTiming = false;
 	private TrackerImpl tracker = null;
 
@@ -179,19 +180,33 @@ public class TrackingActivity extends Activity {
 		tracker.tnt(event);
 	}
 
+	/**
+	 * Return thread handle that owns this activity. Owner is the tread that
+	 * started this activity when <code>TrackingActivity.start()</code> is called.
+	 * There can only be one thread that owns an activity. All thread/activity metrics
+	 * are computed based on the owner thread.
+	 * It is possible, but not recommended to use the same <code>TrackingActivity</code>
+	 * instance across multiple threads, where start/stop are run across thread boundaries.
+	 * 
+	 * @return thread owner info
+	 */	
+	public ThreadInfo getThreadInfo() {
+		return ownerThread;
+	}
+	
 	private void initActivity() {
 		if (startStopCount == 0) {
 			long start = System.nanoTime();
 			startStopCount++;
 			tracker.push(this);
 			if (enableTiming) {
-				startCPUTime = cpuTimingSupported ? tmbean.getCurrentThreadCpuTime() : 0;
-				ThreadInfo tinfo = tmbean.getThreadInfo(Thread.currentThread().getId());
-				startBlockCount = tinfo.getBlockedCount();
-				startWaitCount = tinfo.getWaitedCount();
+				ownerThread = tmbean.getThreadInfo(Thread.currentThread().getId());
+				startCPUTime = cpuTimingSupported ? tmbean.getThreadCpuTime(ownerThread.getThreadId()) : 0;
+				startBlockCount = ownerThread.getBlockedCount();
+				startWaitCount = ownerThread.getWaitedCount();
 				if (contTimingSupported) {
-					startBlockTime = tinfo.getBlockedTime();
-					startWaitTime = tinfo.getWaitedTime();
+					startBlockTime = ownerThread.getBlockedTime();
+					startWaitTime = ownerThread.getWaitedTime();
 				}
 			}
 			if (reportStarts) {
@@ -221,7 +236,8 @@ public class TrackingActivity extends Activity {
 		initActivity();
 	}
 
-	public void start(long startTime, int startTimeUsec) {
+	@Override
+	public void start(long startTime, long startTimeUsec) {
 		super.start(startTime, startTimeUsec);
 		initActivity();
 	}
@@ -305,12 +321,11 @@ public class TrackingActivity extends Activity {
 			long start = System.nanoTime();
 			startStopCount++;
 			if (startCPUTime > 0) {
-				ThreadInfo tinfo = tmbean.getThreadInfo(Thread.currentThread().getId());
-				stopBlockCount = tinfo.getBlockedCount();
-				stopWaitCount = tinfo.getWaitedCount();
+				stopBlockCount = ownerThread.getBlockedCount();
+				stopWaitCount = ownerThread.getWaitedCount();
 				if (contTimingSupported) {
-					stopBlockTime = tinfo.getBlockedTime();
-					stopWaitTime = tinfo.getWaitedTime();
+					stopBlockTime = ownerThread.getBlockedTime();
+					stopWaitTime = ownerThread.getWaitedTime();
 					setWaitTime(((stopWaitTime - startWaitTime) + (stopBlockTime - startBlockTime)) * 1000);
 				}
 				stopCPUTime = getCurrentCpuTimeNanos();
@@ -331,9 +346,10 @@ public class TrackingActivity extends Activity {
 
 	/**
 	 * This method returns total CPU time in nanoseconds currently used by the current thread.
+	 * run this method only after activity is started.
 	 */
 	public long getCurrentCpuTimeNanos() {
-		return (cpuTimingSupported ? tmbean.getCurrentThreadCpuTime() : -1);
+		return (cpuTimingSupported && (ownerThread != null)? tmbean.getThreadCpuTime(ownerThread.getThreadId()) : -1);
 	}
 
 	/**
@@ -402,17 +418,16 @@ public class TrackingActivity extends Activity {
 		}
 		this.add(cpu);
 
-		ThreadInfo tinfo = tmbean.getThreadInfo(Thread.currentThread().getId());
 		PropertySnapshot thread = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_THREAD);
 		thread.add(new Property(DEFAULT_PROPERTY_COUNT, tmbean.getThreadCount()));
 		thread.add(new Property(DEFAULT_PROPERTY_DAEMON_COUNT, tmbean.getDaemonThreadCount()));
 		thread.add(new Property(DEFAULT_PROPERTY_STARTED_COUNT, tmbean.getTotalStartedThreadCount()));
 		thread.add(new Property(DEFAULT_PROPERTY_PEAK_COUNT, tmbean.getPeakThreadCount()));
-		thread.add(new Property(DEFAULT_PROPERTY_BLOCKED_COUNT, tinfo.getBlockedCount()));
-		thread.add(new Property(DEFAULT_PROPERTY_WAITED_COUNT, tinfo.getWaitedCount()));
+		thread.add(new Property(DEFAULT_PROPERTY_BLOCKED_COUNT, ownerThread.getBlockedCount()));
+		thread.add(new Property(DEFAULT_PROPERTY_WAITED_COUNT, ownerThread.getWaitedCount()));
 		if (contTimingSupported) {
-			thread.add(new Property(DEFAULT_PROPERTY_BLOCKED_TIME, tinfo.getBlockedTime() * 1000));
-			thread.add(new Property(DEFAULT_PROPERTY_WAITED_TIME, tinfo.getWaitedTime() * 1000));
+			thread.add(new Property(DEFAULT_PROPERTY_BLOCKED_TIME, ownerThread.getBlockedTime() * 1000));
+			thread.add(new Property(DEFAULT_PROPERTY_WAITED_TIME, ownerThread.getWaitedTime() * 1000));
 		}
 		this.add(thread);
 
