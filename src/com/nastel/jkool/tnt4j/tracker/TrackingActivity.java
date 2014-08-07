@@ -197,10 +197,10 @@ public class TrackingActivity extends Activity {
 	private void initActivity() {
 		if (startStopCount == 0) {
 			long start = System.nanoTime();
+			ownerThread = tmbean.getThreadInfo(Thread.currentThread().getId());
 			startStopCount++;
 			tracker.push(this);
 			if (enableTiming) {
-				ownerThread = tmbean.getThreadInfo(Thread.currentThread().getId());
 				startCPUTime = cpuTimingSupported ? tmbean.getThreadCpuTime(ownerThread.getThreadId()) : 0;
 				startBlockCount = ownerThread.getBlockedCount();
 				startWaitCount = ownerThread.getWaitedCount();
@@ -232,14 +232,14 @@ public class TrackingActivity extends Activity {
 	@Override
 	public void start() {
 		enableTiming = true;
-		super.start();
 		initActivity();
+		super.start();
 	}
 
 	@Override
 	public void start(long startTime, long startTimeUsec) {
-		super.start(startTime, startTimeUsec);
 		initActivity();
+		super.start(startTime, startTimeUsec);
 	}
 
 	/**
@@ -412,9 +412,8 @@ public class TrackingActivity extends Activity {
 		}
 		if (cpuTimingSupported) {
 			cpu.add(DEFAULT_PROPERTY_COUNT, ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors());
-			cpu.add(new Property(DEFAULT_PROPERTY_CPU_TIME, ((double) tmbean.getCurrentThreadCpuTime() / 1000.0d)));
-			cpu.add(new Property(DEFAULT_PROPERTY_TOTAL_USER_TIME, ((double) tmbean.getThreadUserTime(Thread
-			        .currentThread().getId()) / 1000.0d)));
+			cpu.add(new Property(DEFAULT_PROPERTY_CPU_TIME, ((double) tmbean.getThreadCpuTime(ownerThread.getThreadId()) / 1000.0d)));
+			cpu.add(new Property(DEFAULT_PROPERTY_TOTAL_USER_TIME, ((double) tmbean.getThreadUserTime(ownerThread.getThreadId()) / 1000.0d)));
 		}
 		this.add(cpu);
 
