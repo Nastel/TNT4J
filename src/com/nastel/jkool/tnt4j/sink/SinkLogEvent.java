@@ -93,16 +93,7 @@ public class SinkLogEvent extends EventObject {
 	    }    
 	    level = sev;
 	}
-	
-	/**
-	 * Return associated event sink with this event
-	 *
-	 * @return event sink handle associated with this event
-	 */
-	public EventSink getEventSink() {
-		return (EventSink) getSource();
-	}
-	
+		
 	/**
 	 * Return list of arguments supplied with the logging message
 	 *
