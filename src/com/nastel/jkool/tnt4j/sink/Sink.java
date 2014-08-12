@@ -42,7 +42,7 @@ public interface Sink extends Handle {
 	 * 
 	 * @param msg message to be written to the sink
 	 * @param args arguments associated with the message
-	 * @throws IOException
+	 * @throws IOException, InterruptedException
 	 */
-	public void write(Object msg, Object...args) throws IOException;
+	public void write(Object msg, Object...args) throws IOException, InterruptedException;
 }

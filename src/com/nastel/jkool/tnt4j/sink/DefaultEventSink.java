@@ -45,12 +45,22 @@ public abstract class DefaultEventSink implements EventSink {
 	protected ArrayList<SinkLogEventListener> logListeners = new ArrayList<SinkLogEventListener>(10);
 	protected ArrayList<SinkEventFilter> filters = new ArrayList<SinkEventFilter>(10);
 
+	private String name;
 	private AtomicLong loggedActivities = new AtomicLong(0);
 	private AtomicLong loggedEvents = new AtomicLong(0);
 	private AtomicLong loggedMsgs = new AtomicLong(0);
 	private AtomicLong errorCount = new AtomicLong(0);
 	private AtomicLong filteredCount = new AtomicLong(0);
 	
+	public DefaultEventSink(String nm) {
+		name = nm;
+	}
+	
+	@Override
+	public String getName() {
+		return name;
+	}
+
 	@Override
 	public Map<String, Object> getStats() {
 		HashMap<String, Object> stats = new HashMap<String, Object>();
