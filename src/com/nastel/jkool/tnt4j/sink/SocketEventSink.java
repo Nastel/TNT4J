@@ -51,14 +51,13 @@ public class SocketEventSink extends DefaultEventSink {
 	 * Create a socket event sink based on a given host, port and formatter.
 	 * Another sink can be associated with this sink where all events are routed.
 	 * 
-	 * @param name logical name assigned to this sink
 	 * @param host name where all messages are sent
 	 * @param port number where all messages are sent
 	 * @param frm event formatter associated with this sink
 	 * @param sink piped sink where all events are piped
+	 * 
 	 */
-	public SocketEventSink(String name, String host, int port, EventFormatter frm, EventSink sink) {
-		super(name);
+	public SocketEventSink(String host, int port, EventFormatter frm, EventSink sink) {
 		hostName = host;
 		portNo = port;
 		formatter = frm;

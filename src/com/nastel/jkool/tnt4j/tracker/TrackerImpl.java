@@ -226,8 +226,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		stats.put(KEY_TRACK_NOOP_COUNT, noopCount.get());
 		stats.put(KEY_ACTIVITIES_STARTED, pushCount.get());
 		stats.put(KEY_ACTIVITIES_STOPPED, popCount.get());
-		stats.put(KEY_TOTAL_OVERHEAD_NANOS, overheadNanos.get());
-		if (eventSink != null) eventSink.getStats(stats);
+		stats.put(KEY_TOTAL_OVERHEAD_USEC, overheadNanos.get()/1000);
 		return this;
 	}
 	
@@ -240,7 +239,6 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		popCount.set(0);
 		noopCount.set(0);
 		overheadNanos.set(0);
-		if (eventSink != null) eventSink.resetStats();
 	}
 
 	@Override

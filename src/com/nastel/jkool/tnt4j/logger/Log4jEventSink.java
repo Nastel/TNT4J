@@ -52,6 +52,7 @@ public class Log4jEventSink extends DefaultEventSink {
 
 	private static final String[] log4JStatusMap = { "INFO", "INFO", "INFO", "ERROR" };
 
+	private String logName;
 	private Logger logger = null;
 	private EventFormatter formatter = null;
 	
@@ -64,7 +65,7 @@ public class Log4jEventSink extends DefaultEventSink {
 	 *
 	 */
 	public Log4jEventSink(String name, Properties props, EventFormatter frmt) {
-		super(name);
+		logName = name;	
 		formatter = frmt;
 		open();
 	}
@@ -155,7 +156,7 @@ public class Log4jEventSink extends DefaultEventSink {
 	@Override
     public synchronized void open() {
 		if (logger == null) {
-			logger = Logger.getLogger(getName());	
+			logger = Logger.getLogger(logName);	
 		}
     }
 

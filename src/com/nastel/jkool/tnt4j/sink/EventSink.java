@@ -42,13 +42,6 @@ public interface EventSink extends Sink, KeyValueStats {
 	static final String KEY_FILTERED_COUNT = "filtered-count";
 
 	/**
-	 * Obtain name associated with this event sink instance
-	 *
-	 * @return name associated with the event sink instance
-	 */
-	String getName();
-	
-	/**
 	 * This method allows writing of <code>TrackingActivity</code> objects
 	 * to the underlying destination.
 	 * 
