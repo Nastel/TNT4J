@@ -7,7 +7,13 @@ No need to concatenate messages before logging. String concatenation is expensiv
 ```java
 logger.debug("My message {0}, {1}, {2}", arg1, arg2, arg3);
 ```
-
+TNT4J enhances logging performance by supporting asynchronous pooled logging, which delegates logging to a dedicated thread pool. Use `BufferedEventSinkFactory` in your `tnt4.properties` configuration to enable this feature. See example below: 
+```
+...
+event.sink.factory: com.nastel.jkool.tnt4j.sink.BufferedEventSinkFactory
+event.sink.factory.EventSinkFactory: com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory
+...
+```
 ### Simplicity & Clean Code
 No need to check for `isDebugEnabled()` before logging messages. Just register your own `SinkEventFilter` and consolidate all checking into a single listener.
 ```java	
