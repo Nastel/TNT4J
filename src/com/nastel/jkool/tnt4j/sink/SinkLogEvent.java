@@ -41,7 +41,7 @@ public class SinkLogEvent extends EventObject {
 	private Object logObj = null;
 	private Throwable error = null;
 	private OpLevel level = OpLevel.NONE;
-	private Object [] argList = null;
+	private Object[] argList = null;
 
 	/**
 	 * Create a new log event instance
@@ -52,12 +52,12 @@ public class SinkLogEvent extends EventObject {
 	 *            tracking event instance
 	 */
 	public SinkLogEvent(EventSink source, TrackingEvent msg) {
-	    super(source);
-	    logObj = msg;
-	    error = msg.getOperation().getThrowable();
-	    level = msg.getSeverity();
-   }
-	
+		super(source);
+		logObj = msg;
+		error = msg.getOperation().getThrowable();
+		level = msg.getSeverity();
+	}
+
 	/**
 	 * Create a new log event instance
 	 * 
@@ -67,13 +67,13 @@ public class SinkLogEvent extends EventObject {
 	 *            tracking activity instance
 	 */
 	public SinkLogEvent(EventSink source, TrackingActivity msg) {
-	    super(source);
-	    logObj = msg;
-	    error = msg.getThrowable();
-    }
-	
+		super(source);
+		logObj = msg;
+		error = msg.getThrowable();
+	}
+
 	/**
-	 * Create a new log event instance. 
+	 * Create a new log event instance.
 	 * 
 	 * @param source
 	 *            sink associated with the event
@@ -84,56 +84,64 @@ public class SinkLogEvent extends EventObject {
 	 * @param args
 	 *            argument list associated with the message
 	 */
-	public SinkLogEvent(EventSink source, OpLevel sev, String msg, Object...args) {
-	    super(source);
-	    logObj = msg;
-	    if (args != null && args.length > 0) {
-	    	argList = args;
-	    	error = Utils.getThrowable(args);
-	    }    
-	    level = sev;
+	public SinkLogEvent(EventSink source, OpLevel sev, String msg, Object... args) {
+		super(source);
+		logObj = msg;
+		if (args != null && args.length > 0) {
+			argList = args;
+			error = Utils.getThrowable(args);
+		}
+		level = sev;
 	}
-		
+
+	/**
+	 * Return associated event sink with this event
+	 * 
+	 * @return event sink handle associated with this event
+	 */
+	public EventSink getEventSink() {
+		return (EventSink) getSource();
+	}
+
 	/**
 	 * Return list of arguments supplied with the logging message
-	 *
+	 * 
 	 * @return array of objects
 	 */
-	public Object [] getArguments() {
+	public Object[] getArguments() {
 		return argList;
 	}
-	
+
 	/**
 	 * Return current severity level associated with this event
-	 *
+	 * 
 	 * @return severity level
 	 */
 	public OpLevel getSeverity() {
 		return level;
 	}
-	
+
 	/**
 	 * Return log exception
-	 *
+	 * 
 	 * @return severity level
 	 */
 	public Throwable getException() {
 		return error;
 	}
-	
+
 	/**
 	 * Return log object
-	 *
+	 * 
 	 * @return log object
 	 */
 	public Object getSinkObject() {
 		return logObj;
 	}
-	
+
 	@Override
 	public String toString() {
-		return super.toString() 
-			+ "{source: " + getSource() 
-			+ ", sev=" + level + ", log.obj=" + Utils.quote(logObj) + ", exception=" +  Utils.quote(error) + "}";
+		return super.toString() + "{source: " + getSource() + ", sev=" + level + ", log.obj=" + Utils.quote(logObj)
+		        + ", exception=" + Utils.quote(error) + "}";
 	}
 }

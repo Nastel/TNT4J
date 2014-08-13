@@ -37,13 +37,14 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  */
 public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
-	private EventSinkFactory sinkFactory;
-	private int sinkMaxCapacity = 1000;
+	private static PooledLogger pooledLogger = new PooledLogger(Integer.getInteger("tnt4j.pooled.logger.pool", 5),
+			Integer.getInteger("tnt4j.pooled.logger.capacity", 5000));
 	
+	private EventSinkFactory sinkFactory;
+		
 	/**
 	 * Create a default buffered sink factory 
 	 * 
-	 * @param sink out sink where events/log message are written out
 	 */
 	public BufferedEventSinkFactory() {
 	}
@@ -58,25 +59,32 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 		sinkFactory = factory;
 	}
 	
+	/**
+	 * Obtain an instance of pooled logger, which allows logging of events
+	 * asynchronously by a thread pool.
+	 * 
+	 */
+	public static PooledLogger getPooledLogger() {
+		return pooledLogger;
+	}
+	
 	@Override
 	public EventSink getEventSink(String name) {
-		return configureSink(new BufferedEventSink(sinkFactory.getEventSink(name), sinkMaxCapacity));
+		return configureSink(new BufferedEventSink(sinkFactory.getEventSink(name)));
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
-		return configureSink(new BufferedEventSink(sinkFactory.getEventSink(name, props), sinkMaxCapacity));
+		return configureSink(new BufferedEventSink(sinkFactory.getEventSink(name, props)));
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-		return configureSink(new BufferedEventSink(sinkFactory.getEventSink(name, props, frmt), sinkMaxCapacity));
+		return configureSink(new BufferedEventSink(sinkFactory.getEventSink(name, props, frmt)));
 	}
 
 	@Override
 	public void setConfiguration(Map<String, Object> props) throws ConfigurationException {
-		Object capacity = props.get("MaxCapacity");
-		sinkMaxCapacity = capacity != null? Integer.valueOf(capacity.toString()): sinkMaxCapacity;
 		sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory", "EventSinkFactory.", props);
 		super.setConfiguration(props);
 	}
