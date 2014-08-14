@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -169,4 +170,9 @@ public class BufferedEventSink implements EventSink {
 		dropCount.set(0);
 		outSink.resetStats();
 	}
+
+	@Override
+    public EventFormatter getEventFormatter() {
+	    return outSink.getEventFormatter();
+    }
 }

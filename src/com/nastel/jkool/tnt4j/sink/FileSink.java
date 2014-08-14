@@ -80,6 +80,15 @@ public class FileSink implements Sink {
 	}
 
 	/**
+	 * Obtain underlying print stream handle
+	 * 
+	 * @return print stream
+	 */
+    public PrintStream getPrintStream() {
+	    return printer;
+    }
+	
+	/**
 	 * Return the file name associated with this sink
 	 * 
 	 * @return return file name
@@ -90,7 +99,7 @@ public class FileSink implements Sink {
 	
 	@Override
     public Object getSinkHandle() {
-	    return file;
+	    return printer;
     }
 
 	@Override

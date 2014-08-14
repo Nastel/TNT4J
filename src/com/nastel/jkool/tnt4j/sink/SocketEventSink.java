@@ -23,6 +23,7 @@ import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
@@ -39,10 +40,9 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * @see EventSink
  * @see EventFormatter
  */
-public class SocketEventSink extends DefaultEventSink {
+public class SocketEventSink extends AbstractEventSink {
 	private Socket socketSink = null;
 	private DataOutputStream outStream = null;
-	private EventFormatter formatter = null;
 	private EventSink logSink = null;
 	private String hostName = "localhost";
 	private int portNo = 6400;
@@ -58,56 +58,40 @@ public class SocketEventSink extends DefaultEventSink {
 	 * @param sink piped sink where all events are piped
 	 */
 	public SocketEventSink(String name, String host, int port, EventFormatter frm, EventSink sink) {
-		super(name);
+		super(name, frm);
 		hostName = host;
 		portNo = port;
-		formatter = frm;
 		logSink = sink;
 	}
 
 	@Override
-	public void log(TrackingActivity activity) {
-		if (!filterEvent(activity)) return;
-		
+	protected void _log(TrackingActivity activity) throws IOException {
 		if (logSink != null) {
 			logSink.log(activity);
 		}
-		if (isOpen()) {
-			writeLine(formatter.format(activity));
-			super.log(activity);
-		}
+		writeLine(getEventFormatter().format(activity));
 	}
 
 	@Override
-	public void log(TrackingEvent event) {
-		if (!filterEvent(event)) return;
-		
+	protected void _log(TrackingEvent event) throws IOException {
 		if (logSink != null) {
 			logSink.log(event);
 		}
-		if (isOpen()) {
-			writeLine(formatter.format(event));
-			super.log(event);
-		}
+		writeLine(getEventFormatter().format(event));
 	}
 
 	@Override
-	public void log(OpLevel sev, String msg, Object...args) {
-		if (!filterEvent(sev, msg)) return;
-
+	protected void _log(OpLevel sev, String msg, Object...args)  throws IOException {
 		if (logSink != null) {
 			logSink.log(sev, msg, args);
 		}
-		if (isOpen()) {
-			writeLine(formatter.format(sev, msg, args));
-			super.log(sev, msg, args);
-		}
+		writeLine(getEventFormatter().format(sev, msg, args));
 	}
 
 	@Override
 	public void write(Object msg, Object...args) throws IOException {
 		if (isOpen()) {
-			writeLine(formatter.format(msg, args));
+			writeLine(getEventFormatter().format(msg, args));
 		}
 	}
 
@@ -134,9 +118,7 @@ public class SocketEventSink extends DefaultEventSink {
 	public synchronized void close() throws IOException {
 		try {
 			if (isOpen()) {
-				if (logSink != null) {
-					logSink.close();
-				}
+				Utils.close(logSink);
 				outStream.close();
 				socketSink.close();
 			}
@@ -152,24 +134,26 @@ public class SocketEventSink extends DefaultEventSink {
 			+ "{host: " + hostName 
 			+ ", port: " + portNo 
 			+ ", socket: " + socketSink 
-			+ ", formatter: " + formatter 
+			+ ", formatter: " + getEventFormatter() 
 			+ ", piped.sink: " + logSink 
 			+ "}";
 	}
 	
-	private void writeLine(String msg) {
-		try {
-			String lineMsg = msg.endsWith("\n")? msg: msg + "\n";
-			byte [] bytes = lineMsg.getBytes();
-			outStream.write(bytes, 0, bytes.length);
-			outStream.flush();
-		} catch (Throwable io) {
-			super.notifyListeners(msg, io);
-		} 
+	private void writeLine(String msg) throws IOException {
+		String lineMsg = msg.endsWith("\n")? msg: msg + "\n";
+		byte [] bytes = lineMsg.getBytes();
+		outStream.write(bytes, 0, bytes.length);
+		outStream.flush();
 	}
 
 	@Override
     public boolean isSet(OpLevel sev) {
 	    return logSink != null? logSink.isSet(sev): true;
+    }
+
+	@Override
+    protected void _checkState() throws IllegalStateException {
+		if (!isOpen())
+			throw new IllegalStateException("Sink closed");
     }
 }

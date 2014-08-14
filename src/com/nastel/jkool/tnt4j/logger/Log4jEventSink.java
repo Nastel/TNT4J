@@ -26,78 +26,71 @@ import com.nastel.jkool.tnt4j.core.ActivityStatus;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
-import com.nastel.jkool.tnt4j.sink.DefaultEventSink;
+import com.nastel.jkool.tnt4j.sink.AbstractEventSink;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
- * <p><code>EventSink</code> implementation that routes log messages to log4j. This implementation
- * is designed to log messages to log4j framework.</p>
- *
- *
+ * <p>
+ * <code>EventSink</code> implementation that routes log messages to log4j. This implementation is designed to log
+ * messages to log4j framework.
+ * </p>
+ * 
+ * 
  * @see TrackingEvent
  * @see EventFormatter
  * @see OpLevel
- *
+ * 
  * @version $Revision: 11 $
- *
+ * 
  */
-public class Log4jEventSink extends DefaultEventSink {
-	private static final String[] log4JSevMap = { 
-		"INFO", "TRACE", "DEBUG", 
-		"INFO", "INFO", "WARN", 
-		"ERROR", "FATAL", "FATAL",
-        "FATAL", "FATAL" };
+public class Log4jEventSink extends AbstractEventSink {
+	private static final String[] log4JSevMap = { "INFO", "TRACE", "DEBUG", "INFO", "INFO", "WARN", "ERROR", "FATAL",
+	        "FATAL", "FATAL", "FATAL" };
 
 	private static final String[] log4JStatusMap = { "INFO", "INFO", "INFO", "ERROR" };
 
 	private Logger logger = null;
-	private EventFormatter formatter = null;
-	
+
 	/**
 	 * Create a new log4j backed event sink
 	 * 
-	 * @param name log4j event category/application name
-	 * @param props java properties used by the event sink
-	 * @param frmt event formatter used to format event entries
-	 *
+	 * @param name
+	 *            log4j event category/application name
+	 * @param props
+	 *            java properties used by the event sink
+	 * @param frmt
+	 *            event formatter used to format event entries
+	 * 
 	 */
 	public Log4jEventSink(String name, Properties props, EventFormatter frmt) {
-		super(name);
-		formatter = frmt;
+		super(name, frmt);
 		open();
 	}
 
 	@Override
-    public void log(TrackingEvent event) {
-		if (logger == null) throw new IllegalStateException("Sink closed");
-		if (!filterEvent(event)) return;
-
-		Priority level = getL4JLevel(event);
-		if (logger.isEnabledFor(level)) {
-			logger.log(getL4JLevel(event), formatter.format(event), event.getOperation().getThrowable());
-			super.log(event);
-		}
-    }
+	protected void _log(TrackingEvent event) {
+		logger.log(getL4JLevel(event), getEventFormatter().format(event), event.getOperation().getThrowable());
+	}
 
 	@Override
-	public void log(TrackingActivity activity) {
-		if (logger == null) throw new IllegalStateException("Sink closed");
-		if (!filterEvent(activity)) return;
-
+	protected void _log(TrackingActivity activity) {
 		Priority level = getL4JLevel(activity.getSeverity());
-		if (logger.isEnabledFor(level)) {
-			Throwable ex = activity.getThrowable();
-			logger.log(level, formatter.format(activity), ex);
-			super.log(activity);
-		}
+		Throwable ex = activity.getThrowable();
+		logger.log(level, getEventFormatter().format(activity), ex);
 	}
-	
+
+	@Override
+	protected void _log(OpLevel sev, String msg, Object... args) {
+		logger.log(getL4JLevel(sev), getEventFormatter().format(sev, msg, args), Utils.getThrowable(args));
+	}
+
 	/**
 	 * Maps <code>TrackingEvent</code> severity to log4j Level.
-	 *
-	 * @param ev application tracking event
+	 * 
+	 * @param ev
+	 *            application tracking event
 	 * @see OpType
 	 */
 	public Level getL4JLevel(TrackingEvent ev) {
@@ -106,8 +99,9 @@ public class Log4jEventSink extends DefaultEventSink {
 
 	/**
 	 * Maps <code>ActivityStatus</code> severity to log4j Level.
-	 *
-	 * @param status application activity status
+	 * 
+	 * @param status
+	 *            application activity status
 	 * @see ActivityStatus
 	 */
 	public Level getL4JLevel(ActivityStatus status) {
@@ -116,8 +110,9 @@ public class Log4jEventSink extends DefaultEventSink {
 
 	/**
 	 * Maps <code>OpLevel</code> severity to log4j Level.
-	 *
-	 * @param sev severity level
+	 * 
+	 * @param sev
+	 *            severity level
 	 * @see OpType
 	 */
 	public Level getL4JLevel(OpLevel sev) {
@@ -125,46 +120,41 @@ public class Log4jEventSink extends DefaultEventSink {
 	}
 
 	@Override
-    public void log(OpLevel sev, String msg, Object...args) {
-		if (logger == null) throw new IllegalStateException("Sink closed");
-		if (!filterEvent(sev, msg, args)) return;
+	public Object getSinkHandle() {
+		return logger;
+	}
 
-		if (isSet(sev)) {
-			logger.log(getL4JLevel(sev), formatter.format(sev, msg, args), Utils.getThrowable(args));
-			super.log(sev, msg, args);
+	@Override
+	public boolean isOpen() {
+		return logger != null;
+	}
+
+	@Override
+	public void write(Object msg, Object... args) throws IOException {
+		if (logger == null)
+			throw new IllegalStateException("Sink closed");
+		logger.info(getEventFormatter().format(msg, args));
+	}
+
+	@Override
+	public synchronized void open() {
+		if (logger == null) {
+			logger = Logger.getLogger(getName());
 		}
 	}
 
+	@Override
+	public synchronized void close() throws IOException {
+	}
 
 	@Override
-    public Object getSinkHandle() {
-	    return logger;
-    }
-
-	@Override
-    public boolean isOpen() {
-	    return logger != null;
-    }
-
-	@Override
-    public void write(Object msg, Object...args) throws IOException {
-		if (logger == null) throw new IllegalStateException("Sink closed");
-		logger.info(formatter.format(msg, args));
-    }
-
-	@Override
-    public synchronized void open() {
-		if (logger == null) {
-			logger = Logger.getLogger(getName());	
-		}
-    }
-
-	@Override
-    public synchronized void close() throws IOException {
-    }
-
-	@Override
-    public boolean isSet(OpLevel sev) {
+	public boolean isSet(OpLevel sev) {
 		return logger.isEnabledFor(getL4JLevel(sev));
+	}
+
+	@Override
+	protected void _checkState() throws IllegalStateException {
+		if (logger == null)
+			throw new IllegalStateException("Sink closed");
 	}
 }

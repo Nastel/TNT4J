@@ -17,6 +17,7 @@ package com.nastel.jkool.tnt4j.sink;
 
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.KeyValueStats;
+import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -35,11 +36,11 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  *
  */
 public interface EventSink extends Sink, KeyValueStats {
-	static final String KEY_SINK_ERROR_COUNT = "sink-error-count";
-	static final String KEY_LOGGED_MSGS = "logged-messages";
-	static final String KEY_LOGGED_EVENTS = "logged-events";
-	static final String KEY_LOGGED_ACTIVITIES = "logged-activities";
-	static final String KEY_FILTERED_COUNT = "filtered-count";
+	static final String KEY_SINK_ERROR_COUNT = "sink-errors";
+	static final String KEY_LOGGED_MSGS = "sink-messages";
+	static final String KEY_LOGGED_EVENTS = "sink-events";
+	static final String KEY_LOGGED_ACTIVITIES = "sink-activities";
+	static final String KEY_SKIPPED_COUNT = "sink-skipped";
 
 	/**
 	 * Obtain name associated with this event sink instance
@@ -47,6 +48,13 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * @return name associated with the event sink instance
 	 */
 	String getName();
+	
+	/**
+	 * Obtain event formatter instance associated with this sink
+	 *
+	 * @return event formatter instance
+	 */
+	EventFormatter getEventFormatter();
 	
 	/**
 	 * This method allows writing of <code>TrackingActivity</code> objects

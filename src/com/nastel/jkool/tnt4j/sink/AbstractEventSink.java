@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -40,25 +41,36 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * @see SinkLogEvent
  * @see SinkLogEventListener
  */
-public abstract class DefaultEventSink implements EventSink {
+public abstract class AbstractEventSink implements EventSink {
 	protected ArrayList<SinkErrorListener> errorListeners = new ArrayList<SinkErrorListener>(10);
 	protected ArrayList<SinkLogEventListener> logListeners = new ArrayList<SinkLogEventListener>(10);
 	protected ArrayList<SinkEventFilter> filters = new ArrayList<SinkEventFilter>(10);
 
 	private String name;
+	private EventFormatter formatter;
 	private AtomicLong loggedActivities = new AtomicLong(0);
 	private AtomicLong loggedEvents = new AtomicLong(0);
 	private AtomicLong loggedMsgs = new AtomicLong(0);
 	private AtomicLong errorCount = new AtomicLong(0);
 	private AtomicLong filteredCount = new AtomicLong(0);
-	
-	public DefaultEventSink(String nm) {
+
+	public AbstractEventSink(String nm) {
 		name = nm;
 	}
-	
+
+	public AbstractEventSink(String nm, EventFormatter fmt) {
+		name = nm;
+		formatter = fmt;
+	}
+
 	@Override
 	public String getName() {
 		return name;
+	}
+
+	@Override
+	public EventFormatter getEventFormatter() {
+		return formatter;
 	}
 
 	@Override
@@ -67,17 +79,17 @@ public abstract class DefaultEventSink implements EventSink {
 		getStats(stats);
 		return stats;
 	}
-	
+
 	@Override
 	public KeyValueStats getStats(Map<String, Object> stats) {
 		stats.put(KEY_LOGGED_ACTIVITIES, loggedActivities.get());
 		stats.put(KEY_LOGGED_EVENTS, loggedEvents.get());
 		stats.put(KEY_SINK_ERROR_COUNT, errorCount.get());
 		stats.put(KEY_LOGGED_MSGS, loggedMsgs.get());
-		stats.put(KEY_FILTERED_COUNT, filteredCount.get());
+		stats.put(KEY_SKIPPED_COUNT, filteredCount.get());
 		return this;
 	}
-	
+
 	@Override
 	public void resetStats() {
 		loggedActivities.set(0);
@@ -86,7 +98,7 @@ public abstract class DefaultEventSink implements EventSink {
 		loggedMsgs.set(0);
 		filteredCount.set(0);
 	}
-	
+
 	/**
 	 * Register an event sink listener for notifications when logging events occur when writing to event sink.
 	 * 
@@ -178,8 +190,7 @@ public abstract class DefaultEventSink implements EventSink {
 	}
 
 	/**
-	 * Subclasses should use this helper class to filter out
-	 * unwanted log events before writing to the underlying sink
+	 * Subclasses should use this helper class to filter out unwanted log events before writing to the underlying sink
 	 * 
 	 * @param level
 	 *            severity level of the event message
@@ -187,13 +198,14 @@ public abstract class DefaultEventSink implements EventSink {
 	 *            event message
 	 * @param args
 	 *            argument list passed along with the message
-	 * @return true if event passed all filters, false otherwise           
+	 * @return true if event passed all filters, false otherwise
 	 * @see OpLevel
 	 */
-	protected boolean filterEvent(OpLevel level, String msg, Object...args) {
+	protected boolean filterEvent(OpLevel level, String msg, Object... args) {
 		boolean pass = true;
-		if (filters.size() == 0) return pass;
-		
+		if (filters.size() == 0)
+			return pass;
+
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, level, msg, args));
 			if (!pass) {
@@ -205,18 +217,18 @@ public abstract class DefaultEventSink implements EventSink {
 	}
 
 	/**
-	 * Subclasses should use this helper class to filter out
-	 * unwanted log events before writing to the underlying sink
+	 * Subclasses should use this helper class to filter out unwanted log events before writing to the underlying sink
 	 * 
 	 * @param activity
 	 *            to be checked with registered filters
-	 * @return true if tracking activity passed all filters, false otherwise           
+	 * @return true if tracking activity passed all filters, false otherwise
 	 * @see TrackingActivity
 	 */
 	protected boolean filterEvent(TrackingActivity activity) {
 		boolean pass = true;
-		if (filters.size() == 0) return pass;
-		
+		if (filters.size() == 0)
+			return pass;
+
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, activity));
 			if (!pass) {
@@ -226,21 +238,20 @@ public abstract class DefaultEventSink implements EventSink {
 		}
 		return pass;
 	}
-	
-	
+
 	/**
-	 * Subclasses should use this helper class to filter out
-	 * unwanted log events before writing to the underlying sink
+	 * Subclasses should use this helper class to filter out unwanted log events before writing to the underlying sink
 	 * 
 	 * @param event
 	 *            to be checked with registered filters
-	 * @return true if tracking event passed all filters, false otherwise           
+	 * @return true if tracking event passed all filters, false otherwise
 	 * @see TrackingEvent
 	 */
 	protected boolean filterEvent(TrackingEvent event) {
 		boolean pass = true;
-		if (filters.size() == 0) return pass;
-		
+		if (filters.size() == 0)
+			return pass;
+
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, event));
 			if (!pass) {
@@ -250,44 +261,111 @@ public abstract class DefaultEventSink implements EventSink {
 		}
 		return pass;
 	}
-	
-	
-	
+
 	@Override
-	public void addSinkEventFilter(SinkEventFilter filter){
+	public void addSinkEventFilter(SinkEventFilter filter) {
 		synchronized (filters) {
 			filters.add(filter);
-		}	
+		}
 	}
-	
+
 	@Override
-	public void removeSinkEventFilter(SinkEventFilter filter){
+	public void removeSinkEventFilter(SinkEventFilter filter) {
 		synchronized (filters) {
 			filters.remove(filter);
-		}		
+		}
 	}
 
 	@Override
 	public void log(TrackingActivity activity) {
-		loggedActivities.incrementAndGet();
-		if (logListeners.size() > 0) {
-			notifyListeners(new SinkLogEvent(this, activity));
+		_checkState();
+		if (!filterEvent(activity))
+			return;
+		if (isSet(activity.getSeverity())) {
+			try {
+				_log(activity);
+				loggedEvents.incrementAndGet();
+				if (logListeners.size() > 0) {
+					notifyListeners(new SinkLogEvent(this, activity));
+				}
+			} catch (Throwable ex) {
+				notifyListeners(activity, ex);
+			}
 		}
 	}
 
 	@Override
 	public void log(TrackingEvent event) {
-		loggedEvents.incrementAndGet();
-		if (logListeners.size() > 0) {
-			notifyListeners(new SinkLogEvent(this, event));
+		_checkState();
+		if (!filterEvent(event))
+			return;
+		if (isSet(event.getSeverity())) {
+			try {
+				_log(event);
+				loggedEvents.incrementAndGet();
+				if (logListeners.size() > 0) {
+					notifyListeners(new SinkLogEvent(this, event));
+				}
+			} catch (Throwable ex) {
+				notifyListeners(event, ex);
+			}
 		}
 	}
 
 	@Override
-	public void log(OpLevel sev, String msg, Object...args) {
-		loggedMsgs.incrementAndGet();
-		if (logListeners.size() > 0) {
-			notifyListeners(new SinkLogEvent(this, sev, msg, args));
+	public void log(OpLevel sev, String msg, Object... args) {
+		_checkState();
+		if (!filterEvent(sev, msg))
+			return;
+		if (isSet(sev)) {
+			try {
+				_log(sev, msg, args);
+				loggedMsgs.incrementAndGet();
+				if (logListeners.size() > 0) {
+					notifyListeners(new SinkLogEvent(this, sev, msg, args));
+				}
+			} catch (Throwable ex) {
+				notifyListeners(msg, ex);
+			}
 		}
 	}
+
+	/**
+	 * Override this method to check state of the sink before logging occurs. Throws <code>IllegalStateException</code>
+	 * if sink is in wrong state.
+	 * 
+	 * @throws IllegalStateException
+	 */
+	abstract protected void _checkState() throws IllegalStateException;
+
+	/**
+	 * Override this method to add actual implementation for all subclasses.
+	 * 
+	 * @param event
+	 *            to be sent to the sink
+	 * @see TrackingEvent
+	 */
+	abstract protected void _log(TrackingEvent event) throws Exception;
+
+	/**
+	 * Override this method to add actual implementation for all subclasses.
+	 * 
+	 * @param activity
+	 *            to be sent to the sink
+	 * @see TrackingActivity
+	 */
+	abstract protected void _log(TrackingActivity activity) throws Exception;;
+
+	/**
+	 * Override this method to add actual implementation for all subclasses.
+	 * 
+	 * @param sev
+	 *            message severity to log
+	 * @param msg
+	 *            string message to be logged
+	 * @param args
+	 *            arguments passed along the message
+	 * @see OpLevel
+	 */
+	abstract protected void _log(OpLevel sev, String msg, Object... args) throws Exception;;
 }

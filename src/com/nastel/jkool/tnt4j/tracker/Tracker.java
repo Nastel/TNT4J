@@ -48,13 +48,13 @@ import com.nastel.jkool.tnt4j.source.Source;
  *
  */
 public interface Tracker extends Handle, KeyValueStats {
-	static final String KEY_REPORTED_ACTIVITY_COUNT = "reported-activity-count";
-	static final String KEY_REPORTED_EVENT_COUNT = "reported-event-count";
-	static final String KEY_ACTIVITIES_STARTED = "started-activity-count";
-	static final String KEY_ACTIVITIES_STOPPED = "stopped-activity-count";
-	static final String KEY_TRACK_NOOP_COUNT = "track-noop-count";
-	static final String KEY_TRACK_ERROR_COUNT = "track-error-count";
-	static final String KEY_TOTAL_OVERHEAD_NANOS = "total-overhead-nanos";
+	static final String KEY_REPORTED_ACTIVITY_COUNT = "tracker-activity-count";
+	static final String KEY_REPORTED_EVENT_COUNT = "tracker-event-count";
+	static final String KEY_ACTIVITIES_STARTED = "tracker-started-activity-count";
+	static final String KEY_ACTIVITIES_STOPPED = "tracker-stopped-activity-count";
+	static final String KEY_TRACK_NOOP_COUNT = "tracker-track-noop-count";
+	static final String KEY_TRACK_ERROR_COUNT = "tracker-track-error-count";
+	static final String KEY_TOTAL_OVERHEAD_NANOS = "tracker-total-overhead-nanos";
 	
 	/**
 	 * Obtains current/active <code>Source</code> handle associated 
