@@ -43,6 +43,9 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 abstract public class AbstractEventSinkFactory implements EventSinkFactory, Configurable {
 	private SinkEventFilter eventFilter = null;
+	private SinkErrorListener errorListener = null;
+	private SinkLogEventListener eventListener = null;
+
 	protected Map<String, Object> config = null;
 
 	/**
@@ -63,6 +66,12 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 		if (eventFilter != null) {
 			sink.addSinkEventFilter(eventFilter);
 		}
+		if (errorListener != null) {
+			sink.addSinkErrorListener(errorListener);
+		}
+		if (eventListener != null) {
+			sink.addSinkLogEventListener(eventListener);
+		}
 		return sink;
 	}
 
@@ -75,5 +84,7 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	public void setConfiguration(Map<String, Object> props) throws ConfigurationException {
 		config = props;
 		eventFilter = (SinkEventFilter) Utils.createConfigurableObject("Filter", "Filter.", config);
+		errorListener = (SinkErrorListener) Utils.createConfigurableObject("ErrorListener", "ErrorListener.", config);
+		eventListener = (SinkLogEventListener) Utils.createConfigurableObject("EventListener", "EventListener.", config);
 	}
 }

@@ -70,7 +70,7 @@ public class PooledLogger implements KeyValueStats {
 	public PooledLogger(int threadPoolSize, int maxCapacity) {
 		poolSize = threadPoolSize;
 		capacity = maxCapacity;
-		threadPool = Executors.newFixedThreadPool(poolSize, new LoggingThreadFactory("PooledLogger/task-"));
+		threadPool = Executors.newFixedThreadPool(poolSize, new LoggingThreadFactory("PooledLogger(" + threadPoolSize + "," + capacity + ")/task-"));
 		eventQ = new ArrayBlockingQueue<SinkLogEvent>(capacity);
 		start();
 	}
