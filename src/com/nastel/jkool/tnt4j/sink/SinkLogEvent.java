@@ -141,7 +141,11 @@ public class SinkLogEvent extends EventObject {
 
 	@Override
 	public String toString() {
-		return super.toString() + "{source: " + getSource() + ", sev=" + level + ", log.obj=" + Utils.quote(logObj)
-		        + ", exception=" + Utils.quote(error) + "}";
+		return super.toString() 
+			+ "{source: " + getSource()
+			+ ", sev: " + level
+			+ ", log.obj: " + Utils.quote(logObj)
+		    + ", exception: " + Utils.quote(error)
+		    + "}";
 	}
 }
