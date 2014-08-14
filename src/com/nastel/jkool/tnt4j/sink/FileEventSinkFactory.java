@@ -44,12 +44,12 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 	
 	@Override
 	public EventSink getEventSink(String name) {
-		return configureSink(new FileEventSink(name, fileName, append, new SimpleFormatter()));
+		return configureSink(new FileEventSink(name, fileName, append, new SimpleFormatter("{0} | {1} | {2}")));
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
-		return configureSink(new FileEventSink(name, fileName, append, new SimpleFormatter()));
+		return configureSink(new FileEventSink(name, fileName, append, new SimpleFormatter("{0} | {1} | {2}")));
 	}
 
 	@Override

@@ -49,6 +49,44 @@ public class DefaultFormatter implements EventFormatter, Configurable   {
 
 	private Map<String, Object> config = null;
 	
+	/**
+	 * Create a default event formatter
+	 *
+	 */
+	public DefaultFormatter() {
+	}
+	
+	/**
+	 * Create a default event formatter
+	 *
+	 * @param format string (e.g. "{2} | {1} | {0}")
+	 */
+	public DefaultFormatter(String format) {
+		formatString = format;
+	}
+	
+	/**
+	 * Create a default event formatter
+	 *
+	 * @param format string (e.g. "{2} | {1} | {0}")
+	 * @param tz time zone
+	 */
+	public DefaultFormatter(String format, TimeZone tz) {
+		formatString = format;
+		timeZone = tz;
+	}
+	
+	/**
+	 * Create a default event formatter
+	 *
+	 * @param format string (e.g. "{2} | {1} | {0}")
+	 * @param tzid time zone id
+	 */
+	public DefaultFormatter(String format, String tzid) {
+		formatString = format;
+		timeZone = TimeZone.getTimeZone(tzid);;
+	}
+	
 	@Override
 	public String format(Object obj, Object...args) {
 		if (obj instanceof TrackingActivity) {

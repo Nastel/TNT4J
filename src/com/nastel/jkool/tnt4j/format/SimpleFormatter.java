@@ -16,6 +16,7 @@
 package com.nastel.jkool.tnt4j.format;
 
 import java.util.List;
+import java.util.TimeZone;
 
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
@@ -42,6 +43,33 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
 public class SimpleFormatter extends DefaultFormatter {
 		
+	/**
+	 * Create a simple event formatter with default setting.
+	 * Format: "{2} | {1} | {0}", TimeZone: UTC.
+	 *
+	 */
+	public SimpleFormatter() {
+	}
+	
+	/**
+	 * Create a simple event formatter instance with a given format
+	 *
+	 * @param format string (e.g. "{2} | {1} | {0}")
+	 */
+	public SimpleFormatter(String format) {
+		super(format);
+	}
+	
+	/**
+	 * Create a simple event formatter instance with a given format, timezone
+	 *
+	 * @param format string (e.g. "{2} | {1} | {0}")
+	 * @param tz time zone
+	 */
+	public SimpleFormatter(String format, TimeZone tz) {
+		super(format, tz);
+	}
+	
 	@Override
 	public String format(TrackingEvent event) {
 		StringBuffer msg = new StringBuffer(1024);
