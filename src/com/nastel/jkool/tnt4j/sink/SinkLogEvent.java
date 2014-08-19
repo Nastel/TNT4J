@@ -18,6 +18,7 @@ package com.nastel.jkool.tnt4j.sink;
 import java.util.EventObject;
 
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -39,6 +40,7 @@ public class SinkLogEvent extends EventObject {
 	private static final long serialVersionUID = 1L;
 
 	private Object logObj = null;
+	private Snapshot snapshot = null;
 	private Throwable error = null;
 	private OpLevel level = OpLevel.NONE;
 	private Object[] argList = null;
@@ -70,6 +72,21 @@ public class SinkLogEvent extends EventObject {
 		super(source);
 		logObj = msg;
 		error = msg.getThrowable();
+	}
+
+	/**
+	 * Create a new log event instance.
+	 * 
+	 * @param source
+	 *            sink associated with the event
+	 * @param snap
+	 *            a set of properties
+	 */
+	public SinkLogEvent(EventSink source, Snapshot snap) {
+		super(source);
+		level = snap.getSeverity();
+		logObj = snap;
+		snapshot = snap;
 	}
 
 	/**
@@ -137,6 +154,15 @@ public class SinkLogEvent extends EventObject {
 	 */
 	public Object getSinkObject() {
 		return logObj;
+	}
+
+	/**
+	 * Return log object
+	 * 
+	 * @return log object
+	 */
+	public Snapshot getSnapshot() {
+		return snapshot;
 	}
 
 	@Override

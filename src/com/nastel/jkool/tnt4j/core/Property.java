@@ -80,12 +80,7 @@ public class Property {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-
-		result = prime * result + key.length();
-
-		return result;
+		return key.hashCode();
 	}
 
 	/**

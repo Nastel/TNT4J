@@ -15,8 +15,9 @@
  */
 package com.nastel.jkool.tnt4j.sink;
 
-import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.KeyValueStats;
+import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -40,6 +41,7 @@ public interface EventSink extends Sink, KeyValueStats {
 	static final String KEY_LOGGED_MSGS = "sink-messages";
 	static final String KEY_LOGGED_EVENTS = "sink-events";
 	static final String KEY_LOGGED_ACTIVITIES = "sink-activities";
+	static final String KEY_LOGGED_SNAPSHOTS = "sink-snapshots";
 	static final String KEY_SKIPPED_COUNT = "sink-skipped";
 
 	/**
@@ -57,15 +59,6 @@ public interface EventSink extends Sink, KeyValueStats {
 	EventFormatter getEventFormatter();
 	
 	/**
-	 * This method allows writing of <code>TrackingActivity</code> objects
-	 * to the underlying destination.
-	 * 
-	 * @param activity to be sent to the sink
-	 * @see TrackingActivity
-	 */
-	public void log(TrackingActivity activity);
-
-	/**
 	 * Check of a certain log level is set/enabled
 	 * 
 	 * @param sev severity level
@@ -80,6 +73,24 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * @see TrackingEvent
 	 */
 	public void log(TrackingEvent event);
+
+	/**
+	 * This method allows writing of <code>TrackingActivity</code> objects
+	 * to the underlying destination.
+	 * 
+	 * @param activity to be sent to the sink
+	 * @see TrackingActivity
+	 */
+	public void log(TrackingActivity activity);
+
+	/**
+	 * This method allows writing of <code>Snapshot<Property></code> objects
+	 * to the underlying destination.
+	 * 
+	 * @param snapshot a set of properties
+	 * @see Snapshot
+	 */
+	public void log(Snapshot snapshot);
 
 	/**
 	 * Log a given string message with a specified severity

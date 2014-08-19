@@ -33,6 +33,8 @@ import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpCompCode;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
+import com.nastel.jkool.tnt4j.core.Property;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.dump.DefaultDumpSinkFactory;
 import com.nastel.jkool.tnt4j.dump.DumpCollection;
 import com.nastel.jkool.tnt4j.dump.DumpEvent;
@@ -742,6 +744,21 @@ public class TrackingLogger implements Tracker {
 
 
 	/**
+	 * Report a single snapshot.
+	 * 
+	 * @param snapshot
+	 *            snapshot to be tracked and logged
+	 * @see Snapshot
+	 * @see Property
+	 */
+	public void tnt(Snapshot snapshot) {
+		if (snapshot == null) return;
+		checkState();
+		logger.tnt(snapshot);
+	}
+
+
+	/**
 	 * Report a single tracking event
 	 *
 	 * @param severity
@@ -819,6 +836,18 @@ public class TrackingLogger implements Tracker {
 		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
 		logger.tnt(event);
 	}
+
+	@Override
+    public Snapshot newSnapshot(String cat, String name, OpLevel level) {
+		checkState();
+		return logger.newSnapshot(cat, name, level);
+    }
+
+	@Override
+    public Snapshot newSnapshot(String cat, String name, OpLevel level, OpType type) {
+		checkState();
+		return logger.newSnapshot(cat, name, level, type);
+    }
 
 	/**
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.

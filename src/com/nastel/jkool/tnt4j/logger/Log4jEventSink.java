@@ -25,6 +25,7 @@ import org.apache.log4j.Priority;
 import com.nastel.jkool.tnt4j.core.ActivityStatus;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.sink.AbstractEventSink;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
@@ -81,6 +82,11 @@ public class Log4jEventSink extends AbstractEventSink {
 		logger.log(level, getEventFormatter().format(activity), ex);
 	}
 
+	@Override
+    protected void _log(Snapshot snapshot) {
+		logger.log(getL4JLevel(snapshot.getSeverity()), getEventFormatter().format(snapshot));		
+	}
+	
 	@Override
 	protected void _log(OpLevel sev, String msg, Object... args) {
 		logger.log(getL4JLevel(sev), getEventFormatter().format(sev, msg, args), Utils.getThrowable(args));

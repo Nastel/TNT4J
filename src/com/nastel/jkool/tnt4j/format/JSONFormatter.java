@@ -21,8 +21,8 @@ import java.util.Map;
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Property;
-import com.nastel.jkool.tnt4j.core.PropertySnapshot;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -126,11 +126,11 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		START_JSON = newLineFormat ? START_LINE : START;
 		END_JSON = newLineFormat ? END_LINE : END;
 		ATTR_JSON = newLineFormat ? ATTR_END_LINE : ATTR_END;
-		ARRAY_START_JSON = newLineFormat ? ARRAY_START_LINE : ARRAY_START;		
+		ARRAY_START_JSON = newLineFormat ? ARRAY_START_LINE : ARRAY_START;
 	}
-	
+
 	@Override
-	public String format(Object obj, Object...args) {
+	public String format(Object obj, Object... args) {
 		if (obj instanceof TrackingActivity) {
 			return format((TrackingActivity) obj);
 		} else if (obj instanceof TrackingEvent) {
@@ -140,7 +140,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		} else {
 			StringBuilder jsonString = new StringBuilder(1024);
 			jsonString.append(START_JSON);
-			jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(Utils.format(obj.toString(), args)));
+			jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(
+			        Utils.quote(Utils.format(obj.toString(), args)));
 			jsonString.append(END_JSON);
 			return jsonString.toString();
 		}
@@ -220,8 +221,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 				        event.getOperation().getWaitTime()).append(ATTR_JSON);
 			}
 			if (event.getMessageAge() > 0) {
-				jsonString.append(Utils.quote(JSON_MSG_AGE_USEC_LABEL)).append(ATTR_SEP).append(
-				        event.getMessageAge()).append(ATTR_JSON);
+				jsonString.append(Utils.quote(JSON_MSG_AGE_USEC_LABEL)).append(ATTR_SEP).append(event.getMessageAge())
+				        .append(ATTR_JSON);
 			}
 		}
 
@@ -230,8 +231,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			        .append(ATTR_JSON);
 		}
 		jsonString.append(Utils.quote(JSON_MSG_SIZE_LABEL)).append(ATTR_SEP).append(event.getSize()).append(ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(
-		        Utils.quote(event.getMessage()));
+		jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getMessage()));
 
 		String exStr = event.getOperation().getExceptionString();
 		if (exStr != null) {
@@ -298,8 +298,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			jsonString.append(Utils.quote(JSON_LOCATION_LABEL)).append(ATTR_SEP).append(
 			        Utils.quote(activity.getLocation())).append(ATTR_JSON);
 		}
-		jsonString.append(Utils.quote(JSON_OPERATION_LABEL)).append(ATTR_SEP).append(Utils.quote(activity.getResolvedName()))
-		        .append(ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_OPERATION_LABEL)).append(ATTR_SEP).append(
+		        Utils.quote(activity.getResolvedName())).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_RESOURCE_LABEL)).append(ATTR_SEP)
 		        .append(Utils.quote(activity.getResource())).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_USER_LABEL)).append(ATTR_SEP).append(
@@ -331,7 +331,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		if (activity.getIdCount() > 0) {
 			jsonString.append(ATTR_JSON);
 			jsonString.append(Utils.quote(JSON_ID_SET_LABEL)).append(ATTR_SEP).append(ARRAY_START_JSON).append(
-			        itemsToJSON(activity.getIds())).append(ARRAY_END);			
+			        itemsToJSON(activity.getIds())).append(ARRAY_END);
 		}
 		if (activity.getSnapshotCount() > 0) {
 			jsonString.append(ATTR_JSON);
@@ -349,21 +349,53 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	 *            snapshot object to be formatted into JSON
 	 * @see Snapshot
 	 */
-	public String format(PropertySnapshot snap) {
+	public String format(Snapshot snap) {
 		StringBuilder jsonString = new StringBuilder(1024);
 		jsonString.append(START_JSON);
+
+		if (snap.getTrackingId() != null) {
+			jsonString.append(START_JSON).append(Utils.quote(JSON_TRACK_ID_LABEL)).append(ATTR_SEP).append(
+			        Utils.quote(snap.getTrackingId())).append(ATTR_JSON);
+		}
+		if (snap.getParentId() != null) {
+			jsonString.append(Utils.quote(JSON_PARENT_TRACK_ID_LABEL)).append(ATTR_SEP).append(
+			        Utils.quote(snap.getParentId())).append(ATTR_JSON);
+		}
+
 		if (snap.getCategory() != null) {
 			jsonString.append(Utils.quote(JSON_CATEGORY_LABEL)).append(ATTR_SEP)
 			        .append(Utils.quote(snap.getCategory())).append(ATTR_JSON);
 		}
 		jsonString.append(Utils.quote(JSON_NAME_LABEL)).append(ATTR_SEP).append(Utils.quote(snap.getName())).append(
 		        ATTR_JSON);
+		
 		jsonString.append(Utils.quote(JSON_COUNT_LABEL)).append(ATTR_SEP).append(snap.size()).append(ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_TIME_USEC_LABEL)).append(ATTR_SEP).append(snap.getTimeStamp().getTimeUsec());
+		jsonString.append(Utils.quote(JSON_TIME_USEC_LABEL)).append(ATTR_SEP).append(snap.getTimeStamp().getTimeUsec()).append(ATTR_JSON);
+
+		Source source = snap.getSource();
+		if (source != null) {
+			jsonString.append(Utils.quote(JSON_SOURCE_LABEL)).append(ATTR_SEP).append(Utils.quote(source.getName()))
+			        .append(ATTR_JSON);
+			jsonString.append(Utils.quote(JSON_SOURCE_FQN_LABEL)).append(ATTR_SEP).append(
+			        Utils.quote(source.getFQName())).append(ATTR_JSON);
+			jsonString.append(Utils.quote(JSON_SOURCE_INFO_LABEL)).append(ATTR_SEP).append(
+			        Utils.quote(source.getInfo())).append(ATTR_JSON);
+			if (snap.getSource().getUrl() != null) {
+				jsonString.append(Utils.quote(JSON_SOURCE_URL_LABEL)).append(ATTR_SEP).append(
+				        Utils.quote(source.getUrl())).append(ATTR_JSON);
+			}
+		}
+		jsonString.append(Utils.quote(JSON_SEVERITY_LABEL)).append(ATTR_SEP).append(Utils.quote(snap.getSeverity()))
+		        .append(ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_SEVERITY_NO_LABEL)).append(ATTR_SEP).append(snap.getSeverity().ordinal())
+		        .append(ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_TYPE_LABEL)).append(ATTR_SEP).append(Utils.quote(snap.getType())).append(
+		        ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_TYPE_NO_LABEL)).append(ATTR_SEP).append(snap.getType().ordinal());
 		if (snap.size() > 0) {
 			jsonString.append(ATTR_JSON);
 			jsonString.append(Utils.quote(JSON_PROPERTIES_LABEL)).append(ATTR_SEP).append(ARRAY_START_JSON).append(
-			        itemsToJSON(snap)).append(ARRAY_END);
+			        itemsToJSON(snap.getSnapshot())).append(ARRAY_END);
 		}
 		jsonString.append(END_JSON);
 		return jsonString.toString();
@@ -393,16 +425,16 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		return jsonString.toString();
 	}
 
-
 	@Override
-	public String format(OpLevel level, String msg, Object...args) {
+	public String format(OpLevel level, String msg, Object... args) {
 		StringBuilder jsonString = new StringBuilder(1024);
 		jsonString.append(START_JSON);
 		jsonString.append(Utils.quote(JSON_SEVERITY_LABEL)).append(ATTR_SEP).append(Utils.quote(level)).append(
 		        ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_SEVERITY_NO_LABEL)).append(ATTR_SEP).append(level.ordinal()).append(
 		        ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(Utils.format(msg, args)));
+		jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(
+		        Utils.quote(Utils.format(msg, args)));
 		Throwable ex = Utils.getThrowable(args);
 		if (ex != null) {
 			jsonString.append(ATTR_JSON);
@@ -423,8 +455,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 				json.append(format((TrackingEvent) item));
 			} else if (item instanceof TrackingActivity) {
 				json.append(format((TrackingActivity) item));
-			} else if (item instanceof PropertySnapshot) {
-				json.append(format((PropertySnapshot) item));
+			} else if (item instanceof Snapshot) {
+				json.append(format((Snapshot) item));
 			} else if (item instanceof Property) {
 				json.append(format((Property) item));
 			} else {

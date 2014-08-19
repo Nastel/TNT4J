@@ -19,6 +19,7 @@ import java.util.Map;
 
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.sink.EventSink;
 import com.nastel.jkool.tnt4j.sink.SinkEventFilter;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
@@ -104,6 +105,11 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 				return false;
 		}
 		return (activity.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(activity.getSeverity());
+	}
+
+	@Override
+	public boolean filter(EventSink sink, Snapshot snapshot) {
+		return (snapshot.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(snapshot.getSeverity());
 	}
 
 	@Override

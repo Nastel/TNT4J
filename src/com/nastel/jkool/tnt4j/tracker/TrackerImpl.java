@@ -27,6 +27,8 @@ import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Operation;
+import com.nastel.jkool.tnt4j.core.PropertySnapshot;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
 import com.nastel.jkool.tnt4j.sink.DefaultEventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.EventSink;
@@ -71,6 +73,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	private volatile boolean openFlag = false;
 	private AtomicLong activityCount = new AtomicLong(0); 
 	private AtomicLong eventCount = new AtomicLong(0); 
+	private AtomicLong msgCount = new AtomicLong(0); 
+	private AtomicLong snapCount = new AtomicLong(0); 
 	private AtomicLong errorCount = new AtomicLong(0); 
 	private AtomicLong pushCount = new AtomicLong(0); 
 	private AtomicLong popCount = new AtomicLong(0); 
@@ -137,6 +141,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			}
 		} finally {
 			eventSink.log(activity);	
+			snapCount.addAndGet(activity.getSnapshotCount());
 			activityCount.incrementAndGet();
 		}
 	}
@@ -220,13 +225,16 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public  KeyValueStats getStats(Map<String, Object> stats) {
-		stats.put(KEY_REPORTED_ACTIVITY_COUNT, activityCount.get());
-		stats.put(KEY_REPORTED_EVENT_COUNT, eventCount.get());
-		stats.put(KEY_TRACK_ERROR_COUNT, errorCount.get());
-		stats.put(KEY_TRACK_NOOP_COUNT, noopCount.get());
+		stats.put(KEY_ACTIVITY_COUNT, activityCount.get());
+		stats.put(KEY_EVENT_COUNT, eventCount.get());
+		stats.put(KEY_MSG_COUNT, msgCount.get());
+		stats.put(KEY_SNAPSHOT_COUNT, snapCount.get());
+		stats.put(KEY_ERROR_COUNT, errorCount.get());
+		stats.put(KEY_NOOP_COUNT, noopCount.get());
 		stats.put(KEY_ACTIVITIES_STARTED, pushCount.get());
 		stats.put(KEY_ACTIVITIES_STOPPED, popCount.get());
-		stats.put(KEY_TOTAL_OVERHEAD_NANOS, overheadNanos.get());
+		stats.put(KEY_STACK_DEPTH, getStackSize());
+		stats.put(KEY_OVERHEAD_NANOS, overheadNanos.get());
 		if (eventSink != null) eventSink.getStats(stats);
 		return this;
 	}
@@ -235,12 +243,16 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public void resetStats() {
 		activityCount.set(0);
 		eventCount.set(0);
+		msgCount.set(0);
+		snapCount.set(0);
 		errorCount.set(0);
 		pushCount.set(0);
 		popCount.set(0);
 		noopCount.set(0);
 		overheadNanos.set(0);
-		if (eventSink != null) eventSink.resetStats();
+		if (eventSink != null) {
+			eventSink.resetStats();
+		}
 	}
 
 	@Override
@@ -392,6 +404,17 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 
 	@Override
+    public void tnt(Snapshot snapshot) {
+		long start = System.nanoTime();
+		try {
+			eventSink.log(snapshot);
+			snapCount.incrementAndGet();
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
+		}
+    }
+
+	@Override
 	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object... args) {
 		long start = System.nanoTime();
 		try {
@@ -491,8 +514,24 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		long start = System.nanoTime();
 		try {
 			eventSink.log(sev, msg, args);
+			msgCount.incrementAndGet();
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
 		}
 	}
+
+	@Override
+    public Snapshot newSnapshot(String cat, String name, OpLevel level) {
+	    PropertySnapshot snapshot = new PropertySnapshot(cat, name, level);
+	    snapshot.setSource(getSource());
+	    return snapshot;
+    }
+
+	@Override
+    public Snapshot newSnapshot(String cat, String name, OpLevel level, OpType type) {
+	    PropertySnapshot snapshot = new PropertySnapshot(cat, name, level, type);
+	    snapshot.setSource(getSource());
+	    return snapshot;
+    }
+
 }

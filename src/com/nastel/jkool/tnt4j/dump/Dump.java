@@ -49,7 +49,7 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	 * @see DumpProvider
 	 */
 	public Dump(String name, DumpProvider prvd) {
-		this(name, prvd, null, 16);
+		this(name, prvd, null);
 	}
 
 	/**
@@ -60,13 +60,10 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	 *            of the generated dump
 	 * @param prvd
 	 *            dump provider that generates the dump
-	 * @param capacity
-	 *            initial capacity of this collection
-	 * 
 	 * @see DumpProvider
 	 */
-	public Dump(String name, DumpProvider prvd, Throwable rsn, int capacity) {
-		super(prvd.getCategoryName(), name, capacity);
+	public Dump(String name, DumpProvider prvd, Throwable rsn) {
+		super(prvd.getCategoryName(), name);
 		dProv = prvd;
 		reason = rsn;
 	}

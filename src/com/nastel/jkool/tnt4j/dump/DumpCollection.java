@@ -15,7 +15,6 @@
  */
 package com.nastel.jkool.tnt4j.dump;
 
-import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 
 
@@ -32,7 +31,7 @@ import com.nastel.jkool.tnt4j.core.Snapshot;
  * @see DumpProvider
  */
 
-public interface DumpCollection extends Snapshot<Property>{
+public interface DumpCollection extends Snapshot {
 
 	/**
 	 * Obtain <code>DumpProvider</code> instance associated with the dump.

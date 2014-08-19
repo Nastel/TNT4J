@@ -32,6 +32,7 @@ import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Operation;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.utils.TimeService;
 
 /**
@@ -172,12 +173,21 @@ public class TrackingActivity extends Activity {
 	}
 
 	/**
-	 * Track and Trace given <code>TrackingEvent</code> instance within current activity
+	 * Track and Trace given <code>TrackingEvent</code> instance correlated with current activity
 	 * 
 	 */
 	public void tnt(TrackingEvent event) {
 		add(event);
 		tracker.tnt(event);
+	}
+
+	/**
+	 * Track and Trace given <code>Snapshot</code> instance correlated with current activity
+	 * 
+	 */
+	public void tnt(Snapshot snapshot) {
+		add(snapshot);
+		tracker.tnt(snapshot);
 	}
 
 	/**
@@ -405,7 +415,7 @@ public class TrackingActivity extends Activity {
 	 */
 	protected void appendProperties() {
 		long start = System.nanoTime();
-		PropertySnapshot cpu = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_CPU);
+		PropertySnapshot cpu = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_CPU, getSeverity());
 		double load = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
 		if (load >= 0) {
 			cpu.add(new Property(DEFAULT_PROPERTY_LOAD_AVG, load));
@@ -417,7 +427,7 @@ public class TrackingActivity extends Activity {
 		}
 		this.add(cpu);
 
-		PropertySnapshot thread = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_THREAD);
+		PropertySnapshot thread = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_THREAD, getSeverity());
 		thread.add(new Property(DEFAULT_PROPERTY_COUNT, tmbean.getThreadCount()));
 		thread.add(new Property(DEFAULT_PROPERTY_DAEMON_COUNT, tmbean.getDaemonThreadCount()));
 		thread.add(new Property(DEFAULT_PROPERTY_STARTED_COUNT, tmbean.getTotalStartedThreadCount()));
@@ -430,7 +440,7 @@ public class TrackingActivity extends Activity {
 		}
 		this.add(thread);
 
-		PropertySnapshot mem = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_MEMORY);
+		PropertySnapshot mem = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_MEMORY, getSeverity());
 		long usedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		long memPct = (long) (((double) usedMem / (double) Runtime.getRuntime().totalMemory()) * 100.0d);
 		mem.add(new Property(DEFAULT_PROPERTY_MAX_BYTES, Runtime.getRuntime().maxMemory()));
@@ -442,7 +452,7 @@ public class TrackingActivity extends Activity {
 
 		List<GarbageCollectorMXBean> gcList = ManagementFactory.getGarbageCollectorMXBeans();
 		for (GarbageCollectorMXBean gc : gcList) {
-			PropertySnapshot gcSnap = new PropertySnapshot(SNAPSHOT_CATEGORY_GC, gc.getName());
+			PropertySnapshot gcSnap = new PropertySnapshot(SNAPSHOT_CATEGORY_GC, gc.getName(), getSeverity());
 			gcSnap.add(new Property(DEFAULT_PROPERTY_COUNT, gc.getCollectionCount()));
 			gcSnap.add(new Property(DEFAULT_PROPERTY_TIME, gc.getCollectionTime()));
 			gcSnap.add(new Property(DEFAULT_PROPERTY_VALID, gc.isValid()));
@@ -450,7 +460,7 @@ public class TrackingActivity extends Activity {
 		}
 
 		if (startCPUTime > 0) {
-			PropertySnapshot activity = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_ACTIVITY);
+			PropertySnapshot activity = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_ACTIVITY, getSeverity());
 			if (cpuTimingSupported) {
 				long cpuUsed = getUsedCpuTimeNanos();
 				double cpuUsec = ((double) cpuUsed / 1000.0d);

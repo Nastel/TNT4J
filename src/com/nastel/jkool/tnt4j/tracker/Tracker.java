@@ -17,9 +17,10 @@ package com.nastel.jkool.tnt4j.tracker;
 
 import com.nastel.jkool.tnt4j.config.TrackerConfig;
 import com.nastel.jkool.tnt4j.core.Activity;
+import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
-import com.nastel.jkool.tnt4j.core.KeyValueStats;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
 import com.nastel.jkool.tnt4j.sink.EventSink;
 import com.nastel.jkool.tnt4j.sink.Handle;
@@ -48,13 +49,16 @@ import com.nastel.jkool.tnt4j.source.Source;
  *
  */
 public interface Tracker extends Handle, KeyValueStats {
-	static final String KEY_REPORTED_ACTIVITY_COUNT = "tracker-activity-count";
-	static final String KEY_REPORTED_EVENT_COUNT = "tracker-event-count";
-	static final String KEY_ACTIVITIES_STARTED = "tracker-started-activity-count";
-	static final String KEY_ACTIVITIES_STOPPED = "tracker-stopped-activity-count";
-	static final String KEY_TRACK_NOOP_COUNT = "tracker-track-noop-count";
-	static final String KEY_TRACK_ERROR_COUNT = "tracker-track-error-count";
-	static final String KEY_TOTAL_OVERHEAD_NANOS = "tracker-total-overhead-nanos";
+	static final String KEY_ACTIVITY_COUNT = "tracker-activities";
+	static final String KEY_EVENT_COUNT = "tracker-events";
+	static final String KEY_MSG_COUNT = "tracker-msgs";
+	static final String KEY_SNAPSHOT_COUNT = "tracker-snapshots";
+	static final String KEY_ACTIVITIES_STARTED = "tracker-started-activities";
+	static final String KEY_ACTIVITIES_STOPPED = "tracker-stopped-activities";
+	static final String KEY_NOOP_COUNT = "tracker-track-noops";
+	static final String KEY_ERROR_COUNT = "tracker-track-errors";
+	static final String KEY_STACK_DEPTH = "tracker-track-stack-depth";
+	static final String KEY_OVERHEAD_NANOS = "tracker-total-overhead-nanos";
 	
 	/**
 	 * Obtains current/active <code>Source</code> handle associated 
@@ -95,8 +99,10 @@ public interface Tracker extends Handle, KeyValueStats {
 	/**
 	 * Obtains the top most active <code>TrackingActivity</code> instance
 	 * at the top of the stack, <code>NullActivity</code> if none is available.
+	 * Current activity is within the scope of the current thread.
 	 * 
-	 * @return current active tracking activity
+	 * @return current active tracking activity or <code>NullActivity</code> when no such activity exists.
+	 * @see NullActivity
 	 */
 	public TrackingActivity getCurrentActivity();
 
@@ -104,29 +110,31 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * Obtains the bottom most active <code>TrackingActivity</code> instance
 	 * at the bottom of the stack, <code>NullActivity</code> if none is available.
 	 * This represents the root (first) activity.
+	 * Root activity is within the scope of the current thread.
 	 * 
-	 * @return root tracking activity
+	 * @return root tracking activity or <code>NullActivity</code> when no such activity exists.
+	 * @see NullActivity
 	 */
 	public TrackingActivity getRootActivity();
 
 	/**
-	 * Obtains current stack trace based on nested activity execution.
+	 * Obtains current stack trace based on nested activity execution for the current thread.
 	 * 
 	 * @return stack trace of nested tracking activities
 	 */
 	public StackTraceElement[] getStackTrace();
 
 	/**
-	 * Obtains current stack of nested tracking activities
+	 * Obtains current stack of nested tracking activities for the current thread.
 	 * 
 	 * @return current stack of nested tracking activities
 	 */
 	public TrackingActivity[] getActivityStack();
 	
 	/**
-	 * Obtains current size of nested activity stack
+	 * Obtains current size of nested activity stack for the current thread.
 	 * 
-	 * @return current size of nested activity stack
+	 * @return current size of nested activity stack.
 	 */
 	public int getStackSize();
 	
@@ -177,6 +185,26 @@ public interface Tracker extends Handle, KeyValueStats {
 	public TrackingActivity newActivity(OpLevel level, String name, String signature);
 
 	/**
+	 * Create a new application snapshot via <code>Snapshot</code> object instance.
+	 * 
+	 * @return a new application metric snapshot
+	 * @see Snapshot
+	 */
+	public Snapshot newSnapshot(String cat, String name, OpLevel level);
+
+	/**
+	 * Create a new application snapshot via <code>Snapshot</code> object instance.
+	 * 
+	 * @param cat category name
+	 * @param name snapshot name
+	 * @param level activity severity level
+	 * @param type operation type
+	 * @return a new application metric snapshot
+	 * @see Snapshot
+	 */
+	public Snapshot newSnapshot(String cat, String name, OpLevel level, OpType type);
+
+	/**
 	 * Track and Trace a single application tracking activity
 	 * Activities of type <code>OpType.NOOP</code> are ignored.
 	 * 
@@ -195,6 +223,14 @@ public interface Tracker extends Handle, KeyValueStats {
 	 */
 	public void tnt(TrackingEvent event);
 	
+
+	/**
+	 * Log a given property snapshot with a given severity
+	 *
+	 * @param snapshot a set of properties
+	 * @see Snapshot
+	 */
+	public void tnt(Snapshot snapshot);
 
 	/**
 	 * Log a given string message with a specified severity

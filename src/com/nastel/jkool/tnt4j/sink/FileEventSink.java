@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -99,6 +100,13 @@ public class FileEventSink extends AbstractEventSink {
     protected void _log(TrackingActivity activity) throws IOException {
         fileSink.write(activity);
     }
+
+	@Override
+    protected void _log(Snapshot snapshot) {
+		PrintStream printer = fileSink.getPrintStream();
+		printer.println(getEventFormatter().format(snapshot));		
+		printer.flush();
+	}	
 
 	@Override
     protected void _log(OpLevel sev, String msg, Object... args) {

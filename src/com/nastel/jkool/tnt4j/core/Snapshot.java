@@ -25,13 +25,20 @@ import java.util.Collection;
  * @see UsecTimestamp
  * @version $Revision: 5 $
  */
-public interface Snapshot<E> {
+public interface Snapshot extends Trackable {
 	/**
 	 * Obtain a name of the snapshot
 	 * 
 	 * @return name of the snapshot.
 	 */
 	public String getName();
+
+	/**
+	 * Gets the current severity level to associated with the snapshot
+	 *
+	 * @return current severity level
+	 */
+	public OpLevel getSeverity();
 
 	/**
 	 * Obtain a snapshot category name
@@ -48,17 +55,29 @@ public interface Snapshot<E> {
 	public long getTime();
 
 	/**
+	 * Obtain the number of properties in the snapshot
+	 * 
+	 * @return property count
+	 */
+	public int size();
+
+	/**
 	 * Obtain a fully qualified time stamp object
 	 * 
 	 * @return time stamp object
 	 */
 	public UsecTimestamp getTimeStamp();
 	
-	
 	/**
 	 * Obtain a collection containing snapshot elements
 	 * 
 	 * @return collection containing snapshot elements
 	 */
-	public Collection<E> getSnapshot();
+	public Collection<Property> getSnapshot();
+
+	/**
+	 * Adds a property to the snapshot
+	 * 
+	 */
+	public void add(Property property);
 }

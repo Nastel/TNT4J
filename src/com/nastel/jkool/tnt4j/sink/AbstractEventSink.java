@@ -22,6 +22,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -51,6 +52,7 @@ public abstract class AbstractEventSink implements EventSink {
 	private AtomicLong loggedActivities = new AtomicLong(0);
 	private AtomicLong loggedEvents = new AtomicLong(0);
 	private AtomicLong loggedMsgs = new AtomicLong(0);
+	private AtomicLong loggedSnaps = new AtomicLong(0);
 	private AtomicLong errorCount = new AtomicLong(0);
 	private AtomicLong filteredCount = new AtomicLong(0);
 
@@ -84,6 +86,7 @@ public abstract class AbstractEventSink implements EventSink {
 	public KeyValueStats getStats(Map<String, Object> stats) {
 		stats.put(KEY_LOGGED_ACTIVITIES, loggedActivities.get());
 		stats.put(KEY_LOGGED_EVENTS, loggedEvents.get());
+		stats.put(KEY_LOGGED_SNAPSHOTS, loggedSnaps.get());
 		stats.put(KEY_SINK_ERROR_COUNT, errorCount.get());
 		stats.put(KEY_LOGGED_MSGS, loggedMsgs.get());
 		stats.put(KEY_SKIPPED_COUNT, filteredCount.get());
@@ -219,6 +222,29 @@ public abstract class AbstractEventSink implements EventSink {
 	/**
 	 * Subclasses should use this helper class to filter out unwanted log events before writing to the underlying sink
 	 * 
+	 * @param snapshot
+	 *            snapshot
+	 * @return true if event passed all filters, false otherwise
+	 * @see OpLevel
+	 */
+	protected boolean filterEvent(Snapshot snapshot) {
+		boolean pass = true;
+		if (filters.size() == 0)
+			return pass;
+
+		for (SinkEventFilter filter : filters) {
+			pass = (pass && filter.filter(this, snapshot));
+			if (!pass) {
+				filteredCount.incrementAndGet();
+				break;
+			}
+		}
+		return pass;
+	}
+
+	/**
+	 * Subclasses should use this helper class to filter out unwanted log events before writing to the underlying sink
+	 * 
 	 * @param activity
 	 *            to be checked with registered filters
 	 * @return true if tracking activity passed all filters, false otherwise
@@ -313,6 +339,24 @@ public abstract class AbstractEventSink implements EventSink {
 	}
 
 	@Override
+	public void log(Snapshot snapshot) {
+		_checkState();
+		if (!filterEvent(snapshot))
+			return;
+		if (isSet(snapshot.getSeverity())) {
+			try {
+				_log(snapshot);
+				loggedSnaps.incrementAndGet();
+				if (logListeners.size() > 0) {
+					notifyListeners(new SinkLogEvent(this, snapshot));
+				}
+			} catch (Throwable ex) {
+				notifyListeners(snapshot, ex);
+			}
+		}
+	}
+	
+	@Override
 	public void log(OpLevel sev, String msg, Object... args) {
 		_checkState();
 		if (!filterEvent(sev, msg))
@@ -355,6 +399,15 @@ public abstract class AbstractEventSink implements EventSink {
 	 * @see TrackingActivity
 	 */
 	abstract protected void _log(TrackingActivity activity) throws Exception;;
+
+	/**
+	 * Override this method to add actual implementation for all subclasses.
+	 * 
+	 * @param snapshot
+	 *            string message to be logged
+	 * @see OpLevel
+	 */
+	abstract protected void _log(Snapshot snapshot) throws Exception;
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.

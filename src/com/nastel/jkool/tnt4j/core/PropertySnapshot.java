@@ -15,8 +15,10 @@
  */
 package com.nastel.jkool.tnt4j.core;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
+
+import com.nastel.jkool.tnt4j.source.Source;
 
 /**
  * This class defines a snapshot/collection of <code>Property</code> instances. A collection of name, value pairs with
@@ -26,11 +28,19 @@ import java.util.Collection;
  * @see UsecTimestamp
  * @version $Revision: 8 $
  */
-public class PropertySnapshot extends ArrayList<Property> implements Snapshot<Property> {
+public class PropertySnapshot  implements Snapshot {
 	private static final long serialVersionUID = 1L;
 
-	private String category = null, snapName = null;
+	private OpLevel level;
+	private OpType opType = OpType.INQUIRE;
+	private String category = null;
+	private String snapName = null;
+	private String correlator;
+	private String tracking_id;
+	private String parent_id;
 	private UsecTimestamp timeStamp = null;
+	private Source source;
+	private HashSet<Property> propSet = new HashSet<Property>();
 
 	/**
 	 * Constructs a Property snapshot with the specified name and current time stamp.
@@ -39,7 +49,7 @@ public class PropertySnapshot extends ArrayList<Property> implements Snapshot<Pr
 	 *            snapshot name
 	 */
 	public PropertySnapshot(String name) {
-		this(null, name, 16);
+		this(null, name);
 	}
 
 	/**
@@ -51,21 +61,33 @@ public class PropertySnapshot extends ArrayList<Property> implements Snapshot<Pr
 	 *            snapshot name
 	 */
 	public PropertySnapshot(String cat, String name) {
-		this(cat, name, 16);
+		this(cat, name, new UsecTimestamp(), OpLevel.INFO, OpType.INQUIRE);
 	}
 
 	/**
-	 * Constructs a Property snapshot with the specified name, current time stamp and a given capacity.
+	 * Constructs a Property snapshot with the specified name and current time stamp.
 	 * 
 	 * @param cat
 	 *            snapshot category name
 	 * @param name
 	 *            snapshot name
-	 * @param capacity
-	 *            initial capacity
+	 * @param lvl severity level
 	 */
-	public PropertySnapshot(String cat, String name, int capacity) {
-		this(cat, name, new UsecTimestamp(), 16);
+	public PropertySnapshot(String cat, String name, OpLevel lvl) {
+		this(cat, name, lvl, OpType.INQUIRE);
+	}
+
+	/**
+	 * Constructs a Property snapshot with the specified name and current time stamp.
+	 * 
+	 * @param cat
+	 *            snapshot category name
+	 * @param name
+	 *            snapshot name
+	 * @param lvl severity level
+	 */
+	public PropertySnapshot(String cat, String name, OpLevel lvl, OpType type) {
+		this(cat, name, new UsecTimestamp(), lvl, type);
 	}
 
 	/**
@@ -75,16 +97,36 @@ public class PropertySnapshot extends ArrayList<Property> implements Snapshot<Pr
 	 *            snapshot category name
 	 * @param name
 	 *            snapshot name
-	 * @param capacity
-	 *            initial capacity
 	 * @param time
 	 *            time stamp associated with the snapshot
+	 * @param capacity
+	 *            initial capacity
+	 * @param lvl severity level
 	 */
-	public PropertySnapshot(String cat, String name, UsecTimestamp time, int capacity) {
-		super(capacity);
+	public PropertySnapshot(String cat, String name, UsecTimestamp time, OpLevel lvl, OpType type) {
 		category = cat;
 		snapName = name;
 		timeStamp = time;
+		level = lvl;
+		opType = type;
+	}
+
+	/**
+	 * Gets the current severity level to associated with snapshot.
+	 *
+	 * @return current severity level
+	 */
+	public OpLevel getSeverity() {
+		return level;
+	}
+
+	/**
+	 * Sets the current severity level to associated with snapshot
+	 *
+	 * @param lvl operation severity level
+	 */
+	public void setSeverity(OpLevel lvl) {
+		level = lvl;
 	}
 
 	/**
@@ -115,6 +157,15 @@ public class PropertySnapshot extends ArrayList<Property> implements Snapshot<Pr
 		return this;
 	}
 
+	/**
+	 * Set current/active <code>Source</code> with the current activity
+	 *
+	 * @see Source
+	 */
+	public void setSource(Source src) {
+		source = src;
+	}
+
 	@Override
 	public String getName() {
 		return snapName;
@@ -136,7 +187,7 @@ public class PropertySnapshot extends ArrayList<Property> implements Snapshot<Pr
 		str.append(this.getClass().getSimpleName()).append("{Category: " + category
 				+ ", Name: " + snapName).append(", TimeStamp: ").append(timeStamp).append(
 		        ", Count: " + this.size()).append(", List: [");
-		for (Property item : this) {
+		for (Property item : propSet) {
 			str.append(item);
 		}
 		str.append("]}");
@@ -145,11 +196,61 @@ public class PropertySnapshot extends ArrayList<Property> implements Snapshot<Pr
 
 	@Override
 	public Collection<Property> getSnapshot() {
-		return this;
+		return propSet;
 	}
 
 	@Override
     public String getCategory() {
 	    return category;
+    }
+
+	@Override
+    public String getCorrelator() {
+	    return correlator;
+    }
+
+	@Override
+    public String getParentId() {
+	    return parent_id;
+    }
+
+	@Override
+    public Source getSource() {
+	    return source;
+    }
+
+	@Override
+    public String getTrackingId() {
+	    return tracking_id;
+    }
+
+	@Override
+    public OpType getType() {
+	    return opType;
+    }
+
+	@Override
+    public void setCorrelator(String cid) {
+		correlator = cid;
+	}
+
+	@Override
+    public void setParentId(Trackable parentObject) {
+		parent_id = parentObject != null? parentObject.getTrackingId(): parent_id;
+	}
+
+	@Override
+    public void setTrackingId(String signature) {
+		tracking_id = signature;
+	}
+
+	@Override
+    public void add(Property property) {
+		propSet.add(property);
+	}
+
+	@Override
+    public int size() {
+		return propSet.size();
     }
 }

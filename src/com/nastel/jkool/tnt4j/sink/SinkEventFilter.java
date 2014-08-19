@@ -16,6 +16,7 @@
 package com.nastel.jkool.tnt4j.sink;
 
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -59,6 +60,18 @@ public interface SinkEventFilter {
 	 * @see TrackingActivity
 	 */
 	public boolean filter(EventSink sink, TrackingActivity activity);
+
+	/**
+	 * Returns true if a given logging event passes the filter, false otherwise
+	 * 
+	 * @param sink
+	 *            event sink where filter request is coming from
+	 * @param snapshot
+	 *            a set of properties
+	 * @return true if event passed all filters, false otherwise
+	 * @see EventSink
+	 */
+	public boolean filter(EventSink sink, Snapshot snapshot);
 
 	/**
 	 * Returns true if a given logging event passes the filter, false otherwise

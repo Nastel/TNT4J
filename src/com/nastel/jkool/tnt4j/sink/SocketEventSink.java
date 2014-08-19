@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.net.Socket;
 
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -80,6 +81,14 @@ public class SocketEventSink extends AbstractEventSink {
 		writeLine(getEventFormatter().format(event));
 	}
 
+	@Override
+    protected void _log(Snapshot snapshot) throws IOException {
+		if (logSink != null) {
+			logSink.log(snapshot);
+		}
+		writeLine(getEventFormatter().format(snapshot));		
+	}
+	
 	@Override
 	protected void _log(OpLevel sev, String msg, Object...args)  throws IOException {
 		if (logSink != null) {

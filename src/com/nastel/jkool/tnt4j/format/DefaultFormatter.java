@@ -21,6 +21,7 @@ import java.util.TimeZone;
 
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -87,7 +88,7 @@ public class DefaultFormatter implements EventFormatter, Configurable   {
 		timeZone = TimeZone.getTimeZone(tzid);;
 	}
 	
-	@Override
+    @Override
 	public String format(Object obj, Object...args) {
 		if (obj instanceof TrackingActivity) {
 			return format((TrackingActivity) obj);
@@ -108,6 +109,11 @@ public class DefaultFormatter implements EventFormatter, Configurable   {
 		return activity.getStatus() + separator + activity + separator + activity.getSource();
 	}
 
+	@Override
+    public String format(Snapshot snapshot) {
+		return format(snapshot.getSeverity(), snapshot.toString());
+    }
+	
 	@Override
     public String format(OpLevel level, String msg, Object...args) {
 		return Utils.format(formatString, UsecTimestamp.getTimeStamp(timeZone), level, Utils.format(msg, args));

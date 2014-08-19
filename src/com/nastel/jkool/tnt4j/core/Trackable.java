@@ -30,6 +30,14 @@ import com.nastel.jkool.tnt4j.source.Source;
 public interface Trackable {
 		
 	/**
+	 * Set current/active <code>Source</code> with the trackable entity
+	 *
+	 * @param src application source handle
+	 * @see Source
+	 */
+	public void setSource(Source src);
+	
+	/**
 	 * Obtains current/active <code>Source</code> handle associated
 	 * with the current trackable objects
 	 *

@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -110,6 +111,12 @@ public class BufferedEventSink implements EventSink {
 		if (!flag) dropCount.incrementAndGet();
     }
 
+	@Override
+    public void log(Snapshot props) {
+		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, props));
+		if (!flag) dropCount.incrementAndGet();
+    }
+	
 	@Override
     public void log(OpLevel sev, String msg, Object... args) {
 		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, sev, msg, args));

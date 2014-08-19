@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 import com.nastel.jkool.tnt4j.core.Property;
-import com.nastel.jkool.tnt4j.core.PropertySnapshot;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -147,16 +147,46 @@ public class SimpleFormatter extends DefaultFormatter {
 		}
 		msg.append("track-id: '").append(activity.getTrackingId()).append("'");
 		if (activity.getSnapshotCount() > 0) {
-			List<PropertySnapshot> snapshots = activity.getSnapshots();
-			for (PropertySnapshot snap : snapshots) {
-				msg.append("\n\tSnapshot(").append(snap.getName()).append("@").append(snap.getCategory()).append(") {");
-				for (Property prop : snap) {
-					msg.append("\n\t\t").append(prop.getKey()).append(": ").append(prop.getValue());
-				}
-				msg.append("\n\t}");
+			List<Snapshot> snapshots = activity.getSnapshots();
+			for (Snapshot snap : snapshots) {
+				format(msg, snap);
 			}
 		}
 		msg.append("}");
 		return msg.toString();
-	}		
+	}
+	
+	@Override
+	public String format(Snapshot snap) {
+		StringBuilder msg = new StringBuilder(1024);
+		return format(msg, snap).toString();
+	}
+	
+	protected StringBuffer format(StringBuffer msg, Snapshot snap) {
+		msg.append("\n\tSnapshot(name:").append(snap.getName()).append("@").append(snap.getCategory());
+		msg.append(",level:" + snap.getSeverity());
+		msg.append(",type:" + snap.getType());
+		msg.append(",time:" + snap.getTimeStamp());
+		if (snap.getSource() != null) {
+			msg.append(",source:" + snap.getSource().getFQName());
+		}
+		String cid = snap.getCorrelator();
+		String pid = snap.getParentId();
+		String tid = snap.getTrackingId();
+		if (pid != null) {
+			msg.append(",parent-id:").append(pid);
+		}
+		if (tid != null) {
+			msg.append(",track-id:").append(tid);
+		}
+		if (cid != null) {
+			msg.append(",corr-id:").append(cid);
+		}
+		msg.append(") {");
+		for (Property prop : snap.getSnapshot()) {
+			msg.append("\n\t\t").append(prop.getKey()).append(": ").append(prop.getValue());
+		}
+		msg.append("\n\t}");	
+		return msg;
+	}
 }

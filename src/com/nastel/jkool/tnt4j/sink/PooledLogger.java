@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.nastel.jkool.tnt4j.core.KeyValueStats;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -216,7 +217,7 @@ class LoggingTask implements Runnable {
 		eventQ = eq;
     }
 
-	@Override
+    @Override
     public void run() {
 		try {
 			while (true) {
@@ -228,6 +229,8 @@ class LoggingTask implements Runnable {
 					outSink.log((TrackingEvent)sinkO);
 				} else if (sinkO instanceof TrackingActivity) {
 					outSink.log((TrackingActivity)sinkO);
+				}  else if (sinkO instanceof Snapshot) {
+					outSink.log(event.getSnapshot());
 				} else {
 					outSink.log(event.getSeverity(), String.valueOf(sinkO), event.getArguments());
 				}

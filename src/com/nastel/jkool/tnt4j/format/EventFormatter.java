@@ -16,6 +16,7 @@
 package com.nastel.jkool.tnt4j.format;
 
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -47,6 +48,15 @@ public interface EventFormatter extends Formatter {
 	 * @see TrackingActivity
 	 */
 	public String format(TrackingActivity activity);
+
+	/**
+	 * Format a given <code>PropertySnapshot</code> and return a string
+	 * 
+	 * @param snapshot
+	 *            snapshot object to be formatted
+	 * @see Snapshot
+	 */
+	public String format(Snapshot snapshot);
 
 	/**
 	 * Format a given message and severity level combo

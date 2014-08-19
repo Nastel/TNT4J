@@ -409,4 +409,9 @@ public class TrackingEvent extends Message implements Trackable {
     public OpType getType() {
 	    return operation.getType();
     }
+
+	@Override
+    public void setSource(Source src) {
+		source = src;
+	}
 }

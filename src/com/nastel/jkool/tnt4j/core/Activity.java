@@ -50,7 +50,7 @@ public class Activity extends Operation implements Trackable {
 	private ActivityStatus status = ActivityStatus.BEGIN;
 
 	private HashSet<String> correlators = new HashSet<String>(89);
-	private ArrayList<PropertySnapshot> snapshots =  new ArrayList<PropertySnapshot>(32);
+	private ArrayList<Snapshot> snapshots =  new ArrayList<Snapshot>(32);
 	private ArrayList<ActivityListener> activityListeners = null;
 
 	/**
@@ -194,11 +194,7 @@ public class Activity extends Operation implements Trackable {
 		notifyStopped();
 	}
 
-	/**
-	 * Set current/active <code>Source</code> with the current activity
-	 *
-	 * @see Source
-	 */
+	@Override
 	public void setSource(Source source) {
 		appl = source;
 	}
@@ -260,7 +256,7 @@ public class Activity extends Operation implements Trackable {
 	 */
 	@Override
 	public void setParentId(Trackable parentObject) {
-		this.parentId = parentObject.getTrackingId();
+		this.parentId = parentObject != null? parentObject.getTrackingId(): parentId;
 	}
 
 	/**
@@ -282,11 +278,18 @@ public class Activity extends Operation implements Trackable {
 	public void add(Trackable item) {
 		if (item == null)
 			throw new NullPointerException("msg must be non-null");
-
-		correlators.add(item.getTrackingId());
+		
+		String tid = item.getTrackingId();
+		if (tid != null) {
+			correlators.add(tid);
+		}
+		
 		String cid = item.getCorrelator();
 		if (cid != null) {
 			correlators.add(cid);
+		}
+		if (item instanceof Snapshot) {
+			snapshots.add((Snapshot)item);
 		}
 		item.setParentId(this);
 	}
@@ -324,51 +327,11 @@ public class Activity extends Operation implements Trackable {
 	}
 
 	/**
-	 * Adds the specified snapshot to the list of snapshots for this Activity.
-	 * This method does NOT check for duplicates.
-	 *
-	 * @param snapshot Activity snapshot
-	 * @throws NullPointerException if snapshot is <code>null</code>
-	 * @see #contains(PropertySnapshot)
-	 */
-	public void add(PropertySnapshot snapshot) {
-		if (snapshot == null)
-			throw new NullPointerException("snapshot must be non-null");
-		snapshots.add(snapshot);
-	}
-
-	/**
-	 * Checks whether the specified snapshot has been added to the list of
-	 * snapshots for this Activity.
-	 *
-	 * @param snapshot snapshot to test for
-	 * @return <code>true</code> if the Activity contains specified snapshot,
-	 *         <code>false</code> otherwise
-	 */
-	public boolean contains(PropertySnapshot snapshot) {
-		if (snapshot == null || snapshots == null)
-			return false;
-
-		return snapshots.contains(snapshot);
-	}
-
-	/**
-	 * Removes the specified snapshot from the list of snapshots for this Activity.
-	 *
-	 * @param snapshot snapshot to remove
-	 */
-	public void remove(PropertySnapshot snapshot) {
-		if (snapshots != null && snapshot != null) {
-			snapshots.remove(snapshot);
-		}
-	}
-
-	/**
 	 * Gets the list of snapshots for this Activity.
 	 *
 	 * @return list of Activity snapshots
 	 */
-	public List<PropertySnapshot> getSnapshots() {
+	public List<Snapshot> getSnapshots() {
 		return snapshots;
 	}
 
