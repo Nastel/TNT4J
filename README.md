@@ -72,17 +72,28 @@ TrackingLogger.dumpState();
 
 ### Measurements & Metrics
 TNT4J is not just about logging messages, it is also about measurements and metrics. Metrics such as elpased time, CPU, memory, block/wait times as well as user defined metrics. TNT4J allows you to answer the state of CPU, memory, user defined metrics at the time of the logged event.
+Below is an example of reporting a snapshot (collection of metrics) which are related to a given activity:
 ```java
 // post processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
 TrackingActivity activity = logger.newActivity(OpLevel.INFO, "MyActivity");
 ...
-PropertySnapshot snapshot = new PropertySnapshot("Metrics", "MyMetricGroup");
+PropertySnapshot snapshot = logger.newSnapshot("MyCategory", "MySnapshot");
 snapshot.add("metric1", myMetric1);
 snapshot.add("metric2", myMetric2);
-activity.add(snapshot); // add property snapshot to activity
+activity.tnt(snapshot); // add and report property snapshot associated with this activity
 ```
-
+Below is an example of reporting standalone snapshot:
+```java
+// post processing of activity: enrich activity with application metrics
+TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
+TrackingActivity activity = logger.newActivity(OpLevel.INFO, "MyActivity");
+...
+PropertySnapshot snapshot = logger.newSnapshot("MyCategory", "MySnapshot");
+snapshot.add("metric1", myMetric1);
+snapshot.add("metric2", myMetric2);
+logger.tnt(snapshot); // report a property snapshot
+```
 ### Correlation & Topology
 Relate event message together by grouping or passing context (correlator). Most if not all logging frameworks completely miss the correlation angle. TNT4J allows attachement of correlators when reporting tracking events see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same paradigm.
 
