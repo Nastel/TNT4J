@@ -87,7 +87,6 @@ Below is an example of reporting standalone snapshot:
 ```java
 // post processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
-TrackingActivity activity = logger.newActivity(OpLevel.INFO, "MyActivity");
 ...
 PropertySnapshot snapshot = logger.newSnapshot("MyCategory", "MySnapshot");
 snapshot.add("metric1", myMetric1);
