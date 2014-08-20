@@ -164,28 +164,32 @@ public class SimpleFormatter extends DefaultFormatter {
 	}
 	
 	protected StringBuilder format(StringBuilder msg, Snapshot snap) {
-		msg.append("Snapshot(name:").append(snap.getName()).append("@").append(snap.getCategory());
-		msg.append(",level:" + snap.getSeverity());
-		msg.append(",type:" + snap.getType());
-		msg.append(",time:" + snap.getTimeStamp());
+		msg.append("Snapshot(name: '").append(snap.getName()).append("@").append("'").append(separator);
+		msg.append("level: '" + snap.getSeverity()).append("'").append(separator);
+		msg.append("type: '" + snap.getType()).append("'").append(separator);
+		msg.append("time: '" + snap.getTimeStamp()).append("'");
 		if (snap.getSource() != null) {
-			msg.append(",source:" + snap.getSource().getFQName());
+			msg.append(separator);
+			msg.append("source: '" + snap.getSource().getFQName()).append("'");
 		}
 		String cid = snap.getCorrelator();
 		String pid = snap.getParentId();
 		String tid = snap.getTrackingId();
 		if (pid != null) {
-			msg.append(",parent-id:").append(pid);
+			msg.append(separator);
+			msg.append("parent-id: '").append(pid).append("'");
 		}
 		if (tid != null) {
-			msg.append(",track-id:").append(tid);
+			msg.append(separator);
+			msg.append("track-id: '").append(tid).append("'");
 		}
 		if (cid != null) {
-			msg.append(",corr-id:").append(cid);
+			msg.append(separator);
+			msg.append("corr-id: '").append(cid).append("'");
 		}
 		msg.append(") {");
 		for (Property prop : snap.getSnapshot()) {
-			msg.append("\n\t\t").append(prop.getKey()).append(": ").append(prop.getValue());
+			msg.append("\n\t\t").append(prop.getKey()).append(": '").append(prop.getValue()).append("'");
 		}
 		msg.append("\n\t}");	
 		return msg;

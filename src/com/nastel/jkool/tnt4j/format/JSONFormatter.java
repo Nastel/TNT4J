@@ -135,6 +135,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			return format((TrackingActivity) obj);
 		} else if (obj instanceof TrackingEvent) {
 			return format((TrackingEvent) obj);
+		} else if (obj instanceof Snapshot) {
+			return format((Snapshot) obj);
 		} else if (obj instanceof Property) {
 			return format((Property) obj);
 		} else {
@@ -343,7 +345,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	}
 
 	/**
-	 * Format a given <code>PropertySnapshot</code> into JSON format
+	 * Format a given <code>Snapshot</code> into JSON format
 	 * 
 	 * @param snap
 	 *            snapshot object to be formatted into JSON
