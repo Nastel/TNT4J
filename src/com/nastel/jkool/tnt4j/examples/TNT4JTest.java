@@ -27,6 +27,7 @@ import com.nastel.jkool.tnt4j.core.Activity;
 import com.nastel.jkool.tnt4j.core.ActivityListener;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.dump.DefaultDumpProvider;
 import com.nastel.jkool.tnt4j.dump.Dump;
 import com.nastel.jkool.tnt4j.dump.DumpCollection;
@@ -83,6 +84,10 @@ public class TNT4JTest {
 		
 		tlogger = TrackingLogger.getInstance(config.build()); 
 		tlogger.addSinkErrorListener(new MySinkErrorHandler());
+
+		Snapshot begin = tlogger.newSnapshot("Start", "TNT4JTest");
+		begin.add("time-overhead-nanos", TimeService.getOverheadNanos());
+		tlogger.tnt(begin);
 		
 		// optionally register application state dump
 		// by default dumps are generated on JVM shutdown
@@ -112,6 +117,13 @@ public class TNT4JTest {
 		System.out.println("Logging stats: " + tlogger.getStats());
 		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size());
 		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size() + ", stack.size=" + TrackingLogger.getAllTrackerStackTrace().size());	
+		
+		Snapshot end = tlogger.newSnapshot("End", "TNT4JTest");
+		end.add("loggers-size", TrackingLogger.getAllTrackers().size());
+		end.add("stack-size", TrackingLogger.getAllTrackerStackTrace().size());
+		end.setParentId(activity);
+		tlogger.tnt(end);
+
 		Utils.printStackTrace("Tracker stack trace", TrackingLogger.getTrackerStackTrace(tlogger), System.out);	
 		
 		tlogger.close(); //deregister and release all logging resources
