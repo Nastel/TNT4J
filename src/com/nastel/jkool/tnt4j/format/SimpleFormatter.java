@@ -72,7 +72,7 @@ public class SimpleFormatter extends DefaultFormatter {
 	
 	@Override
 	public String format(TrackingEvent event) {
-		StringBuffer msg = new StringBuffer(1024);
+		StringBuilder msg = new StringBuilder(1024);
 		msg.append(event.getMessage()).append(" ");
 		msg.append("{time: '").append(UsecTimestamp.getTimeStamp(timeZone)).append("'").append(separator);
 		msg.append("sev: '").append(event.getSeverity()).append("'").append(separator);
@@ -113,7 +113,7 @@ public class SimpleFormatter extends DefaultFormatter {
 
 	@Override
 	public String format(TrackingActivity activity) {
-		StringBuffer msg = new StringBuffer(1024);
+		StringBuilder msg = new StringBuilder(1024);
 		msg.append("{status: '").append(activity.getStatus()).append("'").append(separator);
 		msg.append("time: '").append(UsecTimestamp.getTimeStamp(timeZone)).append("'").append(separator);
 		msg.append("sev: '").append(activity.getSeverity()).append("'").append(separator);
@@ -149,6 +149,7 @@ public class SimpleFormatter extends DefaultFormatter {
 		if (activity.getSnapshotCount() > 0) {
 			List<Snapshot> snapshots = activity.getSnapshots();
 			for (Snapshot snap : snapshots) {
+				msg.append("\n\t");
 				format(msg, snap);
 			}
 		}
@@ -162,8 +163,8 @@ public class SimpleFormatter extends DefaultFormatter {
 		return format(msg, snap).toString();
 	}
 	
-	protected StringBuffer format(StringBuffer msg, Snapshot snap) {
-		msg.append("\n\tSnapshot(name:").append(snap.getName()).append("@").append(snap.getCategory());
+	protected StringBuilder format(StringBuilder msg, Snapshot snap) {
+		msg.append("Snapshot(name:").append(snap.getName()).append("@").append(snap.getCategory());
 		msg.append(",level:" + snap.getSeverity());
 		msg.append(",type:" + snap.getType());
 		msg.append(",time:" + snap.getTimeStamp());
