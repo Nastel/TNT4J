@@ -521,6 +521,13 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 
 	@Override
+    public Snapshot newSnapshot(String cat, String name) {
+	    PropertySnapshot snapshot = new PropertySnapshot(cat, name);
+	    snapshot.setSource(getSource());
+	    return snapshot;
+    }
+
+	@Override
     public Snapshot newSnapshot(String cat, String name, OpLevel level) {
 	    PropertySnapshot snapshot = new PropertySnapshot(cat, name, level);
 	    snapshot.setSource(getSource());

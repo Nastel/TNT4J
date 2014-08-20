@@ -838,6 +838,12 @@ public class TrackingLogger implements Tracker {
 	}
 
 	@Override
+    public Snapshot newSnapshot(String cat, String name) {
+		checkState();
+		return logger.newSnapshot(cat, name);
+    }
+
+	@Override
     public Snapshot newSnapshot(String cat, String name, OpLevel level) {
 		checkState();
 		return logger.newSnapshot(cat, name, level);

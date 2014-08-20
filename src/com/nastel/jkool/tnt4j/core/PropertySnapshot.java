@@ -16,7 +16,7 @@
 package com.nastel.jkool.tnt4j.core;
 
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.HashMap;
 
 import com.nastel.jkool.tnt4j.source.Source;
 
@@ -40,7 +40,7 @@ public class PropertySnapshot  implements Snapshot {
 	private String parent_id;
 	private UsecTimestamp timeStamp = null;
 	private Source source;
-	private HashSet<Property> propSet = new HashSet<Property>();
+	private HashMap<Object, Property> propSet = new HashMap<Object, Property>();
 
 	/**
 	 * Constructs a Property snapshot with the specified name and current time stamp.
@@ -152,6 +152,7 @@ public class PropertySnapshot  implements Snapshot {
 	 *            value associated with the key
 	 * @return reference to this snapshot
 	 */
+	@Override
 	public PropertySnapshot add(Object key, Object value) {
 		this.add(new Property(key.toString(), value));
 		return this;
@@ -187,7 +188,7 @@ public class PropertySnapshot  implements Snapshot {
 		str.append(this.getClass().getSimpleName()).append("{Category: " + category
 				+ ", Name: " + snapName).append(", TimeStamp: ").append(timeStamp).append(
 		        ", Count: " + this.size()).append(", List: [");
-		for (Property item : propSet) {
+		for (Property item : propSet.values()) {
 			str.append(item);
 		}
 		str.append("]}");
@@ -196,7 +197,7 @@ public class PropertySnapshot  implements Snapshot {
 
 	@Override
 	public Collection<Property> getSnapshot() {
-		return propSet;
+		return propSet.values();
 	}
 
 	@Override
@@ -245,12 +246,23 @@ public class PropertySnapshot  implements Snapshot {
 	}
 
 	@Override
-    public void add(Property property) {
-		propSet.add(property);
+    public Snapshot add(Property property) {
+		propSet.put(property.getKey(), property);
+		return this;
 	}
 
 	@Override
     public int size() {
 		return propSet.size();
     }
+
+	@Override
+    public Property get(Object key) {
+	    return propSet.get(key);
+    }
+
+	@Override
+    public Property remove(Object key) {
+		return propSet.remove(key);
+	}
 }

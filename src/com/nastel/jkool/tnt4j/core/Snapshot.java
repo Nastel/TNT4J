@@ -78,6 +78,31 @@ public interface Snapshot extends Trackable {
 	/**
 	 * Adds a property to the snapshot
 	 * 
+	 * @param property instance to be added to the snapshot
 	 */
-	public void add(Property property);
+	public Snapshot add(Property property);
+	
+	/**
+	 * Adds a property to the snapshot
+	 * 
+	 * @param key object to be removed
+	 * @param value property value
+	 */
+	public Snapshot add(Object key, Object value);
+	
+	/**
+	 * Removed a property specified by the given key.
+	 * 
+	 * @param key object to be removed
+	 * @return Property associated with the key, null if does not exist
+	 */
+	public Property remove(Object key);
+	
+	/**
+	 * Obtain a property associated with the given key
+	 * 
+	 * @param key identifying a property
+	 * @return Property associated with the key, null if does not exist
+	 */
+	public Property get(Object key);
 }

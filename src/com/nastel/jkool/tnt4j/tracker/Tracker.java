@@ -187,6 +187,19 @@ public interface Tracker extends Handle, KeyValueStats {
 	/**
 	 * Create a new application snapshot via <code>Snapshot</code> object instance.
 	 * 
+	 * @param cat category name
+	 * @param name snapshot name
+	 * @return a new application metric snapshot
+	 * @see Snapshot
+	 */
+	public Snapshot newSnapshot(String cat, String name);
+	
+	/**
+	 * Create a new application snapshot via <code>Snapshot</code> object instance.
+	 * 
+	 * @param cat category name
+	 * @param name snapshot name
+	 * @param level activity severity level
 	 * @return a new application metric snapshot
 	 * @see Snapshot
 	 */
