@@ -37,6 +37,7 @@ import com.nastel.jkool.tnt4j.sink.SinkEventFilter;
 import com.nastel.jkool.tnt4j.sink.SinkLogEventListener;
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.source.SourceFactory;
+import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.TrackerFactory;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
@@ -128,7 +129,20 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            name of the source instance associated with the configuration
 	 */
 	protected TrackerConfigStore(String source) {
-		this(source, null);
+		this(source, SourceType.APPL);
+	}
+
+	/**
+	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
+	 * <code>tnt4j.config</code> property.
+	 * 
+	 * @param source
+	 *            name of the source instance associated with the configuration
+	 * @param type
+	 *            source type
+	 */
+	protected TrackerConfigStore(String source, SourceType type) {
+		this(source, type, null);
 	}
 
 	/**
@@ -140,8 +154,8 @@ public class TrackerConfigStore extends TrackerConfig {
 	 * @param fileName
 	 *            configuration file name
 	 */
-	protected TrackerConfigStore(String source, String fileName) {
-		super(source);
+	protected TrackerConfigStore(String source, SourceType type, String fileName) {
+		super(source, type);
 		initConfig(fileName);		
 	}
 

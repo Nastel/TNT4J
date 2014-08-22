@@ -16,6 +16,7 @@
 package com.nastel.jkool.tnt4j.config;
 
 import com.nastel.jkool.tnt4j.source.Source;
+import com.nastel.jkool.tnt4j.source.SourceType;
 
 /**
  * <p>
@@ -52,13 +53,18 @@ public class ConfigFactoryStoreImpl implements ConfigFactory {
 	}
 
 	@Override
+	public TrackerConfig getConfig(String source, SourceType type) {
+		return new TrackerConfigStore(source, type);
+	}
+
+	@Override
 	public TrackerConfig getConfig(Source source) {
 		return new TrackerConfigStore(source);
 	}
 
 	@Override
-	public TrackerConfig getConfig(String source, String configName) {
-		return new TrackerConfigStore(source, configName);
+	public TrackerConfig getConfig(String source, SourceType type, String configName) {
+		return new TrackerConfigStore(source, type, configName);
 	}
 
 	@Override
@@ -72,8 +78,8 @@ public class ConfigFactoryStoreImpl implements ConfigFactory {
 	}
 
 	@Override
-	public TrackerConfig getConfig(Class<?> clazz, String configName) {
-		return getConfig(clazz.getName(), configName);
+	public TrackerConfig getConfig(Class<?> clazz, SourceType type, String configName) {
+		return getConfig(clazz.getName(), type, configName);
 	}
 
 }

@@ -16,6 +16,7 @@
 package com.nastel.jkool.tnt4j.config;
 
 import com.nastel.jkool.tnt4j.source.Source;
+import com.nastel.jkool.tnt4j.source.SourceType;
 
 /**
  * <p>
@@ -49,6 +50,18 @@ public interface ConfigFactory {
 	public TrackerConfig getConfig(String source);
 
 	/**
+	 * Create a default tracking configuration
+	 * 
+	 * @param source
+	 *            user defined source name
+	 * @param type
+	 *            source type
+	 * @see TrackerConfig
+	 * @return new <code>TrackerConfig</code> instance with default values and factories
+	 */
+	public TrackerConfig getConfig(String source, SourceType type);
+
+	/**
 	 * Create a default tracking configuration based on a given class
 	 * 
 	 * @param clazz
@@ -73,24 +86,28 @@ public interface ConfigFactory {
 	 * 
 	 * @param source
 	 *            user defined source name
+	 * @param type
+	 *            source type
 	 * @param configName
 	 *            configuration name where configuration elements are read from (e.g. filename)
 	 * @see TrackerConfig
 	 * @return new <code>TrackerConfig</code> instance with default values and factories
 	 */
-	public TrackerConfig getConfig(String source, String configName);
+	public TrackerConfig getConfig(String source, SourceType type, String configName);
 
 	/**
 	 * Create a default tracking configuration
 	 * 
 	 * @param clazz
 	 *            class for which to obtain configuration
+	 * @param type
+	 *            source type
 	 * @param configName
 	 *            configuration name where configuration elements are read from (e.g. filename)
 	 * @see TrackerConfig
 	 * @return new <code>TrackerConfig</code> instance with default values and factories
 	 */
-	public TrackerConfig getConfig(Class<?> clazz, String configName);
+	public TrackerConfig getConfig(Class<?> clazz, SourceType type, String configName);
 
 	/**
 	 * Create a default tracking configuration

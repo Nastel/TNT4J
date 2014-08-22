@@ -53,6 +53,7 @@ import com.nastel.jkool.tnt4j.sink.SinkErrorListener;
 import com.nastel.jkool.tnt4j.sink.SinkEventFilter;
 import com.nastel.jkool.tnt4j.sink.SinkLogEventListener;
 import com.nastel.jkool.tnt4j.source.Source;
+import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.DefaultTrackerFactory;
 import com.nastel.jkool.tnt4j.tracker.Tracker;
 import com.nastel.jkool.tnt4j.tracker.TrackerFactory;
@@ -211,7 +212,7 @@ public class TrackingLogger implements Tracker {
 	static {
 		// load configuration and initialize default factories
 		initJavaTiming();
-		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(TRACKER_SOURCE, TRACKER_CONFIG).build();
+		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(TRACKER_SOURCE, SourceType.APPL, TRACKER_CONFIG).build();
 		DefaultEventSinkFactory.setDefaultEventSinkFactory(config.getDefaultEvenSinkFactory());
 		factory = config.getTrackerFactory();
 		dumpFactory = config.getDumpSinkFactory();
@@ -336,6 +337,22 @@ public class TrackingLogger implements Tracker {
 	 */
 	public static TrackingLogger getInstance(String sourceName) {
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName);
+		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
+		registerTracker(tracker);
+		return tracker;
+	}
+
+	/**
+	 * Obtain an instance of <code>TrackingLogger</code> logger.
+	 *
+	 * @param sourceName
+	 *            application source name associated with this logger
+	 * @param type
+	 *            application source type associated with this logger
+	 * @see TrackerConfig
+	 */
+	public static TrackingLogger getInstance(String sourceName, SourceType type) {
+		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName, type);
 		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
 		registerTracker(tracker);
 		return tracker;
