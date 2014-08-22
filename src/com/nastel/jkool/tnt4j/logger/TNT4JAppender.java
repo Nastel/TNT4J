@@ -64,7 +64,6 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <tr><td valign=top>Severity</td>					<td valign=top>Level</td></tr>
  * <tr><td valign=top>Completion Code</td>			<td valign=top>Level</td></tr>
  * <tr><td valign=top>Message Data</td>				<td valign=top>Message</td></tr>
- * <tr><td valign=top>Location</td>					<td valign=top>Location info, if captured</td></tr>
  * <tr><td valign=top>Start Time</td>				<td valign=top>Timestamp</td></tr>
  * <tr><td valign=top>End Time</td>					<td valign=top>Timestamp</td></tr>
  * </table>
