@@ -31,7 +31,6 @@ import com.nastel.jkool.tnt4j.core.ActivityStatus;
 import com.nastel.jkool.tnt4j.core.OpCompCode;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
-import com.nastel.jkool.tnt4j.source.DefaultSourceFactory;
 import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -71,9 +70,16 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <p>In addition, it will set other TNT4j Activity and Event parameters based on the local environment.  These default
  * parameter values can be overridden by annotating the log event messages.
  *
-  * <p>The following annotations are supported:</p>
+  * <p>The following annotations are supported for reporting activities:</p>
  * <table>
- * <tr><td><b>app</b></td>				<td>Application name</td></tr>
+ * <tr><td><b>bgn</b></td>				<td>Begin an activity (collection of related events/messages)</td></tr>
+ * <tr><td><b>end</b></td>				<td>End an activity (collection of related events/messages)</td></tr>
+ * <tr><td><b>app</b></td>				<td>Application/source name</td></tr>
+ * </table>
+ * 
+ * <p>The following annotations are supported for reporting events:</p>
+ * <table>
+ * <tr><td><b>app</b></td>				<td>Application/source name</td></tr>
  * <tr><td><b>usr</b></td>				<td>User name</td></tr>
  * <tr><td><b>cid</b></td>				<td>Correlator for relating events</td></tr>
  * <tr><td><b>tag</b></td>				<td>User defined tag</td></tr>
@@ -90,10 +96,17 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <tr><td><b>rsn</b></td>				<td>Resource name on which operation/event took place</td></tr>
  * </table>
  *
- * <p>An example of annotating (TNT4J) a log message using log4j:</p>
+ * <p>An example of annotating (TNT4J) a single log message using log4j:</p>
  * <p><code>logger.error("Operation Failed #app=MyApp #opn=save #rsn=" + filename + "  #rcd="
  *  + errno);</code></p>
  *  
+ *  
+ * <p>An example of reporting a TNT4J activity using log4j (activity is a related collection of events):</p>
+ * <p><code>logger.info("Starting order processing #app=MyApp #bgn=" + activityName);</code></p>
+ * <p><code></code></p>
+ * <p><code>logger.debug("Operation processing #app=MyApp #opn=save #rsn=" + filename);</code></p>
+ * <p><code>logger.error("Operation Failed #app=MyApp #opn=save #rsn=" + filename + "  #rcd=" + errno);</code></p>
+ * <p><code>logger.info("Finished order processing #app=MyApp #end=" + activityName);</code></p>
  *  
  * @version $Revision: 1 $
  * 
@@ -101,6 +114,9 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
 public class TNT4JAppender extends AppenderSkeleton {
 	public static final String DEFAULT_OP_NAME 			 = "LoggingEvent";
+	
+	public static final String PARAM_BEGIN_LABEL         = "bgn";
+	public static final String PARAM_END_LABEL           = "end";
 	
 	public static final String PARAM_APPL_LABEL          = "app";
 	public static final String PARAM_USER_LABEL          = "usr";
@@ -119,13 +135,35 @@ public class TNT4JAppender extends AppenderSkeleton {
 	public static final String PARAM_ELAPSED_TIME_LABEL  = "elt";
 	
 	private TrackingLogger logger;
+	private String sourceName;
+	private SourceType sourceType = SourceType.APPL;
+	
 	private boolean metricsOnException = true;
 	private long metricsFrequency = 60, lastSnapshot = 0;
 
+	public String getSourceName() {
+		return sourceName;
+	}
+	
+	public void setSourceName(String name) {
+		sourceName = name;
+	}
+	
+	public String getSourceType() {
+		return sourceType.toString();
+	}
+	
+	public void setSourceType(String type) {
+		sourceType = SourceType.valueOf(type);
+	}
+	
 	@Override
 	public void activateOptions() {
 		try {
-			logger = TrackingLogger.getInstance(getName(), SourceType.VIRTUAL);
+			if (sourceName == null) {
+				setSourceName(getName());
+			}
+			logger = TrackingLogger.getInstance(sourceName, sourceType);
 	        logger.open();
         } catch (IOException e) {
 	        LogLog.error("Unable to create tnt4j tracker instance=" + getName(), e);
@@ -136,40 +174,75 @@ public class TNT4JAppender extends AppenderSkeleton {
 	protected void append(LoggingEvent event) {
 		long lastReport = System.currentTimeMillis();
 
-		String eventMsg = event.getRenderedMessage();
 		ThrowableInformation ti = event.getThrowableInformation();
-		Throwable ex = ti != null? ti.getThrowable(): null;
+		Throwable ex = ti != null ? ti.getThrowable() : null;
 
-		OpLevel level = getOpLevel(event);
-		TrackingEvent tev = logger.newEvent(level, DEFAULT_OP_NAME, null, eventMsg);
-		tev.setTag(event.getThreadName());
-		processEventMessage(tev, event, eventMsg, ex);
-		
-		boolean reportMetrics = (ex != null && metricsOnException) || ((lastReport - lastSnapshot) > (metricsFrequency * 1000)); 
-		
-		if (reportMetrics) {
-			// report a single tracking event as part of an activity
-			TrackingActivity activity = logger.newActivity(level, getName());
-			activity.start(tev.getOperation().getStartTime().getTimeMillis());
-			activity.setException(ex);
-			activity.setStatus(ex != null? ActivityStatus.EXCEPTION: ActivityStatus.END);
-			activity.stop(tev.getOperation().getEndTime().getTimeMillis());
-			activity.tnt(tev);
-			logger.tnt(activity);
-			lastSnapshot = lastReport;
+		String eventMsg = event.getRenderedMessage();
+		Map<String, String> attrs = parseEventMessage(eventMsg);
+
+		boolean activityMessage = isActivityInstruction(attrs);
+		if (activityMessage) {
+			processActivityAttrs(attrs, event, ex);
 		} else {
-			// report a single tracking event as datagram
-			logger.tnt(tev);
+			TrackingActivity activity = logger.getCurrentActivity();
+			TrackingEvent tev = processEventMessage(attrs, activity, event, eventMsg, ex);
+
+			boolean reportMetrics = activity.isNoop() 
+					&& ((ex != null && metricsOnException)
+			        || ((lastReport - lastSnapshot) > (metricsFrequency * 1000)));
+
+			if (reportMetrics) {
+				// report a single tracking event as part of an activity
+				activity = logger.newActivity(tev.getSeverity(), getName());
+				activity.start(tev.getOperation().getStartTime().getTimeMillis());
+				activity.setSource(tev.getSource()); // use event's source name for this activity
+				activity.setException(ex);
+				activity.setStatus(ex != null ? ActivityStatus.EXCEPTION : ActivityStatus.END);
+				activity.stop(tev.getOperation().getEndTime().getTimeMillis());
+				activity.tnt(tev);
+				logger.tnt(activity);
+				lastSnapshot = lastReport;
+			} else if (activity.isNoop()) {
+				// report a single tracking event as datagram
+				logger.tnt(tev);
+			} else {
+				activity.tnt(tev);
+			}
 		}
 	}
 
-	private TrackingEvent processEventMessage(TrackingEvent event, LoggingEvent jev, String eventMsg, Throwable ex) {
+	private boolean isActivityInstruction(Map<String, String> attrs) {
+		return attrs.get(PARAM_BEGIN_LABEL) != null || attrs.get(PARAM_END_LABEL) != null;		
+	}
+	
+	private TrackingActivity processActivityAttrs(Map<String, String> attrs, LoggingEvent jev, Throwable ex) {
+		TrackingActivity activity = logger.getCurrentActivity();
+		String activityName = attrs.get(PARAM_BEGIN_LABEL);
+		if (attrs.get(PARAM_END_LABEL) != null && !activity.isNoop()) {
+			activity.setStatus(ex != null? ActivityStatus.EXCEPTION: ActivityStatus.END);
+			activity.stop(ex);
+			logger.tnt(activity);
+		} else if (activityName != null) {
+			OpLevel level = getOpLevel(jev);
+			activity = logger.newActivity(level, activityName);
+			activity.start();
+			String appl = attrs.get(PARAM_APPL_LABEL);
+			if (appl != null) {
+				activity.setSource(logger.getConfiguration().getSourceFactory().newSource(appl));				
+			}
+		}
+		return activity;
+	}
+
+	private TrackingEvent processEventMessage(Map<String, String> attrs, TrackingActivity activity, LoggingEvent jev, String eventMsg, Throwable ex) {
 		int rcode = 0;
-		boolean sourced = false;
 		OpCompCode ccode = ex == null? OpCompCode.SUCCESS: OpCompCode.ERROR;
 		long evTime = jev.getTimeStamp(), startTime = 0, elapsedTime= 0, endTime = 0;
 	
-		Map<String, String> attrs = parseEventMessage(eventMsg);
+		OpLevel level = getOpLevel(jev);
+		TrackingEvent event = logger.newEvent(level, DEFAULT_OP_NAME, null, eventMsg);
+		event.setTag(jev.getThreadName());
+
 		for (Map.Entry<String, String> entry: attrs.entrySet()) {
 			String key = entry.getKey();
 			String value = entry.getValue();
@@ -202,8 +275,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 			} else if (key.equalsIgnoreCase(PARAM_MSG_DATA_LABEL)) {
 				event.setMessage(value);
 			} else if (key.equalsIgnoreCase(PARAM_APPL_LABEL)) {
-				event.setSource(DefaultSourceFactory.getInstance().newSource(value));
-				sourced = true;
+				event.setSource(logger.getConfiguration().getSourceFactory().newSource(value));
 			}
 		}		
 		startTime = startTime == 0? (evTime - elapsedTime): evTime;
@@ -211,9 +283,6 @@ public class TNT4JAppender extends AppenderSkeleton {
 		
 		event.start(startTime);
 		event.stop(ccode, rcode, ex, endTime);
-		if (!sourced) {
-			event.setSource(DefaultSourceFactory.getInstance().newSource(jev.getLogger().getName()));
-		}
 		return event;
 	}
 	
@@ -297,22 +366,41 @@ public class TNT4JAppender extends AppenderSkeleton {
 
 	@Override
     public boolean requiresLayout() {
-	    return true;
+	    return false;
     }
 	
+	/**
+	 * Return whether appender generates metrics log entries with exception
+	 *
+	 */
 	public boolean getMetricsOnException() {
 		return metricsOnException;
 	}
 	
+	/**
+	 * Direct appender to generate metrics log entries with exception when
+	 * set to true, false otherwise.
+	 *
+	 * @param flag true to append metrics on exception, false otherwise
+	 */
 	public void setMetricsOnException(boolean flag) {
 		metricsOnException = flag;
 	}
 	
+	/**
+	 * Appender generates metrics based on a given frequency in seconds.
+	 *
+	 */
 	public long getMetricsFrequency() {
 		return metricsFrequency;
 	}
 	
-	public void setMetricsFrequency(long freqSec) {
-		metricsFrequency = freqSec;
+	/**
+	 * Set metric collection frequency seconds.
+	 * 
+	 * @param freq number of seconds
+	 */
+	public void setMetricsFrequency(long freq) {
+		metricsFrequency = freq;
 	}
 }

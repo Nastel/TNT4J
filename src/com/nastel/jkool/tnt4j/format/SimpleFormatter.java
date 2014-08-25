@@ -103,6 +103,9 @@ public class SimpleFormatter extends DefaultFormatter {
 		if (event.getOperation().getThrowable() != null) {
 			msg.append("error: '").append(event.getOperation().getExceptionString()).append("'").append(separator);
 		}
+		if (event.getSource() != null) {
+			msg.append("source: '").append(event.getSource().getFQName()).append("'").append(separator);
+		}
 		if (event.getParentId() != null) {
 			msg.append("parent-id: '").append(event.getParentId()).append("'").append(separator);
 		}
@@ -164,7 +167,7 @@ public class SimpleFormatter extends DefaultFormatter {
 	}
 	
 	protected StringBuilder format(StringBuilder msg, Snapshot snap) {
-		msg.append("Snapshot(name: '").append(snap.getName()).append("@").append("'").append(separator);
+		msg.append("Snapshot(name: '").append(snap.getName()).append("@").append(snap.getCategory()).append("'").append(separator);
 		msg.append("level: '" + snap.getSeverity()).append("'").append(separator);
 		msg.append("type: '" + snap.getType()).append("'").append(separator);
 		msg.append("time: '" + snap.getTimeStamp()).append("'");
