@@ -88,14 +88,15 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <tr><td><b>loc</b></td>				<td>Location specifier</td></tr>
  * <tr><td><b>opn</b></td>			    <td>Event/Operation name</td></tr>
  * <tr><td><b>opt</b></td>			    <td>Event/Operation Type - Value must be either a member of {@link OpType} or the equivalent numeric value</td></tr>
+ * <tr><td><b>rsn</b></td>				<td>Resource name on which operation/event took place</td></tr>
  * <tr><td><b>msg</b></td>				<td>Event message (user data) enclosed in single quotes e.g. <code>#msg='My error message'<code></td></tr>
  * <tr><td><b>sev</b></td>				<td>Event Severity - Value can be either a member of {@link OpLevel} or any numeric value</td></tr>
  * <tr><td><b>ccd</b></td>				<td>Event Completion Code - Value must be either a member of {@link OpCompCode} or the equivalent numeric value</td></tr>
  * <tr><td><b>rcd</b></td>				<td>Reason Code</td></tr>
- * <tr><td><b>elt</b></td>			    <td>Elapsed Time of event, in milliseconds</td></tr>
+ * <tr><td><b>elt</b></td>			    <td>Elapsed Time of event, in microseconds</td></tr>
+ * <tr><td><b>age</b></td>			    <td>Message/event age in microseconds (useful when receiving messages, designating message age on receipt)</td></tr>
  * <tr><td><b>stt</b></td>			    <td>Start Time, as the number of milliseconds since epoch</td></tr>
  * <tr><td><b>ent</b></td>				<td>End Time, as the number of milliseconds since epoch</td></tr>
- * <tr><td><b>rsn</b></td>				<td>Resource name on which operation/event took place</td></tr>
  * </table>
  *
  * <p>An example of annotating (TNT4J) a single log message using log4j:</p>
@@ -135,6 +136,8 @@ public class TNT4JAppender extends AppenderSkeleton {
 	public static final String PARAM_START_TIME_LABEL    = "stt";
 	public static final String PARAM_END_TIME_LABEL      = "ent";
 	public static final String PARAM_ELAPSED_TIME_LABEL  = "elt";
+	public static final String PARAM_AGE_TIME_LABEL 	 = "age";
+
 	
 	private TrackingLogger logger;
 	private String sourceName;
@@ -243,7 +246,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 	private TrackingEvent processEventMessage(Map<String, Object> attrs, 
 			TrackingActivity activity, LoggingEvent jev, String eventMsg, Throwable ex) {
 		int rcode = 0;
-		long evTime = jev.getTimeStamp(), startTime = 0, elapsedTime= 0, endTime = 0;
+		long evTime = jev.getTimeStamp(), startTime = 0, elapsedTimeUsec = 0, ageTimeUsec = 0, endTime = 0;
 	
 		OpCompCode ccode = getOpCompCode(jev);
 		OpLevel level = getOpLevel(jev);
@@ -264,7 +267,9 @@ public class TNT4JAppender extends AppenderSkeleton {
 			}  else if (key.equalsIgnoreCase(PARAM_USER_LABEL)) {
 				event.getOperation().setUser(value);
 			} else if (key.equalsIgnoreCase(PARAM_ELAPSED_TIME_LABEL)) {
-				elapsedTime = Long.parseLong(value);
+				elapsedTimeUsec = Long.parseLong(value);
+			} else if (key.equalsIgnoreCase(PARAM_AGE_TIME_LABEL)) {
+				ageTimeUsec = Long.parseLong(value);
 			} else if (key.equalsIgnoreCase(PARAM_START_TIME_LABEL)) {
 				startTime = Long.parseLong(value);
 			} else if (key.equalsIgnoreCase(PARAM_START_TIME_LABEL)) {
@@ -285,10 +290,12 @@ public class TNT4JAppender extends AppenderSkeleton {
 				event.setSource(logger.getConfiguration().getSourceFactory().newSource(value));
 			}
 		}		
+		long elapsedTime = elapsedTimeUsec/1000;
 		startTime = startTime == 0? (evTime - elapsedTime): evTime;
 		endTime = endTime == 0? (startTime + elapsedTime): endTime;
 		
 		event.start(startTime);
+		event.setMessageAge(ageTimeUsec);
 		event.stop(ccode, rcode, ex, endTime);
 		return event;
 	}
