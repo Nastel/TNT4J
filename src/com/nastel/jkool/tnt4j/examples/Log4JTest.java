@@ -21,12 +21,13 @@ public class Log4JTest {
 	private static final Logger logger = Logger.getLogger(Log4JTest.class);
 	
 	public static void main(String[] args) {
-		logger.info("Starting a tnt4j activity #bgn=Test, #app=" + Log4JTest.class.getName());
-		logger.warn("First log message #app=" + Log4JTest.class.getName() + ", #msg=\"1 Test warning message\"");
-		logger.error("Second log message #app=" + Log4JTest.class.getName() + ", #msg=\"2 Test error message\"", new Exception("test exception"));
+		logger.info("Starting a tnt4j activity #beg=Test, #app=" + Log4JTest.class.getName());
+		logger.warn("First log message #app=" + Log4JTest.class.getName() + ", #msg='1 Test warning message'");
+		logger.error("Second log message #app=" + Log4JTest.class.getName() + ", #msg='2 Test error message'", new Exception("test exception"));
 		logger.info("Ending a tnt4j activity #end=Test, #app=" + Log4JTest.class.getName());
 		
-		logger.debug("First datagram message #app=" + Log4JTest.class.getName() + ", #msg=\"Test datagram message\"");
-		logger.trace("Second datagram message #app=" + Log4JTest.class.getName() + ", #msg=\"Test datagram message\"");
+		logger.debug("First datagram message #app=" + Log4JTest.class.getName() + ", #msg='Test datagram message'");
+		logger.trace("Second datagram message #app=" + Log4JTest.class.getName() + ", #msg='Test datagram message'");
+		logger.trace("Whole datagram message #app=" + Log4JTest.class.getName());
 	}
 }

@@ -22,6 +22,7 @@ import java.util.Map;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.log4j.AppenderSkeleton;
 import org.apache.log4j.Level;
+import org.apache.log4j.MDC;
 import org.apache.log4j.helpers.LogLog;
 import org.apache.log4j.spi.LoggingEvent;
 import org.apache.log4j.spi.ThrowableInformation;
@@ -43,9 +44,10 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  *
  * <p>This appender has the following behavior:</p>
  * <ul>
- * <li>This appender does use a layout.</li>
- *
- * <li>All messages send to this appender will be send to all defined sinks as configured by tnt4j configuration.</li>
+ * 
+ * <li>This appender does not require a layout.</li>
+ * <li>TNT4J hash tags below can be passed using {@code MDC}.</li>
+ * <li>All messages logged to this appender will be sent to all defined sinks as configured by tnt4j configuration.</li>
  *
  * </ul>
  *
@@ -68,16 +70,16 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * </table>
  *
  * <p>In addition, it will set other TNT4j Activity and Event parameters based on the local environment.  These default
- * parameter values can be overridden by annotating the log event messages.
+ * parameter values can be overridden by annotating the log event messages or passing them using {@code MDC}.
  *
-  * <p>The following annotations are supported for reporting activities:</p>
+ * <p>The following hash tag annotations are supported for reporting activities:</p>
  * <table>
- * <tr><td><b>bgn</b></td>				<td>Begin an activity (collection of related events/messages)</td></tr>
+ * <tr><td><b>beg</b></td>				<td>Begin an activity (collection of related events/messages)</td></tr>
  * <tr><td><b>end</b></td>				<td>End an activity (collection of related events/messages)</td></tr>
  * <tr><td><b>app</b></td>				<td>Application/source name</td></tr>
  * </table>
  * 
- * <p>The following annotations are supported for reporting events:</p>
+ * <p>The following hash tag annotations are supported for reporting events:</p>
  * <table>
  * <tr><td><b>app</b></td>				<td>Application/source name</td></tr>
  * <tr><td><b>usr</b></td>				<td>User name</td></tr>
@@ -86,7 +88,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <tr><td><b>loc</b></td>				<td>Location specifier</td></tr>
  * <tr><td><b>opn</b></td>			    <td>Event/Operation name</td></tr>
  * <tr><td><b>opt</b></td>			    <td>Event/Operation Type - Value must be either a member of {@link OpType} or the equivalent numeric value</td></tr>
- * <tr><td><b>msg</b></td>				<td>Event message (user data)</td></tr>
+ * <tr><td><b>msg</b></td>				<td>Event message (user data) enclosed in single quotes e.g. <code>#msg='My error message'<code></td></tr>
  * <tr><td><b>sev</b></td>				<td>Event Severity - Value can be either a member of {@link OpLevel} or any numeric value</td></tr>
  * <tr><td><b>ccd</b></td>				<td>Event Completion Code - Value must be either a member of {@link OpCompCode} or the equivalent numeric value</td></tr>
  * <tr><td><b>rcd</b></td>				<td>Reason Code</td></tr>
@@ -98,7 +100,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  *
  * <p>An example of annotating (TNT4J) a single log message using log4j:</p>
  * <p><code>logger.error("Operation Failed #app=MyApp #opn=save #rsn=" + filename + "  #rcd="
- *  + errno);</code></p>
+ *  + errno + " #msg='My error message'");</code></p>
  *  
  *  
  * <p>An example of reporting a TNT4J activity using log4j (activity is a related collection of events):</p>
@@ -114,8 +116,8 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
 public class TNT4JAppender extends AppenderSkeleton {
 	public static final String DEFAULT_OP_NAME 			 = "LoggingEvent";
-	
-	public static final String PARAM_BEGIN_LABEL         = "bgn";
+		
+	public static final String PARAM_BEGIN_LABEL         = "beg";
 	public static final String PARAM_END_LABEL           = "end";
 	
 	public static final String PARAM_APPL_LABEL          = "app";
@@ -170,15 +172,19 @@ public class TNT4JAppender extends AppenderSkeleton {
         }
 	}
 
-	@Override
+	@SuppressWarnings("unchecked")
+    @Override
 	protected void append(LoggingEvent event) {
 		long lastReport = System.currentTimeMillis();
-
+		String eventMsg = event.getRenderedMessage();
+				
 		ThrowableInformation ti = event.getThrowableInformation();
 		Throwable ex = ti != null ? ti.getThrowable() : null;
 
-		String eventMsg = event.getRenderedMessage();
-		Map<String, String> attrs = parseEventMessage(eventMsg);
+		HashMap<String, Object> attrs = new HashMap<String, Object>();
+		Map<String, Object> l4jMdc = MDC.getContext();
+		if (l4jMdc != null) attrs.putAll(l4jMdc);
+		parseEventMessage(attrs, eventMsg);
 
 		boolean activityMessage = isActivityInstruction(attrs);
 		if (activityMessage) {
@@ -211,41 +217,42 @@ public class TNT4JAppender extends AppenderSkeleton {
 		}
 	}
 
-	private boolean isActivityInstruction(Map<String, String> attrs) {
+	private boolean isActivityInstruction(Map<String, Object> attrs) {
 		return attrs.get(PARAM_BEGIN_LABEL) != null || attrs.get(PARAM_END_LABEL) != null;		
 	}
 	
-	private TrackingActivity processActivityAttrs(Map<String, String> attrs, LoggingEvent jev, Throwable ex) {
+	private TrackingActivity processActivityAttrs(Map<String, Object> attrs, LoggingEvent jev, Throwable ex) {
 		TrackingActivity activity = logger.getCurrentActivity();
-		String activityName = attrs.get(PARAM_BEGIN_LABEL);
+		Object activityName = attrs.get(PARAM_BEGIN_LABEL);
 		if (attrs.get(PARAM_END_LABEL) != null && !activity.isNoop()) {
 			activity.setStatus(ex != null? ActivityStatus.EXCEPTION: ActivityStatus.END);
 			activity.stop(ex);
 			logger.tnt(activity);
 		} else if (activityName != null) {
 			OpLevel level = getOpLevel(jev);
-			activity = logger.newActivity(level, activityName);
+			activity = logger.newActivity(level, activityName.toString());
 			activity.start();
-			String appl = attrs.get(PARAM_APPL_LABEL);
+			Object appl = attrs.get(PARAM_APPL_LABEL);
 			if (appl != null) {
-				activity.setSource(logger.getConfiguration().getSourceFactory().newSource(appl));				
+				activity.setSource(logger.getConfiguration().getSourceFactory().newSource(appl.toString()));				
 			}
 		}
 		return activity;
 	}
 
-	private TrackingEvent processEventMessage(Map<String, String> attrs, TrackingActivity activity, LoggingEvent jev, String eventMsg, Throwable ex) {
+	private TrackingEvent processEventMessage(Map<String, Object> attrs, 
+			TrackingActivity activity, LoggingEvent jev, String eventMsg, Throwable ex) {
 		int rcode = 0;
-		OpCompCode ccode = ex == null? OpCompCode.SUCCESS: OpCompCode.ERROR;
 		long evTime = jev.getTimeStamp(), startTime = 0, elapsedTime= 0, endTime = 0;
 	
+		OpCompCode ccode = getOpCompCode(jev);
 		OpLevel level = getOpLevel(jev);
 		TrackingEvent event = logger.newEvent(level, DEFAULT_OP_NAME, null, eventMsg);
 		event.setTag(jev.getThreadName());
 
-		for (Map.Entry<String, String> entry: attrs.entrySet()) {
+		for (Map.Entry<String, Object> entry: attrs.entrySet()) {
 			String key = entry.getKey();
-			String value = entry.getValue();
+			String value = entry.getValue().toString();
 			if (key.equalsIgnoreCase(PARAM_CORRELATOR_LABEL)) {
 				event.setCorrelator(value);
 			} else if (key.equalsIgnoreCase(PARAM_TAG_LABEL)) {
@@ -311,8 +318,32 @@ public class TNT4JAppender extends AppenderSkeleton {
 		}	
 	}
 
-	private Map<String, String> parseEventMessage(String msg) {
-		HashMap<String, String> tags = new HashMap<String,String>();
+	private OpCompCode getOpCompCode(LoggingEvent event) {
+		Level lvl = event.getLevel();
+		if (lvl == Level.INFO) {
+			return OpCompCode.SUCCESS;
+		}
+		else if (lvl == Level.ERROR) {
+			return OpCompCode.ERROR;
+		}
+		else if (lvl == Level.WARN) {
+			return OpCompCode.WARNING;
+		}
+		else if (lvl == Level.DEBUG) {
+			return OpCompCode.SUCCESS;
+		}
+		else if (lvl == Level.TRACE) {
+			return OpCompCode.SUCCESS;
+		}
+		else if (lvl == Level.OFF) {
+			return OpCompCode.SUCCESS;
+		}
+		else {
+			return OpCompCode.SUCCESS;
+		}	
+	}
+
+	private Map<String, Object> parseEventMessage(Map<String, Object> tags, String msg) {
 		int curPos = 0;
 		while (curPos < msg.length()) {
 			if (msg.charAt(curPos) != '#') {
@@ -328,7 +359,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 				if (c == '=') {
 					inValue = true;
 				}
-				else if (c == '"' && inValue && msg.charAt(curPos-1) != '\\') {
+				else if (c == '\'' && inValue) {
 					// the double quote we just read was not escaped, so include it in value
 					if (quotedValue) {
 						// found closing quote
@@ -347,9 +378,9 @@ public class TNT4JAppender extends AppenderSkeleton {
 
 			if (curPos > start) {
 				String[] curTag = msg.substring(start, curPos).split("=");
-				String name = curTag[0].trim().replace("\"", "");
+				String name = curTag[0].trim().replace("'", "");
 				String value = (curTag.length > 1 ? curTag[1] : "");
-				if (value.startsWith("\"") && value.endsWith("\""))
+				if (value.startsWith("'") && value.endsWith("'"))
 					value = StringEscapeUtils.unescapeJava(value.substring(1, value.length()-1));
 				tags.put(name, value);
 			}
