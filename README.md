@@ -16,8 +16,17 @@ logger.warn("First log message #app=" + Log4JTest.class.getName() + ", #msg='1 T
 logger.error("Second log message #app=" + Log4JTest.class.getName() + ", #msg='2 Test error message'", new Exception("test exception"));
 logger.info("Ending a tnt4j activity #end=Test, #app=" + Log4JTest.class.getName());
 ```
-Above example related messages between first and last into a related logical activity. Hashtags `#beg` and `#end` are used to demarcate actviity boundaries. This method also supports nested activities.
-
+Above example related messages between first and last into a related logical activity. Hashtags `#beg` and `#end` are used to demarcate actviity boundaries. This method also supports nested activities. Below is a sample log4j appender configuration:
+```
+### Default TNT4J Appender configuration
+log4j.appender.tnt4j=com.nastel.jkool.tnt4j.logger.TNT4JAppender
+log4j.appender.tnt4j.SourceName=com.log4j.Test
+log4j.appender.tnt4j.SourceType=APPL
+log4j.appender.tnt4j.MetricsOnException=true
+log4j.appender.tnt4j.MetricsFrequency=60
+log4j.appender.tnt4j.layout=org.apache.log4j.PatternLayout
+log4j.appender.tnt4j.layout.ConversionPattern=%d{ABSOLUTE} %-5p [%c{1}] %m%n
+```
 ### Performance
 No need to concatenate messages before logging. String concatenation is expensive especialy in loops. Simply log using message patterns as follows and TNT4J will resolve the message only if it actually gets logged:
 ```java
