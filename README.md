@@ -2,7 +2,7 @@ Why TNT4J
 =====================================
 Several key features make TNT4J a prime logging choice for java applications:
 
-### Log4J Integration
+### Log4j Integration
 TNT4J integrates with log4j or any other logging framework via a concept of an `EventSink`. TNT4J default integration is with log4j. 
 
 First, all TNT4J messages can be routed via a log4j event sink and therefore can take advantage of the whole log4j framework. 
