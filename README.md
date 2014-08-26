@@ -2,6 +2,16 @@ Why TNT4J
 =====================================
 Several key features make TNT4J a prime logging choice for java applications:
 
+### Log4J Integration
+TNT4J integrates with log4j or any other logging framework via a concept of an `EventSink`. TNT4J default integration is with log4j. First, all TNT4J messages can be routed via a log4j event sink and therefore can take advantage of the whole log4j framework. Second, TNT4J includes `TNT4JAppender` for log4j which allows developers to send log4j messages to TNT4J via this appender and take advantage of TNT4j functionality.
+Developers may also enrich log4j messages and pass context to TNT4J using hash tag enrichment scheme whoch are used to decorate log4j messages with important meta data about each log message. This meta data is used to generate TNT4J tracking events:
+```java
+logger.info("Starting a tnt4j activity #beg=Test, #app=" + Log4JTest.class.getName());
+logger.warn("First log message #app=" + Log4JTest.class.getName() + ", #msg='1 Test warning message'");
+logger.error("Second log message #app=" + Log4JTest.class.getName() + ", #msg='2 Test error message'", new Exception("test exception"));
+logger.info("Ending a tnt4j activity #end=Test, #app=" + Log4JTest.class.getName());
+```
+
 ### Performance
 No need to concatenate messages before logging. String concatenation is expensive especialy in loops. Simply log using message patterns as follows and TNT4J will resolve the message only if it actually gets logged:
 ```java
