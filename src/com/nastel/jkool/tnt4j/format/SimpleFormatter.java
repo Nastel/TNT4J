@@ -78,6 +78,9 @@ public class SimpleFormatter extends DefaultFormatter {
 		msg.append("sev: '").append(event.getSeverity()).append("'").append(separator);
 		msg.append("type: '").append(event.getOperation().getType()).append("'").append(separator);
 		msg.append("name: '").append(event.getOperation().getResolvedName()).append("'").append(separator);
+		if (event.getOperation().getResource() != null) {
+			msg.append("resource: '").append(event.getOperation().getResource()).append("'").append(separator);
+		}
 		msg.append("ccode: '").append(event.getOperation().getCompCode()).append("'").append(separator);
 		if (event.getOperation().getReasonCode() != 0) {
 			msg.append("rcode: '").append(event.getOperation().getReasonCode()).append("'").append(separator);
@@ -122,6 +125,9 @@ public class SimpleFormatter extends DefaultFormatter {
 		msg.append("sev: '").append(activity.getSeverity()).append("'").append(separator);
 		msg.append("type: '").append(activity.getType()).append("'").append(separator);
 		msg.append("name: '").append(activity.getResolvedName()).append("'").append(separator);
+		if (activity.getResource() != null) {
+			msg.append("resource: '").append(activity.getResource()).append("'").append(separator);
+		}
 		if (activity.getElapsedTime() != 0) {
 			msg.append("usec: '").append(activity.getElapsedTime()).append("'").append(separator);
 		}

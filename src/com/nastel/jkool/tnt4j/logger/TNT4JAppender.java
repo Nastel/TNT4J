@@ -46,7 +46,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <ul>
  * 
  * <li>This appender does not require a layout.</li>
- * <li>TNT4J hash tags below can be passed using {@code MDC}.</li>
+ * <li>TNT4J hash tags can be passed using log4j messages (using <code>#tag=value</code> convention) as well as {@code MDC}.</li>
  * <li>All messages logged to this appender will be sent to all defined sinks as configured by tnt4j configuration.</li>
  *
  * </ul>
@@ -83,7 +83,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <table>
  * <tr><td><b>app</b></td>				<td>Application/source name</td></tr>
  * <tr><td><b>usr</b></td>				<td>User name</td></tr>
- * <tr><td><b>cid</b></td>				<td>Correlator for relating events</td></tr>
+ * <tr><td><b>cid</b></td>				<td>Correlator for relating events across threads, applications, servers</td></tr>
  * <tr><td><b>tag</b></td>				<td>User defined tag</td></tr>
  * <tr><td><b>loc</b></td>				<td>Location specifier</td></tr>
  * <tr><td><b>opn</b></td>			    <td>Event/Operation name</td></tr>
@@ -246,7 +246,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 	private TrackingEvent processEventMessage(Map<String, Object> attrs, 
 			TrackingActivity activity, LoggingEvent jev, String eventMsg, Throwable ex) {
 		int rcode = 0;
-		long evTime = jev.getTimeStamp(), startTime = 0, elapsedTimeUsec = 0, ageTimeUsec = 0, endTime = 0;
+		long evTime = jev.getTimeStamp(), startTime = 0, elapsedTimeUsec = 0, endTime = 0;
 	
 		OpCompCode ccode = getOpCompCode(jev);
 		OpLevel level = getOpLevel(jev);
@@ -269,7 +269,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 			} else if (key.equalsIgnoreCase(PARAM_ELAPSED_TIME_LABEL)) {
 				elapsedTimeUsec = Long.parseLong(value);
 			} else if (key.equalsIgnoreCase(PARAM_AGE_TIME_LABEL)) {
-				ageTimeUsec = Long.parseLong(value);
+				event.setMessageAge(Long.parseLong(value));
 			} else if (key.equalsIgnoreCase(PARAM_START_TIME_LABEL)) {
 				startTime = Long.parseLong(value);
 			} else if (key.equalsIgnoreCase(PARAM_START_TIME_LABEL)) {
@@ -290,12 +290,11 @@ public class TNT4JAppender extends AppenderSkeleton {
 				event.setSource(logger.getConfiguration().getSourceFactory().newSource(value));
 			}
 		}		
-		long elapsedTime = elapsedTimeUsec/1000;
-		startTime = startTime == 0? (evTime - elapsedTime): evTime;
-		endTime = endTime == 0? (startTime + elapsedTime): endTime;
+		long elapsedTime = elapsedTimeUsec/1000; // convert usec to milliseconds
+		startTime = startTime <= 0 ? (evTime - elapsedTime): evTime;
+		endTime = endTime <= 0 ? (startTime + elapsedTime): endTime;
 		
 		event.start(startTime);
-		event.setMessageAge(ageTimeUsec);
 		event.stop(ccode, rcode, ex, endTime);
 		return event;
 	}
@@ -303,6 +302,9 @@ public class TNT4JAppender extends AppenderSkeleton {
 	private OpLevel getOpLevel(LoggingEvent event) {
 		Level lvl = event.getLevel();
 		if (lvl == Level.INFO) {
+			return OpLevel.INFO;
+		}
+		else if (lvl == Level.FATAL) {
 			return OpLevel.FATAL;
 		}
 		else if (lvl == Level.ERROR) {
@@ -390,7 +392,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 				if (value.startsWith("'") && value.endsWith("'"))
 					value = StringEscapeUtils.unescapeJava(value.substring(1, value.length()-1));
 				tags.put(name, value);
-			}
+			} 
 		}
 		return tags;
 	}
