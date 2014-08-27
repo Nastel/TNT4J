@@ -9,14 +9,16 @@ First, all TNT4J messages can be routed via a log4j event sink and therefore can
 
 Second, TNT4J includes `TNT4JAppender` for log4j which allows developers to send log4j messages to TNT4J via this appender and take advantage of TNT4j functionality.
 
-Developers may also enrich log4j messages and pass context to TNT4J using hash tag enrichment scheme whoch are used to decorate log4j messages with important meta data about each log message. This meta data is used to generate TNT4J tracking events:
+Developers may also enrich log4j messages and pass context to TNT4J using hashtag enrichment scheme. Hashtags are used to decorate log4j messages with important meta data about each log message. This meta data is used to generate TNT4J tracking events (same tags can be passed using log4j `MDC` object):
 ```java
 logger.info("Starting a tnt4j activity #beg=Test, #app=" + Log4JTest.class.getName());
 logger.warn("First log message #app=" + Log4JTest.class.getName() + ", #msg='1 Test warning message'");
 logger.error("Second log message #app=" + Log4JTest.class.getName() + ", #msg='2 Test error message'", new Exception("test exception"));
 logger.info("Ending a tnt4j activity #end=Test, #app=" + Log4JTest.class.getName());
 ```
-Above example related messages between first and last into a related logical activity. Hashtags `#beg` and `#end` are used to demarcate actviity boundaries. This method also supports nested activities. Below is a sample log4j appender configuration:
+Above example groups messages between first and last into a related logical collection called `Activity`. Activity is simply a collection of logically related events/messages. Hashtags `#beg` and `#end` are used to demarcate activity boundaries. This method also supports nested activities. 
+
+Below is a sample log4j appender configuration:
 ```
 ### Default TNT4J Appender configuration
 log4j.appender.tnt4j=com.nastel.jkool.tnt4j.logger.TNT4JAppender
