@@ -90,13 +90,13 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <tr><td><b>opt</b></td>			    <td>Event/Operation Type - Value must be either a member of {@link OpType} or the equivalent numeric value</td></tr>
  * <tr><td><b>rsn</b></td>				<td>Resource name on which operation/event took place</td></tr>
  * <tr><td><b>msg</b></td>				<td>Event message (user data) enclosed in single quotes e.g. <code>#msg='My error message'<code></td></tr>
- * <tr><td><b>sev</b></td>				<td>Event Severity - Value can be either a member of {@link OpLevel} or any numeric value</td></tr>
- * <tr><td><b>ccd</b></td>				<td>Event Completion Code - Value must be either a member of {@link OpCompCode} or the equivalent numeric value</td></tr>
- * <tr><td><b>rcd</b></td>				<td>Reason Code</td></tr>
- * <tr><td><b>elt</b></td>			    <td>Elapsed Time of event, in microseconds</td></tr>
+ * <tr><td><b>sev</b></td>				<td>Event severity - Value can be either a member of {@link OpLevel} or any numeric value</td></tr>
+ * <tr><td><b>ccd</b></td>				<td>Event completion code - Value must be either a member of {@link OpCompCode} or the equivalent numeric value</td></tr>
+ * <tr><td><b>rcd</b></td>				<td>Reason code</td></tr>
+ * <tr><td><b>elt</b></td>			    <td>Elapsed time of event, in microseconds</td></tr>
  * <tr><td><b>age</b></td>			    <td>Message/event age in microseconds (useful when receiving messages, designating message age on receipt)</td></tr>
- * <tr><td><b>stt</b></td>			    <td>Start Time, as the number of milliseconds since epoch</td></tr>
- * <tr><td><b>ent</b></td>				<td>End Time, as the number of milliseconds since epoch</td></tr>
+ * <tr><td><b>stt</b></td>			    <td>Start time, as the number of milliseconds since epoch</td></tr>
+ * <tr><td><b>ent</b></td>				<td>End time, as the number of milliseconds since epoch</td></tr>
  * </table>
  *
  * <p>An example of annotating (TNT4J) a single log message using log4j:</p>
@@ -114,7 +114,6 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * @version $Revision: 1 $
  * 
  */
-
 public class TNT4JAppender extends AppenderSkeleton {
 	public static final String DEFAULT_OP_NAME 			 = "LoggingEvent";
 		
@@ -146,18 +145,41 @@ public class TNT4JAppender extends AppenderSkeleton {
 	private boolean metricsOnException = true;
 	private long metricsFrequency = 60, lastSnapshot = 0;
 
+	/**
+	 * Obtain source name associated with this appender.
+	 * This name is used tnt4j source for loading tnt4j configuration.
+	 *
+	 * @return source name string that maps to tnt4j configuration
+	 */
 	public String getSourceName() {
 		return sourceName;
 	}
 	
+	/**
+	 * Set source name associated with this appender.
+	 * This name is used tnt4j source for loading tnt4j configuration.
+	 *
+	 */
 	public void setSourceName(String name) {
 		sourceName = name;
 	}
 	
+	/**
+	 * Obtain source type associated with this appender see {@code SourceType} 
+	 *
+	 * @return source type string representation
+	 * @see SourceType
+	 */
 	public String getSourceType() {
 		return sourceType.toString();
 	}
 	
+	/**
+	 * Assign default source type string see {@code SourceType} 
+	 *
+	 * @param type source type string representation, see {@code SourceType}
+	 * @see SourceType
+	 */
 	public void setSourceType(String type) {
 		sourceType = SourceType.valueOf(type);
 	}
@@ -412,6 +434,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 	/**
 	 * Return whether appender generates metrics log entries with exception
 	 *
+	 * @return true to publish default jvm metrics when exception is logged
 	 */
 	public boolean getMetricsOnException() {
 		return metricsOnException;
