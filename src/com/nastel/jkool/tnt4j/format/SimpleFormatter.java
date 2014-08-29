@@ -117,6 +117,7 @@ public class SimpleFormatter extends DefaultFormatter {
 			msg.append("track-id: '").append(event.getTrackingId()).append("'").append(separator);
 		}
 		msg.append("mime-type: '").append(event.getMimeType()).append("'").append(separator);
+		msg.append("charset: '").append(event.getCharset()).append("'").append(separator);
 		msg.append("encoding: '").append(event.getEncoding()).append("'");
 		if (event.getOperation().getSnapshotCount() > 0) {
 			msg.append(separator);

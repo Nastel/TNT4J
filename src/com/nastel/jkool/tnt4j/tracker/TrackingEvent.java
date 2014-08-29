@@ -213,7 +213,7 @@ public class TrackingEvent extends Message implements Trackable {
 		operation.setCorrelator(correlator);
 		operation.setResource(Utils.getVMName());
 		operation.setException(Utils.getThrowable(args));
-		source = src;
+		setSource(src);
 		setTag(tag);
 	}
 
@@ -237,7 +237,7 @@ public class TrackingEvent extends Message implements Trackable {
 		operation.setCorrelator(correlator);
 		operation.setResource(Utils.getVMName());
 		operation.setException(Utils.getThrowable(args));
-		source = src;
+		setSource(src);
 		setTag(tag);
 	}
 

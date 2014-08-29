@@ -79,6 +79,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	public static final String JSON_WAIT_TIME_USEC_LABEL = "wait-time-usec";
 	public static final String JSON_MSG_AGE_USEC_LABEL = "msg-age-usec";
 	public static final String JSON_MSG_ENC_LABEL = "encoding";
+	public static final String JSON_MSG_CHARSET_LABEL = "charset";
 	public static final String JSON_MSG_MIME_LABEL = "mime-type";
 	public static final String JSON_MSG_SIZE_LABEL = "msg-size";
 	public static final String JSON_MSG_TAG_LABEL = "msg-tag";
@@ -241,6 +242,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		jsonString.append(Utils.quote(JSON_MSG_SIZE_LABEL)).append(ATTR_SEP).append(event.getSize()).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_MSG_MIME_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getMimeType())).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_MSG_ENC_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getEncoding())).append(ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_MSG_CHARSET_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getCharset())).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getMessage()));
 
 		String exStr = event.getOperation().getExceptionString();

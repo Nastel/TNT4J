@@ -15,6 +15,7 @@
  */
 package com.nastel.jkool.tnt4j.core;
 
+import java.nio.charset.Charset;
 import java.util.UUID;
 
 import org.apache.commons.codec.binary.Base64;
@@ -23,11 +24,11 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 
 /**
- * <p>Implements a Message entity .</p>
+ * <p>Implements a Message entity.</p>
  *
- * <p>A <code>Message</code> represents a logical message being transported
- * between a set of entities. Message has id, size, content with a set of arguments
- * and age.
+ * <p>A <code>Message</code> represents a logical message represented by: mime type, encoding (e.g. base64) and character set see{@code Charset}.
+ * Messages are exchanged between a set of software entities (applications). Message has tracking id, size, tag and content with a set of arguments
+ * and age. Content is always represented as text and binary data encoded with base64.
  * </p>
  *
  * @see Activity
@@ -37,11 +38,13 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 7 $
  */
 public class Message {
-	public static final String ENCODING_BASE64 = "base64";
-	public static final String ENCODING_DEFAULT = "default";
+	public static final String ENCODING_BASE64 	= "base64";
+	public static final String ENCODING_NONE 	= "none";
+	public static final String CHARSET_DEFAULT 	= Charset.defaultCharset().displayName();
 
-	public static final String MIME_BINARY = "application/octet-stream";
-	public static final String MIME_TEXT_PLAIN = "text/plain";
+
+	public static final String MIME_TYPE_BINARY = "application/octet-stream";
+	public static final String MIME_TYPE_TEXT_PLAIN = "text/plain";
 	
 	private String		signature;
 	private int			size;
@@ -49,8 +52,9 @@ public class Message {
 	private String		strData;
 	private Object[]	argList;
 	private long		messageAge;
-	private String		mimeType = MIME_TEXT_PLAIN;
-	private String		encoding = ENCODING_DEFAULT;
+	private String		mimeType = MIME_TYPE_TEXT_PLAIN;
+	private String		encoding = ENCODING_NONE;
+	private String		charset = CHARSET_DEFAULT;
 
 
 
@@ -103,7 +107,7 @@ public class Message {
 	}
 
 	/**
-	 * Gets message encoding as defined by java character encoding
+	 * Gets message encoding 
 	 *
 	 * @return message encoding
 	 */
@@ -112,11 +116,30 @@ public class Message {
     }
 
 	/**
-	 * Sets message character encoding
-	 *
+	 * Sets message encoding e.g. "base64"
+	 * 
+	 * @param encoding message content encoding type such as "base64" see {@code Message.ENCODING_BASE64}
 	 */
 	public void setEncoding(String encoding) {
 	    this.encoding = encoding;
+    }
+
+	/**
+	 * Gets message character as defined by {@code Charset}
+	 *
+	 * @return message encoding
+	 */
+	public String getCharset() {
+	    return charset;
+    }
+
+	/**
+	 * Sets message character set see {@code Charset}
+	 *
+	 * @param charset character set of the body of the message see {@code Charset}
+	 */
+	public void setCharset(String charset) {
+	    this.charset = charset;
     }
 
 	/**
@@ -130,6 +153,8 @@ public class Message {
 
 	/**
 	 * Sets message mime type
+	 * 
+	 * @param mimeType mime type of the message (default <code>text/plain</code>)
 	 *
 	 */
 	public void setMimeType(String mimeType) {
@@ -280,7 +305,7 @@ public class Message {
 	public void setMessage(byte[] bytes, Object...args) {
 		strData = new String(Base64.encodeBase64(bytes));
 		setEncoding(ENCODING_BASE64);
-		setMimeType(MIME_BINARY);
+		setMimeType(MIME_TYPE_BINARY);
 		if (strData != null) {
 			setSize(strData.length());
 		} else setSize(0);
