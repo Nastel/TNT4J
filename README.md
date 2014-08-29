@@ -318,6 +318,7 @@ TNT4J depends on the following external packages:
 * Apache commons lang3 3.0.1 (http://commons.apache.org/proper/commons-lang/)
 * Apache commons logging 1.2.17 (http://commons.apache.org/proper/commons-logging/)
 * Apache commons net 3.3 (http://commons.apache.org/proper/commons-net/)
+* Apache commons codec 1.9 (http://commons.apache.org/proper/commons-codec/)
 * Apache Log4J 1.2.17 (http://logging.apache.org/log4j/1.2/)
 
 To build TNT4J:
