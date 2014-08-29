@@ -76,6 +76,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	public static final String JSON_ELAPSED_TIME_USEC_LABEL = "elasped-time-usec";
 	public static final String JSON_WAIT_TIME_USEC_LABEL = "wait-time-usec";
 	public static final String JSON_MSG_AGE_USEC_LABEL = "msg-age-usec";
+	public static final String JSON_MSG_ENC_LABEL = "encoding";
+	public static final String JSON_MSG_MIME_LABEL = "mime-type";
 	public static final String JSON_MSG_SIZE_LABEL = "msg-size";
 	public static final String JSON_MSG_TAG_LABEL = "msg-tag";
 	public static final String JSON_MSG_TEXT_LABEL = "msg-text";
@@ -232,13 +234,22 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			jsonString.append(Utils.quote(JSON_MSG_TAG_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getTag()))
 			        .append(ATTR_JSON);
 		}
+		int snapCount = event.getOperation().getSnapshotCount();
+		jsonString.append(Utils.quote(JSON_SNAPSHOT_COUNT_LABEL)).append(ATTR_SEP).append(snapCount);
 		jsonString.append(Utils.quote(JSON_MSG_SIZE_LABEL)).append(ATTR_SEP).append(event.getSize()).append(ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_MSG_MIME_LABEL)).append(ATTR_SEP).append(event.getMimeType()).append(ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_MSG_ENC_LABEL)).append(ATTR_SEP).append(event.getEncoding()).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getMessage()));
 
 		String exStr = event.getOperation().getExceptionString();
 		if (exStr != null) {
 			jsonString.append(ATTR_JSON);
 			jsonString.append(Utils.quote(JSON_EXCEPTION_LABEL)).append(ATTR_SEP).append(Utils.quote(exStr));
+		}
+		if (snapCount > 0) {
+			jsonString.append(ATTR_JSON);
+			jsonString.append(Utils.quote(JSON_SNAPSHOTS_LABEL)).append(ATTR_SEP).append(ARRAY_START_JSON).append(
+			        itemsToJSON(event.getOperation().getSnapshots())).append(ARRAY_END);
 		}
 		jsonString.append(END_JSON);
 		return jsonString.toString();

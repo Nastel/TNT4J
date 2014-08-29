@@ -17,7 +17,6 @@ package com.nastel.jkool.tnt4j.core;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import com.nastel.jkool.tnt4j.source.Source;
@@ -50,7 +49,6 @@ public class Activity extends Operation implements Trackable {
 	private ActivityStatus status = ActivityStatus.BEGIN;
 
 	private HashSet<String> correlators = new HashSet<String>(89);
-	private ArrayList<Snapshot> snapshots =  new ArrayList<Snapshot>(32);
 	private ArrayList<ActivityListener> activityListeners = null;
 
 	/**
@@ -289,7 +287,7 @@ public class Activity extends Operation implements Trackable {
 			correlators.add(cid);
 		}
 		if (item instanceof Snapshot) {
-			snapshots.add((Snapshot)item);
+			addSnapshot((Snapshot)item);
 		}
 		item.setParentId(this);
 	}
@@ -325,25 +323,6 @@ public class Activity extends Operation implements Trackable {
 	public int getIdCount() {
 		return correlators != null ? correlators.size() : 0;
 	}
-
-	/**
-	 * Gets the list of snapshots for this Activity.
-	 *
-	 * @return list of Activity snapshots
-	 */
-	public List<Snapshot> getSnapshots() {
-		return snapshots;
-	}
-
-	/**
-	 * Gets the number of snapshots for this Activity.
-	 *
-	 * @return number of snapshots
-	 */
-	public int getSnapshotCount() {
-		return snapshots != null ? snapshots.size() : 0;
-	}
-
 
 	/**
 	 * {@inheritDoc}

@@ -30,10 +30,6 @@ import com.nastel.jkool.tnt4j.core.PropertySnapshot;
  */
 
 public class Dump extends PropertySnapshot implements DumpCollection {
-	/**
-     * 
-     */
-	private static final long serialVersionUID = 1L;
 	DumpProvider dProv;
 	Throwable reason = null;
 

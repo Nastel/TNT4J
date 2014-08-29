@@ -15,6 +15,10 @@
  */
 package com.nastel.jkool.tnt4j.core;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Set;
+
 import com.nastel.jkool.tnt4j.utils.TimeService;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
@@ -50,9 +54,9 @@ public class Operation {
 	public static final String NOOP = "NOOP";
 
 
-	private String		opName;
-	private OpType		opType;
-	private OpCompCode	opCC = OpCompCode.SUCCESS;
+	private String				opName;
+	private OpType				opType;
+	private OpCompCode			opCC = OpCompCode.SUCCESS;
 	private OpLevel				opLevel = OpLevel.INFO;
 	private UsecTimestamp		startTime;
 	private UsecTimestamp		endTime;
@@ -68,6 +72,7 @@ public class Operation {
 	private String				correlator;
 	private long          		pid;
 	private long          		tid;
+	private HashMap<String, Snapshot> snapshots =  new HashMap<String, Snapshot>(32);
 
 	/**
 	 * Creates a Operation with the specified properties.
@@ -654,10 +659,11 @@ public class Operation {
 		   .append("Location:").append(getLocation()).append(",")
 		   .append("Resource:").append(res == null ? "null" : res.toString()).append(",")
 		   .append("User:").append(getUser()).append(",")
+		   .append("SnapCount=").append(getSnapshotCount()).append(",")
 		   .append("CompCode:").append(getCompCode()).append(",")
+		   .append("ReasonCode:").append(getReasonCode()).append(",")
 		   .append("PID:").append(getPID()).append(",")
 		   .append("TID:").append(getTID()).append(",")
-		   .append("ReasonCode:").append(getReasonCode()).append(",")
 		   .append("ElapsedUsec:").append(getElapsedTime()).append(",")
 		   .append("WaitUsec:").append(getWaitTime()).append(",")
 		   .append("StartTime:[").append(sTime == null ? "null" : sTime.toString()).append("],")
@@ -665,5 +671,55 @@ public class Operation {
 		   .append("Exception:").append(getExceptionString()).append("}");
 
 		return str.toString();
+	}
+
+
+	
+	/**
+	 * Gets all available snapshot keys associated with this operation
+	 *
+	 * @return a set of all available snapshot keys
+	 */
+	public Set<String> getSnapshotIds() {
+		return snapshots.keySet();
+	}
+
+	/**
+	 * Gets a snapshot associated with a specific key/id
+	 *
+	 * @return snapshot associated with a given id
+	 * @see Snapshot
+	 */
+	public Snapshot getSnapshot(Object snapId) {
+		return snapshots.get(snapId);
+	}
+
+	/**
+	 * Associate a snapshot with this operation
+	 *
+	 * @param snapshot with a list of properties
+	 * @see Snapshot
+	 */
+	public void addSnapshot(Snapshot snapshot) {
+		snapshots.put(snapshot.getId(), snapshot);		
+	}
+	
+	/**
+	 * Gets the list of available snapshots
+	 *
+	 * @return list of available snapshots
+	 * @see Snapshot
+	 */
+	public Collection<Snapshot> getSnapshots() {
+		return snapshots.values();
+	}
+
+	/**
+	 * Gets the number of available snapshots.
+	 *
+	 * @return number of available snapshots
+	 */
+	public int getSnapshotCount() {
+		return snapshots != null ? snapshots.size() : 0;
 	}
 }

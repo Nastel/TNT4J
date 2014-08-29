@@ -17,7 +17,10 @@ package com.nastel.jkool.tnt4j.core;
 
 import java.util.UUID;
 
+import org.apache.commons.codec.binary.Base64;
+
 import com.nastel.jkool.tnt4j.utils.Utils;
+
 
 /**
  * <p>Implements a Message entity .</p>
@@ -34,12 +37,20 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 7 $
  */
 public class Message {
+	public static final String ENCODING_BASE64 = "base64";
+	public static final String ENCODING_DEFAULT = "default";
+
+	public static final String MIME_BINARY = "application/octet-stream";
+	public static final String MIME_TEXT_PLAIN = "text/plain";
+	
 	private String		signature;
 	private int			size;
 	private String		tag;
 	private String		strData;
 	private Object[]	argList;
 	private long		messageAge;
+	private String		mimeType = MIME_TEXT_PLAIN;
+	private String		encoding = ENCODING_DEFAULT;
 
 
 
@@ -76,6 +87,54 @@ public class Message {
 		setTrackingId(signature);
 		setMessage(msg, args);
 	}
+
+	/**
+	 * Creates a message object with the specified properties.
+	 *
+	 * @param signature unique signature identifying message
+	 * @param msg actual byte message associated with this instance
+	 * @param args argument list passed along the message
+	 * @throws NullPointerException if any arguments are <code>null</code>
+	 * @throws IllegalArgumentException if signature is empty or too long
+	 */
+	public Message(String signature, byte[] msg, Object...args) {
+		setTrackingId(signature);
+		setMessage(msg, args);
+	}
+
+	/**
+	 * Gets message encoding as defined by java character encoding
+	 *
+	 * @return message encoding
+	 */
+	public String getEncoding() {
+	    return encoding;
+    }
+
+	/**
+	 * Sets message character encoding
+	 *
+	 */
+	public void setEncoding(String encoding) {
+	    this.encoding = encoding;
+    }
+
+	/**
+	 * Gets message mime type
+	 *
+	 * @return message encoding
+	 */
+	public String getMimeType() {
+	    return mimeType;
+    }
+
+	/**
+	 * Sets message mime type
+	 *
+	 */
+	public void setMimeType(String mimeType) {
+	    this.mimeType = mimeType;
+    }
 
 	/**
 	 * Gets the message signature, which is the unique identifier for the message.
@@ -212,6 +271,24 @@ public class Message {
 
 
 	/**
+	 * Sets binary data for the message. Binary message will be base64 encoded
+	 * and message encoding set to "base64".
+	 *
+	 * @param bytes binary message content
+	 * @param args list of arguments associated with this message
+	 */
+	public void setMessage(byte[] bytes, Object...args) {
+		strData = new String(Base64.encodeBase64(bytes));
+		setEncoding(ENCODING_BASE64);
+		setMimeType(MIME_BINARY);
+		if (strData != null) {
+			setSize(strData.length());
+		} else setSize(0);
+		argList = args;
+	}
+
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -253,6 +330,8 @@ public class Message {
 		str.append(getClass().getSimpleName()).append("(")
 			.append("TrackId:").append(getTrackingId()).append(",")
 			.append("Tag:").append(getTag()).append(",")
+			.append("Encoding:").append(getEncoding()).append(",")
+			.append("MimeType:").append(getMimeType()).append(",")
 			.append("Size:").append(getSize()).append(")");
 
 		return str.toString();

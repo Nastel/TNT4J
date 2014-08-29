@@ -162,7 +162,7 @@ public class TrackingEvent extends Message implements Trackable {
 	 *
 	 */
 	protected TrackingEvent() {
-		this(null, OpLevel.NONE, OpType.NOOP, Operation.NOOP, null, null, null);
+		this(null, OpLevel.NONE, OpType.NOOP, Operation.NOOP, null, null, (String)null);
 	}
 
 	/**
@@ -181,6 +181,20 @@ public class TrackingEvent extends Message implements Trackable {
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
+	 * This constructor will assign a unique event signature using newUUID() call
+	 *
+	 * @param severity severity level
+	 * @param opName operation name associated with this event (tracking event name)
+	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
+	 * @param msg binary message associated with this event
+	 * @param args argument list passed along side the message
+	 */
+	protected TrackingEvent(Source src, OpLevel severity, String opName, String correlator, byte[] msg, Object...args) {
+		this(src, severity, OpType.EVENT, opName, correlator, null, msg, args);
+	}
+
+	/**
+	 * Create a new instance of tracking event that can be timed and reported.
 	 *
 	 * @param severity severity level
 	 * @param opType operation type
@@ -193,6 +207,30 @@ public class TrackingEvent extends Message implements Trackable {
 	 * @see OpType
 	 */
 	protected TrackingEvent(Source src, OpLevel severity, OpType opType, String opName, String correlator, String tag, String msg, Object...args) {
+		super(newUUID(), msg, args);
+		operation = new Operation(opName, opType);
+		operation.setSeverity(severity);
+		operation.setCorrelator(correlator);
+		operation.setResource(Utils.getVMName());
+		operation.setException(Utils.getThrowable(args));
+		source = src;
+		setTag(tag);
+	}
+
+	/**
+	 * Create a new instance of tracking event that can be timed and reported.
+	 *
+	 * @param severity severity level
+	 * @param opType operation type
+	 * @param opName operation name associated with this event (tracking event name)
+	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
+	 * @param tag associated with this event
+	 * @param msg binary message associated with this event
+	 * @param args argument list passed along side the message
+	 * @see OpLevel
+	 * @see OpType
+	 */
+	protected TrackingEvent(Source src, OpLevel severity, OpType opType, String opName, String correlator, String tag, byte[] msg, Object...args) {
 		super(newUUID(), msg, args);
 		operation = new Operation(opName, opType);
 		operation.setSeverity(severity);

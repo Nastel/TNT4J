@@ -27,6 +27,7 @@
         <include name="commons-configuration-*.jar"/>
         <include name="commons-lang*-*.jar"/>
         <include name="commons-logging-*.jar"/>
+        <include name="commons-codec-*.jar"/>
         <include name="commons-net-*.jar"/>
         <include name="log4j-*.jar"/>
       </fileset>

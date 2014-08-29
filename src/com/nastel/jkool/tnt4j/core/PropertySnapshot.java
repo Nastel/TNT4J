@@ -29,10 +29,10 @@ import com.nastel.jkool.tnt4j.source.Source;
  * @version $Revision: 8 $
  */
 public class PropertySnapshot  implements Snapshot {
-	private static final long serialVersionUID = 1L;
-
+	
 	private OpLevel level;
 	private OpType opType = OpType.INQUIRE;
+	private String id = null;
 	private String category = null;
 	private String snapName = null;
 	private String correlator;
@@ -109,6 +109,7 @@ public class PropertySnapshot  implements Snapshot {
 		timeStamp = time;
 		level = lvl;
 		opType = type;
+		id = snapName + "@" + category;
 	}
 
 	/**
@@ -165,6 +166,11 @@ public class PropertySnapshot  implements Snapshot {
 	 */
 	public void setSource(Source src) {
 		source = src;
+	}
+
+	@Override
+	public String getId() {
+		return id;
 	}
 
 	@Override

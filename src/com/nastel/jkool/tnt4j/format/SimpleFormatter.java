@@ -15,7 +15,7 @@
  */
 package com.nastel.jkool.tnt4j.format;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.TimeZone;
 
 import com.nastel.jkool.tnt4j.core.Property;
@@ -78,6 +78,7 @@ public class SimpleFormatter extends DefaultFormatter {
 		msg.append("sev: '").append(event.getSeverity()).append("'").append(separator);
 		msg.append("type: '").append(event.getOperation().getType()).append("'").append(separator);
 		msg.append("name: '").append(event.getOperation().getResolvedName()).append("'").append(separator);
+		msg.append("snap-count: '").append(event.getOperation().getSnapshotCount()).append("'").append(separator);
 		if (event.getOperation().getResource() != null) {
 			msg.append("resource: '").append(event.getOperation().getResource()).append("'").append(separator);
 		}
@@ -112,7 +113,19 @@ public class SimpleFormatter extends DefaultFormatter {
 		if (event.getParentId() != null) {
 			msg.append("parent-id: '").append(event.getParentId()).append("'").append(separator);
 		}
-		msg.append("track-id: '").append(event.getTrackingId()).append("'");
+		if (event.getTrackingId() != null) { 
+			msg.append("track-id: '").append(event.getTrackingId()).append("'").append(separator);
+		}
+		msg.append("mime-type: '").append(event.getMimeType()).append("'").append(separator);
+		msg.append("encoding: '").append(event.getEncoding()).append("'");
+		if (event.getOperation().getSnapshotCount() > 0) {
+			msg.append(separator);
+			Collection<Snapshot> snapshots = event.getOperation().getSnapshots();
+			for (Snapshot snap : snapshots) {
+				msg.append("\n\t");
+				format(msg, snap);
+			}
+		}
 		msg.append("}");
 		return msg.toString();
 	}
@@ -156,7 +169,8 @@ public class SimpleFormatter extends DefaultFormatter {
 		}
 		msg.append("track-id: '").append(activity.getTrackingId()).append("'");
 		if (activity.getSnapshotCount() > 0) {
-			List<Snapshot> snapshots = activity.getSnapshots();
+			msg.append(separator);
+			Collection<Snapshot> snapshots = activity.getSnapshots();
 			for (Snapshot snap : snapshots) {
 				msg.append("\n\t");
 				format(msg, snap);
@@ -173,7 +187,9 @@ public class SimpleFormatter extends DefaultFormatter {
 	}
 	
 	protected StringBuilder format(StringBuilder msg, Snapshot snap) {
-		msg.append("Snapshot(name: '").append(snap.getName()).append("@").append(snap.getCategory()).append("'").append(separator);
+		msg.append("Snapshot(id: '").append(snap.getId()).append("'").append(separator);
+		msg.append("category: '" + snap.getCategory()).append("'").append(separator);
+		msg.append("name: '" + snap.getName()).append("'").append(separator);
 		msg.append("level: '" + snap.getSeverity()).append("'").append(separator);
 		msg.append("type: '" + snap.getType()).append("'").append(separator);
 		msg.append("time: '" + snap.getTimeStamp()).append("'");
