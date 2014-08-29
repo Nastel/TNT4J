@@ -68,6 +68,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	public static final String JSON_COMP_CODE_NO_LABEL = "comp-code-no";
 	public static final String JSON_SEVERITY_LABEL = "severity";
 	public static final String JSON_SEVERITY_NO_LABEL = "severity-no";
+	public static final String JSON_ID_LABEL = "id";
 	public static final String JSON_PID_LABEL = "pid";
 	public static final String JSON_TID_LABEL = "tid";
 	public static final String JSON_USER_LABEL = "user";
@@ -235,10 +236,10 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			        .append(ATTR_JSON);
 		}
 		int snapCount = event.getOperation().getSnapshotCount();
-		jsonString.append(Utils.quote(JSON_SNAPSHOT_COUNT_LABEL)).append(ATTR_SEP).append(snapCount);
+		jsonString.append(Utils.quote(JSON_SNAPSHOT_COUNT_LABEL)).append(ATTR_SEP).append(snapCount).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_MSG_SIZE_LABEL)).append(ATTR_SEP).append(event.getSize()).append(ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_MSG_MIME_LABEL)).append(ATTR_SEP).append(event.getMimeType()).append(ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_MSG_ENC_LABEL)).append(ATTR_SEP).append(event.getEncoding()).append(ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_MSG_MIME_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getMimeType())).append(ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_MSG_ENC_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getEncoding())).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getMessage()));
 
 		String exStr = event.getOperation().getExceptionString();
@@ -375,13 +376,16 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			        Utils.quote(snap.getParentId())).append(ATTR_JSON);
 		}
 
+		if (snap.getId() != null) {
+			jsonString.append(Utils.quote(JSON_ID_LABEL)).append(ATTR_SEP)
+			        .append(Utils.quote(snap.getId())).append(ATTR_JSON);
+		}
 		if (snap.getCategory() != null) {
 			jsonString.append(Utils.quote(JSON_CATEGORY_LABEL)).append(ATTR_SEP)
 			        .append(Utils.quote(snap.getCategory())).append(ATTR_JSON);
 		}
 		jsonString.append(Utils.quote(JSON_NAME_LABEL)).append(ATTR_SEP).append(Utils.quote(snap.getName())).append(
 		        ATTR_JSON);
-		
 		jsonString.append(Utils.quote(JSON_COUNT_LABEL)).append(ATTR_SEP).append(snap.size()).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_TIME_USEC_LABEL)).append(ATTR_SEP).append(snap.getTimeStamp().getTimeUsec()).append(ATTR_JSON);
 
