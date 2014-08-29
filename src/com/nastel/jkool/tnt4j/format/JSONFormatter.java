@@ -30,7 +30,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 /**
  * <p>
  * JSON implementation of <code>Formatter</code> interface provides default formatting of <code>TrackingActvity</code>,
- * <code>TrackingEvent</code>, <code>Property</code> into JSON format.
+ * <code>TrackingEvent</code>, <code>Snapshot</code>, <code>Property</code> into JSON format.
  * </p>
  * 
  * 
@@ -39,6 +39,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @see DefaultFormatter
  * @see TrackingActivity
  * @see TrackingEvent
+ * @see Snapshot
  * @see Property
  */
 
