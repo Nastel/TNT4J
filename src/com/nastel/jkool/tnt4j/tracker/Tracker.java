@@ -295,4 +295,35 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @see OpType
 	 */
 	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag, String msg, Object...args);	
+	
+	/**
+	 * Create a new instance of tracking event that can be timed and reported.
+	 * This constructor will assign a unique event signature using newUUID() call
+	 * NOOP event instance <code>NullEvent</code> is returned 
+	 * when <code>TrackingFilter</code> is set and returns false.
+	 *
+	 * @param severity severity level
+	 * @param opName operation name associated with this event (tracking event name)
+	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
+	 * @param msg binary message associated with this event
+	 * @param args argument list passed along with the message
+	 */
+	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, byte[] msg, Object...args);
+
+	/**
+	 * Create a new instance of tracking event that can be timed and reported.
+	 * NOOP event instance <code>NullEvent</code> is returned 
+	 * when <code>TrackingFilter</code> is set and returns false.
+	 *
+	 * @param severity severity level
+	 * @param opType operation type
+	 * @param opName operation name associated with this event (tracking event name)
+	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
+	 * @param tag associated with this event 
+	 * @param msg binary message associated with this event
+	 * @param args argument list passed along with the message
+	 * @see OpLevel
+	 * @see OpType
+	 */
+	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag, byte[] msg, Object...args);	
 }

@@ -975,6 +975,55 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
+	 * Create a new instance of tracking event that can be timed and reported. This constructor will assign a unique
+	 * event signature using newUUID() call
+	 *
+	 * @param severity
+	 *            severity level
+	 * @param opName
+	 *            operation name associated with this event (tracking event name)
+	 * @param correlator
+	 *            associated with this event (could be unique or passed from a correlated activity)
+	 * @param msg
+	 *            binary message associated with this event
+	 * @param args argument list passed along the message
+	 * @see OpLevel
+	 * @see TrackingEvent
+	 */
+	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, byte[] msg, Object...args) {
+		checkState();
+		return logger.newEvent(severity, opName, correlator, msg, args);
+	}
+
+
+	/**
+	 * Create a new instance of tracking event that can be timed and reported. This constructor will assign a unique
+	 * event signature using newUUID() call
+	 *
+	 * @param severity
+	 *            severity level
+	 * @param opType
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with this event (tracking event name)
+	 * @param correlator
+	 *            associated with this event (could be unique or passed from a correlated activity)
+	 * @param tag
+	 *            associated with this event
+	 * @param msg
+	 *            binary message associated with this event
+	 * @param args argument list passed along the message
+	 * @see TrackingEvent
+	 * @see OpType
+	 * @see OpLevel
+	 */
+	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator,
+	        String tag, byte[] msg, Object...args) {
+		checkState();
+		return logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
+	}
+
+	/**
 	 * Returns currently registered <code>Tracker</code> logger associated with the current thread. <code>Tracker</code>
 	 * logger is associated with the current thread after the register() call. <code>Tracker</code> logger instance is
 	 * not thread safe.

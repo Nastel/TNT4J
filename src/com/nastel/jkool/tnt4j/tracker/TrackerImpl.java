@@ -447,6 +447,38 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 	
 	@Override
+	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, byte[] msg, Object... args) {
+		long start = System.nanoTime();
+		try {
+			if (!isTrackingEnabled(severity, opName, correlator, msg, args)) {
+				return NULL_EVENT;
+			}
+			TrackingEvent event = new TrackingEvent(getSource(), severity, opName, correlator, msg, args);
+			event.getOperation().setUser(tConfig.getSource().getUser());
+			return event;
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
+		}
+	}
+
+	
+	@Override
+	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag,
+	        byte[] msg, Object... args) {
+		long start = System.nanoTime();
+		try {
+			if (!isTrackingEnabled(severity, opName, correlator, tag, msg, args)) {
+				return NULL_EVENT;
+			}
+			TrackingEvent event = new TrackingEvent(getSource(), severity, opType, opName, correlator, tag, msg, args);
+			event.getOperation().setUser(tConfig.getSource().getUser());
+			return event;
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
+		}
+	}
+	
+	@Override
 	protected void finalize() throws Throwable {
 		try {
 			close();
