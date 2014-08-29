@@ -1,6 +1,14 @@
 Why TNT4J 
 =====================================
-Several key features make TNT4J a prime logging choice for java applications:
+TNT4J is about tracking and tracing activities, transactions, behavior and performance via an easy to use API.
+
+Why track and trace?
+* Trace application behavior, performance to improve diagnostics
+* Track end-user behavior to improve usability, customer satisfaction
+* Track messages, binary, text, video, image, etc
+* Track location, mobility, GPS of your applications, users
+
+Several key features make TNT4J a prime choice for java applications:
 
 ### Log4j Integration
 TNT4J integrates with log4j or any other logging framework via a concept of an `EventSink`. TNT4J default integration is with log4j. 
