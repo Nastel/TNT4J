@@ -1,14 +1,16 @@
 Why TNT4J 
 =====================================
-TNT4J is about tracking and tracing activities, transactions, behavior and performance via an easy to use API.
+TNT4J is about tracking and tracing activities, transactions, behavior and performance via an easy to use API that behaves much like a logging framework.
 
 Why track and trace?
 * Trace application behavior, performance to improve diagnostics
 * Track end-user behavior to improve usability, customer satisfaction
-* Track messages, binary, text, video, image, etc
+* Track topology, communications, relationships between entities
+* Track messages, binary, text, video, image, voice, etc.
 * Track location, mobility, GPS of your applications, users
+* Track anything worth tracking in your application
 
-Several key features make TNT4J a prime choice for java applications:
+<b>Several key features make TNT4J a prime choice for your java application:</b>
 
 ### Log4j Integration
 TNT4J integrates with log4j or any other logging framework via a concept of an `EventSink`. TNT4J default integration is with log4j. 
