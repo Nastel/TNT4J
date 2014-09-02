@@ -188,10 +188,10 @@ public class SimpleFormatter extends DefaultFormatter {
 	}
 	
 	protected StringBuilder format(StringBuilder msg, Snapshot snap) {
-		msg.append("Snapshot(id: '").append(snap.getId()).append("'").append(separator);
+		msg.append("Snapshot(fqn: '").append(snap.getId()).append("'").append(separator);
 		msg.append("category: '" + snap.getCategory()).append("'").append(separator);
 		msg.append("name: '" + snap.getName()).append("'").append(separator);
-		msg.append("level: '" + snap.getSeverity()).append("'").append(separator);
+		msg.append("sev: '" + snap.getSeverity()).append("'").append(separator);
 		msg.append("type: '" + snap.getType()).append("'").append(separator);
 		msg.append("time: '" + snap.getTimeStamp()).append("'");
 		if (snap.getSource() != null) {

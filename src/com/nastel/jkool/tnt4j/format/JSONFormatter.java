@@ -69,7 +69,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	public static final String JSON_COMP_CODE_NO_LABEL = "comp-code-no";
 	public static final String JSON_SEVERITY_LABEL = "severity";
 	public static final String JSON_SEVERITY_NO_LABEL = "severity-no";
-	public static final String JSON_ID_LABEL = "id";
+	public static final String JSON_FQN_LABEL = "fqn";
 	public static final String JSON_PID_LABEL = "pid";
 	public static final String JSON_TID_LABEL = "tid";
 	public static final String JSON_USER_LABEL = "user";
@@ -385,7 +385,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		}
 
 		if (snap.getId() != null) {
-			jsonString.append(Utils.quote(JSON_ID_LABEL)).append(ATTR_SEP)
+			jsonString.append(Utils.quote(JSON_FQN_LABEL)).append(ATTR_SEP)
 			        .append(Utils.quote(snap.getId())).append(ATTR_JSON);
 		}
 		if (snap.getCategory() != null) {

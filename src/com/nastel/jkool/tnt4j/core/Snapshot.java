@@ -27,7 +27,7 @@ import java.util.Collection;
  */
 public interface Snapshot extends Trackable {
 	/**
-	 * Obtain snapshot id, which is a combination of name and category.
+	 * Obtain snapshot id (fully qualfied name), which is a combination of name and category.
 	 * <code>name@category</code>
 	 * 
 	 * @return snapshot id
