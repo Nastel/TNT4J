@@ -854,6 +854,85 @@ public class TrackingLogger implements Tracker {
 		logger.tnt(event);
 	}
 
+	/**
+	 * Report a single tracking event using a binary message body
+	 *
+	 * @param severity
+	 *            severity level of the reported message
+	 * @param opName
+	 *            operation name associated with the event message
+	 * @param correlator
+	 *            event correlator
+	 * @param msg
+	 *            event binary message
+	 * @param args
+	 *            argument list, exception passed along side given message
+	 * @see TrackingActivity
+	 * @see OpLevel
+	 */
+	public void tnt(OpLevel severity, String opName, String correlator, byte[] msg, Object...args) {
+		tnt(severity, OpType.CALL, opName, correlator,  0, msg, args);
+	}
+
+
+	/**
+	 * Report a single tracking event using a binary message body
+	 *
+	 * @param severity
+	 *            severity level of the reported message
+	 * @param opType
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with the event message
+	 * @param correlator
+	 *            event correlator
+	 * @param elapsed
+	 *            elapsed time of the event in milliseconds.
+	 * @param msg
+	 *            event binary message
+	 * @param args
+	 *            argument list, exception passed along side given message
+	 * @see TrackingActivity
+	 * @see OpLevel
+	 */
+	public void tnt(OpLevel severity, OpType opType, String opName, String correlator, long elapsed,
+			 byte[] msg, Object...args) {
+		tnt(severity, opType, opName, correlator, null, elapsed, msg, args);
+	}
+
+	/**
+	 * Report a single tracking event using a binary message body
+	 *
+	 * @param severity
+	 *            severity level of the reported message
+	 * @param opType
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with the event message
+	 * @param correlator
+	 *            event correlator
+	 * @param tag
+	 *            message tag
+	 * @param elapsed
+	 *            elapsed time of the event in milliseconds.
+	 * @param msg
+	 *            event binary message
+	 * @param args
+	 *            argument list, exception passed along side given message
+	 * @see TrackingActivity
+	 * @see OpLevel
+	 */
+	public void tnt(OpLevel severity, OpType opType, String opName, String correlator, String tag, long elapsed,
+			 byte[] msg, Object...args) {
+		checkState();
+		long endTime = TimeService.currentTimeMillis();
+		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
+		event.start(endTime - elapsed);
+		Throwable ex = Utils.getThrowable(args);
+		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
+		logger.tnt(event);
+	}
+
 	@Override
     public Snapshot newSnapshot(String cat, String name) {
 		checkState();
@@ -1043,6 +1122,7 @@ public class TrackingLogger implements Tracker {
 	 * @see TrackingFilter
 	 */
 	public void setTrackingFilter(TrackingFilter filter) {
+		checkState();
 		logger.setTrackingFilter(filter);
 	}
 
