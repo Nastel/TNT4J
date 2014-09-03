@@ -155,7 +155,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 				eventSink.open();
 			}
 		} finally {
-			if (!event.getOperation().isStopped()) {
+			if (!event.isStopped()) {
 				event.stop();
 			}
 			eventSink.log(event);						

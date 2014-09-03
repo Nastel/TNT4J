@@ -138,6 +138,24 @@ public class TrackingEvent extends Message implements Trackable {
 	}
 
 	/**
+	 * Determine if operation was ever started
+	 *
+	 * @return true if operation was started, false otherwise
+	 */
+	public boolean isStarted() {
+		return operation.isStarted();
+	}
+
+	/**
+	 * Determine if operation was ever stopped
+	 *
+	 * @return true if operation was stopped, false otherwise
+	 */
+	public boolean isStopped() {
+		return operation.isStopped();
+	}
+
+	/**
 	 * Return current severity level associated with this event
 	 *
 	 * @return severity level
