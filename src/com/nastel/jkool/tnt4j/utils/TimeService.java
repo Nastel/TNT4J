@@ -123,6 +123,14 @@ public class TimeService {
 	}
 	
 	/**
+	 * Obtain NTP synchronized current time in microseconds
+	 * 
+	 */
+	public static long currentTimeUsecs() {
+		return (System.currentTimeMillis() + adjustment)*1000;
+	}
+	
+	/**
 	 * Calculate overhead of <code>TimeService.currentTimeMillis()</code> based on a given number of
 	 * iterations.
 	 * 

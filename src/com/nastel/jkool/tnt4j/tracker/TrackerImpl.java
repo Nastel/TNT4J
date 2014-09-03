@@ -140,6 +140,9 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 				eventSink.open();
 			}
 		} finally {
+			if (!activity.isStopped()) {
+				activity.stop();
+			}
 			eventSink.log(activity);	
 			snapCount.addAndGet(activity.getSnapshotCount());
 			activityCount.incrementAndGet();
@@ -152,6 +155,9 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 				eventSink.open();
 			}
 		} finally {
+			if (!event.getOperation().isStopped()) {
+				event.stop();
+			}
 			eventSink.log(event);						
 			eventCount.incrementAndGet();
 		}

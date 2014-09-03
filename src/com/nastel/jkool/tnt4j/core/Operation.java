@@ -244,6 +244,24 @@ public class Operation {
 	}
 
 	/**
+	 * Determine if operation was ever started
+	 *
+	 * @return true if operation was started, false otherwise
+	 */
+	public boolean isStarted() {
+		return (this.startTime != null);
+	}
+
+	/**
+	 * Determine if operation was ever stopped
+	 *
+	 * @return true if operation was stopped, false otherwise
+	 */
+	public boolean isStopped() {
+		return (this.endTime != null);
+	}
+
+	/**
 	 * Gets the completion code for the operation.
 	 *
 	 * @return function completion code
@@ -548,14 +566,16 @@ public class Operation {
 		endTime = new UsecTimestamp(stopTime, stopTimeUsec);
 
 		if (startTime == null)
-			throw new IllegalStateException("stopping operation that was never started");
+			startTime = new UsecTimestamp(stopTime, stopTimeUsec);
 
 		if (endTime.compareTo(startTime) < 0)
 			throw new IllegalArgumentException("stop time is less than start time");
 
 		elapsedTime = endTime.difference(startTime);
-		stopTimeNano = System.nanoTime();	
-		elapsedTimeNano = stopTimeNano - startTimeNano;
+		if (startTimeNano > 0) {
+			stopTimeNano = System.nanoTime();	
+			elapsedTimeNano = stopTimeNano - startTimeNano;
+		}
 	}
 
 	/**

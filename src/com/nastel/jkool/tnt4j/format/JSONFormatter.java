@@ -25,6 +25,7 @@ import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
+import com.nastel.jkool.tnt4j.utils.TimeService;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -147,8 +148,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		} else {
 			StringBuilder jsonString = new StringBuilder(1024);
 			jsonString.append(START_JSON);
-			jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(
-			        Utils.quote(Utils.format(obj.toString(), args)));
+			jsonString.append(Utils.quote(JSON_TIME_USEC_LABEL)).append(ATTR_SEP).append(TimeService.currentTimeUsecs()).append(ATTR_JSON);
+			jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(Utils.format(obj.toString(), args)));
 			jsonString.append(END_JSON);
 			return jsonString.toString();
 		}
@@ -214,6 +215,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		        Utils.quote(event.getOperation().getResource())).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_USER_LABEL)).append(ATTR_SEP).append(
 		        Utils.quote(event.getOperation().getUser())).append(ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_TIME_USEC_LABEL)).append(ATTR_SEP).append(TimeService.currentTimeUsecs()).append(ATTR_JSON);
 		if (event.getOperation().getStartTime() != null) {
 			jsonString.append(Utils.quote(JSON_START_TIME_USEC_LABEL)).append(ATTR_SEP).append(
 			        event.getOperation().getStartTime().getTimeUsec()).append(ATTR_JSON);
@@ -327,6 +329,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		jsonString.append(Utils.quote(JSON_USER_LABEL)).append(ATTR_SEP).append(
 		        Utils.quote(activity.getSource().getUser())).append(ATTR_JSON);
 
+		jsonString.append(Utils.quote(JSON_TIME_USEC_LABEL)).append(ATTR_SEP).append(TimeService.currentTimeUsecs()).append(ATTR_JSON);
 		if (activity.getStartTime() != null) {
 			jsonString.append(Utils.quote(JSON_START_TIME_USEC_LABEL)).append(ATTR_SEP).append(
 			        activity.getStartTime().getTimeUsec()).append(ATTR_JSON);
@@ -458,8 +461,9 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		        ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_SEVERITY_NO_LABEL)).append(ATTR_SEP).append(level.ordinal()).append(
 		        ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(
-		        Utils.quote(Utils.format(msg, args)));
+		jsonString.append(Utils.quote(JSON_TIME_USEC_LABEL)).append(ATTR_SEP).append(TimeService.currentTimeUsecs()).append(
+		        ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(Utils.format(msg, args)));
 		Throwable ex = Utils.getThrowable(args);
 		if (ex != null) {
 			jsonString.append(ATTR_JSON);
