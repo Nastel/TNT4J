@@ -134,6 +134,18 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 	}
 	
+	private synchronized void resetEventSink() {
+		try {
+			if (eventSink != null) {
+				eventSink.close();
+			}	
+		} catch (Throwable e) {
+			logger.log(OpLevel.ERROR, 
+					"Failed to reset event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
+					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
+		}
+	}
+	
 	private void reportActivity(TrackingActivity activity) throws IOException, URISyntaxException {
 		try {
 			if (!eventSink.isOpen()) {
@@ -544,7 +556,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		logger.log(OpLevel.ERROR, 
 				"Sink write error: count={4}, vm.name={0}, tid={1}, event.sink={2}, source={3}",
 				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), errorCount.get(), ev.getCause());
-		closeEventSink();
+		resetEventSink();
 	}
 
 	@Override
