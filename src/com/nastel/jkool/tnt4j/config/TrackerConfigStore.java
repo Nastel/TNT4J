@@ -254,16 +254,7 @@ public class TrackerConfigStore extends TrackerConfig {
 		LinkedHashMap<String, Properties> map = new LinkedHashMap<String, Properties>(111);
 		BufferedReader reader = null;
 		try {
-			if (fileName != null) {
-				reader = new BufferedReader(new FileReader(fileName));
-			} else {
-				String tnt4JResource = "/" + TNT4J_PROPERTIES;
-				InputStream ins = getClass().getResourceAsStream(tnt4JResource);
-				if (ins == null) {
-					throw new FileNotFoundException("Resource '" + tnt4JResource + "' not found");
-				}
-				reader = new BufferedReader(new InputStreamReader(ins));
-			}
+			reader = getConfigReader(fileName);
 			Properties props = null;
 			do {
 				props = readStanza(reader);
@@ -287,6 +278,31 @@ public class TrackerConfigStore extends TrackerConfig {
 		}
 		return map;
 	}
+
+	
+	private BufferedReader getConfigReader(String fileName) throws IOException {
+		BufferedReader reader = null;
+		IOException exc = null;
+		
+		try {
+			if (fileName != null) {
+				reader = new BufferedReader(new FileReader(fileName));
+				return reader;
+			}
+		} catch (IOException err) {
+			exc = err;
+		}
+		
+		String tnt4JResource = "/" + TNT4J_PROPERTIES;
+		InputStream ins = getClass().getResourceAsStream(tnt4JResource);
+		if (ins == null) {
+			FileNotFoundException ioe =  new FileNotFoundException("Resource '" + tnt4JResource + "' not found");
+			ioe.initCause(exc);
+			throw ioe;
+		}
+		reader = new BufferedReader(new InputStreamReader(ins));
+		return reader;
+    }
 
 	private Properties readStanza(BufferedReader reader) throws IOException {
 		String line = null;
