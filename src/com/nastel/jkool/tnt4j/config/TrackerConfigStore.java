@@ -16,13 +16,15 @@
 package com.nastel.jkool.tnt4j.config;
 
 import java.io.BufferedReader;
-import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 import com.nastel.jkool.tnt4j.core.ActivityListener;
 import com.nastel.jkool.tnt4j.core.OpLevel;
@@ -115,6 +117,8 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 public class TrackerConfigStore extends TrackerConfig {
 	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerConfigStore.class.getName());
 	
+	public static final String TNT4J_PROPERTIES = "tnt4j.properties";
+	
 	private static final String DEFAULT_SOURCE = "*";
 	private static final String SOURCE_KEY = "source";
 	private static final String LIKE_KEY = "like";
@@ -184,7 +188,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 	
 	private void initConfig(String fileName) {
-		configFile = fileName == null ? System.getProperty("tnt4j.config", "tnt4j.properties") : fileName;
+		configFile = fileName == null ? System.getProperty("tnt4j.config", TNT4J_PROPERTIES) : fileName;
 		Map<String, Properties> configMap = loadConfiguration(configFile);
 		loadConfigProps(configMap);		
 	}
@@ -237,7 +241,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	private Map<String, Properties> loadConfiguration(String configFile) {
 		Map<String, Properties> map = null;
 		try {
-			map = loadConfigFile(configFile);
+			map = loadConfigResource(configFile);
 			logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, file={1}, config.size={2}, tid={3}", 
 						srcName, configFile, map.size(), Thread.currentThread().getId());
 		} catch (Throwable e) {
@@ -246,12 +250,20 @@ public class TrackerConfigStore extends TrackerConfig {
 		return map;
 	}
 
-	private Map<String, Properties> loadConfigFile(String fileName) throws IOException {
+	private Map<String, Properties> loadConfigResource(String fileName) throws IOException {
 		LinkedHashMap<String, Properties> map = new LinkedHashMap<String, Properties>(111);
-		File file = new File(fileName);
 		BufferedReader reader = null;
 		try {
-			reader = new BufferedReader(new FileReader(file));
+			if (fileName != null) {
+				reader = new BufferedReader(new FileReader(fileName));
+			} else {
+				String tnt4JResource = "/" + TNT4J_PROPERTIES;
+				InputStream ins = getClass().getResourceAsStream(tnt4JResource);
+				if (ins == null) {
+					throw new FileNotFoundException("Resource '" + tnt4JResource + "' not found");
+				}
+				reader = new BufferedReader(new InputStreamReader(ins));
+			}
 			Properties props = null;
 			do {
 				props = readStanza(reader);
