@@ -29,11 +29,13 @@ import com.nastel.jkool.tnt4j.core.ActivityStatus;
 import com.nastel.jkool.tnt4j.core.Message;
 import com.nastel.jkool.tnt4j.core.OpCompCode;
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Operation;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.utils.TimeService;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
@@ -188,6 +190,184 @@ public class TrackingActivity extends Activity {
 	public void tnt(Snapshot snapshot) {
 		add(snapshot);
 		tracker.tnt(snapshot);
+	}
+
+	/**
+	 * Track and Trace a given event and associate it with this activity
+	 * 
+	 * @param severity
+	 *            severity level of the reported message
+	 * @param opName
+	 *            operation name associated with the event message
+	 * @param msg
+	 *            event string message
+	 * @param args
+	 *            argument list, exception passed along side given message
+	 * @see OpLevel
+	 */
+	public void tnt(OpLevel severity, String opName, byte[] msg, Object...args) {
+		tnt(severity, OpType.EVENT, opName, null, null, 0, msg, args);
+	}
+
+	/**
+	 * Track and Trace a given event and associate it with this activity
+	 * 
+	 * @param severity
+	 *            severity level of the reported message
+	 * @param type
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with the event message
+	 * @param msg
+	 *            event string message
+	 * @param args
+	 *            argument list, exception passed along side given message
+	 * @see OpLevel
+	 */
+	public void tnt(OpLevel severity, OpType type, String opName, byte[] msg, Object...args) {
+		tnt(severity, type, opName, null, null, 0, msg, args);
+	}
+
+	/**
+	 * Track and Trace a given event and associate it with this activity
+	 * 
+	 * @param severity
+	 *            severity level of the reported message
+	 * @param type
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with the event message
+	 * @param cid
+	 *            event correlator
+	 * @param elapsed
+	 *            elapsed time of the event in milliseconds.
+	 * @param msg
+	 *            event string message
+	 * @param args
+	 *            argument list, exception passed along side given message
+	 * @see OpLevel
+	 */
+	public void tnt(OpLevel severity, OpType type, String opName, String cid, long elapsed, byte[] msg, Object...args) {
+		tnt(severity, type, opName, cid, null, elapsed, msg, args);
+	}
+
+	/**
+	 * Track and Trace a given event and associate it with this activity
+	 * 
+	 * @param severity
+	 *            severity level of the reported message
+	 * @param type
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with the event message
+	 * @param cid
+	 *            event correlator
+	 * @param tag
+	 *            message tag
+	 * @param elapsed
+	 *            elapsed time of the event in milliseconds.
+	 * @param msg
+	 *            event binary message
+	 * @param args
+	 *            argument list, exception passed along side given message
+	 * @see OpLevel
+	 */
+	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, byte[] msg, Object...args) {
+		long endTime = TimeService.currentTimeMillis();
+		TrackingEvent event = tracker.newEvent(severity, type, opName, cid, tag, msg, args);
+		event.start(endTime - elapsed);
+		Throwable ex = Utils.getThrowable(args);
+		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
+		tnt(event);
+	}
+
+	/**
+	 * Track and Trace a given event and associate it with this activity
+	 * 
+	 * @param severity
+	 *            severity level of the reported message
+	 * @param opName
+	 *            operation name associated with the event message
+	 * @param msg
+	 *            event string message
+	 * @param args
+	 *            argument list, exception passed along side given message
+	 * @see OpLevel
+	 */
+	public void tnt(OpLevel severity, String opName, String msg, Object...args) {
+		tnt(severity, OpType.EVENT, opName, null, null, 0, msg, args);
+	}
+
+	/**
+	 * Track and Trace a given event and associate it with this activity
+	 * 
+	 * @param severity
+	 *            severity level of the reported message
+	 * @param type
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with the event message
+	 * @param msg
+	 *            event string message
+	 * @param args
+	 *            argument list, exception passed along side given message
+	 * @see OpLevel
+	 */
+	public void tnt(OpLevel severity, OpType type, String opName, String msg, Object...args) {
+		tnt(severity, type, opName, null, null, 0, msg, args);
+	}
+
+	/**
+	 * Track and Trace a given event and associate it with this activity
+	 * 
+	 * @param severity
+	 *            severity level of the reported message
+	 * @param type
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with the event message
+	 * @param cid
+	 *            event correlator
+	 * @param elapsed
+	 *            elapsed time of the event in milliseconds.
+	 * @param msg
+	 *            event string message
+	 * @param args
+	 *            argument list, exception passed along side given message
+	 * @see OpLevel
+	 */
+	public void tnt(OpLevel severity, OpType type, String opName, String cid, long elapsed, String msg, Object...args) {
+		tnt(severity, type, opName, cid, null, elapsed, msg, args);
+	}
+
+	/**
+	 * Track and Trace a given event and associate it with this activity
+	 * 
+	 * @param severity
+	 *            severity level of the reported message
+	 * @param type
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with the event message
+	 * @param cid
+	 *            event correlator
+	 * @param tag
+	 *            message tag
+	 * @param elapsed
+	 *            elapsed time of the event in milliseconds.
+	 * @param msg
+	 *            event string message
+	 * @param args
+	 *            argument list, exception passed along side given message
+	 * @see OpLevel
+	 */
+	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, String msg, Object...args) {
+		long endTime = TimeService.currentTimeMillis();
+		TrackingEvent event = tracker.newEvent(severity, type, opName, cid, tag, msg, args);
+		event.start(endTime - elapsed);
+		Throwable ex = Utils.getThrowable(args);
+		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
+		tnt(event);
 	}
 
 	/**
