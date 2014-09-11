@@ -34,6 +34,7 @@ import com.nastel.jkool.tnt4j.core.Operation;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.utils.TimeService;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
@@ -102,7 +103,7 @@ public class TrackingActivity extends Activity {
 	private int startStopCount = 0;
 	private long startCPUTime = 0, stopCPUTime = 0, startBlockTime = 0, stopBlockTime = 0, startWaitTime = 0,
 	        stopWaitTime = 0, startBlockCount = 0, stopBlockCount = 0, startWaitCount = 0, stopWaitCount = 0,
-	        overHeadTimeNano = 0;
+	        overHeadTimeNano = 0, lastEventNanos = 0;
 	private ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
 	private ThreadInfo ownerThread = null;
 	private boolean appendProps = true, cpuTimingSupported = false, contTimingSupported = false, enableTiming = false;
@@ -174,12 +175,18 @@ public class TrackingActivity extends Activity {
 		contTimingSupported = tmbean.isThreadContentionMonitoringEnabled();
 	}
 
+	private long getLastElapsedUsec() {
+		long elapsedUsec = lastEventNanos > 0? (System.nanoTime() - lastEventNanos)/1000: 0;
+		return elapsedUsec;
+	}
+	
 	/**
 	 * Track and Trace given <code>TrackingEvent</code> instance correlated with current activity
 	 * 
 	 */
 	public void tnt(TrackingEvent event) {
 		add(event);
+		lastEventNanos = System.nanoTime();
 		tracker.tnt(event);
 	}
 
@@ -273,11 +280,19 @@ public class TrackingActivity extends Activity {
 	 * @see OpLevel
 	 */
 	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, byte[] msg, Object...args) {
-		long endTime = TimeService.currentTimeMillis();
 		TrackingEvent event = tracker.newEvent(severity, type, opName, cid, tag, msg, args);
-		event.start(endTime - elapsed);
 		Throwable ex = Utils.getThrowable(args);
-		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
+		if (elapsed > 0) {
+			long endTime = TimeService.currentTimeMillis();
+			event.start(endTime - elapsed);			
+			event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
+		} else {
+			long endTime = TimeService.currentTimeUsecs();
+			UsecTimestamp stopTime = new UsecTimestamp(endTime);
+			UsecTimestamp startTime = new UsecTimestamp(endTime - getLastElapsedUsec());
+			event.start(startTime);
+			event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, stopTime);
+		}
 		tnt(event);
 	}
 
@@ -362,11 +377,19 @@ public class TrackingActivity extends Activity {
 	 * @see OpLevel
 	 */
 	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, String msg, Object...args) {
-		long endTime = TimeService.currentTimeMillis();
 		TrackingEvent event = tracker.newEvent(severity, type, opName, cid, tag, msg, args);
-		event.start(endTime - elapsed);
 		Throwable ex = Utils.getThrowable(args);
-		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
+		if (elapsed > 0) {
+			long endTime = TimeService.currentTimeMillis();
+			event.start(endTime - elapsed);			
+			event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
+		} else {
+			long endTime = TimeService.currentTimeUsecs();
+			UsecTimestamp stopTime = new UsecTimestamp(endTime);
+			UsecTimestamp startTime = new UsecTimestamp(endTime - getLastElapsedUsec());
+			event.start(startTime);
+			event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, stopTime);
+		}
 		tnt(event);
 	}
 
