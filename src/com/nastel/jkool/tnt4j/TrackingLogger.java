@@ -60,7 +60,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackerFactory;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.tracker.TrackingFilter;
-import com.nastel.jkool.tnt4j.utils.TimeService;
+import com.nastel.jkool.tnt4j.utils.Useconds;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 
@@ -849,7 +849,7 @@ public class TrackingLogger implements Tracker {
 		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 		Throwable ex = Utils.getThrowable(args);
 		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, 
-				TimeService.currentTimeUsecs(), elapsed);
+				Useconds.CURRENT.get(), elapsed);
 		logger.tnt(event);
 	}
 
@@ -927,7 +927,7 @@ public class TrackingLogger implements Tracker {
 		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 		Throwable ex = Utils.getThrowable(args);
 		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, 
-				TimeService.currentTimeUsecs(), elapsed);
+				Useconds.CURRENT.get(), elapsed);
 		logger.tnt(event);
 	}
 

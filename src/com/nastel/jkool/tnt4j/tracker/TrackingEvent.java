@@ -25,7 +25,7 @@ import com.nastel.jkool.tnt4j.core.Operation;
 import com.nastel.jkool.tnt4j.core.Trackable;
 import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.source.Source;
-import com.nastel.jkool.tnt4j.utils.TimeService;
+import com.nastel.jkool.tnt4j.utils.Useconds;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -366,7 +366,7 @@ public class TrackingEvent extends Message implements Trackable {
 	 * @param elaspedTime elapsed time of this event in (usec)
 	 */
 	public void stop(long elaspedTime) {
-		operation.stop(TimeService.currentTimeUsecs(), elaspedTime);
+		operation.stop(Useconds.CURRENT.get(), elaspedTime);
 	}
 
 	/**
@@ -401,7 +401,7 @@ public class TrackingEvent extends Message implements Trackable {
 	public void stop(Throwable opEx, long elapsedUsec) {
 		operation.setException(opEx);
 		operation.setCompCode(opEx != null? OpCompCode.WARNING: OpCompCode.SUCCESS);
-		operation.stop(TimeService.currentTimeUsecs(), elapsedUsec);
+		operation.stop(Useconds.CURRENT.get(), elapsedUsec);
 	}
 
 	/**

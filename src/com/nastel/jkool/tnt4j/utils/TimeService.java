@@ -17,6 +17,11 @@ package com.nastel.jkool.tnt4j.utils;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.Date;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.net.ntp.NTPUDPClient;
 import org.apache.commons.net.ntp.TimeInfo;
@@ -24,6 +29,7 @@ import org.apache.commons.net.ntp.TimeInfo;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.sink.DefaultEventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.EventSink;
+
 
 /**
  * This class implements a time service that delivers synchronized time using NTP.
@@ -39,11 +45,13 @@ public class TimeService {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TimeService.class);
 	private static final String TIME_SERVER = System.getProperty("tnt4j.time.server");
 	private static final int TIME_SERVER_TIMEOUT = Integer.getInteger("tnt4j.time.server.timeout", 10000);
+	private static final int TIME_CLOCK_SYNC_INTERVAL = Integer.getInteger("tnt4j.time.server.sync.interval", 120000);
 
 	static long timeOverheadNanos = 0;
 	static long timeOverheadMillis = 0;
 	static long adjustment = 0;
 	static long updatedTime = 0;
+	static ScheduledExecutorService scheduler;
 	
 	static NTPUDPClient timeServer = new NTPUDPClient();
 	static TimeInfo timeInfo;
@@ -59,18 +67,30 @@ public class TimeService {
 					timeInfo.getOffset(), timeInfo.getDelay(),
 					adjustment, timeOverheadNanos);
 			}
-		} catch (IOException e) {
+		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, 
 					"Unable to obtain NTP time: time.server={0}, timeout={1}",
 					TIME_SERVER, TIME_SERVER_TIMEOUT, e);
+        } finally {
+        	scheduleUpdates();
         }
+	}
+	
+	/**
+	 * Schedule automatic clock synchronization with NTP and internal clocks
+	 * 
+	 */
+	private static void scheduleUpdates() {
+		scheduler = Executors.newScheduledThreadPool(1, new TimeServiceThreadFactory("TimeService/task-"));
+		scheduler.scheduleAtFixedRate(new TimeClockSync(logger), 
+				TIME_CLOCK_SYNC_INTERVAL, TIME_CLOCK_SYNC_INTERVAL, TimeUnit.MILLISECONDS);
 	}
 	
 	/**
 	 * Obtain NTP connection host:port of the time server.
 	 * 
 	 */
-	public String getTimeServer() {
+	public static String getTimeServer() {
 		return TIME_SERVER;
 	}
 	
@@ -78,7 +98,7 @@ public class TimeService {
 	 * Obtain time stamp when the NTP time was synchronized
 	 * 
 	 */
-	public long getLastUpdatedMillis() {
+	public static long getLastUpdatedMillis() {
 		return updatedTime;
 	}
 	
@@ -86,7 +106,7 @@ public class TimeService {
 	 * Obtain configured NTP server timeout
 	 * 
 	 */
-	public int getTimeServerTimeout() {
+	public static int getTimeServerTimeout() {
 		return TIME_SERVER_TIMEOUT;
 	}
 	
@@ -149,4 +169,40 @@ public class TimeService {
 	private static long _calculateOverheadCost(long runs) {
 		return runs;
 	}
+}
+
+class TimeServiceThreadFactory implements ThreadFactory {
+	int count = 0;
+	String prefix;
+	
+	TimeServiceThreadFactory(String pfix) {
+		prefix = pfix;
+	}
+	
+	@Override
+    public Thread newThread(Runnable r) {
+		Thread task = new Thread(r, prefix + count++);
+		task.setDaemon(true);
+		return task;
+    }	
+}
+
+class TimeClockSync implements Runnable {
+	EventSink logger;
+	
+	TimeClockSync(EventSink lg) {
+		logger = lg;
+	}
+	
+	@Override
+	public void run() {
+		try {
+			TimeService.updateTime();
+			Useconds.CURRENT.sync();
+		} catch (Throwable ex) {
+			logger.log(OpLevel.ERROR, "Failed to update clocks: last.updated={0}, age.ms={1}", 
+					new Date(TimeService.getLastUpdatedMillis()),
+					(TimeService.currentTimeMillis() - TimeService.getLastUpdatedMillis()), ex);
+		}
+	}	
 }

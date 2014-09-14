@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
-import com.nastel.jkool.tnt4j.utils.TimeService;
+import com.nastel.jkool.tnt4j.utils.Useconds;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 
@@ -531,7 +531,7 @@ public class Operation {
 	 * Indicates that the operation has started immediately.
 	 */
 	public void start() {
-		start(TimeService.currentTimeUsecs());
+		start(Useconds.CURRENT.get());
 	}
 
 	/**
@@ -598,7 +598,7 @@ public class Operation {
 	 * Indicates that the operation has stopped immediately.
 	 */
 	public void stop() {
-		stop(TimeService.currentTimeUsecs(), 0);
+		stop(Useconds.CURRENT.get(), 0);
 	}
 
 	/**

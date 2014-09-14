@@ -35,6 +35,7 @@ import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.utils.TimeService;
+import com.nastel.jkool.tnt4j.utils.Useconds;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -284,7 +285,7 @@ public class TrackingActivity extends Activity {
 		
 		long elapsedUsec = elapsed > 0? elapsed: getLastElapsedUsec();
 		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, 
-					ex, TimeService.currentTimeUsecs(), elapsedUsec);
+					ex, Useconds.CURRENT.get(), elapsedUsec);
 		tnt(event);
 	}
 
@@ -374,7 +375,7 @@ public class TrackingActivity extends Activity {
 		
 		long elapsedUsec = elapsed > 0? elapsed: getLastElapsedUsec();
 		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, 
-					ex, TimeService.currentTimeUsecs(), elapsedUsec);
+					ex, Useconds.CURRENT.get(), elapsedUsec);
 		tnt(event);
 	}
 
@@ -545,7 +546,7 @@ public class TrackingActivity extends Activity {
 		setStatus(status);
 		setCompCode(ccode);
 		finishTiming();
-		stop(TimeService.currentTimeUsecs(), elapsedUsec);
+		stop(Useconds.CURRENT.get(), elapsedUsec);
 	}
 
 	@Override
