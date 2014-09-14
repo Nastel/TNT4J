@@ -169,8 +169,8 @@ public class Activity extends Operation implements Trackable {
 	}
 
 	@Override
-	public void start(long startTime, long startTimeUsec) {
-		super.start(startTime, startTimeUsec);
+	public void start(long startTimeUsec) {
+		super.start(startTimeUsec);
 		notifyStarted();
 	}
 
@@ -181,14 +181,14 @@ public class Activity extends Operation implements Trackable {
 	}
 
 	@Override
-	public void stop(long stopTime, long stopTimeUsec) {
-		super.stop(stopTime, stopTimeUsec);
+	public void stop(long stopTimeUsec, long elaspedUsec) {
+		super.stop(stopTimeUsec, elaspedUsec);
 		notifyStopped();
 	}
 
 	@Override
-	public void stop(UsecTimestamp stopTime) {
-		super.stop(stopTime);
+	public void stop(UsecTimestamp stopTime, long elaspedUsec) {
+		super.stop(stopTime, elaspedUsec);
 		notifyStopped();
 	}
 

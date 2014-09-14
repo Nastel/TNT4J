@@ -505,24 +505,14 @@ public class Operation {
 	/**
 	 * Indicates that the operation has started at the specified start time.
 	 *
-	 * @param startTime start time, in milliseconds
-	 * @param startTimeUsec microsecond fractional portion of start time
+	 * @param startTimeUsec start time, in microseconds
 	 * @throws IllegalArgumentException if startTime or startTimeUsec is negative
 	 */
-	public void start(long startTime, long startTimeUsec) {
+	public void start(long startTimeUsec) {
 		this.startTimeNano = System.nanoTime();
-		this.startTime = new UsecTimestamp(startTime, startTimeUsec);
+		this.startTime = new UsecTimestamp(startTimeUsec);
 	}
 
-	/**
-	 * Indicates that the operation has started at the specified start time.
-	 *
-	 * @param startTime start time, in milliseconds
-	 * @throws IllegalArgumentException if startTime is negative
-	 */
-	public void start(long startTime) {
-		start(startTime, 0);
-	}
 
 	/**
 	 * Indicates that the operation has started at the specified start time.
@@ -534,14 +524,14 @@ public class Operation {
 	public void start(UsecTimestamp startTimestamp) {
 		if (startTimestamp == null)
 			throw new NullPointerException("startTimestamp must be non-null");
-		start(startTimestamp.getTimeMillis(), startTimestamp.getUsecPart());
+		start(startTimestamp.getTimeUsec());
 	}
 
 	/**
 	 * Indicates that the operation has started immediately.
 	 */
 	public void start() {
-		start(TimeService.currentTimeMillis(), 0);
+		start(TimeService.currentTimeUsecs());
 	}
 
 	/**
@@ -556,17 +546,18 @@ public class Operation {
 	/**
 	 * Indicates that the operation has stopped at the specified stop time.
 	 *
-	 * @param stopTime stop time, in milliseconds
-	 * @param stopTimeUsec microsecond fractional portion of stop time
-	 * @throws IllegalStateException if operation was never started (start time not set)
+	 * @param stopTimeUsec stop time, in microseconds
+	 * @param elaspedUsec elapsed time in microseconds
 	 * @throws IllegalArgumentException if stopTime or stopTimeUsec is negative,
 	 *  or if the stop time is less than the previously specified start time
 	 */
-	public void stop(long stopTime, long stopTimeUsec) {
-		endTime = new UsecTimestamp(stopTime, stopTimeUsec);
+	public void stop(long stopTimeUsec, long elaspedUsec) {
+		endTime = new UsecTimestamp(stopTimeUsec);
 
-		if (startTime == null)
-			startTime = new UsecTimestamp(stopTime, stopTimeUsec);
+		if (startTime == null) {
+			long startUsec = stopTimeUsec - elaspedUsec;
+			startTime = new UsecTimestamp(startUsec);
+		}
 
 		if (endTime.compareTo(startTime) < 0)
 			throw new IllegalArgumentException("stop time is less than start time");
@@ -581,8 +572,7 @@ public class Operation {
 	/**
 	 * Indicates that the operation has stopped at the specified stop time.
 	 *
-	 * @param stopTime stop time, in milliseconds
-	 * @throws IllegalStateException if operation was never started (start time not set)
+	 * @param stopTime stop time, in microseconds
 	 * @throws IllegalArgumentException if stopTime is negative,
 	 *  or if the stop time is less than the previously specified start time
 	 */
@@ -594,20 +584,21 @@ public class Operation {
 	 * Indicates that the operation has stopped at the specified stop time.
 	 *
 	 * @param stopTimestamp stop time
+	 * @param elaspedUsec elapsed time in microseconds
 	 * @throws NullPointerException if stopTimestamp is <code>null</code>
 	 * @throws IllegalArgumentException if stopTimestamp is invalid
 	 */
-	public void stop(UsecTimestamp stopTimestamp) {
+	public void stop(UsecTimestamp stopTimestamp, long elaspedUsec) {
 		if (stopTimestamp == null)
 			throw new NullPointerException("stopTimestamp must be non-null");
-		stop(stopTimestamp.getTimeMillis(), stopTimestamp.getUsecPart());
+		stop(stopTimestamp.getTimeUsec(), elaspedUsec);
 	}
 
 	/**
 	 * Indicates that the operation has stopped immediately.
 	 */
 	public void stop() {
-		stop(TimeService.currentTimeMillis(), 0);
+		stop(TimeService.currentTimeUsecs(), 0);
 	}
 
 	/**

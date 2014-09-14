@@ -808,7 +808,7 @@ public class TrackingLogger implements Tracker {
 	 * @param correlator
 	 *            event correlator
 	 * @param elapsed
-	 *            elapsed time of the event in milliseconds.
+	 *            elapsed time of the event in microseconds.
 	 * @param msg
 	 *            event text message
 	 * @param args
@@ -835,7 +835,7 @@ public class TrackingLogger implements Tracker {
 	 * @param tag
 	 *            message tag
 	 * @param elapsed
-	 *            elapsed time of the event in milliseconds.
+	 *            elapsed time of the event in microseconds.
 	 * @param msg
 	 *            event text message
 	 * @param args
@@ -846,11 +846,10 @@ public class TrackingLogger implements Tracker {
 	public void tnt(OpLevel severity, OpType opType, String opName, String correlator, String tag, long elapsed,
 			 String msg, Object...args) {
 		checkState();
-		long endTime = TimeService.currentTimeMillis();
 		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
-		event.start(endTime - elapsed);
 		Throwable ex = Utils.getThrowable(args);
-		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
+		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, 
+				TimeService.currentTimeUsecs(), elapsed);
 		logger.tnt(event);
 	}
 
@@ -887,7 +886,7 @@ public class TrackingLogger implements Tracker {
 	 * @param correlator
 	 *            event correlator
 	 * @param elapsed
-	 *            elapsed time of the event in milliseconds.
+	 *            elapsed time of the event in microseconds.
 	 * @param msg
 	 *            event binary message
 	 * @param args
@@ -914,7 +913,7 @@ public class TrackingLogger implements Tracker {
 	 * @param tag
 	 *            message tag
 	 * @param elapsed
-	 *            elapsed time of the event in milliseconds.
+	 *            elapsed time of the event in microseconds.
 	 * @param msg
 	 *            event binary message
 	 * @param args
@@ -925,11 +924,10 @@ public class TrackingLogger implements Tracker {
 	public void tnt(OpLevel severity, OpType opType, String opName, String correlator, String tag, long elapsed,
 			 byte[] msg, Object...args) {
 		checkState();
-		long endTime = TimeService.currentTimeMillis();
 		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
-		event.start(endTime - elapsed);
 		Throwable ex = Utils.getThrowable(args);
-		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
+		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, 
+				TimeService.currentTimeUsecs(), elapsed);
 		logger.tnt(event);
 	}
 

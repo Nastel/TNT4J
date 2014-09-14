@@ -34,7 +34,6 @@ import com.nastel.jkool.tnt4j.core.Operation;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
 import com.nastel.jkool.tnt4j.core.Snapshot;
-import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.utils.TimeService;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
@@ -247,7 +246,7 @@ public class TrackingActivity extends Activity {
 	 * @param cid
 	 *            event correlator
 	 * @param elapsed
-	 *            elapsed time of the event in milliseconds.
+	 *            elapsed time of the event in microseconds.
 	 * @param msg
 	 *            event string message
 	 * @param args
@@ -272,7 +271,7 @@ public class TrackingActivity extends Activity {
 	 * @param tag
 	 *            message tag
 	 * @param elapsed
-	 *            elapsed time of the event in milliseconds.
+	 *            elapsed time of the event in microseconds.
 	 * @param msg
 	 *            event binary message
 	 * @param args
@@ -282,17 +281,10 @@ public class TrackingActivity extends Activity {
 	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, byte[] msg, Object...args) {
 		TrackingEvent event = tracker.newEvent(severity, type, opName, cid, tag, msg, args);
 		Throwable ex = Utils.getThrowable(args);
-		if (elapsed > 0) {
-			long endTime = TimeService.currentTimeMillis();
-			event.start(endTime - elapsed);			
-			event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
-		} else {
-			long endTime = TimeService.currentTimeUsecs();
-			UsecTimestamp stopTime = new UsecTimestamp(endTime);
-			UsecTimestamp startTime = new UsecTimestamp(endTime - getLastElapsedUsec());
-			event.start(startTime);
-			event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, stopTime);
-		}
+		
+		long elapsedUsec = elapsed > 0? elapsed: getLastElapsedUsec();
+		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, 
+					ex, TimeService.currentTimeUsecs(), elapsedUsec);
 		tnt(event);
 	}
 
@@ -344,7 +336,7 @@ public class TrackingActivity extends Activity {
 	 * @param cid
 	 *            event correlator
 	 * @param elapsed
-	 *            elapsed time of the event in milliseconds.
+	 *            elapsed time of the event in microseconds.
 	 * @param msg
 	 *            event string message
 	 * @param args
@@ -369,7 +361,7 @@ public class TrackingActivity extends Activity {
 	 * @param tag
 	 *            message tag
 	 * @param elapsed
-	 *            elapsed time of the event in milliseconds.
+	 *            elapsed time of the event in microseconds.
 	 * @param msg
 	 *            event string message
 	 * @param args
@@ -379,17 +371,10 @@ public class TrackingActivity extends Activity {
 	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, String msg, Object...args) {
 		TrackingEvent event = tracker.newEvent(severity, type, opName, cid, tag, msg, args);
 		Throwable ex = Utils.getThrowable(args);
-		if (elapsed > 0) {
-			long endTime = TimeService.currentTimeMillis();
-			event.start(endTime - elapsed);			
-			event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, endTime);
-		} else {
-			long endTime = TimeService.currentTimeUsecs();
-			UsecTimestamp stopTime = new UsecTimestamp(endTime);
-			UsecTimestamp startTime = new UsecTimestamp(endTime - getLastElapsedUsec());
-			event.start(startTime);
-			event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, stopTime);
-		}
+		
+		long elapsedUsec = elapsed > 0? elapsed: getLastElapsedUsec();
+		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, 
+					ex, TimeService.currentTimeUsecs(), elapsedUsec);
 		tnt(event);
 	}
 
@@ -450,9 +435,9 @@ public class TrackingActivity extends Activity {
 	}
 
 	@Override
-	public void start(long startTime, long startTimeUsec) {
+	public void start(long startTimeUsec) {
 		initActivity();
-		super.start(startTime, startTimeUsec);
+		super.start(startTimeUsec);
 	}
 
 	/**
@@ -461,7 +446,17 @@ public class TrackingActivity extends Activity {
 	 */
 	@Override
 	public void stop() {
-		stop(ActivityStatus.END, null);
+		stop(ActivityStatus.END, null, 0);
+	}
+
+	/**
+	 * Indicates that application activity has ended normally without exception.
+	 * 
+	 * @param elapsedUsec elapsed time in microseconds
+	 */
+	@Override
+	public void stop(long elapsedUsec) {
+		stop(ActivityStatus.END, null, elapsedUsec);
 	}
 
 	/**
@@ -473,7 +468,20 @@ public class TrackingActivity extends Activity {
 	 */
 	public void stop(Throwable ex) {
 		stop((ex != null ? ActivityStatus.EXCEPTION : ActivityStatus.END), (ex != null ? OpCompCode.WARNING
-		        : OpCompCode.SUCCESS), ex);
+		        : OpCompCode.SUCCESS), ex, 0);
+	}
+
+	/**
+	 * Indicates that application activity has ended.
+	 * 
+	 * @param ex
+	 *            exception associated with the activity or null if none.
+	 * @param elapsedUsec elapsed time in microseconds
+	 * @see ActivityStatus
+	 */
+	public void stop(Throwable ex, long elapsedUsec) {
+		stop((ex != null ? ActivityStatus.EXCEPTION : ActivityStatus.END), (ex != null ? OpCompCode.WARNING
+		        : OpCompCode.SUCCESS), ex, elapsedUsec);
 	}
 
 	/**
@@ -486,7 +494,21 @@ public class TrackingActivity extends Activity {
 	 * @see ActivityStatus
 	 */
 	public void stop(ActivityStatus status, Throwable ex) {
-		stop(status, (ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS), ex);
+		stop(status, (ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS), ex, 0);
+	}
+
+	/**
+	 * Indicates that application activity has ended.
+	 * 
+	 * @param status
+	 *            status with which activity ended.
+	 * @param ex
+	 *            exception associated with the activity or null if none.
+	 * @param elapsedUsec elapsed time in microseconds
+	 * @see ActivityStatus
+	 */
+	public void stop(ActivityStatus status, Throwable ex, long elapsedUsec) {
+		stop(status, (ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS), ex, elapsedUsec);
 	}
 
 	/**
@@ -502,17 +524,34 @@ public class TrackingActivity extends Activity {
 	 * @see OpCompCode
 	 */
 	public void stop(ActivityStatus status, OpCompCode ccode, Throwable ex) {
+		stop(status, ccode, ex, 0);
+	}
+
+	/**
+	 * Indicates that application activity has ended.
+	 * 
+	 * @param status
+	 *            status with which activity ended.
+	 * @param ccode
+	 *            completion code of the activity.
+	 * @param ex
+	 *            exception associated with the activity or null if none.
+	 * @param elapsedUsec elapsed time in microseconds
+	 * @see ActivityStatus
+	 * @see OpCompCode
+	 */
+	public void stop(ActivityStatus status, OpCompCode ccode, Throwable ex, long elapsedUsec) {
 		setException(ex);
 		setStatus(status);
 		setCompCode(ccode);
 		finishTiming();
-		stop(TimeService.currentTimeMillis(), 0);
+		stop(TimeService.currentTimeUsecs(), elapsedUsec);
 	}
 
 	@Override
-	public void stop(long stopTime, long stopTimeUsec) {
+	public void stop(long stopTimeUsec, long elapsedUsec) {
 		finishTiming();
-		super.stop(stopTime, stopTimeUsec);
+		super.stop(stopTimeUsec, elapsedUsec);
 		finishActivity();
 	}
 

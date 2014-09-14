@@ -95,8 +95,8 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <tr><td><b>rcd</b></td>				<td>Reason code</td></tr>
  * <tr><td><b>elt</b></td>			    <td>Elapsed time of event, in microseconds</td></tr>
  * <tr><td><b>age</b></td>			    <td>Message/event age in microseconds (useful when receiving messages, designating message age on receipt)</td></tr>
- * <tr><td><b>stt</b></td>			    <td>Start time, as the number of milliseconds since epoch</td></tr>
- * <tr><td><b>ent</b></td>				<td>End time, as the number of milliseconds since epoch</td></tr>
+ * <tr><td><b>stt</b></td>			    <td>Start time, as the number of microseconds since epoch</td></tr>
+ * <tr><td><b>ent</b></td>				<td>End time, as the number of microseconds since epoch</td></tr>
  * </table>
  *
  * <p>An example of annotating (TNT4J) a single log message using log4j:</p>
@@ -225,11 +225,11 @@ public class TNT4JAppender extends AppenderSkeleton {
 			if (reportMetrics) {
 				// report a single tracking event as part of an activity
 				activity = logger.newActivity(tev.getSeverity(), getName());
-				activity.start(tev.getOperation().getStartTime().getTimeMillis());
+				activity.start(tev.getOperation().getStartTime().getTimeUsec());
 				activity.setSource(tev.getSource()); // use event's source name for this activity
 				activity.setException(ex);
 				activity.setStatus(ex != null ? ActivityStatus.EXCEPTION : ActivityStatus.END);
-				activity.stop(tev.getOperation().getEndTime().getTimeMillis());
+				activity.stop(tev.getOperation().getEndTime().getTimeUsec(), 0);
 				activity.tnt(tev);
 				logger.tnt(activity);
 				lastSnapshot = lastReport;
@@ -312,7 +312,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 				event.setSource(logger.getConfiguration().getSourceFactory().newSource(value));
 			}
 		}		
-		long elapsedTime = elapsedTimeUsec/1000; // convert usec to milliseconds
+		long elapsedTime = elapsedTimeUsec; // convert usec to milliseconds
 		startTime = startTime <= 0 ? (evTime - elapsedTime): evTime;
 		endTime = endTime <= 0 ? (startTime + elapsedTime): endTime;
 		

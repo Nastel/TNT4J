@@ -45,11 +45,19 @@ public class NullEvent extends TrackingEvent {
 	}
 
 	@Override
-	public void stop(long endTime) {
+	public void stop(long endTimeUsec) {
+	}
+
+	@Override
+	public void stop(long endTimeUsec, long elapsedUsec) {
 	}
 
 	@Override
 	public void stop(Throwable opEx) {
+	}
+
+	@Override
+	public void stop(Throwable opEx, long elapsedUsec) {
 	}
 
 	@Override
@@ -69,6 +77,10 @@ public class NullEvent extends TrackingEvent {
 	}
 
 	@Override
-	public void stop(OpCompCode ccode, int rcode, Throwable opEx, UsecTimestamp endTime) {
+	public void stop(OpCompCode ccode, int rcode, Throwable opEx, long endTime, long elapsedUsec) {
+	}
+
+	@Override
+	public void stop(OpCompCode ccode, int rcode, Throwable opEx, UsecTimestamp endTime, long elapsedUsec) {
 	}
 }

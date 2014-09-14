@@ -25,6 +25,7 @@ import com.nastel.jkool.tnt4j.core.Operation;
 import com.nastel.jkool.tnt4j.core.Trackable;
 import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.source.Source;
+import com.nastel.jkool.tnt4j.utils.TimeService;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -317,10 +318,10 @@ public class TrackingEvent extends Message implements Trackable {
 	/**
 	 * Indicates that application tracking event has started at the specified startTime
 	 *
-	 * @param startTime start time of the tracking event (ms)
+	 * @param startTimeUsc start time of the tracking event (usec)
 	 */
-	public void start(long startTime) {
-		operation.start(startTime);
+	public void start(long startTimeUsc) {
+		operation.start(startTimeUsc);
 	}
 
 	/**
@@ -353,18 +354,29 @@ public class TrackingEvent extends Message implements Trackable {
 	 * Indicates that application tracking event has ended.
 	 *
 	 * @param time when operation stopped
+	 * @param elapsedUsec elapsed time of the event in microseconds
 	 */
-	public void stop(UsecTimestamp time) {
-		operation.stop(time);
+	public void stop(UsecTimestamp time, long elapsedUsec) {
+		operation.stop(time, elapsedUsec);
 	}
 
 	/**
 	 * Indicates that application tracking event has ended.
 	 *
-	 * @param endTime ending time associated with the event (ms)
+	 * @param elaspedTime elapsed time of this event in (usec)
 	 */
-	public void stop(long endTime) {
-		operation.stop(endTime);
+	public void stop(long elaspedTime) {
+		operation.stop(TimeService.currentTimeUsecs(), elaspedTime);
+	}
+
+	/**
+	 * Indicates that application tracking event has ended.
+	 *
+	 * @param endTimeUsec ending time associated with the event (usec)
+	 * @param elapsedUsec elapsed time in (usec)
+	 */
+	public void stop(long endTimeUsec, long elapsedUsec) {
+		operation.stop(endTimeUsec, elapsedUsec);
 	}
 
 	/**
@@ -372,11 +384,24 @@ public class TrackingEvent extends Message implements Trackable {
 	 * Event completion code is set to <code>OpCompCode.WARNING</code>
 	 *
 	 * @param opEx exception associated with this tracking event
-	 * @see OpCompCode
 	 */
 	public void stop(Throwable opEx) {
+		operation.setException(opEx);
 		operation.stop();
 		operation.setCompCode(opEx != null? OpCompCode.WARNING: OpCompCode.SUCCESS);
+	}
+
+	/**
+	 * Indicates that application tracking event has ended.
+	 * Event completion code is set to <code>OpCompCode.WARNING</code>
+	 *
+	 * @param opEx exception associated with this tracking event
+	 * @param elapsedUsec elapsed time in (usec)
+	 */
+	public void stop(Throwable opEx, long elapsedUsec) {
+		operation.setException(opEx);
+		operation.setCompCode(opEx != null? OpCompCode.WARNING: OpCompCode.SUCCESS);
+		operation.stop(TimeService.currentTimeUsecs(), elapsedUsec);
 	}
 
 	/**
@@ -426,14 +451,31 @@ public class TrackingEvent extends Message implements Trackable {
 	 * @param ccode completion code of the tracking event
 	 * @param rcode reason code associated with this tracking event
 	 * @param opEx exception associated with this tracking event
-	 * @param endTime time when the tracking event has ended (ms)
+	 * @param endTimeUsec time when the tracking event has ended (usec)
 	 * @see OpCompCode
 	 */
-	public void stop(OpCompCode ccode, int rcode, Throwable opEx, long endTime) {
+	public void stop(OpCompCode ccode, int rcode, Throwable opEx, long endTimeUsec) {
 		operation.setException(opEx);
 		operation.setCompCode(ccode);
 		operation.setReasonCode(rcode);
-		operation.stop(endTime);
+		operation.stop(endTimeUsec);
+	}
+
+	/**
+	 * Indicates that application tracking event has ended.
+	 *
+	 * @param ccode completion code of the tracking event
+	 * @param rcode reason code associated with this tracking event
+	 * @param opEx exception associated with this tracking event
+	 * @param endTimeUsec time when the tracking event has ended (usec)
+	 * @param elpasedUsec elapsed time in (usec)
+	 * @see OpCompCode
+	 */
+	public void stop(OpCompCode ccode, int rcode, Throwable opEx, long endTimeUsec, long elpasedUsec) {
+		operation.setException(opEx);
+		operation.setCompCode(ccode);
+		operation.setReasonCode(rcode);
+		operation.stop(endTimeUsec, elpasedUsec);
 	}
 
 	/**
@@ -443,13 +485,14 @@ public class TrackingEvent extends Message implements Trackable {
 	 * @param rcode reason code associated with this tracking event
 	 * @param opEx exception associated with this tracking event
 	 * @param endTime time when the tracking event has ended (usec)
+	 * @param elpasedUsec elapsed time in (usec)
 	 * @see OpCompCode
 	 */
-	public void stop(OpCompCode ccode, int rcode, Throwable opEx, UsecTimestamp endTime) {
+	public void stop(OpCompCode ccode, int rcode, Throwable opEx, UsecTimestamp endTime, long elpasedUsec) {
 		operation.setException(opEx);
 		operation.setCompCode(ccode);
 		operation.setReasonCode(rcode);
-		operation.stop(endTime);
+		operation.stop(endTime, elpasedUsec);
 	}
 
 	/**

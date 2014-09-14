@@ -38,7 +38,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	private static final long serialVersionUID = 3658590467907047916L;
 
 	private long msecs;
-	private long  usecs;
+	private long usecs;
 
 	/**
 	 * Creates UsecTimestamp based on current time.

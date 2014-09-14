@@ -20,6 +20,7 @@ import com.nastel.jkool.tnt4j.core.OpCompCode;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Operation;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.Trackable;
 
 /**
@@ -49,7 +50,8 @@ public class NullActivity extends TrackingActivity {
 	public void start() {
 	}
 
-	public void start(long startTime, int startTimeUsec) {
+	@Override
+	public void start(long startTimeUsec) {
 	}
 
 	@Override
@@ -57,7 +59,19 @@ public class NullActivity extends TrackingActivity {
 	}
 
 	@Override
+	public void stop(long elapsedUsec) {
+	}
+
+	@Override
+	public void stop(long stopTimeUsec, long elapsedUsec) {
+	}
+
+	@Override
 	public void stop(Throwable ex) {
+	}
+
+	@Override
+	public void stop(Throwable ex, long elapsedUsec) {
 	}
 
 	@Override
@@ -65,11 +79,15 @@ public class NullActivity extends TrackingActivity {
 	}
 
 	@Override
+	public void stop(ActivityStatus status, Throwable ex, long elapsedUsec) {
+	}
+
+	@Override
 	public void stop(ActivityStatus status, OpCompCode ccode, Throwable ex) {
 	}
 
 	@Override
-	public void stop(long stopTime, long stopTimeUsec) {
+	public void stop(ActivityStatus status, OpCompCode ccode, Throwable ex, long elapsedUsec) {
 	}
 
 	@Override
@@ -80,6 +98,18 @@ public class NullActivity extends TrackingActivity {
 
 	@Override
 	public void tnt(TrackingEvent event) {
+	}
+	
+	@Override
+	public void tnt(Snapshot event) {
+	}
+	
+	@Override
+	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, byte[] msg, Object...args) {
+	}
+	
+	@Override
+	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, String msg, Object...args) {
 	}
 	
 	@Override
