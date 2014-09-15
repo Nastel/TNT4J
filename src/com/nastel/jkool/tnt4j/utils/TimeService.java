@@ -149,7 +149,8 @@ public class TimeService {
 	}
 	
 	/**
-	 * Obtain NTP synchronized current time in microseconds
+	 * Obtain NTP synchronized current time in microseconds precision 
+	 * (but necessarily accuracy)
 	 * 
 	 */
 	public static long currentTimeUsecs() {
