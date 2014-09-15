@@ -15,24 +15,32 @@
  */
 package com.nastel.jkool.tnt4j.examples;
 
+/**
+ * This class measures clock drift between
+ * <code>System.currentTimeMillis()</code> and <code>System.nanoTime()>/code>.
+ * 
+ * @version $Revision: 1 $
+ */
 public class ClockDriftTest {
-	  private static final int ONE_MILLION  = 1000000;
-	  private static final int HALF_MILLION =  499999;
+	private static final int ONE_MILLION = 1000000;
+	private static final int HALF_MILLION = 499999;
 
-	  public static void main(String[] args) {
-	    long start = System.nanoTime();
-	    long base = System.currentTimeMillis() - (start / ONE_MILLION);
+	public static void main(String[] args) {
+		long start = System.nanoTime();
+		long base = System.currentTimeMillis() - (start / ONE_MILLION);
 
-	    while (true) {
-	      try {
-	        Thread.sleep(10000);
-	      } catch (InterruptedException e) {
-	      }
-	      long now = System.nanoTime();
-	      long drift = System.currentTimeMillis() - (now / ONE_MILLION) - base;
-	      long interval = (now - start + HALF_MILLION) / ONE_MILLION;
-	      System.out.println("Clock drift " + drift + " msec after " + interval
-	                         + " msec = " + (drift * 1000 / interval) + " msec/sec");
-	    }
-	  }
+		while (true) {
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+			}
+			long now = System.nanoTime();
+			long drift = System.currentTimeMillis() - (now / ONE_MILLION) - base;
+			long interval = (now - start + HALF_MILLION) / ONE_MILLION;
+			System.out.println("Clock drift.ms=" + drift + ", after interval.ms="
+							+ interval + ", change.rate="
+							+ ((double) (drift * 1000) / (double) interval)
+							+ " ms/sec");
+		}
 	}
+}

@@ -69,6 +69,9 @@ public class TimeService {
         }
 	}
 	
+	private TimeService() {
+	}
+	
 	/**
 	 * Schedule automatic clock synchronization with NTP and internal clocks
 	 * 
