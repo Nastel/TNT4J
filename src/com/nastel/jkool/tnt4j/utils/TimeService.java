@@ -21,7 +21,6 @@ import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.net.ntp.NTPUDPClient;
 import org.apache.commons.net.ntp.TimeInfo;
@@ -45,13 +44,13 @@ public class TimeService {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TimeService.class);
 	private static final String TIME_SERVER = System.getProperty("tnt4j.time.server");
 	private static final int TIME_SERVER_TIMEOUT = Integer.getInteger("tnt4j.time.server.timeout", 10000);
-	private static final int TIME_CLOCK_SYNC_INTERVAL = Integer.getInteger("tnt4j.time.server.sync.interval", 120000);
 
 	static long timeOverheadNanos = 0;
 	static long timeOverheadMillis = 0;
 	static long adjustment = 0;
 	static long updatedTime = 0;
 	static ScheduledExecutorService scheduler;
+	static ClockDriftMonitorTask clockSyncTask = null;
 	
 	static NTPUDPClient timeServer = new NTPUDPClient();
 	static TimeInfo timeInfo;
@@ -82,11 +81,9 @@ public class TimeService {
 	 */
 	private static void scheduleUpdates() {
 		if (scheduler == null) {
-			scheduler = Executors.newScheduledThreadPool(1, new TimeServiceThreadFactory("TimeService/task-"));
-			scheduler.scheduleAtFixedRate(new TimeClockSyncTask(logger), 
-				TIME_CLOCK_SYNC_INTERVAL, 
-				TIME_CLOCK_SYNC_INTERVAL, 
-				TimeUnit.MILLISECONDS);
+			scheduler = Executors.newScheduledThreadPool(1, new TimeServiceThreadFactory("TimeService/clock-sync-"));
+			clockSyncTask = new ClockDriftMonitorTask(logger);
+			scheduler.submit(clockSyncTask);
 		}
 	}
 	
@@ -164,6 +161,39 @@ public class TimeService {
 	}
 	
 	/**
+	 * Obtain currently measured clock drift in milliseconds
+	 * 
+	 */
+	public static long getDriftMillis() {
+		return clockSyncTask.getDriftMillis();
+	}
+	
+	/**
+	 * Obtain measured total clock drift in milliseconds since start up
+	 * 
+	 */
+	public static long getTotalDriftMillis() {
+		return clockSyncTask.getTotalDriftMillis();
+	}
+	
+	/**
+	 * Obtain total number of times clocks have been updated to adjust
+	 * for drift.
+	 * 
+	 */
+	public static long getDriftUpdateCount() {
+		return clockSyncTask.getDriftUpdateCount();
+	}
+	
+	/**
+	 * Obtain currently measured clock drift interval in milliseconds
+	 * 
+	 */
+	public static long getDriftIntervalMillis() {
+		return clockSyncTask.getIntervalMillis();
+	}
+	
+	/**
 	 * Calculate overhead of <code>TimeService.currentTimeMillis()</code> based on a given number of
 	 * iterations.
 	 * 
@@ -200,22 +230,70 @@ class TimeServiceThreadFactory implements ThreadFactory {
     }	
 }
 
-class TimeClockSyncTask implements Runnable {
+class ClockDriftMonitorTask implements Runnable {
+	private static final long TIME_CLOCK_DRIFT_SAMPLE = Integer.getInteger("tnt4j.time.server.drift.sample.ms", 10000);
+	private static final long TIME_CLOCK_DRIFT_LIMIT = Integer.getInteger("tnt4j.time.server.drift.limit.ms", 1);
+
+	private static final int ONE_MILLION = 1000000;
+	private static final int HALF_MILLION = 499999;
+
+	long interval, drift, updateCount = 0, totalDrift;	
 	EventSink logger;
 	
-	TimeClockSyncTask(EventSink lg) {
+	ClockDriftMonitorTask(EventSink lg) {
 		logger = lg;
 	}
 	
-	@Override
-	public void run() {
+	public long getIntervalMillis() {
+		return interval;
+	}
+	
+	public long getDriftMillis() {
+		return drift;
+	}
+
+	public long getTotalDriftMillis() {
+		return totalDrift;
+	}
+
+	public long getDriftUpdateCount() {
+		return updateCount;
+	}
+	
+	private void syncClocks() {
 		try {
 			TimeService.updateTime();
 			Useconds.CURRENT.sync();
+			updateCount++;
+			logger.log(OpLevel.INFO, 
+					"Updated clocks: drift.ms={0}, interval.ms={1}, total.drift.ms={2}, updates={3}", 
+					drift, interval, totalDrift, updateCount);
 		} catch (Throwable ex) {
 			logger.log(OpLevel.ERROR, "Failed to update clocks: last.updated={0}, age.ms={1}", 
 					new Date(TimeService.getLastUpdatedMillis()),
 					TimeService.getUpdateAgeMillis(), ex);
 		}
 	}	
+		
+	@Override
+	public void run() {
+		long start = System.nanoTime();
+		long base = System.currentTimeMillis() - (start / ONE_MILLION);
+
+		while (true) {
+			try {
+				Thread.sleep(TIME_CLOCK_DRIFT_SAMPLE);
+			} catch (InterruptedException e) {
+			}
+			long now = System.nanoTime();
+			drift = System.currentTimeMillis() - (now / ONE_MILLION) - base;
+			totalDrift += drift;
+			interval = (now - start + HALF_MILLION) / ONE_MILLION;
+			if (drift >= TIME_CLOCK_DRIFT_LIMIT) {
+				syncClocks();
+				start = System.nanoTime();
+				base = System.currentTimeMillis() - (start / ONE_MILLION);
+			}
+		}
+	}
 }
