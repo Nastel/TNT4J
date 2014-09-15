@@ -81,9 +81,13 @@ public class TimeService {
 	 * 
 	 */
 	private static void scheduleUpdates() {
-		scheduler = Executors.newScheduledThreadPool(1, new TimeServiceThreadFactory("TimeService/task-"));
-		scheduler.scheduleAtFixedRate(new TimeClockSync(logger), 
-				TIME_CLOCK_SYNC_INTERVAL, TIME_CLOCK_SYNC_INTERVAL, TimeUnit.MILLISECONDS);
+		if (scheduler == null) {
+			scheduler = Executors.newScheduledThreadPool(1, new TimeServiceThreadFactory("TimeService/task-"));
+			scheduler.scheduleAtFixedRate(new TimeClockSyncTask(logger), 
+				TIME_CLOCK_SYNC_INTERVAL, 
+				TIME_CLOCK_SYNC_INTERVAL, 
+				TimeUnit.MILLISECONDS);
+		}
 	}
 	
 	/**
@@ -187,10 +191,10 @@ class TimeServiceThreadFactory implements ThreadFactory {
     }	
 }
 
-class TimeClockSync implements Runnable {
+class TimeClockSyncTask implements Runnable {
 	EventSink logger;
 	
-	TimeClockSync(EventSink lg) {
+	TimeClockSyncTask(EventSink lg) {
 		logger = lg;
 	}
 	
