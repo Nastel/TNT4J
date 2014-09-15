@@ -138,6 +138,15 @@ public class TimeService {
 		return  timeOverheadNanos;
 	}
 	
+	
+	/**
+	 * Obtain number of milliseconds since NTP time was synchronized
+	 * 
+	 */
+	public static long getUpdateAgeMillis() {
+		return TimeService.getLastUpdatedMillis() > 0? TimeService.currentTimeMillis() - TimeService.getLastUpdatedMillis(): -1;
+	}
+	
 	/**
 	 * Obtain NTP synchronized current time in milliseconds
 	 * 
@@ -206,7 +215,7 @@ class TimeClockSyncTask implements Runnable {
 		} catch (Throwable ex) {
 			logger.log(OpLevel.ERROR, "Failed to update clocks: last.updated={0}, age.ms={1}", 
 					new Date(TimeService.getLastUpdatedMillis()),
-					(TimeService.currentTimeMillis() - TimeService.getLastUpdatedMillis()), ex);
+					TimeService.getUpdateAgeMillis(), ex);
 		}
 	}	
 }

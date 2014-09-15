@@ -268,7 +268,8 @@ public class TNT4JAppender extends AppenderSkeleton {
 	private TrackingEvent processEventMessage(Map<String, Object> attrs, 
 			TrackingActivity activity, LoggingEvent jev, String eventMsg, Throwable ex) {
 		int rcode = 0;
-		long evTime = jev.getTimeStamp(), startTime = 0, elapsedTimeUsec = 0, endTime = 0;
+		long evTime = jev.getTimeStamp()*1000; // convert to usec
+		long startTime = 0, elapsedTimeUsec = 0, endTime = 0;
 	
 		OpCompCode ccode = getOpCompCode(jev);
 		OpLevel level = getOpLevel(jev);
@@ -294,7 +295,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 				event.setMessageAge(Long.parseLong(value));
 			} else if (key.equalsIgnoreCase(PARAM_START_TIME_LABEL)) {
 				startTime = Long.parseLong(value);
-			} else if (key.equalsIgnoreCase(PARAM_START_TIME_LABEL)) {
+			} else if (key.equalsIgnoreCase(PARAM_END_TIME_LABEL)) {
 				endTime = Long.parseLong(value);
 			} else if (key.equalsIgnoreCase(PARAM_REASON_CODE_LABEL)) {
 				rcode = Integer.parseInt(value);
@@ -312,9 +313,8 @@ public class TNT4JAppender extends AppenderSkeleton {
 				event.setSource(logger.getConfiguration().getSourceFactory().newSource(value));
 			}
 		}		
-		long elapsedTime = elapsedTimeUsec; // convert usec to milliseconds
-		startTime = startTime <= 0 ? (evTime - elapsedTime): evTime;
-		endTime = endTime <= 0 ? (startTime + elapsedTime): endTime;
+		startTime = startTime <= 0 ? (evTime - elapsedTimeUsec): evTime;
+		endTime = endTime <= 0 ? (startTime + elapsedTimeUsec): endTime;
 		
 		event.start(startTime);
 		event.stop(ccode, rcode, ex, endTime);

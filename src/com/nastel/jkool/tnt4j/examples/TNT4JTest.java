@@ -124,10 +124,12 @@ public class TNT4JTest {
 		end.setParentId(activity);
 		tlogger.tnt(end);
 
-		Utils.printStackTrace("Tracker stack trace", TrackingLogger.getTrackerStackTrace(tlogger), System.out);	
+		for (StackTraceElement stack[]: TrackingLogger.getAllTrackerStackTrace()) {
+			Utils.printStackTrace("Tracker stack trace", stack, System.out);			
+		}
 		
 		tlogger.close(); //deregister and release all logging resources
-		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size());
+		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size() + ", list=" + TrackingLogger.getAllTrackers());
 	}
 
 	static private TrackingActivity runSampleActivity(String msg, String cid, String opName, String location) {
