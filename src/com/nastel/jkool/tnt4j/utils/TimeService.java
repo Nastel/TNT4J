@@ -234,8 +234,7 @@ class ClockDriftMonitorTask implements Runnable {
 	private static final long TIME_CLOCK_DRIFT_SAMPLE = Integer.getInteger("tnt4j.time.server.drift.sample.ms", 10000);
 	private static final long TIME_CLOCK_DRIFT_LIMIT = Integer.getInteger("tnt4j.time.server.drift.limit.ms", 1);
 
-	private static final int ONE_MILLION = 1000000;
-	private static final int HALF_MILLION = 499999;
+	private static final int ONEM = 1000000;
 
 	long interval, drift, updateCount = 0, totalDrift;	
 	EventSink logger;
@@ -278,7 +277,7 @@ class ClockDriftMonitorTask implements Runnable {
 	@Override
 	public void run() {
 		long start = System.nanoTime();
-		long base = System.currentTimeMillis() - (start / ONE_MILLION);
+		long base = System.currentTimeMillis() - (start / ONEM);
 
 		while (true) {
 			try {
@@ -286,13 +285,13 @@ class ClockDriftMonitorTask implements Runnable {
 			} catch (InterruptedException e) {
 			}
 			long now = System.nanoTime();
-			drift = System.currentTimeMillis() - (now / ONE_MILLION) - base;
+			drift = System.currentTimeMillis() - (now / ONEM) - base;
 			totalDrift += Math.abs(drift);
-			interval = (now - start + HALF_MILLION) / ONE_MILLION;
+			interval = (now - start) / ONEM;
 			if (Math.abs(drift) >= TIME_CLOCK_DRIFT_LIMIT) {
 				syncClocks();
 				start = System.nanoTime();
-				base = System.currentTimeMillis() - (start / ONE_MILLION);
+				base = System.currentTimeMillis() - (start / ONEM);
 			}
 		}
 	}

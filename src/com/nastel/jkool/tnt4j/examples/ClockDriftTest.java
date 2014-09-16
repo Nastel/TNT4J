@@ -22,12 +22,11 @@ package com.nastel.jkool.tnt4j.examples;
  * @version $Revision: 1 $
  */
 public class ClockDriftTest {
-	private static final int ONE_MILLION = 1000000;
-	private static final int HALF_MILLION = 499999;
+	private static final int ONEM = 1000000;
 
 	public static void main(String[] args) {
 		long start = System.nanoTime();
-		long base = System.currentTimeMillis() - (start / ONE_MILLION);
+		long base = System.currentTimeMillis() - (start / ONEM);
 
 		while (true) {
 			try {
@@ -35,8 +34,8 @@ public class ClockDriftTest {
 			} catch (InterruptedException e) {
 			}
 			long now = System.nanoTime();
-			long drift = System.currentTimeMillis() - (now / ONE_MILLION) - base;
-			long interval = (now - start + HALF_MILLION) / ONE_MILLION;
+			long drift = System.currentTimeMillis() - (now / ONEM) - base;
+			long interval = (now - start) / ONEM;
 			System.out.println("Clock drift.ms=" + drift + ", after interval.ms="
 							+ interval + ", change.rate="
 							+ ((double) (drift * 1000) / (double) interval)
