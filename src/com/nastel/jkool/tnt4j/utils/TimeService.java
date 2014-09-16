@@ -287,9 +287,9 @@ class ClockDriftMonitorTask implements Runnable {
 			}
 			long now = System.nanoTime();
 			drift = System.currentTimeMillis() - (now / ONE_MILLION) - base;
-			totalDrift += drift;
+			totalDrift += Math.abs(drift);
 			interval = (now - start + HALF_MILLION) / ONE_MILLION;
-			if (drift >= TIME_CLOCK_DRIFT_LIMIT) {
+			if (Math.abs(drift) >= TIME_CLOCK_DRIFT_LIMIT) {
 				syncClocks();
 				start = System.nanoTime();
 				base = System.currentTimeMillis() - (start / ONE_MILLION);
