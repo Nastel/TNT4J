@@ -142,7 +142,7 @@ snapshot.add("metric1", myMetric1);
 snapshot.add("metric2", myMetric2);
 logger.tnt(snapshot); // report a property snapshot
 ```
-### Correlation & Topology
+### Correlation, Topology, Time Synchronization
 Relate event message together by grouping or passing context (correlator). Most if not all logging frameworks completely miss the correlation angle. TNT4J allows attachement of correlators when reporting tracking events see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same paradigm.
 
 `TrackingLogger.tnt(..)` also allows developers to specify the flow of messages using `OpType.SEND` and `OpType.RECEIVE` modifiers. These modifiers let developers specify message flow, direction.
@@ -168,9 +168,9 @@ logger.tnt(OpLevel.INFO, OpType.RECEIVE, "ReceiveOrder", order_id,
 	elasped_time, "Received order from={0}", source);
 ```
 
-<b>NOTE:</b> TNT4J uses NTP natively to synchtronze times across servers to enable cross server event, log correlation in time. To enable NTP time synchronization define java property `-Dtnt4j.time.server=ntp-server:123`. 
+<b>NOTE:</b> TNT4J uses NTP natively to synchronize times across servers to enable cross server event correlation in time. To enable NTP time synchronization define java property `-Dtnt4j.time.server=ntp-server:123`. 
 
-<b>TIP:</b> Developers should use `TimeServer.currentTimeMillis()` instead of `System.currentTimeMillis()` to obtain time adjusted to NTP time.
+<b>TIP:</b> Developers should use `TimeServer.currentTimeMillis()` instead of `System.currentTimeMillis()` to obtain time adjusted to NTP time. TNT4J also maintains a microsecond resolution clock using `Useconds.CURRENT.get()` which the number of microseconds between the current time and midnight, January 1, 1970 UTC (NTP adjusted). TNT4J automatically measures and adjusts clock drift between NTP, `System.currentTimeMillis()` and `System.nanoTime()` clocks.
 
 ### Logging Statistics
 TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors, overhead in usec and more. Do you know the overhead of your logging framework on your application?
