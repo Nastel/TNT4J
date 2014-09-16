@@ -78,7 +78,7 @@ public class TimeService {
 	 */
 	private static void scheduleUpdates() {
 		if (scheduler == null) {
-			scheduler = Executors.newScheduledThreadPool(1, new TimeServiceThreadFactory("TimeService/clock-sync-"));
+			scheduler = Executors.newScheduledThreadPool(1, new TimeServiceThreadFactory("TimeService/clock-sync"));
 			clockSyncTask = new ClockDriftMonitorTask(logger);
 			scheduler.submit(clockSyncTask);
 		}
@@ -224,7 +224,7 @@ class TimeServiceThreadFactory implements ThreadFactory {
 	
 	@Override
     public Thread newThread(Runnable r) {
-		Thread task = new Thread(r, prefix + count++);
+		Thread task = new Thread(r, prefix + "-" + count++);
 		task.setDaemon(true);
 		return task;
     }	
