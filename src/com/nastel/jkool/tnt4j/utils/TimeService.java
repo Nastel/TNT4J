@@ -265,7 +265,7 @@ class ClockDriftMonitorTask implements Runnable {
 			TimeService.updateTime();
 			Useconds.CURRENT.sync();
 			updateCount++;
-			logger.log(OpLevel.INFO, 
+			logger.log(OpLevel.DEBUG, 
 					"Updated clocks: drift.ms={0}, interval.ms={1}, total.drift.ms={2}, updates={3}", 
 					drift, interval, totalDrift, updateCount);
 		} catch (Throwable ex) {
