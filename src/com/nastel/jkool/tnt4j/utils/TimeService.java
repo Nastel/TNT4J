@@ -42,6 +42,9 @@ import com.nastel.jkool.tnt4j.sink.EventSink;
  */
 public class TimeService {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TimeService.class);
+	
+	protected static final int ONE_K = 1000;
+	protected static final int ONE_M = 1000000;
 	private static final String TIME_SERVER = System.getProperty("tnt4j.time.server");
 	private static final int TIME_SERVER_TIMEOUT = Integer.getInteger("tnt4j.time.server.timeout", 10000);
 
@@ -57,8 +60,8 @@ public class TimeService {
 		
 	static {
 		try {
-			timeOverheadNanos = calculateOverhead(1000000);
-			timeOverheadMillis = (timeOverheadNanos/1000000);
+			timeOverheadNanos = calculateOverhead(ONE_M);
+			timeOverheadMillis = (timeOverheadNanos/ONE_M);
 			updateTime();
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, 
@@ -157,7 +160,7 @@ public class TimeService {
 	 * 
 	 */
 	public static long currentTimeUsecs() {
-		return (System.currentTimeMillis() + adjustment)*1000;
+		return (System.currentTimeMillis() + adjustment)*ONE_K;
 	}
 	
 	/**
@@ -234,8 +237,6 @@ class ClockDriftMonitorTask implements Runnable {
 	private static final long TIME_CLOCK_DRIFT_SAMPLE = Integer.getInteger("tnt4j.time.server.drift.sample.ms", 10000);
 	private static final long TIME_CLOCK_DRIFT_LIMIT = Integer.getInteger("tnt4j.time.server.drift.limit.ms", 1);
 
-	private static final int ONEM = 1000000;
-
 	long interval, drift, updateCount = 0, totalDrift;	
 	EventSink logger;
 	
@@ -277,7 +278,7 @@ class ClockDriftMonitorTask implements Runnable {
 	@Override
 	public void run() {
 		long start = System.nanoTime();
-		long base = System.currentTimeMillis() - (start / ONEM);
+		long base = System.currentTimeMillis() - (start / TimeService.ONE_M);
 
 		while (true) {
 			try {
@@ -285,13 +286,13 @@ class ClockDriftMonitorTask implements Runnable {
 			} catch (InterruptedException e) {
 			}
 			long now = System.nanoTime();
-			drift = System.currentTimeMillis() - (now / ONEM) - base;
+			drift = System.currentTimeMillis() - (now / TimeService.ONE_M) - base;
 			totalDrift += Math.abs(drift);
-			interval = (now - start) / ONEM;
+			interval = (now - start) / TimeService.ONE_M;
 			if (Math.abs(drift) >= TIME_CLOCK_DRIFT_LIMIT) {
 				syncClocks();
 				start = System.nanoTime();
-				base = System.currentTimeMillis() - (start / ONEM);
+				base = System.currentTimeMillis() - (start / TimeService.ONE_M);
 			}
 		}
 	}
