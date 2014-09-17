@@ -43,7 +43,7 @@ public class SinkLogEvent extends EventObject {
 	private Object logObj = null;
 	private Snapshot snapshot = null;
 	private Throwable error = null;
-	private Source src = null;
+	private Source evSrc = null;
 	private OpLevel level = OpLevel.NONE;
 	private Object[] argList = null;
 
@@ -60,7 +60,7 @@ public class SinkLogEvent extends EventObject {
 		logObj = msg;
 		error = msg.getOperation().getThrowable();
 		level = msg.getSeverity();
-		src = msg.getSource();
+		evSrc = msg.getSource();
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class SinkLogEvent extends EventObject {
 		super(sink);
 		logObj = msg;
 		error = msg.getThrowable();
-		src = msg.getSource();
+		evSrc = msg.getSource();
 	}
 
 	/**
@@ -91,7 +91,7 @@ public class SinkLogEvent extends EventObject {
 		level = snap.getSeverity();
 		logObj = snap;
 		snapshot = snap;
-		src = snap.getSource();
+		evSrc = snap.getSource();
 	}
 
 	/**
@@ -116,6 +116,7 @@ public class SinkLogEvent extends EventObject {
 			error = Utils.getThrowable(args);
 		}
 		level = sev;
+		evSrc = evSource;
 	}
 
 	/**
@@ -142,7 +143,7 @@ public class SinkLogEvent extends EventObject {
 	 * @return source associated with the event
 	 */
 	public Source getEventSource() {
-		return src;
+		return evSrc;
 	}
 
 	/**
@@ -187,6 +188,7 @@ public class SinkLogEvent extends EventObject {
 			+ "{source: " + getSource()
 			+ ", sev: " + level
 			+ ", log.obj: " + Utils.quote(logObj)
+			+ ", ev.source: " + Utils.quote(evSrc)
 		    + ", exception: " + Utils.quote(error)
 		    + "}";
 	}
