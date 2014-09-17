@@ -19,7 +19,7 @@ import java.util.Map;
 
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.config.ConfigurationException;
-import com.nastel.jkool.tnt4j.utils.Utils;
+import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 
 
 
@@ -41,7 +41,8 @@ public class DefaultDumpSinkFactory implements DumpSinkFactory, Configurable {
 	public static final String DEFAULT_DUMP_FOLDER = System.getProperty("tnt4j.dump.folder", "./");
 
 	protected Map<String, Object> config = null;
-	private String dumpLocation = DEFAULT_DUMP_FOLDER + Utils.VM_NAME + ".dump";
+	private boolean append = true;
+	private String dumpLocation = DEFAULT_DUMP_FOLDER + UsecTimestamp.getTimeStamp("yyyy-MM-dd") + ".dump";
 	
 	/**
 	 * Obtain default dump location URL.
@@ -54,12 +55,12 @@ public class DefaultDumpSinkFactory implements DumpSinkFactory, Configurable {
 	
 	@Override
     public DumpSink getInstance() {
-	    return new FileDumpSink(dumpLocation);
+	    return new FileDumpSink(dumpLocation, append);
     }
 
 	@Override
     public DumpSink getInstance(String url) {
-	    return new FileDumpSink(url);
+	    return new FileDumpSink(url, append);
     }
 
 	@Override
@@ -80,6 +81,9 @@ public class DefaultDumpSinkFactory implements DumpSinkFactory, Configurable {
 	@Override
 	public void setConfiguration(Map<String, Object> props) throws ConfigurationException {
 		config = props;
+		Object flag  = props.get("Append");
+		append = flag == null? append: Boolean.valueOf(flag.toString());
+
 		Object dumpUrl = config.get("DumpLocation");
 		dumpLocation = dumpUrl != null? dumpUrl.toString(): dumpLocation;
 	}

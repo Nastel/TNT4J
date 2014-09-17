@@ -76,7 +76,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	public static final String JSON_USER_LABEL = "user";
 	public static final String JSON_START_TIME_USEC_LABEL = "start-time-usec";
 	public static final String JSON_END_TIME_USEC_LABEL = "end-time-usec";
-	public static final String JSON_ELAPSED_TIME_USEC_LABEL = "elasped-time-usec";
+	public static final String JSON_ELAPSED_TIME_USEC_LABEL = "elapsed-time-usec";
 	public static final String JSON_WAIT_TIME_USEC_LABEL = "wait-time-usec";
 	public static final String JSON_MSG_AGE_USEC_LABEL = "msg-age-usec";
 	public static final String JSON_MSG_ENC_LABEL = "encoding";

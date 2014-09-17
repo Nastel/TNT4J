@@ -19,9 +19,9 @@ import java.util.Map;
 import java.util.Properties;
 
 import com.nastel.jkool.tnt4j.config.ConfigurationException;
+import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.format.SimpleFormatter;
-import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>Concrete implementation of <code>EventSinkFactory</code> interface, which
@@ -39,8 +39,8 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 public class FileEventSinkFactory extends AbstractEventSinkFactory {
 
-	boolean append = false;;
-	String fileName = Utils.getVMName() + ".log";
+	boolean append = true;;
+	String fileName = UsecTimestamp.getTimeStamp("yyyy-MM-dd") + ".log";
 	
 	@Override
 	public EventSink getEventSink(String name) {

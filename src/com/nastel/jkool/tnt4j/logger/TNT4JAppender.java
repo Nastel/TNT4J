@@ -137,6 +137,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 	public static final String PARAM_ELAPSED_TIME_LABEL  = "elt";
 	public static final String PARAM_AGE_TIME_LABEL 	 = "age";
 
+	private static final ThreadLocal<Long> EVENT_TIMER = new ThreadLocal<Long>();
 	
 	private TrackingLogger logger;
 	private String sourceName;
@@ -265,11 +266,21 @@ public class TNT4JAppender extends AppenderSkeleton {
 		return activity;
 	}
 
+	private long getElapsedNanosSinceLastEvent() {
+		Long last = EVENT_TIMER.get();
+		long now = System.nanoTime(), elapsedNanos = 0;
+		
+		elapsedNanos = last != null? now - last.longValue(): elapsedNanos;
+		EVENT_TIMER.set(now);
+		return elapsedNanos;
+	}
+	
 	private TrackingEvent processEventMessage(Map<String, Object> attrs, 
 			TrackingActivity activity, LoggingEvent jev, String eventMsg, Throwable ex) {
 		int rcode = 0;
+		long elapsedTimeUsec = getElapsedNanosSinceLastEvent()/1000;
 		long evTime = jev.getTimeStamp()*1000; // convert to usec
-		long startTime = 0, elapsedTimeUsec = 0, endTime = 0;
+		long startTime = 0, endTime = 0;
 	
 		OpCompCode ccode = getOpCompCode(jev);
 		OpLevel level = getOpLevel(jev);
