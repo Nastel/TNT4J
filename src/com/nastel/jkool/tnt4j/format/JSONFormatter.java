@@ -408,7 +408,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			        Utils.quote(source.getFQName())).append(ATTR_JSON);
 			jsonString.append(Utils.quote(JSON_SOURCE_INFO_LABEL)).append(ATTR_SEP).append(
 			        Utils.quote(source.getInfo())).append(ATTR_JSON);
-			if (snap.getSource().getUrl() != null) {
+			if (source.getUrl() != null) {
 				jsonString.append(Utils.quote(JSON_SOURCE_URL_LABEL)).append(ATTR_SEP).append(
 				        Utils.quote(source.getUrl())).append(ATTR_JSON);
 			}
@@ -454,7 +454,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	}
 
 	@Override
-	public String format(OpLevel level, String msg, Object... args) {
+	public String format(Source source, OpLevel level, String msg, Object... args) {
 		StringBuilder jsonString = new StringBuilder(1024);
 		jsonString.append(START_JSON);
 		jsonString.append(Utils.quote(JSON_SEVERITY_LABEL)).append(ATTR_SEP).append(Utils.quote(level)).append(
@@ -463,6 +463,18 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		        ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_TIME_USEC_LABEL)).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(
 		        ATTR_JSON);
+		if (source != null) {
+			jsonString.append(Utils.quote(JSON_SOURCE_LABEL)).append(ATTR_SEP).append(Utils.quote(source.getName()))
+			        .append(ATTR_JSON);
+			jsonString.append(Utils.quote(JSON_SOURCE_FQN_LABEL)).append(ATTR_SEP).append(
+			        Utils.quote(source.getFQName())).append(ATTR_JSON);
+			jsonString.append(Utils.quote(JSON_SOURCE_INFO_LABEL)).append(ATTR_SEP).append(
+			        Utils.quote(source.getInfo())).append(ATTR_JSON);
+			if (source.getUrl() != null) {
+				jsonString.append(Utils.quote(JSON_SOURCE_URL_LABEL)).append(ATTR_SEP).append(
+				        Utils.quote(source.getUrl())).append(ATTR_JSON);
+			}
+		}
 		jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(Utils.format(msg, args)));
 		Throwable ex = Utils.getThrowable(args);
 		if (ex != null) {

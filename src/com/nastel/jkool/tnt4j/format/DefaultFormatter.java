@@ -23,6 +23,7 @@ import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.UsecTimestamp;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -46,7 +47,7 @@ public class DefaultFormatter implements EventFormatter, Configurable   {
 
 	protected String separator = SEPARATOR;
 	protected TimeZone timeZone = TimeZone.getTimeZone("UTC");
-	protected String formatString = "{2} | {1} | {0}";
+	protected String formatString = "{2} | {1} | {0} | {3}";
 
 	private Map<String, Object> config = null;
 	
@@ -60,7 +61,7 @@ public class DefaultFormatter implements EventFormatter, Configurable   {
 	/**
 	 * Create a default event formatter
 	 *
-	 * @param format string (e.g. "{2} | {1} | {0}")
+	 * @param format string (e.g. "{2} | {1} | {0} | {3}")
 	 */
 	public DefaultFormatter(String format) {
 		formatString = format;
@@ -69,7 +70,7 @@ public class DefaultFormatter implements EventFormatter, Configurable   {
 	/**
 	 * Create a default event formatter
 	 *
-	 * @param format string (e.g. "{2} | {1} | {0}")
+	 * @param format string (e.g. "{2} | {1} | {0} | {3}")
 	 * @param tz time zone
 	 */
 	public DefaultFormatter(String format, TimeZone tz) {
@@ -80,7 +81,7 @@ public class DefaultFormatter implements EventFormatter, Configurable   {
 	/**
 	 * Create a default event formatter
 	 *
-	 * @param format string (e.g. "{2} | {1} | {0}")
+	 * @param format string (e.g. "{2} | {1} | {0} | {3}")
 	 * @param tzid time zone id
 	 */
 	public DefaultFormatter(String format, String tzid) {
@@ -115,8 +116,8 @@ public class DefaultFormatter implements EventFormatter, Configurable   {
     }
 	
 	@Override
-    public String format(OpLevel level, String msg, Object...args) {
-		return Utils.format(formatString, UsecTimestamp.getTimeStamp(timeZone), level, Utils.format(msg, args));
+    public String format(Source src, OpLevel level, String msg, Object...args) {
+		return Utils.format(formatString, UsecTimestamp.getTimeStamp(timeZone), level, Utils.format(msg, args), src.getFQName());
     }
 	
 	@Override

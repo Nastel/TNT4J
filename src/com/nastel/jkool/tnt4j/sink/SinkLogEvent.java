@@ -19,6 +19,7 @@ import java.util.EventObject;
 
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -42,58 +43,64 @@ public class SinkLogEvent extends EventObject {
 	private Object logObj = null;
 	private Snapshot snapshot = null;
 	private Throwable error = null;
+	private Source src = null;
 	private OpLevel level = OpLevel.NONE;
 	private Object[] argList = null;
 
 	/**
 	 * Create a new log event instance
 	 * 
-	 * @param source
+	 * @param sink
 	 *            sink associated with the event
 	 * @param msg
 	 *            tracking event instance
 	 */
-	public SinkLogEvent(EventSink source, TrackingEvent msg) {
-		super(source);
+	public SinkLogEvent(EventSink sink, TrackingEvent msg) {
+		super(sink);
 		logObj = msg;
 		error = msg.getOperation().getThrowable();
 		level = msg.getSeverity();
+		src = msg.getSource();
 	}
 
 	/**
 	 * Create a new log event instance
 	 * 
-	 * @param source
+	 * @param sink
 	 *            sink associated with the event
 	 * @param msg
 	 *            tracking activity instance
 	 */
-	public SinkLogEvent(EventSink source, TrackingActivity msg) {
-		super(source);
+	public SinkLogEvent(EventSink sink, TrackingActivity msg) {
+		super(sink);
 		logObj = msg;
 		error = msg.getThrowable();
+		src = msg.getSource();
 	}
 
 	/**
 	 * Create a new log event instance.
 	 * 
-	 * @param source
+	 * @param sink
 	 *            sink associated with the event
 	 * @param snap
 	 *            a set of properties
 	 */
-	public SinkLogEvent(EventSink source, Snapshot snap) {
-		super(source);
+	public SinkLogEvent(EventSink sink, Snapshot snap) {
+		super(sink);
 		level = snap.getSeverity();
 		logObj = snap;
 		snapshot = snap;
+		src = snap.getSource();
 	}
 
 	/**
 	 * Create a new log event instance.
 	 * 
-	 * @param source
+	 * @param sink
 	 *            sink associated with the event
+	 * @param evSource
+	 *            source associated with the event
 	 * @param sev
 	 *            log severity
 	 * @param msg
@@ -101,8 +108,8 @@ public class SinkLogEvent extends EventObject {
 	 * @param args
 	 *            argument list associated with the message
 	 */
-	public SinkLogEvent(EventSink source, OpLevel sev, String msg, Object... args) {
-		super(source);
+	public SinkLogEvent(EventSink sink, Source evSource, OpLevel sev, String msg, Object... args) {
+		super(sink);
 		logObj = msg;
 		if (args != null && args.length > 0) {
 			argList = args;
@@ -127,6 +134,15 @@ public class SinkLogEvent extends EventObject {
 	 */
 	public Object[] getArguments() {
 		return argList;
+	}
+
+	/**
+	 * Return current event source associated with this event
+	 * 
+	 * @return source associated with the event
+	 */
+	public Source getEventSource() {
+		return src;
 	}
 
 	/**

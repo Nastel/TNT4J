@@ -19,6 +19,7 @@ import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -30,6 +31,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  *
  *
  * @see OpLevel
+ * @see Source
  * @see TrackingEvent
  * @see TrackingActivity
  *
@@ -43,6 +45,23 @@ public interface EventSink extends Sink, KeyValueStats {
 	static final String KEY_LOGGED_ACTIVITIES = "sink-activities";
 	static final String KEY_LOGGED_SNAPSHOTS = "sink-snapshots";
 	static final String KEY_SKIPPED_COUNT = "sink-skipped";
+
+	/**
+	 * Set current/active <code>Source</code> with the sink
+	 *
+	 * @param src event source handle
+	 * @see Source
+	 */
+	void setSource(Source src);
+	
+	/**
+	 * Obtains current/active <code>Source</code> handle associated
+	 * with the current sink.
+	 *
+	 * @return current source handle
+	 * @see Source
+	 */
+	Source getSource();
 
 	/**
 	 * Obtain name associated with this event sink instance
@@ -101,6 +120,17 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * @see OpLevel
 	 */
 	public void log(OpLevel sev, String msg, Object...args);
+		
+	/**
+	 * Log a given string message with a specified severity
+	 *
+	 * @param src log message source info
+	 * @param sev message severity to log
+	 * @param msg string message to be logged
+	 * @param args arguments passed along the message
+	 * @see OpLevel
+	 */
+	public void log(Source src, OpLevel sev, String msg, Object...args);
 		
 	/**
 	 * Register an event sink listener for notifications when errors 

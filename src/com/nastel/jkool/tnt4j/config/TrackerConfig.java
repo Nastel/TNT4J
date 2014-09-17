@@ -450,7 +450,9 @@ public class TrackerConfig {
 	 * @return new event logger instance created by <code>EventSinkFactory</code>
 	 */
 	public EventSink getEventSink() {
-		return evFactory.getEventSink(sourceHandle.getName(), props, evFormatter);
+		EventSink sink = evFactory.getEventSink(sourceHandle.getName(), props, evFormatter);
+		sink.setSource(sourceHandle);
+		return sink;
 	}
 
 	/**
@@ -463,7 +465,9 @@ public class TrackerConfig {
 	 * @return new event logger instance created by <code>EventSinkFactory</code>
 	 */
 	public EventSink getEventSink(EventFormatter frm) {
-		return evFactory.getEventSink(sourceHandle.getName(), props, frm);
+		EventSink sink = evFactory.getEventSink(sourceHandle.getName(), props, frm);
+		sink.setSource(sourceHandle);
+		return sink;
 	}
 
 	/**

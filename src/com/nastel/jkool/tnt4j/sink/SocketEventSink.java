@@ -22,6 +22,7 @@ import java.net.Socket;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -90,11 +91,11 @@ public class SocketEventSink extends AbstractEventSink {
 	}
 	
 	@Override
-	protected void _log(OpLevel sev, String msg, Object...args)  throws IOException {
+	protected void _log(Source src, OpLevel sev, String msg, Object...args)  throws IOException {
 		if (logSink != null) {
-			logSink.log(sev, msg, args);
+			logSink.log(src, sev, msg, args);
 		}
-		writeLine(getEventFormatter().format(sev, msg, args));
+		writeLine(getEventFormatter().format(src, sev, msg, args));
 	}
 
 	@Override

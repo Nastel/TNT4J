@@ -17,6 +17,7 @@ package com.nastel.jkool.tnt4j.format;
 
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -61,10 +62,11 @@ public interface EventFormatter extends Formatter {
 	/**
 	 * Format a given message and severity level combo
 	 *
+	 * @param src event source
 	 * @param level severity level
 	 * @param msg message to be formatted
 	 * @param args arguments associated with the object
 	 * @see OpLevel
 	 */
-	public String format(OpLevel level, String msg, Object...args);
+	public String format(Source src, OpLevel level, String msg, Object...args);
 }

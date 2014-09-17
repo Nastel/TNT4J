@@ -24,6 +24,7 @@ import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -49,6 +50,7 @@ public abstract class AbstractEventSink implements EventSink {
 
 	private String name;
 	private EventFormatter formatter;
+	private Source source;
 	private AtomicLong loggedActivities = new AtomicLong(0);
 	private AtomicLong loggedEvents = new AtomicLong(0);
 	private AtomicLong loggedMsgs = new AtomicLong(0);
@@ -63,6 +65,16 @@ public abstract class AbstractEventSink implements EventSink {
 	public AbstractEventSink(String nm, EventFormatter fmt) {
 		name = nm;
 		formatter = fmt;
+	}
+
+	@Override
+	public void setSource(Source src) {
+		source = src;
+	}
+	
+	@Override
+	public Source getSource() {
+		return source;
 	}
 
 	@Override
@@ -358,15 +370,20 @@ public abstract class AbstractEventSink implements EventSink {
 	
 	@Override
 	public void log(OpLevel sev, String msg, Object... args) {
+		log(source, sev, msg, args);
+	}
+	
+	@Override
+	public void log(Source src, OpLevel sev, String msg, Object... args) {
 		_checkState();
 		if (!filterEvent(sev, msg))
 			return;
 		if (isSet(sev)) {
 			try {
-				_log(sev, msg, args);
+				_log(src, sev, msg, args);
 				loggedMsgs.incrementAndGet();
 				if (logListeners.size() > 0) {
-					notifyListeners(new SinkLogEvent(this, sev, msg, args));
+					notifyListeners(new SinkLogEvent(this, src, sev, msg, args));
 				}
 			} catch (Throwable ex) {
 				notifyListeners(msg, ex);
@@ -412,6 +429,8 @@ public abstract class AbstractEventSink implements EventSink {
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 * 
+	 * @param src
+	 *            event source handle
 	 * @param sev
 	 *            message severity to log
 	 * @param msg
@@ -420,5 +439,5 @@ public abstract class AbstractEventSink implements EventSink {
 	 *            arguments passed along the message
 	 * @see OpLevel
 	 */
-	abstract protected void _log(OpLevel sev, String msg, Object... args) throws Exception;;
+	abstract protected void _log(Source src, OpLevel sev, String msg, Object... args) throws Exception;;
 }

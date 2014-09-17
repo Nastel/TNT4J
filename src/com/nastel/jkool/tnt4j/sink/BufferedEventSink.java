@@ -23,6 +23,7 @@ import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -45,6 +46,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 public class BufferedEventSink implements EventSink {
 	static final String KEY_OBJECTS_DROPPED = "buffered-objects-dropped";
 
+	private Source source;
 	private EventSink outSink = null;
 	private AtomicLong dropCount = new AtomicLong(0);	
 
@@ -95,7 +97,7 @@ public class BufferedEventSink implements EventSink {
 
 	@Override
     public void write(Object msg, Object... args) throws IOException, InterruptedException {
-		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, OpLevel.NONE, String.valueOf(msg), args));
+		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, null, OpLevel.NONE, String.valueOf(msg), args));
 		if (!flag) dropCount.incrementAndGet();
 	}
 
@@ -119,7 +121,12 @@ public class BufferedEventSink implements EventSink {
 	
 	@Override
     public void log(OpLevel sev, String msg, Object... args) {
-		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, sev, msg, args));
+		log(source, sev, msg, args);
+    }
+
+	@Override
+    public void log(Source src, OpLevel sev, String msg, Object... args) {
+		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, src, sev, msg, args));
 		if (!flag) dropCount.incrementAndGet();
     }
 
@@ -181,5 +188,15 @@ public class BufferedEventSink implements EventSink {
 	@Override
     public EventFormatter getEventFormatter() {
 	    return outSink.getEventFormatter();
+    }
+
+	@Override
+    public void setSource(Source src) {
+		source = src;
+	}
+
+	@Override
+    public Source getSource() {
+	    return source;
     }
 }

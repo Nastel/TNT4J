@@ -28,6 +28,7 @@ import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.sink.AbstractEventSink;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -88,8 +89,8 @@ public class Log4jEventSink extends AbstractEventSink {
 	}
 	
 	@Override
-	protected void _log(OpLevel sev, String msg, Object... args) {
-		logger.log(getL4JLevel(sev), getEventFormatter().format(sev, msg, args), Utils.getThrowable(args));
+	protected void _log(Source src, OpLevel sev, String msg, Object... args) {
+		logger.log(getL4JLevel(sev), getEventFormatter().format(src, sev, msg, args), Utils.getThrowable(args));
 	}
 
 	/**

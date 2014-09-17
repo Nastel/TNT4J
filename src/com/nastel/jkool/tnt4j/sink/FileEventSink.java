@@ -21,6 +21,7 @@ import java.io.PrintStream;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -109,9 +110,9 @@ public class FileEventSink extends AbstractEventSink {
 	}	
 
 	@Override
-    protected void _log(OpLevel sev, String msg, Object... args) {
+    protected void _log(Source src, OpLevel sev, String msg, Object... args) {
 		PrintStream printer = fileSink.getPrintStream();
-		printer.println(getEventFormatter().format(sev, msg, args));		
+		printer.println(getEventFormatter().format(src, sev, msg, args));		
 		printer.flush();
 	}	
 }
