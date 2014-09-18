@@ -31,7 +31,7 @@ import com.nastel.jkool.tnt4j.source.Source;
 public class PropertySnapshot  implements Snapshot {
 	
 	private OpLevel level;
-	private OpType opType = OpType.INQUIRE;
+	private OpType opType = OpType.SNAPSHOT;
 	private String id = null;
 	private String category = null;
 	private String snapName = null;
@@ -61,7 +61,7 @@ public class PropertySnapshot  implements Snapshot {
 	 *            snapshot name
 	 */
 	public PropertySnapshot(String cat, String name) {
-		this(cat, name, new UsecTimestamp(), OpLevel.INFO, OpType.INQUIRE);
+		this(cat, name, new UsecTimestamp(), OpLevel.INFO, OpType.SNAPSHOT);
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class PropertySnapshot  implements Snapshot {
 	 * @param lvl severity level
 	 */
 	public PropertySnapshot(String cat, String name, OpLevel lvl) {
-		this(cat, name, lvl, OpType.INQUIRE);
+		this(cat, name, lvl, OpType.SNAPSHOT);
 	}
 
 	/**

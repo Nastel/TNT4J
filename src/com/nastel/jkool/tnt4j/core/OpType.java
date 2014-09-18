@@ -22,7 +22,7 @@ package com.nastel.jkool.tnt4j.core;
  * @version $Revision: 5 $
  */
 public enum OpType {
-	OTHER, NOOP, CALL, ACTIVITY, EVENT, START, STOP, OPEN, CLOSE, SEND, RECEIVE,
+	OTHER, NOOP, CALL, ACTIVITY, EVENT, SNAPSHOT, START, STOP, OPEN, CLOSE, SEND, RECEIVE,
 	INQUIRE, SET, BROWSE, REQUEST, RESPONSE, ADD, REMOVE, CLEAR;
 
 	private static OpType[] enumList = OpType.values();

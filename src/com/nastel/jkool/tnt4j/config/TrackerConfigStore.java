@@ -223,19 +223,23 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	private Properties loadProperties(Map<String, Properties> map) {
-		Properties defaultSet = null;
-		if (map == null) return defaultSet;
+		int maxKeyLen = 0;
+		Properties selectedSet = null;
+		if (map == null) return selectedSet;
 		for (Entry<String, Properties> entry : map.entrySet()) {
 			if (entry.getKey().equals(DEFAULT_SOURCE)) {
-				defaultSet = entry.getValue();
+				selectedSet = entry.getValue();
 				continue;
 			}
-			int idx = this.srcName.indexOf(entry.getKey());
-			if (idx >= 0) {
-				return entry.getValue();
+			// find the best match (longest string match)
+			String configKey = entry.getKey();
+			boolean match = this.srcName.indexOf(configKey) >= 0;
+			if (match && configKey.length() > maxKeyLen) {
+				maxKeyLen = configKey.length();
+				selectedSet = entry.getValue();
 			}
 		}
-		return defaultSet;
+		return selectedSet;
 	}
 
 	private Map<String, Properties> loadConfiguration(String configFile) {
