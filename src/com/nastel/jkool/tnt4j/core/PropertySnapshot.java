@@ -87,7 +87,7 @@ public class PropertySnapshot  implements Snapshot {
 	 * @param lvl severity level
 	 * @param type operation associated with this snapshot
 	 */
-	public PropertySnapshot(String cat, String name, OpLevel lvl, OpType type) {
+	protected PropertySnapshot(String cat, String name, OpLevel lvl, OpType type) {
 		this(cat, name, new UsecTimestamp(), lvl, type);
 	}
 
@@ -103,7 +103,7 @@ public class PropertySnapshot  implements Snapshot {
 	 * @param lvl severity level
 	 * @param type operation associated with this snapshot
 	 */
-	public PropertySnapshot(String cat, String name, UsecTimestamp time, OpLevel lvl, OpType type) {
+	protected PropertySnapshot(String cat, String name, UsecTimestamp time, OpLevel lvl, OpType type) {
 		category = cat;
 		snapName = name;
 		timeStamp = time;

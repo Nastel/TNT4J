@@ -943,12 +943,6 @@ public class TrackingLogger implements Tracker {
 		return logger.newSnapshot(cat, name, level);
     }
 
-	@Override
-    public Snapshot newSnapshot(String cat, String name, OpLevel level, OpType type) {
-		checkState();
-		return logger.newSnapshot(cat, name, level, type);
-    }
-
 	/**
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.
 	 *

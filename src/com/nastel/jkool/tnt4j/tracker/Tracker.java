@@ -206,18 +206,6 @@ public interface Tracker extends Handle, KeyValueStats {
 	public Snapshot newSnapshot(String cat, String name, OpLevel level);
 
 	/**
-	 * Create a new application snapshot via <code>Snapshot</code> object instance.
-	 * 
-	 * @param cat category name
-	 * @param name snapshot name
-	 * @param level activity severity level
-	 * @param type operation type
-	 * @return a new application metric snapshot
-	 * @see Snapshot
-	 */
-	public Snapshot newSnapshot(String cat, String name, OpLevel level, OpType type);
-
-	/**
 	 * Track and Trace a single application tracking activity
 	 * Activities of type <code>OpType.NOOP</code> are ignored.
 	 * 
