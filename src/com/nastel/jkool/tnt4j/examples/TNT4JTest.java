@@ -171,7 +171,7 @@ public class TNT4JTest {
 			}
 		} finally {
 			event.stop();
-			tlogger.info("runTNT4JEvent: runs={0}, elapsed.nsec={1}, nsec/call={2}", limit, event.getOperation().getElapsedTimeNano(), (event.getOperation().getElapsedTimeNano()/limit));
+			tlogger.info("runTNT4JEvent: runs=\"{0}\", elapsed.nsec={1}, nsec/call={2}", limit, event.getOperation().getElapsedTimeNano(), (event.getOperation().getElapsedTimeNano()/limit));
 		}
 		return event;
 	}

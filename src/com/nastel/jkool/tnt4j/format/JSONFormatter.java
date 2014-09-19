@@ -102,6 +102,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	protected static final String ARRAY_END = "]";
 	protected static final String ARRAY_START = "[";
 	protected static final String ARRAY_START_LINE = "[\n";
+	protected static final String QUOTE = "\"";
+	protected static final String ESCAPED_QUOTE = "\\\"";
 
 	private Map<String, Object> config = null;
 	private boolean newLineFormat = true;
@@ -150,7 +152,10 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			StringBuilder jsonString = new StringBuilder(1024);
 			jsonString.append(START_JSON);
 			jsonString.append(Utils.quote(JSON_TIME_USEC_LABEL)).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
-			jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(Utils.format(obj.toString(), args)));
+			
+			String msgText = Utils.format(obj.toString(), args);
+			msgText = msgText.replace(QUOTE, ESCAPED_QUOTE); // escape double quote chars
+			jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(msgText));
 			jsonString.append(END_JSON);
 			return jsonString.toString();
 		}
@@ -250,7 +255,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		String msgText = event.getMessage();
 		if (msgText != null) {
 			jsonString.append(ATTR_JSON);
-			jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getMessage()));
+			msgText = msgText.replace(QUOTE, ESCAPED_QUOTE); // escape double quote chars
+			jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(msgText));
 		}
 
 		String exStr = event.getOperation().getExceptionString();
@@ -471,10 +477,15 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			jsonString.append(Utils.quote(JSON_SOURCE_FQN_LABEL)).append(ATTR_SEP).append(Utils.quote(source.getFQName())).append(ATTR_JSON);
 			jsonString.append(Utils.quote(JSON_SOURCE_INFO_LABEL)).append(ATTR_SEP).append(Utils.quote(source.getInfo())).append(ATTR_JSON);
 			if (source.getUrl() != null) {
-				jsonString.append(Utils.quote(JSON_SOURCE_URL_LABEL)).append(ATTR_SEP).append(Utils.quote(source.getUrl())).append(ATTR_JSON);
+				jsonString.append(Utils.quote(JSON_SOURCE_URL_LABEL)).append(ATTR_SEP).append(Utils.quote(source.getUrl()));
 			}
 		}
-		jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(Utils.format(msg, args)));
+		if (msg != null) {
+			String msgText = Utils.format(msg, args);
+			msgText = msgText.replace(QUOTE, ESCAPED_QUOTE); // escape double quote chars
+			jsonString.append(ATTR_JSON);
+			jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(msgText));
+		}
 		Throwable ex = Utils.getThrowable(args);
 		if (ex != null) {
 			jsonString.append(ATTR_JSON);
