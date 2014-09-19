@@ -91,6 +91,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * {
  * source: org
  * like: com.nastel
+ * enabled: true
  * }
  * }
  * </pre>
@@ -121,6 +122,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	
 	private static final String DEFAULT_SOURCE = "*";
 	private static final String SOURCE_KEY = "source";
+	private static final String ENABLED_KEY = "enabled";
 	private static final String LIKE_KEY = "like";
 	
 	private String configFile = null;
@@ -264,6 +266,12 @@ public class TrackerConfigStore extends TrackerConfig {
 				props = readStanza(reader);
 				String key = props.getProperty(SOURCE_KEY);
 				String like = props.getProperty(LIKE_KEY);
+				String enabled = props.getProperty(ENABLED_KEY);
+				if (enabled != null && enabled.equalsIgnoreCase("true")) {
+					logger.log(OpLevel.WARNING, 
+							"Disabling properties for source={0}, like={1}, enabled={2}", key, like, enabled);
+					continue;
+				}
 				if (like != null) {
 					props = map.get(like);
 					if (props == null) {
