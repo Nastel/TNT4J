@@ -29,6 +29,7 @@ import com.nastel.jkool.tnt4j.source.Source;
  * @version $Revision: 8 $
  */
 public class PropertySnapshot  implements Snapshot {
+	public static final String CATEGORY_DEFAULT = "Default";
 	
 	private OpLevel level;
 	private OpType opType = OpType.SNAPSHOT;
@@ -49,7 +50,7 @@ public class PropertySnapshot  implements Snapshot {
 	 *            snapshot name
 	 */
 	public PropertySnapshot(String name) {
-		this(null, name);
+		this(CATEGORY_DEFAULT, name);
 	}
 
 	/**
@@ -61,7 +62,7 @@ public class PropertySnapshot  implements Snapshot {
 	 *            snapshot name
 	 */
 	public PropertySnapshot(String cat, String name) {
-		this(cat, name, new UsecTimestamp(), OpLevel.INFO, OpType.SNAPSHOT);
+		this(cat, name, OpLevel.INFO, OpType.SNAPSHOT, new UsecTimestamp());
 	}
 
 	/**
@@ -74,36 +75,42 @@ public class PropertySnapshot  implements Snapshot {
 	 * @param lvl severity level
 	 */
 	public PropertySnapshot(String cat, String name, OpLevel lvl) {
-		this(cat, name, lvl, OpType.SNAPSHOT);
+		this(cat, name, lvl, OpType.SNAPSHOT, new UsecTimestamp());
 	}
 
 	/**
-	 * Constructs a Property snapshot with the specified name and current time stamp.
+	 * Constructs a Property snapshot with the specified name, given time stamp.
 	 * 
 	 * @param cat
 	 *            snapshot category name
 	 * @param name
 	 *            snapshot name
-	 * @param lvl severity level
-	 * @param type operation associated with this snapshot
-	 */
-	protected PropertySnapshot(String cat, String name, OpLevel lvl, OpType type) {
-		this(cat, name, new UsecTimestamp(), lvl, type);
-	}
-
-	/**
-	 * Constructs a Property snapshot with the specified name, given time stamp and a given capacity.
-	 * 
-	 * @param cat
-	 *            snapshot category name
-	 * @param name
-	 *            snapshot name
+	 * @param lvl
+	 *            severity level
 	 * @param time
 	 *            time stamp associated with the snapshot
-	 * @param lvl severity level
-	 * @param type operation associated with this snapshot
+	 * @param type
+	 *            operation associated with this snapshot
 	 */
-	protected PropertySnapshot(String cat, String name, UsecTimestamp time, OpLevel lvl, OpType type) {
+	public PropertySnapshot(String cat, String name, OpLevel lvl, UsecTimestamp time) {
+		this(cat, name, lvl, OpType.SNAPSHOT, time);
+	}
+	
+	/**
+	 * Constructs a Property snapshot with the specified name, type, given time stamp .
+	 * 
+	 * @param cat
+	 *            snapshot category name
+	 * @param name
+	 *            snapshot name
+	 * @param lvl
+	 *            severity level
+	 * @param type
+	 *            operation associated with this snapshot
+	 * @param time
+	 *            time stamp associated with the snapshot
+	 */
+	protected PropertySnapshot(String cat, String name, OpLevel lvl, OpType type, UsecTimestamp time) {
 		category = cat;
 		snapName = name;
 		timeStamp = time;
