@@ -18,6 +18,8 @@ package com.nastel.jkool.tnt4j.format;
 import java.util.Collection;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringEscapeUtils;
+
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
@@ -102,8 +104,6 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	protected static final String ARRAY_END = "]";
 	protected static final String ARRAY_START = "[";
 	protected static final String ARRAY_START_LINE = "[\n";
-	protected static final String QUOTE = "\"";
-	protected static final String ESCAPED_QUOTE = "\\\"";
 
 	private Map<String, Object> config = null;
 	private boolean newLineFormat = true;
@@ -154,7 +154,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			jsonString.append(Utils.quote(JSON_TIME_USEC_LABEL)).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
 			
 			String msgText = Utils.format(obj.toString(), args);
-			msgText = msgText.replace(QUOTE, ESCAPED_QUOTE); // escape double quote chars
+			msgText = StringEscapeUtils.escapeJson(msgText); // escape double quote chars
 			jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(msgText));
 			jsonString.append(END_JSON);
 			return jsonString.toString();
@@ -255,7 +255,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		String msgText = event.getMessage();
 		if (msgText != null) {
 			jsonString.append(ATTR_JSON);
-			msgText = msgText.replace(QUOTE, ESCAPED_QUOTE); // escape double quote chars
+			msgText = StringEscapeUtils.escapeJson(msgText); // escape double quote chars
 			jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(msgText));
 		}
 
@@ -482,7 +482,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		}
 		if (msg != null) {
 			String msgText = Utils.format(msg, args);
-			msgText = msgText.replace(QUOTE, ESCAPED_QUOTE); // escape double quote chars
+			msgText = StringEscapeUtils.escapeJson(msgText); // escape double quote chars
 			jsonString.append(ATTR_JSON);
 			jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(msgText));
 		}
