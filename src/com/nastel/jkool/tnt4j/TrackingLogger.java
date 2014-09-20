@@ -208,7 +208,7 @@ public class TrackingLogger implements Tracker {
 
 	private Tracker logger;
 	private TrackingSelector selector;
-
+	
 	static {
 		// load configuration and initialize default factories
 		initJavaTiming();

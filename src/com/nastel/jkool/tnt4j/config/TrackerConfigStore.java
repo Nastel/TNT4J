@@ -116,7 +116,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 
 public class TrackerConfigStore extends TrackerConfig {
-	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerConfigStore.class.getName());
+	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerConfigStore.class);
 	
 	public static final String TNT4J_PROPERTIES = "tnt4j.properties";
 	

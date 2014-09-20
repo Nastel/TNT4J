@@ -193,6 +193,9 @@ public class BufferedEventSink implements EventSink {
 	@Override
     public void setSource(Source src) {
 		source = src;
+		if (outSink != null) {
+			outSink.setSource(source);
+		}
 	}
 
 	@Override

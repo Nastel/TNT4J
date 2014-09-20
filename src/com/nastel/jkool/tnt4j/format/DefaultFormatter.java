@@ -23,6 +23,7 @@ import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.UsecTimestamp;
+import com.nastel.jkool.tnt4j.source.DefaultSourceFactory;
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -117,7 +118,8 @@ public class DefaultFormatter implements EventFormatter, Configurable   {
 	
 	@Override
     public String format(Source src, OpLevel level, String msg, Object...args) {
-		return Utils.format(formatString, UsecTimestamp.getTimeStamp(timeZone), level, Utils.format(msg, args), src.getFQName());
+		String srcName = src != null? src.getFQName(): DefaultSourceFactory.getInstance().getRootSource().getFQName();
+		return Utils.format(formatString, UsecTimestamp.getTimeStamp(timeZone), level, Utils.format(msg, args), srcName);
     }
 	
 	@Override

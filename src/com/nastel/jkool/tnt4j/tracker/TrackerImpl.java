@@ -60,7 +60,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * 
  */
 public class TrackerImpl implements Tracker, SinkErrorListener {	
-	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerImpl.class.getName());
+	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerImpl.class);
 	private static ThreadLocal<LightStack<TrackingActivity>> ACTIVITY_STACK = new ThreadLocal<LightStack<TrackingActivity>>();
 	
 	public static final NullActivity NULL_ACTIVITY = new NullActivity();	
@@ -565,7 +565,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		try {
 			TrackingActivity activity = getCurrentActivity();
 			if (activity == null || activity instanceof NullActivity) {
-				eventSink.log(sev, msg, args);				
+				eventSink.log(getSource(), sev, msg, args);				
 			} else {
 				activity.tnt(sev, "log", msg, args);
 			}

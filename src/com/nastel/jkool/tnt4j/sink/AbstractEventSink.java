@@ -44,6 +44,8 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * @see SinkLogEventListener
  */
 public abstract class AbstractEventSink implements EventSink {
+	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(AbstractEventSink.class);
+	
 	protected ArrayList<SinkErrorListener> errorListeners = new ArrayList<SinkErrorListener>(10);
 	protected ArrayList<SinkLogEventListener> logListeners = new ArrayList<SinkLogEventListener>(10);
 	protected ArrayList<SinkEventFilter> filters = new ArrayList<SinkEventFilter>(10);
@@ -201,6 +203,8 @@ public abstract class AbstractEventSink implements EventSink {
 		if (errorListeners.size() > 0) {
 			SinkError event = new SinkError(this, msg, ex);
 			notifyListeners(event);
+		} else {
+			logger.log(OpLevel.ERROR, "Error when logging msg='{0}'", msg, ex);
 		}
 	}
 
@@ -216,11 +220,9 @@ public abstract class AbstractEventSink implements EventSink {
 	 * @return true if event passed all filters, false otherwise
 	 * @see OpLevel
 	 */
-	protected boolean filterEvent(OpLevel level, String msg, Object... args) {
+	protected boolean passEvent(OpLevel level, String msg, Object... args) {
 		boolean pass = true;
-		if (filters.size() == 0)
-			return pass;
-
+		if (filters.size() == 0) return pass;
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, level, msg, args));
 			if (!pass) {
@@ -376,8 +378,7 @@ public abstract class AbstractEventSink implements EventSink {
 	@Override
 	public void log(Source src, OpLevel sev, String msg, Object... args) {
 		_checkState();
-		if (!filterEvent(sev, msg))
-			return;
+		if (!passEvent(sev, msg)) return;
 		if (isSet(sev)) {
 			try {
 				_log(src, sev, msg, args);
