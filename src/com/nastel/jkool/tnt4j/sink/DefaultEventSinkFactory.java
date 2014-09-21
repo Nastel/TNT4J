@@ -19,12 +19,37 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
- * This class provides a static way to get default event sink factory
+ * This class provides a static way to get default event sink factory. Default event sink factory is
+ * set to <code>com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory</code>.
+ * Developers may initialize default event sink factory at runtime via code as follows:
+ * <pre>
+ * {@code
+ * EventSinkFactory factory = new MyEventSinkFactory();
+ * DefaultEventSinkFactory.setDefaultEventSinkFactory(factory);
+ * ...
+ * }
+ * </pre>
+ * Another way to initialize to via a java property <code>tnt4j.default.event.factory</code>
+ * java property and setting to the name of the class that implements <code>EventSinkFactory</code> interface.
+ * Example:
+ * <pre>
+ * {@code
+ * tnt4j.default.event.factory="com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory"
+ * }
+ * </pre>
  * </p>
- * 
+ * Below is an example of how to obtain default event sink factory.
  * <pre>
  * {@code
  * EventSinkFactory config = DefaultEventSinkFactory.getInstance();
+ * ...
+ * }
+ * </pre>
+ * Below is an example of how to obtain an event sink based on a default event sink factory.
+ * Use this method for all default logging.
+ * <pre>
+ * {@code
+ * EventSink sink = DefaultEventSinkFactory.defaultEventSink(MyClass.class);
  * ...
  * }
  * </pre>
@@ -43,17 +68,48 @@ public class DefaultEventSinkFactory {
 		LoadDefaultFactory();
 	}
 	
+	/**
+	 * Initialize default even sink factory based on given environment.
+	 * Default event sink factory can be specified using <code>tnt4j.default.event.factory</code>
+	 * java property and setting to the name of the class that implements <code>EventSinkFactory</code>
+	 * interface. The given event sink factory class must provide a default public constructor with
+	 * no arguments.
+	 * 
+	 * @see EventSinkFactory
+	 */
 	private static void LoadDefaultFactory() {
 		if (defaultFactory == null) {
 			String defaultFactoryClass = System.getProperty("tnt4j.default.event.factory", DEFAULT_FACTORY_CLASS);
-			try {
-				defaultFactory = (EventSinkFactory) Utils.createInstance(defaultFactoryClass);
-			} catch (Throwable e) {
-				e.printStackTrace();
+			defaultFactory = createEventSinkFactory(defaultFactoryClass);
+			if (defaultFactory == null && !defaultFactoryClass.equals(DEFAULT_FACTORY_CLASS)) {
+				defaultFactory = createEventSinkFactory(DEFAULT_FACTORY_CLASS);
 			}
 		}
 	}
 	
+	/**
+	 * Create an instance of <code>EventSinkFactory</code> based on
+	 * a given class name. The class must provide a default public constructor
+	 * with no arguments.
+	 * 
+	 * @param className class name that implements <code>EventSinkFactory</code> interface.
+	 * @return event sink factory instance, null if not able to create an instance.
+	 * @see EventSinkFactory
+	 */
+	private static EventSinkFactory createEventSinkFactory(String className) {
+		try {
+			EventSinkFactory factory = (EventSinkFactory) Utils.createInstance(className);
+			return factory;
+		} catch (Throwable e) {
+			e.printStackTrace();
+		}	
+		return null;
+	}
+	
+	/**
+	 * Private constructor to prevent object instantiation
+	 * 
+	 */
 	private DefaultEventSinkFactory() {}
 	
 	/**
@@ -79,7 +135,7 @@ public class DefaultEventSinkFactory {
 	 * Static method to obtain default event sink
 	 * 
 	 * @param name name of the application/event sink to get
-	 *
+	 * @return new event sink instance associated with given name
 	 */
 	public static EventSink defaultEventSink(String name) {
 		return defaultFactory.getEventSink(name);
@@ -89,7 +145,7 @@ public class DefaultEventSinkFactory {
 	 * Static method to obtain default event sink
 	 * 
 	 * @param clazz class for which to get the event sink
-	 *
+	 * @return new event sink instance associated with given class
 	 */
 	public static EventSink defaultEventSink(Class<?> clazz) {
 	    return defaultEventSink(clazz.getName());
