@@ -15,7 +15,7 @@
  */
 package com.nastel.jkool.tnt4j.sink;
 
-import com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
@@ -36,8 +36,24 @@ import com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory;
  * 
  */
 public class DefaultEventSinkFactory {
-	private static EventSinkFactory defaultFactory = new Log4JEventSinkFactory();
+	private static final String DEFAULT_FACTORY_CLASS = "com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory";
+	private static EventSinkFactory defaultFactory;
 
+	static {
+		LoadDefaultFactory();
+	}
+	
+	private static void LoadDefaultFactory() {
+		if (defaultFactory == null) {
+			String defaultFactoryClass = System.getProperty("tnt4j.default.event.factory", DEFAULT_FACTORY_CLASS);
+			try {
+				defaultFactory = (EventSinkFactory) Utils.createInstance(defaultFactoryClass);
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	private DefaultEventSinkFactory() {}
 	
 	/**
