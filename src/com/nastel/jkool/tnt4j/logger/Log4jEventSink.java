@@ -151,7 +151,7 @@ public class Log4jEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public synchronized void close() throws IOException {
+	public void close() throws IOException {
 	}
 
 	@Override
