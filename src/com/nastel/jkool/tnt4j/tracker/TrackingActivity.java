@@ -184,6 +184,9 @@ public class TrackingActivity extends Activity {
 	 * 
 	 */
 	public void tnt(TrackingEvent event) {
+		if (isStopped()) {
+			throw new IllegalStateException("Activity already stopped: name=" + getName() + ", id=" + this.getTrackingId());
+		}
 		add(event);
 		lastEventNanos = System.nanoTime();
 		tracker.tnt(event);
@@ -194,6 +197,9 @@ public class TrackingActivity extends Activity {
 	 * 
 	 */
 	public void tnt(Snapshot snapshot) {
+		if (isStopped()) {
+			throw new IllegalStateException("Activity already stopped: name=" + getName() + ", id=" + this.getTrackingId());
+		}
 		add(snapshot);
 		tracker.tnt(snapshot);
 	}

@@ -563,12 +563,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
     public void log(OpLevel sev, String msg, Object... args) {
 		long start = System.nanoTime();
 		try {
-			TrackingActivity activity = getCurrentActivity();
-			if (activity == null || activity instanceof NullActivity) {
-				eventSink.log(getSource(), sev, msg, args);				
-			} else {
-				activity.tnt(sev, "log", msg, args);
-			}
+			eventSink.log(getSource(), sev, msg, args);				
 			msgCount.incrementAndGet();
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
