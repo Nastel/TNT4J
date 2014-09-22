@@ -325,7 +325,7 @@ Requirements
 TNT4J depends on the following external packages:
 * Apache commons configuration 1.10 (http://commons.apache.org/proper/commons-configuration/)
 * Apache commons lang 2.6 (http://commons.apache.org/proper/commons-lang/)
-* Apache commons lang3 3.0.1 (http://commons.apache.org/proper/commons-lang/)
+* Apache commons lang3 3.3.2 (http://commons.apache.org/proper/commons-lang/)
 * Apache commons logging 1.2.17 (http://commons.apache.org/proper/commons-logging/)
 * Apache commons net 3.3 (http://commons.apache.org/proper/commons-net/)
 * Apache commons codec 1.9 (http://commons.apache.org/proper/commons-codec/)
