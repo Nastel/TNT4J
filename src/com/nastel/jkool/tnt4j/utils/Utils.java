@@ -544,15 +544,15 @@ public class Utils {
 	 * Returns the current time in microseconds.
 	 * </p>
 	 * <p>
-	 * This is a wrapper around {@link java.lang.System#currentTimeMillis()}, returning the value in microsecond
+	 * This is a wrapper around {@link com.nastel.jkool.tnt4j.utils.Useconds#get()}, returning the value in microsecond
 	 * resolution.
 	 * </p>
 	 * 
 	 * @return the difference, measured in microseconds, between the current time and midnight, January 1, 1970 UTC
-	 * @see java.lang.System#currentTimeMillis()
+	 * @see com.nastel.jkool.tnt4j.utils.Useconds#get()
 	 */
 	public static long currentTimeUsec() {
-		return TimeService.currentTimeMillis() * 1000;
+		return Useconds.CURRENT.get();
 	}
 
 	/**

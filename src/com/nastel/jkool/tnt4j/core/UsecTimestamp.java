@@ -25,6 +25,7 @@ import java.util.TimeZone;
 import org.apache.commons.lang3.StringUtils;
 
 import com.nastel.jkool.tnt4j.utils.TimeService;
+import com.nastel.jkool.tnt4j.utils.Useconds;
 
 /**
  * <p>Represents a timestamp that has microsecond accuracy.</p>
@@ -41,12 +42,21 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	private long usecs;
 
 	/**
-	 * Creates UsecTimestamp based on current time.
+	 * Returns UsecTimestamp based on current time with microsecond precision/accuracy
+	 *
+	 * @see com.nastel.jkool.tnt4j.utils.Utils#currentTimeUsec
+	 */
+	public static UsecTimestamp now() {
+		return new UsecTimestamp();
+	}
+
+	/**
+	 * Creates UsecTimestamp based on current time with microsecond precision/accuracy
 	 *
 	 * @see com.nastel.jkool.tnt4j.utils.Utils#currentTimeUsec
 	 */
 	public UsecTimestamp() {
-		setTimestampValues(TimeService.currentTimeMillis(), 0);
+		this(Useconds.CURRENT.get());
 	}
 
 	/**
@@ -191,12 +201,10 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 					}
 				}
 			}
-
 			dateFormat = new SimpleDateFormat(formatStr);
 		}
 
 		dateFormat.setLenient(true);
-
 		if (timeZone != null)
 			dateFormat.setTimeZone(timeZone);
 

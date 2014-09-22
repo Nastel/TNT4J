@@ -62,7 +62,7 @@ public class PropertySnapshot  implements Snapshot {
 	 *            snapshot name
 	 */
 	public PropertySnapshot(String cat, String name) {
-		this(cat, name, OpLevel.INFO, OpType.SNAPSHOT, new UsecTimestamp());
+		this(cat, name, OpLevel.INFO, OpType.SNAPSHOT, UsecTimestamp.now());
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class PropertySnapshot  implements Snapshot {
 	 * @see OpLevel
 	 */
 	public PropertySnapshot(String cat, String name, OpLevel lvl) {
-		this(cat, name, lvl, OpType.SNAPSHOT, new UsecTimestamp());
+		this(cat, name, lvl, OpType.SNAPSHOT, UsecTimestamp.now());
 	}
 
 	/**
