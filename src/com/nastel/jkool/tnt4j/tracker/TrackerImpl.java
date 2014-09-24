@@ -394,7 +394,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 		catch (Throwable ex) {
 			logger.log(OpLevel.ERROR, 
-					"Failed to report activity signature={0}, tid={1}, event.sink={2}, source={3}",
+					"Failed to track activity signature={0}, tid={1}, event.sink={2}, source={3}",
 					activity.getTrackingId(), Thread.currentThread().getId(), eventSink, getSource(), ex);
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
@@ -410,10 +410,9 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			} else {
 				noopCount.incrementAndGet();
 			}
-		}
-		catch (Throwable ex) {
+		} catch (Throwable ex) {
 			logger.log(OpLevel.ERROR, 
-				"Failed to report event signature={0}, tid={1}, event.sink={2}, source={3}",
+				"Failed to track event signature={0}, tid={1}, event.sink={2}, source={3}",
 				event.getTrackingId(), Thread.currentThread().getId(), eventSink, getSource(), ex);
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
@@ -427,6 +426,9 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		try {
 			eventSink.log(snapshot);
 			snapCount.incrementAndGet();
+		} catch (Throwable ex) {
+			logger.log(OpLevel.ERROR, 
+				"Failed to track snapshot{0}", snapshot, ex);
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
 		}
