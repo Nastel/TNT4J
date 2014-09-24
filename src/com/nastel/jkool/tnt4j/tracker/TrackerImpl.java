@@ -235,6 +235,15 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 	
 	@Override
+	public String toString() {
+		return getClass().getSimpleName()
+				+ "{jid=" + Integer.toHexString(System.identityHashCode(this))
+				+ ", name=" + getSource().getName()
+				+ ", sink=" + eventSink
+				+ "}";
+	}
+	
+	@Override
 	public Map<String, Object> getStats() {
 		HashMap<String, Object> stats = new HashMap<String, Object>();
 		getStats(stats);

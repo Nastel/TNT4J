@@ -255,7 +255,7 @@ public class TrackingLogger implements Tracker {
 
 	private void checkState() {
 		if (logger == null)
-			throw new IllegalStateException("logger closed");
+			throw new IllegalStateException("tracker not initialized");
 	}
 
 	private static void registerTracker(TrackingLogger tracker) {
@@ -557,6 +557,7 @@ public class TrackingLogger implements Tracker {
 	 *            user defined arguments supplied along side given message
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
+	 * @throws IllegalStateException when tracker is not initialized
 	 */
 	public void log(OpLevel level, String msg, Object...args) {
 		checkState();
@@ -738,6 +739,7 @@ public class TrackingLogger implements Tracker {
 	 *
 	 * @param activity
 	 *            tracking activity to be reported
+	 * @throws IllegalStateException when tracker is not initialized
 	 * @see TrackingActivity
 	 */
 	public void tnt(TrackingActivity activity) {
@@ -751,6 +753,7 @@ public class TrackingLogger implements Tracker {
 	 * has been completed using <code>TrackingEvent.stop()</code> call.
 	 * @param event
 	 *            tracking event to be reported as a single activity
+	 * @throws IllegalStateException when tracker is not initialized
 	 * @see TrackingEvent
 	 */
 	public void tnt(TrackingEvent event) {
@@ -765,6 +768,7 @@ public class TrackingLogger implements Tracker {
 	 * 
 	 * @param snapshot
 	 *            snapshot to be tracked and logged
+	 * @throws IllegalStateException when tracker is not initialized
 	 * @see Snapshot
 	 * @see Property
 	 */
@@ -788,6 +792,7 @@ public class TrackingLogger implements Tracker {
 	 *            event text message
 	 * @param args
 	 *            argument list, exception passed along side given message
+	 * @throws IllegalStateException when tracker is not initialized
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
@@ -813,6 +818,7 @@ public class TrackingLogger implements Tracker {
 	 *            event text message
 	 * @param args
 	 *            argument list, exception passed along side given message
+	 * @throws IllegalStateException when tracker is not initialized
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
@@ -840,6 +846,7 @@ public class TrackingLogger implements Tracker {
 	 *            event text message
 	 * @param args
 	 *            argument list, exception passed along side given message
+	 * @throws IllegalStateException when tracker is not initialized
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
@@ -866,6 +873,7 @@ public class TrackingLogger implements Tracker {
 	 *            event binary message
 	 * @param args
 	 *            argument list, exception passed along side given message
+	 * @throws IllegalStateException when tracker is not initialized
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
@@ -891,6 +899,7 @@ public class TrackingLogger implements Tracker {
 	 *            event binary message
 	 * @param args
 	 *            argument list, exception passed along side given message
+	 * @throws IllegalStateException when tracker is not initialized
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
@@ -918,6 +927,7 @@ public class TrackingLogger implements Tracker {
 	 *            event binary message
 	 * @param args
 	 *            argument list, exception passed along side given message
+	 * @throws IllegalStateException when tracker is not initialized
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
@@ -948,6 +958,7 @@ public class TrackingLogger implements Tracker {
 	 *
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
+	 * @throws IllegalStateException when tracker is not initialized
 	 */
 	public TrackingActivity newActivity() {
 		checkState();
@@ -960,6 +971,7 @@ public class TrackingLogger implements Tracker {
 	 * @param level activity severity level
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
+	 * @throws IllegalStateException when tracker is not initialized
 	 */
 	public TrackingActivity newActivity(OpLevel level) {
 		checkState();
@@ -974,6 +986,7 @@ public class TrackingLogger implements Tracker {
 	 *            user defined activity name
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
+	 * @throws IllegalStateException when tracker is not initialized
 	 */
 	public TrackingActivity newActivity(OpLevel level, String name) {
 		checkState();
@@ -990,6 +1003,7 @@ public class TrackingLogger implements Tracker {
 	 *            user defined activity signature (should be unique)
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
+	 * @throws IllegalStateException when tracker is not initialized
 	 */
 	public TrackingActivity newActivity(OpLevel level, String name, String signature) {
 		checkState();
@@ -1009,6 +1023,7 @@ public class TrackingLogger implements Tracker {
 	 * @param msg
 	 *            text message associated with this event
 	 * @param args argument list passed along the message
+	 * @throws IllegalStateException when tracker is not initialized
 	 * @see OpLevel
 	 * @see TrackingEvent
 	 */
@@ -1035,6 +1050,7 @@ public class TrackingLogger implements Tracker {
 	 * @param msg
 	 *            text message associated with this event
 	 * @param args argument list passed along the message
+	 * @throws IllegalStateException when tracker is not initialized
 	 * @see TrackingEvent
 	 * @see OpType
 	 * @see OpLevel
@@ -1058,6 +1074,7 @@ public class TrackingLogger implements Tracker {
 	 * @param msg
 	 *            binary message associated with this event
 	 * @param args argument list passed along the message
+	 * @throws IllegalStateException when tracker is not initialized
 	 * @see OpLevel
 	 * @see TrackingEvent
 	 */
@@ -1087,6 +1104,7 @@ public class TrackingLogger implements Tracker {
 	 * @see TrackingEvent
 	 * @see OpType
 	 * @see OpLevel
+	 * @throws IllegalStateException when tracker is not initialized
 	 */
 	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator,
 	        String tag, byte[] msg, Object...args) {
@@ -1112,6 +1130,7 @@ public class TrackingLogger implements Tracker {
 	 * logic into a single class.
 	 *
 	 * @see TrackingFilter
+	 * @throws IllegalStateException when tracker is not initialized
 	 */
 	public void setTrackingFilter(TrackingFilter filter) {
 		checkState();
@@ -1124,6 +1143,7 @@ public class TrackingLogger implements Tracker {
 	 *
 	 * @param listener user supplied sink log listener
 	 * @see SinkErrorListener
+	 * @throws IllegalStateException when tracker is not initialized
 	 */
 	public void addSinkLogEventListener(SinkLogEventListener listener) {
 		checkState();
@@ -1135,6 +1155,7 @@ public class TrackingLogger implements Tracker {
 	 * occurs when writing to the event sink.
 	 *
 	 * @param listener user supplied sink log listener
+	 * @throws IllegalStateException when tracker is not initialized
 	 * @see SinkErrorListener
 	 */
 	public void removeSinkLogEventListener(SinkLogEventListener listener) {
@@ -1148,6 +1169,7 @@ public class TrackingLogger implements Tracker {
 	 *
 	 * @param listener user supplied sink error listener
 	 * @see SinkErrorListener
+	 * @throws IllegalStateException when tracker is not initialized
 	 */
 	public void addSinkErrorListener(SinkErrorListener listener) {
 		checkState();
@@ -1174,6 +1196,7 @@ public class TrackingLogger implements Tracker {
 	 *
 	 * @param filter user supplied sink filter
 	 * @see SinkEventFilter
+	 * @throws IllegalStateException when tracker is not initialized
 	 */
 	public void addSinkEventFilter(SinkEventFilter filter) {
 		checkState();
@@ -1185,6 +1208,7 @@ public class TrackingLogger implements Tracker {
 	 * out events written to the underlying sink.
 	 *
 	 * @param filter user supplied sink filter
+	 * @throws IllegalStateException when tracker is not initialized
 	 * @see SinkEventFilter
 	 */
 	public void removeSinkEventFilter(SinkEventFilter filter) {
