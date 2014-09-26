@@ -15,11 +15,13 @@
  */
 package com.nastel.jkool.tnt4j.dump;
 
+import java.io.File;
 import java.util.Map;
 
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.config.ConfigurationException;
 import com.nastel.jkool.tnt4j.core.UsecTimestamp;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 
 
@@ -38,11 +40,24 @@ import com.nastel.jkool.tnt4j.core.UsecTimestamp;
  * @see FileDumpSink
  */
 public class DefaultDumpSinkFactory implements DumpSinkFactory, Configurable {
-	public static final String DEFAULT_DUMP_FOLDER = System.getProperty("tnt4j.dump.folder", "./");
+	public static final String DEFAULT_DUMP_FOLDER = System.getProperty("tnt4j.dump.folder", "." + File.separator);
 
 	protected Map<String, Object> config = null;
 	private boolean append = true;
-	private String dumpLocation = DEFAULT_DUMP_FOLDER + UsecTimestamp.getTimeStamp("yyyy-MM-dd") + ".dump";
+	private String dumpLocation;
+	
+	
+	/**
+	 * Create a default dump sink factory with default dump
+	 * location.
+	 */
+	public DefaultDumpSinkFactory() {
+		dumpLocation = DEFAULT_DUMP_FOLDER;
+		if (!dumpLocation.endsWith(File.separator)) {
+			dumpLocation += File.separator;
+		}
+		dumpLocation += Utils.getVMName() + ".dump";
+	}
 	
 	/**
 	 * Obtain default dump location URL.
