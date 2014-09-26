@@ -20,7 +20,6 @@ import java.util.Map;
 
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.config.ConfigurationException;
-import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 
