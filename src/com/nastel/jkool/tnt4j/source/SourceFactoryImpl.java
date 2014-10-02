@@ -32,14 +32,14 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *  source.factory.GEOADDR: New York
  *  source.factory.DATACENTER: MyDC
  *  source.factory.DEVICE: HPPRO
- *  source.factory.RootFQN: RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?	
+ *  source.factory.PROCESS: $java.process
+ *  source.factory.RootFQN: PROCESS=?#RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?	
  * }
  * </pre>
  * 
  * @version $Revision: 1 $
  * 
  */
-
 public class SourceFactoryImpl implements SourceFactory, Configurable {
 	public final static String UNKNOWN_SOURCE = "UNKNOWN";
 	public final static String DEFAULT_SOURCE_ROOT_FQN = System.getProperty("tnt4j.source.root.fqname", "RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?");
@@ -164,15 +164,27 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	
 	/**
 	 * <p>
-	 * Obtains default name based on a given name/type pair ? name is converted into a runtime binding. Example: ?,
-	 * SERVER will return localhost name of the location server.
+	 * Returns current source name for specific source type
+	 * </p>
+	 * @param type source type
+	 * @return source name associated with a given type
+	 */
+	public String getCurrentSource(SourceType type) {
+		return defaultSources[type.ordinal()];
+	}
+	
+	/**
+	 * <p>
+	 * Obtains default name based on a given name/type pair ? name is converted into a default runtime binding.
+	 * $property converts property to java property binding.
+	 * Example: SERVER=? or PROCESS=$java.process, where java property must be set to java.process=value. 
 	 * </p>
 	 * 
 	 * @return source name based on given name and type
 	 */
 	protected String getNameFromType(String name, SourceType type) {
 		if (name == null || name.equals("?")) return defaultSources[type.ordinal()];
-		if (name.equals("$")) return System.getProperty(name.substring(1), UNKNOWN_SOURCE);
+		if (name.startsWith("$")) return System.getProperty(name.substring(1), UNKNOWN_SOURCE);
 		return name;
 	}
 
