@@ -78,18 +78,13 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 
 	@Override
 	public synchronized void open() throws IOException {
-		try {
-			if (tokenRepository == null) {
-				tokenRepository = new FileTokenRepository();
-			}
-			tokenRepository.open();
-			listener = new PropertyListener(this, logger);
-			tokenRepository.addRepositoryListener(listener);
-			reloadConfig();
-		} catch (IOException e) {
-			logger.log(OpLevel.ERROR, "Unable to load repository={0}", tokenRepository, e);
-			throw e;
+		if (tokenRepository == null) {
+			tokenRepository = new FileTokenRepository();
 		}
+		tokenRepository.open();
+		listener = new PropertyListener(this, logger);
+		tokenRepository.addRepositoryListener(listener);
+		reloadConfig();
 	}
 
 	@Override

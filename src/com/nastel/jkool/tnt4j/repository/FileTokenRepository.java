@@ -146,10 +146,8 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	        	config.setReloadingStrategy(reloadConfig);	
 	        }
         }  catch (IOException e) {
-        	logger.log(OpLevel.ERROR, "Unable to open token repository url={0}, reload.ms={1}", urlName, refDelay, e);
 			throw e;
         } catch (Throwable e) {
-        	logger.log(OpLevel.FAILURE, "Unable to open token repository url={0}, reload.ms={1}", urlName, refDelay, e);
         	IOException ioe = new IOException(e.toString());
         	ioe.initCause(e);
         	throw ioe;
