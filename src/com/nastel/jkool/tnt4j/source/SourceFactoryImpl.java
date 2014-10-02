@@ -29,9 +29,10 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * <pre>
  * {@code
  *  source.factory: com.nastel.jkool.tnt4j.source.SourceFactoryImpl
- *  source.factory.GeoLocation: New York
- *  source.factory.Datacenter: MyDC
- *  source.factory.RootFQN: JVM=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?	
+ *  source.factory.GEOADDR: New York
+ *  source.factory.DATACENTER: MyDC
+ *  source.factory.DEVICE: HPPRO
+ *  source.factory.RootFQN: RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?	
  * }
  * </pre>
  * 
@@ -40,17 +41,44 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 
 public class SourceFactoryImpl implements SourceFactory, Configurable {
-	public final String DEFAULT_SOURCE_ROOT_FQN = System.getProperty("tnt4j.source.root.fqname", "JVM=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?");
-	public final String DEFAULT_SOURCE_GEO_LOCATION = System.getProperty("tnt4j.current.geo.location", "unknown");
-	public final String DEFAULT_SOURCE_DATACENTER = System.getProperty("tnt4j.current.geo.datacenter", "default");
-	public final String DEFAULT_SOURCE_USER = System.getProperty("user.name");
+	public final static String UNKNOWN_SOURCE = "UNKNOWN";
+	public final static String DEFAULT_SOURCE_ROOT_FQN = System.getProperty("tnt4j.source.root.fqname", "RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?");
 	
+	private final static String [] DEFAULT_SOURCES;
+	
+	static {
+		int i = 0;
+		DEFAULT_SOURCES = new String[SourceType.length()];
+		for (SourceType type: SourceType.values()) {
+			String typeValue = "unknown";
+			String typeString = type.toString().toLowerCase();
+			typeValue = System.getProperty("tnt4j.source." + typeString);
+			
+			if (typeValue == null) {
+				if (typeString.equalsIgnoreCase(SourceType.SERVER.name())) {
+					typeValue = Utils.getLocalHostName();
+				} else if (typeString.equalsIgnoreCase(SourceType.RUNTIME.name())) {
+					typeValue = Utils.getVMName();				
+				} else if (typeString.equalsIgnoreCase(SourceType.NETADDR.name())) {
+					typeValue = Utils.getLocalHostAddress();				
+				} else if (typeString.equalsIgnoreCase(SourceType.USER.name())) {
+					typeValue = System.getProperty("user.name");				
+				} else {
+					typeValue = UNKNOWN_SOURCE;
+				}
+			} 
+			if (typeValue.startsWith("$")) {
+				// points to another environment variable
+				typeValue = System.getProperty(typeValue.substring(1), UNKNOWN_SOURCE);
+			}
+			DEFAULT_SOURCES[i++] = typeValue;
+		}
+	}
+
 	private Map<String, Object> config = null;
 	private String rootFqn = DEFAULT_SOURCE_ROOT_FQN;
-	private String geoAddr = DEFAULT_SOURCE_GEO_LOCATION;
-	private String dcName = DEFAULT_SOURCE_DATACENTER;
+	private String [] defaultSources = DEFAULT_SOURCES.clone();
 	private Source rootSource = null;
-
 
 	public SourceFactoryImpl() {
 		rootSource = newFromFQN(rootFqn);
@@ -73,7 +101,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 
 	@Override
     public Source newSource(String name, SourceType tp, Source parent) {
-	    return newSource(name, tp, parent, DEFAULT_SOURCE_USER);
+	    return newSource(name, tp, parent, getNameFromType("?", SourceType.USER));
     }
 
 	@Override
@@ -94,8 +122,15 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	@Override
     public void setConfiguration(Map<String, Object> settings) {
 		config = settings;
-		geoAddr = config.get("GeoLocation") != null? config.get("GeoLocation").toString(): geoAddr;
-		dcName = config.get("Datacenter") != null? config.get("Datacenter").toString(): geoAddr;
+		
+		// initialize source types for this factory
+		for (SourceType type: SourceType.values()) {
+			String typeString = type.toString().toUpperCase();
+			Object typeValue = config.get(typeString);
+			if (typeValue != null) {
+				defaultSources[type.ordinal()] = String.valueOf(typeValue);
+			}
+		}
 		if (config.get("RootFQN") != null) {
 			rootFqn = config.get("RootFQN") != null? config.get("RootFQN").toString(): DEFAULT_SOURCE_ROOT_FQN;
 			rootSource = newFromFQN(rootFqn);			
@@ -111,8 +146,8 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	 * 
 	 * @return current geo location
 	 */
-	public String getCurrentGeoLocation() {
-		return geoAddr;
+	public String getCurrentGeoAddr() {
+		return defaultSources[SourceType.GEOADDR.ordinal()];
 	}
 	
 	/**
@@ -121,10 +156,10 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	 * Developers should override this method for specific platforms.
 	 * </p>
 	 * 
-	 * @return current geo location
+	 * @return current datacenter name
 	 */
 	public String getCurrentDatacenter() {
-		return dcName;
+		return defaultSources[SourceType.DATACENTER.ordinal()];
 	}
 	
 	/**
@@ -136,18 +171,8 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	 * @return source name based on given name and type
 	 */
 	protected String getNameFromType(String name, SourceType type) {
-		if (name.equals("?") && type == SourceType.SERVER)
-			name = Utils.getLocalHostName();
-		else if (name.equals("?") && type == SourceType.NETADDR)
-			name = Utils.getLocalHostAddress();
-		else if (name.equals("?") && type == SourceType.JVM)
-			name = Utils.getVMName();
-		else if (name.equals("?") && type == SourceType.GEOADDR)
-			name = getCurrentGeoLocation();
-		else if (name.equals("?") && type == SourceType.DATACENTER)
-			name = getCurrentDatacenter();
-		else if (name.equals("?"))
-			throw new RuntimeException("Unknown name for type=" + type);
+		if (name.equals("?")) return defaultSources[type.ordinal()];
+		if (name.equals("$")) return System.getProperty(name.substring(1), UNKNOWN_SOURCE);
 		return name;
 	}
 
@@ -159,7 +184,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 			String sName = tk.nextToken();
 			String[] pair = sName.split("=");
 			SourceType type = SourceType.valueOf(pair[0]);
-			DefaultSource source = new DefaultSource(getNameFromType(pair[1], type), type, null, DEFAULT_SOURCE_USER);
+			DefaultSource source = new DefaultSource(getNameFromType(pair[1], type), type, null,  getNameFromType("?", SourceType.USER));
 			if (child != null)
 				child.setSource(source);
 			if (root == null)

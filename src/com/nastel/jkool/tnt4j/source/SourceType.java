@@ -23,11 +23,21 @@ package com.nastel.jkool.tnt4j.source;
  * @version $Revision: 1 $
  */
 public enum SourceType {
-	GENERIC, APPL, APPSERVER, SERVER, JVM, CLR, VIRTUAL,
+	GENERIC, USER, APPL, PROCESS, APPSERVER, SERVER, RUNTIME, VIRTUAL,
 	NETWORK, DEVICE, NETADDR, GEOADDR, DATACENTER;
 
 	private static SourceType[] enumList = SourceType.values();
 
+
+	/**
+	 * Returns the number of source types defined
+	 *
+	 * @return number of defined source types
+	 */
+	public static int length() {
+		return enumList.length;		
+	}
+	
 	/**
 	 * Converts the specified value to a member of the enumeration.
 	 *
