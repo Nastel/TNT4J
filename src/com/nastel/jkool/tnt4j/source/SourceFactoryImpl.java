@@ -128,7 +128,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 			String typeString = type.toString().toUpperCase();
 			Object typeValue = config.get(typeString);
 			if (typeValue != null) {
-				defaultSources[type.ordinal()] = String.valueOf(typeValue);
+				defaultSources[type.ordinal()] = getNameFromType(String.valueOf(typeValue), type);
 			}
 		}
 		if (config.get("RootFQN") != null) {
@@ -171,7 +171,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	 * @return source name based on given name and type
 	 */
 	protected String getNameFromType(String name, SourceType type) {
-		if (name.equals("?")) return defaultSources[type.ordinal()];
+		if (name == null || name.equals("?")) return defaultSources[type.ordinal()];
 		if (name.equals("$")) return System.getProperty(name.substring(1), UNKNOWN_SOURCE);
 		return name;
 	}
