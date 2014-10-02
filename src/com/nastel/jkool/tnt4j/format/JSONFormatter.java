@@ -26,6 +26,7 @@ import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.source.Source;
+import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Useconds;
@@ -475,9 +476,15 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			jsonString.append(Utils.quote(JSON_SOURCE_LABEL)).append(ATTR_SEP).append(Utils.quote(source.getName()))
 			        .append(ATTR_JSON);
 			jsonString.append(Utils.quote(JSON_SOURCE_FQN_LABEL)).append(ATTR_SEP).append(Utils.quote(source.getFQName())).append(ATTR_JSON);
-			jsonString.append(Utils.quote(JSON_SOURCE_INFO_LABEL)).append(ATTR_SEP).append(Utils.quote(source.getInfo())).append(ATTR_JSON);
+			jsonString.append(Utils.quote(JSON_SOURCE_INFO_LABEL)).append(ATTR_SEP).append(Utils.quote(source.getInfo()));
 			if (source.getUrl() != null) {
+				jsonString.append(ATTR_JSON);
 				jsonString.append(Utils.quote(JSON_SOURCE_URL_LABEL)).append(ATTR_SEP).append(Utils.quote(source.getUrl()));
+			}
+			Source location = source.getSource(SourceType.GEOADDR);
+			if (location != null) {
+				jsonString.append(ATTR_JSON);
+				jsonString.append(Utils.quote(JSON_LOCATION_LABEL)).append(ATTR_SEP).append(Utils.quote(location.getName()));
 			}
 		}
 		if (msg != null) {

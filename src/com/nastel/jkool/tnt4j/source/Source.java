@@ -45,6 +45,14 @@ public interface Source {
 	public Source getSource();
 
 	/**
+	 * Gets parent source associated with the given type
+	 * 
+	 * @param type source type
+	 * @return parent source
+	 */
+	public Source getSource(SourceType type);
+
+	/**
 	 * Gets the user name that the application is running under.
 	 * 
 	 * @return name of user running application

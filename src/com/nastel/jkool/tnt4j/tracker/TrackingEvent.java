@@ -188,6 +188,7 @@ public class TrackingEvent extends Message implements Trackable {
 	 * Create a new instance of tracking event that can be timed and reported.
 	 * This constructor will assign a unique event signature using newUUID() call
 	 *
+	 * @param src event source
 	 * @param severity severity level
 	 * @param opName operation name associated with this event (tracking event name)
 	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
@@ -202,6 +203,7 @@ public class TrackingEvent extends Message implements Trackable {
 	 * Create a new instance of tracking event that can be timed and reported.
 	 * This constructor will assign a unique event signature using newUUID() call
 	 *
+	 * @param src event source
 	 * @param severity severity level
 	 * @param opName operation name associated with this event (tracking event name)
 	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
@@ -215,6 +217,7 @@ public class TrackingEvent extends Message implements Trackable {
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 *
+	 * @param src event source
 	 * @param severity severity level
 	 * @param opType operation type
 	 * @param opName operation name associated with this event (tracking event name)
@@ -233,12 +236,14 @@ public class TrackingEvent extends Message implements Trackable {
 		operation.setResource(Utils.getVMName());
 		operation.setException(Utils.getThrowable(args));
 		setSource(src);
+		setLocation(src);
 		setTag(tag);
 	}
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 *
+	 * @param src event source
 	 * @param severity severity level
 	 * @param opType operation type
 	 * @param opName operation name associated with this event (tracking event name)
@@ -257,6 +262,7 @@ public class TrackingEvent extends Message implements Trackable {
 		operation.setResource(Utils.getVMName());
 		operation.setException(Utils.getThrowable(args));
 		setSource(src);
+		setLocation(src);
 		setTag(tag);
 	}
 
@@ -312,6 +318,15 @@ public class TrackingEvent extends Message implements Trackable {
 	 * @param location location string for tracking event
 	 */
 	public void setLocation(String location) {
+		operation.setLocation(location);
+	}
+
+	/**
+	 * Sets the location associated with the tracking event such as GPS locator.
+	 *
+	 * @param location location string for tracking event
+	 */
+	public void setLocation(Source location) {
 		operation.setLocation(location);
 	}
 

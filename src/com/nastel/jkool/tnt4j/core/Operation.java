@@ -19,6 +19,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.nastel.jkool.tnt4j.source.Source;
+import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.utils.Useconds;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
@@ -461,7 +463,7 @@ public class Operation {
 	}
 
 	/**
-	 * Gets the location string identifying the location the operation was executed
+	 * Sets the location string identifying the location the operation was executed
 	 * (e.g. GPS locator, source file line, etc.).
 	 *
 	 * @param location location string for operation
@@ -470,6 +472,19 @@ public class Operation {
 		if (location != null && location.length() == 0)
 			location = null;
 		this.location = location;
+	}
+
+	/**
+	 * Gets the location string identifying the location the operation was executed
+	 * (e.g. GPS locator, source file line, etc.).
+	 *
+	 * @param source location source
+	 */
+	public void setLocation(Source source) {
+		if (source != null) {
+			Source geo = source.getSource(SourceType.GEOADDR);
+			if (geo != null) location = geo.getName();
+		}
 	}
 
 	/**

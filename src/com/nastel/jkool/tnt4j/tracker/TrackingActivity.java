@@ -34,6 +34,7 @@ import com.nastel.jkool.tnt4j.core.Operation;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.utils.Useconds;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
@@ -143,6 +144,7 @@ public class TrackingActivity extends Activity {
 		super(UUID.randomUUID().toString(), name, trk.getSource());
 		tracker = trk;
 		setSeverity(level);
+		setLocation(trk.getSource());
 		initJavaTiming();
 	}
 
@@ -166,6 +168,7 @@ public class TrackingActivity extends Activity {
 		super(signature, name, trk.getSource());
 		tracker = trk;
 		setSeverity(level);
+		setLocation(trk.getSource());
 		initJavaTiming();
 	}
 

@@ -54,20 +54,12 @@ public class DefaultSource implements Source {
 		setDefaultInfo();
 	}
 
-	/**
-	 * Gets the name used to identify the application.
-	 * 
-	 * @return name of application
-	 */
+	@Override
 	public String getName() {
 		return sname;
 	}
 
-	/**
-	 * Gets the fully qualified name used to identify this source type=source-name#parent-source
-	 * 
-	 * @return fully qualified name of this source
-	 */
+	@Override
 	public String getFQName() {
 		return (parentSource == null) ? sourceType + "=" + sname : sourceType + "=" + sname + "#"
 		        + parentSource.getFQName();
@@ -83,13 +75,15 @@ public class DefaultSource implements Source {
 		this.sname = name;
 	}
 
-	/**
-	 * Gets parent source
-	 * 
-	 * @return parent source
-	 */
+	@Override
 	public Source getSource() {
 		return parentSource;
+	}
+
+	@Override
+	public Source getSource(SourceType type) {
+		if (this.sourceType.equals(type)) return this;
+		return parentSource != null? (parentSource.getType().equals(type)? parentSource: parentSource.getSource(type)): null;
 	}
 
 	/**
@@ -103,79 +97,37 @@ public class DefaultSource implements Source {
 		return this;
 	}
 
-	/**
-	 * Gets the user name that the application is running under.
-	 * 
-	 * @return name of user running application
-	 */
+	@Override
 	public String getUser() {
 		return user;
 	}
 
-	/**
-	 * Sets the user name that the application is running under, truncating if necessary.
-	 * 
-	 * @param user
-	 *            User name that application is running under
-	 */
+	@Override
 	public void setUser(String user) {
 		this.user = user;
 	}
 
-	/**
-	 * Gets the URL that the application is running at.
-	 * 
-	 * @return URL that application is running at
-	 */
+	@Override
 	public String getUrl() {
 		return url;
 	}
 
-	/**
-	 * Sets the URL that the application is running at, truncating if necessary.
-	 * 
-	 * @param url
-	 *            URL that application is running at
-	 */
+	@Override
 	public void setUrl(String url) {
 		this.url = url;
 	}
 
-	/**
-	 * <p>
-	 * Gets source info string.
-	 * </p>
-	 * 
-	 * <p>
-	 * If this attribute was not explicitly set, it defaults to the concatenation of the system properties "os.name" and
-	 * "os.version".
-	 * </p>
-	 * 
-	 * @return source info
-	 * @since Revision 27
-	 */
+	@Override
 	public String getInfo() {
 		return info;
 	}
 
-	/**
-	 * Sets source info associated with this source
-	 * 
-	 * @param inf
-	 *            info associated with the source
-	 * @since Revision 27
-	 */
+	@Override
 	public void setInfo(String inf) {
 		this.info = inf;
 	}
 
-	/**
-	 * <p>
-	 * Gets source type.
-	 * </p>
-	 * 
-	 * @return container type
-	 */
+	@Override
 	public SourceType getType() {
 		return sourceType;
 	}
@@ -186,7 +138,7 @@ public class DefaultSource implements Source {
 	 * </p>
 	 * 
 	 */
-	public void setType(SourceType ct) {
+	protected void setType(SourceType ct) {
 		sourceType = ct;
 	}
 
