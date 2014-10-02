@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.config.ConfigurationException;
 import com.nastel.jkool.tnt4j.core.OpLevel;
+import com.nastel.jkool.tnt4j.repository.FileTokenRepository;
 import com.nastel.jkool.tnt4j.repository.TokenRepository;
 import com.nastel.jkool.tnt4j.repository.TokenRepositoryEvent;
 import com.nastel.jkool.tnt4j.repository.TokenRepositoryListener;
@@ -76,8 +77,11 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	}
 
 	@Override
-	public void open() throws IOException {
+	public synchronized void open() throws IOException {
 		try {
+			if (tokenRepository == null) {
+				tokenRepository = new FileTokenRepository();
+			}
 			tokenRepository.open();
 			listener = new PropertyListener(this, logger);
 			tokenRepository.addRepositoryListener(listener);
@@ -89,7 +93,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	}
 
 	@Override
-	public void close() throws IOException {
+	public synchronized void close() throws IOException {
 		clear();
 		if (tokenRepository != null) {
 			tokenRepository.removeRepositoryListener(listener);
