@@ -18,7 +18,7 @@ package com.nastel.jkool.tnt4j.sink;
 import java.util.Map;
 import java.util.Properties;
 
-import com.nastel.jkool.tnt4j.config.ConfigurationException;
+import com.nastel.jkool.tnt4j.config.ConfigException;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.format.JSONFormatter;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -108,7 +108,7 @@ public class SocketEventSinkFactory  extends AbstractEventSinkFactory  {
     }
 
 	@Override
-    public void setConfiguration(Map<String, Object> settings) throws ConfigurationException {
+    public void setConfiguration(Map<String, Object> settings) throws ConfigException {
 		super.setConfiguration(settings);
 		hostName = settings.get("Host") != null? settings.get("Host").toString(): hostName;
 		port = settings.get("Port") != null? Integer.parseInt(settings.get("Port").toString()): port;

@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.Map;
 
 import com.nastel.jkool.tnt4j.config.Configurable;
-import com.nastel.jkool.tnt4j.config.ConfigurationException;
+import com.nastel.jkool.tnt4j.config.ConfigException;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 
@@ -93,7 +93,7 @@ public class DefaultDumpSinkFactory implements DumpSinkFactory, Configurable {
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> props) throws ConfigurationException {
+	public void setConfiguration(Map<String, Object> props) throws ConfigException {
 		config = props;
 		Object flag  = props.get("Append");
 		append = flag == null? append: Boolean.valueOf(flag.toString());

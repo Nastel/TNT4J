@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import com.nastel.jkool.tnt4j.config.Configurable;
-import com.nastel.jkool.tnt4j.config.ConfigurationException;
+import com.nastel.jkool.tnt4j.config.ConfigException;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.repository.FileTokenRepository;
 import com.nastel.jkool.tnt4j.repository.TokenRepository;
@@ -194,7 +194,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> props) throws ConfigurationException {
+	public void setConfiguration(Map<String, Object> props) throws ConfigException {
 		config = props;
 		Object obj = Utils.createConfigurableObject("Repository", "Repository.", config);
 		setRepository((TokenRepository) obj);

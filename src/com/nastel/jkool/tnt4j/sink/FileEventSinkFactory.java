@@ -18,7 +18,7 @@ package com.nastel.jkool.tnt4j.sink;
 import java.util.Map;
 import java.util.Properties;
 
-import com.nastel.jkool.tnt4j.config.ConfigurationException;
+import com.nastel.jkool.tnt4j.config.ConfigException;
 import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.format.SimpleFormatter;
@@ -58,7 +58,7 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> props) throws ConfigurationException {
+	public void setConfiguration(Map<String, Object> props) throws ConfigException {
 		fileName = props.get("FileName") == null? fileName: props.get("FileName").toString();
 		
 		Object flag  = props.get("Append");

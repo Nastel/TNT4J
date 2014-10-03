@@ -27,7 +27,7 @@ import java.util.Properties;
  * @version $Revision: 1 $
  */
 
-public class ConfigurationException extends Exception {
+public class ConfigException extends Exception {
     private static final long serialVersionUID = 3062997853952792045L;
     
     private Map<?, ?> config;
@@ -39,7 +39,7 @@ public class ConfigurationException extends Exception {
 	 * @param msg error message
 	 * @param settings configuration settings
 	 */
-   public ConfigurationException(String msg, Map<String, Object> settings) {
+   public ConfigException(String msg, Map<String, Object> settings) {
     	super(msg);
     	config = settings;
     }
@@ -51,7 +51,7 @@ public class ConfigurationException extends Exception {
 	 * @param msg error message
 	 * @param settings configuration settings
 	 */
-    public ConfigurationException(String msg, Properties settings) {
+    public ConfigException(String msg, Properties settings) {
     	super(msg);
     	config = settings;
     }

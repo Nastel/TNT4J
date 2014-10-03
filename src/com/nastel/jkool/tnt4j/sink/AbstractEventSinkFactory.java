@@ -18,7 +18,7 @@ package com.nastel.jkool.tnt4j.sink;
 import java.util.Map;
 
 import com.nastel.jkool.tnt4j.config.Configurable;
-import com.nastel.jkool.tnt4j.config.ConfigurationException;
+import com.nastel.jkool.tnt4j.config.ConfigException;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -81,7 +81,7 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> props) throws ConfigurationException {
+	public void setConfiguration(Map<String, Object> props) throws ConfigException {
 		config = props;
 		eventFilter = (SinkEventFilter) Utils.createConfigurableObject("Filter", "Filter.", config);
 		errorListener = (SinkErrorListener) Utils.createConfigurableObject("ErrorListener", "ErrorListener.", config);

@@ -16,6 +16,7 @@
 package com.nastel.jkool.tnt4j.repository;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
@@ -29,9 +30,10 @@ import org.apache.commons.configuration.event.ConfigurationErrorListener;
 import org.apache.commons.configuration.event.ConfigurationEvent;
 import org.apache.commons.configuration.event.ConfigurationListener;
 import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.configuration.ConfigurationException;
 
+import com.nastel.jkool.tnt4j.config.ConfigException;
 import com.nastel.jkool.tnt4j.config.Configurable;
-import com.nastel.jkool.tnt4j.config.ConfigurationException;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.sink.DefaultEventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.EventSink;
@@ -52,7 +54,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(FileTokenRepository.class);	
 	private static ConcurrentHashMap<TokenRepositoryListener, TokenConfigurationListener> LISTEN_MAP = new ConcurrentHashMap<TokenRepositoryListener, TokenConfigurationListener>(49);
 	
-	private String urlName = null;
+	private String configName = null;
 	private PropertiesConfiguration config = null;
 	protected Map<String, Object> settings = null;
 	private long refDelay = 20000;
@@ -77,7 +79,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	 * @param url file name or URL of the property file containing tokens
 	 */
 	public FileTokenRepository(String url, long refreshDelay) {
-    	urlName = url;
+    	configName = url;
     	refDelay = refreshDelay;
 	}
 
@@ -121,7 +123,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
     public String getName() {
-	    return urlName;
+	    return configName;
     }
 
 	@Override
@@ -138,15 +140,12 @@ public class FileTokenRepository implements TokenRepository, Configurable {
     public void open() throws IOException {
 		if (isOpen()) return;
         try {
-         	int urlIndex = urlName.indexOf("://");
-	        config = urlIndex > 0? new PropertiesConfiguration(new URL(urlName)): new PropertiesConfiguration(urlName);
-	        if (refDelay > 0) {
+        	initConfig();
+        	if (refDelay > 0) {
 	        	FileChangedReloadingStrategy reloadConfig = new FileChangedReloadingStrategy();
 	        	reloadConfig.setRefreshDelay(refDelay);
 	        	config.setReloadingStrategy(reloadConfig);	
 	        }
-        }  catch (IOException e) {
-			throw e;
         } catch (Throwable e) {
         	IOException ioe = new IOException(e.toString());
         	ioe.initCause(e);
@@ -154,6 +153,20 @@ public class FileTokenRepository implements TokenRepository, Configurable {
         }	
     }
 
+	private void initConfig() throws ConfigurationException, MalformedURLException {
+   		int urlIndex = configName.indexOf("://");
+   		if (urlIndex > 0) {
+   			config = new PropertiesConfiguration(new URL(configName)); new PropertiesConfiguration(configName);
+   		} else {
+			URL configResource = getClass().getResource("/" + configName);
+			if (configResource != null) {
+				config = new PropertiesConfiguration(configResource); 
+			} else {
+				config = new PropertiesConfiguration(configName);
+			}
+   		}		
+	}
+	
 	@Override
     public void close() throws IOException {
 	}
@@ -164,10 +177,10 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> props) throws ConfigurationException {
+	public void setConfiguration(Map<String, Object> props) throws ConfigException {
 		settings = props;
 		Object fileUrl = props.get("Url");
-		urlName = fileUrl != null? fileUrl.toString(): urlName;
+		configName = fileUrl != null? fileUrl.toString(): configName;
 		
 		Object delay = props.get("RefreshTime");
 		refDelay = delay != null? Long.parseLong(delay.toString()): refDelay;
