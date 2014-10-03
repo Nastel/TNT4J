@@ -153,7 +153,12 @@ public class FileTokenRepository implements TokenRepository, Configurable {
         }	
     }
 
-	private void initConfig() throws ConfigurationException, MalformedURLException {
+	/**
+	 * Initialize property configuration based on a configured configuration
+	 * file name. The method attempts to load it from URL if given config is URL,
+	 * then load it from class path and then from file system.
+	 */ 
+	protected void initConfig() throws ConfigurationException, MalformedURLException {
    		int urlIndex = configName.indexOf("://");
    		if (urlIndex > 0) {
    			config = new PropertiesConfiguration(new URL(configName)); new PropertiesConfiguration(configName);
