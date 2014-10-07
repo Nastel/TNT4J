@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -28,7 +29,9 @@ import com.nastel.jkool.tnt4j.utils.TimeService;
 import com.nastel.jkool.tnt4j.utils.Useconds;
 
 /**
- * <p>Represents a timestamp that has microsecond accuracy.</p>
+ * <p>Represents a timestamp that has microsecond accuracy. This timestamp also
+ * implements Lamport clock synchronization algorithm see {@link UsecTimestamp#getLamportClock()}
+ * and {@link UsecTimestamp#UsecTimestamp(long, long, long)}.</p>
  *
  * <p>Stores timestamp as <i>mmmmmmmmmm.uuu</i>, where <i>mmmmmmmmmm</i> is the
  * timestamp in milliseconds, and <i>uuu</i> is the fractional microseconds.</p>
@@ -38,9 +41,22 @@ import com.nastel.jkool.tnt4j.utils.Useconds;
 public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Serializable {
 	private static final long serialVersionUID = 3658590467907047916L;
 
+	protected static AtomicLong LamportCounter = new AtomicLong(System.currentTimeMillis());
+
 	private long msecs;
 	private long usecs;
+	private long currentLamportClock = LamportCounter.incrementAndGet();
 
+	
+	/**
+	 * Returns Lamport clock value of this time stamp 
+	 * (based on Lamport Clock algorithm)
+	 *
+	 */
+	public long getLamportClock() {
+		return currentLamportClock;
+	}
+	
 	/**
 	 * Returns UsecTimestamp based on current time with microsecond precision/accuracy
 	 *
@@ -83,7 +99,23 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 *  or if usecs is greater than 999
 	 */
 	public UsecTimestamp(long msecs, long usecs) {
-		setTimestampValues(msecs, usecs);
+		setTimestampValues(msecs, usecs, 0);
+	}
+
+	/**
+	 * Creates UsecTimestamp based on specified millisecond timestamp
+	 * and fractional microsecond. This timestamp Lamport clock
+	 * will be computed based on the specified sender's Lamport clock
+	 * value.
+	 *
+	 * @param msecs timestamp, in milliseconds
+	 * @param usecs fraction microseconds
+	 * @param recvdLamportClock Lamport clock of the received event (0 do not compute Lamport clock)
+	 * @throws IllegalArgumentException if any arguments are negative,
+	 *  or if usecs is greater than 999
+	 */
+	public UsecTimestamp(long msecs, long usecs, long recvdLamportClock) {
+		setTimestampValues(msecs, usecs, recvdLamportClock);
 	}
 
 	/**
@@ -210,7 +242,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 
 		Date date = dateFormat.parse(timeStampStr);
 
-		setTimestampValues(date.getTime(), 0);
+		setTimestampValues(date.getTime(), 0, 0);
 		add(0, usecs);
 	}
 
@@ -239,19 +271,38 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 *
 	 * @param msecs timestamp, in milliseconds
 	 * @param usecs fraction microseconds
+	 * @param recvdLamportClock received Lamport clock
 	 * @throws IllegalArgumentException if any arguments are negative,
 	 *  or if usecs is greater than 999
 	 */
-	protected void setTimestampValues(long msecs, long usecs) {
+	protected void setTimestampValues(long msecs, long usecs, long recvdLamportClock) {
 		if (msecs < 0)
 			throw new IllegalArgumentException("msecs must be non-negative");
 		if (usecs < 0 || usecs > 999)
 			throw new IllegalArgumentException("usecs must be in the range [0,999], inclusive");
-
+		
 		this.msecs = msecs;
 		this.usecs = usecs;
+		assignLamportClock(recvdLamportClock);
 	}
 
+	/**
+	 * Assign local Lamport clock based on the value of the received 
+	 * Lamport clock.
+	 *
+	 * @param recvdLamportClock received Lamport clock
+	 */
+	public void assignLamportClock(long recvdLamportClock) {
+		while (recvdLamportClock > currentLamportClock) {
+			if (LamportCounter.compareAndSet(currentLamportClock, recvdLamportClock + 1)) {
+				currentLamportClock = recvdLamportClock + 1;
+				break;
+			} else {
+				currentLamportClock = LamportCounter.incrementAndGet();
+			}
+		}
+	}
+	
 	/**
 	 * Creates UsecTimestamp based on specified UsecTimestamp.
 	 *
@@ -259,7 +310,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 * @throws NullPointerException if timestamp is <code>null</code>
 	 */
 	public UsecTimestamp(UsecTimestamp other) {
-		this(other.msecs, other.usecs);
+		this(other.msecs, other.usecs, other.getLamportClock());
 	}
 
 	/**
@@ -269,7 +320,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 * @throws NullPointerException if date is <code>null</code>
 	 */
 	public UsecTimestamp(Date date) {
-		setTimestampValues(date.getTime(), 0);
+		setTimestampValues(date.getTime(), 0, 0);
 	}
 
 	/**
