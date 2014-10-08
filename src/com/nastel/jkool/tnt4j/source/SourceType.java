@@ -17,7 +17,7 @@ package com.nastel.jkool.tnt4j.source;
 
 /**
  * Provides list of valid source types. Source is a logical nested entity that expresses container
- * of applications, servers, application servers, jvms, etc.
+ * of applications, servers, application servers, runtimes, etc.
  *
  * @see Source
  * @version $Revision: 1 $

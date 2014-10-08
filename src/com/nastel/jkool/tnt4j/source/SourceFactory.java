@@ -73,7 +73,7 @@ public interface SourceFactory {
 	/**
 	 * Create a new source based on a given fully qualified path. Format:
 	 * type=name|?#type=name...
-	 * Example: JVM=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?
+	 * Example: RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?
 	 * 
 	 * @param fqn fully qualified path for the source
 	 * @return source handle representing the path.
