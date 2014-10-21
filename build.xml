@@ -97,8 +97,7 @@
 
   <target name="tnt4j-pkg" depends="doc" description="build package for distribution">
     <echo message="Deleting old archives" level="info"/>
-    <delete file="${pkg}-${version}-all.jar"/>
-    <delete file="${pkg}-${version}-all.zip"/>
+    <delete dir="${tnt4j-build}" includes="*-all.jar,*-all.zip"/>
     
     <echo message="Copying common TNT4J properties" level="info"/>
 	<copy todir="${tnt4j-build}">
