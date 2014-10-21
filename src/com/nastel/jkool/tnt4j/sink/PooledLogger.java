@@ -231,8 +231,12 @@ class LoggingTask implements Runnable {
 					outSink.log((TrackingActivity)sinkO);
 				}  else if (sinkO instanceof Snapshot) {
 					outSink.log(event.getSnapshot());
+				} else if (event.getEventSource() != null){
+					outSink.log(event.getEventSource(), event.getSeverity(), 
+							String.valueOf(sinkO), event.getArguments());
 				} else {
-					outSink.log(event.getSeverity(), String.valueOf(sinkO), event.getArguments());
+					outSink.log(event.getSeverity(), String.valueOf(sinkO),
+							event.getArguments());
 				}
 				pooledLogger.loggedCount.incrementAndGet();
 				long elaspedNanos = System.nanoTime() - start;
