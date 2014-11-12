@@ -33,10 +33,10 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * This class implements a default abstract class for <code>EventSink</code>. Developers should subclass from this class
  * for all event sinks.
  * </p>
- * 
- * 
+ *
+ *
  * @version $Revision: 9 $
- * 
+ *
  * @see EventSink
  * @see SinkError
  * @see SinkErrorListener
@@ -45,7 +45,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  */
 public abstract class AbstractEventSink implements EventSink {
 	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(AbstractEventSink.class);
-	
+
 	protected ArrayList<SinkErrorListener> errorListeners = new ArrayList<SinkErrorListener>(10);
 	protected ArrayList<SinkLogEventListener> logListeners = new ArrayList<SinkLogEventListener>(10);
 	protected ArrayList<SinkEventFilter> filters = new ArrayList<SinkEventFilter>(10);
@@ -73,7 +73,7 @@ public abstract class AbstractEventSink implements EventSink {
 	public void setSource(Source src) {
 		source = src;
 	}
-	
+
 	@Override
 	public Source getSource() {
 		return source;
@@ -118,9 +118,10 @@ public abstract class AbstractEventSink implements EventSink {
 
 	/**
 	 * Register an event sink listener for notifications when logging events occur when writing to event sink.
-	 * 
+	 *
 	 * @see SinkLogEventListener
 	 */
+	@Override
 	public void addSinkLogEventListener(SinkLogEventListener listener) {
 		synchronized (logListeners) {
 			logListeners.add(listener);
@@ -129,9 +130,10 @@ public abstract class AbstractEventSink implements EventSink {
 
 	/**
 	 * Remove an event sink listener for notifications when logging events occur when writing to event sink.
-	 * 
+	 *
 	 * @see SinkLogEventListener
 	 */
+	@Override
 	public void removeSinkLogEventListener(SinkLogEventListener listener) {
 		synchronized (logListeners) {
 			logListeners.remove(listener);
@@ -140,9 +142,10 @@ public abstract class AbstractEventSink implements EventSink {
 
 	/**
 	 * Register an event sink listener for notifications when errors occur when writing to event sink.
-	 * 
+	 *
 	 * @see SinkErrorListener
 	 */
+	@Override
 	public void addSinkErrorListener(SinkErrorListener listener) {
 		synchronized (errorListeners) {
 			errorListeners.add(listener);
@@ -151,9 +154,10 @@ public abstract class AbstractEventSink implements EventSink {
 
 	/**
 	 * Remove an event sink listener for notifications when errors occur when writing to event sink.
-	 * 
+	 *
 	 * @see SinkErrorListener
 	 */
+	@Override
 	public void removeSinkErrorListener(SinkErrorListener listener) {
 		synchronized (errorListeners) {
 			errorListeners.remove(listener);
@@ -162,7 +166,7 @@ public abstract class AbstractEventSink implements EventSink {
 
 	/**
 	 * Subclasses should use this helper class to trigger log event notifications during logging process.
-	 * 
+	 *
 	 * @param event
 	 *            sink logging event to be sent to all listeners
 	 * @see SinkLogEvent
@@ -177,7 +181,7 @@ public abstract class AbstractEventSink implements EventSink {
 
 	/**
 	 * Subclasses should use this helper class to trigger error notifications during logging process.
-	 * 
+	 *
 	 * @param event
 	 *            sink error event to be sent to all listeners
 	 * @see SinkError
@@ -192,7 +196,7 @@ public abstract class AbstractEventSink implements EventSink {
 
 	/**
 	 * Subclasses should use this helper class to trigger error notifications during logging process.
-	 * 
+	 *
 	 * @param msg
 	 *            sink message associated with the sink operation
 	 * @param ex
@@ -204,13 +208,13 @@ public abstract class AbstractEventSink implements EventSink {
 			SinkError event = new SinkError(this, msg, ex);
 			notifyListeners(event);
 		} else {
-			logger.log(OpLevel.ERROR, "Error when logging msg='{0}'", msg, ex);
+			logger.log(OpLevel.ERROR, "Error when logging msg=''{0}''", msg, ex);
 		}
 	}
 
 	/**
 	 * Subclasses should use this helper class to filter out unwanted log events before writing to the underlying sink
-	 * 
+	 *
 	 * @param level
 	 *            severity level of the event message
 	 * @param msg
@@ -235,7 +239,7 @@ public abstract class AbstractEventSink implements EventSink {
 
 	/**
 	 * Subclasses should use this helper class to filter out unwanted log events before writing to the underlying sink
-	 * 
+	 *
 	 * @param snapshot
 	 *            snapshot
 	 * @return true if event passed all filters, false otherwise
@@ -258,7 +262,7 @@ public abstract class AbstractEventSink implements EventSink {
 
 	/**
 	 * Subclasses should use this helper class to filter out unwanted log events before writing to the underlying sink
-	 * 
+	 *
 	 * @param activity
 	 *            to be checked with registered filters
 	 * @return true if tracking activity passed all filters, false otherwise
@@ -281,7 +285,7 @@ public abstract class AbstractEventSink implements EventSink {
 
 	/**
 	 * Subclasses should use this helper class to filter out unwanted log events before writing to the underlying sink
-	 * 
+	 *
 	 * @param event
 	 *            to be checked with registered filters
 	 * @return true if tracking event passed all filters, false otherwise
@@ -369,12 +373,12 @@ public abstract class AbstractEventSink implements EventSink {
 			}
 		}
 	}
-	
+
 	@Override
 	public void log(OpLevel sev, String msg, Object... args) {
 		log(source, sev, msg, args);
 	}
-	
+
 	@Override
 	public void log(Source src, OpLevel sev, String msg, Object... args) {
 		_checkState();
@@ -395,14 +399,14 @@ public abstract class AbstractEventSink implements EventSink {
 	/**
 	 * Override this method to check state of the sink before logging occurs. Throws <code>IllegalStateException</code>
 	 * if sink is in wrong state.
-	 * 
+	 *
 	 * @throws IllegalStateException
 	 */
 	abstract protected void _checkState() throws IllegalStateException;
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.
-	 * 
+	 *
 	 * @param event
 	 *            to be sent to the sink
 	 * @see TrackingEvent
@@ -411,7 +415,7 @@ public abstract class AbstractEventSink implements EventSink {
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.
-	 * 
+	 *
 	 * @param activity
 	 *            to be sent to the sink
 	 * @see TrackingActivity
@@ -420,7 +424,7 @@ public abstract class AbstractEventSink implements EventSink {
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.
-	 * 
+	 *
 	 * @param snapshot
 	 *            string message to be logged
 	 * @see OpLevel
@@ -429,7 +433,7 @@ public abstract class AbstractEventSink implements EventSink {
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.
-	 * 
+	 *
 	 * @param src
 	 *            event source handle
 	 * @param sev
