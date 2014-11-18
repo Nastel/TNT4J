@@ -18,6 +18,7 @@ package com.nastel.jkool.tnt4j.utils;
 import java.io.Closeable;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
@@ -36,6 +37,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Map.Entry;
+
+import org.apache.commons.lang3.SerializationUtils;
 
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.config.ConfigException;
@@ -774,5 +777,30 @@ public class Utils {
 		Constructor<?> ct = classObj.getConstructor(types);
 		return ct.newInstance(args);
 	}
+
+
+	/**
+	 * Serialize a given object into a byte array
+	 * 
+	 *@param obj
+	 *            serializable object
+	 * 
+	 *@return byte array containing flat object
+	 */
+	public static byte[] serialize(Serializable obj) {
+	    return SerializationUtils.serialize(obj);
+    }
+
+	/**
+	 * Serialize a given object into a byte array
+	 * 
+	 *@param bytes
+	 *            containing serializable object
+	 * 
+	 *@return object
+	 */
+	public static Object deserialize(byte[] bytes) {
+	    return SerializationUtils.deserialize(bytes);
+    }
 
 }
