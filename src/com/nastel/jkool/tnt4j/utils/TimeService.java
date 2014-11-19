@@ -124,7 +124,7 @@ public class TimeService {
 			timeInfo.computeDetails();     
 			adjustment = timeInfo.getOffset() - timeOverheadMillis;
 			updatedTime = currentTimeMillis();
-			logger.log(OpLevel.INFO, "Time server={0}, timeout.ms={1}, offset.ms={2}, delay.ms={3}, clock.adjust.ms={4}, overhead.nsec={5}",
+			logger.log(OpLevel.DEBUG, "Time server={0}, timeout.ms={1}, offset.ms={2}, delay.ms={3}, clock.adjust.ms={4}, overhead.nsec={5}",
 				TIME_SERVER, TIME_SERVER_TIMEOUT, timeInfo.getOffset(), timeInfo.getDelay(), adjustment, timeOverheadNanos);
 		}
 	}
