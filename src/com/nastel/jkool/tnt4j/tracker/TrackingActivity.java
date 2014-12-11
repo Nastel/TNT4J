@@ -20,7 +20,6 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
 import java.util.List;
-import java.util.UUID;
 
 import com.nastel.jkool.tnt4j.TrackingLogger;
 import com.nastel.jkool.tnt4j.core.Activity;
@@ -121,7 +120,7 @@ public class TrackingActivity extends Activity {
 	 * @see #setTrackingId(String)
 	 */
 	protected TrackingActivity(OpLevel level, String name) {
-		super(UUID.randomUUID().toString(), name);
+		super(Utils.newUUID(), name);
 		setSeverity(level);
 	}
 
@@ -140,7 +139,7 @@ public class TrackingActivity extends Activity {
 	 * @see #setTrackingId(String)
 	 */
 	protected TrackingActivity(OpLevel level, String name, TrackerImpl trk) {
-		super(UUID.randomUUID().toString(), name, trk.getSource());
+		super(Utils.newUUID(), name, trk.getSource());
 		tracker = trk;
 		setSeverity(level);
 		setLocation(trk.getSource());

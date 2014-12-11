@@ -16,7 +16,6 @@
 package com.nastel.jkool.tnt4j.core;
 
 import java.nio.charset.Charset;
-import java.util.UUID;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -64,7 +63,7 @@ public class Message {
 	 * @throws NullPointerException if any arguments are <code>null</code>
 	 */
 	public Message() {
-		this(UUID.randomUUID().toString());
+		this(Utils.newUUID());
 	}
 
 	/**

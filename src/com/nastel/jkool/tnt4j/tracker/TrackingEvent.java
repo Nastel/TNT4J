@@ -15,8 +15,6 @@
  */
 package com.nastel.jkool.tnt4j.tracker;
 
-import java.util.UUID;
-
 import com.nastel.jkool.tnt4j.core.Message;
 import com.nastel.jkool.tnt4j.core.OpCompCode;
 import com.nastel.jkool.tnt4j.core.OpLevel;
@@ -171,7 +169,7 @@ public class TrackingEvent extends Message implements Trackable {
 	 * @return UUID in string form
 	 */
 	public static String newUUID() {
-		return UUID.randomUUID().toString();
+		return Utils.newUUID();
 	}
 
 

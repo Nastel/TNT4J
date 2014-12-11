@@ -40,6 +40,9 @@ import java.util.Map.Entry;
 
 import org.apache.commons.lang3.SerializationUtils;
 
+import com.fasterxml.uuid.EthernetAddress;
+import com.fasterxml.uuid.Generators;
+import com.fasterxml.uuid.impl.TimeBasedGenerator;
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.config.ConfigException;
 
@@ -77,17 +80,21 @@ public class Utils {
 
 	public static final int CLIENT_CODE_STACK_INDEX;
 
-    static {
-        int index = 0;
+	private static TimeBasedGenerator uuidGenerator;		
+	
+	static {
+		EthernetAddress nic = EthernetAddress.fromInterface();
+		uuidGenerator = Generators.timeBasedGenerator(nic);
+		int index = 0;
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-		for (StackTraceElement frame: stack) {
-        	index++;
-            if (frame.getClassName().equals(Utils.class.getName())) {
-                break;
-            }
-        }
-        CLIENT_CODE_STACK_INDEX = index;
-    }
+		for (StackTraceElement frame : stack) {
+			index++;
+			if (frame.getClassName().equals(Utils.class.getName())) {
+				break;
+			}
+		}
+		CLIENT_CODE_STACK_INDEX = index;
+	}
     
     private static long initVMID() {
 		String _vm_pid_del = System.getProperty("tnt4j.java.vm.pid.dlm", "@");
@@ -104,6 +111,15 @@ public class Utils {
 	}
 
     
+	/**
+	 * Return a new GUID as string
+	 * 
+	 * @return return GUID string representation
+	 */
+	public static String newUUID() {
+		return uuidGenerator.generate().toString();
+	}
+	
 	/**
 	 * Return current client stack index that identifies the
 	 * calling stack frame return by <code>Thread.currentThread().getStackTrace()</code>
