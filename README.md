@@ -331,6 +331,7 @@ TNT4J depends on the following external packages:
 * Apache commons net 3.3 (http://commons.apache.org/proper/commons-net/)
 * Apache commons codec 1.9 (http://commons.apache.org/proper/commons-codec/)
 * Apache Log4J 1.2.17 (http://logging.apache.org/log4j/1.2/)
+* Java UUID Generator (JUG) 3.1.3 (http://wiki.fasterxml.com/JugHome/)
 
 To build TNT4J:
 * Download the above libraries and place into the tnt4j-master/lib folder
