@@ -92,7 +92,7 @@ public class LightStack<T> extends ArrayList<T> {
 	public T pop(T obj) {
 		T item = peek();
 		if (item != obj) {
-			throw new IllegalStateException("Item not on stop of the stack");
+			throw new IllegalStateException("Item not on stop of the stack, stack.size=" + size());
 		}
 		cursor--;
 		set(cursor, null);
