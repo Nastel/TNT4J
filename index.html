@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
+
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <title>Tnt4j by Nastel</title>
+  </head>
+
+  <body>
+    <header>
+      <div class="inner">
+        <h1>Tnt4j</h1>
+        <h2>Track and Trace 4 Java API, Application event streaming and logging framework for correlation, diagnostics and tracking of application activities.</h2>
+        <a href="https://github.com/Nastel/TNT4J" class="button"><small>View project on</small> GitHub</a>
+      </div>
+    </header>
+
+    <div id="content-wrapper">
+      <div class="inner clearfix">
+        <section id="main-content">
+          <h1>
+<a id="why-tnt4j-" class="anchor" href="#why-tnt4j-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why TNT4J </h1>
+
+<p>TNT4J is about tracking and tracing activities, transactions, behavior and performance via an easy to use API that behaves much like a logging framework.</p>
+
+<p>Why track and trace your apps?</p>
+
+<ul>
+<li>Trace application behavior, performance to improve diagnostics</li>
+<li>Track end-user behavior to improve usability, customer satisfaction</li>
+<li>Track topology, communications, relationships between entities</li>
+<li>Track messages, binary, text, video, image, voice, etc.</li>
+<li>Track location, mobility, GPS of your applications, users</li>
+<li>Track anything worth tracking in your application</li>
+<li>Know what happend, when, why </li>
+</ul>
+
+<p><b>Several key features make TNT4J a prime choice for your java application:</b></p>
+
+<h3>
+<a id="log4j-integration" class="anchor" href="#log4j-integration" aria-hidden="true"><span class="octicon octicon-link"></span></a>Log4j Integration</h3>
+
+<p>TNT4J integrates with log4j or any other logging framework via a concept of an <code>EventSink</code>. TNT4J default integration is with log4j. </p>
+
+<p>First, all TNT4J messages can be routed via a log4j event sink and therefore can take advantage of the whole log4j framework. </p>
+
+<p>Second, TNT4J includes <code>TNT4JAppender</code> for log4j which allows developers to send log4j messages to TNT4J via this appender and take advantage of TNT4j functionality.</p>
+
+<p>Developers may also enrich log4j messages and pass context to TNT4J using hashtag enrichment scheme. Hashtags are used to decorate log4j messages with important meta data about each log message. This meta data is used to generate TNT4J tracking events (same tags can be passed using log4j <code>MDC</code> object):</p>
+
+<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>info(<span class="pl-s1"><span class="pl-pds">"</span>Starting a tnt4j activity #beg=Test, #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-stj">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName());
+logger<span class="pl-k">.</span>warn(<span class="pl-s1"><span class="pl-pds">"</span>First log message #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-stj">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName() <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">"</span>, #msg='1 Test warning message'<span class="pl-pds">"</span></span>);
+logger<span class="pl-k">.</span>error(<span class="pl-s1"><span class="pl-pds">"</span>Second log message #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-stj">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName() <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">"</span>, #msg='2 Test error message'<span class="pl-pds">"</span></span>, <span class="pl-k">new</span> <span class="pl-stj">Exception</span>(<span class="pl-s1"><span class="pl-pds">"</span>test exception<span class="pl-pds">"</span></span>));
+logger<span class="pl-k">.</span>info(<span class="pl-s1"><span class="pl-pds">"</span>Ending a tnt4j activity #end=Test, #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-stj">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName());</pre></div>
+
+<p>Above example groups messages between first and last into a related logical collection called <code>Activity</code>. Activity is simply a collection of logically related events/messages. Hashtags <code>#beg</code> and <code>#end</code> are used to demarcate activity boundaries. This method also supports nested activities. </p>
+
+<p>Below is a sample log4j appender configuration:</p>
+
+<pre><code>### Default TNT4J Appender configuration
+log4j.appender.tnt4j=com.nastel.jkool.tnt4j.logger.TNT4JAppender
+log4j.appender.tnt4j.SourceName=com.log4j.Test
+log4j.appender.tnt4j.SourceType=APPL
+log4j.appender.tnt4j.MetricsOnException=true
+log4j.appender.tnt4j.MetricsFrequency=60
+log4j.appender.tnt4j.layout=org.apache.log4j.PatternLayout
+log4j.appender.tnt4j.layout.ConversionPattern=%d{ABSOLUTE} %-5p [%c{1}] %m%n
+</code></pre>
+
+<h3>
+<a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h3>
+
+<p>No need to concatenate messages before logging. String concatenation is expensive especialy in loops. Simply log using message patterns as follows and TNT4J will resolve the message only if it actually gets logged:</p>
+
+<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>debug(<span class="pl-s1"><span class="pl-pds">"</span>My message {0}, {1}, {2}<span class="pl-pds">"</span></span>, arg1, arg2, arg3);</pre></div>
+
+<p>TNT4J enhances logging performance by supporting asynchronous pooled logging, which delegates logging to a dedicated thread pool. Use <code>BufferedEventSinkFactory</code> in your <code>tnt4.properties</code> configuration to enable this feature. See example below: </p>
+
+<pre><code>...
+event.sink.factory: com.nastel.jkool.tnt4j.sink.BufferedEventSinkFactory
+event.sink.factory.EventSinkFactory: com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory
+...
+</code></pre>
+
+<h3>
+<a id="simplicity--clean-code" class="anchor" href="#simplicity--clean-code" aria-hidden="true"><span class="octicon octicon-link"></span></a>Simplicity &amp; Clean Code</h3>
+
+<p>No need to check for <code>isDebugEnabled()</code> before logging messages. Just register your own <code>SinkEventFilter</code> and consolidate all checking into a single listener.</p>
+
+<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span> <span class="pl-stj">MyLogFilter</span>()); 
+<span class="pl-c1">...</span>
+logger<span class="pl-k">.</span>debug(<span class="pl-s1"><span class="pl-pds">"</span>My message {0}, {1}, {2}<span class="pl-pds">"</span></span>, arg1, arg2, arg3);</pre></div>
+
+<p>All conditional logging can be consolidated into a single listener object. </p>
+
+<h3>
+<a id="flexible-filtering" class="anchor" href="#flexible-filtering" aria-hidden="true"><span class="octicon octicon-link"></span></a>Flexible Filtering</h3>
+
+<p>Filter out not only based on category/severity (as log4j), but also based on performance objectives. Example: log events only if their elapsed time or wait times are greater than a ceratin value. TNT4J allows users to register filters within <code>tnt4j.properties</code> without changing application code. Create your own filters which would allow you to filter events out based on user defined criteria and inject filters using <code>tnt4j.properties</code>.
+See  <code>tnt4j.properties</code> and <code>com.nastel.jkool.tnt4j.filters.EventLevelTimeFilter</code> for details.
+Register filters via declarations in <code>tnt4j.properties</code> or in your application by creating your own event filter.</p>
+
+<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span> <span class="pl-stj">MyLogFilter</span>());</pre></div>
+
+<h3>
+<a id="granular-conditional-logging" class="anchor" href="#granular-conditional-logging" aria-hidden="true"><span class="octicon octicon-link"></span></a>Granular conditional logging</h3>
+
+<p>Log only what matters. Increase performance of your apps by decreasing the amount of logging your app produces and yet increasing relevance and quality of the output.</p>
+
+<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>isSet(<span class="pl-stj">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>DEBUG</span>);
+logger<span class="pl-k">.</span>isSet(<span class="pl-stj">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>DEBUG</span>, <span class="pl-s1"><span class="pl-pds">"</span>myapp.mykey<span class="pl-pds">"</span></span>, myvalue);</pre></div>
+
+<p>Checking a global debug level is not granular enough for most applications. Many java apps require granular logging to log only what matters. Consolidate these checks into <code>SinkEventFilter</code> implementation and register with the logger instance.</p>
+
+<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span> <span class="pl-stj">MyLogFilter</span>());</pre></div>
+
+<h3>
+<a id="share-logging-context-across-apps" class="anchor" href="#share-logging-context-across-apps" aria-hidden="true"><span class="octicon octicon-link"></span></a>Share logging context across apps</h3>
+
+<p>Pass logging context across apps programatically or via a shared cache.</p>
+
+<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>set(<span class="pl-stj">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>DEBUG</span>, <span class="pl-s1"><span class="pl-pds">"</span>myapp.mykey<span class="pl-pds">"</span></span>, myvalue);</pre></div>
+
+<p>Imagine writing an application that has to pass logging flag to apps downstream, how would you do that?
+TNT lets you do that using this method.</p>
+
+<p>Check log context by calling:</p>
+
+<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>isSet(<span class="pl-stj">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>DEBUG</span>, <span class="pl-s1"><span class="pl-pds">"</span>myapp.mykey<span class="pl-pds">"</span></span>, myvalue);</pre></div>
+
+<h3>
+<a id="state-logging" class="anchor" href="#state-logging" aria-hidden="true"><span class="octicon octicon-link"></span></a>State logging</h3>
+
+<p>Log application state to improve diagnostics of performance, resource utilization and other tough problems which are difficult  to trace using standard event logging techniques. Simply register your state dump provider (see <code>DumpProvider</code> interface) and export state variables specific to you application. Dump providers can be called on VM shutdown or on demand.</p>
+
+<p>Generate application dump on demand.</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-c">// register your dump provider</span>
+<span class="pl-stj">TrackingLogger</span><span class="pl-k">.</span>addDumpProvider(<span class="pl-k">new</span> <span class="pl-stj">MyDumpProvider</span>());
+<span class="pl-c1">...</span>
+<span class="pl-stj">TrackingLogger</span><span class="pl-k">.</span>dumpState();</pre></div>
+
+<h3>
+<a id="measurements--metrics" class="anchor" href="#measurements--metrics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Measurements &amp; Metrics</h3>
+
+<p>TNT4J is not just about logging messages, it is also about measurements and metrics. Metrics such as elpased time, CPU, memory, block/wait times as well as user defined metrics. TNT4J allows you to answer the state of CPU, memory, user defined metrics at the time of the logged event.
+Below is an example of creating a snapshot (collection of metrics) and relate it to an activity:</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-c">// post processing of activity: enrich activity with application metrics</span>
+<span class="pl-stj">TrackingLogger</span> logger <span class="pl-k">=</span> <span class="pl-stj">TrackingLogger</span><span class="pl-k">.</span>getInstance(<span class="pl-v">this</span><span class="pl-k">.</span>getClass());
+<span class="pl-stj">TrackingActivity</span> activity <span class="pl-k">=</span> logger<span class="pl-k">.</span>newActivity(<span class="pl-stj">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>INFO</span>, <span class="pl-s1"><span class="pl-pds">"</span>MyActivity<span class="pl-pds">"</span></span>);
+<span class="pl-c1">...</span>
+<span class="pl-stj">PropertySnapshot</span> snapshot <span class="pl-k">=</span> logger<span class="pl-k">.</span>newSnapshot(<span class="pl-s1"><span class="pl-pds">"</span>MyCategory<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>MySnapshot<span class="pl-pds">"</span></span>);
+snapshot<span class="pl-k">.</span>add(<span class="pl-s1"><span class="pl-pds">"</span>metric1<span class="pl-pds">"</span></span>, myMetric1);
+snapshot<span class="pl-k">.</span>add(<span class="pl-s1"><span class="pl-pds">"</span>metric2<span class="pl-pds">"</span></span>, myMetric2);
+activity<span class="pl-k">.</span>add(snapshot); <span class="pl-c">// add property snapshot associated with this activity</span>
+logger<span class="pl-k">.</span>tnt(activity); <span class="pl-c">// report activity and associated snapshots as a single entity</span></pre></div>
+
+<p>Below is an example of reporting a snapshot which are related to a given activity:</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-c">// post processing of activity: enrich activity with application metrics</span>
+<span class="pl-stj">TrackingLogger</span> logger <span class="pl-k">=</span> <span class="pl-stj">TrackingLogger</span><span class="pl-k">.</span>getInstance(<span class="pl-v">this</span><span class="pl-k">.</span>getClass());
+<span class="pl-stj">TrackingActivity</span> activity <span class="pl-k">=</span> logger<span class="pl-k">.</span>newActivity(<span class="pl-stj">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>INFO</span>, <span class="pl-s1"><span class="pl-pds">"</span>MyActivity<span class="pl-pds">"</span></span>);
+<span class="pl-c1">...</span>
+<span class="pl-stj">PropertySnapshot</span> snapshot <span class="pl-k">=</span> logger<span class="pl-k">.</span>newSnapshot(<span class="pl-s1"><span class="pl-pds">"</span>MyCategory<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>MySnapshot<span class="pl-pds">"</span></span>);
+snapshot<span class="pl-k">.</span>add(<span class="pl-s1"><span class="pl-pds">"</span>metric1<span class="pl-pds">"</span></span>, myMetric1);
+snapshot<span class="pl-k">.</span>add(<span class="pl-s1"><span class="pl-pds">"</span>metric2<span class="pl-pds">"</span></span>, myMetric2);
+activity<span class="pl-k">.</span>tnt(snapshot); <span class="pl-c">// add and report property snapshot associated with this activity</span></pre></div>
+
+<p>Below is an example of reporting standalone snapshot:</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-c">// post processing of activity: enrich activity with application metrics</span>
+<span class="pl-stj">TrackingLogger</span> logger <span class="pl-k">=</span> <span class="pl-stj">TrackingLogger</span><span class="pl-k">.</span>getInstance(<span class="pl-v">this</span><span class="pl-k">.</span>getClass());
+<span class="pl-c1">...</span>
+<span class="pl-stj">PropertySnapshot</span> snapshot <span class="pl-k">=</span> logger<span class="pl-k">.</span>newSnapshot(<span class="pl-s1"><span class="pl-pds">"</span>MyCategory<span class="pl-pds">"</span></span>, <span class="pl-s1"><span class="pl-pds">"</span>MySnapshot<span class="pl-pds">"</span></span>);
+snapshot<span class="pl-k">.</span>add(<span class="pl-s1"><span class="pl-pds">"</span>metric1<span class="pl-pds">"</span></span>, myMetric1);
+snapshot<span class="pl-k">.</span>add(<span class="pl-s1"><span class="pl-pds">"</span>metric2<span class="pl-pds">"</span></span>, myMetric2);
+logger<span class="pl-k">.</span>tnt(snapshot); <span class="pl-c">// report a property snapshot</span></pre></div>
+
+<h3>
+<a id="correlation-topology-time-synchronization" class="anchor" href="#correlation-topology-time-synchronization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Correlation, Topology, Time Synchronization</h3>
+
+<p>Relate event message together by grouping or passing context (correlator). Most if not all logging frameworks completely miss the correlation angle. TNT4J allows attachement of correlators when reporting tracking events see <code>TrackingLogger.tnt(..)</code> calls for details. The API also allows relating tracking events across application and runtime boundaries using the same paradigm.</p>
+
+<p><code>TrackingLogger.tnt(..)</code> also allows developers to specify the flow of messages using <code>OpType.SEND</code> and <code>OpType.RECEIVE</code> modifiers. These modifiers let developers specify message flow, direction.
+Below is an example of a sender application:</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-c">// post processing of activity: enrich activity with application metrics</span>
+<span class="pl-stj">TrackingLogger</span> logger <span class="pl-k">=</span> <span class="pl-stj">TrackingLogger</span><span class="pl-k">.</span>getInstance(<span class="pl-v">this</span><span class="pl-k">.</span>getClass());
+
+<span class="pl-c">// report sending an order with a specific correlator (order_id)</span>
+logger<span class="pl-k">.</span>tnt(<span class="pl-stj">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>INFO</span>, <span class="pl-stj">OpType</span><span class="pl-c1"><span class="pl-k">.</span>SEND</span>, <span class="pl-s1"><span class="pl-pds">"</span>SendOrder<span class="pl-pds">"</span></span>, order_id, 
+    elasped_time, <span class="pl-s1"><span class="pl-pds">"</span>Sending order to={0}<span class="pl-pds">"</span></span>, destination);
+<span class="pl-c">// sending logic</span>
+<span class="pl-c1">....</span>
+<span class="pl-c1">....</span></pre></div>
+
+<p>Below is an example of a receiver application:</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-c">// post processing of activity: enrich activity with application metrics</span>
+<span class="pl-stj">TrackingLogger</span> logger <span class="pl-k">=</span> <span class="pl-stj">TrackingLogger</span><span class="pl-k">.</span>getInstance(<span class="pl-v">this</span><span class="pl-k">.</span>getClass());
+<span class="pl-c1">...</span>
+<span class="pl-c">// report received an order with a specific correlator (order_id)</span>
+logger<span class="pl-k">.</span>tnt(<span class="pl-stj">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>INFO</span>, <span class="pl-stj">OpType</span><span class="pl-c1"><span class="pl-k">.</span>RECEIVE</span>, <span class="pl-s1"><span class="pl-pds">"</span>ReceiveOrder<span class="pl-pds">"</span></span>, order_id,
+    elasped_time, <span class="pl-s1"><span class="pl-pds">"</span>Received order from={0}<span class="pl-pds">"</span></span>, source);</pre></div>
+
+<p><b>NOTE:</b> TNT4J uses NTP natively to synchronize times across servers to enable cross server event correlation in time. To enable NTP time synchronization define java property <code>-Dtnt4j.time.server=ntp-server:123</code>. </p>
+
+<p><b>TIP:</b> Developers should use <code>TimeServer.currentTimeMillis()</code> instead of <code>System.currentTimeMillis()</code> to obtain time adjusted to NTP time. TNT4J also maintains a microsecond resolution clock using <code>Useconds.CURRENT.get()</code> which returns the number of microseconds between the current time and midnight, January 1, 1970 UTC (NTP adjusted). TNT4J automatically measures and adjusts clock drift between NTP, <code>System.currentTimeMillis()</code> and <code>System.nanoTime()</code> clocks to ensure accurate microsecond precision/accuracy timing spanning VMs, devices, servers, geo locations.</p>
+
+<h3>
+<a id="logging-statistics" class="anchor" href="#logging-statistics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Logging Statistics</h3>
+
+<p>TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors, overhead in usec and more. Do you know the overhead of your logging framework on your application?</p>
+
+<p>Obtain a map of all available key/value pairs:</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-st">Map&lt;<span class="pl-stj">String</span>, <span class="pl-stj">Long</span>&gt;</span> stats <span class="pl-k">=</span> logger<span class="pl-k">.</span>getStats();
+<span class="pl-stj">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s1"><span class="pl-pds">"</span>Logger stats: <span class="pl-pds">"</span></span> <span class="pl-k">+</span> stats);
+<span class="pl-c1">...</span>
+<span class="pl-stj">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s1"><span class="pl-pds">"</span>Resetting logger stats<span class="pl-pds">"</span></span>);
+logger<span class="pl-k">.</span>resetStats();</pre></div>
+
+<p>Here is an example to obtain metrics for all available loggers:</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-st">List&lt;<span class="pl-stj">TrackingLogger</span>&gt;</span> loggers <span class="pl-k">=</span> <span class="pl-stj">TrackingLogger</span><span class="pl-k">.</span>getAllTrackers();
+<span class="pl-k">for</span> (<span class="pl-stj">TrackingLogger</span> lg<span class="pl-k">:</span> loggers) {
+    <span class="pl-st">Map&lt;<span class="pl-stj">String</span>, <span class="pl-stj">Long</span>&gt;</span> stats <span class="pl-k">=</span> lg<span class="pl-k">.</span>getStats();
+    <span class="pl-c1">...</span>
+}</pre></div>
+
+<p>TNT4J also keeps track of stack traces for all <code>TrackingLogger</code> allocations. Below is an example of how to get stack frames for a specific <code>TrackingLogger</code> instance:</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-st">List&lt;<span class="pl-stj">TrackingLogger</span>&gt;</span> loggers <span class="pl-k">=</span> <span class="pl-stj">TrackingLogger</span><span class="pl-k">.</span>getAllTrackers();
+<span class="pl-k">for</span> (<span class="pl-stj">TrackingLogger</span> lg<span class="pl-k">:</span> loggers) {
+    <span class="pl-st">StackTraceElement</span>[] stack <span class="pl-k">=</span> <span class="pl-stj">TrackingLogger</span><span class="pl-k">.</span>getTrackerStackTrace(lg);
+    <span class="pl-stj">Utils</span><span class="pl-k">.</span>printStackTrace(<span class="pl-s1"><span class="pl-pds">"</span>Tracker stack trace<span class="pl-pds">"</span></span>, stack, <span class="pl-stj">System</span><span class="pl-k">.</span>out);
+    <span class="pl-c1">...</span>
+}</pre></div>
+
+<h2>
+<a id="quick-examples" class="anchor" href="#quick-examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick Examples</h2>
+
+<p>Here is a simple example of using TNT4J:</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-stj">TrackingLogger</span> logger <span class="pl-k">=</span> <span class="pl-stj">TrackingLogger</span><span class="pl-k">.</span>getInstance(<span class="pl-v">this</span><span class="pl-k">.</span>getClass());
+<span class="pl-k">try</span> {
+   <span class="pl-c1">...</span>
+} <span class="pl-k">catch</span> (<span class="pl-stj">Exception</span> e) {
+   logger<span class="pl-k">.</span>error(<span class="pl-s1"><span class="pl-pds">"</span>Failed to process request={0}<span class="pl-pds">"</span></span>, request_id, ex);
+}</pre></div>
+
+<p>Below is an example of using correlator and a relative class marker to locate caller's method call on the stack -- <code>$my.package.myclass:0</code>. This marker will resolve to the caller's method name above all the calls that start with <code>$my.package.myclass</code>.</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-stj">TrackingLogger</span> logger <span class="pl-k">=</span> <span class="pl-stj">TrackingLogger</span><span class="pl-k">.</span>getInstance(<span class="pl-v">this</span><span class="pl-k">.</span>getClass());
+<span class="pl-k">try</span> {
+   <span class="pl-c1">...</span>
+} <span class="pl-k">catch</span> (<span class="pl-stj">Exception</span> e) {
+   logger<span class="pl-k">.</span>tnt(<span class="pl-stj">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>ERROR</span>, <span class="pl-s1"><span class="pl-pds">"</span>$my.package.myclass:0<span class="pl-pds">"</span></span>, myCorrelator, 
+    <span class="pl-s1"><span class="pl-pds">"</span>Failed to process request={0}<span class="pl-pds">"</span></span>, request_id, ex);
+}</pre></div>
+
+<p>Consolidate all conditional logging checks into a single listener. Why call `isDebugEnabled()' before each log entry?</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-stj">TrackingLogger</span> logger <span class="pl-k">=</span> <span class="pl-stj">TrackingLogger</span><span class="pl-k">.</span>getInstance(<span class="pl-v">this</span><span class="pl-k">.</span>getClass());
+logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span> <span class="pl-stj">MyEventFilter</span>(logger));
+<span class="pl-k">try</span> {
+   logger<span class="pl-k">.</span>debug(<span class="pl-s1"><span class="pl-pds">"</span>My debug message {0}, {1}<span class="pl-pds">"</span></span>, arg0, arg1); <span class="pl-c">// no need to gate this call</span>
+   <span class="pl-c1">...</span>
+} <span class="pl-k">catch</span> (<span class="pl-stj">Exception</span> e) {
+   logger<span class="pl-k">.</span>error(<span class="pl-s1"><span class="pl-pds">"</span>Failed to process request={0}<span class="pl-pds">"</span></span>, request_id, ex);
+}
+
+<span class="pl-s">class</span> <span class="pl-en">MyEventFilter</span> <span class="pl-s">implements</span> <span class="pl-e">SinkEventFilter</span> {
+    <span class="pl-stj">TaskLogger</span> logger;
+
+    <span class="pl-en">MyEventFilter</span>(<span class="pl-stj">TaskLogger</span> <span class="pl-v">lg</span>) {
+        logger <span class="pl-k">=</span> lg;
+    }
+
+    <span class="pl-st">@Override</span>
+    <span class="pl-s">public</span> <span class="pl-st">boolean</span> <span class="pl-en">filter</span>(<span class="pl-stj">EventSink</span> <span class="pl-v">arg0</span>, <span class="pl-stj">TrackingEvent</span> <span class="pl-v">arg1</span>) {
+        <span class="pl-k">return</span> logger<span class="pl-k">.</span>isSet(arg1<span class="pl-k">.</span>getSeverity(), <span class="pl-s1"><span class="pl-pds">"</span>myappl.token<span class="pl-pds">"</span></span>);
+    }
+
+    <span class="pl-st">@Override</span>
+    <span class="pl-s">public</span> <span class="pl-st">boolean</span> <span class="pl-en">filter</span>(<span class="pl-stj">EventSink</span> <span class="pl-v">arg0</span>, <span class="pl-stj">TrackingActivity</span> <span class="pl-v">arg1</span>) {
+        <span class="pl-k">return</span> logger<span class="pl-k">.</span>isSet(arg1<span class="pl-k">.</span>getSeverity(), <span class="pl-s1"><span class="pl-pds">"</span>myappl.token<span class="pl-pds">"</span></span>);
+    }
+
+    <span class="pl-st">@Override</span>
+    <span class="pl-s">public</span> <span class="pl-st">boolean</span> <span class="pl-en">filter</span>(<span class="pl-stj">EventSink</span> <span class="pl-v">arg0</span>, <span class="pl-stj">OpLevel</span> <span class="pl-v">arg1</span>, <span class="pl-stj">String</span> <span class="pl-v">arg2</span>, <span class="pl-stj">Object</span>... <span class="pl-v">arg3</span>) {
+        <span class="pl-k">return</span> logger<span class="pl-k">.</span>isSet(arg1, <span class="pl-s1"><span class="pl-pds">"</span>myappl.token<span class="pl-pds">"</span></span>);
+    }
+}</pre></div>
+
+<p>Embed TNT4J into your application and realize the benefits in matter if minutes. TNT4J can take advantage of other lower level logging frameworks such as log4j. Default TNT4J binding is based on log4j.</p>
+
+<h1>
+<a id="about-tnt4j" class="anchor" href="#about-tnt4j" aria-hidden="true"><span class="octicon octicon-link"></span></a>About TNT4J</h1>
+
+<p>Track and Trace 4 Java API, Application logging framework for correlation, diagnostics and tracking of application activities within and across <b>multiple applications, runtimes, servers, geo locations. This API is specifically designed to troubleshoot distributed, concurrent, multi-threaded, composite applications</b> and includes activity correlation, application state dumps, performance and user defined metrics.</p>
+
+<p>Here is short list of TNT4J features:</p>
+
+<ul>
+<li>Simple programming model to facilitate fast root-cause, log analysis</li>
+<li>Automated timing of application activities and sub-activities (elapsed, idle time, message age)</li>
+<li>Application state dump framework for reporting internal variables, data structures</li>
+<li>Granular conditional logging based on application tokens, patterns, that can be shared accross applications, runtimes</li>
+<li>Share logging context across application, thread, runtime boundaries</li>
+<li>Inter-log correlation of log entries (correlators and tags) between multiple related applications</li>
+<li>Intra-log correlation of related activities and sub-activities between multiple applications and threads</li>
+<li>Event location tags such as GPS, server etc.</li>
+<li>Message flow direction for composite applications that exchange messages (e.g. SOAP, JMS, and SQL etc.)</li>
+<li>User defined properties such as CPU, memory logging, thread statistics per process/thread</li>
+<li>Extensible activity, sink, error listeners for pre, post event processing</li>
+<li>Granular context such as thread id, process id, server, application name</li>
+</ul>
+
+<p>See TNT4J tutorial (<a href="http://www.slideshare.net/AlbertMavashev/open-source-application-behavior-tnt4j-tutorial">http://www.slideshare.net/AlbertMavashev/open-source-application-behavior-tnt4j-tutorial</a>)
+See Getting Started (<a href="https://github.com/Nastel/TNT4J/wiki/Getting-Started">https://github.com/Nastel/TNT4J/wiki/Getting-Started</a>) for quick reference on TNT4J.
+Wiki is available at <a href="https://github.com/Nastel/TNT4J/wiki">https://github.com/Nastel/TNT4J/wiki</a></p>
+
+<h1>
+<a id="tnt4j-mission" class="anchor" href="#tnt4j-mission" aria-hidden="true"><span class="octicon octicon-link"></span></a>TNT4J Mission</h1>
+
+<ul>
+<li>Standard way to track application behavior, activities accross users, apps, servers, devices, threads</li>
+<li>Dramatically reduce time it takes to troubleshoot application behavior using logging paradigm</li>
+<li>Performance metrics and application state to reduce diagnostic time</li>
+<li>Simple programming model for ease of use</li>
+<li>Improve quality and readability of logs to accelerate diagnostics</li>
+<li>Enrich log entries for automated analysis. Manual analysis is just painfully long</li>
+<li>Decrease or eliminate development of custom code required to track behavior and activities</li>
+<li>Independent of the underlying storage, formats</li>
+</ul>
+
+<h1>
+<a id="tnt4j-concepts" class="anchor" href="#tnt4j-concepts" aria-hidden="true"><span class="octicon octicon-link"></span></a>TNT4J Concepts</h1>
+
+<p>TNT4J is fully plug-in and play tracking, tracing and logging framework that consits of the folliwng basic constructs:</p>
+
+<ul>
+<li>
+<b>Tracker</b> -- high level object that allows developer to track, trace and log application activities</li>
+<li>
+<b>Actvity</b> -- a collection of related tracking events (TrackingEvent) and other sub-activities, relation is established via a grouping specified by a developer or set of correlators (across thread, application boundaries). Activities may have a set of uder defined properties which are grouped into property snapshots (PropertySnapshot).</li>
+<li>
+<b>Tracking Event</b> -- a message with associated start/stop time stamps, severity, user defined message, correlator, tag, location (such as GPS, server etc) and other event properties.</li>
+<li>
+<b>Property</b> -- key, value pair</li>
+<li>
+<b>Property snapshot</b> -- a collection of properties with category, name and a timestamp associated with when snapshot is taked. Actvities may have one or more property snapshots.</li>
+<li>
+<b>Formatter</b> -- an object responsible for formatting underlying TNT4J objects such as Activity, Tracking Event and convert into a formatted string.</li>
+<li>
+<b>Tracking Selector</b> -- an object associated with a Tracker that allows developers to perform conditional logging based on a given set of severity, key, value combination. Such combinations are stored in token repository.</li>
+<li>
+<b>Token Repository</b> -- an underlying storage used by tracking selector that actually stores and maintains severity, key, value combinations. Such repository can be backed by a file, cache, memory or any other desired medium. Token repositories can be shared accross application boundaries and therefore conditional logging can span multiple applications, runtimes, geo locations.</li>
+<li>
+<b>Sink</b> -- sink is a basic destination where obejcts can be written.</li>
+<li>
+<b>Event Sink</b> -- destination where events, activities and messages are recorded. Such destination can be file, socket, etc.
+Sinks are usually associated with formatters which are called to format objects before writting to the sink.</li>
+<li>
+<b>Dump Sink</b> -- sink where application dumps are recorded.</li>
+<li>
+<b>Dump</b> -- a property snapshot that deals with application state (name, value pairs). Application can generate user defined dumps to report application specific metrics during diagnostics, on demand or VM shutdown.</li>
+<li>
+<b>Dump Provider</b> -- user defined implmenetation that actually generated application Dumps.</li>
+</ul>
+
+<h1>
+<a id="how-to-build-tnt4j" class="anchor" href="#how-to-build-tnt4j" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to Build TNT4J</h1>
+
+<p>Requirements</p>
+
+<ul>
+<li>JDK 1.6+</li>
+<li>ANT (<a href="http://ant.apache.org/">http://ant.apache.org/</a>)</li>
+</ul>
+
+<p>TNT4J depends on the following external packages:</p>
+
+<ul>
+<li>Apache commons configuration 1.10 (<a href="http://commons.apache.org/proper/commons-configuration/">http://commons.apache.org/proper/commons-configuration/</a>)</li>
+<li>Apache commons lang 2.6 (<a href="http://commons.apache.org/proper/commons-lang/">http://commons.apache.org/proper/commons-lang/</a>)</li>
+<li>Apache commons lang3 3.3.2 (<a href="http://commons.apache.org/proper/commons-lang/">http://commons.apache.org/proper/commons-lang/</a>)</li>
+<li>Apache commons logging 1.2.17 (<a href="http://commons.apache.org/proper/commons-logging/">http://commons.apache.org/proper/commons-logging/</a>)</li>
+<li>Apache commons net 3.3 (<a href="http://commons.apache.org/proper/commons-net/">http://commons.apache.org/proper/commons-net/</a>)</li>
+<li>Apache commons codec 1.9 (<a href="http://commons.apache.org/proper/commons-codec/">http://commons.apache.org/proper/commons-codec/</a>)</li>
+<li>Apache Log4J 1.2.17 (<a href="http://logging.apache.org/log4j/1.2/">http://logging.apache.org/log4j/1.2/</a>)</li>
+<li>Java UUID Generator (JUG) 3.1.3 (<a href="http://wiki.fasterxml.com/JugHome/">http://wiki.fasterxml.com/JugHome/</a>)</li>
+</ul>
+
+<p>To build TNT4J:</p>
+
+<ul>
+<li>Download the above libraries and place into the tnt4j-master/lib folder</li>
+<li>Compile and build using ANT: 
+
+<ul>
+<li>ant all (run "ant clean" for clean builds)</li>
+<li>Check ../build/tnt4j for output</li>
+<li>JavaDoc will be located under ../build/tnt4j/doc</li>
+</ul>
+</li>
+</ul>
+
+<h1>
+<a id="verify-tnt4j" class="anchor" href="#verify-tnt4j" aria-hidden="true"><span class="octicon octicon-link"></span></a>Verify TNT4J</h1>
+
+<p>Run a sample program (<code>com.nastel.jkool.tnt4j.examples.TNT4JTest</code>):</p>
+
+<pre><code>CD to ../build/tnt4j
+</code></pre>
+
+<div class="highlight highlight-java"><pre>    java <span class="pl-k">-</span>javaagent<span class="pl-k">:</span>tnt4j<span class="pl-k">-</span>api<span class="pl-k">.</span>jar <span class="pl-k">-</span><span class="pl-stj">Dlog4j</span><span class="pl-k">.</span>configuration<span class="pl-k">=</span>file<span class="pl-k">:</span>log4j<span class="pl-k">.</span>properties <span class="pl-k">-</span><span class="pl-stj">Dtnt4j</span><span class="pl-k">.</span>dump<span class="pl-k">.</span>on<span class="pl-k">.</span>vm<span class="pl-k">.</span>shutdown<span class="pl-k">=</span><span class="pl-c1">true</span>
+    <span class="pl-k">-</span><span class="pl-stj">Dtnt4j</span><span class="pl-k">.</span>dump<span class="pl-k">.</span>provider<span class="pl-k">.</span><span class="pl-k">default</span><span class="pl-k">=</span><span class="pl-c1">true</span> <span class="pl-k">-</span><span class="pl-stj">Dtnt4j</span><span class="pl-k">.</span>formatter<span class="pl-k">.</span>json<span class="pl-k">.</span>newline<span class="pl-k">=</span><span class="pl-c1">true</span> <span class="pl-k">-</span>classpath tnt4j<span class="pl-k">-</span>api<span class="pl-k">-</span><span class="pl-s">final</span><span class="pl-k">-</span>all<span class="pl-k">.</span>jar
+    <span class="pl-stj">com.nastel.jkool.tnt4j.examples<span class="pl-k">.</span>TNT4JTest</span> <span class="pl-stj">com.myco<span class="pl-k">.</span>TestApp</span> <span class="pl-c1">MYSERVER</span> <span class="pl-s1"><span class="pl-pds">"</span>Test log message<span class="pl-pds">"</span></span> correlator1 <span class="pl-s1"><span class="pl-pds">"</span>TestCommand<span class="pl-pds">"</span></span>  <span class="pl-stj">TestLocation</span></pre></div>
+
+<p><code>-javaagent:tnt4j-api.jar</code> command line option is required by <code>ObjectDumpProvider</code> to calculate object deep and shallow memory sizes. Use this only if your application makes use of ObjectDumpProvider to dump object state.</p>
+
+<p><code>-Dtnt4j.dump.provider.default=true</code> java property allows application state dumps generated automatically upon VM shutdown.</p>
+
+<p><code>-Dtnt4j.formatter.json.newline=true</code> java property directs <code>JSONFormatter</code> to append new line when formatting log entries.</p>
+
+<p>See <code>tnt4j-event.log</code> and <code>&lt;vmid&gt;.dump</code> file for output produced by <code>com.nastel.jkool.tnt4j.examples.TNT4JTest</code>.</p>
+
+<p>See <code>tnt4j.properties</code> for TNT4J configuration: factories, formatters, listeners, etc. See Wiki for more information.</p>
+        </section>
+
+        <aside id="sidebar">
+          <a href="https://github.com/Nastel/TNT4J/zipball/master" class="button">
+            <small>Download</small>
+            .zip file
+          </a>
+          <a href="https://github.com/Nastel/TNT4J/tarball/master" class="button">
+            <small>Download</small>
+            .tar.gz file
+          </a>
+
+          <p class="repo-owner"><a href="https://github.com/Nastel/TNT4J"></a> is maintained by <a href="https://github.com/Nastel">Nastel</a>.</p>
+
+          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
+        </aside>
+      </div>
+    </div>
+
+  
+  </body>
+</html>
