@@ -455,7 +455,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		if (value instanceof Number) {
 			jsonString.append(Utils.quote(JSON_VALUE_LABEL)).append(ATTR_SEP).append(value);
 		} else {
-			jsonString.append(Utils.quote(JSON_VALUE_LABEL)).append(ATTR_SEP).append(Utils.quote(value));
+			String valueText = StringEscapeUtils.escapeJson(String.valueOf(value));
+			jsonString.append(Utils.quote(JSON_VALUE_LABEL)).append(ATTR_SEP).append(Utils.quote(valueText));
 		}
 		jsonString.append(END_JSON);
 		return jsonString.toString();

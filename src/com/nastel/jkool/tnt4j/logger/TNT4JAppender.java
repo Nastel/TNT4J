@@ -105,7 +105,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  *  
  *  
  * <p>An example of reporting a TNT4J activity using log4j (activity is a related collection of events):</p>
- * <p><code>logger.info("Starting order processing #app=MyApp #bgn=" + activityName);</code></p>
+ * <p><code>logger.info("Starting order processing #app=MyApp #beg=" + activityName);</code></p>
  * <p><code></code></p>
  * <p><code>logger.debug("Operation processing #app=MyApp #opn=save #rsn=" + filename);</code></p>
  * <p><code>logger.error("Operation Failed #app=MyApp #opn=save #rsn=" + filename + "  #rcd=" + errno);</code></p>
