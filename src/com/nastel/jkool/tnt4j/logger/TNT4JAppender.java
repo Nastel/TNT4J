@@ -230,8 +230,8 @@ public class TNT4JAppender extends AppenderSkeleton {
 				activity.setSource(tev.getSource()); // use event's source name for this activity
 				activity.setException(ex);
 				activity.setStatus(ex != null ? ActivityStatus.EXCEPTION : ActivityStatus.END);
-				activity.stop(tev.getOperation().getEndTime().getTimeUsec(), 0);
 				activity.tnt(tev);
+				activity.stop(tev.getOperation().getEndTime().getTimeUsec(), 0);
 				logger.tnt(activity);
 				lastSnapshot = lastReport;
 			} else if (activity.isNoop()) {
@@ -249,6 +249,23 @@ public class TNT4JAppender extends AppenderSkeleton {
 	
 	private TrackingActivity processActivityAttrs(Map<String, Object> attrs, LoggingEvent jev, Throwable ex) {
 		TrackingActivity activity = logger.getCurrentActivity();
+		
+		for (Map.Entry<String, Object> entry: attrs.entrySet()) {
+			String key = entry.getKey();
+			String value = entry.getValue().toString();
+			if (key.equalsIgnoreCase(PARAM_CORRELATOR_LABEL)) {
+				activity.setCorrelator(value);
+			} else if (key.equalsIgnoreCase(PARAM_LOCATION_LABEL)) {
+				activity.setLocation(value);
+			} else if (key.equalsIgnoreCase(PARAM_RESOURCE_LABEL)) {
+				activity.setResource(value);
+			}  else if (key.equalsIgnoreCase(PARAM_USER_LABEL)) {
+				activity.setUser(value);
+			} else if (key.equalsIgnoreCase(PARAM_SEVERITY_LABEL)) {
+				activity.setSeverity(OpLevel.valueOf(value));
+			}
+		}
+		
 		Object activityName = attrs.get(PARAM_BEGIN_LABEL);
 		if (attrs.get(PARAM_END_LABEL) != null && !activity.isNoop()) {
 			activity.setStatus(ex != null? ActivityStatus.EXCEPTION: ActivityStatus.END);
