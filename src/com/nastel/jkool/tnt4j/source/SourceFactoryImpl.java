@@ -44,6 +44,8 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	public final static String UNKNOWN_SOURCE = "UNKNOWN";
 	public final static String DEFAULT_SOURCE_ROOT_FQN = System.getProperty("tnt4j.source.root.fqname", "RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?");
 	
+	private final static String TNT4J_SOURCE_PFIX = "tnt4j.source.";	
+	private final static String USER_NAME_KEY = "user.name";	
 	private final static String [] DEFAULT_SOURCES;
 	
 	static {
@@ -52,7 +54,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 		for (SourceType type: SourceType.values()) {
 			String typeValue = UNKNOWN_SOURCE;
 			String typeString = type.toString().toUpperCase();
-			typeValue = System.getProperty("tnt4j.source." + typeString);
+			typeValue = System.getProperty(TNT4J_SOURCE_PFIX + typeString);
 
 			if (typeValue == null) {
 				if (typeString.equalsIgnoreCase(SourceType.SERVER.name())) {
@@ -62,7 +64,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 				} else if (typeString.equalsIgnoreCase(SourceType.NETADDR.name())) {
 					typeValue = Utils.getLocalHostAddress();				
 				} else if (typeString.equalsIgnoreCase(SourceType.USER.name())) {
-					typeValue = System.getProperty("user.name");				
+					typeValue = System.getProperty(USER_NAME_KEY);				
 				} else {
 					typeValue = UNKNOWN_SOURCE;
 				}
