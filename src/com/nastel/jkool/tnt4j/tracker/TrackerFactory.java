@@ -35,11 +35,11 @@ public interface TrackerFactory {
 	 * @param tconfig tracking configuration associated with the tracking instance
 	 * @return <code>Tracker</code> logger instance associated with this thread
 	 */
-	public Tracker getInstance(TrackerConfig tconfig); 
+	Tracker getInstance(TrackerConfig tconfig); 
 		
 	/**
 	 * Close and release resources associated with <code>Tracker</code> instance
 	 * 
 	 */
-	public void close(Tracker tr);
+	void close(Tracker tr);
 }

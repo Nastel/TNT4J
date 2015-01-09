@@ -35,7 +35,7 @@ public interface Trackable {
 	 * @param src application source handle
 	 * @see Source
 	 */
-	public void setSource(Source src);
+	void setSource(Source src);
 	
 	/**
 	 * Obtains current/active <code>Source</code> handle associated
@@ -44,7 +44,7 @@ public interface Trackable {
 	 * @return current active application handle
 	 * @see Source
 	 */
-	public Source getSource();
+	Source getSource();
 
 	/**
 	 * Returns user defined correlator, which are used to relate any
@@ -52,42 +52,42 @@ public interface Trackable {
 	 *
 	 * @return user-defined correlator
 	 */
-	public String getCorrelator();
+	String getCorrelator();
 	
 	/**
 	 * Sets tracking correlator
 	 *
 	 * @param cid tracking correlator
 	 */
-	public void setCorrelator(String cid);
+	void setCorrelator(String cid);
 	
 	/**
 	 * Gets operation type associated with the trackable instance
 	 *
 	 * @return operation type
 	 */
-	public OpType getType();
+	OpType getType();
 	
 	/**
 	 * Gets tracking signature associated with this trackable instance.
 	 *
 	 * @return item tracking signature
 	 */
-	public String getTrackingId();
+	String getTrackingId();
 	
 	/**
 	 * Gets parent's tracking id.
 	 *
 	 * @return parent's tracking id
 	 */
-	public String getParentId();
+	String getParentId();
 	
 	/**
 	 * Sets tracking signature
 	 *
 	 * @param signature tracking signature
 	 */
-	public void setTrackingId(String signature);
+	void setTrackingId(String signature);
 	
 	/**
 	 * Sets the parent object for this object.
@@ -95,5 +95,5 @@ public interface Trackable {
 	 * @param parentObject parent object
 	 * @throws IllegalArgumentException if parentObject is not a valid type of parent
 	 */
-	public void setParentId(Trackable parentObject);
+	void setParentId(Trackable parentObject);
 }

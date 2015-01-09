@@ -34,5 +34,5 @@ public interface SinkLogEventListener {
 	 * 
 	 * @see SinkLogEvent
 	 */
-	public void sinkLogEvent(SinkLogEvent ev);
+	void sinkLogEvent(SinkLogEvent ev);
 }

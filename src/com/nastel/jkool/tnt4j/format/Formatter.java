@@ -34,5 +34,5 @@ public interface Formatter {
 	 * @param obj object to be formatted as string
 	 * @param args arguments associated with the object
 	 */
-	public String format(Object obj, Object...args);
+	String format(Object obj, Object...args);
 }

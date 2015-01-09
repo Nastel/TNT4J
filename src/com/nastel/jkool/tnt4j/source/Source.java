@@ -28,21 +28,21 @@ public interface Source {
 	 * 
 	 * @return short name which identifies this source
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * Gets the fully qualified name used to identify this source type=source-name#parent-source
 	 * 
 	 * @return fully qualified name of this source
 	 */
-	public String getFQName();
+	String getFQName();
 
 	/**
 	 * Gets parent source
 	 * 
 	 * @return parent source
 	 */
-	public Source getSource();
+	Source getSource();
 
 	/**
 	 * Gets parent source associated with the given type
@@ -50,14 +50,14 @@ public interface Source {
 	 * @param type source type
 	 * @return parent source
 	 */
-	public Source getSource(SourceType type);
+	Source getSource(SourceType type);
 
 	/**
 	 * Gets the user name that the application is running under.
 	 * 
 	 * @return name of user running application
 	 */
-	public String getUser();
+	String getUser();
 
 	/**
 	 * Sets the user name that the application is running under, truncating if necessary.
@@ -65,14 +65,14 @@ public interface Source {
 	 * @param user
 	 *            User name that application is running under
 	 */
-	public void setUser(String user);
+	void setUser(String user);
 
 	/**
 	 * Gets the URL that the application is running at.
 	 * 
 	 * @return URL that application is running at
 	 */
-	public String getUrl();
+	String getUrl();
 
 	/**
 	 * Sets the URL that the application is running at, truncating if necessary.
@@ -80,7 +80,7 @@ public interface Source {
 	 * @param url
 	 *            URL that application is running at
 	 */
-	public void setUrl(String url);
+	void setUrl(String url);
 
 	/**
 	 * 
@@ -88,7 +88,7 @@ public interface Source {
 	 * 
 	 * @return source info
 	 */
-	public String getInfo();
+	String getInfo();
 
 	/**
 	 * Sets source info associated with this source
@@ -96,12 +96,12 @@ public interface Source {
 	 * @param inf
 	 *            info associated with the source
 	 */
-	public void setInfo(String inf);
+	void setInfo(String inf);
 
 	/**
 	 * Gets source type.
 	 * 
 	 * @return container type
 	 */
-	public SourceType getType();
+	SourceType getType();
 }

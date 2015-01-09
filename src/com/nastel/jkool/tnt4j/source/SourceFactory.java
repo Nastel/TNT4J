@@ -30,7 +30,7 @@ public interface SourceFactory {
 	 * 
 	 * @return root source
 	 */
-	public Source getRootSource();
+	Source getRootSource();
 
 	/**
 	 * Create a new source
@@ -38,7 +38,7 @@ public interface SourceFactory {
 	 * @param name source name
 	 * @return source handle
 	 */
-	public Source newSource(String name);
+	Source newSource(String name);
 
 	/**
 	 * Create a new source given name and type
@@ -47,7 +47,7 @@ public interface SourceFactory {
 	 * @param type source type
 	 * @return source handle
 	 */
-	public Source newSource(String name, SourceType type);
+	Source newSource(String name, SourceType type);
 
 	/**
 	 * Create a new source given name and type
@@ -57,7 +57,7 @@ public interface SourceFactory {
 	 * @param parent source
 	 * @return source handle
 	 */
-	public Source newSource(String name, SourceType type, Source parent);
+	Source newSource(String name, SourceType type, Source parent);
 
 	/**
 	 * Create a new source given name and type
@@ -68,7 +68,7 @@ public interface SourceFactory {
 	 * @param user user name associated with the source
 	 * @return source handle
 	 */
-	public Source newSource(String name, SourceType type, Source parent, String user);
+	Source newSource(String name, SourceType type, Source parent, String user);
 
 	/**
 	 * Create a new source based on a given fully qualified path. Format:
@@ -78,5 +78,5 @@ public interface SourceFactory {
 	 * @param fqn fully qualified path for the source
 	 * @return source handle representing the path.
 	 */
-	public Source newFromFQN(String fqn);
+	Source newFromFQN(String fqn);
 }

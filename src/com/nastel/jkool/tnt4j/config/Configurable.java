@@ -31,12 +31,12 @@ public interface Configurable {
 	 *  
 	 * @return current configuration settings
 	 */
-	public Map<String, Object> getConfiguration();
+	Map<String, Object> getConfiguration();
 	
 	/**
 	 * Apply given configuration settings
 	 *  
 	 *  @param settings apply given settings as configuration (name, value pairs)
 	 */
-	public void setConfiguration(Map<String, Object> settings) throws ConfigException;
+	void setConfiguration(Map<String, Object> settings) throws ConfigException;
 }

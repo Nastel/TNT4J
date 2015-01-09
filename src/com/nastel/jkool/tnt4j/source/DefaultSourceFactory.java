@@ -47,5 +47,4 @@ public class DefaultSourceFactory {
 	public static SourceFactory getInstance() {
 		return factory;
 	}	
-
 }

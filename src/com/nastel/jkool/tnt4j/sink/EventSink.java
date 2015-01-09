@@ -83,7 +83,7 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * @param sev severity level
 	 * @see OpLevel
 	 */
-	public boolean isSet(OpLevel sev);
+	boolean isSet(OpLevel sev);
 
 	/**
 	 * Log a given tracking event
@@ -91,7 +91,7 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * @param event tracking event to log
 	 * @see TrackingEvent
 	 */
-	public void log(TrackingEvent event);
+	void log(TrackingEvent event);
 
 	/**
 	 * This method allows writing of <code>TrackingActivity</code> objects
@@ -100,7 +100,7 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * @param activity to be sent to the sink
 	 * @see TrackingActivity
 	 */
-	public void log(TrackingActivity activity);
+	void log(TrackingActivity activity);
 
 	/**
 	 * This method allows writing of <code>Snapshot<Property></code> objects
@@ -109,7 +109,7 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * @param snapshot a set of properties
 	 * @see Snapshot
 	 */
-	public void log(Snapshot snapshot);
+	void log(Snapshot snapshot);
 
 	/**
 	 * Log a given string message with a specified severity
@@ -119,7 +119,7 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * @param args arguments passed along the message
 	 * @see OpLevel
 	 */
-	public void log(OpLevel sev, String msg, Object...args);
+	void log(OpLevel sev, String msg, Object...args);
 		
 	/**
 	 * Log a given string message with a specified severity
@@ -130,7 +130,7 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * @param args arguments passed along the message
 	 * @see OpLevel
 	 */
-	public void log(Source src, OpLevel sev, String msg, Object...args);
+	void log(Source src, OpLevel sev, String msg, Object...args);
 		
 	/**
 	 * Register an event sink listener for notifications when errors 
@@ -138,7 +138,7 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * 
 	 * @see SinkErrorListener
 	 */
-	public void addSinkErrorListener(SinkErrorListener listener);
+	void addSinkErrorListener(SinkErrorListener listener);
 	
 	/**
 	 * Remove an event sink listener for notifications when errors 
@@ -146,7 +146,7 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * 
 	 * @see SinkErrorListener
 	 */
-	public void removeSinkErrorListener(SinkErrorListener listener);
+	void removeSinkErrorListener(SinkErrorListener listener);
 	
 	/**
 	 * Register an event sink listener for notifications when logging events
@@ -154,7 +154,7 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * 
 	 * @see SinkLogEventListener
 	 */
-	public void addSinkLogEventListener(SinkLogEventListener listener);
+	void addSinkLogEventListener(SinkLogEventListener listener);
 	
 	/**
 	 * Remove an event sink listener for notifications when logging events 
@@ -162,20 +162,19 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * 
 	 * @see SinkLogEventListener
 	 */
-	public void removeSinkLogEventListener(SinkLogEventListener listener);
+	void removeSinkLogEventListener(SinkLogEventListener listener);
 	
 	/**
 	 * Register an event sink filter to selectively filter out certain events.
 	 * 
 	 * @see SinkEventFilter
 	 */
-	public void addSinkEventFilter(SinkEventFilter listener);
+	void addSinkEventFilter(SinkEventFilter listener);
 	
 	/**
 	 * Remove an event sink filter.
 	 * 
 	 * @see SinkEventFilter
 	 */
-	public void removeSinkEventFilter(SinkEventFilter listener);
-	
+	void removeSinkEventFilter(SinkEventFilter listener);
 }

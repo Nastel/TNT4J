@@ -65,14 +65,14 @@ public interface TokenRepository  extends Handle {
 	 * 
 	 * @return repository name
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * Removes the mapping for the specified key from this repository if present.
 	 * 
 	 * @param key key whose mapping is to be removed from the repository
 	 */
-	public void remove(String key);
+	void remove(String key);
 
 	/**
 	 * Obtain the value associated with the given key
@@ -80,7 +80,7 @@ public interface TokenRepository  extends Handle {
 	 * @param key key whose mapping is to be obtained
 	 * @return get the value associated with the specified key
 	 */
-	public Object get(String key);
+	Object get(String key);
 
 	/**
 	 * Set the key/value pair within the repository
@@ -88,14 +88,14 @@ public interface TokenRepository  extends Handle {
 	 * @param key key whose mapping is to be obtained
 	 * @param value value associated with the key
 	 */
-	public void set(String key, Object value);
+	void set(String key, Object value);
 
 	/**
 	 * Obtain a list of keys available in the repository
 	 * 
 	 * @return iterator containing all available keys
 	 */
-	public Iterator<? extends Object> getKeys();
+	Iterator<? extends Object> getKeys();
 
 	/**
 	 * Register a repository listener for notifications in change of state of
@@ -103,7 +103,7 @@ public interface TokenRepository  extends Handle {
 	 * 
 	 * @see TokenRepositoryListener
 	 */
-	public void addRepositoryListener(TokenRepositoryListener listener);	
+	void addRepositoryListener(TokenRepositoryListener listener);	
 	
 	/**
 	 * Remove a repository listener for notifications in change of state of
@@ -111,6 +111,5 @@ public interface TokenRepository  extends Handle {
 	 * 
 	 * @see TokenRepositoryListener
 	 */
-	public void removeRepositoryListener(TokenRepositoryListener listener);	
-
+	void removeRepositoryListener(TokenRepositoryListener listener);	
 }

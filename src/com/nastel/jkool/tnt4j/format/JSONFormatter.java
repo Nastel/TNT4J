@@ -263,7 +263,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		String exStr = event.getOperation().getExceptionString();
 		if (exStr != null) {
 			jsonString.append(ATTR_JSON);
-			jsonString.append(Utils.quote(JSON_EXCEPTION_LABEL)).append(ATTR_SEP).append(Utils.quote(exStr));
+			String excText = StringEscapeUtils.escapeJson(exStr); // escape double quote chars
+			jsonString.append(Utils.quote(JSON_EXCEPTION_LABEL)).append(ATTR_SEP).append(Utils.quote(excText));
 		}
 		if (snapCount > 0) {
 			jsonString.append(ATTR_JSON);
@@ -359,7 +360,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		String exStr = activity.getExceptionString();
 		if (exStr != null) {
 			jsonString.append(ATTR_JSON);
-			jsonString.append(Utils.quote(JSON_EXCEPTION_LABEL)).append(ATTR_SEP).append(Utils.quote(exStr));
+			String excText = StringEscapeUtils.escapeJson(exStr); // escape double quote chars
+			jsonString.append(Utils.quote(JSON_EXCEPTION_LABEL)).append(ATTR_SEP).append(Utils.quote(excText));
 		}
 		if (activity.getIdCount() > 0) {
 			jsonString.append(ATTR_JSON);
@@ -497,7 +499,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		Throwable ex = Utils.getThrowable(args);
 		if (ex != null) {
 			jsonString.append(ATTR_JSON);
-			jsonString.append(Utils.quote(JSON_EXCEPTION_LABEL)).append(ATTR_SEP).append(Utils.quote(ex));
+			String excText = StringEscapeUtils.escapeJson(ex.toString()); // escape double quote chars
+			jsonString.append(Utils.quote(JSON_EXCEPTION_LABEL)).append(ATTR_SEP).append(Utils.quote(excText));
 		}
 		jsonString.append(END_JSON);
 		return jsonString.toString();

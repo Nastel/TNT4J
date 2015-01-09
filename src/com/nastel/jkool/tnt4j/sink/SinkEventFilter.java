@@ -46,7 +46,7 @@ public interface SinkEventFilter {
 	 * @see OpLevel
 	 * @see EventSink
 	 */
-	public boolean filter(EventSink sink, TrackingEvent event);
+	boolean filter(EventSink sink, TrackingEvent event);
 
 	/**
 	 * Returns true if a given logging event passes the filter, false otherwise
@@ -59,7 +59,7 @@ public interface SinkEventFilter {
 	 * @see EventSink
 	 * @see TrackingActivity
 	 */
-	public boolean filter(EventSink sink, TrackingActivity activity);
+	boolean filter(EventSink sink, TrackingActivity activity);
 
 	/**
 	 * Returns true if a given logging event passes the filter, false otherwise
@@ -71,7 +71,7 @@ public interface SinkEventFilter {
 	 * @return true if event passed all filters, false otherwise
 	 * @see EventSink
 	 */
-	public boolean filter(EventSink sink, Snapshot snapshot);
+	boolean filter(EventSink sink, Snapshot snapshot);
 
 	/**
 	 * Returns true if a given logging event passes the filter, false otherwise
@@ -88,5 +88,5 @@ public interface SinkEventFilter {
 	 * @see OpLevel
 	 * @see EventSink
 	 */
-	public boolean filter(EventSink sink, OpLevel level, String msg, Object... args);
+	boolean filter(EventSink sink, OpLevel level, String msg, Object... args);
 }

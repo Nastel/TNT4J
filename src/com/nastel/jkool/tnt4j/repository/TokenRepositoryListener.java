@@ -35,7 +35,7 @@ public interface TokenRepositoryListener {
 	 * 
 	 * @see TokenRepositoryEvent
 	 */
-	public void repositoryChanged(TokenRepositoryEvent event);
+	void repositoryChanged(TokenRepositoryEvent event);
 	
 	/**
 	 * Notifies this listener about an error on a monitored repository object.
@@ -44,6 +44,6 @@ public interface TokenRepositoryListener {
 	 * 
 	 * @see TokenRepositoryEvent
 	 */
-	public void repositoryError(TokenRepositoryEvent event);
+	void repositoryError(TokenRepositoryEvent event);
 	
 }

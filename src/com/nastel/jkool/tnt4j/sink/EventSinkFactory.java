@@ -38,7 +38,7 @@ public interface EventSinkFactory {
 	 * @param name name of the category associated with the event log
 	 * @see EventSink
 	 */
-	public EventSink getEventSink(String name);
+	EventSink getEventSink(String name);
 	
 	/**
 	 * Obtain an instance of <code>EventSink</code> by name and 
@@ -48,7 +48,7 @@ public interface EventSinkFactory {
 	 * @param props properties associated with the event logger (implementation specific).
 	 * @see EventSink
 	 */
-	public EventSink getEventSink(String name, Properties props);
+	EventSink getEventSink(String name, Properties props);
 
 	/**
 	 * Obtain an instance of <code>EventSink</code> by name and 
@@ -60,6 +60,5 @@ public interface EventSinkFactory {
 	 * @see EventSink
 	 * @see EventFormatter
 	 */
-	public EventSink getEventSink(String name, Properties props, EventFormatter frmt);
-	
+	EventSink getEventSink(String name, Properties props, EventFormatter frmt);
 }

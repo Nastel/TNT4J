@@ -37,7 +37,7 @@ public interface ConfigFactory {
 	 * @see TrackerConfig
 	 * @return new <code>TrackerConfig</code> instance with default values and factories
 	 */
-	public TrackerConfig getConfig();
+	TrackerConfig getConfig();
 
 	/**
 	 * Create a default tracking configuration
@@ -47,7 +47,7 @@ public interface ConfigFactory {
 	 * @see TrackerConfig
 	 * @return new <code>TrackerConfig</code> instance with default values and factories
 	 */
-	public TrackerConfig getConfig(String source);
+	TrackerConfig getConfig(String source);
 
 	/**
 	 * Create a default tracking configuration
@@ -59,7 +59,7 @@ public interface ConfigFactory {
 	 * @see TrackerConfig
 	 * @return new <code>TrackerConfig</code> instance with default values and factories
 	 */
-	public TrackerConfig getConfig(String source, SourceType type);
+	TrackerConfig getConfig(String source, SourceType type);
 
 	/**
 	 * Create a default tracking configuration based on a given class
@@ -69,7 +69,7 @@ public interface ConfigFactory {
 	 * @see TrackerConfig
 	 * @return new <code>TrackerConfig</code> instance with default values and factories
 	 */
-	public TrackerConfig getConfig(Class<?> clazz);
+	TrackerConfig getConfig(Class<?> clazz);
 
 	/**
 	 * Create a default tracking configuration
@@ -79,7 +79,7 @@ public interface ConfigFactory {
 	 * @see TrackerConfig
 	 * @return new <code>TrackerConfig</code> instance with default values and factories
 	 */
-	public TrackerConfig getConfig(Source source);
+	TrackerConfig getConfig(Source source);
 
 	/**
 	 * Create a default tracking configuration
@@ -93,7 +93,7 @@ public interface ConfigFactory {
 	 * @see TrackerConfig
 	 * @return new <code>TrackerConfig</code> instance with default values and factories
 	 */
-	public TrackerConfig getConfig(String source, SourceType type, String configName);
+	TrackerConfig getConfig(String source, SourceType type, String configName);
 
 	/**
 	 * Create a default tracking configuration
@@ -107,7 +107,7 @@ public interface ConfigFactory {
 	 * @see TrackerConfig
 	 * @return new <code>TrackerConfig</code> instance with default values and factories
 	 */
-	public TrackerConfig getConfig(Class<?> clazz, SourceType type, String configName);
+	TrackerConfig getConfig(Class<?> clazz, SourceType type, String configName);
 
 	/**
 	 * Create a default tracking configuration
@@ -119,5 +119,5 @@ public interface ConfigFactory {
 	 * @see TrackerConfig
 	 * @return new <code>TrackerConfig</code> instance with default values and factories
 	 */
-	public TrackerConfig getConfig(Source source, String configName);
+	TrackerConfig getConfig(Source source, String configName);
 }

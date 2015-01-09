@@ -76,7 +76,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @return current <code>TrackingSelector</code> instance associated with the current tracker
 	 * @see TrackingSelector
 	 */
-	public TrackingSelector getTrackingSelector();
+	TrackingSelector getTrackingSelector();
 
 	/**
 	 * Obtains current <code>EventSink</code> associated with this <code>Tracker</code>
@@ -85,7 +85,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @return current <code>EventSink</code> instance
 	 * @see EventSink
 	 */
-	public EventSink getEventSink();
+	EventSink getEventSink();
 
 	/**
 	 * Obtains current/active <code>TrackerConfig</code> configuration associated with 
@@ -94,7 +94,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @return current tracking configuration
 	 * @see TrackerConfig
 	 */
-	public TrackerConfig getConfiguration();
+	TrackerConfig getConfiguration();
 
 	/**
 	 * Obtains the top most active <code>TrackingActivity</code> instance
@@ -104,7 +104,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @return current active tracking activity or <code>NullActivity</code> when no such activity exists.
 	 * @see NullActivity
 	 */
-	public TrackingActivity getCurrentActivity();
+	TrackingActivity getCurrentActivity();
 
 	/**
 	 * Obtains the bottom most active <code>TrackingActivity</code> instance
@@ -115,28 +115,28 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @return root tracking activity or <code>NullActivity</code> when no such activity exists.
 	 * @see NullActivity
 	 */
-	public TrackingActivity getRootActivity();
+	TrackingActivity getRootActivity();
 
 	/**
 	 * Obtains current stack trace based on nested activity execution for the current thread.
 	 * 
 	 * @return stack trace of nested tracking activities
 	 */
-	public StackTraceElement[] getStackTrace();
+	StackTraceElement[] getStackTrace();
 
 	/**
 	 * Obtains current stack of nested tracking activities for the current thread.
 	 * 
 	 * @return current stack of nested tracking activities
 	 */
-	public TrackingActivity[] getActivityStack();
+	TrackingActivity[] getActivityStack();
 	
 	/**
 	 * Obtains current size of nested activity stack for the current thread.
 	 * 
 	 * @return current size of nested activity stack.
 	 */
-	public int getStackSize();
+	int getStackSize();
 	
 	/**
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.
@@ -146,7 +146,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @return a new application activity object instance with severity set to OpLevel.INFO.
 	 * @see TrackingActivity
 	 */
-	public TrackingActivity newActivity();
+	TrackingActivity newActivity();
 
 	/**
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.
@@ -157,7 +157,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
 	 */
-	public TrackingActivity newActivity(OpLevel level);
+	TrackingActivity newActivity(OpLevel level);
 
 	/**
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.
@@ -169,7 +169,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
 	 */
-	public TrackingActivity newActivity(OpLevel level, String name);
+	TrackingActivity newActivity(OpLevel level, String name);
 
 	/**
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.
@@ -182,7 +182,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @return a new application activity object instance
 	 * @see TrackingActivity
 	 */
-	public TrackingActivity newActivity(OpLevel level, String name, String signature);
+	TrackingActivity newActivity(OpLevel level, String name, String signature);
 
 	/**
 	 * Create a new application snapshot via <code>Snapshot</code> object instance.
@@ -192,7 +192,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @return a new application metric snapshot
 	 * @see Snapshot
 	 */
-	public Snapshot newSnapshot(String cat, String name);
+	Snapshot newSnapshot(String cat, String name);
 	
 	/**
 	 * Create a new application snapshot via <code>Snapshot</code> object instance.
@@ -203,7 +203,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @return a new application metric snapshot
 	 * @see Snapshot
 	 */
-	public Snapshot newSnapshot(String cat, String name, OpLevel level);
+	Snapshot newSnapshot(String cat, String name, OpLevel level);
 
 	/**
 	 * Track and Trace a single application tracking activity
@@ -212,7 +212,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @param activity application activity to be reported
 	 * @see TrackingActivity
 	 */
-	public void tnt(TrackingActivity activity);
+	void tnt(TrackingActivity activity);
 	
 	/**
 	 * Track and Trace a single application tracking event as 
@@ -222,7 +222,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @param event application tracking event to be reported
 	 * @see TrackingEvent
 	 */
-	public void tnt(TrackingEvent event);
+	void tnt(TrackingEvent event);
 	
 
 	/**
@@ -231,7 +231,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @param snapshot a set of properties
 	 * @see Snapshot
 	 */
-	public void tnt(Snapshot snapshot);
+	void tnt(Snapshot snapshot);
 
 	/**
 	 * Log a given string message with a specified severity
@@ -241,7 +241,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @param args arguments passed along the message
 	 * @see OpLevel
 	 */
-	public void log(OpLevel sev, String msg, Object...args);
+	void log(OpLevel sev, String msg, Object...args);
 
 	/**
 	 * Register a tracking filter associated with the tracker.
@@ -251,7 +251,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * 
 	 * @see TrackingFilter
 	 */
-	public void setTrackingFilter(TrackingFilter filter);
+	void setTrackingFilter(TrackingFilter filter);
 	
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
@@ -265,7 +265,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @param msg text message associated with this event
 	 * @param args argument list passed along with the message
 	 */
-	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object...args);
+	TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object...args);
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
@@ -282,7 +282,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @see OpLevel
 	 * @see OpType
 	 */
-	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag, String msg, Object...args);	
+	TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag, String msg, Object...args);	
 	
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
@@ -296,7 +296,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @param msg binary message associated with this event
 	 * @param args argument list passed along with the message
 	 */
-	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, byte[] msg, Object...args);
+	TrackingEvent newEvent(OpLevel severity, String opName, String correlator, byte[] msg, Object...args);
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
@@ -313,5 +313,5 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @see OpLevel
 	 * @see OpType
 	 */
-	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag, byte[] msg, Object...args);	
+	TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag, byte[] msg, Object...args);	
 }

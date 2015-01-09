@@ -575,7 +575,7 @@ public class Operation {
 		}
 
 		if (endTime.compareTo(startTime) < 0)
-			throw new IllegalArgumentException("stop time is less than start time");
+			throw new IllegalArgumentException("end.time='" + endTime + "' is less than start.time='" + startTime + "'");
 
 		elapsedTime = endTime.difference(startTime);
 		if (startTimeNano > 0) {

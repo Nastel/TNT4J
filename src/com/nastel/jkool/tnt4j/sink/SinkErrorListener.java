@@ -37,5 +37,5 @@ public interface SinkErrorListener {
 	 * 
 	 * @see SinkError
 	 */
-	public void sinkError(SinkError ev);
+	void sinkError(SinkError ev);
 }

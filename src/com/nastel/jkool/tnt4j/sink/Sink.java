@@ -34,7 +34,7 @@ public interface Sink extends Handle {
 	 * 
 	 * @return underlying sink handle.
 	 */
-	public Object getSinkHandle();
+	Object getSinkHandle();
 		
 
 	/**
@@ -44,5 +44,5 @@ public interface Sink extends Handle {
 	 * @param args arguments associated with the message
 	 * @throws IOException, InterruptedException
 	 */
-	public void write(Object msg, Object...args) throws IOException, InterruptedException;
+	void write(Object msg, Object...args) throws IOException, InterruptedException;
 }

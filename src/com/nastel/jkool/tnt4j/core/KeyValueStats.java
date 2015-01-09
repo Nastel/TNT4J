@@ -32,7 +32,7 @@ public interface KeyValueStats {
 	 * 
 	 * @return a map of key/value statistic pairs
 	 */
-	public Map<String, Object> getStats();
+	Map<String, Object> getStats();
 
 	/**
 	 * Obtain all available statistics into a given map
@@ -40,12 +40,12 @@ public interface KeyValueStats {
 	 * @param stats map where key/values pairs are added (existing replaced)
 	 * @return current <code>KeyValueStats</code> handle
 	 */
-	public KeyValueStats getStats(Map<String, Object> stats);
+	KeyValueStats getStats(Map<String, Object> stats);
 
 	/**
 	 * Reset all statistics to their initial values.
 	 * All counters are set to 0.
 	 * 
 	 */
-	public void resetStats();
+	void resetStats();
 }

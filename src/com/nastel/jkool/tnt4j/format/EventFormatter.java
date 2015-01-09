@@ -40,7 +40,7 @@ public interface EventFormatter extends Formatter {
 	 * @param event tracking event instance to be formatted
 	 * @see TrackingEvent
 	 */
-	public String format(TrackingEvent event);
+	String format(TrackingEvent event);
 	
 	/**
 	 * Format a given <code>TrackingActivity</code> and return a string
@@ -48,7 +48,7 @@ public interface EventFormatter extends Formatter {
 	 * @param activity tracking activity instance to be formatted
 	 * @see TrackingActivity
 	 */
-	public String format(TrackingActivity activity);
+	String format(TrackingActivity activity);
 
 	/**
 	 * Format a given <code>PropertySnapshot</code> and return a string
@@ -57,7 +57,7 @@ public interface EventFormatter extends Formatter {
 	 *            snapshot object to be formatted
 	 * @see Snapshot
 	 */
-	public String format(Snapshot snapshot);
+	String format(Snapshot snapshot);
 
 	/**
 	 * Format a given message and severity level combo
@@ -68,5 +68,5 @@ public interface EventFormatter extends Formatter {
 	 * @param args arguments associated with the object
 	 * @see OpLevel
 	 */
-	public String format(Source src, OpLevel level, String msg, Object...args);
+	String format(Source src, OpLevel level, String msg, Object...args);
 }

@@ -53,7 +53,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 			String typeValue = "unknown";
 			String typeString = type.toString().toLowerCase();
 			typeValue = System.getProperty("tnt4j.source." + typeString);
-			
+
 			if (typeValue == null) {
 				if (typeString.equalsIgnoreCase(SourceType.SERVER.name())) {
 					typeValue = Utils.getLocalHostName();

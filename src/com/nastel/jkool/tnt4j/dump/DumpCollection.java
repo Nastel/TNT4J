@@ -39,7 +39,7 @@ public interface DumpCollection extends Snapshot {
 	 * 
 	 * @return a dump provider associated with this dump.
 	 */
-	public DumpProvider getDumpProvider();
+	DumpProvider getDumpProvider();
 	
 
 	/**
@@ -47,13 +47,12 @@ public interface DumpCollection extends Snapshot {
 	 * 
 	 * @return reason for dump being generated
 	 */
-	public Throwable getReason();
+	Throwable getReason();
 	
 	/**
 	 * Set reason why the dump was triggered or generated
 	 * 
 	 * @param reason of what caused dump generation
 	 */
-	public void setReason(Throwable reason);
-	
+	void setReason(Throwable reason);
 }

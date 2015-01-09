@@ -32,7 +32,7 @@ public interface Handle extends java.io.Closeable {
 	 * 
 	 * @throws IOException
 	 */
-	public void open() throws IOException;
+	void open() throws IOException;
 
 	/**
 	 * This method determines of the message destination is in open state 
@@ -40,5 +40,5 @@ public interface Handle extends java.io.Closeable {
 	 * 
 	 * @return true if open, false otherwise.
 	 */
-	public boolean isOpen();
+	boolean isOpen();
 }

@@ -27,68 +27,68 @@ import java.util.Collection;
  */
 public interface Snapshot extends Trackable {
 	/**
-	 * Obtain snapshot id (fully qualfied name), which is a combination of name and category.
+	 * Obtain snapshot id (fully qualified name), which is a combination of name and category.
 	 * <code>name@category</code>
 	 * 
 	 * @return snapshot id
 	 */
-	public String getId();
+	String getId();
 
 	/**
 	 * Obtain a name of the snapshot
 	 * 
 	 * @return name of the snapshot.
 	 */
-	public String getName();
+	String getName();
 
 	/**
 	 * Gets the current severity level to associated with the snapshot
 	 *
 	 * @return current severity level
 	 */
-	public OpLevel getSeverity();
+	OpLevel getSeverity();
 
 	/**
 	 * Obtain a snapshot category name
 	 * 
 	 * @return name of the snapshot category
 	 */
-	public String getCategory();
+	String getCategory();
 
 	/**
 	 * Obtain the time stamp of the snapshot.
 	 * 
 	 * @return time stamp in ms
 	 */
-	public long getTime();
+	long getTime();
 
 	/**
 	 * Obtain the number of properties in the snapshot
 	 * 
 	 * @return property count
 	 */
-	public int size();
+	int size();
 
 	/**
 	 * Obtain a fully qualified time stamp object
 	 * 
 	 * @return time stamp object
 	 */
-	public UsecTimestamp getTimeStamp();
+	UsecTimestamp getTimeStamp();
 	
 	/**
 	 * Obtain a collection containing snapshot elements
 	 * 
 	 * @return collection containing snapshot elements
 	 */
-	public Collection<Property> getSnapshot();
+	Collection<Property> getSnapshot();
 
 	/**
 	 * Adds a property to the snapshot
 	 * 
 	 * @param property instance to be added to the snapshot
 	 */
-	public Snapshot add(Property property);
+	Snapshot add(Property property);
 	
 	/**
 	 * Adds a property to the snapshot
@@ -96,7 +96,7 @@ public interface Snapshot extends Trackable {
 	 * @param key object to be removed
 	 * @param value property value
 	 */
-	public Snapshot add(Object key, Object value);
+	Snapshot add(Object key, Object value);
 	
 	/**
 	 * Removed a property specified by the given key.
@@ -104,7 +104,7 @@ public interface Snapshot extends Trackable {
 	 * @param key object to be removed
 	 * @return Property associated with the key, null if does not exist
 	 */
-	public Property remove(Object key);
+	Property remove(Object key);
 	
 	/**
 	 * Obtain a property associated with the given key
@@ -112,5 +112,5 @@ public interface Snapshot extends Trackable {
 	 * @param key identifying a property
 	 * @return Property associated with the key, null if does not exist
 	 */
-	public Property get(Object key);
+	Property get(Object key);
 }

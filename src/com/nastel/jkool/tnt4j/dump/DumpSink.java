@@ -42,5 +42,5 @@ public interface DumpSink extends Sink {
 	 * @see DumpCollection
 	 * @throws IOException
 	 */
-	public void write(DumpCollection dump) throws IOException;
+	void write(DumpCollection dump) throws IOException;
 }

@@ -43,7 +43,7 @@ public interface TrackingSelector extends Handle {
 	 * 
 	 * @see OpLevel
 	 */
-	public boolean isSet(OpLevel sev, Object key);
+	boolean isSet(OpLevel sev, Object key);
 	
 	/**
 	 * Determine if a particular sev/key/value combination is trackable
@@ -59,7 +59,7 @@ public interface TrackingSelector extends Handle {
 	 * 
 	 * @see OpLevel
 	 */
-	public boolean isSet(OpLevel sev, Object key, Object value);
+	boolean isSet(OpLevel sev, Object key, Object value);
 	
 	/**
 	 * Set sev/key/value combination for tracking
@@ -70,7 +70,7 @@ public interface TrackingSelector extends Handle {
 	 * 
 	 * @see OpLevel
 	 */
-	public void set(OpLevel sev, Object key, Object value);
+	void set(OpLevel sev, Object key, Object value);
 
 	/**
 	 * Set sev/key combination for tracking. This is the same as calling
@@ -81,7 +81,7 @@ public interface TrackingSelector extends Handle {
 	 * 
 	 * @see OpLevel
 	 */
-	public void set(OpLevel sev, Object key);
+	void set(OpLevel sev, Object key);
 
 	/**
 	 * Get value of the specific key
@@ -90,7 +90,7 @@ public interface TrackingSelector extends Handle {
 	 * @return value associated with a given key
 	 * 
 	 */
-	public Object get(Object key);
+	Object get(Object key);
 
 	/**
 	 * Clear value for the specific key
@@ -98,14 +98,14 @@ public interface TrackingSelector extends Handle {
 	 * @param key key associated with tracking activity
 	 * 
 	 */
-	public void remove(Object key);
+	void remove(Object key);
 	
 	/**
 	 * Obtain a list of keys available in the selector
 	 * 
 	 * @return iterator containing all available keys
 	 */
-	public Iterator<? extends Object> getKeys();
+	Iterator<? extends Object> getKeys();
 
 	/**
 	 * Obtain an instance of the token repository associated with this selector
@@ -113,7 +113,7 @@ public interface TrackingSelector extends Handle {
 	 * @return handle to the token repository
 	 * @see TokenRepository
 	 */
-	public TokenRepository getRepository();
+	TokenRepository getRepository();
 	
 	/**
 	 * Set an instance of the token repository associated with this selector
@@ -121,6 +121,5 @@ public interface TrackingSelector extends Handle {
 	 * @param repo token repository implementation
 	 * @see TokenRepository
 	 */
-	public void setRepository(TokenRepository repo);
-	
+	void setRepository(TokenRepository repo);
 }
