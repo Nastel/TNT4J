@@ -82,11 +82,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 * @throws IllegalArgumentException if usecTime is negative
 	 */
 	public UsecTimestamp(long usecTime) {
-		if (usecTime < 0)
-			throw new IllegalArgumentException("usecTime must be non-negative");
-
-		this.msecs = usecTime / 1000L;
-		this.usecs = (int)(usecTime - (this.msecs * 1000));
+		setTimeUsec(usecTime);
 	}
 
 	/**
@@ -246,6 +242,21 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 		add(0, usecs);
 	}
 
+	/**
+	 * Sets UsecTimestamp based on specified microsecond timestamp.
+	 *
+	 * @param usecTime timestamp, in microsecond
+	 * @throws IllegalArgumentException if usecTime is negative
+	 */
+	public UsecTimestamp setTimeUsec(long usecTime) {
+		if (usecTime < 0)
+			throw new IllegalArgumentException("usecTime must be non-negative");
+
+		this.msecs = usecTime / 1000L;
+		this.usecs = (int)(usecTime - (this.msecs * 1000));
+		return this;
+	}
+	
 	/**
 	 * @see #UsecTimestamp(Timestamp, long)
 	 */

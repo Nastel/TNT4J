@@ -50,8 +50,8 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 		int i = 0;
 		DEFAULT_SOURCES = new String[SourceType.length()];
 		for (SourceType type: SourceType.values()) {
-			String typeValue = "unknown";
-			String typeString = type.toString().toLowerCase();
+			String typeValue = UNKNOWN_SOURCE;
+			String typeString = type.toString().toUpperCase();
 			typeValue = System.getProperty("tnt4j.source." + typeString);
 
 			if (typeValue == null) {

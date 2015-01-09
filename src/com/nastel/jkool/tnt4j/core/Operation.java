@@ -574,14 +574,20 @@ public class Operation {
 			startTime = new UsecTimestamp(startUsec);
 		}
 
-		if (endTime.compareTo(startTime) < 0)
-			throw new IllegalArgumentException("end.time='" + endTime + "' is less than start.time='" + startTime + "'");
-
-		elapsedTime = endTime.difference(startTime);
 		if (startTimeNano > 0) {
 			stopTimeNano = System.nanoTime();	
 			elapsedTimeNano = stopTimeNano - startTimeNano;
 		}
+
+		if (endTime.compareTo(startTime) < 0) {
+			if (startTimeNano > 0) {
+				startTime.setTimeUsec(endTime.getTimeUsec() - (elapsedTimeNano/1000));
+			} else {
+				throw new IllegalArgumentException("end.time='" + endTime + "' is less than start.time='" + startTime + "'"
+					+ ", delta.usec=" + (endTime.getTimeUsec() - startTime.getTimeUsec()));
+			}
+		}
+		elapsedTime = endTime.difference(startTime);
 	}
 
 	/**
