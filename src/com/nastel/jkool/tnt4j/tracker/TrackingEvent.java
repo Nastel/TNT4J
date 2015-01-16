@@ -231,7 +231,6 @@ public class TrackingEvent extends Message implements Trackable {
 		operation = new Operation(opName, opType);
 		operation.setSeverity(severity);
 		operation.setCorrelator(correlator);
-		operation.setResource(Utils.getVMName());
 		operation.setException(Utils.getThrowable(args));
 		setSource(src);
 		setLocation(src);
@@ -257,7 +256,6 @@ public class TrackingEvent extends Message implements Trackable {
 		operation = new Operation(opName, opType);
 		operation.setSeverity(severity);
 		operation.setCorrelator(correlator);
-		operation.setResource(Utils.getVMName());
 		operation.setException(Utils.getThrowable(args));
 		setSource(src);
 		setLocation(src);

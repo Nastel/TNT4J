@@ -63,7 +63,6 @@ public class Activity extends Operation implements Trackable {
 		super(Operation.NOOP, OpType.ACTIVITY);
 		setTrackingId(id);
 		setTID(Thread.currentThread().getId());
-		setResource(Utils.getVMName());
 	}
 
 	/**
@@ -79,7 +78,6 @@ public class Activity extends Operation implements Trackable {
 		super(name, OpType.ACTIVITY);
 		setTrackingId(id);
 		setTID(Thread.currentThread().getId());
-		setResource(Utils.getVMName());
 	}
 
 	/**
@@ -97,7 +95,6 @@ public class Activity extends Operation implements Trackable {
 		setTrackingId(id);
 		setTID(Thread.currentThread().getId());
 		setSource(appl);
-		setResource(Utils.getVMName());
 	}
 
 	/**
@@ -116,7 +113,6 @@ public class Activity extends Operation implements Trackable {
 		setTrackingId(id);
 		setSource(appl);
 		setTID(Thread.currentThread().getId());
-		setResource(Utils.getVMName());
 	}
 
 	/**
