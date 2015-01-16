@@ -70,7 +70,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	private TrackerConfig tConfig;
 	private TrackingSelector selector;
 	private TrackingFilter filter;
-	private volatile boolean openFlag = false;
+	private volatile boolean openFlag = false, keepContext = true;
 	private AtomicLong activityCount = new AtomicLong(0); 
 	private AtomicLong eventCount = new AtomicLong(0); 
 	private AtomicLong msgCount = new AtomicLong(0); 
@@ -188,6 +188,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	 * @return current tracker instance
 	 */
 	protected Tracker push(TrackingActivity item) {
+		if (!keepContext) return this;
 		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
 		if (stack == null) {
 			stack = new LightStack<TrackingActivity>();
@@ -215,6 +216,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	 *                if the top of the stack is not the item
 	 */
 	protected Tracker pop(TrackingActivity item) {
+		if (!keepContext) return this;
 		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
 		if (stack != null) {
 			stack.pop(item);
@@ -593,5 +595,16 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	    PropertySnapshot snapshot = new PropertySnapshot(cat, name, level);
 	    snapshot.setSource(getSource());
 	    return snapshot;
+    }
+
+	@Override
+    public Tracker setKeepThreadContext(boolean flag) {
+		keepContext = flag;
+	    return this;
+    }
+
+	@Override
+    public boolean getKeepThreadContext() {
+		return keepContext;
     }
 }

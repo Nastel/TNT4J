@@ -1491,6 +1491,18 @@ public class TrackingLogger implements Tracker {
 		checkState();
 		logger.resetStats();
     }
+
+	@Override
+    public Tracker setKeepThreadContext(boolean flag) {
+		checkState();
+		return logger.setKeepThreadContext(flag);
+    }
+
+	@Override
+    public boolean getKeepThreadContext() {
+		checkState();
+		return logger.getKeepThreadContext();
+     }
 }
 
 class DumpHook extends Thread {

@@ -139,6 +139,22 @@ public interface Tracker extends Handle, KeyValueStats {
 	int getStackSize();
 	
 	/**
+	 * Maintain thread context for all newly created activities.
+	 * Activities are kept in the thread local context if set to true.
+	 * 
+	 * @return itself
+	 */
+	Tracker setKeepThreadContext(boolean flag);
+	
+	/**
+	 * Return true if thread context for all newly created activities is enabled.
+	 * Activities are kept in the thread local context if set to true.
+	 * 
+	 * @return true of thread context is enabled, false otherwise
+	 */
+	boolean getKeepThreadContext();
+	
+	/**
 	 * Create a new application activity via <code>TrackingActivity</code> object instance.
 	 * NOOP activity instance <code>NullActivity</code> is returned 
 	 * when <code>TrackingFilter</code> is set and returns false.
