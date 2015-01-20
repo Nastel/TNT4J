@@ -87,7 +87,7 @@ public class ActivityScheduler {
 	 * @param period in milliseconds
 	 */
 	public void schedule(long period) {
-		schedule("ActivityPing", period, period, TimeUnit.MILLISECONDS);
+		schedule("ActivityTask", period, period, TimeUnit.MILLISECONDS);
 	}
 	
 	/**
@@ -101,7 +101,7 @@ public class ActivityScheduler {
 	}
 	
 	/**
-	 * Schedule activity with a specified period in milliseconds
+	 * Schedule activity with a given name and timing details
 	 * 
 	 * @param name activity name
 	 * @param period in specified time units
@@ -120,8 +120,21 @@ public class ActivityScheduler {
 	 * @param tunit time unit for period
 	 */
 	public void schedule(String name, long initialDelay, long period, TimeUnit tunit) {
+		schedule(name, period, period, tunit, OpLevel.SUCCESS);
+	}
+
+	/**
+	 * Schedule activity with a given name and timing details
+	 * 
+	 * @param name activity name
+	 * @param level severity level
+	 * @param initialDelay in specified time units
+	 * @param period in specified time units
+	 * @param tunit time unit for period
+	 */
+	public void schedule(String name, long initialDelay, long period, TimeUnit tunit,  OpLevel level) {
 		if (future == null || future.isCancelled()) {
-			activityTask = new ActivityTask(logger, name);
+			activityTask = new ActivityTask(logger, name, level);
 			future = scheduler.scheduleAtFixedRate(activityTask, initialDelay, period, tunit);
 		} else {
 			throw new IllegalStateException("Already scheduled");
@@ -183,14 +196,20 @@ class ActivityTask implements Runnable {
 	String activityName;
 	TrackingLogger logger;
 	TrackingActivity activity;
+	OpLevel level;
 	
 	public ActivityTask(TrackingLogger lg) {
-		this(lg, "ActivityTask");
+		this(lg, "ActivityTask", OpLevel.SUCCESS);
 	}
 	
 	public ActivityTask(TrackingLogger lg, String name) {
+		this(lg, name, OpLevel.SUCCESS);
+	}
+	
+	public ActivityTask(TrackingLogger lg, String name, OpLevel level) {
 		logger = lg;
 		activityName = name;
+		this.level = level;
 		startActvity();
 	}
 
@@ -199,7 +218,7 @@ class ActivityTask implements Runnable {
 	}
 	
 	private void startActvity() {
-		activity = logger.newActivity(OpLevel.SUCCESS, activityName);
+		activity = logger.newActivity(level, activityName);
 		activity.start();		
 	}
 	
