@@ -20,7 +20,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.nastel.jkool.tnt4j.source.Source;
-import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>Implements a collection of related event and sub-activities.</p>
