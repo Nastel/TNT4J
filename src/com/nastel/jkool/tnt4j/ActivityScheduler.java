@@ -15,6 +15,7 @@
  */
 package com.nastel.jkool.tnt4j;
 
+import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
@@ -158,6 +159,16 @@ public class ActivityScheduler {
 		future.cancel(interrupt);
 	}
 	
+	
+	/**
+	 * Open current scheduled activity instance.
+	 * @throws IOException 
+	 * 
+	 */
+	public void open() throws IOException {
+		logger.open();
+	}
+
 	/**
 	 * Close current scheduled activity instance.
 	 * 

@@ -15,6 +15,8 @@
  */
 package com.nastel.jkool.tnt4j.examples;
 
+import java.io.IOException;
+
 import com.nastel.jkool.tnt4j.ActivityScheduler;
 import com.nastel.jkool.tnt4j.core.Activity;
 import com.nastel.jkool.tnt4j.core.ActivityListener;
@@ -27,12 +29,13 @@ public class Pinger {
 	 * 
 	 * @param args Usage: pinger-name activity-name period-ms
 	 */
-	public static void main(String[] args) throws InterruptedException {
+	public static void main(String[] args) throws InterruptedException, IOException {
 		if (args.length < 3) {
 			System.out.println("Usage: pinger-name activity-name period-ms");
 			System.exit(-1);
 		}
 		ActivityScheduler pinger = new ActivityScheduler(args[0], new PingHandler());
+		pinger.open();
 		long period = Long.parseLong(args[2]);
 		pinger.schedule(args[1], period);
 		try {
