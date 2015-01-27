@@ -361,3 +361,10 @@ Run a sample program (`com.nastel.jkool.tnt4j.examples.TNT4JTest`):
 See `tnt4j-event.log` and `<vmid>.dump` file for output produced by `com.nastel.jkool.tnt4j.examples.TNT4JTest`.
 
 See `tnt4j.properties` for TNT4J configuration: factories, formatters, listeners, etc. See Wiki for more information.
+
+Known Projects Using TNT4J
+===============================================
+* TrackingFilter (https://github.com/Nastel/TrackingFilter)
+* PingJMX (https://github.com/Nastel/PingJMX)
+* jkoolcloud.com (https://www.jkoolcloud.com)
+* AutoPilot M6 (http://www.nastel.com/products/autopilot-m6.html)
