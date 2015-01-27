@@ -83,6 +83,16 @@ public class ActivityScheduler {
 	}
 	
 	/**
+	 * Get an activity listener used when scheduled activity starts/stops
+	 * 
+	 * @return return currently associated activity listener
+	 * @see ActivityListener
+	 */
+	public ActivityListener getListener() {
+		return logger.getConfiguration().getActivityListener();
+	}
+	
+	/**
 	 * Schedule activity with a specified period in milliseconds
 	 * 
 	 * @param period in milliseconds
