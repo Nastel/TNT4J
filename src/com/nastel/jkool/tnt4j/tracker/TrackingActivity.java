@@ -738,5 +738,4 @@ public class TrackingActivity extends Activity {
 			return super.toString();
 		}
 	}
-
 }
