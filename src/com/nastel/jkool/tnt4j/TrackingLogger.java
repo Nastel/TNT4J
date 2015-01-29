@@ -221,6 +221,7 @@ public class TrackingLogger implements Tracker {
 		defaultDumpSink = dumpFactory.getInstance();
 		boolean enableDefaultDumpProviders = Boolean.getBoolean("tnt4j.dump.provider.default");
 		boolean dumpOnVmHook = Boolean.getBoolean("tnt4j.dump.on.vm.shutdown");
+		boolean dumpOnException= Boolean.getBoolean("tnt4j.dump.on.exception");
 
 		if (enableDefaultDumpProviders) {
 			addDumpProvider(defaultDumpSink, new PropertiesDumpProvider(Utils.VM_NAME));
@@ -230,6 +231,7 @@ public class TrackingLogger implements Tracker {
 			addDumpProvider(defaultDumpSink, new LoggerDumpProvider(Utils.VM_NAME));
 		}
 		if (dumpOnVmHook) dumpOnShutdown(dumpOnVmHook);
+		if (dumpOnException) dumpOnUncaughtException();
 	}
 
 	/**
@@ -1372,6 +1374,15 @@ public class TrackingLogger implements Tracker {
 		else Runtime.getRuntime().removeShutdownHook(dumpHook);
 	}
 
+	/**
+	 * Enable or disable UncaughtExceptionHandler hook that will automatically trigger a dump
+	 * on uncaught thread exceptions for all threads. 
+	 *
+	 */
+	public static void dumpOnUncaughtException() {
+		Thread.setDefaultUncaughtExceptionHandler(dumpHook);
+	}
+
 	private static void openDumpSinks() {
 		for (DumpSink dest : DUMP_DESTINATIONS) {
 			try {
@@ -1513,7 +1524,12 @@ public class TrackingLogger implements Tracker {
     }
 }
 
-class DumpHook extends Thread {
+class DumpHook extends Thread implements Thread.UncaughtExceptionHandler {
+	@Override
+	public void uncaughtException(Thread t, Throwable e) {
+		TrackingLogger.dumpState(e);
+	}
+
 	@Override
 	public void run() {
 		setName("TrackingLogger/DumpHook");

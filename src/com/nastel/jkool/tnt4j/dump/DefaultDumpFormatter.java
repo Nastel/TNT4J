@@ -113,8 +113,15 @@ public class DefaultDumpFormatter implements DumpFormatter {
 	@Override
 	public String getHeader(DumpCollection dump) {
 		StringBuilder buffer = new StringBuilder(1024);
+		Throwable reason = dump.getReason();
 		buffer.append("{\n");
-		buffer.append(Utils.quote("dump.reason")).append(": ").append(Utils.quote(dump.getReason()));
+		buffer.append(Utils.quote("dump.reason")).append(": ").append(Utils.quote(reason));
+		if (reason != null) {
+			StackTraceElement[] stack = reason.getStackTrace();
+			for (int i=0; i < stack.length; i++) {
+				buffer.append("\n").append(Utils.quote("stack.frame[" + i + "]")).append(": ").append(Utils.quote(stack[i]));
+			}
+		}
 		return buffer.toString();
 	}
 
