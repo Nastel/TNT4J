@@ -195,6 +195,16 @@ public class ActivityScheduler {
 			logger.close();
 		}
 	}
+	
+	/**
+	 * Obtain <code>TrackingLogger</code> instance for logging
+	 * 
+	 * @return tracking logger instance
+	 */
+	public TrackingLogger getLogger() {
+		return this.logger;
+	}
+	
 }
 
 class TaskThreadFactory implements ThreadFactory {
