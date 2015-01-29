@@ -90,11 +90,14 @@ public class DefaultDumpFormatter implements DumpFormatter {
 			if (buffer.length() > startLen) {
 				buffer.append(",\n");
 			}
-			buffer.append("\t");
 			Object value = entry.getValue();
-			if (value instanceof Number) {
+			if (value instanceof DumpCollection) {
+				buffer.append(format((DumpCollection)value));
+			} else if (value instanceof Number) {
+				buffer.append("\t");
 				buffer.append(Utils.quote(entry.getKey())).append(": ").append(value);
 			} else {
+				buffer.append("\t");
 				buffer.append(Utils.quote(entry.getKey())).append(": ").append(Utils.quote(value));				
 			}
 		}

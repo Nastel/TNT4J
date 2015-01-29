@@ -66,6 +66,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public static final NullActivity NULL_ACTIVITY = new NullActivity();	
 	public static final NullEvent NULL_EVENT = new NullEvent();	
 	
+	private String id;
 	private EventSink eventSink;
 	private TrackerConfig tConfig;
 	private TrackingSelector selector;
@@ -82,6 +83,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	private AtomicLong overheadNanos = new AtomicLong(0); 
 	
 	protected TrackerImpl(TrackerConfig config) {
+		id = Utils.newUUID();
 		tConfig = config;
 		selector = tConfig.getTrackingSelector();
 		eventSink = tConfig.getEventSink();
@@ -606,5 +608,10 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	@Override
     public boolean getKeepThreadContext() {
 		return keepContext;
+    }
+
+	@Override
+    public String getId() {
+	    return id;
     }
 }

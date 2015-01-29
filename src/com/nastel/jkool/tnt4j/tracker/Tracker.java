@@ -60,6 +60,14 @@ public interface Tracker extends Handle, KeyValueStats {
 	static final String KEY_STACK_DEPTH = "tracker-track-stack-depth";
 	static final String KEY_OVERHEAD_NANOS = "tracker-total-overhead-nanos";
 	
+	
+	/**
+	 * Obtains unique tracker id
+	 * 
+	 * @return unique tracker id
+	 */
+	String getId();
+
 	/**
 	 * Obtains current/active <code>Source</code> handle associated 
 	 * with the current thread. 
@@ -67,7 +75,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @return current active source handle associated with this thread
 	 * @see Source
 	 */
-	public Source getSource();
+	Source getSource();
 
 	/**
 	 * Obtains current <code>TrackingSelector</code> associated with this <code>Tracker</code>

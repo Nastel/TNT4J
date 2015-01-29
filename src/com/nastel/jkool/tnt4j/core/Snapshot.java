@@ -16,6 +16,7 @@
 package com.nastel.jkool.tnt4j.core;
 
 import java.util.Collection;
+import java.util.Map;
 
 
 /**
@@ -97,6 +98,13 @@ public interface Snapshot extends Trackable {
 	 * @param value property value
 	 */
 	Snapshot add(Object key, Object value);
+	
+	/**
+	 * Add all properties from a given map
+	 * 
+	 * @param map of key/value pairs to be added
+	 */
+	Snapshot addAll(Map<? extends Object,? extends Object> map);
 	
 	/**
 	 * Removed a property specified by the given key.

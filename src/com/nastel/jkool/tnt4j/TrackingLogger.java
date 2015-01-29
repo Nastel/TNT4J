@@ -42,6 +42,7 @@ import com.nastel.jkool.tnt4j.dump.DumpListener;
 import com.nastel.jkool.tnt4j.dump.DumpProvider;
 import com.nastel.jkool.tnt4j.dump.DumpSink;
 import com.nastel.jkool.tnt4j.dump.DumpSinkFactory;
+import com.nastel.jkool.tnt4j.dump.LoggerDumpProvider;
 import com.nastel.jkool.tnt4j.dump.MXBeanDumpProvider;
 import com.nastel.jkool.tnt4j.dump.PropertiesDumpProvider;
 import com.nastel.jkool.tnt4j.dump.ThreadDeadlockDumpProvider;
@@ -226,6 +227,7 @@ public class TrackingLogger implements Tracker {
 			addDumpProvider(defaultDumpSink, new MXBeanDumpProvider(Utils.VM_NAME));
 			addDumpProvider(defaultDumpSink, new ThreadDumpProvider(Utils.VM_NAME));
 			addDumpProvider(defaultDumpSink, new ThreadDeadlockDumpProvider(Utils.VM_NAME));
+			addDumpProvider(defaultDumpSink, new LoggerDumpProvider(Utils.VM_NAME));
 		}
 		if (dumpOnVmHook) dumpOnShutdown(dumpOnVmHook);
 	}
@@ -1503,6 +1505,12 @@ public class TrackingLogger implements Tracker {
 		checkState();
 		return logger.getKeepThreadContext();
      }
+
+	@Override
+    public String getId() {
+		checkState();
+		return logger.getId();
+    }
 }
 
 class DumpHook extends Thread {

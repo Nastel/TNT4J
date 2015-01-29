@@ -17,6 +17,8 @@ package com.nastel.jkool.tnt4j.core;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import com.nastel.jkool.tnt4j.source.Source;
 
@@ -282,4 +284,12 @@ public class PropertySnapshot  implements Snapshot {
     public Property remove(Object key) {
 		return propSet.remove(key);
 	}
+
+	@Override
+    public Snapshot addAll(Map<? extends Object, ? extends Object> m) {
+	    for (Entry<? extends Object, ? extends Object> entry: m.entrySet()) {
+	    	this.add(entry.getKey(), entry.getValue());
+	    }
+	    return this;
+    }
 }
