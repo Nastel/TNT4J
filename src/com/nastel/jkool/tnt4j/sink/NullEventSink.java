@@ -50,7 +50,7 @@ public class NullEventSink extends AbstractEventSink {
 
 	@Override
 	public boolean isSet(OpLevel sev) {
-		return false;
+		return true;
 	}
 
 	@Override
