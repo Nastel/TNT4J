@@ -292,4 +292,17 @@ public class PropertySnapshot  implements Snapshot {
 	    }
 	    return this;
     }
+	
+	@Override
+	public int hashCode() {
+		return id.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof Snapshot) {
+			return ((Snapshot)obj).getId().equals(id);
+		}
+		return false;
+	}
 }
