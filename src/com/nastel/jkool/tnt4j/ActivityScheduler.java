@@ -43,9 +43,10 @@ import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 public class ActivityScheduler {
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2, new TaskThreadFactory("ActivityScheduler/task"));
 	
+	private String name;
 	private TrackingLogger logger;
 	private ScheduledFuture<?> future;
-	private ActivityTask activityTask;
+	private Runnable activityTask;
 
 	/**
 	 * Creates a scheduler with specified name
@@ -65,10 +66,20 @@ public class ActivityScheduler {
 	 * @see ActivityListener
 	 */
 	public ActivityScheduler(String name, ActivityListener listener) {
+		this.name = name;
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(name);
 		if (listener != null) config.setActivityListener(listener);
 		this.logger = TrackingLogger.getInstance(config.build());
 		this.logger.setKeepThreadContext(false);
+	}
+	
+	/**
+	 * Name associated with this object
+	 * 
+	 * @return object name
+	 */
+	public String getName() {
+		return name;
 	}
 	
 	/**
@@ -145,7 +156,7 @@ public class ActivityScheduler {
 	 */
 	public void schedule(String name, long initialDelay, long period, TimeUnit tunit,  OpLevel level) {
 		if (future == null || future.isCancelled()) {
-			activityTask = new ActivityTask(logger, name, level);
+			activityTask = newActivityTask(logger, name, level);
 			future = scheduler.scheduleAtFixedRate(activityTask, initialDelay, period, tunit);
 		} else {
 			throw new IllegalStateException("Already scheduled");
@@ -205,6 +216,15 @@ public class ActivityScheduler {
 		return this.logger;
 	}
 	
+	/**
+	 * Override this calls to return custom instances of
+	 * <code>Runnable</code> which will be invoked per specified
+	 * schedule.
+	 * @return <code>Runnable</code> instance
+	 */
+	protected Runnable newActivityTask(TrackingLogger lg, String name, OpLevel level) {
+		return new ActivityTask(logger, name, level);
+	}
 }
 
 class TaskThreadFactory implements ThreadFactory {
@@ -221,50 +241,4 @@ class TaskThreadFactory implements ThreadFactory {
 		task.setDaemon(true);
 		return task;
     }	
-}
-
-class ActivityTask implements Runnable {
-	String activityName;
-	TrackingLogger logger;
-	TrackingActivity activity;
-	OpLevel level;
-	
-	public ActivityTask(TrackingLogger lg) {
-		this(lg, "ActivityTask", OpLevel.SUCCESS);
-	}
-	
-	public ActivityTask(TrackingLogger lg, String name) {
-		this(lg, name, OpLevel.SUCCESS);
-	}
-	
-	public ActivityTask(TrackingLogger lg, String name, OpLevel level) {
-		logger = lg;
-		activityName = name;
-		this.level = level;
-		startActvity();
-	}
-
-	protected TrackingActivity getActivity() {
-		return activity;
-	}
-	
-	private void startActvity() {
-		activity = logger.newActivity(level, activityName);
-		activity.start();		
-	}
-	
-	private long endActivity() {
-		activity.stop();
-		logger.tnt(activity);
-		return activity.getElapsedTime();
-	}
-	
-	@Override
-    public void run() {
-		try {
-			endActivity();
-		} finally {
-			startActvity();			
-		}
-    }
 }
