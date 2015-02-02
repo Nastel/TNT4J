@@ -119,7 +119,7 @@ public class ActivityTask implements Runnable {
 	 * @return true to track current activity, false to ignore
 	 */
 	protected boolean doSample() {
-		return !activity.isNoop();
+		return true;
 	}
 	
 	@Override
