@@ -149,7 +149,7 @@ public class SocketEventSink extends AbstractEventSink {
 			+ "}";
 	}
 	
-	private void writeLine(String msg) throws IOException {
+	private synchronized void writeLine(String msg) throws IOException {
 		String lineMsg = msg.endsWith("\n")? msg: msg + "\n";
 		byte [] bytes = lineMsg.getBytes();
 		outStream.write(bytes, 0, bytes.length);
