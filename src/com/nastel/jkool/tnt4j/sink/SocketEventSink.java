@@ -164,6 +164,6 @@ public class SocketEventSink extends AbstractEventSink {
 	@Override
     protected void _checkState() throws IllegalStateException {
 		if (!isOpen())
-			throw new IllegalStateException("Sink closed " + hostName + ":" + this.portNo + ", socket=" + socketSink);
+			throw new IllegalStateException("Sink closed: " + hostName + ":" + this.portNo + ", socket=" + socketSink);
     }
 }
