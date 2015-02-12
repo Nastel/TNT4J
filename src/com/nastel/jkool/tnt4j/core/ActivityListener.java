@@ -32,7 +32,7 @@ public interface ActivityListener {
 	 * @param activity activity which is just started
 	 * 
 	 */
-	public void started(Activity activity);
+	void started(Activity activity);
 	
 	/**
 	 * Notifies this listener when activity is stopped.
@@ -40,5 +40,5 @@ public interface ActivityListener {
 	 * @param activity activity which is just stopped
 	 * 
 	 */
-	public void stopped(Activity activity);
+	void stopped(Activity activity);
 }
