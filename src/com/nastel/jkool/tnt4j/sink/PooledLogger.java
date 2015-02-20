@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.nastel.jkool.tnt4j.core.KeyValueStats;
+import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -48,19 +49,23 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * @see SinkLogEvent
  */
 public class PooledLogger implements KeyValueStats {
+	protected static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(PooledLogger.class);
+	
 	static final String KEY_Q_SIZE = "pooled-queue-size";
 	static final String KEY_Q_CAPACITY = "pooled-queue-capacity";
 	static final String KEY_OBJECTS_DROPPED = "pooled-objects-dropped";
 	static final String KEY_OBJECTS_LOGGED = "pooled-objects-logged";
+	static final String KEY_EXCEPTION_COUNT = "pooled-exceptions";
 	static final String KEY_TOTAL_TIME_NANOS = "pooled-total-time-nanos";
 	
 	int poolSize, capacity;
 	ArrayBlockingQueue<SinkLogEvent> eventQ;
 	ExecutorService threadPool;
 	
-	AtomicLong dropCount = new AtomicLong(0),
-		loggedCount = new AtomicLong(0),
-		totalNanos = new AtomicLong(0);
+	AtomicLong dropCount = new AtomicLong(0);
+	AtomicLong loggedCount = new AtomicLong(0);
+	AtomicLong exceptionCount = new AtomicLong(0);
+	AtomicLong totalNanos = new AtomicLong(0);
 	
     /**
      * Create a pooled logger instance.
@@ -89,6 +94,7 @@ public class PooledLogger implements KeyValueStats {
 	    stats.put(KEY_Q_CAPACITY, capacity);
 	    stats.put(KEY_OBJECTS_DROPPED, dropCount.get());
 	    stats.put(KEY_OBJECTS_LOGGED, loggedCount.get());		
+	    stats.put(KEY_EXCEPTION_COUNT, exceptionCount.get());		
 	    stats.put(KEY_TOTAL_TIME_NANOS, totalNanos.get());
 	    return this;
     }
@@ -98,6 +104,7 @@ public class PooledLogger implements KeyValueStats {
 		dropCount.set(0);
 		loggedCount.set(0);		
 		totalNanos.set(0);
+		exceptionCount.set(0);
 	}
 
 	/**
@@ -209,6 +216,8 @@ class LoggingThreadFactory implements ThreadFactory {
 }
 
 class LoggingTask implements Runnable {
+	private static final int ERROR_REPORT_WINDOW = Integer.getInteger("tnt4j.pooled.logger.error.window", 30000);
+	
 	PooledLogger pooledLogger;
 	BlockingQueue<SinkLogEvent> eventQ;
 	
@@ -217,32 +226,51 @@ class LoggingTask implements Runnable {
 		eventQ = eq;
     }
 
+	protected void logEvent(SinkLogEvent event, long start) {
+		Object sinkO = event.getSinkObject();
+		EventSink outSink = event.getEventSink();
+		if (sinkO instanceof TrackingEvent) {
+			outSink.log((TrackingEvent)sinkO);
+		} else if (sinkO instanceof TrackingActivity) {
+			outSink.log((TrackingActivity)sinkO);
+		}  else if (sinkO instanceof Snapshot) {
+			outSink.log(event.getSnapshot());
+		} else if (event.getEventSource() != null){
+			outSink.log(event.getEventSource(), event.getSeverity(), 
+					String.valueOf(sinkO), event.getArguments());
+		} else {
+			outSink.log(event.getSeverity(), String.valueOf(sinkO),
+					event.getArguments());
+		}
+		pooledLogger.loggedCount.incrementAndGet();
+		long elaspedNanos = System.nanoTime() - start;
+		pooledLogger.totalNanos.addAndGet(elaspedNanos);		
+	}
+	
     @Override
     public void run() {
-		try {
+    	try {
+    		long lastError = 0;
 			while (true) {
 				SinkLogEvent event = eventQ.take();
-				long start = System.nanoTime();
-				Object sinkO = event.getSinkObject();
-				EventSink outSink = event.getEventSink();
-				if (sinkO instanceof TrackingEvent) {
-					outSink.log((TrackingEvent)sinkO);
-				} else if (sinkO instanceof TrackingActivity) {
-					outSink.log((TrackingActivity)sinkO);
-				}  else if (sinkO instanceof Snapshot) {
-					outSink.log(event.getSnapshot());
-				} else if (event.getEventSource() != null){
-					outSink.log(event.getEventSource(), event.getSeverity(), 
-							String.valueOf(sinkO), event.getArguments());
-				} else {
-					outSink.log(event.getSeverity(), String.valueOf(sinkO),
-							event.getArguments());
+				try {
+					long start = System.nanoTime();
+					logEvent(event, start);
+				} catch (Throwable err) {
+					long thisError = System.currentTimeMillis();
+					pooledLogger.exceptionCount.incrementAndGet();
+					if ((thisError - lastError) >= ERROR_REPORT_WINDOW) {
+						lastError = thisError;
+						PooledLogger.logger.log(OpLevel.ERROR, 
+							"Error during processing: error.count={0}, event={1}", 
+							pooledLogger.exceptionCount.get(), event, err);
+					}
 				}
-				pooledLogger.loggedCount.incrementAndGet();
-				long elaspedNanos = System.nanoTime() - start;
-				pooledLogger.totalNanos.addAndGet(elaspedNanos);
 			}
-		} catch (InterruptedException e) {
+		} catch (Throwable e) {
+			PooledLogger.logger.log(OpLevel.WARNING, 
+					"Interrupted during processing: shutting down: error.count={0}",
+					pooledLogger.exceptionCount.get(), e);
 		}
     }	
 }
