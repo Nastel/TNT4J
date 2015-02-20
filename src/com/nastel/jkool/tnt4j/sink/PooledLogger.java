@@ -15,7 +15,7 @@
  */
 package com.nastel.jkool.tnt4j.sink;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -83,7 +83,7 @@ public class PooledLogger implements KeyValueStats {
 
 	@Override
     public Map<String, Object> getStats() {
-	    Map<String, Object> stats = new HashMap<String, Object>();
+	    Map<String, Object> stats = new LinkedHashMap<String, Object>();
 	    getStats(stats);
 	    return stats;
     }

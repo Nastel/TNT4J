@@ -16,7 +16,7 @@
 package com.nastel.jkool.tnt4j.core;
 
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -43,7 +43,7 @@ public class PropertySnapshot  implements Snapshot {
 	private String parent_id;
 	private UsecTimestamp timeStamp = null;
 	private Source source;
-	private HashMap<Object, Property> propSet = new HashMap<Object, Property>();
+	private Map<Object, Property> propSet = new LinkedHashMap<Object, Property>();
 
 	/**
 	 * Constructs a Property snapshot with the specified name and current time stamp.

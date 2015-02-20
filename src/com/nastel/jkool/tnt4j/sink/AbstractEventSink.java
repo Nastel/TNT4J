@@ -16,7 +16,7 @@
 package com.nastel.jkool.tnt4j.sink;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -91,7 +91,7 @@ public abstract class AbstractEventSink implements EventSink {
 
 	@Override
 	public Map<String, Object> getStats() {
-		HashMap<String, Object> stats = new HashMap<String, Object>();
+		LinkedHashMap<String, Object> stats = new LinkedHashMap<String, Object>();
 		getStats(stats);
 		return stats;
 	}

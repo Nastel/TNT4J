@@ -18,7 +18,7 @@ package com.nastel.jkool.tnt4j.tracker;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.EmptyStackException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -249,7 +249,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	
 	@Override
 	public Map<String, Object> getStats() {
-		HashMap<String, Object> stats = new HashMap<String, Object>();
+		Map<String, Object> stats = new LinkedHashMap<String, Object>();
 		getStats(stats);
 		return stats;
 	}
