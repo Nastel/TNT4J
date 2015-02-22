@@ -328,7 +328,8 @@ public abstract class AbstractEventSink implements EventSink {
 		if (isSet(activity.getSeverity())) {
 			try {
 				_log(activity);
-				loggedEvents.incrementAndGet();
+				loggedActivities.incrementAndGet();
+				loggedSnaps.addAndGet(activity.getSnapshotCount());
 				if (logListeners.size() > 0) {
 					notifyListeners(new SinkLogEvent(this, activity));
 				}
@@ -347,6 +348,7 @@ public abstract class AbstractEventSink implements EventSink {
 			try {
 				_log(event);
 				loggedEvents.incrementAndGet();
+				loggedSnaps.addAndGet(event.getOperation().getSnapshotCount());
 				if (logListeners.size() > 0) {
 					notifyListeners(new SinkLogEvent(this, event));
 				}
