@@ -97,24 +97,28 @@ public class BufferedEventSink implements EventSink {
 
 	@Override
     public void write(Object msg, Object... args) throws IOException, InterruptedException {
+		_checkState();
 		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, null, OpLevel.NONE, String.valueOf(msg), args));
 		if (!flag) dropCount.incrementAndGet();
 	}
 
 	@Override
     public void log(TrackingActivity activity) {
+		_checkState();
 		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, activity));
 		if (!flag) dropCount.incrementAndGet();
-   }
+	}
 
 	@Override
     public void log(TrackingEvent event) {
+		_checkState();
 		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, event));
 		if (!flag) dropCount.incrementAndGet();
     }
 
 	@Override
     public void log(Snapshot props) {
+		_checkState();
 		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, props));
 		if (!flag) dropCount.incrementAndGet();
     }
@@ -126,6 +130,7 @@ public class BufferedEventSink implements EventSink {
 
 	@Override
     public void log(Source src, OpLevel sev, String msg, Object... args) {
+		_checkState();
 		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, src, sev, msg, args));
 		if (!flag) dropCount.incrementAndGet();
     }
@@ -202,4 +207,14 @@ public class BufferedEventSink implements EventSink {
     public Source getSource() {
 	    return source;
     }
+	
+    /**
+	 * Override this method to check state of the sink before logging occurs. Throws <code>IllegalStateException</code>
+	 * if sink is in wrong state.
+	 *
+	 * @throws IllegalStateException
+	 */
+    protected void _checkState() throws IllegalStateException {
+    	AbstractEventSink.checkState(this);
+    }	
 }

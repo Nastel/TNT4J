@@ -229,6 +229,10 @@ class LoggingTask implements Runnable {
 	protected void logEvent(SinkLogEvent event, long start) {
 		Object sinkO = event.getSinkObject();
 		EventSink outSink = event.getEventSink();
+		
+		//check if the sink is in valid write state
+		AbstractEventSink.checkState(outSink);
+		
 		if (sinkO instanceof TrackingEvent) {
 			outSink.log((TrackingEvent)sinkO);
 		} else if (sinkO instanceof TrackingActivity) {

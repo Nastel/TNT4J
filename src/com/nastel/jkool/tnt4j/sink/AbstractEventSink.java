@@ -397,12 +397,25 @@ public abstract class AbstractEventSink implements EventSink {
 	}
 
 	/**
+	 * Check state of the sink before logging occurs. Throws <code>IllegalStateException</code>
+	 * if sink is in wrong state.
+	 *
+	 * @throws IllegalStateException
+	 */
+    public static void checkState(EventSink sink) throws IllegalStateException {
+		if (sink == null || !sink.isOpen())
+			throw new IllegalStateException("Sink closed or unavailable: sink=" + sink);
+    }	
+
+	/**
 	 * Override this method to check state of the sink before logging occurs. Throws <code>IllegalStateException</code>
 	 * if sink is in wrong state.
 	 *
 	 * @throws IllegalStateException
 	 */
-	abstract protected void _checkState() throws IllegalStateException;
+    protected void _checkState() throws IllegalStateException {
+    	checkState(this);
+    }
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.
