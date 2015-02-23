@@ -201,6 +201,10 @@ public class TNT4JAppender extends AppenderSkeleton {
         }
 	}
 
+	/**
+	 * {@inheritDoc}
+	 *
+	 */
 	@SuppressWarnings("unchecked")
     @Override
 	protected void append(LoggingEvent event) {
@@ -257,7 +261,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 	}
 	
 	/**
-	 * Process a given log4j event into a TNT4J activity object.
+	 * Process a given log4j event into a TNT4J activity object {@link TrackingActivity}
 	 * 
 	 * @param attrs a set of name/value pairs
 	 * @param jev log4j logging event object
@@ -324,7 +328,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 	}
 	
 	/**
-	 * Parse a a given message into a TNT4J event object.
+	 * Parse a a given message into a map of key/value pairs.
 	 * Tags are identified by '#key=value .. #keyN=value' sequence. 
 	 * String values should be enclosed in single quotes.
 	 * 
@@ -378,7 +382,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 	}
 
 	/**
-	 * Process a given log4j event into a TNT4J event object.
+	 * Process a given log4j event into a TNT4J event object {@link TrackingEvent}.
 	 * 
 	 * @param attrs a set of name/value pairs
 	 * @param activity tnt4j activity associated with current message
@@ -565,6 +569,10 @@ public class TNT4JAppender extends AppenderSkeleton {
 		}	
 	}
 
+	/**
+	 * {@inheritDoc}
+	 *
+	 */
 	@Override
     public void close() {
 		if (logger != null) {
@@ -572,6 +580,10 @@ public class TNT4JAppender extends AppenderSkeleton {
 		}
 	}
 
+	/**
+	 * {@inheritDoc}
+	 *
+	 */
 	@Override
     public boolean requiresLayout() {
 	    return false;
