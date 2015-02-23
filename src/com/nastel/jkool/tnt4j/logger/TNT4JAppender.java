@@ -246,10 +246,25 @@ public class TNT4JAppender extends AppenderSkeleton {
 		}
 	}
 
-	private boolean isActivityInstruction(Map<String, Object> attrs) {
+	/**
+	 * Determine if a given tag is an activity instruction that
+	 * signifies activity start/end.
+	 *
+	 * @return true of activity instruction.
+	 */
+	protected boolean isActivityInstruction(Map<String, Object> attrs) {
 		return attrs.get(PARAM_BEGIN_LABEL) != null || attrs.get(PARAM_END_LABEL) != null;		
 	}
 	
+	/**
+	 * Process a given log4j event into a TNT4J activity object.
+	 * 
+	 * @param attrs a set of name/value pairs
+	 * @param jev log4j logging event object
+	 * @param ex exception associated with this event
+	 * 
+	 * @return tnt4j tracking activity object
+	 */
 	private TrackingActivity processActivityAttrs(Map<String, Object> attrs, LoggingEvent jev, Throwable ex) {
 		Snapshot snapshot = null;
 		TrackingActivity activity = logger.getCurrentActivity();
@@ -294,7 +309,12 @@ public class TNT4JAppender extends AppenderSkeleton {
 		return activity;
 	}
 
-	private long getElapsedNanosSinceLastEvent() {
+	/**
+	 * Obtain elapsed nanoseconds since last log4j event
+	 *
+	 * @return elapsed nanoseconds since last log4j even
+	 */
+	protected long getElapsedNanosSinceLastEvent() {
 		Long last = EVENT_TIMER.get();
 		long now = System.nanoTime(), elapsedNanos = 0;
 		
@@ -303,6 +323,71 @@ public class TNT4JAppender extends AppenderSkeleton {
 		return elapsedNanos;
 	}
 	
+	/**
+	 * Parse a a given message into a TNT4J event object.
+	 * Tags are identified by '#key=value .. #keyN=value' sequence. 
+	 * String values should be enclosed in single quotes.
+	 * 
+	 * @param tags a set of name/value pairs
+	 * @param msg string message to be parsed
+	 * @return a map of parsed name/value pairs from a given string message.
+	 */
+	private Map<String, Object> parseEventMessage(Map<String, Object> tags, String msg) {
+		int curPos = 0;
+		while (curPos < msg.length()) {
+			if (msg.charAt(curPos) != '#') {
+				curPos++;
+				continue;
+			}
+
+			int start = ++curPos;
+			boolean inValue = false;
+			boolean quotedValue = false;
+			while (curPos < msg.length()) {
+				char c = msg.charAt(curPos);
+				if (c == '=') {
+					inValue = true;
+				}
+				else if (c == '\'' && inValue) {
+					// the double quote we just read was not escaped, so include it in value
+					if (quotedValue) {
+						// found closing quote
+						curPos++;
+						break;
+					}
+					else {
+						quotedValue = true;
+					}
+				}
+				else if (Character.isWhitespace(c) && !quotedValue) {
+					break;
+				}
+				curPos++;
+			}
+
+			if (curPos > start) {
+				String[] curTag = msg.substring(start, curPos).split("=");
+				String name = curTag[0].trim().replace("'", "");
+				String value = (curTag.length > 1 ? curTag[1] : "");
+				if (value.startsWith("'") && value.endsWith("'"))
+					value = StringEscapeUtils.unescapeJava(value.substring(1, value.length()-1));
+				tags.put(name, value);
+			} 
+		}
+		return tags;
+	}
+
+	/**
+	 * Process a given log4j event into a TNT4J event object.
+	 * 
+	 * @param attrs a set of name/value pairs
+	 * @param activity tnt4j activity associated with current message
+	 * @param jev log4j logging event object
+	 * @param eventMsg string message associated with this event
+	 * @param ex exception associated with this event
+	 * 
+	 * @return tnt4j tracking event object
+	 */
 	private TrackingEvent processEventMessage(Map<String, Object> attrs, 
 			TrackingActivity activity, LoggingEvent jev, String eventMsg, Throwable ex) {
 		int rcode = 0;
@@ -368,12 +453,28 @@ public class TNT4JAppender extends AppenderSkeleton {
 		return event;
 	}
 	
+	/**
+	 * Strip type qualifier from a given key
+	 *
+	 * @param key key with prefixed type qualifier
+	 * @return stripped key
+	 */
 	private String stripKey(String key) {
 		if (key.length() > 3 && key.charAt(0) == '%' && key.charAt(2) == '/') {
 			return key.substring(3);
 		} 
 		return key;
 	}
+
+	/**
+	 * Convert annotated value with key type qualifier such as %type/
+	 * into the appropriate java object.
+	 *
+	 * @param key key with prefixed type qualifier
+	 * @param value to be converted based on type qualifier
+	 * 
+	 * @return converted value
+	 */
 	private Object toType(String key, String value) {
 		if (!key.startsWith("%")) {
 			try { return Long.parseLong(value); }
@@ -398,6 +499,12 @@ public class TNT4JAppender extends AppenderSkeleton {
 		}
     }
 
+	/**
+	 * Map log4j logging event level to TNT4J {@link OpLevel}. 
+	 *
+	 * @param event log4j logging event object
+	 * @return TNT4J {@link OpLevel}. 
+	 */
 	private OpLevel getOpLevel(LoggingEvent event) {
 		Level lvl = event.getLevel();
 		if (lvl == Level.INFO) {
@@ -426,6 +533,13 @@ public class TNT4JAppender extends AppenderSkeleton {
 		}	
 	}
 
+	
+	/**
+	 * Map log4j logging event level to TNT4J {@link OpCompCode}. 
+	 *
+	 * @param event log4j logging event object
+	 * @return TNT4J {@link OpCompCode}. 
+	 */
 	private OpCompCode getOpCompCode(LoggingEvent event) {
 		Level lvl = event.getLevel();
 		if (lvl == Level.INFO) {
@@ -449,51 +563,6 @@ public class TNT4JAppender extends AppenderSkeleton {
 		else {
 			return OpCompCode.SUCCESS;
 		}	
-	}
-
-	private Map<String, Object> parseEventMessage(Map<String, Object> tags, String msg) {
-		int curPos = 0;
-		while (curPos < msg.length()) {
-			if (msg.charAt(curPos) != '#') {
-				curPos++;
-				continue;
-			}
-
-			int start = ++curPos;
-			boolean inValue = false;
-			boolean quotedValue = false;
-			while (curPos < msg.length()) {
-				char c = msg.charAt(curPos);
-				if (c == '=') {
-					inValue = true;
-				}
-				else if (c == '\'' && inValue) {
-					// the double quote we just read was not escaped, so include it in value
-					if (quotedValue) {
-						// found closing quote
-						curPos++;
-						break;
-					}
-					else {
-						quotedValue = true;
-					}
-				}
-				else if (Character.isWhitespace(c) && !quotedValue) {
-					break;
-				}
-				curPos++;
-			}
-
-			if (curPos > start) {
-				String[] curTag = msg.substring(start, curPos).split("=");
-				String name = curTag[0].trim().replace("'", "");
-				String value = (curTag.length > 1 ? curTag[1] : "");
-				if (value.startsWith("'") && value.endsWith("'"))
-					value = StringEscapeUtils.unescapeJava(value.substring(1, value.length()-1));
-				tags.put(name, value);
-			} 
-		}
-		return tags;
 	}
 
 	@Override
