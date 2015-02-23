@@ -286,6 +286,10 @@ public class TNT4JAppender extends AppenderSkeleton {
 				activity.setUser(value);
 			} else if (key.equalsIgnoreCase(PARAM_SEVERITY_LABEL)) {
 				activity.setSeverity(OpLevel.valueOf(value));
+			} else if (key.equalsIgnoreCase(PARAM_BEGIN_LABEL)
+					|| key.equals(PARAM_END_LABEL)
+					|| key.equals(PARAM_APPL_LABEL)) {
+				// skip and process later
 			} else if (activity != null) {
 				// add unknown attribute into snapshot
 				if (snapshot == null) {
