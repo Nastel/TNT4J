@@ -32,6 +32,7 @@ import com.nastel.jkool.tnt4j.core.ActivityStatus;
 import com.nastel.jkool.tnt4j.core.OpCompCode;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
+import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -72,14 +73,14 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <p>In addition, it will set other TNT4j Activity and Event parameters based on the local environment.  These default
  * parameter values can be overridden by annotating the log event messages or passing them using {@code MDC}.
  *
- * <p>The following hash tag annotations are supported for reporting activities:</p>
+ * <p>The following '#' hash tag annotations are supported for reporting activities:</p>
  * <table>
  * <tr><td><b>beg</b></td>				<td>Begin an activity (collection of related events/messages)</td></tr>
  * <tr><td><b>end</b></td>				<td>End an activity (collection of related events/messages)</td></tr>
  * <tr><td><b>app</b></td>				<td>Application/source name</td></tr>
  * </table>
  * 
- * <p>The following hash tag annotations are supported for reporting events:</p>
+ * <p>The following '#' hash tag annotations are supported for reporting events:</p>
  * <table>
  * <tr><td><b>app</b></td>				<td>Application/source name</td></tr>
  * <tr><td><b>usr</b></td>				<td>User name</td></tr>
@@ -97,6 +98,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <tr><td><b>age</b></td>			    <td>Message/event age in microseconds (useful when receiving messages, designating message age on receipt)</td></tr>
  * <tr><td><b>stt</b></td>			    <td>Start time, as the number of microseconds since epoch</td></tr>
  * <tr><td><b>ent</b></td>				<td>End time, as the number of microseconds since epoch</td></tr>
+ * <tr><td><b>%[s|i|l|f|d|b]/user-key</b></td>				<td>User defined key/value pair and [s|i|l|f|d|b] are type specifiers (i=Integer, l=Long, d=Double, f=Float, s=String, b=Boolean) (e.g #%i/myfield=7634732)</td></tr>
  * </table>
  *
  * <p>An example of annotating (TNT4J) a single log message using log4j:</p>
@@ -109,12 +111,13 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <p><code></code></p>
  * <p><code>logger.debug("Operation processing #app=MyApp #opn=save #rsn=" + filename);</code></p>
  * <p><code>logger.error("Operation Failed #app=MyApp #opn=save #rsn=" + filename + "  #rcd=" + errno);</code></p>
- * <p><code>logger.info("Finished order processing #app=MyApp #end=" + activityName);</code></p>
+ * <p><code>logger.info("Finished order processing #app=MyApp #end=" + activityName + " #%l/order-no=" + orderNo);</code></p>
  *  
  * @version $Revision: 1 $
  * 
  */
 public class TNT4JAppender extends AppenderSkeleton {
+	public static final String SNAPSHOT_CATEGORY		 = "UserDefined";
 	public static final String DEFAULT_OP_NAME 			 = "LoggingEvent";
 		
 	public static final String PARAM_BEGIN_LABEL         = "beg";
@@ -248,6 +251,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 	}
 	
 	private TrackingActivity processActivityAttrs(Map<String, Object> attrs, LoggingEvent jev, Throwable ex) {
+		Snapshot snapshot = null;
 		TrackingActivity activity = logger.getCurrentActivity();
 		
 		for (Map.Entry<String, Object> entry: attrs.entrySet()) {
@@ -263,6 +267,13 @@ public class TNT4JAppender extends AppenderSkeleton {
 				activity.setUser(value);
 			} else if (key.equalsIgnoreCase(PARAM_SEVERITY_LABEL)) {
 				activity.setSeverity(OpLevel.valueOf(value));
+			} else if (activity != null) {
+				// add unknown attribute into snapshot
+				if (snapshot == null) {
+					snapshot = logger.newSnapshot(SNAPSHOT_CATEGORY, activity.getName());
+					activity.addSnapshot(snapshot);
+				}
+				snapshot.add(stripKey(key), toType(key, value));
 			}
 		}
 		
@@ -298,6 +309,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 		long elapsedTimeUsec = getElapsedNanosSinceLastEvent()/1000;
 		long evTime = jev.getTimeStamp()*1000; // convert to usec
 		long startTime = 0, endTime = 0;
+		Snapshot snapshot = null;
 	
 		OpCompCode ccode = getOpCompCode(jev);
 		OpLevel level = getOpLevel(jev);
@@ -315,7 +327,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 				event.setLocation(value);
 			} else if (key.equalsIgnoreCase(PARAM_RESOURCE_LABEL)) {
 				event.getOperation().setResource(value);
-			}  else if (key.equalsIgnoreCase(PARAM_USER_LABEL)) {
+			} else if (key.equalsIgnoreCase(PARAM_USER_LABEL)) {
 				event.getOperation().setUser(value);
 			} else if (key.equalsIgnoreCase(PARAM_ELAPSED_TIME_LABEL)) {
 				elapsedTimeUsec = Long.parseLong(value);
@@ -339,6 +351,13 @@ public class TNT4JAppender extends AppenderSkeleton {
 				event.setMessage(value);
 			} else if (key.equalsIgnoreCase(PARAM_APPL_LABEL)) {
 				event.setSource(logger.getConfiguration().getSourceFactory().newSource(value));
+			} else {
+				// add unknown attribute into snapshot
+				if (snapshot == null) {
+					snapshot = logger.newSnapshot(SNAPSHOT_CATEGORY, event.getOperation().getName());
+					event.getOperation().addSnapshot(snapshot);
+				}
+				snapshot.add(stripKey(key), toType(key, value));
 			}
 		}		
 		startTime = startTime <= 0 ? (evTime - elapsedTimeUsec): evTime;
@@ -349,6 +368,36 @@ public class TNT4JAppender extends AppenderSkeleton {
 		return event;
 	}
 	
+	private String stripKey(String key) {
+		if (key.length() > 3 && key.charAt(0) == '%' && key.charAt(2) == '/') {
+			return key.substring(3);
+		} 
+		return key;
+	}
+	private Object toType(String key, String value) {
+		if (!key.startsWith("%")) {
+			try { return Long.parseLong(value); }
+			catch (NumberFormatException ne) {
+				return value;				
+			}
+		}
+		if (key.startsWith("%s/")) {
+			return value;
+		} else if (key.startsWith("%i/")) {
+			return Integer.parseInt(value);
+		} else if (key.startsWith("%l/")) {
+			return Long.parseLong(value);
+		} else if (key.startsWith("%f/")) {
+			return Float.parseFloat(value);
+		} else if (key.startsWith("%d/")) {
+			return Double.parseDouble(value);
+		} else if (key.startsWith("%b/")) {
+			return Boolean.parseBoolean(value);
+		} else {
+			return value;
+		}
+    }
+
 	private OpLevel getOpLevel(LoggingEvent event) {
 		Level lvl = event.getLevel();
 		if (lvl == Level.INFO) {
