@@ -56,6 +56,7 @@ public class PooledLogger implements KeyValueStats {
 	static final String KEY_OBJECTS_DROPPED = "pooled-objects-dropped";
 	static final String KEY_OBJECTS_LOGGED = "pooled-objects-logged";
 	static final String KEY_EXCEPTION_COUNT = "pooled-exceptions";
+	static final String KEY_RECOVERY_COUNT = "pooled-recovery-count";
 	static final String KEY_TOTAL_TIME_NANOS = "pooled-total-time-nanos";
 	
 	int poolSize, capacity;
@@ -65,6 +66,7 @@ public class PooledLogger implements KeyValueStats {
 	AtomicLong dropCount = new AtomicLong(0);
 	AtomicLong loggedCount = new AtomicLong(0);
 	AtomicLong exceptionCount = new AtomicLong(0);
+	AtomicLong recoveryCount = new AtomicLong(0);
 	AtomicLong totalNanos = new AtomicLong(0);
 	
     /**
@@ -95,6 +97,7 @@ public class PooledLogger implements KeyValueStats {
 	    stats.put(KEY_OBJECTS_DROPPED, dropCount.get());
 	    stats.put(KEY_OBJECTS_LOGGED, loggedCount.get());		
 	    stats.put(KEY_EXCEPTION_COUNT, exceptionCount.get());		
+	    stats.put(KEY_RECOVERY_COUNT, recoveryCount.get());		
 	    stats.put(KEY_TOTAL_TIME_NANOS, totalNanos.get());
 	    return this;
     }
@@ -104,7 +107,18 @@ public class PooledLogger implements KeyValueStats {
 		dropCount.set(0);
 		loggedCount.set(0);		
 		totalNanos.set(0);
+		recoveryCount.set(0);
 		exceptionCount.set(0);
+	}
+
+	/**
+	 * Obtain total number of times sink recovered from 
+	 * exception(s).
+	 * 
+	 * @return total number of times sink recovered from exceptions
+	 */
+	public long getRecoveryCount() {
+		return recoveryCount.get();
 	}
 
 	/**
@@ -255,12 +269,18 @@ class LoggingTask implements Runnable {
     public void run() {
     	try {
     		long lastError = 0;
+    		boolean errorState = false;
 			while (true) {
 				SinkLogEvent event = eventQ.take();
 				try {
 					long start = System.nanoTime();
 					logEvent(event, start);
+					if (errorState) {
+						pooledLogger.recoveryCount.incrementAndGet();
+						errorState = false;
+					}
 				} catch (Throwable err) {
+					errorState = true;
 					long thisError = System.currentTimeMillis();
 					pooledLogger.exceptionCount.incrementAndGet();
 					if ((thisError - lastError) >= ERROR_REPORT_WINDOW) {
