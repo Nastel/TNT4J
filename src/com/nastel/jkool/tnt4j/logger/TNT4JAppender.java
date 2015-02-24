@@ -98,7 +98,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <tr><td><b>age</b></td>			    <td>Message/event age in microseconds (useful when receiving messages, designating message age on receipt)</td></tr>
  * <tr><td><b>stt</b></td>			    <td>Start time, as the number of microseconds since epoch</td></tr>
  * <tr><td><b>ent</b></td>				<td>End time, as the number of microseconds since epoch</td></tr>
- * <tr><td><b>%[s|i|l|f|d|b]/user-key</b></td>				<td>User defined key/value pair and [s|i|l|f|d|b] are type specifiers (i=Integer, l=Long, d=Double, f=Float, s=String, b=Boolean) (e.g #%i/myfield=7634732)</td></tr>
+ * <tr><td><b>%[s|i|l|f|d|n|b]/user-key</b></td><td>User defined key/value pair and [s|i|l|f|n|d|b] are type specifiers (i=Integer, l=Long, d=Double, f=Float, n=Number, s=String, b=Boolean) (e.g #%i/myfield=7634732)</td></tr>
  * </table>
  *
  * <p>An example of annotating (TNT4J) a single log message using log4j:</p>
@@ -111,7 +111,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <p><code></code></p>
  * <p><code>logger.debug("Operation processing #app=MyApp #opn=save #rsn=" + filename);</code></p>
  * <p><code>logger.error("Operation Failed #app=MyApp #opn=save #rsn=" + filename + "  #rcd=" + errno);</code></p>
- * <p><code>logger.info("Finished order processing #app=MyApp #end=" + activityName + " #%l/order-no=" + orderNo);</code></p>
+ * <p><code>logger.info("Finished order processing #app=MyApp #end=" + activityName + " #%l/order=" + orderNo);</code></p>
  *  
  * @version $Revision: 1 $
  * 
@@ -477,6 +477,9 @@ public class TNT4JAppender extends AppenderSkeleton {
 	/**
 	 * Convert annotated value with key type qualifier such as %type/
 	 * into the appropriate java object.
+	 * <table>
+	 * <tr><td><b>%[s|i|l|f|d|n|b]/user-key</b></td><td>User defined key/value pair and [s|i|l|f|n|d|b] are type specifiers (i=Integer, l=Long, d=Double, f=Float, n=Number, s=String, b=Boolean) (e.g #%i/myfield=7634732)</td></tr>
+	 * </table>
 	 *
 	 * @param key key with prefixed type qualifier
 	 * @param value to be converted based on type qualifier
@@ -484,28 +487,32 @@ public class TNT4JAppender extends AppenderSkeleton {
 	 * @return converted value
 	 */
 	private Object toType(String key, String value) {
-		if (!key.startsWith("%")) {
-			try { return Long.parseLong(value); }
-			catch (NumberFormatException ne) {
-				return value;				
+		try {
+			if (!key.startsWith("%")) {
+				// if no type specified, assume a numeric field
+				return Double.parseDouble(value);
+			} else if (key.startsWith("%s/")) {
+				return value;
+			} else if (key.startsWith("%n/")) {
+				return Double.parseDouble(value);
+			} else if (key.startsWith("%i/")) {
+				return Integer.parseInt(value);
+			} else if (key.startsWith("%l/")) {
+				return Long.parseLong(value);
+			} else if (key.startsWith("%f/")) {
+				return Float.parseFloat(value);
+			} else if (key.startsWith("%d/")) {
+				return Double.parseDouble(value);
+			} else if (key.startsWith("%b/")) {
+				return Boolean.parseBoolean(value);
+			} else {
+				return value;
 			}
-		}
-		if (key.startsWith("%s/")) {
-			return value;
-		} else if (key.startsWith("%i/")) {
-			return Integer.parseInt(value);
-		} else if (key.startsWith("%l/")) {
-			return Long.parseLong(value);
-		} else if (key.startsWith("%f/")) {
-			return Float.parseFloat(value);
-		} else if (key.startsWith("%d/")) {
-			return Double.parseDouble(value);
-		} else if (key.startsWith("%b/")) {
-			return Boolean.parseBoolean(value);
-		} else {
+		} catch (NumberFormatException ne) {
+			// return a string if exception occurs
 			return value;
 		}
-    }
+	}
 
 	/**
 	 * Map log4j logging event level to TNT4J {@link OpLevel}. 
