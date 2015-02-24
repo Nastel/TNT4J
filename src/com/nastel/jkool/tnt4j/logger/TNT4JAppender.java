@@ -117,28 +117,37 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * 
  */
 public class TNT4JAppender extends AppenderSkeleton {
-	public static final String SNAPSHOT_CATEGORY		 = "UserDefined";
-	public static final String DEFAULT_OP_NAME 			 = "LoggingEvent";
+	public static final String SNAPSHOT_CATEGORY		= "UserDefined";
+	public static final String DEFAULT_OP_NAME			= "LoggingEvent";
 		
-	public static final String PARAM_BEGIN_LABEL         = "beg";
-	public static final String PARAM_END_LABEL           = "end";
+	public static final String PARAM_BEGIN_LABEL		= "beg";
+	public static final String PARAM_END_LABEL			= "end";
 	
-	public static final String PARAM_APPL_LABEL          = "app";
-	public static final String PARAM_USER_LABEL          = "usr";
-	public static final String PARAM_CORRELATOR_LABEL    = "cid";
-	public static final String PARAM_TAG_LABEL           = "tag";
-	public static final String PARAM_LOCATION_LABEL      = "loc";
-	public static final String PARAM_OP_NAME_LABEL       = "opn";
-	public static final String PARAM_OP_TYPE_LABEL       = "opt";
-	public static final String PARAM_RESOURCE_LABEL      = "rsn";
-	public static final String PARAM_MSG_DATA_LABEL      = "msg";
-	public static final String PARAM_SEVERITY_LABEL      = "sev";
-	public static final String PARAM_COMP_CODE_LABEL     = "ccd";
-	public static final String PARAM_REASON_CODE_LABEL   = "rcd";
-	public static final String PARAM_START_TIME_LABEL    = "stt";
-	public static final String PARAM_END_TIME_LABEL      = "ent";
-	public static final String PARAM_ELAPSED_TIME_LABEL  = "elt";
-	public static final String PARAM_AGE_TIME_LABEL 	 = "age";
+	public static final String PARAM_APPL_LABEL			= "app";
+	public static final String PARAM_USER_LABEL			= "usr";
+	public static final String PARAM_CORRELATOR_LABEL	= "cid";
+	public static final String PARAM_TAG_LABEL			= "tag";
+	public static final String PARAM_LOCATION_LABEL		= "loc";
+	public static final String PARAM_OP_NAME_LABEL		= "opn";
+	public static final String PARAM_OP_TYPE_LABEL		= "opt";
+	public static final String PARAM_RESOURCE_LABEL		= "rsn";
+	public static final String PARAM_MSG_DATA_LABEL     = "msg";
+	public static final String PARAM_SEVERITY_LABEL		= "sev";
+	public static final String PARAM_COMP_CODE_LABEL	= "ccd";
+	public static final String PARAM_REASON_CODE_LABEL	= "rcd";
+	public static final String PARAM_START_TIME_LABEL	= "stt";
+	public static final String PARAM_END_TIME_LABEL		= "ent";
+	public static final String PARAM_ELAPSED_TIME_LABEL	= "elt";
+	public static final String PARAM_AGE_TIME_LABEL		= "age";
+	
+	public static final String TAG_TYPE_QUALIFIER		= "%";
+	public static final String TAG_TYPE_INTEGER			= "%i/";
+	public static final String TAG_TYPE_LONG		 	= "%l/";
+	public static final String TAG_TYPE_DOUBLE		 	= "%d/";
+	public static final String TAG_TYPE_FLOAT		 	= "%f/";
+	public static final String TAG_TYPE_NUMBER		 	= "%n/";
+	public static final String TAG_TYPE_BOOLEAN		 	= "%b/";
+	public static final String TAG_TYPE_STRING		 	= "%s/";
 
 	private static final ThreadLocal<Long> EVENT_TIMER = new ThreadLocal<Long>();
 	
@@ -488,22 +497,22 @@ public class TNT4JAppender extends AppenderSkeleton {
 	 */
 	private Object toType(String key, String value) {
 		try {
-			if (!key.startsWith("%")) {
+			if (!key.startsWith(TAG_TYPE_QUALIFIER)) {
 				// if no type specified, assume a numeric field
 				return Double.parseDouble(value);
-			} else if (key.startsWith("%s/")) {
+			} else if (key.startsWith(TAG_TYPE_STRING)) {
 				return value;
-			} else if (key.startsWith("%n/")) {
+			} else if (key.startsWith(TAG_TYPE_NUMBER)) {
 				return Double.parseDouble(value);
-			} else if (key.startsWith("%i/")) {
+			} else if (key.startsWith(TAG_TYPE_INTEGER)) {
 				return Integer.parseInt(value);
-			} else if (key.startsWith("%l/")) {
+			} else if (key.startsWith(TAG_TYPE_LONG)) {
 				return Long.parseLong(value);
-			} else if (key.startsWith("%f/")) {
+			} else if (key.startsWith(TAG_TYPE_FLOAT)) {
 				return Float.parseFloat(value);
-			} else if (key.startsWith("%d/")) {
+			} else if (key.startsWith(TAG_TYPE_DOUBLE)) {
 				return Double.parseDouble(value);
-			} else if (key.startsWith("%b/")) {
+			} else if (key.startsWith(TAG_TYPE_BOOLEAN)) {
 				return Boolean.parseBoolean(value);
 			} else {
 				return value;
