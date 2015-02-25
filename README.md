@@ -28,7 +28,7 @@ logger.info("Ending a tnt4j activity #end=Test, #app=" + Log4JTest.class.getName
 ```
 Above example groups messages between first and last into a related logical collection called `Activity`. Activity is a collection of logically related events/messages. Hashtags `#beg` and `#end` are used to demarcate activity boundaries. This method also supports nested activities.
 
-User defined fields can be reported as well using `#[type-qualifier]metric=value` convetion (e.g. `#%i/order-no=62627`). `TNT4JAppender` supports the following type qualifiers:
+User defined fields can be reported using `#[type-qualifier]metric=value` convention (e.g. `#%i/order-no=62627`). `TNT4JAppender` supports the following optional type qualifiers:
 ```
 	%i/ -- integer
 	%l/ -- long
@@ -38,7 +38,7 @@ User defined fields can be reported as well using `#[type-qualifier]metric=value
 	%n/ -- number
 	%s/ -- string
 ```
-Not specifying a qualifier defaults to auto detection of type by `TNT4JAppender`. First `number` qualifier is tested and defaults to `string` if the test fails.
+Not specifying a qualifier defaults to auto detection of type by `TNT4JAppender`. First `number` qualifier is tested and defaults to `string` if the test fails (e.g. `#order-no=62627`). User defined fields are reported as a TNT4J snapshot with `UserDefined` category and snapshot name set to activity name set by `#beg` and `#end` tags or `#opn` tags.
 
 Below is a sample log4j appender configuration:
 ```
