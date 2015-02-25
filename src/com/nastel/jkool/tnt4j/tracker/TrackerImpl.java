@@ -440,8 +440,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			eventSink.log(snapshot);
 			snapCount.incrementAndGet();
 		} catch (Throwable ex) {
-			logger.log(OpLevel.ERROR, 
-				"Failed to track snapshot{0}", snapshot, ex);
+			logger.log(OpLevel.ERROR, "Failed to track snapshot={0}", snapshot, ex);
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
 		}

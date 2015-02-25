@@ -17,7 +17,6 @@ Why track and trace your apps?
 TNT4J integrates with log4j or any other logging framework via a concept of an `EventSink`. TNT4J default integration is with log4j. 
 
 First, all TNT4J messages can be routed via a log4j event sink and therefore can take advantage of the whole log4j framework. 
-
 Second, TNT4J includes `TNT4JAppender` for log4j which allows developers to send log4j messages to TNT4J via this appender and take advantage of TNT4j functionality.
 
 Developers may also enrich log4j messages and pass context to TNT4J using hashtag enrichment scheme. Hashtags are used to decorate log4j messages with important meta data about each log message. This meta data is used to generate TNT4J tracking events (same tags can be passed using log4j `MDC` object):
@@ -25,9 +24,21 @@ Developers may also enrich log4j messages and pass context to TNT4J using hashta
 logger.info("Starting a tnt4j activity #beg=Test, #app=" + Log4JTest.class.getName());
 logger.warn("First log message #app=" + Log4JTest.class.getName() + ", #msg='1 Test warning message'");
 logger.error("Second log message #app=" + Log4JTest.class.getName() + ", #msg='2 Test error message'", new Exception("test exception"));
-logger.info("Ending a tnt4j activity #end=Test, #app=" + Log4JTest.class.getName());
+logger.info("Ending a tnt4j activity #end=Test, #app=" + Log4JTest.class.getName() + " #%i/order-no=" + orderNo);
 ```
-Above example groups messages between first and last into a related logical collection called `Activity`. Activity is simply a collection of logically related events/messages. Hashtags `#beg` and `#end` are used to demarcate activity boundaries. This method also supports nested activities. 
+Above example groups messages between first and last into a related logical collection called `Activity`. Activity is a collection of logically related events/messages. Hashtags `#beg`, `#end` are used to demarcate activity boundaries. This method also supports nested activities.
+
+User defined fields can be reported using `#[type-qualifier]your-metric-name=your-value` convention (e.g. `#%i/order-no=62627`). `TNT4JAppender` supports the following optional type qualifiers:
+```
+	%i/ -- integer
+	%l/ -- long
+	%d/ -- double
+	%f/ -- float
+	%b/ -- boolean
+	%n/ -- number
+	%s/ -- string
+```
+Not specifying a qualifier defaults to auto detection of type by `TNT4JAppender`. First `number` qualifier is tested and defaults to `string` if the test fails (e.g. `#order-no=62627`). User defined fields are reported as a TNT4J snapshot with `UserDefined` category and snapshot name set to activity name set by `#beg`, `#end`, `#opn` tags.
 
 Below is a sample log4j appender configuration:
 ```
@@ -345,12 +356,11 @@ Verify TNT4J
 ===============================================
 Run a sample program (`com.nastel.jkool.tnt4j.examples.TNT4JTest`):
 	
-	CD to ../build/tnt4j
-
 ```java	
-	java -javaagent:tnt4j-api.jar -Dlog4j.configuration=file:log4j.properties -Dtnt4j.dump.on.vm.shutdown=true
-	-Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath tnt4j-api-final-all.jar
-	com.nastel.jkool.tnt4j.examples.TNT4JTest com.myco.TestApp MYSERVER "Test log message" correlator1 "TestCommand"  TestLocation
+CD to ../build/tnt4j
+java -javaagent:tnt4j-api.jar -Dlog4j.configuration=file:log4j.properties -Dtnt4j.dump.on.vm.shutdown=true
+-Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath tnt4j-api-final-all.jar
+com.nastel.jkool.tnt4j.examples.TNT4JTest com.myco.TestApp MYSERVER "Test log message" correlator1 "TestCommand"  TestLocation
 ```
 `-javaagent:tnt4j-api.jar` command line option is required by `ObjectDumpProvider` to calculate object deep and shallow memory sizes. Use this only if your application makes use of ObjectDumpProvider to dump object state.
 

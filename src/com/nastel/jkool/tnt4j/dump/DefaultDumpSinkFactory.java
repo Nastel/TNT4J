@@ -20,6 +20,7 @@ import java.util.Map;
 
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.config.ConfigException;
+import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 
@@ -55,7 +56,7 @@ public class DefaultDumpSinkFactory implements DumpSinkFactory, Configurable {
 		if (!dumpLocation.endsWith(File.separator)) {
 			dumpLocation += File.separator;
 		}
-		dumpLocation += Utils.getVMName() + ".dump";
+		dumpLocation += UsecTimestamp.getTimeStamp("yyyy-MM-dd") + ".dump";
 	}
 	
 	/**

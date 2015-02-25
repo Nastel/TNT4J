@@ -230,7 +230,7 @@ class LoggingThreadFactory implements ThreadFactory {
 }
 
 class LoggingTask implements Runnable {
-	private static final int ERROR_REPORT_WINDOW = Integer.getInteger("tnt4j.pooled.logger.error.window", 30000);
+	private static final int ERROR_REPORT_WINDOW = Integer.getInteger("tnt4j.logger.error.frequency", 30000);
 	
 	PooledLogger pooledLogger;
 	BlockingQueue<SinkLogEvent> eventQ;
