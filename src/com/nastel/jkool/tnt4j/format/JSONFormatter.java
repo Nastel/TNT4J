@@ -37,10 +37,10 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * JSON implementation of <code>Formatter</code> interface provides default formatting of <code>TrackingActvity</code>,
  * <code>TrackingEvent</code>, <code>Snapshot</code>, <code>Property</code> into JSON format.
  * </p>
- * 
- * 
+ *
+ *
  * @version $Revision: 22 $
- * 
+ *
  * @see DefaultFormatter
  * @see TrackingActivity
  * @see TrackingEvent
@@ -115,7 +115,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 
 	/**
 	 * Create JSON formatter without newlines during formatting
-	 * 
+	 *
 	 */
 	public JSONFormatter() {
 		this(Boolean.getBoolean("tnt4j.formatter.json.newline"));
@@ -123,7 +123,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 
 	/**
 	 * Create JSON formatter and conditionally format with newline
-	 * 
+	 *
 	 * @param newLine
 	 *            apply newline formatting to JSON
 	 */
@@ -153,7 +153,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			StringBuilder jsonString = new StringBuilder(1024);
 			jsonString.append(START_JSON);
 			jsonString.append(Utils.quote(JSON_TIME_USEC_LABEL)).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
-			
+
 			String msgText = Utils.format(obj.toString(), args);
 			msgText = StringEscapeUtils.escapeJson(msgText); // escape double quote chars
 			jsonString.append(Utils.quote(JSON_MSG_TEXT_LABEL)).append(ATTR_SEP).append(Utils.quote(msgText));
@@ -164,7 +164,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 
 	/**
 	 * Format a given <code>TrackingEvent</code> into JSON format
-	 * 
+	 *
 	 * @param event
 	 *            tracking event instance to be formatted
 	 * @see TrackingEvent
@@ -216,12 +216,18 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			jsonString.append(Utils.quote(JSON_LOCATION_LABEL)).append(ATTR_SEP).append(
 			        Utils.quote(event.getLocation())).append(ATTR_JSON);
 		}
-		jsonString.append(Utils.quote(JSON_OPERATION_LABEL)).append(ATTR_SEP).append(
-		        Utils.quote(event.getOperation().getResolvedName())).append(ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_RESOURCE_LABEL)).append(ATTR_SEP).append(
-		        Utils.quote(event.getOperation().getResource())).append(ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_USER_LABEL)).append(ATTR_SEP).append(
-		        Utils.quote(event.getOperation().getUser())).append(ATTR_JSON);
+		if (event.getOperation().getResolvedName() != null) {
+			jsonString.append(Utils.quote(JSON_OPERATION_LABEL)).append(ATTR_SEP).append(
+					Utils.quote(event.getOperation().getResolvedName())).append(ATTR_JSON);
+		}
+		if (event.getOperation().getResource() != null) {
+			jsonString.append(Utils.quote(JSON_RESOURCE_LABEL)).append(ATTR_SEP).append(
+			        Utils.quote(event.getOperation().getResource())).append(ATTR_JSON);
+		}
+		if (event.getOperation().getUser() != null) {
+			jsonString.append(Utils.quote(JSON_USER_LABEL)).append(ATTR_SEP).append(
+			        Utils.quote(event.getOperation().getUser())).append(ATTR_JSON);
+		}
 		jsonString.append(Utils.quote(JSON_TIME_USEC_LABEL)).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
 		if (event.getOperation().getStartTime() != null) {
 			jsonString.append(Utils.quote(JSON_START_TIME_USEC_LABEL)).append(ATTR_SEP).append(
@@ -252,7 +258,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		jsonString.append(Utils.quote(JSON_MSG_MIME_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getMimeType())).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_MSG_ENC_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getEncoding())).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_MSG_CHARSET_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getCharset()));
-		
+
 		String msgText = event.getMessage();
 		if (msgText != null) {
 			jsonString.append(ATTR_JSON);
@@ -277,7 +283,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 
 	/**
 	 * Format a given <code>TrackingActivity</code> into JSON format
-	 * 
+	 *
 	 * @param activity
 	 *            tracking activity instance to be formatted
 	 * @see TrackingActivity
@@ -331,12 +337,18 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			jsonString.append(Utils.quote(JSON_LOCATION_LABEL)).append(ATTR_SEP).append(
 			        Utils.quote(activity.getLocation())).append(ATTR_JSON);
 		}
-		jsonString.append(Utils.quote(JSON_OPERATION_LABEL)).append(ATTR_SEP).append(
-		        Utils.quote(activity.getResolvedName())).append(ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_RESOURCE_LABEL)).append(ATTR_SEP)
-		        .append(Utils.quote(activity.getResource())).append(ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_USER_LABEL)).append(ATTR_SEP).append(
-		        Utils.quote(activity.getSource().getUser())).append(ATTR_JSON);
+		if (activity.getResolvedName() != null) {
+			jsonString.append(Utils.quote(JSON_OPERATION_LABEL)).append(ATTR_SEP).append(
+			        Utils.quote(activity.getResolvedName())).append(ATTR_JSON);
+		}
+		if (activity.getResource() != null) {
+			jsonString.append(Utils.quote(JSON_RESOURCE_LABEL)).append(ATTR_SEP)
+			        .append(Utils.quote(activity.getResource())).append(ATTR_JSON);
+		}
+		if (activity.getSource().getUser() != null) {
+			jsonString.append(Utils.quote(JSON_USER_LABEL)).append(ATTR_SEP).append(
+			        Utils.quote(activity.getSource().getUser())).append(ATTR_JSON);
+		}
 
 		jsonString.append(Utils.quote(JSON_TIME_USEC_LABEL)).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
 		if (activity.getStartTime() != null) {
@@ -379,11 +391,12 @@ public class JSONFormatter implements EventFormatter, Configurable {
 
 	/**
 	 * Format a given <code>Snapshot</code> into JSON format
-	 * 
+	 *
 	 * @param snap
 	 *            snapshot object to be formatted into JSON
 	 * @see Snapshot
 	 */
+	@Override
 	public String format(Snapshot snap) {
 		StringBuilder jsonString = new StringBuilder(1024);
 		jsonString.append(START_JSON);
@@ -441,7 +454,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 
 	/**
 	 * Format a given <code>Property</code> into JSON format
-	 * 
+	 *
 	 * @param prop
 	 *            property object to be formatted into JSON
 	 * @see Property
