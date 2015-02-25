@@ -28,7 +28,7 @@ logger.info("Ending a tnt4j activity #end=Test, #app=" + Log4JTest.class.getName
 ```
 Above example groups messages between first and last into a related logical collection called `Activity`. Activity is a collection of logically related events/messages. Hashtags `#beg` and `#end` are used to demarcate activity boundaries. This method also supports nested activities.
 
-User defined fields can be reported using `#[type-qualifier]metric=value` convention (e.g. `#%i/order-no=62627`). `TNT4JAppender` supports the following optional type qualifiers:
+User defined fields can be reported using `#[type-qualifier]your-metric-name=your-value` convention (e.g. `#%i/order-no=62627`). `TNT4JAppender` supports the following optional type qualifiers:
 ```
 	%i/ -- integer
 	%l/ -- long
