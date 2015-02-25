@@ -247,7 +247,6 @@ public class JSONFormatter implements EventFormatter, Configurable {
 				        .append(ATTR_JSON);
 			}
 		}
-
 		if (event.getTag() != null) {
 			jsonString.append(Utils.quote(JSON_MSG_TAG_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getTag()))
 			        .append(ATTR_JSON);
@@ -409,7 +408,6 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			jsonString.append(Utils.quote(JSON_PARENT_TRACK_ID_LABEL)).append(ATTR_SEP).append(
 			        Utils.quote(snap.getParentId())).append(ATTR_JSON);
 		}
-
 		if (snap.getId() != null) {
 			jsonString.append(Utils.quote(JSON_FQN_LABEL)).append(ATTR_SEP)
 			        .append(Utils.quote(snap.getId())).append(ATTR_JSON);
