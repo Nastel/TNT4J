@@ -25,9 +25,19 @@ Developers may also enrich log4j messages and pass context to TNT4J using hashta
 logger.info("Starting a tnt4j activity #beg=Test, #app=" + Log4JTest.class.getName());
 logger.warn("First log message #app=" + Log4JTest.class.getName() + ", #msg='1 Test warning message'");
 logger.error("Second log message #app=" + Log4JTest.class.getName() + ", #msg='2 Test error message'", new Exception("test exception"));
-logger.info("Ending a tnt4j activity #end=Test, #app=" + Log4JTest.class.getName());
+logger.info("Ending a tnt4j activity #end=Test, #app=" + Log4JTest.class.getName() + " #%i/order-no=" + orderNo);
 ```
-Above example groups messages between first and last into a related logical collection called `Activity`. Activity is simply a collection of logically related events/messages. Hashtags `#beg` and `#end` are used to demarcate activity boundaries. This method also supports nested activities. 
+Above example groups messages between first and last into a related logical collection called `Activity`. Activity is a collection of logically related events/messages. Hashtags `#beg` and `#end` are used to demarcate activity boundaries. This method also supports nested activities. User defined fields can be reported as well using `#[type-qualifier]metric=value` convetion (e.g. `#%i/order-no=62627`). `TNT4JAppender` supports the following type qualifiers:
+```
+	%i/ -- integer
+	%l/ -- long
+	%d/ -- double
+	%f/ -- float
+	%b/ -- boolean
+	%n/ -- number
+	%s/ -- string
+```
+Not specifying a qualifier defaults to auto detection of type by `TNT4JAppender`. First `number` qualifier is tested and defaults to `string` if the test fails.
 
 Below is a sample log4j appender configuration:
 ```
