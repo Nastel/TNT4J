@@ -13,13 +13,13 @@
     <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
     <![endif]-->
 
-    <title>Tnt4j by Nastel</title>
+    <title>TNT4J by Nastel</title>
   </head>
 
   <body>
     <header>
       <div class="inner">
-        <h1>Tnt4j</h1>
+        <h1>TNT4J</h1>
         <h2>Track and Trace 4 Java API, Application event streaming and logging framework for correlation, diagnostics and tracking of application activities.</h2>
         <a href="https://github.com/Nastel/TNT4J" class="button"><small>View project on</small> GitHub</a>
       </div>
@@ -52,18 +52,30 @@
 
 <p>TNT4J integrates with log4j or any other logging framework via a concept of an <code>EventSink</code>. TNT4J default integration is with log4j. </p>
 
-<p>First, all TNT4J messages can be routed via a log4j event sink and therefore can take advantage of the whole log4j framework. </p>
-
-<p>Second, TNT4J includes <code>TNT4JAppender</code> for log4j which allows developers to send log4j messages to TNT4J via this appender and take advantage of TNT4j functionality.</p>
+<p>First, all TNT4J messages can be routed via a log4j event sink and therefore can take advantage of the whole log4j framework. 
+Second, TNT4J includes <code>TNT4JAppender</code> for log4j which allows developers to send log4j messages to TNT4J via this appender and take advantage of TNT4j functionality.</p>
 
 <p>Developers may also enrich log4j messages and pass context to TNT4J using hashtag enrichment scheme. Hashtags are used to decorate log4j messages with important meta data about each log message. This meta data is used to generate TNT4J tracking events (same tags can be passed using log4j <code>MDC</code> object):</p>
 
 <div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>info(<span class="pl-s1"><span class="pl-pds">"</span>Starting a tnt4j activity #beg=Test, #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-stj">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName());
 logger<span class="pl-k">.</span>warn(<span class="pl-s1"><span class="pl-pds">"</span>First log message #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-stj">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName() <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">"</span>, #msg='1 Test warning message'<span class="pl-pds">"</span></span>);
 logger<span class="pl-k">.</span>error(<span class="pl-s1"><span class="pl-pds">"</span>Second log message #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-stj">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName() <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">"</span>, #msg='2 Test error message'<span class="pl-pds">"</span></span>, <span class="pl-k">new</span> <span class="pl-stj">Exception</span>(<span class="pl-s1"><span class="pl-pds">"</span>test exception<span class="pl-pds">"</span></span>));
-logger<span class="pl-k">.</span>info(<span class="pl-s1"><span class="pl-pds">"</span>Ending a tnt4j activity #end=Test, #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-stj">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName());</pre></div>
+logger<span class="pl-k">.</span>info(<span class="pl-s1"><span class="pl-pds">"</span>Ending a tnt4j activity #end=Test, #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-stj">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName() <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">"</span> #%i/order-no=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> orderNo);</pre></div>
 
-<p>Above example groups messages between first and last into a related logical collection called <code>Activity</code>. Activity is simply a collection of logically related events/messages. Hashtags <code>#beg</code> and <code>#end</code> are used to demarcate activity boundaries. This method also supports nested activities. </p>
+<p>Above example groups messages between first and last into a related logical collection called <code>Activity</code>. Activity is a collection of logically related events/messages. Hashtags <code>#beg</code> and <code>#end</code> are used to demarcate activity boundaries. This method also supports nested activities.</p>
+
+<p>User defined fields can be reported using <code>#[type-qualifier]your-metric-name=your-value</code> convention (e.g. <code>#%i/order-no=62627</code>). <code>TNT4JAppender</code> supports the following optional type qualifiers:</p>
+
+<pre><code>    %i/ -- integer
+    %l/ -- long
+    %d/ -- double
+    %f/ -- float
+    %b/ -- boolean
+    %n/ -- number
+    %s/ -- string
+</code></pre>
+
+<p>Not specifying a qualifier defaults to auto detection of type by <code>TNT4JAppender</code>. First <code>number</code> qualifier is tested and defaults to <code>string</code> if the test fails (e.g. <code>#order-no=62627</code>). User defined fields are reported as a TNT4J snapshot with <code>UserDefined</code> category and snapshot name set to activity name set by <code>#beg</code> and <code>#end</code> tags or <code>#opn</code> tags.</p>
 
 <p>Below is a sample log4j appender configuration:</p>
 
