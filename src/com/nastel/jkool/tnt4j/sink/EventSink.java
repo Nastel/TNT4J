@@ -45,6 +45,8 @@ public interface EventSink extends Sink, KeyValueStats {
 	static final String KEY_LOGGED_ACTIVITIES = "sink-activities";
 	static final String KEY_LOGGED_SNAPSHOTS = "sink-snapshots";
 	static final String KEY_SKIPPED_COUNT = "sink-skipped";
+	static final String KEY_LAST_TIMESTAMP = "sink-last-timestamp";
+	static final String KEY_LAST_AGE = "sink-last-age-ms";
 
 	/**
 	 * Set current/active <code>Source</code> with the sink

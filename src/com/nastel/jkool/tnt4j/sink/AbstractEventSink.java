@@ -16,6 +16,7 @@
 package com.nastel.jkool.tnt4j.sink;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicLong;
@@ -56,9 +57,10 @@ public abstract class AbstractEventSink implements EventSink {
 	private AtomicLong loggedActivities = new AtomicLong(0);
 	private AtomicLong loggedEvents = new AtomicLong(0);
 	private AtomicLong loggedMsgs = new AtomicLong(0);
+	private AtomicLong lastTime = new AtomicLong(0);
 	private AtomicLong loggedSnaps = new AtomicLong(0);
 	private AtomicLong errorCount = new AtomicLong(0);
-	private AtomicLong filteredCount = new AtomicLong(0);
+	private AtomicLong skipCount = new AtomicLong(0);
 
 	public AbstractEventSink(String nm) {
 		name = nm;
@@ -103,7 +105,11 @@ public abstract class AbstractEventSink implements EventSink {
 		stats.put(KEY_LOGGED_SNAPSHOTS, loggedSnaps.get());
 		stats.put(KEY_SINK_ERROR_COUNT, errorCount.get());
 		stats.put(KEY_LOGGED_MSGS, loggedMsgs.get());
-		stats.put(KEY_SKIPPED_COUNT, filteredCount.get());
+		stats.put(KEY_SKIPPED_COUNT, skipCount.get());
+		if (lastTime.get() > 0) {
+			stats.put(KEY_LAST_TIMESTAMP, new Date(lastTime.get()));
+			stats.put(KEY_LAST_AGE, (System.currentTimeMillis() - lastTime.get()));
+		}
 		return this;
 	}
 
@@ -113,7 +119,7 @@ public abstract class AbstractEventSink implements EventSink {
 		loggedEvents.set(0);
 		errorCount.set(0);
 		loggedMsgs.set(0);
-		filteredCount.set(0);
+		skipCount.set(0);
 	}
 
 	/**
@@ -230,7 +236,7 @@ public abstract class AbstractEventSink implements EventSink {
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, level, msg, args));
 			if (!pass) {
-				filteredCount.incrementAndGet();
+				skipCount.incrementAndGet();
 				break;
 			}
 		}
@@ -253,7 +259,7 @@ public abstract class AbstractEventSink implements EventSink {
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, snapshot));
 			if (!pass) {
-				filteredCount.incrementAndGet();
+				skipCount.incrementAndGet();
 				break;
 			}
 		}
@@ -276,7 +282,7 @@ public abstract class AbstractEventSink implements EventSink {
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, activity));
 			if (!pass) {
-				filteredCount.incrementAndGet();
+				skipCount.incrementAndGet();
 				break;
 			}
 		}
@@ -299,7 +305,7 @@ public abstract class AbstractEventSink implements EventSink {
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, event));
 			if (!pass) {
-				filteredCount.incrementAndGet();
+				skipCount.incrementAndGet();
 				break;
 			}
 		}
@@ -330,6 +336,7 @@ public abstract class AbstractEventSink implements EventSink {
 				_log(activity);
 				loggedActivities.incrementAndGet();
 				loggedSnaps.addAndGet(activity.getSnapshotCount());
+				lastTime.set(System.currentTimeMillis());
 				if (logListeners.size() > 0) {
 					notifyListeners(new SinkLogEvent(this, activity));
 				}
@@ -349,6 +356,7 @@ public abstract class AbstractEventSink implements EventSink {
 				_log(event);
 				loggedEvents.incrementAndGet();
 				loggedSnaps.addAndGet(event.getOperation().getSnapshotCount());
+				lastTime.set(System.currentTimeMillis());
 				if (logListeners.size() > 0) {
 					notifyListeners(new SinkLogEvent(this, event));
 				}
@@ -367,6 +375,7 @@ public abstract class AbstractEventSink implements EventSink {
 			try {
 				_log(snapshot);
 				loggedSnaps.incrementAndGet();
+				lastTime.set(System.currentTimeMillis());
 				if (logListeners.size() > 0) {
 					notifyListeners(new SinkLogEvent(this, snapshot));
 				}
@@ -389,6 +398,7 @@ public abstract class AbstractEventSink implements EventSink {
 			try {
 				_log(src, sev, msg, args);
 				loggedMsgs.incrementAndGet();
+				lastTime.set(System.currentTimeMillis());
 				if (logListeners.size() > 0) {
 					notifyListeners(new SinkLogEvent(this, src, sev, msg, args));
 				}
