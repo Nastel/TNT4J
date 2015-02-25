@@ -62,7 +62,7 @@ logger<span class="pl-k">.</span>warn(<span class="pl-s1"><span class="pl-pds">"
 logger<span class="pl-k">.</span>error(<span class="pl-s1"><span class="pl-pds">"</span>Second log message #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-stj">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName() <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">"</span>, #msg='2 Test error message'<span class="pl-pds">"</span></span>, <span class="pl-k">new</span> <span class="pl-stj">Exception</span>(<span class="pl-s1"><span class="pl-pds">"</span>test exception<span class="pl-pds">"</span></span>));
 logger<span class="pl-k">.</span>info(<span class="pl-s1"><span class="pl-pds">"</span>Ending a tnt4j activity #end=Test, #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-stj">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName() <span class="pl-k">+</span> <span class="pl-s1"><span class="pl-pds">"</span> #%i/order-no=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> orderNo);</pre></div>
 
-<p>Above example groups messages between first and last into a related logical collection called <code>Activity</code>. Activity is a collection of logically related events/messages. Hashtags <code>#beg</code> and <code>#end</code> are used to demarcate activity boundaries. This method also supports nested activities.</p>
+<p>Above example groups messages between first and last into a related logical collection called <code>Activity</code>. Activity is a collection of logically related events/messages. Hashtags <code>#beg</code>, <code>#end</code> are used to demarcate activity boundaries. This method also supports nested activities.</p>
 
 <p>User defined fields can be reported using <code>#[type-qualifier]your-metric-name=your-value</code> convention (e.g. <code>#%i/order-no=62627</code>). <code>TNT4JAppender</code> supports the following optional type qualifiers:</p>
 
@@ -75,7 +75,7 @@ logger<span class="pl-k">.</span>info(<span class="pl-s1"><span class="pl-pds">"
     %s/ -- string
 </code></pre>
 
-<p>Not specifying a qualifier defaults to auto detection of type by <code>TNT4JAppender</code>. First <code>number</code> qualifier is tested and defaults to <code>string</code> if the test fails (e.g. <code>#order-no=62627</code>). User defined fields are reported as a TNT4J snapshot with <code>UserDefined</code> category and snapshot name set to activity name set by <code>#beg</code> and <code>#end</code> tags or <code>#opn</code> tags.</p>
+<p>Not specifying a qualifier defaults to auto detection of type by <code>TNT4JAppender</code>. First <code>number</code> qualifier is tested and defaults to <code>string</code> if the test fails (e.g. <code>#order-no=62627</code>). User defined fields are reported as a TNT4J snapshot with <code>UserDefined</code> category and snapshot name set to activity name set by <code>#beg</code>, <code>#end</code>, <code>#opn</code> tags.</p>
 
 <p>Below is a sample log4j appender configuration:</p>
 
