@@ -410,9 +410,11 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			}
 		}
 		catch (Throwable ex) {
-			logger.log(OpLevel.ERROR, 
-					"Failed to track activity signature={0}, tid={1}, event.sink={2}, source={3}",
+			if (logger.isSet(OpLevel.DEBUG)) {
+				logger.log(OpLevel.ERROR, 
+					"Failed to track activity: signature={0}, tid={1}, event.sink={2}, source={3}",
 					activity.getTrackingId(), Thread.currentThread().getId(), eventSink, getSource(), ex);
+			}
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
 		}
@@ -428,9 +430,11 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 				noopCount.incrementAndGet();
 			}
 		} catch (Throwable ex) {
-			logger.log(OpLevel.ERROR, 
-				"Failed to track event signature={0}, tid={1}, event.sink={2}, source={3}",
-				event.getTrackingId(), Thread.currentThread().getId(), eventSink, getSource(), ex);
+			if (logger.isSet(OpLevel.DEBUG)) {
+				logger.log(OpLevel.ERROR, 
+						"Failed to track event: signature={0}, tid={1}, event.sink={2}, source={3}",
+						event.getTrackingId(), Thread.currentThread().getId(), eventSink, getSource(), ex);
+			}
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
 		}
@@ -444,13 +448,31 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			eventSink.log(snapshot);
 			snapCount.incrementAndGet();
 		} catch (Throwable ex) {
-			logger.log(OpLevel.ERROR, 
-					"Failed to track snapshot signature={0}, tid={1}, event.sink={2}, snapshot={3}",
+			if (logger.isSet(OpLevel.DEBUG)) {
+				logger.log(OpLevel.ERROR, 
+					"Failed to track snapshot: signature={0}, tid={1}, event.sink={2}, snapshot={3}",
 					snapshot.getTrackingId(), Thread.currentThread().getId(), eventSink, snapshot, ex);
+			}
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
 		}
     }
+
+	@Override
+    public void log(OpLevel sev, String msg, Object... args) {
+		long start = System.nanoTime();
+		try {
+			eventSink.log(getSource(), sev, msg, args);				
+			msgCount.incrementAndGet();
+		} catch (Throwable ex) {
+			if (logger.isSet(OpLevel.DEBUG)) {
+				logger.log(OpLevel.ERROR, 
+					"Failed to log message: severity={0}, msg={1}", sev, msg, ex);
+			}
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
+		}
+	}
 
 	@Override
 	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object... args) {
@@ -574,21 +596,12 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	@Override
     public void sinkError(SinkError ev) {
 		errorCount.incrementAndGet();
-		logger.log(OpLevel.ERROR, 
+		if (logger.isSet(OpLevel.DEBUG)) {
+			logger.log(OpLevel.ERROR, 
 				"Sink write error: count={4}, vm.name={0}, tid={1}, event.sink={2}, source={3}",
 				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), errorCount.get(), ev.getCause());
-		resetEventSink();
-	}
-
-	@Override
-    public void log(OpLevel sev, String msg, Object... args) {
-		long start = System.nanoTime();
-		try {
-			eventSink.log(getSource(), sev, msg, args);				
-			msgCount.incrementAndGet();
-		} finally {
-			countOverheadNanos(System.nanoTime() - start);
 		}
+		resetEventSink();
 	}
 
 	@Override

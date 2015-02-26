@@ -286,8 +286,8 @@ class LoggingTask implements Runnable {
 					if ((thisError - lastError) >= ERROR_REPORT_WINDOW) {
 						lastError = thisError;
 						PooledLogger.logger.log(OpLevel.ERROR, 
-							"Error during processing: error.count={0}, event={1}", 
-							pooledLogger.exceptionCount.get(), event, err);
+							"Error during processing: error.count={0}, event.source={1}, event.sink={2}", 
+							pooledLogger.exceptionCount.get(), event.getEventSource(), event.getEventSink(), err);
 					}
 				}
 			}
