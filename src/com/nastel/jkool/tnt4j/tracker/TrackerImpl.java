@@ -94,6 +94,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		try {
 			handle.open();
 		} catch (Throwable e) {
+			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR, 
 					"Failed to open handle={4}, vm.name={0}, tid={1}, event.sink={2}, source={3}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), handle, e);
@@ -111,6 +112,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			eventSink.addSinkErrorListener(this);
 			eventSink.open();
 		} catch (Throwable e) {
+			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR, 
 					"Failed to open event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
@@ -130,6 +132,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 				eventSink.close();
 			}	
 		} catch (Throwable e) {
+			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR, 
 					"Failed to close event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
@@ -142,6 +145,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 				eventSink.close();
 			}	
 		} catch (Throwable e) {
+			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR, 
 					"Failed to reset event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
@@ -440,7 +444,9 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			eventSink.log(snapshot);
 			snapCount.incrementAndGet();
 		} catch (Throwable ex) {
-			logger.log(OpLevel.ERROR, "Failed to track snapshot={0}", snapshot, ex);
+			logger.log(OpLevel.ERROR, 
+					"Failed to track snapshot signature={0}, tid={1}, event.sink={2}, snapshot={3}",
+					snapshot.getTrackingId(), Thread.currentThread().getId(), eventSink, snapshot, ex);
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
 		}
@@ -556,6 +562,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 				"Tracker closed vm.name={0}, tid={1}, event.sink={2}, source={3}",
 				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource());
 		} catch (Throwable e) {
+			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR, 
 				"Failed to close tracker vm.name={0}, tid={1}, event.sink={2}, source={3}",
 				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
