@@ -2,14 +2,14 @@ Why TNT4J
 =====================================
 TNT4J is about tracking and tracing activities, transactions, behavior and performance via an easy to use API that behaves much like a logging framework.
 
-Why track and trace your apps?
+Why track and trace your applications?
 * Trace application behavior, performance to improve diagnostics
 * Track end-user behavior to improve usability, customer satisfaction
 * Track topology, communications, relationships between entities
 * Track messages, binary, text, video, image, voice, etc.
 * Track location, mobility, GPS of your applications, users
 * Track anything worth tracking in your application
-* Know what happend, when, why 
+* Know what happened, when, why 
 
 <b>Several key features make TNT4J a prime choice for your java application:</b>
 
@@ -19,14 +19,14 @@ TNT4J integrates with log4j or any other logging framework via a concept of an `
 First, all TNT4J messages can be routed via a log4j event sink and therefore can take advantage of the whole log4j framework. 
 Second, TNT4J includes `TNT4JAppender` for log4j which allows developers to send log4j messages to TNT4J via this appender and take advantage of TNT4j functionality.
 
-Developers may also enrich log4j messages and pass context to TNT4J using hashtag enrichment scheme. Hashtags are used to decorate log4j messages with important meta data about each log message. This meta data is used to generate TNT4J tracking events (same tags can be passed using log4j `MDC` object):
+Developers may also enrich log4j messages and pass context to TNT4J using hashtag enrichment scheme. Hash tags are used to decorate log4j messages with important meta data about each log message. This meta data is used to generate TNT4J tracking events (same tags can be passed using log4j `MDC` object):
 ```java
 logger.info("Starting a tnt4j activity #beg=Test, #app=" + Log4JTest.class.getName());
 logger.warn("First log message #app=" + Log4JTest.class.getName() + ", #msg='1 Test warning message'");
 logger.error("Second log message #app=" + Log4JTest.class.getName() + ", #msg='2 Test error message'", new Exception("test exception"));
 logger.info("Ending a tnt4j activity #end=Test, #app=" + Log4JTest.class.getName() + " #%i/order-no=" + orderNo);
 ```
-Above example groups messages between first and last into a related logical collection called `Activity`. Activity is a collection of logically related events/messages. Hashtags `#beg`, `#end` are used to demarcate activity boundaries. This method also supports nested activities.
+Above example groups messages between first and last into a related logical collection called `Activity`. Activity is a collection of logically related events/messages. Hash tags `#beg`, `#end` are used to demarcate activity boundaries. This method also supports nested activities.
 
 User defined fields can be reported using `#[type-qualifier]your-metric-name=your-value` convention (e.g. `#%i/order-no=62627`). `TNT4JAppender` supports the following optional type qualifiers:
 ```
@@ -120,7 +120,7 @@ TrackingLogger.dumpState();
 ```
 
 ### Measurements & Metrics
-TNT4J is not just about logging messages, it is also about measurements and metrics. Metrics such as elpased time, CPU, memory, block/wait times as well as user defined metrics. TNT4J allows you to answer the state of CPU, memory, user defined metrics at the time of the logged event.
+TNT4J is not just about logging messages, it is also about measurements and metrics. Metrics such as elapsed time, CPU, memory, block/wait times as well as user defined metrics. TNT4J allows you to answer the state of CPU, memory, user defined metrics at the time of the logged event.
 Below is an example of creating a snapshot (collection of metrics) and relate it to an activity:
 ```java
 // post processing of activity: enrich activity with application metrics
@@ -235,7 +235,7 @@ try {
    	"Failed to process request={0}", request_id, ex);
 }
 ```
-Consolidate all conditional logging checks into a single listener. Why call `isDebugEnabled()' before each log entry?
+Consolidate all conditional logging checks into a single listener. Why call `isDebugEnabled()` before each log entry?
 
 ```java
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
@@ -298,7 +298,7 @@ Wiki is available at https://github.com/Nastel/TNT4J/wiki
 
 TNT4J Mission
 =======================================
-* Standard way to track application behavior, activities accross users, apps, servers, devices, threads
+* Standard way to track application behavior, activities across users, apps, servers, devices, threads
 * Dramatically reduce time it takes to troubleshoot application behavior using logging paradigm
 * Performance metrics and application state to reduce diagnostic time
 * Simple programming model for ease of use
@@ -309,22 +309,22 @@ TNT4J Mission
 
 TNT4J Concepts
 ========================================
-TNT4J is fully plug-in and play tracking, tracing and logging framework that consits of the folliwng basic constructs:
+TNT4J is fully plug-in and play tracking, tracing and logging framework that consists of the following basic constructs:
 
 * <b>Tracker</b> -- high level object that allows developer to track, trace and log application activities
 * <b>Actvity</b> -- a collection of related tracking events (TrackingEvent) and other sub-activities, relation is established via a grouping specified by a developer or set of correlators (across thread, application boundaries). Activities may have a set of uder defined properties which are grouped into property snapshots (PropertySnapshot).
 * <b>Tracking Event</b> -- a message with associated start/stop time stamps, severity, user defined message, correlator, tag, location (such as GPS, server etc) and other event properties.
 * <b>Property</b> -- key, value pair
-* <b>Property snapshot</b> -- a collection of properties with category, name and a timestamp associated with when snapshot is taked. Actvities may have one or more property snapshots.
+* <b>Property snapshot</b> -- a collection of properties with category, name and a time stamp associated with when snapshot is taken. Activities may have one or more property snapshots.
 * <b>Formatter</b> -- an object responsible for formatting underlying TNT4J objects such as Activity, Tracking Event and convert into a formatted string.
 * <b>Tracking Selector</b> -- an object associated with a Tracker that allows developers to perform conditional logging based on a given set of severity, key, value combination. Such combinations are stored in token repository.
 * <b>Token Repository</b> -- an underlying storage used by tracking selector that actually stores and maintains severity, key, value combinations. Such repository can be backed by a file, cache, memory or any other desired medium. Token repositories can be shared accross application boundaries and therefore conditional logging can span multiple applications, runtimes, geo locations.
 * <b>Sink</b> -- sink is a basic destination where obejcts can be written.
 * <b>Event Sink</b> -- destination where events, activities and messages are recorded. Such destination can be file, socket, etc.
-Sinks are usually associated with formatters which are called to format objects before writting to the sink.
+Sinks are usually associated with formatters which are called to format objects before writing to the sink.
 * <b>Dump Sink</b> -- sink where application dumps are recorded.
 * <b>Dump</b> -- a property snapshot that deals with application state (name, value pairs). Application can generate user defined dumps to report application specific metrics during diagnostics, on demand or VM shutdown.
-* <b>Dump Provider</b> -- user defined implmenetation that actually generated application Dumps.
+* <b>Dump Provider</b> -- user defined implementation that actually generated application Dumps.
 
 
 How to Build TNT4J
