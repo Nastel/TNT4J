@@ -374,7 +374,7 @@ See `tnt4j.properties` for TNT4J configuration: factories, formatters, listeners
 
 Known Projects Using TNT4J
 ===============================================
-* Simple Web End-User Monitoring -- TrackingFilter (https://github.com/Nastel/TrackingFilter)
+* Simple Web End-User Tracking -- TrackingFilter (https://github.com/Nastel/TrackingFilter)
 * JMX Streaming Agent - PingJMX (https://github.com/Nastel/PingJMX)
 * Cloud Event Streaming Library - JESL (https://github.com/Nastel/JESL)
 * Streaming Analytics Service -- jkoolcloud.com (https://www.jkoolcloud.com)
