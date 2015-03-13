@@ -42,7 +42,7 @@
 <li>Track messages, binary, text, video, image, voice, etc.</li>
 <li>Track location, mobility, GPS of your applications, users</li>
 <li>Track anything worth tracking in your application</li>
-<li>Know what happened, when, why </li>
+<li>Know you application: what, where, when, why </li>
 </ul>
 
 <p><b>Several key features make TNT4J a prime choice for your java application:</b></p>
@@ -94,7 +94,7 @@ log4j.appender.tnt4j.layout.ConversionPattern=%d{ABSOLUTE} %-5p [%c{1}] %m%n
 
 <p>No need to concatenate messages before logging. String concatenation is expensive especialy in loops. Simply log using message patterns as follows and TNT4J will resolve the message only if it actually gets logged:</p>
 
-<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>debug(<span class="pl-s1"><span class="pl-pds">"</span>My message {0}, {1}, {2}<span class="pl-pds">"</span></span>, arg1, arg2, arg3);</pre></div>
+<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>debug(<span class="pl-s1"><span class="pl-pds">"</span>My message {0}, {1}, {2}<span class="pl-pds">"</span></span>, arg0, arg1, arg3);</pre></div>
 
 <p>TNT4J enhances logging performance by supporting asynchronous pooled logging, which delegates logging to a dedicated thread pool. Use <code>BufferedEventSinkFactory</code> in your <code>tnt4.properties</code> configuration to enable this feature. See example below: </p>
 
@@ -111,7 +111,7 @@ event.sink.factory.EventSinkFactory: com.nastel.jkool.tnt4j.logger.Log4JEventSin
 
 <div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span> <span class="pl-stj">MyLogFilter</span>()); 
 <span class="pl-c1">...</span>
-logger<span class="pl-k">.</span>debug(<span class="pl-s1"><span class="pl-pds">"</span>My message {0}, {1}, {2}<span class="pl-pds">"</span></span>, arg1, arg2, arg3);</pre></div>
+logger<span class="pl-k">.</span>debug(<span class="pl-s1"><span class="pl-pds">"</span>My message {0}, {1}, {2}<span class="pl-pds">"</span></span>, arg0, arg1, arg2);</pre></div>
 
 <p>All conditional logging can be consolidated into a single listener object. </p>
 
