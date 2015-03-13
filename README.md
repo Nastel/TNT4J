@@ -54,7 +54,7 @@ log4j.appender.tnt4j.layout.ConversionPattern=%d{ABSOLUTE} %-5p [%c{1}] %m%n
 ### Performance
 No need to concatenate messages before logging. String concatenation is expensive especialy in loops. Simply log using message patterns as follows and TNT4J will resolve the message only if it actually gets logged:
 ```java
-logger.debug("My message {0}, {1}, {2}", arg1, arg2, arg3);
+logger.debug("My message {0}, {1}, {2}", arg0, arg1, arg3);
 ```
 TNT4J enhances logging performance by supporting asynchronous pooled logging, which delegates logging to a dedicated thread pool. Use `BufferedEventSinkFactory` in your `tnt4.properties` configuration to enable this feature. See example below: 
 ```
@@ -68,7 +68,7 @@ No need to check for `isDebugEnabled()` before logging messages. Just register y
 ```java	
 logger.addSinkEventFilter(new MyLogFilter()); 
 ...
-logger.debug("My message {0}, {1}, {2}", arg1, arg2, arg3);
+logger.debug("My message {0}, {1}, {2}", arg0, arg1, arg2);
 ```
 
 All conditional logging can be consolidated into a single listener object. 
