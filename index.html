@@ -124,12 +124,12 @@ Register filters via declarations in <code>tnt4j.properties</code> or in your ap
 
 <div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span> <span class="pl-stj">MyLogFilter</span>());</pre></div>
 
-<p>Below is an example of a event sink filter <code>SampleTimeFilter</code> which must implement <code>SinkEventFilter</code> interface.</p>
+<p>Below is an example of an event sink filter <code>SampleEventFilter</code> which must implement <code>SinkEventFilter</code> interface.</p>
 
-<div class="highlight highlight-java"><pre><span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">SampleTimeFilter</span> <span class="pl-s">implements</span> <span class="pl-e">SinkEventFilter</span> {
+<div class="highlight highlight-java"><pre><span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">SampleEventFilter</span> <span class="pl-s">implements</span> <span class="pl-e">SinkEventFilter</span> {
     <span class="pl-stj">OpLevel</span> sevLimit <span class="pl-k">=</span> <span class="pl-stj">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>INFO</span>;
 
-    <span class="pl-s">public</span> <span class="pl-en">SampleTimeFilter</span>() {
+    <span class="pl-s">public</span> <span class="pl-en">SampleEventFilter</span>() {
     }
 
     <span class="pl-st">@Override</span>
