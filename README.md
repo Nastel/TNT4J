@@ -80,12 +80,12 @@ Register filters via declarations in `tnt4j.properties` or in your application b
 ```java
 logger.addSinkEventFilter(new MyLogFilter());
 ```
-Below is an example of a event sink filter `SampleTimeFilter` which must implement `SinkEventFilter` interface.
+Below is an example of an event sink filter `SampleEventFilter` which must implement `SinkEventFilter` interface.
 ```java
-public class SampleTimeFilter implements SinkEventFilter {
+public class SampleEventFilter implements SinkEventFilter {
 	OpLevel sevLimit = OpLevel.INFO;
 
-	public SampleTimeFilter() {
+	public SampleEventFilter() {
 	}
 
 	@Override
