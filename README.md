@@ -80,7 +80,35 @@ Register filters via declarations in `tnt4j.properties` or in your application b
 ```java
 logger.addSinkEventFilter(new MyLogFilter());
 ```
+Below is an example of a event sink filter `SampleTimeFilter` which must implement `SinkEventFilter` interface.
+```java
+public class SampleTimeFilter implements SinkEventFilter {
+	OpLevel sevLimit = OpLevel.INFO;
 
+	public SampleTimeFilter() {
+	}
+
+	@Override
+	public boolean filter(EventSink sink, TrackingEvent event) {
+		return (event.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(event.getSeverity());
+	}
+
+	@Override
+	public boolean filter(EventSink sink, TrackingActivity activity) {
+		return (activity.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(activity.getSeverity());
+	}
+
+	@Override
+	public boolean filter(EventSink sink, Snapshot snapshot) {
+		return (snapshot.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(snapshot.getSeverity());
+	}
+
+	@Override
+	public boolean filter(EventSink sink, OpLevel level, String msg, Object... args) {
+		return (level.ordinal() >= sevLimit.ordinal()) && sink.isSet(level);
+	}
+}
+```
 ### Granular conditional logging
 Log only what matters. Increase performance of your apps by decreasing the amount of logging your app produces and yet increasing relevance and quality of the output.
 
