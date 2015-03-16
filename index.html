@@ -124,6 +124,35 @@ Register filters via declarations in <code>tnt4j.properties</code> or in your ap
 
 <div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span> <span class="pl-stj">MyLogFilter</span>());</pre></div>
 
+<p>Below is an example of a event sink filter <code>SampleTimeFilter</code> which must implement <code>SinkEventFilter</code> interface.</p>
+
+<div class="highlight highlight-java"><pre><span class="pl-s">public</span> <span class="pl-s">class</span> <span class="pl-en">SampleTimeFilter</span> <span class="pl-s">implements</span> <span class="pl-e">SinkEventFilter</span> {
+    <span class="pl-stj">OpLevel</span> sevLimit <span class="pl-k">=</span> <span class="pl-stj">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>INFO</span>;
+
+    <span class="pl-s">public</span> <span class="pl-en">SampleTimeFilter</span>() {
+    }
+
+    <span class="pl-st">@Override</span>
+    <span class="pl-s">public</span> <span class="pl-st">boolean</span> <span class="pl-en">filter</span>(<span class="pl-stj">EventSink</span> <span class="pl-v">sink</span>, <span class="pl-stj">TrackingEvent</span> <span class="pl-v">event</span>) {
+        <span class="pl-k">return</span> (event<span class="pl-k">.</span>getSeverity()<span class="pl-k">.</span>ordinal() <span class="pl-k">&gt;=</span> sevLimit<span class="pl-k">.</span>ordinal()) <span class="pl-k">&amp;&amp;</span> sink<span class="pl-k">.</span>isSet(event<span class="pl-k">.</span>getSeverity());
+    }
+
+    <span class="pl-st">@Override</span>
+    <span class="pl-s">public</span> <span class="pl-st">boolean</span> <span class="pl-en">filter</span>(<span class="pl-stj">EventSink</span> <span class="pl-v">sink</span>, <span class="pl-stj">TrackingActivity</span> <span class="pl-v">activity</span>) {
+        <span class="pl-k">return</span> (activity<span class="pl-k">.</span>getSeverity()<span class="pl-k">.</span>ordinal() <span class="pl-k">&gt;=</span> sevLimit<span class="pl-k">.</span>ordinal()) <span class="pl-k">&amp;&amp;</span> sink<span class="pl-k">.</span>isSet(activity<span class="pl-k">.</span>getSeverity());
+    }
+
+    <span class="pl-st">@Override</span>
+    <span class="pl-s">public</span> <span class="pl-st">boolean</span> <span class="pl-en">filter</span>(<span class="pl-stj">EventSink</span> <span class="pl-v">sink</span>, <span class="pl-stj">Snapshot</span> <span class="pl-v">snapshot</span>) {
+        <span class="pl-k">return</span> (snapshot<span class="pl-k">.</span>getSeverity()<span class="pl-k">.</span>ordinal() <span class="pl-k">&gt;=</span> sevLimit<span class="pl-k">.</span>ordinal()) <span class="pl-k">&amp;&amp;</span> sink<span class="pl-k">.</span>isSet(snapshot<span class="pl-k">.</span>getSeverity());
+    }
+
+    <span class="pl-st">@Override</span>
+    <span class="pl-s">public</span> <span class="pl-st">boolean</span> <span class="pl-en">filter</span>(<span class="pl-stj">EventSink</span> <span class="pl-v">sink</span>, <span class="pl-stj">OpLevel</span> <span class="pl-v">level</span>, <span class="pl-stj">String</span> <span class="pl-v">msg</span>, <span class="pl-stj">Object</span>... <span class="pl-v">args</span>) {
+        <span class="pl-k">return</span> (level<span class="pl-k">.</span>ordinal() <span class="pl-k">&gt;=</span> sevLimit<span class="pl-k">.</span>ordinal()) <span class="pl-k">&amp;&amp;</span> sink<span class="pl-k">.</span>isSet(level);
+    }
+}</pre></div>
+
 <h3>
 <a id="granular-conditional-logging" class="anchor" href="#granular-conditional-logging" aria-hidden="true"><span class="octicon octicon-link"></span></a>Granular conditional logging</h3>
 
