@@ -330,18 +330,23 @@ logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span
     }
 
     <span class="pl-st">@Override</span>
-    <span class="pl-s">public</span> <span class="pl-st">boolean</span> <span class="pl-en">filter</span>(<span class="pl-stj">EventSink</span> <span class="pl-v">arg0</span>, <span class="pl-stj">TrackingEvent</span> <span class="pl-v">arg1</span>) {
-        <span class="pl-k">return</span> logger<span class="pl-k">.</span>isSet(arg1<span class="pl-k">.</span>getSeverity(), <span class="pl-s1"><span class="pl-pds">"</span>myappl.token<span class="pl-pds">"</span></span>);
+    <span class="pl-s">public</span> <span class="pl-st">boolean</span> <span class="pl-en">filter</span>(<span class="pl-stj">EventSink</span> <span class="pl-v">arg0</span>, <span class="pl-stj">TrackingEvent</span> <span class="pl-v">event</span>) {
+        <span class="pl-k">return</span> logger<span class="pl-k">.</span>isSet(event<span class="pl-k">.</span>getSeverity(), <span class="pl-s1"><span class="pl-pds">"</span>myappl.token<span class="pl-pds">"</span></span>);
     }
 
     <span class="pl-st">@Override</span>
-    <span class="pl-s">public</span> <span class="pl-st">boolean</span> <span class="pl-en">filter</span>(<span class="pl-stj">EventSink</span> <span class="pl-v">arg0</span>, <span class="pl-stj">TrackingActivity</span> <span class="pl-v">arg1</span>) {
-        <span class="pl-k">return</span> logger<span class="pl-k">.</span>isSet(arg1<span class="pl-k">.</span>getSeverity(), <span class="pl-s1"><span class="pl-pds">"</span>myappl.token<span class="pl-pds">"</span></span>);
+    <span class="pl-s">public</span> <span class="pl-st">boolean</span> <span class="pl-en">filter</span>(<span class="pl-stj">EventSink</span> <span class="pl-v">arg0</span>, <span class="pl-stj">TrackingActivity</span> <span class="pl-v">activity</span>) {
+        <span class="pl-k">return</span> logger<span class="pl-k">.</span>isSet(activity<span class="pl-k">.</span>getSeverity(), <span class="pl-s1"><span class="pl-pds">"</span>myappl.token<span class="pl-pds">"</span></span>);
     }
 
     <span class="pl-st">@Override</span>
-    <span class="pl-s">public</span> <span class="pl-st">boolean</span> <span class="pl-en">filter</span>(<span class="pl-stj">EventSink</span> <span class="pl-v">arg0</span>, <span class="pl-stj">OpLevel</span> <span class="pl-v">arg1</span>, <span class="pl-stj">String</span> <span class="pl-v">arg2</span>, <span class="pl-stj">Object</span>... <span class="pl-v">arg3</span>) {
-        <span class="pl-k">return</span> logger<span class="pl-k">.</span>isSet(arg1, <span class="pl-s1"><span class="pl-pds">"</span>myappl.token<span class="pl-pds">"</span></span>);
+    <span class="pl-s">public</span> <span class="pl-st">boolean</span> <span class="pl-en">filter</span>(<span class="pl-stj">EventSink</span> <span class="pl-v">sink</span>, <span class="pl-stj">Snapshot</span> <span class="pl-v">snapshot</span>) {
+        <span class="pl-k">return</span> logger<span class="pl-k">.</span>isSet(snapshot<span class="pl-k">.</span>getSeverity(), <span class="pl-s1"><span class="pl-pds">"</span>myappl.token<span class="pl-pds">"</span></span>);
+    }
+
+    <span class="pl-st">@Override</span>
+    <span class="pl-s">public</span> <span class="pl-st">boolean</span> <span class="pl-en">filter</span>(<span class="pl-stj">EventSink</span> <span class="pl-v">arg0</span>, <span class="pl-stj">OpLevel</span> <span class="pl-v">level</span>, <span class="pl-stj">String</span> <span class="pl-v">arg2</span>, <span class="pl-stj">Object</span>... <span class="pl-v">arg3</span>) {
+        <span class="pl-k">return</span> logger<span class="pl-k">.</span>isSet(level, <span class="pl-s1"><span class="pl-pds">"</span>myappl.token<span class="pl-pds">"</span></span>);
     }
 }</pre></div>
 
@@ -419,7 +424,7 @@ Sinks are usually associated with formatters which are called to format objects 
 <li>
 <b>Dump</b> -- a property snapshot that deals with application state (name, value pairs). Application can generate user defined dumps to report application specific metrics during diagnostics, on demand or VM shutdown.</li>
 <li>
-<b>Dump Provider</b> -- user defined implementation that actually generated application Dumps.</li>
+<b>Dump Provider</b> -- user defined implementation that actually generates application Dumps.</li>
 </ul>
 
 <h1>
