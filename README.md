@@ -279,26 +279,26 @@ class MyEventFilter implements SinkEventFilter {
     TaskLogger logger;
 
     MyEventFilter(TaskLogger lg) {
-	logger = lg;
+		logger = lg;
     }
 
 	@Override
     public boolean filter(EventSink arg0, TrackingEvent event) {
-	return logger.isSet(event.getSeverity(), "myappl.token");
+		return logger.isSet(event.getSeverity(), "myappl.token");
     }
 
 	@Override
     public boolean filter(EventSink arg0, TrackingActivity activity) {
-    	return logger.isSet(activity.getSeverity(), "myappl.token");
+    		return logger.isSet(activity.getSeverity(), "myappl.token");
     }
 
 	@Override
     public boolean filter(EventSink sink, Snapshot snapshot) {
-    	return logger.isSet(snapshot.getSeverity(), "myappl.token");
+    		return logger.isSet(snapshot.getSeverity(), "myappl.token");
     }
 	@Override
     public boolean filter(EventSink arg0, OpLevel level, String arg2, Object... arg3) {
-	return logger.isSet(level, "myappl.token");
+		return logger.isSet(level, "myappl.token");
     }
 }
 ```
