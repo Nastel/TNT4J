@@ -276,30 +276,31 @@ try {
 }
 
 class MyEventFilter implements SinkEventFilter {
-    TaskLogger logger;
+	TaskLogger logger;
 
-    MyEventFilter(TaskLogger lg) {
+	MyEventFilter(TaskLogger lg) {
 		logger = lg;
-    }
+	}
 
 	@Override
-    public boolean filter(EventSink arg0, TrackingEvent event) {
+	public boolean filter(EventSink arg0, TrackingEvent event) {
 		return logger.isSet(event.getSeverity(), "myappl.token");
-    }
+	}
 
 	@Override
-    public boolean filter(EventSink arg0, TrackingActivity activity) {
+	public boolean filter(EventSink arg0, TrackingActivity activity) {
     		return logger.isSet(activity.getSeverity(), "myappl.token");
-    }
+    	}
 
 	@Override
-    public boolean filter(EventSink sink, Snapshot snapshot) {
+	public boolean filter(EventSink sink, Snapshot snapshot) {
     		return logger.isSet(snapshot.getSeverity(), "myappl.token");
-    }
+    	}
+	
 	@Override
-    public boolean filter(EventSink arg0, OpLevel level, String arg2, Object... arg3) {
+	public boolean filter(EventSink arg0, OpLevel level, String arg2, Object... arg3) {
 		return logger.isSet(level, "myappl.token");
-    }
+	}
 }
 ```
 Embed TNT4J into your application and realize the benefits in matter if minutes. TNT4J can take advantage of other lower level logging frameworks such as log4j. Default TNT4J binding is based on log4j.
