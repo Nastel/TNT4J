@@ -357,7 +357,7 @@ TNT4J is fully plug-in and play tracking, tracing and logging framework that con
 Sinks are usually associated with formatters which are called to format objects before writing to the sink.
 * <b>Dump Sink</b> -- sink where application dumps are recorded.
 * <b>Dump</b> -- a property snapshot that deals with application state (name, value pairs). Application can generate user defined dumps to report application specific metrics during diagnostics, on demand or VM shutdown.
-* <b>Dump Provider</b> -- user defined implementation that actually generated application Dumps.
+* <b>Dump Provider</b> -- user defined implementation that actually generates application Dumps.
 
 
 How to Build TNT4J
