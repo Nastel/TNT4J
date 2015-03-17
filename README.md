@@ -78,7 +78,7 @@ Filter out not only based on category/severity (as log4j), but also based on per
 See  `tnt4j.properties` and `com.nastel.jkool.tnt4j.filters.EventLevelTimeFilter` for details.
 Register filters via declarations in `tnt4j.properties` or in your application by creating your own event filter.
 ```java
-logger.addSinkEventFilter(new MyLogFilter());
+logger.addSinkEventFilter(new SampleEventFilter(OpLevel.WARNING));
 ```
 Below is an example of an event sink filter `SampleEventFilter` which must implement `SinkEventFilter` interface.
 ```java
@@ -86,6 +86,10 @@ public class SampleEventFilter implements SinkEventFilter {
 	OpLevel sevLimit = OpLevel.INFO;
 
 	public SampleEventFilter() {
+	}
+
+	public SampleEventFilter(OpLevel limit) {
+		sevLimit = limit;
 	}
 
 	@Override
