@@ -289,13 +289,13 @@ class MyEventFilter implements SinkEventFilter {
 
 	@Override
 	public boolean filter(EventSink arg0, TrackingActivity activity) {
-    		return logger.isSet(activity.getSeverity(), "myappl.token");
-    	}
+		return logger.isSet(activity.getSeverity(), "myappl.token");
+	}
 
 	@Override
 	public boolean filter(EventSink sink, Snapshot snapshot) {
-    		return logger.isSet(snapshot.getSeverity(), "myappl.token");
-    	}
+		return logger.isSet(snapshot.getSeverity(), "myappl.token");
+	}
 	
 	@Override
 	public boolean filter(EventSink arg0, OpLevel level, String arg2, Object... arg3) {
