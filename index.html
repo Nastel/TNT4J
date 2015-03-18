@@ -122,7 +122,7 @@ logger<span class="pl-k">.</span>debug(<span class="pl-s1"><span class="pl-pds">
 See  <code>tnt4j.properties</code> and <code>com.nastel.jkool.tnt4j.filters.EventLevelTimeFilter</code> for details.
 Register filters via declarations in <code>tnt4j.properties</code> or in your application by creating your own event filter.</p>
 
-<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span> <span class="pl-stj">MyLogFilter</span>());</pre></div>
+<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span> <span class="pl-stj">SampleEventFilter</span>(<span class="pl-stj">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>WARNING</span>));</pre></div>
 
 <p>Below is an example of an event sink filter <code>SampleEventFilter</code> which must implement <code>SinkEventFilter</code> interface.</p>
 
@@ -130,6 +130,10 @@ Register filters via declarations in <code>tnt4j.properties</code> or in your ap
     <span class="pl-stj">OpLevel</span> sevLimit <span class="pl-k">=</span> <span class="pl-stj">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>INFO</span>;
 
     <span class="pl-s">public</span> <span class="pl-en">SampleEventFilter</span>() {
+    }
+
+    <span class="pl-s">public</span> <span class="pl-en">SampleEventFilter</span>(<span class="pl-stj">OpLevel</span> <span class="pl-v">limit</span>) {
+        sevLimit <span class="pl-k">=</span> limit;
     }
 
     <span class="pl-st">@Override</span>
