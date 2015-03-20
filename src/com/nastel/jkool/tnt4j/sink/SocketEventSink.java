@@ -99,7 +99,7 @@ public class SocketEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public void write(Object msg, Object...args) throws IOException {
+	protected void _write(Object msg, Object...args) throws IOException {
 		if (isOpen()) {
 			writeLine(getEventFormatter().format(msg, args));
 		}

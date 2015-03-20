@@ -30,6 +30,7 @@ import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
@@ -92,13 +93,13 @@ public class PooledLogger implements KeyValueStats {
 
 	@Override
     public KeyValueStats getStats(Map<String, Object> stats) {
-	    stats.put(KEY_Q_SIZE, eventQ.size());
-	    stats.put(KEY_Q_CAPACITY, capacity);
-	    stats.put(KEY_OBJECTS_DROPPED, dropCount.get());
-	    stats.put(KEY_OBJECTS_LOGGED, loggedCount.get());		
-	    stats.put(KEY_EXCEPTION_COUNT, exceptionCount.get());		
-	    stats.put(KEY_RECOVERY_COUNT, recoveryCount.get());		
-	    stats.put(KEY_TOTAL_TIME_NANOS, totalNanos.get());
+	    stats.put(Utils.qualify(this, KEY_Q_SIZE), eventQ.size());
+	    stats.put(Utils.qualify(this, KEY_Q_CAPACITY), capacity);
+	    stats.put(Utils.qualify(this, KEY_OBJECTS_DROPPED), dropCount.get());
+	    stats.put(Utils.qualify(this, KEY_OBJECTS_LOGGED), loggedCount.get());		
+	    stats.put(Utils.qualify(this, KEY_EXCEPTION_COUNT), exceptionCount.get());		
+	    stats.put(Utils.qualify(this, KEY_RECOVERY_COUNT), recoveryCount.get());		
+	    stats.put(Utils.qualify(this, KEY_TOTAL_TIME_NANOS), totalNanos.get());
 	    return this;
     }
 

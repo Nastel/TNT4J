@@ -93,6 +93,11 @@ public class Log4jEventSink extends AbstractEventSink {
 		logger.log(getL4JLevel(sev), getEventFormatter().format(src, sev, msg, args), Utils.getThrowable(args));
 	}
 
+	@Override
+	protected void _write(Object msg, Object... args) throws IOException {
+		logger.info(getEventFormatter().format(msg, args));
+	}
+
 	/**
 	 * Maps <code>TrackingEvent</code> severity to log4j Level.
 	 * 
@@ -137,13 +142,6 @@ public class Log4jEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public void write(Object msg, Object... args) throws IOException {
-		if (logger == null)
-			throw new IllegalStateException("Sink closed");
-		logger.info(getEventFormatter().format(msg, args));
-	}
-
-	@Override
 	public synchronized void open() {
 		if (logger == null) {
 			logger = Logger.getLogger(getName());
@@ -157,11 +155,5 @@ public class Log4jEventSink extends AbstractEventSink {
 	@Override
 	public boolean isSet(OpLevel sev) {
 		return logger.isEnabledFor(getL4JLevel(sev));
-	}
-
-	@Override
-	protected void _checkState() throws IllegalStateException {
-		if (logger == null)
-			throw new IllegalStateException("Sink closed");
 	}
 }

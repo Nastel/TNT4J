@@ -41,6 +41,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 public interface EventSink extends Sink, KeyValueStats {
 	static final String KEY_SINK_ERROR_COUNT = "sink-errors";
 	static final String KEY_LOGGED_MSGS = "sink-messages";
+	static final String KEY_SINK_WRITES= "sink-direct-writes";
 	static final String KEY_LOGGED_EVENTS = "sink-events";
 	static final String KEY_LOGGED_ACTIVITIES = "sink-activities";
 	static final String KEY_LOGGED_SNAPSHOTS = "sink-snapshots";

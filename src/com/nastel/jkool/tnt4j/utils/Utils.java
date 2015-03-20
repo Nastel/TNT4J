@@ -112,6 +112,16 @@ public class Utils {
 
     
 	/**
+	 * Qualify  given key with a given object class
+	 * 
+	 * @return return GUID string representation
+	 */
+	public static String qualify(Object obj, String key) {
+		String newKey = obj.getClass().getSimpleName() + "-" + key;
+		return newKey;
+	}
+
+	/**
 	 * Return a new GUID as string
 	 * 
 	 * @return return GUID string representation

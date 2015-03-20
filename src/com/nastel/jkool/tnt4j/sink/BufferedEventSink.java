@@ -26,6 +26,7 @@ import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
@@ -179,7 +180,7 @@ public class BufferedEventSink implements EventSink {
 
 	@Override
     public KeyValueStats getStats(Map<String, Object> stats) {
-	    stats.put(KEY_OBJECTS_DROPPED, dropCount.get());
+	    stats.put(Utils.qualify(this, KEY_OBJECTS_DROPPED), dropCount.get());
 	    BufferedEventSinkFactory.getPooledLogger().getStats(stats);
 	    return outSink.getStats(stats);
     }

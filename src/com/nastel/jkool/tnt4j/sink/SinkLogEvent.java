@@ -104,11 +104,11 @@ public class SinkLogEvent extends EventObject {
 	 * @param sev
 	 *            log severity
 	 * @param msg
-	 *            log message
+	 *            log message object
 	 * @param args
 	 *            argument list associated with the message
 	 */
-	public SinkLogEvent(EventSink sink, Source evSource, OpLevel sev, String msg, Object... args) {
+	public SinkLogEvent(EventSink sink, Source evSource, OpLevel sev, Object msg, Object... args) {
 		super(sink);
 		logObj = msg;
 		if (args != null && args.length > 0) {

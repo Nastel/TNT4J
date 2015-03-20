@@ -66,11 +66,6 @@ public class FileEventSink extends AbstractEventSink {
     }
 
 	@Override
-    public void write(Object msg, Object... args) throws IOException, InterruptedException {
-		fileSink.write(msg, args);
-	}
-
-	@Override
     public boolean isOpen() {
 	    return fileSink.isOpen();
     }
@@ -90,6 +85,11 @@ public class FileEventSink extends AbstractEventSink {
 		if (fileSink == null || !fileSink.isOpen()) {
 			throw new IllegalStateException("Sink is not defined or closed");
 		}
+	}
+
+	@Override
+    protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
+		fileSink.write(msg, args);
 	}
 
 	@Override

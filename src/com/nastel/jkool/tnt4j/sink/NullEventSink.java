@@ -59,10 +59,6 @@ public class NullEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public void write(Object msg, Object... args) throws IOException, InterruptedException {
-	}
-
-	@Override
 	public void open() throws IOException {
 	}
 
@@ -77,6 +73,10 @@ public class NullEventSink extends AbstractEventSink {
 
 	@Override
 	protected void _checkState() throws IllegalStateException {
+	}
+
+	@Override
+	protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
 	}
 
 	@Override

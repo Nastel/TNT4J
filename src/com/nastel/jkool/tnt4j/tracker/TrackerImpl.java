@@ -260,16 +260,16 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public  KeyValueStats getStats(Map<String, Object> stats) {
-		stats.put(KEY_ACTIVITY_COUNT, activityCount.get());
-		stats.put(KEY_EVENT_COUNT, eventCount.get());
-		stats.put(KEY_MSG_COUNT, msgCount.get());
-		stats.put(KEY_SNAPSHOT_COUNT, snapCount.get());
-		stats.put(KEY_ERROR_COUNT, errorCount.get());
-		stats.put(KEY_NOOP_COUNT, noopCount.get());
-		stats.put(KEY_ACTIVITIES_STARTED, pushCount.get());
-		stats.put(KEY_ACTIVITIES_STOPPED, popCount.get());
-		stats.put(KEY_STACK_DEPTH, getStackSize());
-		stats.put(KEY_OVERHEAD_NANOS, overheadNanos.get());
+		stats.put(Utils.qualify(this, KEY_ACTIVITY_COUNT), activityCount.get());
+		stats.put(Utils.qualify(this, KEY_EVENT_COUNT), eventCount.get());
+		stats.put(Utils.qualify(this, KEY_MSG_COUNT), msgCount.get());
+		stats.put(Utils.qualify(this, KEY_SNAPSHOT_COUNT), snapCount.get());
+		stats.put(Utils.qualify(this, KEY_ERROR_COUNT), errorCount.get());
+		stats.put(Utils.qualify(this, KEY_NOOP_COUNT), noopCount.get());
+		stats.put(Utils.qualify(this, KEY_ACTIVITIES_STARTED), pushCount.get());
+		stats.put(Utils.qualify(this, KEY_ACTIVITIES_STOPPED), popCount.get());
+		stats.put(Utils.qualify(this, KEY_STACK_DEPTH), getStackSize());
+		stats.put(Utils.qualify(this, KEY_OVERHEAD_USEC), (long)(overheadNanos.get()/1000));
 		if (eventSink != null) eventSink.getStats(stats);
 		return this;
 	}
