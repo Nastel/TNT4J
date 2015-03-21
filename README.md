@@ -187,9 +187,9 @@ snapshot.add("metric2", myMetric2);
 logger.tnt(snapshot); // report a property snapshot
 ```
 ### Correlation, Topology, Time Synchronization
-Developers can relate events by grouping them into activities (activity is a collection of related events and sub-activities) or passing context -- correlator(s). Activity grouping and correlators create connectivity between events across thread, server, runtime, location boundaries. TNT4J allows attachement of correlators when reporting tracking events: see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same mechanism.
+Developers can relate events by grouping them into activities (activity is a collection of related events and sub-activities) or passing context -- correlator(s). Activity grouping and correlators create connectivity between events across thread, applications, server, runtime, location boundaries. TNT4J allows attachment of correlators when reporting tracking events: see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same mechanism.
 
-`TrackingLogger.tnt(..)` also allows developers to specify the flow of messages using `OpType.SEND` and `OpType.RECEIVE` modifiers. These modifiers let developers specify message flow & direction. This is espeically useful for applications that pass information via network, middleware, messaging. Logging events with such modifiers specify graph/topology information required for root cause analysis.
+`TrackingLogger.tnt(..)` also allows developers to specify the flow of messages using `OpType.SEND` and `OpType.RECEIVE` modifiers. These modifiers let developers specify message flow & direction. This is especially useful for applications that pass information via network, middleware, messaging. Logging events with such modifiers specify graph/topology information required for root cause analysis.
 Below is an example of a sender application:
 ```java
 // post processing of activity: enrich activity with application metrics
