@@ -227,16 +227,18 @@ System.out.println("Logger stats: " + stats);
 System.out.println("Resetting logger stats");
 logger.resetStats();
 ```
-Here is an example to obtain metrics for all available loggers:
+Obtain metrics for all available trackers:
 ```java
 List<TrackingLogger> loggers = TrackingLogger.getAllTrackers();
 for (TrackingLogger lg: loggers) {
 	Map<String, Long> stats = lg.getStats();
+	printStats(stats); // your call to print out tracker statistics
 	...
 }
 ```
-TNT4J also keeps track of stack traces for all `TrackingLogger` allocations. Below is an example of how to get stack frames for a specific `TrackingLogger` instance:
+TNT4J keeps track of stack traces for all `TrackingLogger` allocations. Below is an example of how to get stack frames for a set of `TrackingLogger` instances:
 ```java
+// obtain all available tracker instances
 List<TrackingLogger> loggers = TrackingLogger.getAllTrackers();
 for (TrackingLogger lg: loggers) {
 	StackTraceElement[] stack = TrackingLogger.getTrackerStackTrace(lg);
