@@ -190,6 +190,7 @@ logger.tnt(snapshot); // report a property snapshot
 Developers can relate events by grouping them into activities (activity is a collection of related events and sub-activities) or passing context -- correlator(s). Activity grouping and correlators create connectivity between events across thread, applications, server, runtime, location boundaries. TNT4J allows attachment of correlators when reporting tracking events: see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same mechanism.
 
 `TrackingLogger.tnt(..)` also allows developers to specify the flow of messages using `OpType.SEND` and `OpType.RECEIVE` modifiers. These modifiers let developers specify message flow & direction. This is especially useful for applications that pass information via network, middleware, messaging or any other communication mechanism. Tracking events with such modifiers specify graph/topology information required for root cause analysis as well as visualization of message flow.
+
 Below is an example of a sender application:
 ```java
 // post processing of activity: enrich activity with application metrics
