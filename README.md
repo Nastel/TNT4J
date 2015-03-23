@@ -78,38 +78,38 @@ Filter out not only based on category/severity (as log4j), but also based on per
 See  `tnt4j.properties` and `com.nastel.jkool.tnt4j.filters.EventLevelTimeFilter` for details.
 Register filters via declarations in `tnt4j.properties` or in your application by creating your own event filter.
 ```java
-logger.addSinkEventFilter(new SampleEventFilter(OpLevel.WARNING));
+logger.addSinkEventFilter(new ThresholdEventFilter(OpLevel.WARNING));
 ```
-Below is an example of an event sink filter `SampleEventFilter` which must implement `SinkEventFilter` interface.
+Below is an example of an event sink filter `ThresholdEventFilter` which must implement `SinkEventFilter` interface.
 ```java
-public class SampleEventFilter implements SinkEventFilter {
-	OpLevel sevLimit = OpLevel.INFO;
+public class ThresholdEventFilter implements SinkEventFilter {
+	OpLevel threshold = OpLevel.INFO;
 
-	public SampleEventFilter() {
+	public ThresholdEventFilter() {
 	}
 
-	public SampleEventFilter(OpLevel limit) {
-		sevLimit = limit;
+	public ThresholdEventFilter(OpLevel level) {
+		this.threshold = level;
 	}
 
 	@Override
 	public boolean filter(EventSink sink, TrackingEvent event) {
-		return (event.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(event.getSeverity());
+		return (event.getSeverity().ordinal() >= threshold.ordinal()) && sink.isSet(event.getSeverity());
 	}
 
 	@Override
 	public boolean filter(EventSink sink, TrackingActivity activity) {
-		return (activity.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(activity.getSeverity());
+		return (activity.getSeverity().ordinal() >= threshold.ordinal()) && sink.isSet(activity.getSeverity());
 	}
 
 	@Override
 	public boolean filter(EventSink sink, Snapshot snapshot) {
-		return (snapshot.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(snapshot.getSeverity());
+		return (snapshot.getSeverity().ordinal() >= threshold.ordinal()) && sink.isSet(snapshot.getSeverity());
 	}
 
 	@Override
 	public boolean filter(EventSink sink, OpLevel level, String msg, Object... args) {
-		return (level.ordinal() >= sevLimit.ordinal()) && sink.isSet(level);
+		return (level.ordinal() >= threshold.ordinal()) && sink.isSet(level);
 	}
 }
 ```
