@@ -114,30 +114,43 @@ public class ThresholdEventFilter implements SinkEventFilter {
 }
 ```
 ### Granular conditional logging
-Log only what matters. Increase performance of your apps by decreasing the amount of logging your app produces and yet increasing relevance and quality of the output.
+Log only what matters. Increase performance of your applications by decreasing the amount of logging your application produces while increasing the relevance and quality of the output.
 
 ```java
-logger.isSet(OpLevel.DEBUG);
-logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);
+if (logger.isSet(OpLevel.DEBUG)) {
+	logger.debug("My message {0}, {1}, {2}", arg0, arg1, arg2);
+}
+if (logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue)) {
+	logger.debug("My message {0}, {1}, my.value={2}", arg0, arg1, myvalue);
+}
 ```
 
-Checking a global debug level is not granular enough for most applications. Many java apps require granular logging to log only what matters. Consolidate these checks into `SinkEventFilter` implementation and register with the logger instance.
+Checking a global debug flag is not granular enough for most applications. Many java apps require granular tracking to log only what matters based on specific context.
+Consolidate conditional checks (`logger.isSet()`) into `SinkEventFilter` implementation and register with the tracker instance.
 ```java
 logger.addSinkEventFilter(new MyLogFilter());
 ```
 
 ### Share logging context across apps
-Pass logging context across apps programatically or via a shared cache.
+Pass logging context across threads or applications.
 ```java
 logger.set(OpLevel.DEBUG, "myapp.mykey", myvalue);
 ```
 
-Imagine writing an application that has to pass logging flag to apps downstream, how would you do that?
-TNT lets you do that using this method.
+Imagine writing an application that has to pass tracking context/flag to applications downstream, how would you do that?
+TNT4J lets you set and get conditional variables within and across application boundaries.
 	
-Check log context by calling:
+Set and check tracking context as follows (track all requests matching a specific zip code only):
 ```java
-logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue);
+// set level, key & value pair
+logger.set(OpLevel.DEBUG, "zip-code", trackZipCode);
+..
+..
+// check for sev, key & value pair match
+String zipCode = request.getZipCode();  // example request containing a zip code
+if (logger.isSet(OpLevel.DEBUG, "zip-code", zipCode)) {
+	// your conditional logic here
+}
 ```
 
 ### State logging
