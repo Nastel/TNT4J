@@ -122,66 +122,79 @@ logger<span class="pl-k">.</span>debug(<span class="pl-s"><span class="pl-pds">"
 See  <code>tnt4j.properties</code> and <code>com.nastel.jkool.tnt4j.filters.EventLevelTimeFilter</code> for details.
 Register filters via declarations in <code>tnt4j.properties</code> or in your application by creating your own event filter.</p>
 
-<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span> <span class="pl-smi">SampleEventFilter</span>(<span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>WARNING</span>));</pre></div>
+<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span> <span class="pl-smi">ThresholdEventFilter</span>(<span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>WARNING</span>));</pre></div>
 
-<p>Below is an example of an event sink filter <code>SampleEventFilter</code> which must implement <code>SinkEventFilter</code> interface.</p>
+<p>Below is an example of an event sink filter <code>ThresholdEventFilter</code> which must implement <code>SinkEventFilter</code> interface.</p>
 
-<div class="highlight highlight-java"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">SampleEventFilter</span> <span class="pl-k">implements</span> <span class="pl-e">SinkEventFilter</span> {
-    <span class="pl-smi">OpLevel</span> sevLimit <span class="pl-k">=</span> <span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>INFO</span>;
+<div class="highlight highlight-java"><pre><span class="pl-k">public</span> <span class="pl-k">class</span> <span class="pl-en">ThresholdEventFilter</span> <span class="pl-k">implements</span> <span class="pl-e">SinkEventFilter</span> {
+    <span class="pl-smi">OpLevel</span> threshold <span class="pl-k">=</span> <span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>INFO</span>;
 
-    <span class="pl-k">public</span> <span class="pl-en">SampleEventFilter</span>() {
+    <span class="pl-k">public</span> <span class="pl-en">ThresholdEventFilter</span>() {
     }
 
-    <span class="pl-k">public</span> <span class="pl-en">SampleEventFilter</span>(<span class="pl-smi">OpLevel</span> <span class="pl-v">limit</span>) {
-        sevLimit <span class="pl-k">=</span> limit;
+    <span class="pl-k">public</span> <span class="pl-en">ThresholdEventFilter</span>(<span class="pl-smi">OpLevel</span> <span class="pl-v">level</span>) {
+        <span class="pl-v">this</span><span class="pl-k">.</span>threshold <span class="pl-k">=</span> level;
     }
 
     <span class="pl-k">@Override</span>
     <span class="pl-k">public</span> <span class="pl-k">boolean</span> <span class="pl-en">filter</span>(<span class="pl-smi">EventSink</span> <span class="pl-v">sink</span>, <span class="pl-smi">TrackingEvent</span> <span class="pl-v">event</span>) {
-        <span class="pl-k">return</span> (event<span class="pl-k">.</span>getSeverity()<span class="pl-k">.</span>ordinal() <span class="pl-k">&gt;=</span> sevLimit<span class="pl-k">.</span>ordinal()) <span class="pl-k">&amp;&amp;</span> sink<span class="pl-k">.</span>isSet(event<span class="pl-k">.</span>getSeverity());
+        <span class="pl-k">return</span> (event<span class="pl-k">.</span>getSeverity()<span class="pl-k">.</span>ordinal() <span class="pl-k">&gt;=</span> threshold<span class="pl-k">.</span>ordinal()) <span class="pl-k">&amp;&amp;</span> sink<span class="pl-k">.</span>isSet(event<span class="pl-k">.</span>getSeverity());
     }
 
     <span class="pl-k">@Override</span>
     <span class="pl-k">public</span> <span class="pl-k">boolean</span> <span class="pl-en">filter</span>(<span class="pl-smi">EventSink</span> <span class="pl-v">sink</span>, <span class="pl-smi">TrackingActivity</span> <span class="pl-v">activity</span>) {
-        <span class="pl-k">return</span> (activity<span class="pl-k">.</span>getSeverity()<span class="pl-k">.</span>ordinal() <span class="pl-k">&gt;=</span> sevLimit<span class="pl-k">.</span>ordinal()) <span class="pl-k">&amp;&amp;</span> sink<span class="pl-k">.</span>isSet(activity<span class="pl-k">.</span>getSeverity());
+        <span class="pl-k">return</span> (activity<span class="pl-k">.</span>getSeverity()<span class="pl-k">.</span>ordinal() <span class="pl-k">&gt;=</span> threshold<span class="pl-k">.</span>ordinal()) <span class="pl-k">&amp;&amp;</span> sink<span class="pl-k">.</span>isSet(activity<span class="pl-k">.</span>getSeverity());
     }
 
     <span class="pl-k">@Override</span>
     <span class="pl-k">public</span> <span class="pl-k">boolean</span> <span class="pl-en">filter</span>(<span class="pl-smi">EventSink</span> <span class="pl-v">sink</span>, <span class="pl-smi">Snapshot</span> <span class="pl-v">snapshot</span>) {
-        <span class="pl-k">return</span> (snapshot<span class="pl-k">.</span>getSeverity()<span class="pl-k">.</span>ordinal() <span class="pl-k">&gt;=</span> sevLimit<span class="pl-k">.</span>ordinal()) <span class="pl-k">&amp;&amp;</span> sink<span class="pl-k">.</span>isSet(snapshot<span class="pl-k">.</span>getSeverity());
+        <span class="pl-k">return</span> (snapshot<span class="pl-k">.</span>getSeverity()<span class="pl-k">.</span>ordinal() <span class="pl-k">&gt;=</span> threshold<span class="pl-k">.</span>ordinal()) <span class="pl-k">&amp;&amp;</span> sink<span class="pl-k">.</span>isSet(snapshot<span class="pl-k">.</span>getSeverity());
     }
 
     <span class="pl-k">@Override</span>
     <span class="pl-k">public</span> <span class="pl-k">boolean</span> <span class="pl-en">filter</span>(<span class="pl-smi">EventSink</span> <span class="pl-v">sink</span>, <span class="pl-smi">OpLevel</span> <span class="pl-v">level</span>, <span class="pl-smi">String</span> <span class="pl-v">msg</span>, <span class="pl-smi">Object</span>... <span class="pl-v">args</span>) {
-        <span class="pl-k">return</span> (level<span class="pl-k">.</span>ordinal() <span class="pl-k">&gt;=</span> sevLimit<span class="pl-k">.</span>ordinal()) <span class="pl-k">&amp;&amp;</span> sink<span class="pl-k">.</span>isSet(level);
+        <span class="pl-k">return</span> (level<span class="pl-k">.</span>ordinal() <span class="pl-k">&gt;=</span> threshold<span class="pl-k">.</span>ordinal()) <span class="pl-k">&amp;&amp;</span> sink<span class="pl-k">.</span>isSet(level);
     }
 }</pre></div>
 
 <h3>
 <a id="granular-conditional-logging" class="anchor" href="#granular-conditional-logging" aria-hidden="true"><span class="octicon octicon-link"></span></a>Granular conditional logging</h3>
 
-<p>Log only what matters. Increase performance of your apps by decreasing the amount of logging your app produces and yet increasing relevance and quality of the output.</p>
+<p>Log only what matters. Increase performance of your applications by decreasing the amount of logging your application produces while increasing the relevance and quality of the output.</p>
 
-<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>isSet(<span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>DEBUG</span>);
-logger<span class="pl-k">.</span>isSet(<span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>DEBUG</span>, <span class="pl-s"><span class="pl-pds">"</span>myapp.mykey<span class="pl-pds">"</span></span>, myvalue);</pre></div>
+<div class="highlight highlight-java"><pre><span class="pl-k">if</span> (logger<span class="pl-k">.</span>isSet(<span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>DEBUG</span>)) {
+    logger<span class="pl-k">.</span>debug(<span class="pl-s"><span class="pl-pds">"</span>My message {0}, {1}, {2}<span class="pl-pds">"</span></span>, arg0, arg1, arg2);
+}
+<span class="pl-k">if</span> (logger<span class="pl-k">.</span>isSet(<span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>DEBUG</span>, <span class="pl-s"><span class="pl-pds">"</span>myapp.mykey<span class="pl-pds">"</span></span>, myvalue)) {
+    logger<span class="pl-k">.</span>debug(<span class="pl-s"><span class="pl-pds">"</span>My message {0}, {1}, my.value={2}<span class="pl-pds">"</span></span>, arg0, arg1, myvalue);
+}</pre></div>
 
-<p>Checking a global debug level is not granular enough for most applications. Many java apps require granular logging to log only what matters. Consolidate these checks into <code>SinkEventFilter</code> implementation and register with the logger instance.</p>
+<p>Checking a global debug flag is not granular enough for most applications. Many java apps require granular tracking to log only what matters based on specific context.
+Consolidate conditional checks (<code>logger.isSet()</code>) into <code>SinkEventFilter</code> implementation and register with the tracker instance.</p>
 
 <div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span> <span class="pl-smi">MyLogFilter</span>());</pre></div>
 
 <h3>
 <a id="share-logging-context-across-apps" class="anchor" href="#share-logging-context-across-apps" aria-hidden="true"><span class="octicon octicon-link"></span></a>Share logging context across apps</h3>
 
-<p>Pass logging context across apps programatically or via a shared cache.</p>
+<p>Pass logging context across threads or applications.</p>
 
 <div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>set(<span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>DEBUG</span>, <span class="pl-s"><span class="pl-pds">"</span>myapp.mykey<span class="pl-pds">"</span></span>, myvalue);</pre></div>
 
-<p>Imagine writing an application that has to pass logging flag to apps downstream, how would you do that?
-TNT lets you do that using this method.</p>
+<p>Imagine writing an application that has to pass tracking context/flag to applications downstream, how would you do that?
+TNT4J lets you set and get conditional variables within and across application boundaries.</p>
 
-<p>Check log context by calling:</p>
+<p>Set and check tracking context as follows (track all requests matching a specific zip code only):</p>
 
-<div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>isSet(<span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>DEBUG</span>, <span class="pl-s"><span class="pl-pds">"</span>myapp.mykey<span class="pl-pds">"</span></span>, myvalue);</pre></div>
+<div class="highlight highlight-java"><pre><span class="pl-c">// set level, key &amp; value pair</span>
+logger<span class="pl-k">.</span>set(<span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>DEBUG</span>, <span class="pl-s"><span class="pl-pds">"</span>zip-code<span class="pl-pds">"</span></span>, trackZipCode);
+<span class="pl-c1">..</span>
+<span class="pl-c1">..</span>
+<span class="pl-c">// check for sev, key &amp; value pair match</span>
+<span class="pl-smi">String</span> zipCode <span class="pl-k">=</span> request<span class="pl-k">.</span>getZipCode();  <span class="pl-c">// example request containing a zip code</span>
+<span class="pl-k">if</span> (logger<span class="pl-k">.</span>isSet(<span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>DEBUG</span>, <span class="pl-s"><span class="pl-pds">"</span>zip-code<span class="pl-pds">"</span></span>, zipCode)) {
+    <span class="pl-c">// your conditional logic here</span>
+}</pre></div>
 
 <h3>
 <a id="state-logging" class="anchor" href="#state-logging" aria-hidden="true"><span class="octicon octicon-link"></span></a>State logging</h3>
@@ -237,8 +250,9 @@ logger<span class="pl-k">.</span>tnt(snapshot); <span class="pl-c">// report a p
 
 <p>Developers can relate events by grouping them into activities (activity is a collection of related events and sub-activities) or passing context -- correlator(s). Activity grouping and correlators create connectivity between events across thread, applications, server, runtime, location boundaries. TNT4J allows attachment of correlators when reporting tracking events: see <code>TrackingLogger.tnt(..)</code> calls for details. The API also allows relating tracking events across application and runtime boundaries using the same mechanism.</p>
 
-<p><code>TrackingLogger.tnt(..)</code> also allows developers to specify the flow of messages using <code>OpType.SEND</code> and <code>OpType.RECEIVE</code> modifiers. These modifiers let developers specify message flow &amp; direction. This is especially useful for applications that pass information via network, middleware, messaging. Logging events with such modifiers specify graph/topology information required for root cause analysis.
-Below is an example of a sender application:</p>
+<p><code>TrackingLogger.tnt(..)</code> also allows developers to specify the flow of messages using <code>OpType.SEND</code> and <code>OpType.RECEIVE</code> modifiers. These modifiers let developers specify message flow &amp; direction. This is especially useful for applications that pass information via network, middleware, messaging or any other communication mechanism. Tracking events with such modifiers specify graph/topology information required for root cause analysis as well as visualization of message flow.</p>
+
+<p>Below is an example of a sender application:</p>
 
 <div class="highlight highlight-java"><pre><span class="pl-c">// post processing of activity: enrich activity with application metrics</span>
 <span class="pl-smi">TrackingLogger</span> logger <span class="pl-k">=</span> <span class="pl-smi">TrackingLogger</span><span class="pl-k">.</span>getInstance(<span class="pl-v">this</span><span class="pl-k">.</span>getClass());
@@ -276,17 +290,19 @@ logger<span class="pl-k">.</span>tnt(<span class="pl-smi">OpLevel</span><span cl
 <span class="pl-smi">System</span><span class="pl-k">.</span>out<span class="pl-k">.</span>println(<span class="pl-s"><span class="pl-pds">"</span>Resetting logger stats<span class="pl-pds">"</span></span>);
 logger<span class="pl-k">.</span>resetStats();</pre></div>
 
-<p>Here is an example to obtain metrics for all available loggers:</p>
+<p>Obtain metrics for all available trackers:</p>
 
 <div class="highlight highlight-java"><pre><span class="pl-k">List&lt;<span class="pl-smi">TrackingLogger</span>&gt;</span> loggers <span class="pl-k">=</span> <span class="pl-smi">TrackingLogger</span><span class="pl-k">.</span>getAllTrackers();
 <span class="pl-k">for</span> (<span class="pl-smi">TrackingLogger</span> lg<span class="pl-k">:</span> loggers) {
     <span class="pl-k">Map&lt;<span class="pl-smi">String</span>, <span class="pl-smi">Long</span>&gt;</span> stats <span class="pl-k">=</span> lg<span class="pl-k">.</span>getStats();
+    printStats(stats); <span class="pl-c">// your call to print out tracker statistics</span>
     <span class="pl-c1">...</span>
 }</pre></div>
 
-<p>TNT4J also keeps track of stack traces for all <code>TrackingLogger</code> allocations. Below is an example of how to get stack frames for a specific <code>TrackingLogger</code> instance:</p>
+<p>TNT4J keeps track of stack traces for all <code>TrackingLogger</code> allocations. Below is an example of how to get stack frames for a set of <code>TrackingLogger</code> instances:</p>
 
-<div class="highlight highlight-java"><pre><span class="pl-k">List&lt;<span class="pl-smi">TrackingLogger</span>&gt;</span> loggers <span class="pl-k">=</span> <span class="pl-smi">TrackingLogger</span><span class="pl-k">.</span>getAllTrackers();
+<div class="highlight highlight-java"><pre><span class="pl-c">// obtain all available tracker instances</span>
+<span class="pl-k">List&lt;<span class="pl-smi">TrackingLogger</span>&gt;</span> loggers <span class="pl-k">=</span> <span class="pl-smi">TrackingLogger</span><span class="pl-k">.</span>getAllTrackers();
 <span class="pl-k">for</span> (<span class="pl-smi">TrackingLogger</span> lg<span class="pl-k">:</span> loggers) {
     <span class="pl-k">StackTraceElement</span>[] stack <span class="pl-k">=</span> <span class="pl-smi">TrackingLogger</span><span class="pl-k">.</span>getTrackerStackTrace(lg);
     <span class="pl-smi">Utils</span><span class="pl-k">.</span>printStackTrace(<span class="pl-s"><span class="pl-pds">"</span>Tracker stack trace<span class="pl-pds">"</span></span>, stack, <span class="pl-smi">System</span><span class="pl-k">.</span>out);
