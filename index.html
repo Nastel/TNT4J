@@ -365,7 +365,7 @@ logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span
     }
 
     <span class="pl-k">@Override</span>
-    <span class="pl-k">public</span> <span class="pl-k">boolean</span> <span class="pl-en">filter</span>(<span class="pl-smi">EventSink</span> <span class="pl-v">arg0</span>, <span class="pl-smi">OpLevel</span> <span class="pl-v">level</span>, <span class="pl-smi">String</span> <span class="pl-v">arg2</span>, <span class="pl-smi">Object</span>... <span class="pl-v">arg3</span>) {
+    <span class="pl-k">public</span> <span class="pl-k">boolean</span> <span class="pl-en">filter</span>(<span class="pl-smi">EventSink</span> <span class="pl-v">arg0</span>, <span class="pl-smi">OpLevel</span> <span class="pl-v">level</span>, <span class="pl-smi">String</span> <span class="pl-v">msg</span>, <span class="pl-smi">Object</span>... <span class="pl-v">args</span>) {
         <span class="pl-k">return</span> logger<span class="pl-k">.</span>isSet(level, <span class="pl-s"><span class="pl-pds">"</span>myappl.token<span class="pl-pds">"</span></span>);
     }
 }</pre></div>
@@ -421,7 +421,7 @@ Wiki is available at <a href="https://github.com/Nastel/TNT4J/wiki">https://gith
 <li>
 <b>Tracker</b> -- high level object that allows developer to track, trace and log application activities</li>
 <li>
-<b>Actvity</b> -- a collection of related tracking events (TrackingEvent) and other sub-activities, relation is established via a grouping specified by a developer or set of correlators (across thread, application boundaries). Activities may have a set of uder defined properties which are grouped into property snapshots (PropertySnapshot).</li>
+<b>Activity</b> -- a collection of related tracking events (TrackingEvent) and other sub-activities, relation is established via a grouping specified by a developer or set of correlators (across thread, application boundaries). Activities may have a set of uder defined properties which are grouped into property snapshots (PropertySnapshot).</li>
 <li>
 <b>Tracking Event</b> -- a message with associated start/stop time stamps, severity, user defined message, correlator, tag, location (such as GPS, server etc) and other event properties.</li>
 <li>
@@ -435,10 +435,9 @@ Wiki is available at <a href="https://github.com/Nastel/TNT4J/wiki">https://gith
 <li>
 <b>Token Repository</b> -- an underlying storage used by tracking selector that actually stores and maintains severity, key, value combinations. Such repository can be backed by a file, cache, memory or any other desired medium. Token repositories can be shared accross application boundaries and therefore conditional logging can span multiple applications, runtimes, geo locations.</li>
 <li>
-<b>Sink</b> -- sink is a basic destination where obejcts can be written.</li>
+<b>Sink</b> -- sink is a basic destination where objects can be written (e.g file, socket, http, etc.)</li>
 <li>
-<b>Event Sink</b> -- destination where events, activities and messages are recorded. Such destination can be file, socket, etc.
-Sinks are usually associated with formatters which are called to format objects before writing to the sink.</li>
+<b>Event Sink</b> -- destination where events, activities and messages are recorded. Such destination can be file, socket. Sinks are associated with formatters which are called to format objects before writing to the sink.</li>
 <li>
 <b>Dump Sink</b> -- sink where application dumps are recorded.</li>
 <li>
