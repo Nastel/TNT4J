@@ -209,8 +209,9 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		        event.getOperation().getReasonCode()).append(ATTR_JSON);
 
 		if (event.getCorrelator() != null) {
+			String cid = StringEscapeUtils.escapeJson(event.getCorrelator());
 			jsonString.append(Utils.quote(JSON_CORR_ID_LABEL)).append(ATTR_SEP).append(
-			        Utils.quote(event.getCorrelator())).append(ATTR_JSON);
+			        Utils.quote(cid)).append(ATTR_JSON);
 		}
 		if (event.getLocation() != null) {
 			jsonString.append(Utils.quote(JSON_LOCATION_LABEL)).append(ATTR_SEP).append(
@@ -248,7 +249,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			}
 		}
 		if (event.getTag() != null) {
-			jsonString.append(Utils.quote(JSON_MSG_TAG_LABEL)).append(ATTR_SEP).append(Utils.quote(event.getTag()))
+			String mtag = StringEscapeUtils.escapeJson(event.getTag());
+			jsonString.append(Utils.quote(JSON_MSG_TAG_LABEL)).append(ATTR_SEP).append(Utils.quote(mtag))
 			        .append(ATTR_JSON);
 		}
 		int snapCount = event.getOperation().getSnapshotCount();
@@ -329,8 +331,9 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		jsonString.append(Utils.quote(JSON_REASON_CODE_LABEL)).append(ATTR_SEP).append(activity.getReasonCode())
 		        .append(ATTR_JSON);
 		if (activity.getCorrelator() != null) {
+			String cid = StringEscapeUtils.escapeJson(activity.getCorrelator());
 			jsonString.append(Utils.quote(JSON_CORR_ID_LABEL)).append(ATTR_SEP).append(
-			        Utils.quote(activity.getCorrelator())).append(ATTR_JSON);
+			        Utils.quote(cid)).append(ATTR_JSON);
 		}
 		if (activity.getLocation() != null) {
 			jsonString.append(Utils.quote(JSON_LOCATION_LABEL)).append(ATTR_SEP).append(
