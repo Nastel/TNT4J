@@ -113,6 +113,7 @@ public class ThresholdEventFilter implements SinkEventFilter {
 	}
 }
 ```
+
 ### Granular conditional logging
 Log only what matters. Increase performance of your applications by decreasing the amount of logging your application produces while increasing the relevance and quality of the output.
 
