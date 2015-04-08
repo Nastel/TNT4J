@@ -58,7 +58,7 @@ public class PooledLogger implements KeyValueStats {
 	static final String KEY_OBJECTS_LOGGED = "pooled-objects-logged";
 	static final String KEY_EXCEPTION_COUNT = "pooled-exceptions";
 	static final String KEY_RECOVERY_COUNT = "pooled-recovery-count";
-	static final String KEY_TOTAL_TIME_NANOS = "pooled-total-time-nanos";
+	static final String KEY_TOTAL_TIME_USEC = "pooled-total-time-usec";
 	
 	int poolSize, capacity;
 	ArrayBlockingQueue<SinkLogEvent> eventQ;
@@ -99,7 +99,7 @@ public class PooledLogger implements KeyValueStats {
 	    stats.put(Utils.qualify(this, KEY_OBJECTS_LOGGED), loggedCount.get());		
 	    stats.put(Utils.qualify(this, KEY_EXCEPTION_COUNT), exceptionCount.get());		
 	    stats.put(Utils.qualify(this, KEY_RECOVERY_COUNT), recoveryCount.get());		
-	    stats.put(Utils.qualify(this, KEY_TOTAL_TIME_NANOS), totalNanos.get());
+	    stats.put(Utils.qualify(this, KEY_TOTAL_TIME_USEC), (long)(totalNanos.get()/1000));
 	    return this;
     }
 
