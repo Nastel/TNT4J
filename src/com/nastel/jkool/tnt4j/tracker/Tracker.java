@@ -51,10 +51,10 @@ import com.nastel.jkool.tnt4j.source.Source;
 public interface Tracker extends Handle, KeyValueStats {
 	static final String KEY_ACTIVITY_COUNT = "tracker-activities";
 	static final String KEY_EVENT_COUNT = "tracker-events";
-	static final String KEY_MSG_COUNT = "tracker-msgs";
+	static final String KEY_MSG_COUNT = "tracker-messages";
 	static final String KEY_SNAPSHOT_COUNT = "tracker-snapshots";
-	static final String KEY_ACTIVITIES_STARTED = "tracker-started-activities";
-	static final String KEY_ACTIVITIES_STOPPED = "tracker-stopped-activities";
+	static final String KEY_ACTIVITIES_STARTED = "tracker-started";
+	static final String KEY_ACTIVITIES_STOPPED = "tracker-stopped";
 	static final String KEY_NOOP_COUNT = "tracker-noops";
 	static final String KEY_ERROR_COUNT = "tracker-errors";
 	static final String KEY_STACK_DEPTH = "tracker-stack-depth";
