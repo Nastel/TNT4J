@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.nastel.jkool.tnt4j.TrackingLogger;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
@@ -32,7 +33,7 @@ import com.nastel.jkool.tnt4j.TrackingLogger;
  * 
  */
 public class LoggerDumpProvider extends DefaultDumpProvider {
-
+	public static final String DUMP_LOGGER_SOURCE = "source";
 	/**
 	 * Create a new logger dump provider with a given name
 	 * 
@@ -64,7 +65,7 @@ public class LoggerDumpProvider extends DefaultDumpProvider {
 			Dump dump = new Dump(logger.getId(), this);
 			Map<String, Object> stats = logger.getStats();
 			dump.addAll(stats);
-			dump.add("source", logger.getSource().getFQName());
+			dump.add(Utils.qualify(logger, DUMP_LOGGER_SOURCE), logger.getSource().getFQName());
 			rootDump.add(logger.getId(), dump);
 		}
 		return rootDump;
