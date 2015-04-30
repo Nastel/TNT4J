@@ -59,6 +59,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	public static final String JSON_TYPE_LABEL = "type";
 	public static final String JSON_TYPE_NO_LABEL = "type-no";
 	public static final String JSON_VALUE_LABEL = "value";
+	public static final String JSON_VALUE_TYPE_LABEL = "value-type";
 	public static final String JSON_CORR_ID_LABEL = "corrid";
 	public static final String JSON_TRACK_ID_LABEL = "tracking-id";
 	public static final String JSON_PARENT_TRACK_ID_LABEL = "parent-id";
@@ -464,10 +465,14 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		StringBuilder jsonString = new StringBuilder(1024);
 		jsonString.append(START_JSON);
 		Object value = prop.getValue();
-		jsonString.append(Utils.quote(JSON_NAME_LABEL)).append(ATTR_SEP).append(Utils.quote(prop.getKey())).append(
-		        ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_TYPE_LABEL)).append(ATTR_SEP).append(Utils.quote(prop.getValueType()))
+		jsonString.append(Utils.quote(JSON_NAME_LABEL)).append(ATTR_SEP).append(Utils.quote(prop.getKey()))
 		        .append(ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_TYPE_LABEL)).append(ATTR_SEP).append(Utils.quote(prop.getDataType()))
+		        .append(ATTR_JSON);
+		if (prop.getValueType() != null) {
+			jsonString.append(Utils.quote(JSON_VALUE_TYPE_LABEL)).append(ATTR_SEP)
+			     .append(Utils.quote(prop.getValueType())).append(ATTR_JSON);
+		}
 		if (value instanceof Number) {
 			jsonString.append(Utils.quote(JSON_VALUE_LABEL)).append(ATTR_SEP).append(value);
 		} else {

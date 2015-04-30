@@ -25,13 +25,14 @@ import java.util.Date;
  * represents a name=value pair.
  * </p>
  *
- * @see Activity
+ * @see Snapshot
  *
  * @version $Revision: 7 $
  */
 public class Property {
 	private String  		key;
 	private Object			value;
+	private String			valueType;
 
 
 	/**
@@ -46,14 +47,39 @@ public class Property {
 
 
 	/**
+	 * Constructs a Property objects with the specified properties.
+	 *
+	 * @param key key of property
+	 * @param value value for property
+	 * @param valType value type such as (currency, percent).
+	 */
+	public Property(String key, Object value, String valType) {
+		set(key, value, valType);
+	}
+
+
+	/**
 	 * Sets the type of property.
 	 *
 	 * @param key of property
 	 * @param val property value
 	 */
 	public void set(String key, Object val) {
+		set(key, val, null);
+	}
+
+
+	/**
+	 * Sets the type of property.
+	 *
+	 * @param key of property
+	 * @param val property value
+	 * @param valType value type such as (currency, percent).
+	 */
+	public void set(String key, Object val, String valType) {
 		this.key = key;
 		this.value = val;
+		this.valueType = valType;
 	}
 
 
@@ -100,12 +126,12 @@ public class Property {
 	}
 
 	/**
-	 * Obtain the language independent value type
+	 * Obtain the language independent value data type
 	 * of the property
 	 * 
-	 * @return string representation of the value type
+	 * @return string representation of the value data type
 	 */
-	public String getValueType() {
+	public String getDataType() {
 		if (value instanceof String) {
 			return "string";
 		} else if (value instanceof Long) {
@@ -130,6 +156,16 @@ public class Property {
 			return "object";			
 		}
 	}
+
+	/**
+	 * Obtain value type such as currency, percent, number, timestamp, etc.
+	 * 
+	 * @return string representation of the value type
+	 */
+	public String getValueType() {
+		return valueType;
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -141,7 +177,8 @@ public class Property {
 		str.append(getClass().getSimpleName()).append("{")
 		   .append("Name:").append(key).append(",")
 		   .append("Value:").append(getValue()).append(",")
-		   .append("Type:").append(getValueType()).append("}");
+		   .append("Type:").append(getDataType()).append(",")
+		   .append("Value-Type:").append(getValueType()).append("}");
 
 		return str.toString();
 	}

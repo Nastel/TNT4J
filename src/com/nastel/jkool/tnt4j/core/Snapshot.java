@@ -27,6 +27,19 @@ import java.util.Map;
  * @version $Revision: 5 $
  */
 public interface Snapshot extends Trackable {
+
+	public static final String VALUE_TYPE_CURRENCY = "currency";
+	public static final String VALUE_TYPE_PERCENT = "percent";
+	public static final String VALUE_TYPE_ADDRESS = "address";
+	public static final String VALUE_TYPE_IPADDRESS = "ip.addr";
+	public static final String VALUE_TYPE_IPADDRESS_V4 = "ip.addr.v4";
+	public static final String VALUE_TYPE_IPADDRESS_V6 = "ip.addr.v6";
+	public static final String VALUE_TYPE_TIMETICKS = "timeticks";
+	public static final String VALUE_TYPE_TIMESTAMP = "timestamp";
+	public static final String VALUE_TYPE_COUNTER = "counter";
+	public static final String VALUE_TYPE_GUAGE = "guage";
+	public static final String VALUE_TYPE_GUID = "guid";
+	
 	/**
 	 * Obtain snapshot id (fully qualified name), which is a combination of name and category.
 	 * <code>name@category</code>
@@ -98,6 +111,15 @@ public interface Snapshot extends Trackable {
 	 * @param value property value
 	 */
 	Snapshot add(Object key, Object value);
+	
+	/**
+	 * Adds a property to the snapshot
+	 * 
+	 * @param key object to be removed
+	 * @param value property value
+	 * @param valType value type such as (currency, percent).
+	 */
+	Snapshot add(Object key, Object value, String valType);
 	
 	/**
 	 * Add all properties from a given map

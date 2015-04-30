@@ -173,6 +173,23 @@ public class PropertySnapshot  implements Snapshot {
 	}
 
 	/**
+	 * Add a property with a given key and value
+	 * 
+	 * @param key
+	 *            property key name
+	 * @param value
+	 *            value associated with the key
+	 * @param valType
+	 *            value type such as (currency, percent).
+	 * @return reference to this snapshot
+	 */
+	@Override
+	public PropertySnapshot add(Object key, Object value, String valType) {
+		this.add(new Property(key.toString(), value, valType));
+		return this;
+	}
+
+	/**
 	 * Set current/active <code>Source</code> with the current activity
 	 *
 	 * @see Source
