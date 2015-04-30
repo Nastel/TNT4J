@@ -24,21 +24,10 @@ import java.util.Map;
  * has a name and a time stamp and collection of elements.
  *
  * @see UsecTimestamp
+ * 
  * @version $Revision: 5 $
  */
 public interface Snapshot extends Trackable {
-
-	public static final String VALUE_TYPE_CURRENCY = "currency";
-	public static final String VALUE_TYPE_PERCENT = "percent";
-	public static final String VALUE_TYPE_ADDRESS = "address";
-	public static final String VALUE_TYPE_IPADDRESS = "ip.addr";
-	public static final String VALUE_TYPE_IPADDRESS_V4 = "ip.addr.v4";
-	public static final String VALUE_TYPE_IPADDRESS_V6 = "ip.addr.v6";
-	public static final String VALUE_TYPE_TIMETICKS = "timeticks";
-	public static final String VALUE_TYPE_TIMESTAMP = "timestamp";
-	public static final String VALUE_TYPE_COUNTER = "counter";
-	public static final String VALUE_TYPE_GUAGE = "guage";
-	public static final String VALUE_TYPE_GUID = "guid";
 	
 	/**
 	 * Obtain snapshot id (fully qualified name), which is a combination of name and category.
@@ -117,7 +106,7 @@ public interface Snapshot extends Trackable {
 	 * 
 	 * @param key object to be removed
 	 * @param value property value
-	 * @param valType value type such as (currency, percent).
+	 * @param valType value type such as (currency, percent). {@link ValueTypes}.
 	 */
 	Snapshot add(Object key, Object value, String valType);
 	

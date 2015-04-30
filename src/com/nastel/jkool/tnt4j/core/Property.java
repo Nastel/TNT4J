@@ -74,7 +74,7 @@ public class Property {
 	 *
 	 * @param key of property
 	 * @param val property value
-	 * @param valType value type such as (currency, percent).
+	 * @param valType value type such as (currency, percent). See {@link ValueTypes}.
 	 */
 	public void set(String key, Object val, String valType) {
 		this.key = key;

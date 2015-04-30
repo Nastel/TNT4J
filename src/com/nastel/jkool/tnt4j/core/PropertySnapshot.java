@@ -180,7 +180,7 @@ public class PropertySnapshot  implements Snapshot {
 	 * @param value
 	 *            value associated with the key
 	 * @param valType
-	 *            value type such as (currency, percent).
+	 *            value type such as (currency, percent). See {@link ValueTypes}.
 	 * @return reference to this snapshot
 	 */
 	@Override
