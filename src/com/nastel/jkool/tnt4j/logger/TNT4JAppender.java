@@ -525,7 +525,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 		try {
 			if (!key.startsWith(TAG_TYPE_QUALIFIER)) {
 				// if no type specified, assume a numeric field
-				pValue = value.indexOf(".") > 0? Double.parseDouble(value): Long.parseLong(value);
+				pValue = Long.parseLong(value);
 			} else if (key.startsWith(TAG_TYPE_STRING)) {
 				pValue = value;
 			} else if (key.startsWith(TAG_TYPE_NUMBER)) {
