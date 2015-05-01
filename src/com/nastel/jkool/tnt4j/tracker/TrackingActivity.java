@@ -33,6 +33,7 @@ import com.nastel.jkool.tnt4j.core.Operation;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.core.ValueTypes;
 import com.nastel.jkool.tnt4j.utils.Useconds;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
@@ -667,43 +668,43 @@ public class TrackingActivity extends Activity {
 		PropertySnapshot cpu = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_CPU, getSeverity());
 		double load = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
 		if (load >= 0) {
-			cpu.add(new Property(DEFAULT_PROPERTY_LOAD_AVG, load));
+			cpu.add(new Property(DEFAULT_PROPERTY_LOAD_AVG, load, ValueTypes.VALUE_TYPE_GAUGE));
 		}
 		if (cpuTimingSupported) {
 			cpu.add(DEFAULT_PROPERTY_COUNT, ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors());
-			cpu.add(new Property(DEFAULT_PROPERTY_CPU_TIME, ((double) tmbean.getThreadCpuTime(ownerThread.getThreadId()) / 1000.0d)));
-			cpu.add(new Property(DEFAULT_PROPERTY_TOTAL_USER_TIME, ((double) tmbean.getThreadUserTime(ownerThread.getThreadId()) / 1000.0d)));
+			cpu.add(new Property(DEFAULT_PROPERTY_CPU_TIME, ((double) tmbean.getThreadCpuTime(ownerThread.getThreadId()) / 1000.0d), ValueTypes.VALUE_TYPE_AGE_USEC));
+			cpu.add(new Property(DEFAULT_PROPERTY_TOTAL_USER_TIME, ((double) tmbean.getThreadUserTime(ownerThread.getThreadId()) / 1000.0d), ValueTypes.VALUE_TYPE_AGE_USEC));
 		}
 		this.add(cpu);
 
 		PropertySnapshot thread = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_THREAD, getSeverity());
-		thread.add(new Property(DEFAULT_PROPERTY_COUNT, tmbean.getThreadCount()));
-		thread.add(new Property(DEFAULT_PROPERTY_DAEMON_COUNT, tmbean.getDaemonThreadCount()));
-		thread.add(new Property(DEFAULT_PROPERTY_STARTED_COUNT, tmbean.getTotalStartedThreadCount()));
-		thread.add(new Property(DEFAULT_PROPERTY_PEAK_COUNT, tmbean.getPeakThreadCount()));
-		thread.add(new Property(DEFAULT_PROPERTY_BLOCKED_COUNT, ownerThread.getBlockedCount()));
-		thread.add(new Property(DEFAULT_PROPERTY_WAITED_COUNT, ownerThread.getWaitedCount()));
+		thread.add(new Property(DEFAULT_PROPERTY_COUNT, tmbean.getThreadCount(), ValueTypes.VALUE_TYPE_GAUGE));
+		thread.add(new Property(DEFAULT_PROPERTY_DAEMON_COUNT, tmbean.getDaemonThreadCount(), ValueTypes.VALUE_TYPE_GAUGE));
+		thread.add(new Property(DEFAULT_PROPERTY_STARTED_COUNT, tmbean.getTotalStartedThreadCount(), ValueTypes.VALUE_TYPE_COUNTER));
+		thread.add(new Property(DEFAULT_PROPERTY_PEAK_COUNT, tmbean.getPeakThreadCount(), ValueTypes.VALUE_TYPE_GAUGE));
+		thread.add(new Property(DEFAULT_PROPERTY_BLOCKED_COUNT, ownerThread.getBlockedCount(), ValueTypes.VALUE_TYPE_COUNTER));
+		thread.add(new Property(DEFAULT_PROPERTY_WAITED_COUNT, ownerThread.getWaitedCount(), ValueTypes.VALUE_TYPE_COUNTER));
 		if (contTimingSupported) {
-			thread.add(new Property(DEFAULT_PROPERTY_BLOCKED_TIME, ownerThread.getBlockedTime() * 1000));
-			thread.add(new Property(DEFAULT_PROPERTY_WAITED_TIME, ownerThread.getWaitedTime() * 1000));
+			thread.add(new Property(DEFAULT_PROPERTY_BLOCKED_TIME, ownerThread.getBlockedTime() * 1000, ValueTypes.VALUE_TYPE_AGE_USEC));
+			thread.add(new Property(DEFAULT_PROPERTY_WAITED_TIME, ownerThread.getWaitedTime() * 1000, ValueTypes.VALUE_TYPE_AGE_USEC));
 		}
 		this.add(thread);
 
 		PropertySnapshot mem = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_MEMORY, getSeverity());
 		long usedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-		long memPct = (long) (((double) usedMem / (double) Runtime.getRuntime().totalMemory()) * 100.0d);
-		mem.add(new Property(DEFAULT_PROPERTY_MAX_BYTES, Runtime.getRuntime().maxMemory()));
-		mem.add(new Property(DEFAULT_PROPERTY_TOTAL_BYTES, Runtime.getRuntime().totalMemory()));
-		mem.add(new Property(DEFAULT_PROPERTY_FREE_BYTES, Runtime.getRuntime().freeMemory()));
-		mem.add(new Property(DEFAULT_PROPERTY_USED_BYTES, usedMem));
-		mem.add(new Property(DEFAULT_PROPERTY_USAGE, memPct));
+		double memPct = (double) ((double) usedMem / (double) Runtime.getRuntime().totalMemory());
+		mem.add(new Property(DEFAULT_PROPERTY_MAX_BYTES, Runtime.getRuntime().maxMemory(), ValueTypes.VALUE_TYPE_BYTE));
+		mem.add(new Property(DEFAULT_PROPERTY_TOTAL_BYTES, Runtime.getRuntime().totalMemory(), ValueTypes.VALUE_TYPE_BYTE));
+		mem.add(new Property(DEFAULT_PROPERTY_FREE_BYTES, Runtime.getRuntime().freeMemory(), ValueTypes.VALUE_TYPE_BYTE));
+		mem.add(new Property(DEFAULT_PROPERTY_USED_BYTES, usedMem, ValueTypes.VALUE_TYPE_BYTE));
+		mem.add(new Property(DEFAULT_PROPERTY_USAGE, memPct, ValueTypes.VALUE_TYPE_PERCENT));
 		this.add(mem);
 
 		List<GarbageCollectorMXBean> gcList = ManagementFactory.getGarbageCollectorMXBeans();
 		for (GarbageCollectorMXBean gc : gcList) {
 			PropertySnapshot gcSnap = new PropertySnapshot(SNAPSHOT_CATEGORY_GC, gc.getName(), getSeverity());
-			gcSnap.add(new Property(DEFAULT_PROPERTY_COUNT, gc.getCollectionCount()));
-			gcSnap.add(new Property(DEFAULT_PROPERTY_TIME, gc.getCollectionTime()));
+			gcSnap.add(new Property(DEFAULT_PROPERTY_COUNT, gc.getCollectionCount(), ValueTypes.VALUE_TYPE_COUNTER));
+			gcSnap.add(new Property(DEFAULT_PROPERTY_TIME, gc.getCollectionTime(), ValueTypes.VALUE_TYPE_AGE_MSEC));
 			gcSnap.add(new Property(DEFAULT_PROPERTY_VALID, gc.isValid()));
 			this.add(gcSnap);
 		}
@@ -715,17 +716,17 @@ public class TrackingActivity extends Activity {
 				double cpuUsec = ((double) cpuUsed / 1000.0d);
 				activity.add(new Property(DEFAULT_PROPERTY_CPU_TIME, cpuUsec));
 				long slackTime = (long) (getElapsedTime() - getWaitTime() - cpuUsec);
-				activity.add(new Property(DEFAULT_PROPERTY_SLACK_TIME, slackTime));
-				activity.add(new Property(DEFAULT_PROPERTY_WALL_TIME, (cpuUsec + getWaitTime())));
+				activity.add(new Property(DEFAULT_PROPERTY_SLACK_TIME, slackTime, ValueTypes.VALUE_TYPE_AGE_USEC));
+				activity.add(new Property(DEFAULT_PROPERTY_WALL_TIME, (cpuUsec + getWaitTime()), ValueTypes.VALUE_TYPE_AGE_USEC));
 			}
-			activity.add(new Property(DEFAULT_PROPERTY_BLOCKED_COUNT, (stopBlockCount - startBlockCount)));
-			activity.add(new Property(DEFAULT_PROPERTY_WAITED_COUNT, (stopWaitCount - startWaitCount)));
+			activity.add(new Property(DEFAULT_PROPERTY_BLOCKED_COUNT, (stopBlockCount - startBlockCount), ValueTypes.VALUE_TYPE_GAUGE));
+			activity.add(new Property(DEFAULT_PROPERTY_WAITED_COUNT, (stopWaitCount - startWaitCount), ValueTypes.VALUE_TYPE_GAUGE));
 			if (contTimingSupported) {
-				activity.add(new Property(DEFAULT_PROPERTY_BLOCKED_TIME, ((stopBlockTime - startBlockTime) * 1000)));
-				activity.add(new Property(DEFAULT_PROPERTY_WAITED_TIME, ((stopWaitTime - startWaitTime) * 1000)));
+				activity.add(new Property(DEFAULT_PROPERTY_BLOCKED_TIME, ((stopBlockTime - startBlockTime) * 1000), ValueTypes.VALUE_TYPE_AGE_USEC));
+				activity.add(new Property(DEFAULT_PROPERTY_WAITED_TIME, ((stopWaitTime - startWaitTime) * 1000), ValueTypes.VALUE_TYPE_AGE_USEC));
 			}
 			overHeadTimeNano += (System.nanoTime() - start);
-			activity.add(new Property(DEFAULT_PROPERTY_OVERHEAD_TIME, ((double) overHeadTimeNano / 1000.0d)));
+			activity.add(new Property(DEFAULT_PROPERTY_OVERHEAD_TIME, ((double) overHeadTimeNano / 1000.0d), ValueTypes.VALUE_TYPE_AGE_USEC));
 			this.add(activity);
 		}
 	}

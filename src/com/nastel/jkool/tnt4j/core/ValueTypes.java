@@ -26,23 +26,23 @@ public interface ValueTypes {
 	public static final String VALUE_TYPE_CURRENCY_EUR = "currency.eur";
 	public static final String VALUE_TYPE_CURRENCY_UK = "currency.uk";
 
-	public static final String VALUE_TYPE_BYTES = "bytes";
-	public static final String VALUE_TYPE_KBYTES = "kbyes";
-	public static final String VALUE_TYPE_MBYTES = "mbytes";
-	public static final String VALUE_TYPE_GBYTES = "gbytes";
-	public static final String VALUE_TYPE_TBYTES = "tbytes";
+	public static final String VALUE_TYPE_BYTE = "byte";
+	public static final String VALUE_TYPE_KBYTE = "kb";
+	public static final String VALUE_TYPE_MBYTE = "mb";
+	public static final String VALUE_TYPE_GBYTE = "gb";
+	public static final String VALUE_TYPE_TBYTE = "tb";
 	
 	public static final String VALUE_TYPE_AGE = "age";
-	public static final String VALUE_TYPE_AGE_NSECS = "age.nsecs";
-	public static final String VALUE_TYPE_AGE_USECS = "age.usecs";
-	public static final String VALUE_TYPE_AGE_MSEC = "age.msecs";
-	public static final String VALUE_TYPE_AGE_SECS = "age.secs";
-	public static final String VALUE_TYPE_AGE_MINS= "age.mins";
-	public static final String VALUE_TYPE_AGE_HOURS= "age.hours";
-	public static final String VALUE_TYPE_AGE_DAYS = "age.days";
-	public static final String VALUE_TYPE_AGE_WEEKS = "age.weeks";
-	public static final String VALUE_TYPE_AGE_MONTHS = "age.months";
-	public static final String VALUE_TYPE_AGE_YEARS = "age.years";
+	public static final String VALUE_TYPE_AGE_NSEC = "age.nsec";
+	public static final String VALUE_TYPE_AGE_USEC = "age.usec";
+	public static final String VALUE_TYPE_AGE_MSEC = "age.msec";
+	public static final String VALUE_TYPE_AGE_SEC = "age.sec";
+	public static final String VALUE_TYPE_AGE_MIN = "age.min";
+	public static final String VALUE_TYPE_AGE_HOUR = "age.hour";
+	public static final String VALUE_TYPE_AGE_DAY  = "age.day";
+	public static final String VALUE_TYPE_AGE_WEEK = "age.week";
+	public static final String VALUE_TYPE_AGE_MONTH = "age.month";
+	public static final String VALUE_TYPE_AGE_YEAR  = "age.year";
 
 	public static final String VALUE_TYPE_SPEED_KMH = "speed.kmh";
 	public static final String VALUE_TYPE_SPEED_MPH = "speed.mph";
@@ -60,6 +60,8 @@ public interface ValueTypes {
 	public static final String VALUE_TYPE_TIMETICKS = "timeticks";
 	public static final String VALUE_TYPE_TIMESTAMP = "timestamp";
 	public static final String VALUE_TYPE_COUNTER = "counter";
-	public static final String VALUE_TYPE_GUAGE = "guage";
+	public static final String VALUE_TYPE_GAUGE = "gauge";
+	
+	public static final String VALUE_TYPE_ID = "id";
 	public static final String VALUE_TYPE_GUID = "guid";
 }
