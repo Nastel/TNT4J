@@ -32,7 +32,9 @@ import com.nastel.jkool.tnt4j.core.ActivityStatus;
 import com.nastel.jkool.tnt4j.core.OpCompCode;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
+import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.core.ValueTypes;
 import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -98,8 +100,10 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <tr><td><b>age</b></td>			    <td>Message/event age in microseconds (useful when receiving messages, designating message age on receipt)</td></tr>
  * <tr><td><b>stt</b></td>			    <td>Start time, as the number of microseconds since epoch</td></tr>
  * <tr><td><b>ent</b></td>				<td>End time, as the number of microseconds since epoch</td></tr>
- * <tr><td><b>%[s|i|l|f|d|n|b]/user-key</b></td><td>User defined key/value pair and [s|i|l|f|n|d|b] are type specifiers (i=Integer, l=Long, d=Double, f=Float, n=Number, s=String, b=Boolean) (e.g #%i/myfield=7634732)</td></tr>
+ * <tr><td><b>%[data-type][:value-type]/user-key</b></td><td>User defined key/value pair and data-type->[s|i|l|f|n|d|b] are type specifiers (i=Integer, l=Long, d=Double, f=Float, n=Number, s=String, b=Boolean) (e.g #%i/myfield=7634732)</td></tr>
  * </table>
+ * 
+ * Value types are optional and defined in {@link ValueTypes}. It is highly recommended to annotate user defined properties with data-type and value-type.
  *
  * <p>An example of annotating (TNT4J) a single log message using log4j:</p>
  * <p><code>logger.error("Operation Failed #app=MyApp #opn=save #rsn=" + filename + "  #rcd="
@@ -111,7 +115,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * <p><code></code></p>
  * <p><code>logger.debug("Operation processing #app=MyApp #opn=save #rsn=" + filename);</code></p>
  * <p><code>logger.error("Operation Failed #app=MyApp #opn=save #rsn=" + filename + "  #rcd=" + errno);</code></p>
- * <p><code>logger.info("Finished order processing #app=MyApp #end=" + activityName + " #%l/order=" + orderNo);</code></p>
+ * <p><code>logger.info("Finished order processing #app=MyApp #end=" + activityName + " #%l/order=" + orderNo + " #%d:currency/amount=" + amount);</code></p>
  *  
  * @version $Revision: 1 $
  * 
@@ -141,13 +145,13 @@ public class TNT4JAppender extends AppenderSkeleton {
 	public static final String PARAM_AGE_TIME_LABEL		= "age";
 	
 	public static final String TAG_TYPE_QUALIFIER		= "%";
-	public static final String TAG_TYPE_INTEGER			= "%i/";
-	public static final String TAG_TYPE_LONG		 	= "%l/";
-	public static final String TAG_TYPE_DOUBLE		 	= "%d/";
-	public static final String TAG_TYPE_FLOAT		 	= "%f/";
-	public static final String TAG_TYPE_NUMBER		 	= "%n/";
-	public static final String TAG_TYPE_BOOLEAN		 	= "%b/";
-	public static final String TAG_TYPE_STRING		 	= "%s/";
+	public static final String TAG_TYPE_INTEGER			= "%i";
+	public static final String TAG_TYPE_LONG		 	= "%l";
+	public static final String TAG_TYPE_DOUBLE		 	= "%d";
+	public static final String TAG_TYPE_FLOAT		 	= "%f";
+	public static final String TAG_TYPE_NUMBER		 	= "%n";
+	public static final String TAG_TYPE_BOOLEAN		 	= "%b";
+	public static final String TAG_TYPE_STRING		 	= "%s";
 
 	private static final ThreadLocal<Long> EVENT_TIMER = new ThreadLocal<Long>();
 	
@@ -305,7 +309,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 					snapshot = logger.newSnapshot(SNAPSHOT_CATEGORY, activity.getName());
 					activity.addSnapshot(snapshot);
 				}
-				snapshot.add(stripKey(key), toType(key, value));
+				snapshot.add(toProperty(key, value));
 			}
 		}
 		
@@ -459,7 +463,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 					snapshot = logger.newSnapshot(SNAPSHOT_CATEGORY, event.getOperation().getName());
 					event.getOperation().addSnapshot(snapshot);
 				}
-				snapshot.add(stripKey(key), toType(key, value));
+				snapshot.add(toProperty(key, value));
 			}
 		}		
 		startTime = startTime <= 0 ? (evTime - elapsedTimeUsec): evTime;
@@ -476,51 +480,69 @@ public class TNT4JAppender extends AppenderSkeleton {
 	 * @param key key with prefixed type qualifier
 	 * @return stripped key
 	 */
-	private String stripKey(String key) {
-		if (key.length() > 3 && key.charAt(0) == '%' && key.charAt(2) == '/') {
-			return key.substring(3);
+	private String getKey(String key) {
+		int eIdx = key.indexOf("/");
+		if (key.length() > 3 && key.charAt(0) == '%' && eIdx > 0) {
+			return key.substring(eIdx+1);
 		} 
 		return key;
 	}
 
 	/**
+	 * Extract value type from the key
+	 * <tr><td><b>%[s|i|l|f|d|n|b][:valType]/user-key</b></td><td>User defined key/value pair (e.g #%l:byte/memory=7634732)</td></tr>
+	 * </table>
+	 *
+	 * @param key key with prefixed type qualifier
+	 * @return value type extracted from the key - %[data-type][:value-type]/user-key
+	 */
+	private String getValueType(String key) {
+		if (key.startsWith(TAG_TYPE_QUALIFIER)) {
+			int sIdx = key.indexOf(":");
+			if (sIdx > 0) {
+				int eIdx = key.indexOf("/");
+				return ((eIdx - sIdx) > 1? key.substring(sIdx+1, eIdx): null);
+			}
+		}		
+		return null;
+	}
+	
+	/**
 	 * Convert annotated value with key type qualifier such as %type/
-	 * into the appropriate java object.
+	 * into key, value property.
 	 * <table>
-	 * <tr><td><b>%[s|i|l|f|d|n|b]/user-key</b></td><td>User defined key/value pair and [s|i|l|f|n|d|b] are type specifiers (i=Integer, l=Long, d=Double, f=Float, n=Number, s=String, b=Boolean) (e.g #%i/myfield=7634732)</td></tr>
+	 * <tr><td><b>%[s|i|l|f|d|n|b][:value-type]/user-key</b></td><td>User defined key/value pair and [s|i|l|f|n|d|b] are type specifiers (i=Integer, l=Long, d=Double, f=Float, n=Number, s=String, b=Boolean) (e.g #%i/myfield=7634732)</td></tr>
 	 * </table>
 	 *
 	 * @param key key with prefixed type qualifier
 	 * @param value to be converted based on type qualifier
 	 * 
-	 * @return converted value
+	 * @return property containing key and value
 	 */
-	private Object toType(String key, String value) {
+	private Property toProperty(String key, String value) {
+		Object pValue = value;
+
 		try {
 			if (!key.startsWith(TAG_TYPE_QUALIFIER)) {
 				// if no type specified, assume a numeric field
-				return Long.parseLong(value);
+				pValue = value.indexOf(".") > 0? Double.parseDouble(value): Long.parseLong(value);
 			} else if (key.startsWith(TAG_TYPE_STRING)) {
-				return value;
+				pValue = value;
 			} else if (key.startsWith(TAG_TYPE_NUMBER)) {
-				return Double.parseDouble(value);
+				pValue = Double.parseDouble(value);
 			} else if (key.startsWith(TAG_TYPE_INTEGER)) {
-				return Integer.parseInt(value);
+				pValue = Integer.parseInt(value);
 			} else if (key.startsWith(TAG_TYPE_LONG)) {
-				return Long.parseLong(value);
+				pValue = Long.parseLong(value);
 			} else if (key.startsWith(TAG_TYPE_FLOAT)) {
-				return Float.parseFloat(value);
+				pValue = Float.parseFloat(value);
 			} else if (key.startsWith(TAG_TYPE_DOUBLE)) {
-				return Double.parseDouble(value);
+				pValue = Double.parseDouble(value);
 			} else if (key.startsWith(TAG_TYPE_BOOLEAN)) {
-				return Boolean.parseBoolean(value);
-			} else {
-				return value;
+				pValue = Boolean.parseBoolean(value);
 			}
-		} catch (NumberFormatException ne) {
-			// return a string if exception occurs
-			return value;
-		}
+		} catch (NumberFormatException ne) {}
+		return new Property(getKey(key), pValue, getValueType(key));
 	}
 
 	/**
