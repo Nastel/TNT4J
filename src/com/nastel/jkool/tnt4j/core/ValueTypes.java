@@ -21,17 +21,24 @@ package com.nastel.jkool.tnt4j.core;
  * @version $Revision: 1 $
  */
 public interface ValueTypes {
+	// currency types
 	public static final String VALUE_TYPE_CURRENCY = "currency";
 	public static final String VALUE_TYPE_CURRENCY_USD = "currency.usd";
 	public static final String VALUE_TYPE_CURRENCY_EUR = "currency.eur";
 	public static final String VALUE_TYPE_CURRENCY_UK = "currency.uk";
 
-	public static final String VALUE_TYPE_BYTE = "byte";
-	public static final String VALUE_TYPE_KBYTE = "kb";
-	public static final String VALUE_TYPE_MBYTE = "mb";
-	public static final String VALUE_TYPE_GBYTE = "gb";
-	public static final String VALUE_TYPE_TBYTE = "tb";
+	// size/length value types
+	public static final String VALUE_TYPE_BYTE = "size.byte";
+	public static final String VALUE_TYPE_KBYTE = "size.kb";
+	public static final String VALUE_TYPE_MBYTE = "size.mb";
+	public static final String VALUE_TYPE_GBYTE = "size.gb";
+	public static final String VALUE_TYPE_TBYTE = "size.tb";
+	public static final String VALUE_TYPE_METER = "size.meter";
+	public static final String VALUE_TYPE_KM = "size.km";
+	public static final String VALUE_TYPE_FOOT = "size.foot";
+	public static final String VALUE_TYPE_MILE = "size.mile";
 	
+	// time/age related value types
 	public static final String VALUE_TYPE_AGE = "age";
 	public static final String VALUE_TYPE_AGE_NSEC = "age.nsec";
 	public static final String VALUE_TYPE_AGE_USEC = "age.usec";
@@ -44,24 +51,31 @@ public interface ValueTypes {
 	public static final String VALUE_TYPE_AGE_MONTH = "age.month";
 	public static final String VALUE_TYPE_AGE_YEAR  = "age.year";
 
+	// time related value types
+	public static final String VALUE_TYPE_TIMETICKS = "counter.msec";
+	public static final String VALUE_TYPE_TIMESTAMP = "timestamp";
+
+	// speed/velocity
 	public static final String VALUE_TYPE_SPEED_KMH = "speed.kmh";
 	public static final String VALUE_TYPE_SPEED_MPH = "speed.mph";
 	
-	public static final String VALUE_TYPE_WEIGHT_LB = "weight.lb";
-	public static final String VALUE_TYPE_WEIGHT_OZ = "weight.oz";
-	public static final String VALUE_TYPE_WEIGHT_GRAM = "weight.g";
-	public static final String VALUE_TYPE_WEIGHT_KG = "weight.kg";
+	// mass value types
+	public static final String VALUE_TYPE_MASS_LB = "mass.lb";
+	public static final String VALUE_TYPE_MASS_OZ = "mass.oz";
+	public static final String VALUE_TYPE_MASS_GRAM = "mass.g";
+	public static final String VALUE_TYPE_MASS_KG = "mass.kg";
 	
-	public static final String VALUE_TYPE_PERCENT = "percent";
-	public static final String VALUE_TYPE_ADDRESS = "address";
-	public static final String VALUE_TYPE_IPADDRESS = "ip.addr";
-	public static final String VALUE_TYPE_IPADDRESS_V4 = "ip.addr.v4";
-	public static final String VALUE_TYPE_IPADDRESS_V6 = "ip.addr.v6";
-	public static final String VALUE_TYPE_TIMETICKS = "timeticks";
-	public static final String VALUE_TYPE_TIMESTAMP = "timestamp";
+	// address value types
+	public static final String VALUE_TYPE_ADDR = "addr";
+	public static final String VALUE_TYPE_IPADDR = "addr.ip";
+	public static final String VALUE_TYPE_IPADDR_V4 = "addr.ip.v4";
+	public static final String VALUE_TYPE_IPADDR_V6 = "addr.ip.v6";
+	
+	// generic number based value types
 	public static final String VALUE_TYPE_COUNTER = "counter";
 	public static final String VALUE_TYPE_GAUGE = "gauge";
 	
+	public static final String VALUE_TYPE_PERCENT = "percent";
 	public static final String VALUE_TYPE_ID = "id";
 	public static final String VALUE_TYPE_GUID = "guid";
 }
