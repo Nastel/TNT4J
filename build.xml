@@ -105,6 +105,8 @@
       <fileset dir="${tnt4jroot}">
         <include name="*4j.properties"/>
         <include name="*4j-tokens.properties"/>
+		<include name="README.md"/>
+		<include name="LICENSE"/>
       </fileset>
     </copy>
  	
