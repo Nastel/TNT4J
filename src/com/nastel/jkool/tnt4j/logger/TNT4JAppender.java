@@ -121,8 +121,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * 
  */
 public class TNT4JAppender extends AppenderSkeleton {
-	public static final String SNAPSHOT_CATEGORY		= "UserDefined";
-	public static final String DEFAULT_OP_NAME			= "LoggingEvent";
+	public static final String SNAPSHOT_CATEGORY		= "Log4J";
 		
 	public static final String PARAM_BEGIN_LABEL		= "beg";
 	public static final String PARAM_END_LABEL			= "end";
@@ -245,8 +244,9 @@ public class TNT4JAppender extends AppenderSkeleton {
 
 			if (reportMetrics) {
 				// report a single tracking event as part of an activity
-				activity = logger.newActivity(tev.getSeverity(), getName());
+				activity = logger.newActivity(tev.getSeverity(), event.getThreadName());
 				activity.start(tev.getOperation().getStartTime().getTimeUsec());
+				activity.setResource(event.getLocationInformation().getClassName());
 				activity.setSource(tev.getSource()); // use event's source name for this activity
 				activity.setException(ex);
 				activity.setStatus(ex != null ? ActivityStatus.EXCEPTION : ActivityStatus.END);
@@ -306,7 +306,7 @@ public class TNT4JAppender extends AppenderSkeleton {
 			} else if (activity != null) {
 				// add unknown attribute into snapshot
 				if (snapshot == null) {
-					snapshot = logger.newSnapshot(SNAPSHOT_CATEGORY, activity.getName());
+					snapshot = logger.newSnapshot(getName(), activity.getName());
 					activity.addSnapshot(snapshot);
 				}
 				snapshot.add(toProperty(key, value));
@@ -419,9 +419,13 @@ public class TNT4JAppender extends AppenderSkeleton {
 	
 		OpCompCode ccode = getOpCompCode(jev);
 		OpLevel level = getOpLevel(jev);
-		TrackingEvent event = logger.newEvent(level, DEFAULT_OP_NAME, null, eventMsg);
+		
+		TrackingEvent event = logger.newEvent(level, jev.getLocationInformation().getMethodName(), null, eventMsg);
 		event.setTag(jev.getThreadName());
-
+		event.getOperation().setResource(jev.getLocationInformation().getClassName());
+		event.setLocation(jev.getLocationInformation().getFileName() + ":" + jev.getLocationInformation().getLineNumber());
+		event.setSource(logger.getConfiguration().getSourceFactory().newSource(jev.getLoggerName()));
+		
 		for (Map.Entry<String, Object> entry: attrs.entrySet()) {
 			String key = entry.getKey();
 			String value = entry.getValue().toString();
