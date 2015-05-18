@@ -541,7 +541,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			} else if (item instanceof Property) {
 				json.append(format((Property) item));
 			} else {
-				json.append(Utils.quote(String.valueOf(item)));
+				String vText = StringEscapeUtils.escapeJson(String.valueOf(item)); // escape double quote chars
+				json.append(Utils.quote(vText));
 			}
 		}
 		return json.toString();
