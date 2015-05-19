@@ -28,15 +28,16 @@ public interface ValueTypes {
 	public static final String VALUE_TYPE_CURRENCY_UK = "currency.uk";
 
 	// size/length value types
-	public static final String VALUE_TYPE_BYTE = "size.byte";
-	public static final String VALUE_TYPE_KBYTE = "size.kb";
-	public static final String VALUE_TYPE_MBYTE = "size.mb";
-	public static final String VALUE_TYPE_GBYTE = "size.gb";
-	public static final String VALUE_TYPE_TBYTE = "size.tb";
-	public static final String VALUE_TYPE_METER = "size.meter";
-	public static final String VALUE_TYPE_KM = "size.km";
-	public static final String VALUE_TYPE_FOOT = "size.foot";
-	public static final String VALUE_TYPE_MILE = "size.mile";
+	public static final String VALUE_TYPE_SIZE = "size";
+	public static final String VALUE_TYPE_SIZE_BYTE = "size.byte";
+	public static final String VALUE_TYPE_SIZE_KBYTE = "size.kb";
+	public static final String VALUE_TYPE_SIZE_MBYTE = "size.mb";
+	public static final String VALUE_TYPE_SIZE_GBYTE = "size.gb";
+	public static final String VALUE_TYPE_SIZE_TBYTE = "size.tb";
+	public static final String VALUE_TYPE_SIZE_METER = "size.meter";
+	public static final String VALUE_TYPE_SIZE_KM = "size.km";
+	public static final String VALUE_TYPE_SIZE_FOOT = "size.foot";
+	public static final String VALUE_TYPE_SIZE_MILE = "size.mile";
 	
 	// time/age related value types
 	public static final String VALUE_TYPE_AGE = "age";
@@ -52,7 +53,6 @@ public interface ValueTypes {
 	public static final String VALUE_TYPE_AGE_YEAR  = "age.year";
 
 	// time related value types
-	public static final String VALUE_TYPE_TIMETICKS = "counter.msec";
 	public static final String VALUE_TYPE_TIMESTAMP = "timestamp";
 
 	// speed/velocity
@@ -73,6 +73,7 @@ public interface ValueTypes {
 	
 	// generic number based value types
 	public static final String VALUE_TYPE_COUNTER = "counter";
+	public static final String VALUE_TYPE_COUNTER_TIMETICKS = "counter.msec";
 	public static final String VALUE_TYPE_GAUGE = "gauge";
 	
 	public static final String VALUE_TYPE_PERCENT = "percent";
