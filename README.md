@@ -43,7 +43,6 @@ All predefined `value-type` qualifiers are defined in `com.nastel.jkool.tnt4j.co
 ```
 	currency 	-- generic currency
 	age 		-- age in time units
-	id 		-- alpha-numeric generic identifier
 	guid 		-- globaly unique identifier
 	guage		-- numeric gauge
 	counter		-- numeric counter
