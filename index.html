@@ -1,34 +1,25 @@
 <!DOCTYPE html>
-<html>
+<html lang="en-us">
   <head>
-    <meta charset='utf-8'>
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen">
-    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print">
-
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-
+    <meta charset="UTF-8">
     <title>TNT4J by Nastel</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
+    <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
-
   <body>
-    <header>
-      <div class="inner">
-        <h1>TNT4J</h1>
-        <h2>Track and Trace 4 Java API, Application event streaming and logging framework for correlation, diagnostics and tracking of application activities.</h2>
-        <a href="https://github.com/Nastel/TNT4J" class="button"><small>View project on</small> GitHub</a>
-      </div>
-    </header>
+    <section class="page-header">
+      <h1 class="project-name">TNT4J</h1>
+      <h2 class="project-tagline">Track and Trace 4 Java API, Application event streaming and logging framework for correlation, diagnostics and tracking of application activities.</h2>
+      <a href="https://github.com/Nastel/TNT4J" class="btn">View on GitHub</a>
+      <a href="https://github.com/Nastel/TNT4J/zipball/master" class="btn">Download .zip</a>
+      <a href="https://github.com/Nastel/TNT4J/tarball/master" class="btn">Download .tar.gz</a>
+    </section>
 
-    <div id="content-wrapper">
-      <div class="inner clearfix">
-        <section id="main-content">
-          <h1>
+    <section class="main-content">
+      <h1>
 <a id="why-tnt4j-" class="anchor" href="#why-tnt4j-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why TNT4J </h1>
 
 <p>TNT4J is about tracking and tracing activities, transactions, behavior and performance via an easy to use API that behaves much like a logging framework.</p>
@@ -60,11 +51,12 @@ Second, TNT4J includes <code>TNT4JAppender</code> for log4j which allows develop
 <div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>info(<span class="pl-s"><span class="pl-pds">"</span>Starting a tnt4j activity #beg=Test, #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-smi">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName());
 logger<span class="pl-k">.</span>warn(<span class="pl-s"><span class="pl-pds">"</span>First log message #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-smi">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>, #msg='1 Test warning message'<span class="pl-pds">"</span></span>);
 logger<span class="pl-k">.</span>error(<span class="pl-s"><span class="pl-pds">"</span>Second log message #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-smi">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>, #msg='2 Test error message'<span class="pl-pds">"</span></span>, <span class="pl-k">new</span> <span class="pl-smi">Exception</span>(<span class="pl-s"><span class="pl-pds">"</span>test exception<span class="pl-pds">"</span></span>));
-logger<span class="pl-k">.</span>info(<span class="pl-s"><span class="pl-pds">"</span>Ending a tnt4j activity #end=Test, #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-smi">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span> #%i/order-no=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> orderNo);</pre></div>
+logger<span class="pl-k">.</span>info(<span class="pl-s"><span class="pl-pds">"</span>Ending a tnt4j activity #end=Test, #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-smi">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span> #%i/order-no=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> orderNo  <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span> #%d:currency/amount=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> amount);</pre></div>
 
 <p>Above example groups messages between first and last into a related logical collection called <code>Activity</code>. Activity is a collection of logically related events/messages. Hash tags <code>#beg</code>, <code>#end</code> are used to demarcate activity boundaries. This method also supports nested activities.</p>
 
-<p>User defined fields can be reported using <code>#[type-qualifier]your-metric-name=your-value</code> convention (e.g. <code>#%i/order-no=62627</code>). <code>TNT4JAppender</code> supports the following optional type qualifiers:</p>
+<p>User defined fields can be reported using <code>#[data-type][:value-type]/your-metric-name=your-value</code> convention (e.g. <code>#%i/order-no=62627</code> or <code>#%d:currency/amount=50.45</code>). 
+<code>TNT4JAppender</code> supports the following optional <code>data-type</code> qualifiers:</p>
 
 <pre><code>    %i/ -- integer
     %l/ -- long
@@ -73,6 +65,18 @@ logger<span class="pl-k">.</span>info(<span class="pl-s"><span class="pl-pds">"<
     %b/ -- boolean
     %n/ -- number
     %s/ -- string
+</code></pre>
+
+<p>All predefined <code>value-type</code> qualifiers are defined in <code>com.nastel.jkool.tnt4j.core.ValueTypes</code>. Examples:</p>
+
+<pre><code>    currency    -- generic currency
+    age         -- age in time units
+    guid        -- globaly unique identifier
+    guage       -- numeric gauge
+    counter     -- numeric counter
+    percent     -- percent
+    timestamp   -- timestamp
+    addr        -- generic address
 </code></pre>
 
 <p>Not specifying a qualifier defaults to auto detection of type by <code>TNT4JAppender</code>. First <code>number</code> qualifier is tested and defaults to <code>string</code> if the test fails (e.g. <code>#order-no=62627</code>). User defined fields are reported as a TNT4J snapshot with <code>UserDefined</code> category and snapshot name set to activity name set by <code>#beg</code>, <code>#end</code>, <code>#opn</code> tags.</p>
@@ -513,25 +517,16 @@ java <span class="pl-k">-</span>javaagent<span class="pl-k">:</span>tnt4j<span c
 <li>Streaming Analytics Service -- jkoolcloud.com (<a href="https://www.jkoolcloud.com">https://www.jkoolcloud.com</a>)</li>
 <li>Application Performance Monitoring -- AutoPilot M6 (<a href="http://www.nastel.com/products/autopilot-m6.html">http://www.nastel.com/products/autopilot-m6.html</a>)</li>
 </ul>
-        </section>
 
-        <aside id="sidebar">
-          <a href="https://github.com/Nastel/TNT4J/zipball/master" class="button">
-            <small>Download</small>
-            .zip file
-          </a>
-          <a href="https://github.com/Nastel/TNT4J/tarball/master" class="button">
-            <small>Download</small>
-            .tar.gz file
-          </a>
+      <footer class="site-footer">
+        <span class="site-footer-owner"><a href="https://github.com/Nastel/TNT4J">TNT4J</a> is maintained by <a href="https://github.com/Nastel">Nastel</a>.</span>
 
-          <p class="repo-owner"><a href="https://github.com/Nastel/TNT4J"></a> is maintained by <a href="https://github.com/Nastel">Nastel</a>.</p>
+        <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+      </footer>
 
-          <p>This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the Architect theme by <a href="https://twitter.com/jasonlong">Jason Long</a>.</p>
-        </aside>
-      </div>
-    </div>
+    </section>
 
   
   </body>
 </html>
+
