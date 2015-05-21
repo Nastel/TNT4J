@@ -19,8 +19,8 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
- * Implements Source entity -- container of other sources. Each one identifies a specific entity such as an
- * application, server, device etc.
+ * Implements Source entity -- container of other sources. Each one identifies a specific entity such as an application,
+ * server, device etc.
  * </p>
  * 
  * 
@@ -82,8 +82,10 @@ public class DefaultSource implements Source {
 
 	@Override
 	public Source getSource(SourceType type) {
-		if (this.sourceType.equals(type)) return this;
-		return parentSource != null? (parentSource.getType().equals(type)? parentSource: parentSource.getSource(type)): null;
+		if (this.sourceType.equals(type))
+			return this;
+		return parentSource != null ? (parentSource.getType().equals(type) ? parentSource : parentSource
+		        .getSource(type)) : null;
 	}
 
 	/**
@@ -91,6 +93,7 @@ public class DefaultSource implements Source {
 	 * 
 	 * @param parent
 	 *            source associated with his source
+	 * @return same source instance
 	 */
 	public Source setSource(Source parent) {
 		this.parentSource = parent;
@@ -137,9 +140,10 @@ public class DefaultSource implements Source {
 	 * Set source type associated with this source.
 	 * </p>
 	 * 
+	 * @param type source type
 	 */
-	protected void setType(SourceType ct) {
-		sourceType = ct;
+	protected void setType(SourceType type) {
+		sourceType = type;
 	}
 
 	/**
@@ -177,11 +181,11 @@ public class DefaultSource implements Source {
 		} else if (!sname.equals(other.getName())) {
 			return false;
 		}
-		
+
 		if (!sourceType.equals(other.getType())) {
 			return false;
 		}
-		
+
 		if (user == null) {
 			if (other.getUser() != null)
 				return false;
@@ -200,9 +204,9 @@ public class DefaultSource implements Source {
 		StringBuilder str = new StringBuilder();
 
 		str.append(super.toString()).append("{").append("FQName: ").append(getFQName()).append(",").append("Name: ")
-		        .append(getName()).append(",").append("User: ").append(getUser()).append(",").append("Type: ").append(
-		                getType()).append(",").append("URL: ").append(getUrl()).append(",").append("OS: ").append(
-		                Utils.quote(getInfo())).append("}");
+		        .append(getName()).append(",").append("User: ").append(getUser()).append(",").append("Type: ")
+		        .append(getType()).append(",").append("URL: ").append(getUrl()).append(",").append("OS: ")
+		        .append(Utils.quote(getInfo())).append("}");
 
 		return str.toString();
 	}

@@ -280,7 +280,7 @@ public class TrackingEvent extends Message implements Trackable {
 
 	/**
 	 * Sets the operation correlator, which is a user-defined value to relate two separate
-	 * operations as belonging to the same transaction, truncating if necessary.
+	 * operations as belonging to the same activity.
 	 *
 	 * @param cid user-defined operation correlator
 	 * @throws IllegalArgumentException if correlator is too long
@@ -291,12 +291,32 @@ public class TrackingEvent extends Message implements Trackable {
 
 	/**
 	 * Gets the operation correlator, which is a user-defined value to relate two separate
-	 * operations as belonging to the same transaction.
+	 * operations as belonging to the same activity.
 	 *
 	 * @return user-defined operation correlator
 	 */
 	public String getCorrelator() {
 		return operation.getCorrelator();
+	}
+
+	/**
+	 * Sets correlators, which are user-defined values that relate two separate
+	 * operations as belonging to the same activity.
+	 *
+	 * @param cids user-defined list of correlators
+	 */
+	public void setCorrelators(String...cids) {
+		operation.setCorrelators(cids);
+	}
+
+	/**
+	 * Gets correlators, which are  user-defined values that relate two separate
+	 * operations as belonging to the same activity.
+	 *
+	 * @return user-defined list of correlators
+	 */
+	public String[] getCorrelators() {
+		return operation.getCorrelators();
 	}
 
 	/**

@@ -47,8 +47,8 @@ public class Message {
 	
 	private String		signature;
 	private int			size;
-	private String		tag;
 	private String		strData;
+	private String[]	tags;
 	private Object[]	argList;
 	private long		messageAge;
 	private String		mimeType = MIME_TYPE_TEXT_PLAIN;
@@ -216,7 +216,7 @@ public class Message {
 	 * @return user-defined message tag
 	 */
 	public String getTag() {
-		return tag;
+		return tags != null? tags[0]: null;
 	}
 
 	/**
@@ -226,7 +226,27 @@ public class Message {
 	 * @param tag user-defined message tag
 	 */
 	public void setTag(String tag) {
-		this.tag = tag;
+		setTags(tag);
+	}
+
+
+	/**
+	 * Gets message tags, which are user-defined values associated with the message.
+	 *
+	 * @return user-defined message tag
+	 */
+	public String[] getTags() {
+		return tags;
+	}
+
+	/**
+	 * Sets message tags, which are user-defined value associated with the message,
+	 * truncating if necessary.
+	 *
+	 * @param taglist user-defined list of message tags
+	 */
+	public void setTags(String...taglist) {
+		this.tags = taglist;
 	}
 
 

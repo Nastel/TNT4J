@@ -86,6 +86,7 @@ public class ActivityScheduler {
 	 * Assign an activity listener to be used when scheduled activity starts/stops
 	 * 
 	 * @param listener activity listener invoked when scheduled activity starts and stops
+	 * @return instance of the same scheduler
 	 * @see ActivityListener
 	 */
 	public ActivityScheduler setListener(ActivityListener listener) {
@@ -220,6 +221,9 @@ public class ActivityScheduler {
 	 * Override this calls to return custom instances of
 	 * <code>Runnable</code> which will be invoked per specified
 	 * schedule.
+	 * @param lg tracking logger instance
+	 * @param name of the new activity task
+	 * @param level associated with the task
 	 * @return <code>Runnable</code> instance
 	 */
 	protected Runnable newActivityTask(TrackingLogger lg, String name, OpLevel level) {

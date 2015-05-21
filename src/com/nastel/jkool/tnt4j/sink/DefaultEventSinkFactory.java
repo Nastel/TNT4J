@@ -18,7 +18,6 @@ package com.nastel.jkool.tnt4j.sink;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
- * <p>
  * This class provides a static way to get default event sink factory. Default event sink factory is
  * set to <code>com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory</code>.
  * Developers may initialize default event sink factory at runtime via code as follows:
@@ -37,7 +36,6 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * tnt4j.default.event.factory="com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory"
  * }
  * </pre>
- * </p>
  * Below is an example of how to obtain default event sink factory.
  * <pre>
  * {@code

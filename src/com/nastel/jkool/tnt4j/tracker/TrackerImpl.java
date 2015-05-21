@@ -191,6 +191,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	 * Invoke this when activity starts. The stack is maintained per thread in
 	 * thread local.
 	 * 
+	 * @param item activity to be pushed on the current stack
 	 * @return current tracker instance
 	 */
 	protected Tracker push(TrackingActivity item) {
@@ -215,6 +216,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	 * Invoke this method when activity stops. The stack is maintained per thread in
 	 * thread local.
 	 * 
+	 * @param item activity to be popped from the current stack
 	 * @return current tracker instance
 	 * @exception EmptyStackException
 	 *                if this stack is empty.

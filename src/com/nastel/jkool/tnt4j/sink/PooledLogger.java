@@ -185,6 +185,7 @@ public class PooledLogger implements KeyValueStats {
      * until insert is completed.
      *
      * @param event logging event
+     * @throws InterruptedException 
      */
 	public void put(SinkLogEvent event) throws InterruptedException {
 		eventQ.put(event);

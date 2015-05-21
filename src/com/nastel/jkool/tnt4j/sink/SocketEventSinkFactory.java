@@ -100,6 +100,7 @@ public class SocketEventSinkFactory  extends AbstractEventSinkFactory  {
 	 * @param frmt event formatter object to format events before writing to log
 	 * @param pipedSink piped sink used to route events
 	 * 
+	 * @return event sink instance with specified arguments
 	 * @see EventSink
 	 * @see EventFormatter
 	 */

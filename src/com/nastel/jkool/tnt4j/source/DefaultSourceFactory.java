@@ -32,6 +32,7 @@ public class DefaultSourceFactory {
 	/**
 	 * Set a global default source factory implementation
 	 * 
+	 * @param fac source factory instance
 	 * @return <code>SourceFactory</code> instance
 	 */
 	public static SourceFactory setDefaultConfigFactory(SourceFactory fac) {

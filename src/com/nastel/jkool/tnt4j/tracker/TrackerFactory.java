@@ -40,6 +40,7 @@ public interface TrackerFactory {
 	/**
 	 * Close and release resources associated with <code>Tracker</code> instance
 	 * 
+	 * @param tr tracker instance to be closed
 	 */
 	void close(Tracker tr);
 }

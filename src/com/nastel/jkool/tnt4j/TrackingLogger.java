@@ -323,6 +323,7 @@ public class TrackingLogger implements Tracker {
 	 *
 	 * @param config
 	 *            tracking configuration to be used to create a tracker instance
+	 * @return tracking logger instance
 	 * @see TrackerConfig
 	 */
 	public static TrackingLogger getInstance(TrackerConfig config) {
@@ -337,6 +338,7 @@ public class TrackingLogger implements Tracker {
 	 *
 	 * @param sourceName
 	 *            application source name associated with this logger
+	 * @return tracking logger instance
 	 * @see TrackerConfig
 	 */
 	public static TrackingLogger getInstance(String sourceName) {
@@ -353,6 +355,7 @@ public class TrackingLogger implements Tracker {
 	 *            application source name associated with this logger
 	 * @param type
 	 *            application source type associated with this logger
+	 * @return tracking logger instance
 	 * @see TrackerConfig
 	 */
 	public static TrackingLogger getInstance(String sourceName, SourceType type) {
@@ -368,6 +371,7 @@ public class TrackingLogger implements Tracker {
 	 *
 	 * @param clazz
 	 *            application class used as source name
+	 * @return tracking logger instance
 	 * @see TrackerConfig
 	 */
 	public static TrackingLogger getInstance(Class<?> clazz) {
@@ -432,6 +436,7 @@ public class TrackingLogger implements Tracker {
 	 * @param value
 	 *            associated value with a given key
 	 *
+	 * @return true of combination is set, false otherwise
 	 * @see OpLevel
 	 */
 	public boolean isSet(OpLevel sev, Object key, Object value) {
@@ -447,6 +452,10 @@ public class TrackingLogger implements Tracker {
 	 * @param sev
 	 *            severity of to be checked
 	 *
+	 * @param key
+	 *            key to be checked for being trackable
+	 *
+	 * @return true of combination is set, false otherwise
 	 * @see OpLevel
 	 */
 	public boolean isSet(OpLevel sev, Object key) {
@@ -465,6 +474,7 @@ public class TrackingLogger implements Tracker {
 	 * @param sev
 	 *            severity of to be checked
 	 *
+	 * @return true of combination is set, false otherwise
 	 * @see OpLevel
 	 */
 	public boolean isSet(OpLevel sev) {

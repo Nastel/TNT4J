@@ -182,6 +182,9 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	 * Example: SERVER=? or PROCESS=$java.process, where java property must be set to java.process=value. 
 	 * </p>
 	 * 
+	 * @param name source name
+	 * @param type source type
+	 * 
 	 * @return source name based on given name and type
 	 */
 	protected String getNameFromType(String name, SourceType type) {

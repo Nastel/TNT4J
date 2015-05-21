@@ -184,6 +184,7 @@ public class TrackingActivity extends Activity {
 	/**
 	 * Track and Trace given <code>TrackingEvent</code> instance correlated with current activity
 	 * 
+	 * @param event tracking instance to be tracked
 	 */
 	public void tnt(TrackingEvent event) {
 		if (isStopped()) {
@@ -197,6 +198,7 @@ public class TrackingActivity extends Activity {
 	/**
 	 * Track and Trace given <code>Snapshot</code> instance correlated with current activity
 	 * 
+	 * @param snapshot snapshot instance to be tracked
 	 */
 	public void tnt(Snapshot snapshot) {
 		if (isStopped()) {
@@ -570,6 +572,7 @@ public class TrackingActivity extends Activity {
 	 * 
 	 * @param flag
 	 *            append default snapshot with name "SYSTEM"
+	 * @return current tracking activity instance
 	 */
 	public TrackingActivity appendDefaultSnapshot(boolean flag) {
 		appendProps = flag;
@@ -607,6 +610,8 @@ public class TrackingActivity extends Activity {
 	/**
 	 * This method returns total CPU time in nanoseconds currently used by the current thread.
 	 * run this method only after activity is started.
+	 * 
+	 * @return total currently used CPU time in nanoseconds
 	 */
 	public long getCurrentCpuTimeNanos() {
 		return (cpuTimingSupported && (ownerThread != null)? tmbean.getThreadCpuTime(ownerThread.getThreadId()) : -1);
@@ -616,6 +621,8 @@ public class TrackingActivity extends Activity {
 	 * This method returns total CPU time in nanoseconds used since the start of this activity. If the activity has
 	 * stopped the value returned is an elapsed CPU time since between activity start/stop calls. If the activity has
 	 * not stopped yet, the value is the current used CPU time since the start until now.
+	 * 
+	 * @return total used CPU time in nanoseconds
 	 */
 	public long getUsedCpuTimeNanos() {
 		if (stopCPUTime > 0)
@@ -630,6 +637,8 @@ public class TrackingActivity extends Activity {
 	/**
 	 * This method returns total wall time computed after activity has stopped.
 	 * wall-time is computed as total used cpu + blocked time + wait time.
+	 * 
+	 * @return total wall time of this activity
 	 */
 	public long getWallTimeUsec() {
 		long wallTime = -1;

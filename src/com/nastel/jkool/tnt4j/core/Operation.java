@@ -71,7 +71,7 @@ public class Operation {
 	private String				exceptionStr;
 	private Throwable			exHandle;
 	private String				location;
-	private String				correlator;
+	private String []			correlators;
 	private long          		pid;
 	private long          		tid;
 	private HashMap<String, Snapshot> snapshots =  new HashMap<String, Snapshot>(32);
@@ -494,18 +494,37 @@ public class Operation {
 	 * @return user-defined operation correlator
 	 */
 	public String getCorrelator() {
-		return correlator;
+		return correlators != null? correlators[0]: null;
 	}
 
 	/**
 	 * Sets the operation correlator, which is a user-defined value to relate two separate
-	 * operations as belonging to the same transaction, truncating if necessary.
+	 * operations as belonging to the same transaction.
 	 *
 	 * @param correlator user-defined operation correlator
-	 * @throws IllegalArgumentException if correlator is too long
 	 */
 	public void setCorrelator(String correlator) {
-		this.correlator = correlator;
+		setCorrelators(correlator);
+	}
+
+	/**
+	 * Gets the list of correlators, which are a user-defined values to relate two separate
+	 * operations as belonging to the same activity.
+	 *
+	 * @return user-defined operation correlator
+	 */
+	public String[] getCorrelators() {
+		return correlators;
+	}
+
+	/**
+	 * Sets correlators, which are a user-defined values to relate two separate
+	 * operations as belonging to the same activity.
+	 *
+	 * @param clist user-defined operation correlator
+	 */
+	public void setCorrelators(String...clist) {
+		this.correlators = clist;
 	}
 
 	/**
