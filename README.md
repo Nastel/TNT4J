@@ -183,11 +183,11 @@ Below is an example of creating a snapshot (collection of metrics) and relate it
 ```java
 // post processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
-TrackingActivity activity = logger.newActivity(OpLevel.INFO, "MyActivity");
+TrackingActivity activity = logger.newActivity(OpLevel.INFO, "Order");
 ...
-PropertySnapshot snapshot = logger.newSnapshot("MyCategory", "MySnapshot");
-snapshot.add("metric1", myMetric1);
-snapshot.add("metric2", myMetric2);
+PropertySnapshot snapshot = logger.newSnapshot("Order", "Payment");
+snapshot.add("order-no", orderNo, ValueTypes.VALUE_TYPE_ID);
+snapshot.add("order-amount", orderAmount, ValueTypes.VALUE_TYPE_CURRENCY);
 activity.add(snapshot); // add property snapshot associated with this activity
 logger.tnt(activity); // report activity and associated snapshots as a single entity
 ```
@@ -195,11 +195,11 @@ Below is an example of reporting a snapshot which are related to a given activit
 ```java
 // post processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
-TrackingActivity activity = logger.newActivity(OpLevel.INFO, "MyActivity");
+TrackingActivity activity = logger.newActivity(OpLevel.INFO, "Order");
 ...
-PropertySnapshot snapshot = logger.newSnapshot("MyCategory", "MySnapshot");
-snapshot.add("metric1", myMetric1);
-snapshot.add("metric2", myMetric2);
+PropertySnapshot snapshot = logger.newSnapshot("Order", "Payment");
+snapshot.add("order-no", orderNo, ValueTypes.VALUE_TYPE_ID);
+snapshot.add("order-amount", orderAmount, ValueTypes.VALUE_TYPE_CURRENCY);
 activity.tnt(snapshot); // add and report property snapshot associated with this activity
 ```
 Below is an example of reporting standalone snapshot:
@@ -207,9 +207,9 @@ Below is an example of reporting standalone snapshot:
 // post processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
 ...
-PropertySnapshot snapshot = logger.newSnapshot("MyCategory", "MySnapshot");
-snapshot.add("metric1", myMetric1);
-snapshot.add("metric2", myMetric2);
+PropertySnapshot snapshot = logger.newSnapshot("Order", "Payment");
+snapshot.add("order-no", orderNo, ValueTypes.VALUE_TYPE_ID);
+snapshot.add("order-amount", orderAmount, ValueTypes.VALUE_TYPE_CURRENCY);
 logger.tnt(snapshot); // report a property snapshot
 ```
 ### Correlation, Topology, Time Synchronization
