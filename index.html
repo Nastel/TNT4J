@@ -220,11 +220,11 @@ Below is an example of creating a snapshot (collection of metrics) and relate it
 
 <div class="highlight highlight-java"><pre><span class="pl-c">// post processing of activity: enrich activity with application metrics</span>
 <span class="pl-smi">TrackingLogger</span> logger <span class="pl-k">=</span> <span class="pl-smi">TrackingLogger</span><span class="pl-k">.</span>getInstance(<span class="pl-v">this</span><span class="pl-k">.</span>getClass());
-<span class="pl-smi">TrackingActivity</span> activity <span class="pl-k">=</span> logger<span class="pl-k">.</span>newActivity(<span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>INFO</span>, <span class="pl-s"><span class="pl-pds">"</span>MyActivity<span class="pl-pds">"</span></span>);
+<span class="pl-smi">TrackingActivity</span> activity <span class="pl-k">=</span> logger<span class="pl-k">.</span>newActivity(<span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>INFO</span>, <span class="pl-s"><span class="pl-pds">"</span>Order<span class="pl-pds">"</span></span>);
 <span class="pl-c1">...</span>
-<span class="pl-smi">PropertySnapshot</span> snapshot <span class="pl-k">=</span> logger<span class="pl-k">.</span>newSnapshot(<span class="pl-s"><span class="pl-pds">"</span>MyCategory<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>MySnapshot<span class="pl-pds">"</span></span>);
-snapshot<span class="pl-k">.</span>add(<span class="pl-s"><span class="pl-pds">"</span>metric1<span class="pl-pds">"</span></span>, myMetric1);
-snapshot<span class="pl-k">.</span>add(<span class="pl-s"><span class="pl-pds">"</span>metric2<span class="pl-pds">"</span></span>, myMetric2);
+<span class="pl-smi">PropertySnapshot</span> snapshot <span class="pl-k">=</span> logger<span class="pl-k">.</span>newSnapshot(<span class="pl-s"><span class="pl-pds">"</span>Order<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Payment<span class="pl-pds">"</span></span>);
+snapshot<span class="pl-k">.</span>add(<span class="pl-s"><span class="pl-pds">"</span>order-no<span class="pl-pds">"</span></span>, orderNo, <span class="pl-smi">ValueTypes</span><span class="pl-c1"><span class="pl-k">.</span>VALUE_TYPE_ID</span>);
+snapshot<span class="pl-k">.</span>add(<span class="pl-s"><span class="pl-pds">"</span>order-amount<span class="pl-pds">"</span></span>, orderAmount, <span class="pl-smi">ValueTypes</span><span class="pl-c1"><span class="pl-k">.</span>VALUE_TYPE_CURRENCY</span>);
 activity<span class="pl-k">.</span>add(snapshot); <span class="pl-c">// add property snapshot associated with this activity</span>
 logger<span class="pl-k">.</span>tnt(activity); <span class="pl-c">// report activity and associated snapshots as a single entity</span></pre></div>
 
@@ -232,11 +232,11 @@ logger<span class="pl-k">.</span>tnt(activity); <span class="pl-c">// report act
 
 <div class="highlight highlight-java"><pre><span class="pl-c">// post processing of activity: enrich activity with application metrics</span>
 <span class="pl-smi">TrackingLogger</span> logger <span class="pl-k">=</span> <span class="pl-smi">TrackingLogger</span><span class="pl-k">.</span>getInstance(<span class="pl-v">this</span><span class="pl-k">.</span>getClass());
-<span class="pl-smi">TrackingActivity</span> activity <span class="pl-k">=</span> logger<span class="pl-k">.</span>newActivity(<span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>INFO</span>, <span class="pl-s"><span class="pl-pds">"</span>MyActivity<span class="pl-pds">"</span></span>);
+<span class="pl-smi">TrackingActivity</span> activity <span class="pl-k">=</span> logger<span class="pl-k">.</span>newActivity(<span class="pl-smi">OpLevel</span><span class="pl-c1"><span class="pl-k">.</span>INFO</span>, <span class="pl-s"><span class="pl-pds">"</span>Order<span class="pl-pds">"</span></span>);
 <span class="pl-c1">...</span>
-<span class="pl-smi">PropertySnapshot</span> snapshot <span class="pl-k">=</span> logger<span class="pl-k">.</span>newSnapshot(<span class="pl-s"><span class="pl-pds">"</span>MyCategory<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>MySnapshot<span class="pl-pds">"</span></span>);
-snapshot<span class="pl-k">.</span>add(<span class="pl-s"><span class="pl-pds">"</span>metric1<span class="pl-pds">"</span></span>, myMetric1);
-snapshot<span class="pl-k">.</span>add(<span class="pl-s"><span class="pl-pds">"</span>metric2<span class="pl-pds">"</span></span>, myMetric2);
+<span class="pl-smi">PropertySnapshot</span> snapshot <span class="pl-k">=</span> logger<span class="pl-k">.</span>newSnapshot(<span class="pl-s"><span class="pl-pds">"</span>Order<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Payment<span class="pl-pds">"</span></span>);
+snapshot<span class="pl-k">.</span>add(<span class="pl-s"><span class="pl-pds">"</span>order-no<span class="pl-pds">"</span></span>, orderNo, <span class="pl-smi">ValueTypes</span><span class="pl-c1"><span class="pl-k">.</span>VALUE_TYPE_ID</span>);
+snapshot<span class="pl-k">.</span>add(<span class="pl-s"><span class="pl-pds">"</span>order-amount<span class="pl-pds">"</span></span>, orderAmount, <span class="pl-smi">ValueTypes</span><span class="pl-c1"><span class="pl-k">.</span>VALUE_TYPE_CURRENCY</span>);
 activity<span class="pl-k">.</span>tnt(snapshot); <span class="pl-c">// add and report property snapshot associated with this activity</span></pre></div>
 
 <p>Below is an example of reporting standalone snapshot:</p>
@@ -244,9 +244,9 @@ activity<span class="pl-k">.</span>tnt(snapshot); <span class="pl-c">// add and 
 <div class="highlight highlight-java"><pre><span class="pl-c">// post processing of activity: enrich activity with application metrics</span>
 <span class="pl-smi">TrackingLogger</span> logger <span class="pl-k">=</span> <span class="pl-smi">TrackingLogger</span><span class="pl-k">.</span>getInstance(<span class="pl-v">this</span><span class="pl-k">.</span>getClass());
 <span class="pl-c1">...</span>
-<span class="pl-smi">PropertySnapshot</span> snapshot <span class="pl-k">=</span> logger<span class="pl-k">.</span>newSnapshot(<span class="pl-s"><span class="pl-pds">"</span>MyCategory<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>MySnapshot<span class="pl-pds">"</span></span>);
-snapshot<span class="pl-k">.</span>add(<span class="pl-s"><span class="pl-pds">"</span>metric1<span class="pl-pds">"</span></span>, myMetric1);
-snapshot<span class="pl-k">.</span>add(<span class="pl-s"><span class="pl-pds">"</span>metric2<span class="pl-pds">"</span></span>, myMetric2);
+<span class="pl-smi">PropertySnapshot</span> snapshot <span class="pl-k">=</span> logger<span class="pl-k">.</span>newSnapshot(<span class="pl-s"><span class="pl-pds">"</span>Order<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>Payment<span class="pl-pds">"</span></span>);
+snapshot<span class="pl-k">.</span>add(<span class="pl-s"><span class="pl-pds">"</span>order-no<span class="pl-pds">"</span></span>, orderNo, <span class="pl-smi">ValueTypes</span><span class="pl-c1"><span class="pl-k">.</span>VALUE_TYPE_ID</span>);
+snapshot<span class="pl-k">.</span>add(<span class="pl-s"><span class="pl-pds">"</span>order-amount<span class="pl-pds">"</span></span>, orderAmount, <span class="pl-smi">ValueTypes</span><span class="pl-c1"><span class="pl-k">.</span>VALUE_TYPE_CURRENCY</span>);
 logger<span class="pl-k">.</span>tnt(snapshot); <span class="pl-c">// report a property snapshot</span></pre></div>
 
 <h3>
