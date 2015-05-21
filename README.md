@@ -39,7 +39,7 @@ User defined fields can be reported using `#[data-type][:value-type]/your-metric
 	%n/ -- number
 	%s/ -- string
 ```
-All predefined `value-type` qualifiers are defined in `com.nastel.jkool.tnt4j.core.ValueTypes`. Examples:
+All `value-type` qualifiers are defined in `com.nastel.jkool.tnt4j.core.ValueTypes`. Examples:
 ```
 	currency 	-- generic currency
 	age 		-- age in time units
@@ -50,7 +50,7 @@ All predefined `value-type` qualifiers are defined in `com.nastel.jkool.tnt4j.co
 	timestamp	-- timestamp
 	addr 		-- generic address
 ```
-Not specifying a qualifier defaults to auto detection of type by `TNT4JAppender`. First `number` qualifier is tested and defaults to `string` if the test fails (e.g. `#order-no=62627`). User defined fields are reported as a TNT4J snapshot with `UserDefined` category and snapshot name set to activity name set by `#beg`, `#end`, `#opn` tags.
+Not specifying a qualifier defaults to auto detection of type by `TNT4JAppender`. First `number` qualifier is tested and defaults to `string` if the test fails (e.g. `#order-no=62627`). User defined fields are reported as a TNT4J snapshot with `Log4j` category and snapshot name set to activity name set by `#beg`, `#end`, `#opn` tags.
 
 Below is a sample log4j appender configuration:
 ```
