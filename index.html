@@ -67,7 +67,7 @@ logger<span class="pl-k">.</span>info(<span class="pl-s"><span class="pl-pds">"<
     %s/ -- string
 </code></pre>
 
-<p>All predefined <code>value-type</code> qualifiers are defined in <code>com.nastel.jkool.tnt4j.core.ValueTypes</code>. Examples:</p>
+<p>All <code>value-type</code> qualifiers are defined in <code>com.nastel.jkool.tnt4j.core.ValueTypes</code>. Examples:</p>
 
 <pre><code>    currency    -- generic currency
     age         -- age in time units
@@ -79,7 +79,7 @@ logger<span class="pl-k">.</span>info(<span class="pl-s"><span class="pl-pds">"<
     addr        -- generic address
 </code></pre>
 
-<p>Not specifying a qualifier defaults to auto detection of type by <code>TNT4JAppender</code>. First <code>number</code> qualifier is tested and defaults to <code>string</code> if the test fails (e.g. <code>#order-no=62627</code>). User defined fields are reported as a TNT4J snapshot with <code>UserDefined</code> category and snapshot name set to activity name set by <code>#beg</code>, <code>#end</code>, <code>#opn</code> tags.</p>
+<p>Not specifying a qualifier defaults to auto detection of type by <code>TNT4JAppender</code>. First <code>number</code> qualifier is tested and defaults to <code>string</code> if the test fails (e.g. <code>#order-no=62627</code>). User defined fields are reported as a TNT4J snapshot with <code>Log4j</code> category and snapshot name set to activity name set by <code>#beg</code>, <code>#end</code>, <code>#opn</code> tags.</p>
 
 <p>Below is a sample log4j appender configuration:</p>
 
