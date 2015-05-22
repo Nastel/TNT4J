@@ -192,7 +192,7 @@ activity.add(snapshot); // add property snapshot associated with this activity
 ...
 logger.tnt(activity); // report activity and associated snapshots as a single entity
 ```
-A `Snapshot` is a collection of name, value pairs called `Property`. Each `Property` can be further qualified with a value typed defined in `ValueTypes` class.
+A `Snapshot` is a collection of name, value pairs called `Property`. Each `Property` can be further qualified with a value type defined in `ValueTypes` class.
 
 Below is an example of reporting a snapshot:
 ```java
