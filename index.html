@@ -215,8 +215,8 @@ logger<span class="pl-k">.</span>set(<span class="pl-smi">OpLevel</span><span cl
 <h3>
 <a id="measurements--metrics" class="anchor" href="#measurements--metrics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Measurements &amp; Metrics</h3>
 
-<p>TNT4J is not just about logging messages, it is also about measurements and metrics. Metrics such as elapsed time, CPU, memory, block/wait times as well as user defined metrics. TNT4J allows you to answer the state of CPU, memory, user defined metrics at the time of the logged event.
-Below is an example of creating a snapshot (collection of metrics) and relate it to an activity:</p>
+<p>TNT4J is not just about logging messages, it is also about measurements and metrics such as response time, CPU, memory, block/wait times as well as user defined metrics. TNT4J lets you report metrics at the time of the logged event.
+Below is an example of creating a snapshot (collection of metrics) and attaching it to an activity:</p>
 
 <div class="highlight highlight-java"><pre><span class="pl-c">// post processing of activity: enrich activity with application metrics</span>
 <span class="pl-smi">TrackingLogger</span> logger <span class="pl-k">=</span> <span class="pl-smi">TrackingLogger</span><span class="pl-k">.</span>getInstance(<span class="pl-v">this</span><span class="pl-k">.</span>getClass());
@@ -226,9 +226,12 @@ Below is an example of creating a snapshot (collection of metrics) and relate it
 snapshot<span class="pl-k">.</span>add(<span class="pl-s"><span class="pl-pds">"</span>order-no<span class="pl-pds">"</span></span>, orderNo, <span class="pl-smi">ValueTypes</span><span class="pl-c1"><span class="pl-k">.</span>VALUE_TYPE_ID</span>);
 snapshot<span class="pl-k">.</span>add(<span class="pl-s"><span class="pl-pds">"</span>order-amount<span class="pl-pds">"</span></span>, orderAmount, <span class="pl-smi">ValueTypes</span><span class="pl-c1"><span class="pl-k">.</span>VALUE_TYPE_CURRENCY</span>);
 activity<span class="pl-k">.</span>add(snapshot); <span class="pl-c">// add property snapshot associated with this activity</span>
+<span class="pl-c1">...</span>
 logger<span class="pl-k">.</span>tnt(activity); <span class="pl-c">// report activity and associated snapshots as a single entity</span></pre></div>
 
-<p>Below is an example of reporting a snapshot which are related to a given activity:</p>
+<p>A <code>Snapshot</code> is a collection of name, value pairs called <code>Property</code>. Each <code>Property</code> can be further qualified with a value type defined in <code>ValueTypes</code> class.</p>
+
+<p>Below is an example of reporting a snapshot:</p>
 
 <div class="highlight highlight-java"><pre><span class="pl-c">// post processing of activity: enrich activity with application metrics</span>
 <span class="pl-smi">TrackingLogger</span> logger <span class="pl-k">=</span> <span class="pl-smi">TrackingLogger</span><span class="pl-k">.</span>getInstance(<span class="pl-v">this</span><span class="pl-k">.</span>getClass());
