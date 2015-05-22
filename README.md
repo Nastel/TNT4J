@@ -179,7 +179,7 @@ TrackingLogger.dumpState();
 
 ### Measurements & Metrics
 TNT4J is not just about logging messages, it is also about measurements and metrics such as response time, CPU, memory, block/wait times as well as user defined metrics. TNT4J lets you report metrics at the time of the logged event.
-Below is an example of creating a snapshot (collection of metrics) and relate it to an activity:
+Below is an example of creating a snapshot (collection of metrics) and attaching it to an activity:
 ```java
 // post processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
@@ -189,9 +189,12 @@ PropertySnapshot snapshot = logger.newSnapshot("Order", "Payment");
 snapshot.add("order-no", orderNo, ValueTypes.VALUE_TYPE_ID);
 snapshot.add("order-amount", orderAmount, ValueTypes.VALUE_TYPE_CURRENCY);
 activity.add(snapshot); // add property snapshot associated with this activity
+...
 logger.tnt(activity); // report activity and associated snapshots as a single entity
 ```
-Below is an example of reporting a snapshot which are related to a given activity:
+A `Snapshot` is a collection of name, value pairs called `Property`. Each `Property` can be further qualified with a value typed defined in `ValueTypes` class.
+
+Below is an example of reporting a snapshot:
 ```java
 // post processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
