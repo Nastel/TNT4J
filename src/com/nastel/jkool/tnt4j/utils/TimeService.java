@@ -46,7 +46,7 @@ public class TimeService {
 	protected static final int ONE_K = 1000;
 	protected static final int ONE_M = 1000000;
 	private static final String TIME_SERVER = System.getProperty("tnt4j.time.server");
-	private static final int TIME_SERVER_TIMEOUT = Integer.getInteger("tnt4j.time.server.timeout", 10000);
+	private static final long TIME_SERVER_TIMEOUT = Long.getLong("tnt4j.time.server.timeout", 10000);
 
 	static long timeOverheadNanos = 0;
 	static long timeOverheadMillis = 0;
@@ -90,6 +90,7 @@ public class TimeService {
 	/**
 	 * Obtain NTP connection host:port of the time server.
 	 * 
+	 * @return time server connection string
 	 */
 	public static String getTimeServer() {
 		return TIME_SERVER;
@@ -98,6 +99,7 @@ public class TimeService {
 	/**
 	 * Obtain time stamp when the NTP time was synchronized
 	 * 
+	 * @return time stamp when NTP was updated
 	 */
 	public static long getLastUpdatedMillis() {
 		return updatedTime;
@@ -106,18 +108,20 @@ public class TimeService {
 	/**
 	 * Obtain configured NTP server timeout
 	 * 
+	 * @return time server timeout in milliseconds
 	 */
-	public static int getTimeServerTimeout() {
+	public static long getTimeServerTimeout() {
 		return TIME_SERVER_TIMEOUT;
 	}
 	
 	/**
 	 * Obtain NTP time and synchronize with NTP server
 	 * 
+	 * @throws IOException
 	 */
 	public static void updateTime() throws IOException {
 		if (TIME_SERVER != null) {
-			timeServer.setDefaultTimeout(TIME_SERVER_TIMEOUT);		
+			timeServer.setDefaultTimeout((int)TIME_SERVER_TIMEOUT);		
 			String [] pair = TIME_SERVER.split(":");
 			InetAddress hostAddr = InetAddress.getByName(pair[0]);
 			timeInfo = pair.length < 2? timeServer.getTime(hostAddr): timeServer.getTime(hostAddr, Integer.parseInt(pair[1]));
@@ -132,6 +136,7 @@ public class TimeService {
 	/**
 	 * Obtain measured overhead of calling <code>TimeService.currentTimeMillis()</code> in nanoseconds.
 	 * 
+	 * @return total measured overhead in nanoseconds
 	 */
 	public static long getOverheadNanos() {
 		return  timeOverheadNanos;
@@ -141,6 +146,7 @@ public class TimeService {
 	/**
 	 * Obtain number of milliseconds since NTP time was synchronized
 	 * 
+	 * @return time (ms) since last NTP synchronization
 	 */
 	public static long getUpdateAgeMillis() {
 		return TimeService.getLastUpdatedMillis() > 0? TimeService.currentTimeMillis() - TimeService.getLastUpdatedMillis(): -1;
@@ -149,6 +155,7 @@ public class TimeService {
 	/**
 	 * Obtain NTP synchronized current time in milliseconds
 	 * 
+	 * @return current NTP synchronized time in milliseconds
 	 */
 	public static long currentTimeMillis() {
 		return System.currentTimeMillis() + adjustment;
@@ -158,6 +165,7 @@ public class TimeService {
 	 * Obtain NTP synchronized current time in microseconds precision 
 	 * (but necessarily accuracy)
 	 * 
+	 * @return current NTP synchronized time in microseconds
 	 */
 	public static long currentTimeUsecs() {
 		return (System.currentTimeMillis() + adjustment)*ONE_K;
@@ -166,6 +174,7 @@ public class TimeService {
 	/**
 	 * Obtain currently measured clock drift in milliseconds
 	 * 
+	 * @return clock drift in milliseconds
 	 */
 	public static long getDriftMillis() {
 		return clockSyncTask.getDriftMillis();
@@ -174,6 +183,7 @@ public class TimeService {
 	/**
 	 * Obtain measured total clock drift in milliseconds since start up
 	 * 
+	 * @return total clock drift since start up
 	 */
 	public static long getTotalDriftMillis() {
 		return clockSyncTask.getTotalDriftMillis();
@@ -183,6 +193,7 @@ public class TimeService {
 	 * Obtain total number of times clocks have been updated to adjust
 	 * for drift.
 	 * 
+	 * @return number of times updated to adjust for cock drift
 	 */
 	public static long getDriftUpdateCount() {
 		return clockSyncTask.getDriftUpdateCount();
@@ -191,6 +202,7 @@ public class TimeService {
 	/**
 	 * Obtain currently measured clock drift interval in milliseconds
 	 * 
+	 * @return clock drift interval in milliseconds
 	 */
 	public static long getDriftIntervalMillis() {
 		return clockSyncTask.getIntervalMillis();
@@ -201,7 +213,7 @@ public class TimeService {
 	 * iterations.
 	 * 
 	 * @param runs number of iterations
-	 * 
+	 * @return calculated overhead of getting timestamp
 	 */
 	public static long calculateOverhead(long runs) {
 		long start = System.nanoTime();
