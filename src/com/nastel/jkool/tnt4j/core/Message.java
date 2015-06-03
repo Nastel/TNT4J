@@ -16,6 +16,8 @@
 package com.nastel.jkool.tnt4j.core;
 
 import java.nio.charset.Charset;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -48,12 +50,12 @@ public class Message {
 	private String		signature;
 	private int			size;
 	private String		strData;
-	private String[]	tags;
 	private Object[]	argList;
 	private long		messageAge;
 	private String		mimeType = MIME_TYPE_TEXT_PLAIN;
 	private String		encoding = ENCODING_NONE;
 	private String		charset = CHARSET_DEFAULT;
+	private HashSet<String> tags = new HashSet<String>(89);
 
 
 
@@ -210,32 +212,13 @@ public class Message {
 		this.messageAge = messageAge;
 	}
 
-	/**
-	 * Gets the message tag, which is a user-defined value to associate with the message.
-	 *
-	 * @return user-defined message tag
-	 */
-	public String getTag() {
-		return tags != null? tags[0]: null;
-	}
-
-	/**
-	 * Sets the message tag, which is a user-defined value to associate with the message,
-	 * truncating if necessary.
-	 *
-	 * @param tag user-defined message tag
-	 */
-	public void setTag(String tag) {
-		setTags(tag);
-	}
-
 
 	/**
 	 * Gets message tags, which are user-defined values associated with the message.
 	 *
-	 * @return user-defined message tag
+	 * @return user-defined set of message tags
 	 */
-	public String[] getTags() {
+	public Set<String> getTag() {
 		return tags;
 	}
 
@@ -243,13 +226,24 @@ public class Message {
 	 * Sets message tags, which are user-defined value associated with the message,
 	 * truncating if necessary.
 	 *
-	 * @param taglist user-defined list of message tags
+	 * @param tlist user-defined list of message tags
 	 */
-	public void setTags(String...taglist) {
-		this.tags = taglist;
+	public void setTag(String...tlist) {
+		for (int i=0; (tlist != null) && (i < tlist.length); i++) {
+			if (tlist[i] != null) {
+				this.tags.add(tlist[i]);
+			}
+		}
 	}
 
-
+	/**
+	 * Remove all tags from this message
+	 *
+	 */
+	public void clearTags() {
+		this.tags.clear();
+	}
+	
 	/**
 	 * Get the size of the message.
 	 *

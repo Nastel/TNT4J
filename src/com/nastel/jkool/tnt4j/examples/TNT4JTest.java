@@ -98,14 +98,16 @@ public class TNT4JTest {
 		TrackingActivity activity = tlogger.newActivity(OpLevel.INFO, "LoggingBenchmark");
 		TrackingLogger.addDumpProvider(new ObjectDumpProvider(args[0], activity));
 		
+		String [] cids = args[3].split(":");
 		activityCount++;
 		activity.start();
 		for (int i=0; i < 10; i++) {
-			TrackingEvent event = tlogger.newEvent(OpLevel.DEBUG, "runSampleActivity", args[3], "Running sample={0}", i);
+			TrackingEvent event = tlogger.newEvent(OpLevel.DEBUG, "runSampleActivity", cids[0], "Running sample={0}", i);
+			event.setCorrelator(cids);
 			eventCount++;
 			event.start(); // start timing current event
 			try {
-				runSampleActivity(args[2], args[3], args[4], args[5]);
+				runSampleActivity(args[2], cids, args[4], args[5]);
 			} finally {
 				event.stop();
 				activity.tnt(event); // associate current event with the current activity
@@ -132,7 +134,7 @@ public class TNT4JTest {
 		System.out.println("Registered loggers: size=" + TrackingLogger.getAllTrackers().size() + ", list=" + TrackingLogger.getAllTrackers());
 	}
 
-	static private TrackingActivity runSampleActivity(String msg, String cid, String opName, String location) {
+	static private TrackingActivity runSampleActivity(String msg, String[] cids, String opName, String location) {
 		TrackingActivity activity = tlogger.newActivity(OpLevel.INFO, "runSampleActivity");
 		activityCount++;
 		activity.start();
@@ -140,12 +142,10 @@ public class TNT4JTest {
 		int sev = rand.nextInt(OpLevel.values().length);
 		for (int i = 0; i < runs; i++) {
 			int limit = rand.nextInt(10000000);
-			TrackingEvent ev4j = runTNT4JEvent(msg, opName, OpLevel.valueOf(sev), cid, location, limit);
-			ev4j.setCorrelator(cid);
+			TrackingEvent ev4j = runTNT4JEvent(msg, opName, OpLevel.valueOf(sev), cids, location, limit);
 			ev4j.setLocation(location);
 
-			TrackingEvent log4j = runLog4JEvent(msg, opName, OpLevel.valueOf(sev), cid, location, limit);
-			log4j.setCorrelator(cid);
+			TrackingEvent log4j = runLog4JEvent(msg, opName, OpLevel.valueOf(sev), cids, location, limit);
 			log4j.setLocation(location);
 		
 			if (tlogger.isSet(OpLevel.INFO, "tnt4j.test.location", location)){
@@ -158,8 +158,9 @@ public class TNT4JTest {
 		return activity;
 	}
 	
-	static private TrackingEvent runTNT4JEvent(String msg, String opName, OpLevel sev, String cid, String location, int limit) {
-		TrackingEvent event = tlogger.newEvent(sev, opName, cid, msg);
+	static private TrackingEvent runTNT4JEvent(String msg, String opName, OpLevel sev, String[] cids, String location, int limit) {
+		TrackingEvent event = tlogger.newEvent(sev, opName, cids[0], msg);
+		event.setCorrelator(cids);
 		eventCount++;
 		TrackingSelector selector = tlogger.getTracker().getTrackingSelector();
 		try {
@@ -176,8 +177,9 @@ public class TNT4JTest {
 		return event;
 	}
 	
-	static private TrackingEvent runLog4JEvent(String msg, String opName, OpLevel sev, String cid, String location, int limit) {
-		TrackingEvent event = tlogger.newEvent(sev, opName, cid, msg);
+	static private TrackingEvent runLog4JEvent(String msg, String opName, OpLevel sev, String[] cids, String location, int limit) {
+		TrackingEvent event = tlogger.newEvent(sev, opName, cids[0], msg);
+		event.setCorrelator(cids);
 		eventCount++;
 		try {
 			event.setTag(String.valueOf(Utils.getVMName()));
@@ -215,7 +217,7 @@ class MyActivityHandler implements ActivityListener {
 		activity.add(snapshot); // add property snapshot to activity
 		System.out.println("activity.id=" + activity.getTrackingId() 
 				+ ", activity.name=" + activity.getName() 
-				+ ", elasped.usec=" + activity.getElapsedTime() 
+				+ ", elapsed.usec=" + activity.getElapsedTime() 
 				+ ", snap.count=" + activity.getSnapshotCount() 
 				+ ", id.count=" + activity.getIdCount()
 				);

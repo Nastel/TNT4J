@@ -209,11 +209,6 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		jsonString.append(Utils.quote(JSON_REASON_CODE_LABEL)).append(ATTR_SEP).append(
 		        event.getOperation().getReasonCode()).append(ATTR_JSON);
 
-		if (event.getCorrelator() != null) {
-			String cid = StringEscapeUtils.escapeJson(event.getCorrelator());
-			jsonString.append(Utils.quote(JSON_CORR_ID_LABEL)).append(ATTR_SEP).append(
-			        Utils.quote(cid)).append(ATTR_JSON);
-		}
 		if (event.getLocation() != null) {
 			jsonString.append(Utils.quote(JSON_LOCATION_LABEL)).append(ATTR_SEP).append(
 			        Utils.quote(event.getLocation())).append(ATTR_JSON);
@@ -249,11 +244,6 @@ public class JSONFormatter implements EventFormatter, Configurable {
 				        .append(ATTR_JSON);
 			}
 		}
-		if (event.getTag() != null) {
-			String mtag = StringEscapeUtils.escapeJson(event.getTag());
-			jsonString.append(Utils.quote(JSON_MSG_TAG_LABEL)).append(ATTR_SEP).append(Utils.quote(mtag))
-			        .append(ATTR_JSON);
-		}
 		int snapCount = event.getOperation().getSnapshotCount();
 		jsonString.append(Utils.quote(JSON_SNAPSHOT_COUNT_LABEL)).append(ATTR_SEP).append(snapCount).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_MSG_SIZE_LABEL)).append(ATTR_SEP).append(event.getSize()).append(ATTR_JSON);
@@ -273,6 +263,16 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			jsonString.append(ATTR_JSON);
 			String excText = StringEscapeUtils.escapeJson(exStr); // escape double quote chars
 			jsonString.append(Utils.quote(JSON_EXCEPTION_LABEL)).append(ATTR_SEP).append(Utils.quote(excText));
+		}
+		if (event.getCorrelator().size() > 0) {
+			jsonString.append(ATTR_JSON);
+			jsonString.append(Utils.quote(JSON_CORR_ID_LABEL)).append(ATTR_SEP).append(ARRAY_START_JSON).append(itemsToJSON(event.getCorrelator()))
+	        	.append(ARRAY_END);
+		}
+		if (event.getTag().size() > 0) {
+			jsonString.append(ATTR_JSON);
+			jsonString.append(Utils.quote(JSON_MSG_TAG_LABEL)).append(ATTR_SEP).append(ARRAY_START_JSON).append(itemsToJSON(event.getTag()))
+			        .append(ARRAY_END);
 		}
 		if (snapCount > 0) {
 			jsonString.append(ATTR_JSON);
@@ -331,11 +331,6 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		        activity.getCompCode().ordinal()).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_REASON_CODE_LABEL)).append(ATTR_SEP).append(activity.getReasonCode())
 		        .append(ATTR_JSON);
-		if (activity.getCorrelator() != null) {
-			String cid = StringEscapeUtils.escapeJson(activity.getCorrelator());
-			jsonString.append(Utils.quote(JSON_CORR_ID_LABEL)).append(ATTR_SEP).append(
-			        Utils.quote(cid)).append(ATTR_JSON);
-		}
 		if (activity.getLocation() != null) {
 			jsonString.append(Utils.quote(JSON_LOCATION_LABEL)).append(ATTR_SEP).append(
 			        Utils.quote(activity.getLocation())).append(ATTR_JSON);
@@ -377,6 +372,11 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			jsonString.append(ATTR_JSON);
 			String excText = StringEscapeUtils.escapeJson(exStr); // escape double quote chars
 			jsonString.append(Utils.quote(JSON_EXCEPTION_LABEL)).append(ATTR_SEP).append(Utils.quote(excText));
+		}
+		if (activity.getCorrelator().size() > 0) {
+			jsonString.append(ATTR_JSON);
+			jsonString.append(Utils.quote(JSON_CORR_ID_LABEL)).append(ATTR_SEP).append(ARRAY_START_JSON).append(
+					itemsToJSON(activity.getCorrelator())).append(ARRAY_END);
 		}
 		if (activity.getIdCount() > 0) {
 			jsonString.append(ATTR_JSON);

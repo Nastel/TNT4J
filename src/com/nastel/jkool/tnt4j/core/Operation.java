@@ -17,6 +17,7 @@ package com.nastel.jkool.tnt4j.core;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Set;
 
 import com.nastel.jkool.tnt4j.source.Source;
@@ -71,10 +72,10 @@ public class Operation {
 	private String				exceptionStr;
 	private Throwable			exHandle;
 	private String				location;
-	private String []			correlators;
 	private long          		pid;
 	private long          		tid;
-	private HashMap<String, Snapshot> snapshots =  new HashMap<String, Snapshot>(32);
+	private HashSet<String> 	correlators = new HashSet<String>(89);
+	private HashMap<String, Snapshot>	snapshots =  new HashMap<String, Snapshot>(32);
 
 	/**
 	 * Creates a Operation with the specified properties.
@@ -488,32 +489,12 @@ public class Operation {
 	}
 
 	/**
-	 * Gets the operation correlator, which is a user-defined value to relate two separate
-	 * operations as belonging to the same transaction.
-	 *
-	 * @return user-defined operation correlator
-	 */
-	public String getCorrelator() {
-		return correlators != null? correlators[0]: null;
-	}
-
-	/**
-	 * Sets the operation correlator, which is a user-defined value to relate two separate
-	 * operations as belonging to the same transaction.
-	 *
-	 * @param correlator user-defined operation correlator
-	 */
-	public void setCorrelator(String correlator) {
-		setCorrelators(correlator);
-	}
-
-	/**
 	 * Gets the list of correlators, which are a user-defined values to relate two separate
 	 * operations as belonging to the same activity.
 	 *
-	 * @return user-defined operation correlator
+	 * @return user-defined set of correlators
 	 */
-	public String[] getCorrelators() {
+	public Set<String> getCorrelator() {
 		return correlators;
 	}
 
@@ -523,10 +504,22 @@ public class Operation {
 	 *
 	 * @param clist user-defined operation correlator
 	 */
-	public void setCorrelators(String...clist) {
-		this.correlators = clist;
+	public void setCorrelator(String...clist) {
+		for (int i=0; (clist != null) && (i < clist.length); i++) {
+			if (clist[i] != null) {
+				this.correlators.add(clist[i]);
+			}
+		}
 	}
 
+	/**
+	 * Remove all correlators from this message
+	 *
+	 */
+	public void clearCorrelators() {
+		this.correlators.clear();
+	}
+	
 	/**
 	 * Gets the time the operation started.
 	 *

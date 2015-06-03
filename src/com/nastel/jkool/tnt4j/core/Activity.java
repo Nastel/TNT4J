@@ -47,7 +47,7 @@ public class Activity extends Operation implements Trackable {
 	private String parentId;
 	private ActivityStatus status = ActivityStatus.BEGIN;
 
-	private HashSet<String> correlators = new HashSet<String>(89);
+	private HashSet<String> idset = new HashSet<String>(89);
 	private ArrayList<ActivityListener> activityListeners = null;
 
 	/**
@@ -274,12 +274,12 @@ public class Activity extends Operation implements Trackable {
 		
 		String tid = item.getTrackingId();
 		if (tid != null) {
-			correlators.add(tid);
+			idset.add(tid);
 		}
 		
-		String cid = item.getCorrelator();
+		Set<String> cid = item.getCorrelator();
 		if (cid != null) {
-			correlators.add(cid);
+			idset.addAll(cid);
 		}
 		if (item instanceof Snapshot) {
 			addSnapshot((Snapshot)item);
@@ -297,7 +297,7 @@ public class Activity extends Operation implements Trackable {
 	 */
 	public boolean containsId(String id) {
 		if (id == null) return false;
-		return correlators.contains(id);
+		return idset.contains(id);
 	}
 
 
@@ -307,7 +307,7 @@ public class Activity extends Operation implements Trackable {
 	 * @return list of tracking ids
 	 */
 	public Set<String> getIds() {
-		return correlators;
+		return idset;
 	}
 
 	/**
@@ -316,7 +316,7 @@ public class Activity extends Operation implements Trackable {
 	 * @return number of linked items
 	 */
 	public int getIdCount() {
-		return correlators != null ? correlators.size() : 0;
+		return idset != null ? idset.size() : 0;
 	}
 
 	/**
@@ -348,7 +348,6 @@ public class Activity extends Operation implements Trackable {
 		else if (!tracking_id.equals(other.tracking_id)) {
 			return false;
 		}
-
 		return true;
 	}
 

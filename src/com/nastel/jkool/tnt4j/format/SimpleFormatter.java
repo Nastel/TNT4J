@@ -16,6 +16,7 @@
 package com.nastel.jkool.tnt4j.format;
 
 import java.util.Collection;
+import java.util.Set;
 import java.util.TimeZone;
 
 import com.nastel.jkool.tnt4j.core.Property;
@@ -198,9 +199,9 @@ public class SimpleFormatter extends DefaultFormatter {
 			msg.append(separator);
 			msg.append("source: '" + snap.getSource().getFQName()).append("'");
 		}
-		String cid = snap.getCorrelator();
 		String pid = snap.getParentId();
 		String tid = snap.getTrackingId();
+		Set<String> cid = snap.getCorrelator();
 		if (pid != null) {
 			msg.append(separator);
 			msg.append("parent-id: '").append(pid).append("'");
@@ -209,7 +210,7 @@ public class SimpleFormatter extends DefaultFormatter {
 			msg.append(separator);
 			msg.append("track-id: '").append(tid).append("'");
 		}
-		if (cid != null) {
+		if (cid.size() > 0) {
 			msg.append(separator);
 			msg.append("corr-id: '").append(cid).append("'");
 		}

@@ -15,6 +15,8 @@
  */
 package com.nastel.jkool.tnt4j.core;
 
+import java.util.Set;
+
 import com.nastel.jkool.tnt4j.source.Source;
 
 /**
@@ -47,19 +49,19 @@ public interface Trackable {
 	Source getSource();
 
 	/**
-	 * Returns user defined correlator, which are used to relate any
+	 * Returns user defined correlators, which are used to relate any
 	 * pair of trackable instances.
 	 *
 	 * @return user-defined correlator
 	 */
-	String getCorrelator();
+	Set<String> getCorrelator();
 	
 	/**
-	 * Sets tracking correlator
+	 * Sets tracking correlators
 	 *
-	 * @param cid tracking correlator
+	 * @param cid tracking correlator list
 	 */
-	void setCorrelator(String cid);
+	void setCorrelator(String...cid);
 	
 	/**
 	 * Gets operation type associated with the trackable instance

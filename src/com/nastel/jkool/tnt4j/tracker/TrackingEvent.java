@@ -15,6 +15,8 @@
  */
 package com.nastel.jkool.tnt4j.tracker;
 
+import java.util.Set;
+
 import com.nastel.jkool.tnt4j.core.Message;
 import com.nastel.jkool.tnt4j.core.OpCompCode;
 import com.nastel.jkool.tnt4j.core.OpLevel;
@@ -278,26 +280,6 @@ public class TrackingEvent extends Message implements Trackable {
 	    return source;
     }
 
-	/**
-	 * Sets the operation correlator, which is a user-defined value to relate two separate
-	 * operations as belonging to the same activity.
-	 *
-	 * @param cid user-defined operation correlator
-	 * @throws IllegalArgumentException if correlator is too long
-	 */
-	public void setCorrelator(String cid) {
-		operation.setCorrelator(cid);
-	}
-
-	/**
-	 * Gets the operation correlator, which is a user-defined value to relate two separate
-	 * operations as belonging to the same activity.
-	 *
-	 * @return user-defined operation correlator
-	 */
-	public String getCorrelator() {
-		return operation.getCorrelator();
-	}
 
 	/**
 	 * Sets correlators, which are user-defined values that relate two separate
@@ -305,8 +287,8 @@ public class TrackingEvent extends Message implements Trackable {
 	 *
 	 * @param cids user-defined list of correlators
 	 */
-	public void setCorrelators(String...cids) {
-		operation.setCorrelators(cids);
+	public void setCorrelator(String...cids) {
+		operation.setCorrelator(cids);
 	}
 
 	/**
@@ -315,8 +297,8 @@ public class TrackingEvent extends Message implements Trackable {
 	 *
 	 * @return user-defined list of correlators
 	 */
-	public String[] getCorrelators() {
-		return operation.getCorrelators();
+	public Set<String> getCorrelator() {
+		return operation.getCorrelator();
 	}
 
 	/**

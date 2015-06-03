@@ -64,7 +64,7 @@ class PingHandler implements ActivityListener {
 		activity.add(snapshot); // add property snapshot to activity
 		System.out.println("END: activity.id=" + activity.getTrackingId() 
 				+ ", activity.name=" + activity.getName() 
-				+ ", elasped.usec=" + activity.getElapsedTime() 
+				+ ", elapsed.usec=" + activity.getElapsedTime() 
 				+ ", snap.count=" + activity.getSnapshotCount() 
 				+ ", id.count=" + activity.getIdCount()
 				);

@@ -16,9 +16,11 @@
 package com.nastel.jkool.tnt4j.core;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import com.nastel.jkool.tnt4j.source.Source;
 
@@ -38,11 +40,11 @@ public class PropertySnapshot  implements Snapshot {
 	private String id = null;
 	private String category = null;
 	private String snapName = null;
-	private String correlator;
 	private String tracking_id;
 	private String parent_id;
 	private UsecTimestamp timeStamp = null;
 	private Source source;
+	private HashSet<String> correlators = new HashSet<String>(89);
 	private Map<Object, Property> propSet = new LinkedHashMap<Object, Property>();
 
 	/**
@@ -242,9 +244,18 @@ public class PropertySnapshot  implements Snapshot {
     }
 
 	@Override
-    public String getCorrelator() {
-	    return correlator;
+    public Set<String> getCorrelator() {
+	    return correlators;
     }
+
+	@Override
+    public void setCorrelator(String...clist) {
+		for (int i=0; (clist != null) && (i < clist.length); i++) {
+			if (clist[i] != null) {
+				this.correlators.add(clist[i]);
+			}
+		}
+	}
 
 	@Override
     public String getParentId() {
@@ -265,11 +276,6 @@ public class PropertySnapshot  implements Snapshot {
     public OpType getType() {
 	    return opType;
     }
-
-	@Override
-    public void setCorrelator(String cid) {
-		correlator = cid;
-	}
 
 	@Override
     public void setParentId(Trackable parentObject) {
