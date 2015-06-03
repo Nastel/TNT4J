@@ -2,27 +2,27 @@
 
   <echo message="Processing ${ant.project.name}${line.separator}" level="info"/>
 
-  <condition property="tnt4jroot" value="${basedir}/.">
-    <not><isset property="tnt4jroot"/></not>
+  <condition property="root" value="${basedir}/.">
+    <not><isset property="root"/></not>
   </condition>
   
   <!-- Import default properties for jKool builds --> 
-  <import file="${tnt4jroot}/build-properties.xml"/>
+  <import file="${root}/build-properties.xml"/>
 
   <property name="package"   value="com.nastel.jkool.*"/>
   <property name="docpkg"    value="com.nastel.jkool.tnt4j.*"/>
   <property name="src"       value="src"/>
   <property name="lib"       value="lib"/>
-  <property name="bin"       value="${tnt4j-build}/bin"/>
-  <property name="doc"       value="${tnt4j-build}/doc"/>
-  <property name="pkg"       value="${tnt4j-build}/tnt4j-api"/>
-  <property name="jar"       value="${tnt4j-build}/tnt4j-api.jar"/>
+  <property name="classes"   value="classes"/>
+  <property name="doc"       value="${project-build}/doc"/>
+  <property name="pkg"       value="${project-build}/tnt4j-api"/>
+  <property name="jar"       value="${project-build}/tnt4j-api.jar"/>
 
   <target name="init">
     <tstamp/>
-    <mkdir dir="${bin}"/>
-    <mkdir dir="${tnt4j-build}/lib"/>
-	<copy todir="${tnt4j-build}/lib">
+    <mkdir dir="${classes}"/>
+    <mkdir dir="${project-build}/lib"/>
+	<copy todir="${project-build}/lib">
       <fileset dir="${lib}">
         <include name="commons-configuration-*.jar"/>
         <include name="commons-lang*-*.jar"/>
@@ -35,23 +35,23 @@
     </copy>
   </target>
 
-  <!-- Compile into ${bin} directory -->
+  <!-- Compile into ${classes} directory -->
   <target name="compile" depends="init" description="compile the source">
-    <javac destdir="${bin}" debug="true" debuglevel="${debuglevel}" source="${source}" target="${target}">
+    <javac destdir="${classes}" debug="true" debuglevel="${debuglevel}" source="${source}" target="${target}">
       <src path="${src}"/>
       <classpath>
-        <fileset dir="${tnt4j-build}/lib"/>
+        <fileset dir="${project-build}/lib"/>
       </classpath>
     </javac>
   </target>
 
   <target name="clean" description="clean up">
-    <delete dir="${tnt4j-build}"/>
+    <delete dir="${project-build}"/>
     <echo message="Clean of ${ant.project.name} Complete${line.separator}" level="info"/>
   </target>
 
   <target name="tnt4j-api" depends="init,compile" description="build API">
-    <jar jarfile="${jar}" basedir="${bin}" update="false">
+    <jar jarfile="${jar}" basedir="${classes}" update="false">
       <manifest>
         <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Implementation-Title" value="${prodname} API"/>
@@ -98,34 +98,39 @@
 
   <target name="tnt4j-pkg" depends="doc" description="build package for distribution">
     <echo message="Deleting old archives" level="info"/>
-    <delete dir="${tnt4j-build}" includes="*-all.jar,*-all.zip"/>
+    <delete dir="${project-build}" includes="*-all.jar,*-all.zip"/>
     
-    <echo message="Copying common TNT4J properties" level="info"/>
-	<copy todir="${tnt4j-build}">
-      <fileset dir="${tnt4jroot}">
-        <include name="*4j.properties"/>
-        <include name="*4j-tokens.properties"/>
+    <echo message="Copying README and LICENSE info" level="info"/>
+	<copy todir="${project-build}">
+      <fileset dir="${root}">
 		<include name="README.md"/>
 		<include name="LICENSE"/>
       </fileset>
     </copy>
  	
+   <echo message="Copying TNT4J configuration" level="info"/>
+	<copy todir="${project-build}/config">
+		<fileset dir="${root}/config">
+			<include name="log4j.properties"/>
+			<include name="tnt4j.properties"/>
+			<include name="tnt4j-tokens.properties"/>
+		</fileset>
+	</copy>
+
     <echo message="Creating ${pkg}-${version}-all.jar" level="info"/>
 	<zip destfile="${pkg}-${version}-all.jar">
 		<zipgroupfileset dir="lib" includes="*.jar"/>
-		<zipgroupfileset dir="${tnt4j-build}" includes="*api.jar"/>
+		<zipgroupfileset dir="${project-build}" includes="*api.jar"/>
 	</zip> 
     <echo message="Creating ${pkg}-final-all.jar" level="info"/>
 	<zip destfile="${pkg}-final-all.jar">
 		<zipgroupfileset dir="lib" includes="*.jar"/>
-		<zipgroupfileset dir="${tnt4j-build}" includes="*api.jar"/>
+		<zipgroupfileset dir="${project-build}" includes="*api.jar"/>
 	</zip> 
   </target>
 
   <target name="tnt4j" depends="tnt4j-api" description="build executables"/>
-  
   <target name="all" depends="tnt4j-pkg" description="generate the distribution"/>
-
   <target name="rebuild" depends="clean,all" description="clean and build"/>
   
 </project>

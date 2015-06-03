@@ -3,8 +3,8 @@
 -->
 <project name="TNT4JBuildProps">
   <!-- Installation package directories -->
-  <property name="tnt4j-build"       value="${basedir}/../build/tnt4j"/>
-  <property name="tnt4j-install"     value="${tnt4j-build}/install"/>
+  <property name="project-build"       value="${basedir}/../build/tnt4j"/>
+  <property name="project-install"     value="${project-build}/install"/>
   
   <!-- Default compilation settings -->
   <property name="target"     value="1.6"/>
@@ -12,7 +12,7 @@
   <property name="debuglevel" value="source,lines,vars"/>
 
   <!-- loads project version and build information -->
-  <loadproperties srcFile="${tnt4jroot}/build.properties"/>
+  <loadproperties srcFile="${root}/build.properties"/>
 
   <!-- exclude VSS control files -->
   <defaultexcludes add="**/*.scc"/>
