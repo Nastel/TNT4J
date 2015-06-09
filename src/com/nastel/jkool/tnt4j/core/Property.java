@@ -26,6 +26,7 @@ import java.util.Date;
  * </p>
  *
  * @see Snapshot
+ * @see ValueTypes
  *
  * @version $Revision: 7 $
  */
@@ -152,15 +153,18 @@ public class Property {
 			return "char";
 		} else if (value instanceof Date) {
 			return "date";
+		} else if (value != null) {
+			return value.getClass().getSimpleName();			
 		} else {
-			return "object";			
+			return "none";
 		}
 	}
 
 	/**
 	 * Obtain value type such as currency, percent, number, timestamp, etc.
+	 * See {@link ValueTypes}
 	 * 
-	 * @return string representation of the value type
+	 * @return string representation of the value type. See {@link ValueTypes}
 	 */
 	public String getValueType() {
 		return valueType;
