@@ -13,13 +13,13 @@ Why track and trace your applications?
 
 <b>Several key features make TNT4J a prime choice for your java application:</b>
 
-### Log4j Integration
-TNT4J integrates with log4j or any other logging framework via a concept of an `EventSink`. TNT4J default integration is with log4j. 
+### Logback & Log4J Integration
+TNT4J integrates with Logback & Log4J or any other logging framework via a concept of an `EventSink`. TNT4J default integration is with log4j. 
 
 First, all TNT4J messages can be routed via a log4j event sink and therefore can take advantage of the whole log4j framework. 
-Second, TNT4J includes `TNT4JAppender` for log4j which allows developers to send log4j messages to TNT4J via this appender and take advantage of TNT4j functionality.
+Second, TNT4J includes `TNT4JAppender` for log4j & Logback which allows developers to send event messages to TNT4J via this corresponding appenders and take advantage of TNT4j functionality.
 
-Developers may also enrich log4j messages and pass context to TNT4J using hashtag enrichment scheme. Hash tags are used to decorate log4j messages with important meta data about each log message. This meta data is used to generate TNT4J tracking events (same tags can be passed using log4j `MDC` object):
+Developers may also enrich event messages and pass context to TNT4J using hashtag enrichment scheme. Hash tags are used to decorate event messages with important meta data about each log message. This meta data is used to generate TNT4J tracking events:
 ```java
 logger.info("Starting a tnt4j activity #beg=Test, #app=" + Log4JTest.class.getName());
 logger.warn("First log message #app=" + Log4JTest.class.getName() + ", #msg='1 Test warning message'");
@@ -43,7 +43,7 @@ All `value-type` qualifiers are defined in `com.nastel.jkool.tnt4j.core.ValueTyp
 ```
 	currency 	-- generic currency
 	age 		-- age in time units
-	guid 		-- globaly unique identifier
+	guid 		-- globally unique identifier
 	guage		-- numeric gauge
 	counter		-- numeric counter
 	percent		-- percent

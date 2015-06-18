@@ -31,6 +31,7 @@
         <include name="commons-net-*.jar"/>
         <include name="java-uuid-*.jar"/>
         <include name="log4j-*.jar"/>
+        <include name="logback-*.jar"/>
       </fileset>
     </copy>
   </target>

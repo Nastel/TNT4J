@@ -203,6 +203,19 @@ public class Utils {
 	}
 
 	/**
+	 * Return a specific stack frame with a given stack offset.
+	 * offset 0 -- current, 1 -- calling, and so on.
+	 * 
+	 * @param stack frame list
+	 * @param offset offset index within the calling stack
+	 * @return return current stack frame
+	 */
+	public static StackTraceElement getStackFrame(StackTraceElement[] stack, int offset) {
+		int index = CLIENT_CODE_STACK_INDEX + offset;
+		return stack.length > index? stack[index]: stack[stack.length-1];
+	}
+
+	/**
 	 * Return calling stack frame which is right above a given class marker plus
 	 * the offset.
 	 * 
