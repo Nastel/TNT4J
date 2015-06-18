@@ -409,6 +409,7 @@ TNT4J depends on the following external packages:
 * Apache commons net 3.3 (http://commons.apache.org/proper/commons-net/)
 * Apache commons codec 1.9 (http://commons.apache.org/proper/commons-codec/)
 * Apache Log4J 1.2.17 (http://logging.apache.org/log4j/1.2/)
+* Logback Project 1.1.3 (http://logback.qos.ch/)
 * Java UUID Generator (JUG) 3.1.3 (http://wiki.fasterxml.com/JugHome/)
 
 To build TNT4J:
@@ -418,7 +419,6 @@ To build TNT4J:
 	* Check ../build/tnt4j for output
 	* JavaDoc will be located under ../build/tnt4j/doc
 	
-
 Verify TNT4J
 ===============================================
 Run a sample program (`com.nastel.jkool.tnt4j.examples.TNT4JTest`):
