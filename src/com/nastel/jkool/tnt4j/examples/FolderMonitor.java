@@ -31,22 +31,29 @@ import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.ValueTypes;
+import com.nastel.jkool.tnt4j.sink.DefaultEventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.EventSink;
 import com.nastel.jkool.tnt4j.sink.SinkEventFilter;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
 public class FolderMonitor {
+	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(FolderMonitor.class);
+	
 	public static void main(String[] args) throws InterruptedException, IOException {
 		if (args.length < 2) {
 			System.out.println("Usage: appl-name folder");
 			System.exit(-1);
 		}
-		Path pathToWatch = FileSystems.getDefault().getPath(args[1]);
-		FolderWatcher monitor = new FolderWatcher(args[0], pathToWatch);
-		Thread monitorThread = new Thread(monitor);
-		monitorThread.start();
-		monitorThread.join();
+		try {
+			Path pathToWatch = FileSystems.getDefault().getPath(args[1]);
+			FolderWatcher monitor = new FolderWatcher(args[0], pathToWatch);
+			Thread monitorThread = new Thread(monitor);
+			monitorThread.start();
+			monitorThread.join();
+		} catch (Throwable ex) {
+			logger.log(OpLevel.ERROR, "Unable to watch: {0}", args[1], ex);
+		}
 	}
 }
 
@@ -128,7 +135,7 @@ class FolderWatcher implements Runnable {
 			WatchService watchService = folder.getFileSystem().newWatchService();
 			folder.register(watchService, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_MODIFY,
 			        StandardWatchEventKinds.ENTRY_DELETE);
-			logger.info("Start watching: " + folder);
+			logger.info("Start watching: {0}", folder);
 			while (true) {
 				WatchKey key = watchService.take();
 
@@ -144,11 +151,13 @@ class FolderWatcher implements Runnable {
 				}
 			}
 		} catch (InterruptedException ex) {
+			logger.warn("Unable to watch: {0}", folder, ex);
 			return;
 		} catch (Throwable ex) {
+			logger.error("Unable to watch: {0}", folder, ex);
 			return;
 		} finally {		
-			logger.info("Stopped watching: " + folder);
+			logger.info("Stopped watching: {0}", folder);
 			logger.close();
 		}
 	}
