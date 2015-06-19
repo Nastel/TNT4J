@@ -74,7 +74,7 @@ TNT4J enhances logging performance by supporting asynchronous pooled logging, wh
 ```
 ...
 event.sink.factory: com.nastel.jkool.tnt4j.sink.BufferedEventSinkFactory
-event.sink.factory.EventSinkFactory: com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory
+event.sink.factory.EventSinkFactory: com.nastel.jkool.tnt4j.logger.log4j.Log4JEventSinkFactory
 ...
 ```
 ### Simplicity & Clean Code
@@ -341,7 +341,7 @@ class MyEventFilter implements SinkEventFilter {
 	}
 }
 ```
-Embed TNT4J into your application and realize the benefits in matter if minutes. TNT4J can take advantage of other lower level logging frameworks such as log4j. Default TNT4J binding is based on log4j.
+Embed TNT4J into your application and realize the benefits in matter if minutes. TNT4J can take advantage of other lower level logging frameworks such as log4j, slf4j. Default TNT4J binding is based on slf4j.
 
 About TNT4J
 ======================================
