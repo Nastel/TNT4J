@@ -400,7 +400,7 @@ How to Build TNT4J
 =========================================
 
 Requirements
-* JDK 1.6+
+* JDK 1.7+
 * ANT (http://ant.apache.org/)
 
 TNT4J depends on the following external packages:
