@@ -35,7 +35,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
  * @version $Revision: 1 $
  * 
  */
-public class AppenderTools implements BaseAppenderConstants {
+public class AppenderTools implements AppenderConstants {
 
 	/**
 	 * Strip type qualifier from a given key

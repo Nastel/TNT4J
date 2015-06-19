@@ -33,7 +33,7 @@ import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.ValueTypes;
 import com.nastel.jkool.tnt4j.logger.AppenderTools;
-import com.nastel.jkool.tnt4j.logger.BaseAppenderConstants;
+import com.nastel.jkool.tnt4j.logger.AppenderConstants;
 import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -120,7 +120,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 1 $
  * 
  */
-public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements BaseAppenderConstants {
+public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements AppenderConstants {
 	public static final String SNAPSHOT_CATEGORY = "LogBack";
 	private static final ThreadLocal<Long> EVENT_TIMER = new ThreadLocal<Long>();
 	

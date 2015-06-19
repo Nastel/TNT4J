@@ -24,7 +24,7 @@ package com.nastel.jkool.tnt4j.logger;
  * @version $Revision: 11 $
  * 
  */
-public interface BaseAppenderConstants {
+public interface AppenderConstants {
 	static final String PARAM_BEGIN_LABEL = "beg";
 	static final String PARAM_END_LABEL = "end";
 
