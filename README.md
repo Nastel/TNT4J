@@ -13,11 +13,12 @@ Why track and trace your applications?
 
 <b>Several key features make TNT4J a prime choice for your java application:</b>
 
-### Logback & Log4J Integration
-TNT4J integrates with Logback & Log4J or any other logging framework via a concept of an `EventSink`. TNT4J default integration is with log4j. 
+### SLF4J & LOG4J Integration
+TNT4J integrates with SLF4J & LOG4J. Other logging frameworks can be supported by implementing `EventSinkFactory` & `EventSink` interfaces. 
+TNT4J default integration is with SLF4J. 
 
-First, all TNT4J messages can be routed via a log4j event sink and therefore can take advantage of the whole log4j framework. 
-Second, TNT4J includes `TNT4JAppender` for log4j & Logback which allows developers to send event messages to TNT4J via this corresponding appenders and take advantage of TNT4j functionality.
+All TNT4J messages can be routed via a SLF4J/LOG4J event sink and therefore can take advantage of the underlying logging framework. 
+TNT4J includes `TNT4JAppender` for log4j & Logback (SLF4J) which allows developers to send event messages to TNT4J via this corresponding appenders and take advantage of TNT4J functionality.
 
 Developers may also enrich event messages and pass context to TNT4J using hashtag enrichment scheme. Hash tags are used to decorate event messages with important meta data about each log message. This meta data is used to generate TNT4J tracking events:
 ```java
@@ -42,6 +43,7 @@ User defined fields can be reported using `#[data-type][:value-type]/your-metric
 All `value-type` qualifiers are defined in `com.nastel.jkool.tnt4j.core.ValueTypes`. Examples:
 ```
 	currency 	-- generic currency
+	flag 		-- boolean flag
 	age 		-- age in time units
 	guid 		-- globally unique identifier
 	guage		-- numeric gauge
@@ -55,7 +57,7 @@ Not specifying a qualifier defaults to auto detection of type by `TNT4JAppender`
 Below is a sample log4j appender configuration:
 ```
 ### Default TNT4J Appender configuration
-log4j.appender.tnt4j=com.nastel.jkool.tnt4j.logger.TNT4JAppender
+log4j.appender.tnt4j=com.nastel.jkool.tnt4j.logger.log4j.TNT4JAppender
 log4j.appender.tnt4j.SourceName=com.log4j.Test
 log4j.appender.tnt4j.SourceType=APPL
 log4j.appender.tnt4j.MetricsOnException=true
@@ -344,14 +346,14 @@ Embed TNT4J into your application and realize the benefits in matter if minutes.
 About TNT4J
 ======================================
 
-Track and Trace 4 Java API, Application logging framework for correlation, diagnostics and tracking of application activities within and across <b>multiple applications, runtimes, servers, geo locations. This API is specifically designed to troubleshoot distributed, concurrent, multi-threaded, composite applications</b> and includes activity correlation, application state dumps, performance and user defined metrics.
+Track and Trace 4 Java API, Application logging framework for correlation, diagnostics and tracking of application activities within and across <b>multiple applications, runtime, servers, geo locations. This API is specifically designed to troubleshoot distributed, concurrent, multi-threaded, composite applications</b> and includes activity correlation, application state dumps, performance and user defined metrics.
 
 Here is short list of TNT4J features:
 
 * Simple programming model to facilitate fast root-cause, log analysis
 * Automated timing of application activities and sub-activities (elapsed, idle time, message age)
 * Application state dump framework for reporting internal variables, data structures
-* Granular conditional logging based on application tokens, patterns, that can be shared accross applications, runtimes
+* Granular conditional logging based on application tokens, patterns, that can be shared across applications, runtime
 * Share logging context across application, thread, runtime boundaries
 * Inter-log correlation of log entries (correlators and tags) between multiple related applications
 * Intra-log correlation of related activities and sub-activities between multiple applications and threads
@@ -409,6 +411,7 @@ TNT4J depends on the following external packages:
 * Apache commons net 3.3 (http://commons.apache.org/proper/commons-net/)
 * Apache commons codec 1.9 (http://commons.apache.org/proper/commons-codec/)
 * Apache Log4J 1.2.17 (http://logging.apache.org/log4j/1.2/)
+* SLF4J 1.7.12 (http://www.slf4j.org/)
 * Logback Project 1.1.3 (http://logback.qos.ch/)
 * Java UUID Generator (JUG) 3.1.3 (http://wiki.fasterxml.com/JugHome/)
 

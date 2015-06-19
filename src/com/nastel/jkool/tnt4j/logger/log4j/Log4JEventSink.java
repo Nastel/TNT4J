@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nastel.jkool.tnt4j.logger;
+package com.nastel.jkool.tnt4j.logger.log4j;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -47,7 +47,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 11 $
  * 
  */
-public class Log4jEventSink extends AbstractEventSink {
+public class Log4JEventSink extends AbstractEventSink {
 	private static final String[] log4JSevMap = { "INFO", "TRACE", "DEBUG", "INFO", "INFO", "WARN", "ERROR", "FATAL",
 	        "FATAL", "FATAL", "FATAL" };
 
@@ -66,7 +66,7 @@ public class Log4jEventSink extends AbstractEventSink {
 	 *            event formatter used to format event entries
 	 * 
 	 */
-	public Log4jEventSink(String name, Properties props, EventFormatter frmt) {
+	public Log4JEventSink(String name, Properties props, EventFormatter frmt) {
 		super(name, frmt);
 		open();
 	}

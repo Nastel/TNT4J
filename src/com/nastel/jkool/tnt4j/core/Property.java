@@ -80,7 +80,7 @@ public class Property {
 	public void set(String key, Object val, String valType) {
 		this.key = key;
 		this.value = val;
-		this.valueType = valType;
+		this.valueType = (((valType == null) && (val instanceof Boolean))? ValueTypes.VALUE_TYPE_FLAG: valType);
 	}
 
 

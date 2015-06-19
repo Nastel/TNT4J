@@ -32,6 +32,7 @@
         <include name="java-uuid-*.jar"/>
         <include name="log4j-*.jar"/>
         <include name="logback-*.jar"/>
+        <include name="slf4j-*.jar"/>
       </fileset>
     </copy>
   </target>

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nastel.jkool.tnt4j.logger;
+package com.nastel.jkool.tnt4j.logger.log4j;
 
 import java.io.IOException;
 import java.util.HashMap;
@@ -32,6 +32,8 @@ import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.ValueTypes;
+import com.nastel.jkool.tnt4j.logger.AppenderTools;
+import com.nastel.jkool.tnt4j.logger.BaseAppenderConstants;
 import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;

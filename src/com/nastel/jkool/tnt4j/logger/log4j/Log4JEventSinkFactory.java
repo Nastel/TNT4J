@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nastel.jkool.tnt4j.logger;
+package com.nastel.jkool.tnt4j.logger.log4j;
 
 import java.util.Properties;
 
@@ -23,13 +23,13 @@ import com.nastel.jkool.tnt4j.sink.AbstractEventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.EventSink;
 
 /**
- * <p>Concrete implementation of <code>EventSinkFactory</code> interface, which
+ * <p>Concrete implementation of <code>EventSinkFactory</code> interface over log4j, which
  * creates instances of <code>EventSink</code>. This factory uses <code>Log4jEventSink</code>
  * as the underlying logger provider.</p>
  *
  *
  * @see EventSink
- * @see Log4jEventSink
+ * @see Log4JEventSink
  *
  * @version $Revision: 1 $
  *
@@ -38,17 +38,17 @@ public class Log4JEventSinkFactory extends AbstractEventSinkFactory {
 	
 	@Override
 	public EventSink getEventSink(String name) {
-		return configureSink(new Log4jEventSink(name, System.getProperties(), new DefaultFormatter()));
+		return configureSink(new Log4JEventSink(name, System.getProperties(), new DefaultFormatter()));
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
-		return configureSink(new Log4jEventSink(name, props, new DefaultFormatter()));
+		return configureSink(new Log4JEventSink(name, props, new DefaultFormatter()));
 	}
 
 	@Override
     public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-		return configureSink(new Log4jEventSink(name, props, frmt));
+		return configureSink(new Log4JEventSink(name, props, frmt));
    }
 	
 	/**
@@ -58,7 +58,7 @@ public class Log4JEventSinkFactory extends AbstractEventSinkFactory {
 	 *
 	 */
 	public static EventSink defaultEventSink(String name) {
-		return new Log4jEventSink(name, System.getProperties(), new DefaultFormatter());
+		return new Log4JEventSink(name, System.getProperties(), new DefaultFormatter());
 	}
 
 	/**

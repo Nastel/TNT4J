@@ -66,7 +66,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	 * 
 	 */
 	public FileTokenRepository() {
-		this(System.getProperty("tnt4j.token.repository", "tnt4j-tokens.properties"), 
+		this(System.getProperty("tnt4j.token.repository", "off"), 
 				Long.getLong("tnt4j.file.respository.refresh", 20000));
 	}
 
@@ -85,6 +85,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
 	public void addRepositoryListener(TokenRepositoryListener listener) {
+		if (configName.equalsIgnoreCase("off")) return;
 		TokenConfigurationListener pListener = new TokenConfigurationListener(listener, logger);
 		LISTEN_MAP.put(listener, pListener);
 		config.addConfigurationListener(pListener);
@@ -93,6 +94,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
     public void removeRepositoryListener(TokenRepositoryListener listener) {
+		if (configName.equalsIgnoreCase("off")) return;
 		TokenConfigurationListener pListener = LISTEN_MAP.get(listener);
 		if (pListener != null) {
 			LISTEN_MAP.remove(listener);
@@ -103,22 +105,26 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	
 	@Override
     public Object get(String key) {
-		return config.getProperty(key);
+		return config != null? config.getProperty(key): null;
 	}
 
 	@Override
     public Iterator<? extends Object> getKeys() {
-	    return config.getKeys();
+	    return config != null? config.getKeys(): null;
     }
 
 	@Override
     public void remove(String key) {
-	    config.clearProperty(key);
+	    if (config != null)  {
+	    	config.clearProperty(key);
+	    }
     }
 
 	@Override
     public void set(String key, Object value) {
-	    config.setProperty(key, value);
+	    if (config != null)  {
+	    	config.setProperty(key, value);
+	    }
     }
 
 	@Override
@@ -138,7 +144,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
     public void open() throws IOException {
-		if (isOpen()) return;
+		if (isOpen() || (configName.equalsIgnoreCase("off"))) return;
         try {
         	initConfig();
         	if (refDelay > 0) {

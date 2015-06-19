@@ -23,10 +23,10 @@ import com.nastel.jkool.tnt4j.dump.DumpSinkFactory;
 import com.nastel.jkool.tnt4j.format.DefaultFormatter;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.format.Formatter;
-import com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory;
 import com.nastel.jkool.tnt4j.repository.TokenRepository;
 import com.nastel.jkool.tnt4j.selector.DefaultTrackingSelector;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
+import com.nastel.jkool.tnt4j.sink.DefaultEventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.EventSink;
 import com.nastel.jkool.tnt4j.sink.EventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.SinkEventFilter;
@@ -505,9 +505,9 @@ public class TrackerConfig {
 		if (trFactory == null)
 			trFactory = new DefaultTrackerFactory();
 		if (evFactory == null) 
-			evFactory = new Log4JEventSinkFactory();
+			evFactory = DefaultEventSinkFactory.getInstance();
 		if (defEvFactory == null)
-			defEvFactory = new Log4JEventSinkFactory();
+			defEvFactory = DefaultEventSinkFactory.getInstance();
 		if (dpFactory == null)
 			dpFactory = new DefaultDumpSinkFactory();
 		if (evFormatter == null)

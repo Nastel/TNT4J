@@ -61,6 +61,7 @@ public class SinkLogEvent extends EventObject {
 		error = msg.getOperation().getThrowable();
 		level = msg.getSeverity();
 		evSrc = msg.getSource();
+		argList = msg.getMessageArgs();
 	}
 
 	/**

@@ -76,6 +76,7 @@ public interface ValueTypes {
 	public static final String VALUE_TYPE_COUNTER_TIMETICKS = "counter.msec";
 	public static final String VALUE_TYPE_GAUGE = "gauge";
 	
+	public static final String VALUE_TYPE_FLAG = "flag";
 	public static final String VALUE_TYPE_PERCENT = "percent";
 	public static final String VALUE_TYPE_ID = "id";
 	public static final String VALUE_TYPE_GUID = "guid";
