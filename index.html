@@ -106,7 +106,7 @@ log4j.appender.tnt4j.layout.ConversionPattern=%d{ABSOLUTE} %-5p [%c{1}] %m%n
 
 <pre><code>...
 event.sink.factory: com.nastel.jkool.tnt4j.sink.BufferedEventSinkFactory
-event.sink.factory.EventSinkFactory: com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory
+event.sink.factory.EventSinkFactory: com.nastel.jkool.tnt4j.logger.log4j.Log4JEventSinkFactory
 ...
 </code></pre>
 
@@ -379,7 +379,7 @@ logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span
     }
 }</pre></div>
 
-<p>Embed TNT4J into your application and realize the benefits in matter if minutes. TNT4J can take advantage of other lower level logging frameworks such as log4j. Default TNT4J binding is based on log4j.</p>
+<p>Embed TNT4J into your application and realize the benefits in matter if minutes. TNT4J can take advantage of other lower level logging frameworks such as log4j, slf4j. Default TNT4J binding is based on slf4j.</p>
 
 <h1>
 <a id="about-tnt4j" class="anchor" href="#about-tnt4j" aria-hidden="true"><span class="octicon octicon-link"></span></a>About TNT4J</h1>
@@ -461,7 +461,7 @@ Wiki is available at <a href="https://github.com/Nastel/TNT4J/wiki">https://gith
 <p>Requirements</p>
 
 <ul>
-<li>JDK 1.6+</li>
+<li>JDK 1.7+</li>
 <li>ANT (<a href="http://ant.apache.org/">http://ant.apache.org/</a>)</li>
 </ul>
 
