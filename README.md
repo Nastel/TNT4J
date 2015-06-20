@@ -428,7 +428,7 @@ Run a sample program (`com.nastel.jkool.tnt4j.examples.TNT4JTest`):
 	
 ```java	
 CD to ../build/tnt4j
-java -javaagent:tnt4j-api.jar -Dlog4j.configuration=file:config/log4j.properties -Dtnt4j.config=config/tnt4j.properties -Dtnt4j.token.repository=config/tnt4j-tokens.properties  -Dtnt4j.dump.on.vm.shutdown=true -Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath tnt4j-api-final-all.jar com.nastel.jkool.tnt4j.examples.TNT4JTest com.myco.TestApp MYSERVER "Test log message" correlator1 "TestCommand"  TestLocation
+java -javaagent:tnt4j-api.jar -Dtnt4j.config=config/tnt4j.properties -Dtnt4j.token.repository=config/tnt4j-tokens.properties  -Dtnt4j.dump.on.vm.shutdown=true -Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath tnt4j-api-final-all.jar com.nastel.jkool.tnt4j.examples.TNT4JTest com.myco.TestApp MYSERVER "Test log message" correlator1 "TestCommand"  TestLocation
 ```
 `-javaagent:tnt4j-api.jar` command line option is required by `ObjectDumpProvider` to calculate object deep and shallow memory sizes. Use this only if your application makes use of ObjectDumpProvider to dump object state.
 
@@ -436,7 +436,7 @@ java -javaagent:tnt4j-api.jar -Dlog4j.configuration=file:config/log4j.properties
 
 `-Dtnt4j.formatter.json.newline=true` java property directs `JSONFormatter` to append new line when formatting log entries.
 
-See `tnt4j-event.log` and `<vmid>.dump` file for output produced by `com.nastel.jkool.tnt4j.examples.TNT4JTest`.
+See `<timestamp>.log` and `<vmid>.dump` file for output produced by `com.nastel.jkool.tnt4j.examples.TNT4JTest`.
 
 See `tnt4j.properties` for TNT4J configuration: factories, formatters, listeners, etc. See Wiki for more information.
 
