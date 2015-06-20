@@ -422,22 +422,22 @@ To build TNT4J:
 	* Check ../build/tnt4j for output
 	* JavaDoc will be located under ../build/tnt4j/doc
 	
-Verify TNT4J
+Running Samples
 ===============================================
-Run a sample program (`com.nastel.jkool.tnt4j.examples.TNT4JTest`):
-	
+* Simple TNT4J Sample application (`com.nastel.jkool.tnt4j.examples.TNT4JTest`):
 ```java	
-CD to ../build/tnt4j
 java -javaagent:tnt4j-api.jar -Dtnt4j.config=config/tnt4j.properties -Dtnt4j.token.repository=config/tnt4j-tokens.properties  -Dtnt4j.dump.on.vm.shutdown=true -Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath tnt4j-api-final-all.jar com.nastel.jkool.tnt4j.examples.TNT4JTest com.myco.TestApp MYSERVER "Test log message" correlator1 "TestCommand"  TestLocation
 ```
+* Directory Monitor (`com.nastel.jkool.tnt4j.examples.FolderMonitor`)
+```java	
+java -Dtnt4j.config=config/tnt4j.properties -Dtnt4j.dump.on.vm.shutdown=true -Dtnt4j.dump.provider.default=true -classpath tnt4j-api-final-all.jar com.nastel.jkool.tnt4j.examples.FolderMonitor com.test.FolderMonitor /temp
+```
+
 `-javaagent:tnt4j-api.jar` command line option is required by `ObjectDumpProvider` to calculate object deep and shallow memory sizes. Use this only if your application makes use of ObjectDumpProvider to dump object state.
 
 `-Dtnt4j.dump.provider.default=true` java property allows application state dumps generated automatically upon VM shutdown.
-
 `-Dtnt4j.formatter.json.newline=true` java property directs `JSONFormatter` to append new line when formatting log entries.
-
 See `<timestamp>.log` and `<vmid>.dump` file for output produced by `com.nastel.jkool.tnt4j.examples.TNT4JTest`.
-
 See `tnt4j.properties` for TNT4J configuration: factories, formatters, listeners, etc. See Wiki for more information.
 
 Known Projects Using TNT4J
