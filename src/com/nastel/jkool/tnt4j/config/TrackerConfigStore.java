@@ -60,7 +60,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * ; source: * designates all sources, which is used as default for non matching sources
  * {
  * source: *
- * event.sink.factory: com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory
+ * event.sink.factory: com.nastel.jkool.tnt4j.logger.slf4j.SLF4JEventSinkFactory
  * event.source.factory: com.nastel.jkool.tnt4j.core.DefaultSourceFactory
  * event.formatter: com.nastel.jkool.tnt4j.format.DefaultFormatter
  * token.repository: com.nastel.jkool.tnt4j.repository.FileTokenRepository
@@ -69,7 +69,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * }
  * {
  * source: com
- * event.sink.factory: com.nastel.jkool.tnt4j.logger.Log4JEventSinkFactory
+ * event.sink.factory: com.nastel.jkool.tnt4j.logger.slf4j.SLF4JEventSinkFactory
  * event.formatter: com.nastel.jkool.tnt4j.format.DefaultFormatter
  * token.repository: com.nastel.jkool.tnt4j.repository.FileTokenRepository
  * tracking.selector: com.nastel.jkool.tnt4j.selector.DefaultTrackingSelector
