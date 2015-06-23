@@ -203,7 +203,7 @@ public abstract class AbstractEventSink implements EventSink {
 	 *            sink error event to be sent to all listeners
 	 * @see SinkError
 	 */
-	private void notifyListeners(SinkError event) {
+	protected void notifyListeners(SinkError event) {
 		synchronized (errorListeners) {
 			for (SinkErrorListener listener : errorListeners) {
 				listener.sinkError(event);
