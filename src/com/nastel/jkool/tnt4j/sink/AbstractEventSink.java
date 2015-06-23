@@ -53,6 +53,7 @@ public abstract class AbstractEventSink implements EventSink {
 	protected ArrayList<SinkLogEventListener> logListeners = new ArrayList<SinkLogEventListener>(10);
 	protected ArrayList<SinkEventFilter> filters = new ArrayList<SinkEventFilter>(10);
 
+	private boolean filterCheck = true;
 	private String name;
 	private EventFormatter formatter;
 	private Source source;
@@ -228,19 +229,14 @@ public abstract class AbstractEventSink implements EventSink {
 		}
 	}
 
-	/**
-	 * Subclasses should use this helper class to filter out unwanted log events before writing to the underlying sink
-	 *
-	 * @param level
-	 *            severity level of the event message
-	 * @param msg
-	 *            event message
-	 * @param args
-	 *            argument list passed along with the message
-	 * @return true if event passed all filters, false otherwise
-	 * @see OpLevel
-	 */
-	protected boolean passEvent(OpLevel level, String msg, Object... args) {
+	@Override
+	public EventSink filterOnLog(boolean flag) {
+		filterCheck = flag;
+		return this;
+	}
+
+	@Override
+	public boolean isLoggable(OpLevel level, String msg, Object... args) {
 		boolean pass = true;
 		if (filters.size() == 0) return pass;
 		for (SinkEventFilter filter : filters) {
@@ -250,18 +246,11 @@ public abstract class AbstractEventSink implements EventSink {
 				break;
 			}
 		}
-		return pass;
+		return pass && isSet(level);
 	}
 
-	/**
-	 * Subclasses should use this helper class to filter out unwanted log events before writing to the underlying sink
-	 *
-	 * @param snapshot
-	 *            snapshot
-	 * @return true if event passed all filters, false otherwise
-	 * @see OpLevel
-	 */
-	protected boolean filterEvent(Snapshot snapshot) {
+	@Override
+	public boolean isLoggable(Snapshot snapshot) {
 		boolean pass = true;
 		if (filters.size() == 0)
 			return pass;
@@ -273,18 +262,11 @@ public abstract class AbstractEventSink implements EventSink {
 				break;
 			}
 		}
-		return pass;
+		return pass && isSet(snapshot.getSeverity());
 	}
 
-	/**
-	 * Subclasses should use this helper class to filter out unwanted log events before writing to the underlying sink
-	 *
-	 * @param activity
-	 *            to be checked with registered filters
-	 * @return true if tracking activity passed all filters, false otherwise
-	 * @see TrackingActivity
-	 */
-	protected boolean filterEvent(TrackingActivity activity) {
+	@Override
+	public boolean isLoggable(TrackingActivity activity) {
 		boolean pass = true;
 		if (filters.size() == 0)
 			return pass;
@@ -296,18 +278,11 @@ public abstract class AbstractEventSink implements EventSink {
 				break;
 			}
 		}
-		return pass;
+		return pass && isSet(activity.getSeverity());
 	}
 
-	/**
-	 * Subclasses should use this helper class to filter out unwanted log events before writing to the underlying sink
-	 *
-	 * @param event
-	 *            to be checked with registered filters
-	 * @return true if tracking event passed all filters, false otherwise
-	 * @see TrackingEvent
-	 */
-	protected boolean filterEvent(TrackingEvent event) {
+	@Override
+	public boolean isLoggable(TrackingEvent event) {
 		boolean pass = true;
 		if (filters.size() == 0)
 			return pass;
@@ -319,7 +294,7 @@ public abstract class AbstractEventSink implements EventSink {
 				break;
 			}
 		}
-		return pass;
+		return pass && isSet(event.getSeverity());
 	}
 
 	@Override
@@ -339,9 +314,8 @@ public abstract class AbstractEventSink implements EventSink {
 	@Override
 	public void log(TrackingActivity activity) {
 		_checkState();
-		if (!filterEvent(activity))
-			return;
-		if (isSet(activity.getSeverity())) {
+		boolean doLog = filterCheck? isLoggable(activity): true;
+		if (doLog) {
 			try {
 				_log(activity);
 				loggedActivities.incrementAndGet();
@@ -359,9 +333,8 @@ public abstract class AbstractEventSink implements EventSink {
 	@Override
 	public void log(TrackingEvent event) {
 		_checkState();
-		if (!filterEvent(event))
-			return;
-		if (isSet(event.getSeverity())) {
+		boolean doLog = filterCheck? isLoggable(event): true;
+		if (doLog) {
 			try {
 				_log(event);
 				loggedEvents.incrementAndGet();
@@ -379,9 +352,8 @@ public abstract class AbstractEventSink implements EventSink {
 	@Override
 	public void log(Snapshot snapshot) {
 		_checkState();
-		if (!filterEvent(snapshot))
-			return;
-		if (isSet(snapshot.getSeverity())) {
+		boolean doLog = filterCheck? isLoggable(snapshot): true;
+		if (doLog) {
 			try {
 				_log(snapshot);
 				loggedSnaps.incrementAndGet();
@@ -403,8 +375,8 @@ public abstract class AbstractEventSink implements EventSink {
 	@Override
 	public void log(Source src, OpLevel sev, String msg, Object... args) {
 		_checkState();
-		if (!passEvent(sev, msg)) return;
-		if (isSet(sev)) {
+		boolean doLog = filterCheck? isLoggable(sev, msg): true;
+		if (doLog) {
 			try {
 				_log(src, sev, msg, args);
 				loggedMsgs.incrementAndGet();

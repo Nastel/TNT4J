@@ -80,6 +80,58 @@ public interface EventSink extends Sink, KeyValueStats {
 	 */
 	EventFormatter getEventFormatter();
 	
+	
+	/**
+	 * Enable/disable filter checks on log() calls.
+	 *
+	 * @return event sink instance
+	 */
+	EventSink filterOnLog(boolean flag);
+	
+	/**
+	 * Check if a given event is loggable by the underlying sink -- passes all filters
+	 *
+	 * @param level
+	 *            severity level of the event message
+	 * @param msg
+	 *            event message
+	 * @param args
+	 *            argument list passed along with the message
+	 * @return true if event passed all filters, false otherwise
+	 * @see OpLevel
+	 */
+	boolean isLoggable(OpLevel level, String msg, Object... args);
+
+	/**
+	 * Check if a given event is loggable by the underlying sink -- passes all filters
+	 *
+	 * @param snapshot
+	 *            snapshot
+	 * @return true if event passed all filters, false otherwise
+	 * @see OpLevel
+	 */
+	boolean isLoggable(Snapshot snapshot);
+
+	/**
+	 * Check if a given event is loggable by the underlying sink -- passes all filters
+	 *
+	 * @param activity
+	 *            to be checked with registered filters
+	 * @return true if tracking activity passed all filters, false otherwise
+	 * @see TrackingActivity
+	 */
+	 boolean isLoggable(TrackingActivity activity);
+
+	/**
+	 * Check if a given event is loggable by the underlying sink -- passes all filters
+	 *
+	 * @param event
+	 *            to be checked with registered filters
+	 * @return true if tracking event passed all filters, false otherwise
+	 * @see TrackingEvent
+	 */
+	boolean isLoggable(TrackingEvent event);
+	
 	/**
 	 * Check of a certain log level is set/enabled
 	 * 

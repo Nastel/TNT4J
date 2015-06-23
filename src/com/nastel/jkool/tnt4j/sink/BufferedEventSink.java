@@ -46,10 +46,11 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 public class BufferedEventSink implements EventSink {
 	static final String KEY_OBJECTS_DROPPED = "buffered-objects-dropped";
+	static final String KEY_OBJECTS_SKIPPED = "buffered-objects-skipped";
 
 	private Source source;
 	private EventSink outSink = null;
-	private AtomicLong dropCount = new AtomicLong(0);	
+	private AtomicLong dropCount = new AtomicLong(0), skipCount = new AtomicLong(0);	
 
 	/**
 	 * Create a buffered sink instance with a specified out sink 
@@ -60,6 +61,7 @@ public class BufferedEventSink implements EventSink {
 	 */
 	public BufferedEventSink(EventSink sink) {
 		outSink = sink;
+		sink.filterOnLog(false); // disable filtering on the underlying sink (prevent double filters)
 	}
 
 	/**
@@ -69,6 +71,16 @@ public class BufferedEventSink implements EventSink {
 	 */
 	public long getDropCount() {
 		return dropCount.get();
+	}
+			
+	/**
+	 * Obtain total number of events/log messages skipped since last reset.
+	 * Events are skipped when don't pass sink filters.
+	 * 
+	 * @return total number of skipped messages since last reset
+	 */
+	public long getSkipCount() {
+		return skipCount.get();
 	}
 			
 	@Override
@@ -99,29 +111,46 @@ public class BufferedEventSink implements EventSink {
 	@Override
     public void write(Object msg, Object... args) throws IOException, InterruptedException {
 		_checkState();
-		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, null, OpLevel.NONE, String.valueOf(msg), args));
-		if (!flag) dropCount.incrementAndGet();
+		String txtMsg = String.valueOf(msg);
+		if (isLoggable(OpLevel.NONE, txtMsg, args)) {
+			boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, null, OpLevel.NONE, txtMsg, resolveArguments(args)));
+			if (!flag) dropCount.incrementAndGet();
+		} else {
+			skipCount.incrementAndGet();
+		}
 	}
 
 	@Override
     public void log(TrackingActivity activity) {
 		_checkState();
-		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, activity));
-		if (!flag) dropCount.incrementAndGet();
+		if (isLoggable(activity)) {
+			boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, activity));
+			if (!flag) dropCount.incrementAndGet();
+		} else {
+			skipCount.incrementAndGet();
+		}
 	}
 
 	@Override
     public void log(TrackingEvent event) {
 		_checkState();
-		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, event));
-		if (!flag) dropCount.incrementAndGet();
+		if (isLoggable(event)) {
+			boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, event));
+			if (!flag) dropCount.incrementAndGet();
+		} else {
+			skipCount.incrementAndGet();
+		}
     }
 
 	@Override
     public void log(Snapshot props) {
 		_checkState();
-		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, props));
-		if (!flag) dropCount.incrementAndGet();
+		if (isLoggable(props)) {
+			boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, props));
+			if (!flag) dropCount.incrementAndGet();
+		} else {
+			skipCount.incrementAndGet();
+		}
     }
 	
 	@Override
@@ -132,8 +161,12 @@ public class BufferedEventSink implements EventSink {
 	@Override
     public void log(Source src, OpLevel sev, String msg, Object... args) {
 		_checkState();
-		boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, src, sev, msg, args));
-		if (!flag) dropCount.incrementAndGet();
+		if (isLoggable(OpLevel.NONE, msg, args)) {
+			boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, src, sev, msg, resolveArguments(args)));
+			if (!flag) dropCount.incrementAndGet();
+		} else {
+			skipCount.incrementAndGet();
+		}
     }
 
 	@Override
@@ -181,6 +214,7 @@ public class BufferedEventSink implements EventSink {
 	@Override
     public KeyValueStats getStats(Map<String, Object> stats) {
 	    stats.put(Utils.qualify(this, KEY_OBJECTS_DROPPED), dropCount.get());
+	    stats.put(Utils.qualify(this, KEY_OBJECTS_SKIPPED), skipCount.get());
 	    BufferedEventSinkFactory.getPooledLogger().getStats(stats);
 	    return outSink.getStats(stats);
     }
@@ -188,6 +222,7 @@ public class BufferedEventSink implements EventSink {
 	@Override
     public void resetStats() {
 		dropCount.set(0);
+		skipCount.set(0);
 		outSink.resetStats();
 	}
 
@@ -209,7 +244,20 @@ public class BufferedEventSink implements EventSink {
 	    return source;
     }
 	
-    /**
+	/**
+	 * Convert object array into an array of strings
+	 *
+	 */
+	protected Object [] resolveArguments(Object...args) {
+		if (args == null || args.length == 0) return null;
+		String [] strings = new String[args.length];
+		for (int i=0; i < args.length; i++) {
+			strings[i] = String.valueOf(args[i]);
+		}
+		return strings;
+	}
+ 
+	/**
 	 * Override this method to check state of the sink before logging occurs. Throws <code>IllegalStateException</code>
 	 * if sink is in wrong state.
 	 *
@@ -217,5 +265,30 @@ public class BufferedEventSink implements EventSink {
 	 */
     protected void _checkState() throws IllegalStateException {
     	AbstractEventSink.checkState(this);
+    }
+
+	@Override
+    public boolean isLoggable(OpLevel level, String msg, Object... args) {
+	    return outSink.isLoggable(level, msg, args);
+    }
+
+	@Override
+    public boolean isLoggable(Snapshot snapshot) {
+	    return outSink.isLoggable(snapshot);
+    }
+
+	@Override
+    public boolean isLoggable(TrackingActivity activity) {
+	    return outSink.isLoggable(activity);
+    }
+
+	@Override
+    public boolean isLoggable(TrackingEvent event) {
+	    return outSink.isLoggable(event);
+    }
+
+	@Override
+    public EventSink filterOnLog(boolean flag) {
+	    return outSink.filterOnLog(false);
     }	
 }
