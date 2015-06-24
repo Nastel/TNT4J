@@ -93,6 +93,27 @@ public interface TrackingSelector extends Handle {
 	Object get(Object key);
 
 	/**
+	 * Determine of tracking selector is valid and defined
+	 * Undefined <code>TrackingSelector<code> does not have
+	 * defined token repository and isSet() calls will either
+	 * return all true or false depending on the value of
+	 * <code>tnt4j.selector.undefined.isset.return=true</code>
+	 * property. Default is true.
+	 * 
+	 * @return true if repository is defined, false otherwise
+	 */
+	boolean isDefined();
+
+	/**
+	 * Determine if a specific key exists
+	 * 
+	 * @param key key associated with tracking activity
+	 * @return true if exists, false otherwise
+	 * 
+	 */
+	boolean exists(Object key);
+
+	/**
 	 * Clear value for the specific key
 	 * 
 	 * @param key key associated with tracking activity

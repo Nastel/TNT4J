@@ -47,6 +47,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(DefaultTrackingSelector.class);
+	private static final boolean DEFAULT_RETURN_UNDEFINED = Boolean.valueOf(System.getProperty("tnt4j.selector.undefined.isset.return", "true"));
 	private HashMap<Object, TntToken> tokenMap = new HashMap<Object, TntToken>(89);
 	private Map<String, Object> config = null;
 	private TokenRepository tokenRepository = null;
@@ -81,10 +82,14 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 		if (tokenRepository == null) {
 			tokenRepository = new FileTokenRepository();
 		}
-		tokenRepository.open();
-		listener = new PropertyListener(this, logger);
-		tokenRepository.addRepositoryListener(listener);
-		reloadConfig();
+		if (isDefined()) {
+			tokenRepository.open();
+			listener = new PropertyListener(this, logger);
+			tokenRepository.addRepositoryListener(listener);
+			reloadConfig();
+		} else {
+			logger.log(OpLevel.WARNING, "Undefined token repository={0}: default isSet()={1}", tokenRepository, DEFAULT_RETURN_UNDEFINED);			
+		}
 	}
 
 	@Override
@@ -144,7 +149,9 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 
 	@Override
 	public boolean isSet(OpLevel sev, Object key, Object value) {
-		if (tokenRepository == null) return false;
+		if (!isDefined()) {
+			return DEFAULT_RETURN_UNDEFINED;
+		}
 		TntToken token = tokenMap.get(key);
 		return (token != null? token.isMatch(sev, key, value): false);
 	}
@@ -172,7 +179,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 
 	@Override
     public Iterator<? extends Object> getKeys() {
-	    return tokenRepository.getKeys();
+	    return tokenRepository != null? tokenRepository.getKeys(): null;
     }
 
 	@Override
@@ -201,6 +208,16 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 		Object obj = Utils.createConfigurableObject("Repository", "Repository.", config);
 		setRepository((TokenRepository) obj);
 	}
+
+	@Override
+    public boolean exists(Object key) {
+	    return get(key) != null;
+    }
+
+	@Override
+    public boolean isDefined() {
+		return (tokenRepository != null && tokenRepository.isDefined());
+    }
 }
 
 class PropertyListener implements TokenRepositoryListener {

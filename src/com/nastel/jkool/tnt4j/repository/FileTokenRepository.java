@@ -66,7 +66,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	 * 
 	 */
 	public FileTokenRepository() {
-		this(System.getProperty("tnt4j.token.repository", "off"), 
+		this(System.getProperty("tnt4j.token.repository"), 
 				Long.getLong("tnt4j.file.respository.refresh", 20000));
 	}
 
@@ -85,7 +85,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
 	public void addRepositoryListener(TokenRepositoryListener listener) {
-		if (configName.equalsIgnoreCase("off")) return;
+		if (configName == null) return;
 		TokenConfigurationListener pListener = new TokenConfigurationListener(listener, logger);
 		LISTEN_MAP.put(listener, pListener);
 		config.addConfigurationListener(pListener);
@@ -94,7 +94,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
     public void removeRepositoryListener(TokenRepositoryListener listener) {
-		if (configName.equalsIgnoreCase("off")) return;
+		if (configName == null) return;
 		TokenConfigurationListener pListener = LISTEN_MAP.get(listener);
 		if (pListener != null) {
 			LISTEN_MAP.remove(listener);
@@ -144,7 +144,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
     public void open() throws IOException {
-		if (isOpen() || (configName.equalsIgnoreCase("off"))) return;
+		if (isOpen() || (configName == null)) return;
         try {
         	initConfig();
         	if (refDelay > 0) {
@@ -196,22 +196,13 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 		Object delay = props.get("RefreshTime");
 		refDelay = delay != null? Long.parseLong(delay.toString()): refDelay;
 	}
-	
+
+	@Override
+    public boolean isDefined() {
+	    return configName != null;
+    }
 }
 
-class ReloadFileRepository implements Runnable {
-	PropertiesConfiguration fileConfiguration = null;
-	
-	ReloadFileRepository(PropertiesConfiguration config) {
-		fileConfiguration = config;
-	}
-	
-	@Override
-    public void run() {
-		fileConfiguration.getProperty("test.property");	    
-    }
-	
-}
 
 class TokenConfigurationListener implements ConfigurationListener, ConfigurationErrorListener{
 	TokenRepositoryListener repListener = null;

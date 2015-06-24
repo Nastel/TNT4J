@@ -29,7 +29,7 @@ import com.nastel.jkool.tnt4j.sink.Handle;
  * @version $Revision: 2 $
  *
  */
-public interface TokenRepository  extends Handle {
+public interface TokenRepository extends Handle {
 	/**
 	 * EVENT_EXCEPTION indicates that an exception has occurred in the underlying repository 
 	 */
@@ -60,6 +60,14 @@ public interface TokenRepository  extends Handle {
 	 */
 	public static final int EVENT_RELOAD = 5;
 	
+	/**
+	 * Determine of the token repository is defined.
+	 * Undefined <code>TokenRepository<code> will always fail to open.
+	 * 
+	 * @return true if repository is defined, false otherwise
+	 */
+	boolean isDefined();
+
 	/**
 	 * Obtain a name associated with the repository.
 	 * 
