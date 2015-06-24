@@ -515,7 +515,9 @@ Wiki is available at <a href="https://github.com/Nastel/TNT4J/wiki">https://gith
 <li>
 <code>-javaagent:tnt4j-api.jar</code> command line option is required by <code>ObjectDumpProvider</code> to calculate object deep and shallow memory sizes. Use this only if your application makes use of <code>ObjectDumpProvider</code> to dump object state.</li>
 <li>
-<code>-Dtnt4j.dump.provider.default=true</code> java property allows application state dumps generated automatically upon VM shutdown.</li>
+<code>-Dtnt4j.dump.on.vm.shutdown=true</code> java property allows application state dumps generated automatically upon VM shutdown.</li>
+<li>
+<code>-Dtnt4j.dump.provider.default=true</code> java property registers all default dump providers (memory, stack, logging stats).</li>
 <li>
 <code>-Dtnt4j.formatter.json.newline=true</code> java property directs <code>JSONFormatter</code> to append new line when formatting log entries.</li>
 </ul>
