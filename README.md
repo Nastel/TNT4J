@@ -434,7 +434,8 @@ java -Dtnt4j.config=config/tnt4j.properties -Dtnt4j.dump.on.vm.shutdown=true -Dt
 ```
 <b>Command line arguments:</b>
 * `-javaagent:tnt4j-api.jar` command line option is required by `ObjectDumpProvider` to calculate object deep and shallow memory sizes. Use this only if your application makes use of `ObjectDumpProvider` to dump object state.
-* `-Dtnt4j.dump.provider.default=true` java property allows application state dumps generated automatically upon VM shutdown.
+* `-Dtnt4j.dump.on.vm.shutdown=true` java property allows application state dumps generated automatically upon VM shutdown.
+* `-Dtnt4j.dump.provider.default=true` java property registers all default dump providers (memory, stack, logging stats).
 * `-Dtnt4j.formatter.json.newline=true` java property directs `JSONFormatter` to append new line when formatting log entries.
 
 See `<timestamp>.log` and `<vmid>.dump` file for output produced by `com.nastel.jkool.tnt4j.examples.TNT4JTest`.
