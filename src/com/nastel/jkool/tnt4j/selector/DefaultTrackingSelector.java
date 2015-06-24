@@ -47,7 +47,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(DefaultTrackingSelector.class);
-	private static final boolean DEFAULT_RETURN_UNDEFINED = Boolean.valueOf(System.getProperty("tnt4j.selector.undefined.isset.return", "true"));
+	private static final boolean DEFAULT_RETURN_UNDEFINED = Boolean.valueOf(System.getProperty("tnt4j.selector.undefined.isset", "true"));
 	private HashMap<Object, TntToken> tokenMap = new HashMap<Object, TntToken>(89);
 	private Map<String, Object> config = null;
 	private TokenRepository tokenRepository = null;

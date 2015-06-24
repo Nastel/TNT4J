@@ -105,6 +105,22 @@ public interface EventSink extends Sink, KeyValueStats {
 	/**
 	 * Check if a given event is loggable by the underlying sink -- passes all filters
 	 *
+	 * @param source
+	 *            message source
+	 * @param level
+	 *            severity level of the event message
+	 * @param msg
+	 *            event message
+	 * @param args
+	 *            argument list passed along with the message
+	 * @return true if event passed all filters, false otherwise
+	 * @see OpLevel
+	 */
+	boolean isLoggable(Source source, OpLevel level, String msg, Object... args);
+
+	/**
+	 * Check if a given event is loggable by the underlying sink -- passes all filters
+	 *
 	 * @param snapshot
 	 *            snapshot
 	 * @return true if event passed all filters, false otherwise

@@ -34,31 +34,36 @@ import com.nastel.jkool.tnt4j.core.ValueTypes;
 import com.nastel.jkool.tnt4j.sink.DefaultEventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.EventSink;
 import com.nastel.jkool.tnt4j.sink.SinkEventFilter;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
+/**
+ * Simple application that monitors changes to file system folders.
+ * 
+ * @version $Revision: 1 $
+ */
 public class FolderMonitor {
 	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(FolderMonitor.class);
 	
 	public static void main(String[] args) throws InterruptedException, IOException {
-		if (args.length < 2) {
-			System.out.println("Usage: appl-name folder");
+		if (args.length < 1) {
+			System.out.println("Usage: folder");
 			System.exit(-1);
 		}
 		try {
-			Path pathToWatch = FileSystems.getDefault().getPath(args[1]);
-			FolderWatcher monitor = new FolderWatcher(args[0], pathToWatch);
+			Path pathToWatch = FileSystems.getDefault().getPath(args[0]);
+			FolderWatcher monitor = new FolderWatcher(FolderMonitor.class.getName(), pathToWatch);
 			Thread monitorThread = new Thread(monitor);
 			monitorThread.start();
 			monitorThread.join();
 		} catch (Throwable ex) {
-			logger.log(OpLevel.ERROR, "Unable to watch: {0}", args[1], ex);
+			logger.log(OpLevel.ERROR, "Unable to watch: {0}", args[0], ex);
 		}
 	}
 }
 
 class PathEventFilter implements SinkEventFilter {
-
 	@Override
     public boolean filter(EventSink sink, TrackingEvent event) {
 		Object [] args = event.getMessageArgs();
@@ -71,10 +76,10 @@ class PathEventFilter implements SinkEventFilter {
 				boolean exists = file.exists();
 				if (exists) {
 					PropertySnapshot snap = new PropertySnapshot("FileSystem", file.getName());
-					snap.add("Exists", file.exists());
-					snap.add("CanRead", file.canRead());
-					snap.add("CanWrite", file.canWrite());
-					snap.add("CanExecute", file.canExecute());
+					snap.add("Exists", file.exists(), ValueTypes.VALUE_TYPE_FLAG);
+					snap.add("CanRead", file.canRead(), ValueTypes.VALUE_TYPE_FLAG);
+					snap.add("CanWrite", file.canWrite(), ValueTypes.VALUE_TYPE_FLAG);
+					snap.add("CanExecute", file.canExecute(), ValueTypes.VALUE_TYPE_FLAG);
 					snap.add("FileSize", file.length(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 					snap.add("FreeSpace", file.getFreeSpace(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
 					snap.add("TotalSpace", file.getTotalSpace(), ValueTypes.VALUE_TYPE_SIZE_BYTE);
@@ -98,7 +103,7 @@ class PathEventFilter implements SinkEventFilter {
     }
 
 	@Override
-    public boolean filter(EventSink sink, OpLevel level, String msg, Object... args) {
+    public boolean filter(EventSink sink, Source source, OpLevel level, String msg, Object... args) {
 	    return true;
     }
 }

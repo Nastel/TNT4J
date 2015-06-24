@@ -237,10 +237,15 @@ public abstract class AbstractEventSink implements EventSink {
 
 	@Override
 	public boolean isLoggable(OpLevel level, String msg, Object... args) {
+		return isLoggable(getSource(), level, msg, args);
+	}
+
+	@Override
+	public boolean isLoggable(Source source, OpLevel level, String msg, Object... args) {
 		boolean pass = true;
 		if (filters.size() == 0) return pass;
 		for (SinkEventFilter filter : filters) {
-			pass = (pass && filter.filter(this, level, msg, args));
+			pass = (pass && filter.filter(this, source, level, msg, args));
 			if (!pass) {
 				skipCount.incrementAndGet();
 				break;
@@ -369,7 +374,7 @@ public abstract class AbstractEventSink implements EventSink {
 	@Override
 	public void log(Source src, OpLevel sev, String msg, Object... args) {
 		_checkState();
-		boolean doLog = filterCheck? isLoggable(sev, msg): true;
+		boolean doLog = filterCheck? isLoggable(source, sev, msg): true;
 		if (doLog) {
 			try {
 				_log(src, sev, msg, args);

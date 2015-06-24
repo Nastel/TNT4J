@@ -97,7 +97,7 @@ public interface TrackingSelector extends Handle {
 	 * Undefined <code>TrackingSelector<code> does not have
 	 * defined token repository and isSet() calls will either
 	 * return all true or false depending on the value of
-	 * <code>tnt4j.selector.undefined.isset.return=true</code>
+	 * <code>tnt4j.selector.undefined.isset=true</code>
 	 * property. Default is true.
 	 * 
 	 * @return true if repository is defined, false otherwise

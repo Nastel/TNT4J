@@ -23,6 +23,7 @@ import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.sink.EventSink;
 import com.nastel.jkool.tnt4j.sink.SinkEventFilter;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -147,7 +148,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	}
 
 	@Override
-	public boolean filter(EventSink sink, OpLevel level, String msg, Object... args) {
+	public boolean filter(EventSink sink, Source source, OpLevel level, String msg, Object... args) {
 		if (msgPattern != null) {
 			if (!msgPattern.matcher(msg).matches()) {
 				return false;

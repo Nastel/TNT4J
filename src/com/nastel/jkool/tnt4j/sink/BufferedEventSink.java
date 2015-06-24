@@ -161,7 +161,7 @@ public class BufferedEventSink implements EventSink {
 	@Override
     public void log(Source src, OpLevel sev, String msg, Object... args) {
 		_checkState();
-		if (isLoggable(OpLevel.NONE, msg, args)) {
+		if (isLoggable(sev, msg, args)) {
 			boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, src, sev, msg, resolveArguments(args)));
 			if (!flag) dropCount.incrementAndGet();
 		} else {
@@ -273,6 +273,11 @@ public class BufferedEventSink implements EventSink {
     }
 
 	@Override
+    public boolean isLoggable(Source source, OpLevel level, String msg, Object... args) {
+	    return outSink.isLoggable(source, level, msg, args);
+    }	
+
+	@Override
     public boolean isLoggable(Snapshot snapshot) {
 	    return outSink.isLoggable(snapshot);
     }
@@ -290,5 +295,6 @@ public class BufferedEventSink implements EventSink {
 	@Override
     public EventSink filterOnLog(boolean flag) {
 	    return outSink.filterOnLog(false);
-    }	
+    }
+
 }
