@@ -45,6 +45,8 @@ public class TimeService {
 	
 	protected static final int ONE_K = 1000;
 	protected static final int ONE_M = 1000000;
+	protected static final boolean TIME_SERVER_VERBOSE = Boolean.getBoolean("tnt4j.time.server.verbose");
+	
 	private static final String TIME_SERVER = System.getProperty("tnt4j.time.server");
 	private static final long TIME_SERVER_TIMEOUT = Long.getLong("tnt4j.time.server.timeout", 10000);
 
@@ -128,8 +130,10 @@ public class TimeService {
 			timeInfo.computeDetails();     
 			adjustment = timeInfo.getOffset() - timeOverheadMillis;
 			updatedTime = currentTimeMillis();
-			logger.log(OpLevel.DEBUG, "Time server={0}, timeout.ms={1}, offset.ms={2}, delay.ms={3}, clock.adjust.ms={4}, overhead.nsec={5}",
-				TIME_SERVER, TIME_SERVER_TIMEOUT, timeInfo.getOffset(), timeInfo.getDelay(), adjustment, timeOverheadNanos);
+			if (TIME_SERVER_VERBOSE) {
+				logger.log(OpLevel.DEBUG, "Time server={0}, timeout.ms={1}, offset.ms={2}, delay.ms={3}, clock.adjust.ms={4}, overhead.nsec={5}",
+						TIME_SERVER, TIME_SERVER_TIMEOUT, timeInfo.getOffset(), timeInfo.getDelay(), adjustment, timeOverheadNanos);
+			}
 		}
 	}
 	
@@ -277,9 +281,11 @@ class ClockDriftMonitorTask implements Runnable {
 			TimeService.updateTime();
 			Useconds.CURRENT.sync();
 			updateCount++;
-			logger.log(OpLevel.DEBUG, 
+			if (TimeService.TIME_SERVER_VERBOSE) {
+				logger.log(OpLevel.DEBUG, 
 					"Updated clocks: drift.ms={0}, interval.ms={1}, total.drift.ms={2}, updates={3}", 
 					drift, interval, totalDrift, updateCount);
+			}
 		} catch (Throwable ex) {
 			logger.log(OpLevel.ERROR, "Failed to update clocks: last.updated={0}, age.ms={1}", 
 					new Date(TimeService.getLastUpdatedMillis()),
