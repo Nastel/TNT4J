@@ -34,7 +34,7 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	Throwable reason = null;
 
 	/**
-	 * Create a new instance of <code>DefaultTrackerFactory</code> with a specific <code>EventSinkFactory</code>
+	 * Create a new instance of <code>Dump</code>
 	 * instance.
 	 * 
 	 * @param name
@@ -49,19 +49,54 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	}
 
 	/**
-	 * Create a new instance of <code>DefaultTrackerFactory</code> with a specific <code>EventSinkFactory</code>
+	 * Create a new instance of <code>Dump</code>
 	 * instance.
 	 * 
 	 * @param name
 	 *            of the generated dump
 	 * @param prvd
 	 *            dump provider that generates the dump
+	 * 
+	 * @see DumpProvider
+	 */
+	public Dump(String cat, String name, DumpProvider prvd) {
+		this(cat, name, prvd, null);
+	}
+
+	/**
+	 * Create a new instance of <code>Dump</code>
+	 * instance.
+	 * 
+	 * @param cat
+	 *            category of the dump
+	 * @param name
+	 *            of the dump
+	 * @param prvd
+	 *            dump provider that generates the dump
+	 * @param rsn
+	 *            reason for the dump
+	 * @see DumpProvider
+	 */
+	public Dump(String cat, String name, DumpProvider prvd, Throwable rsn) {
+		super(cat, name);
+		dProv = prvd;
+		reason = rsn;
+	}
+
+	/**
+	 * Create a new instance of <code>Dump</code>
+	 * instance.
+	 * 
+	 * @param name
+	 *            of the generated dump
+	 * @param prvd
+	 *            dump provider that generates the dump
+	 * @param rsn
+	 *            reason for the dump
 	 * @see DumpProvider
 	 */
 	public Dump(String name, DumpProvider prvd, Throwable rsn) {
-		super(prvd.getCategoryName(), name);
-		dProv = prvd;
-		reason = rsn;
+		this(prvd.getCategoryName(), name, prvd);
 	}
 
 	@Override
@@ -71,21 +106,17 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 
 	@Override
 	public String toString() {
-		return "{Name: " + getName() 
-			+ ", Size: " + size() 
-			+ ", Time: " + getTime() 
-			+ ", Provider: " + dProv
-			+ ", Reason: " + reason
-	        + "}";
+		return "{Name: " + getName() + ", Size: " + size() + ", Time: " + getTime() + ", Provider: " + dProv
+		        + ", Reason: " + reason + "}";
 	}
 
 	@Override
-    public Throwable getReason() {
-	    return reason;
-    }
+	public Throwable getReason() {
+		return reason;
+	}
 
 	@Override
-    public void setReason(Throwable rsn) {
+	public void setReason(Throwable rsn) {
 		reason = rsn;
 	}
 }

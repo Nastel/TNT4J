@@ -430,7 +430,7 @@ java -javaagent:tnt4j-api.jar -Dtnt4j.config=config/tnt4j.properties -Dtnt4j.tok
 ```
 * Directory Monitor (`com.nastel.jkool.tnt4j.examples.FolderMonitor`)
 ```java	
-java -Dtnt4j.config=config/tnt4j.properties -Dtnt4j.dump.on.vm.shutdown=true -Dtnt4j.dump.provider.default=true -classpath tnt4j-api-final-all.jar com.nastel.jkool.tnt4j.examples.FolderMonitor com.test.FolderMonitor /temp
+java -Dtnt4j.config=config/tnt4j.properties -Dtnt4j.dump.on.vm.shutdown=true -Dtnt4j.dump.provider.default=true -classpath tnt4j-api-final-all.jar com.nastel.jkool.tnt4j.examples.FolderMonitor /temp
 ```
 <b>Command line arguments:</b>
 * `-javaagent:tnt4j-api.jar` command line option is required by `ObjectDumpProvider` to calculate object deep and shallow memory sizes. Use this only if your application makes use of `ObjectDumpProvider` to dump object state.

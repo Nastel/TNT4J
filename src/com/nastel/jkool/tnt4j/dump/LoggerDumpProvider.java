@@ -65,7 +65,14 @@ public class LoggerDumpProvider extends DefaultDumpProvider {
 			Dump dump = new Dump(logger.getId(), this);
 			Map<String, Object> stats = logger.getStats();
 			dump.addAll(stats);
+			
+			String config = String.valueOf(logger.getConfiguration().getProperty("source"));
 			dump.add(Utils.qualify(logger, DUMP_LOGGER_SOURCE), logger.getSource().getFQName());
+			
+			Dump propDump = new Dump("LoggerConfig", config, this);	
+			propDump.addAll(logger.getConfiguration().getProperties());
+			
+			dump.add(config, propDump);
 			rootDump.add(logger.getId(), dump);
 		}
 		return rootDump;

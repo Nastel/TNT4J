@@ -118,6 +118,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 public class TrackerConfigStore extends TrackerConfig {
 	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerConfigStore.class);
 	
+	public static final String TNT4J_PROPERTIES_KEY = "tnt4j.config";
 	public static final String TNT4J_PROPERTIES = "tnt4j.properties";
 	
 	private static final String DEFAULT_SOURCE = "*";
@@ -190,7 +191,8 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 	
 	private void initConfig(String fileName) {
-		configFile = fileName == null ? System.getProperty("tnt4j.config", TNT4J_PROPERTIES) : fileName;
+		configFile = fileName == null ? System.getProperty(TNT4J_PROPERTIES_KEY, TNT4J_PROPERTIES) : fileName;
+		setProperty(TNT4J_PROPERTIES_KEY, configFile);
 		Map<String, Properties> configMap = loadConfiguration(configFile);
 		loadConfigProps(configMap);		
 	}

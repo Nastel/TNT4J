@@ -74,35 +74,42 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 public class DefaultDumpFormatter implements DumpFormatter {
 	private static ThreadLocal<Long> TIME_TABLE = new ThreadLocal<Long>();
-	
-	@Override
-	public String format(DumpCollection dump) {
+		
+	private String _format(DumpCollection dump, String padding) {
 		StringBuilder buffer = new StringBuilder(1024);
-		buffer.append(Utils.quote("dump.name")).append(": ").append(Utils.quote(dump.getName())).append(",\n");
-		buffer.append(Utils.quote("dump.category")).append(": ").append(Utils.quote(dump.getCategory())).append(",\n");
-		buffer.append(Utils.quote("dump.provider")).append(": ").append(Utils.quote(dump.getDumpProvider().getProviderName())).append(",\n");
-		buffer.append(Utils.quote("dump.provider.category")).append(": ").append(Utils.quote(dump.getDumpProvider().getCategoryName())).append(",\n");
-		buffer.append(Utils.quote("dump.time.string")).append(": ").append(Utils.quote(UsecTimestamp.getTimeStamp(dump.getTime()))).append(",\n");
-		buffer.append(Utils.quote("dump.time.stamp")).append(": ").append(dump.getTime()).append(",\n");
-		buffer.append(Utils.quote("dump.collection")).append(": {\n");
+		
+		buffer.append(padding).append(Utils.quote("dump.name")).append(": ").append(Utils.quote(dump.getName())).append(",\n");
+		buffer.append(padding).append(Utils.quote("dump.category")).append(": ").append(Utils.quote(dump.getCategory())).append(",\n");
+		buffer.append(padding).append(Utils.quote("dump.provider")).append(": ").append(Utils.quote(dump.getDumpProvider().getProviderName())).append(",\n");
+		buffer.append(padding).append(Utils.quote("dump.provider.category")).append(": ").append(Utils.quote(dump.getDumpProvider().getCategoryName())).append(",\n");
+		buffer.append(padding).append(Utils.quote("dump.time.string")).append(": ").append(Utils.quote(UsecTimestamp.getTimeStamp(dump.getTime()))).append(",\n");
+		buffer.append(padding).append(Utils.quote("dump.time.stamp")).append(": ").append(dump.getTime()).append(",\n");
+		buffer.append(padding).append(Utils.quote("dump.snapshot")).append(": {\n");
 		int startLen = buffer.length();
+		
+		String subPadding = padding + "\t";
 		for (Property entry : dump.getSnapshot()) {
 			if (buffer.length() > startLen) {
 				buffer.append(",\n");
 			}
 			Object value = entry.getValue();
 			if (value instanceof DumpCollection) {
-				buffer.append(format((DumpCollection)value));
+				buffer.append(subPadding).append(Utils.quote("dump.collection")).append(": {\n");
+				buffer.append(_format((DumpCollection)value, subPadding));
+				buffer.append("\n").append(subPadding).append("}");
 			} else if (value instanceof Number) {
-				buffer.append("\t");
-				buffer.append(Utils.quote(entry.getKey())).append(": ").append(value);
+				buffer.append(subPadding).append(Utils.quote(entry.getKey())).append(": ").append(value);
 			} else {
-				buffer.append("\t");
-				buffer.append(Utils.quote(entry.getKey())).append(": ").append(Utils.quote(value));				
+				buffer.append(subPadding).append(Utils.quote(entry.getKey())).append(": ").append(Utils.quote(value));				
 			}
 		}
-		buffer.append("\n}");
-		return buffer.toString();
+		buffer.append("\n").append(padding).append("}");
+		return buffer.toString();		
+	}
+	
+	@Override
+	public String format(DumpCollection dump) {
+		return _format(dump, "");
 	}
 
 	@Override
