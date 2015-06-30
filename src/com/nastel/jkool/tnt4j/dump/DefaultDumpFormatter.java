@@ -43,7 +43,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * "dump.category": "ApplRuntime",
  * "dump.time.string": "<time-stamp-string>",
  * "dump.time.stamp": 1394115455190,
- * "dump.collection": {
+ * "dump.snapshot": {
  *  ....
  * }
  * "dump.elapsed.ms=": 4
