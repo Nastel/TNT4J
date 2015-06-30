@@ -74,25 +74,27 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 public class DefaultDumpFormatter implements DumpFormatter {
 	private static ThreadLocal<Long> TIME_TABLE = new ThreadLocal<Long>();
+	
 	private static final String INDENT = "\t";
 	private static final String NEWLINE = "\n";
+	private static final String END_ATTR = ",\n";
 		
 	private String _format(DumpCollection dump, String padding) {
 		StringBuilder buffer = new StringBuilder(1024);
 		
-		buffer.append(padding).append(Utils.quote("dump.name")).append(": ").append(Utils.quote(dump.getName())).append(",\n");
-		buffer.append(padding).append(Utils.quote("dump.category")).append(": ").append(Utils.quote(dump.getCategory())).append(",\n");
-		buffer.append(padding).append(Utils.quote("dump.provider")).append(": ").append(Utils.quote(dump.getDumpProvider().getProviderName())).append(",\n");
-		buffer.append(padding).append(Utils.quote("dump.provider.category")).append(": ").append(Utils.quote(dump.getDumpProvider().getCategoryName())).append(",\n");
-		buffer.append(padding).append(Utils.quote("dump.time.string")).append(": ").append(Utils.quote(UsecTimestamp.getTimeStamp(dump.getTime()))).append(",\n");
-		buffer.append(padding).append(Utils.quote("dump.time.stamp")).append(": ").append(dump.getTime()).append(",\n");
+		buffer.append(padding).append(Utils.quote("dump.name")).append(": ").append(Utils.quote(dump.getName())).append(END_ATTR);
+		buffer.append(padding).append(Utils.quote("dump.category")).append(": ").append(Utils.quote(dump.getCategory())).append(END_ATTR);
+		buffer.append(padding).append(Utils.quote("dump.provider")).append(": ").append(Utils.quote(dump.getDumpProvider().getProviderName())).append(END_ATTR);
+		buffer.append(padding).append(Utils.quote("dump.provider.category")).append(": ").append(Utils.quote(dump.getDumpProvider().getCategoryName())).append(END_ATTR);
+		buffer.append(padding).append(Utils.quote("dump.time.string")).append(": ").append(Utils.quote(UsecTimestamp.getTimeStamp(dump.getTime()))).append(END_ATTR);
+		buffer.append(padding).append(Utils.quote("dump.time.stamp")).append(": ").append(dump.getTime()).append(END_ATTR);
 		buffer.append(padding).append(Utils.quote("dump.snapshot")).append(": {\n");
 		int startLen = buffer.length();
 		
 		String subPadding = padding + INDENT;
 		for (Property entry : dump.getSnapshot()) {
 			if (buffer.length() > startLen) {
-				buffer.append(",\n");
+				buffer.append(END_ATTR);
 			}
 			Object value = entry.getValue();
 			if (value instanceof DumpCollection) {
@@ -146,13 +148,13 @@ public class DefaultDumpFormatter implements DumpFormatter {
     public String getCloseStanza(DumpSink sink) {
 		StringBuilder buffer = new StringBuilder(1024);
 		buffer.append("{\n");
-		buffer.append(Utils.quote("dump.status")).append(": ").append(Utils.quote("END")).append(",\n");
-		buffer.append(Utils.quote("server.name")).append(": ").append(Utils.quote(Utils.getLocalHostName())).append(",\n");
-		buffer.append(Utils.quote("server.address")).append(": ").append(Utils.quote(Utils.getLocalHostAddress())).append(",\n");
-		buffer.append(Utils.quote("vm.name")).append(": ").append(Utils.quote(Utils.getVMName())).append(",\n");
-		buffer.append(Utils.quote("vm.pid")).append(": ").append(Utils.getVMPID()).append(",\n");
-		buffer.append(Utils.quote("dump.sink")).append(": ").append(Utils.quote(sink)).append(",\n");
-		buffer.append(Utils.quote("dump.time.string")).append(": ").append(Utils.quote(UsecTimestamp.getTimeStamp())).append(",\n");
+		buffer.append(Utils.quote("dump.status")).append(": ").append(Utils.quote("END")).append(END_ATTR);
+		buffer.append(Utils.quote("server.name")).append(": ").append(Utils.quote(Utils.getLocalHostName())).append(END_ATTR);
+		buffer.append(Utils.quote("server.address")).append(": ").append(Utils.quote(Utils.getLocalHostAddress())).append(END_ATTR);
+		buffer.append(Utils.quote("vm.name")).append(": ").append(Utils.quote(Utils.getVMName())).append(END_ATTR);
+		buffer.append(Utils.quote("vm.pid")).append(": ").append(Utils.getVMPID()).append(END_ATTR);
+		buffer.append(Utils.quote("dump.sink")).append(": ").append(Utils.quote(sink)).append(END_ATTR);
+		buffer.append(Utils.quote("dump.time.string")).append(": ").append(Utils.quote(UsecTimestamp.getTimeStamp())).append(END_ATTR);
 		long elapsed_ms = TimeService.currentTimeMillis() - TIME_TABLE.get();
 		buffer.append(Utils.quote("dump.elapsed.ms")).append(": ").append(elapsed_ms);
 		buffer.append("\n}");
@@ -164,12 +166,12 @@ public class DefaultDumpFormatter implements DumpFormatter {
 		StringBuilder buffer = new StringBuilder(1024);
 		TIME_TABLE.set(TimeService.currentTimeMillis());
 		buffer.append("{\n");
-		buffer.append(Utils.quote("dump.status")).append(": ").append(Utils.quote("START")).append(",\n");
-		buffer.append(Utils.quote("server.name")).append(": ").append(Utils.quote(Utils.getLocalHostName())).append(",\n");
-		buffer.append(Utils.quote("server.address")).append(": ").append(Utils.quote(Utils.getLocalHostAddress())).append(",\n");
-		buffer.append(Utils.quote("vm.name")).append(": ").append(Utils.quote(Utils.getVMName())).append(",\n");
-		buffer.append(Utils.quote("vm.pid")).append(": ").append(Utils.getVMPID()).append(",\n");
-		buffer.append(Utils.quote("dump.sink")).append(": ").append(Utils.quote(sink)).append(",\n");
+		buffer.append(Utils.quote("dump.status")).append(": ").append(Utils.quote("START")).append(END_ATTR);
+		buffer.append(Utils.quote("server.name")).append(": ").append(Utils.quote(Utils.getLocalHostName())).append(END_ATTR);
+		buffer.append(Utils.quote("server.address")).append(": ").append(Utils.quote(Utils.getLocalHostAddress())).append(END_ATTR);
+		buffer.append(Utils.quote("vm.name")).append(": ").append(Utils.quote(Utils.getVMName())).append(END_ATTR);
+		buffer.append(Utils.quote("vm.pid")).append(": ").append(Utils.getVMPID()).append(END_ATTR);
+		buffer.append(Utils.quote("dump.sink")).append(": ").append(Utils.quote(sink)).append(END_ATTR);
 		buffer.append(Utils.quote("dump.time.string")).append(": ").append(Utils.quote(UsecTimestamp.getTimeStamp()));
 		buffer.append("\n}");
 		return buffer.toString();
