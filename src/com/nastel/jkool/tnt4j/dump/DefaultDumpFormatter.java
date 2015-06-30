@@ -74,6 +74,8 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 public class DefaultDumpFormatter implements DumpFormatter {
 	private static ThreadLocal<Long> TIME_TABLE = new ThreadLocal<Long>();
+	private static final String INDENT = "\t";
+	private static final String NEWLINE = "\n";
 		
 	private String _format(DumpCollection dump, String padding) {
 		StringBuilder buffer = new StringBuilder(1024);
@@ -87,7 +89,7 @@ public class DefaultDumpFormatter implements DumpFormatter {
 		buffer.append(padding).append(Utils.quote("dump.snapshot")).append(": {\n");
 		int startLen = buffer.length();
 		
-		String subPadding = padding + "\t";
+		String subPadding = padding + INDENT;
 		for (Property entry : dump.getSnapshot()) {
 			if (buffer.length() > startLen) {
 				buffer.append(",\n");
@@ -95,15 +97,15 @@ public class DefaultDumpFormatter implements DumpFormatter {
 			Object value = entry.getValue();
 			if (value instanceof DumpCollection) {
 				buffer.append(subPadding).append(Utils.quote("dump.collection")).append(": {\n");
-				buffer.append(_format((DumpCollection)value, subPadding));
-				buffer.append("\n").append(subPadding).append("}");
+				buffer.append(_format((DumpCollection)value, subPadding + INDENT));
+				buffer.append(NEWLINE).append(subPadding).append("}");
 			} else if (value instanceof Number) {
 				buffer.append(subPadding).append(Utils.quote(entry.getKey())).append(": ").append(value);
 			} else {
 				buffer.append(subPadding).append(Utils.quote(entry.getKey())).append(": ").append(Utils.quote(value));				
 			}
 		}
-		buffer.append("\n").append(padding).append("}");
+		buffer.append(NEWLINE).append(padding).append("}");
 		return buffer.toString();		
 	}
 	
@@ -126,7 +128,7 @@ public class DefaultDumpFormatter implements DumpFormatter {
 		if (reason != null) {
 			StackTraceElement[] stack = reason.getStackTrace();
 			for (int i=0; i < stack.length; i++) {
-				buffer.append("\n").append(Utils.quote("stack.frame[" + i + "]")).append(": ").append(Utils.quote(stack[i]));
+				buffer.append(NEWLINE).append(Utils.quote("stack.frame[" + i + "]")).append(": ").append(Utils.quote(stack[i]));
 			}
 		}
 		return buffer.toString();
