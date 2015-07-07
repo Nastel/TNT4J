@@ -17,8 +17,8 @@ package com.nastel.jkool.tnt4j.sink;
 
 import java.util.Map;
 
-import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.config.ConfigException;
+import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -27,16 +27,16 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * instances back using <code>getEventSink()</code> method calls. See example below:
  * </p>
  *<pre>
- *{@code
+ *<code>
  *	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
  *		return configureSink(new MyEventSinkImpl(name, props, frmt));
  *	}
- *}
+ *</code>
  *</pre>
  *
  * @see EventSink
  * @see Configurable
- * 
+ *
  * @version $Revision: 1 $
  *
  */
@@ -50,7 +50,7 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 
 	/**
 	 * Obtain the default instance of <code>SinkEventFilter</code> configured for this factory.
-	 * 
+	 *
 	 * @return default sink event filter instance
 	 */
 	public SinkEventFilter getDefaultEventFilter() {
@@ -59,7 +59,8 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 
 	/**
 	 * Configure a given event sink based on default settings
-	 * 
+	 *
+	 * @param sink event sink
 	 * @return configured event sink
 	 */
 	protected EventSink configureSink(EventSink sink) {

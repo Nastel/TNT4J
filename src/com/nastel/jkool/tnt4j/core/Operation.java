@@ -50,7 +50,7 @@ public class Operation {
 	 * Current stack frame class marker prefix
 	 */
 	public static final String OP_STACK_MARKER_PREFIX = "$";
-	
+
 	/**
 	 * Noop operation name
 	 */
@@ -79,13 +79,13 @@ public class Operation {
 
 	/**
 	 * Creates a Operation with the specified properties.
-	 * Operation name can be any name or a relative name based 
+	 * Operation name can be any name or a relative name based
 	 * on the current thread stack trace. The relative operation name
-	 * must be specified as follows: <code>$class-marker:offset</code>. 
+	 * must be specified as follows: <code>$class-marker:offset</code>.
 	 * Example: <code>$com.nastel.jkool.tnt4j.tracker:0</code>
 	 * This name results in the actual operation name computed at runtime based on
 	 * current thread stack at the time when <code>getResolvedName</code> is called.
-	 * 
+	 *
 	 * @param opname function name triggering operation
 	 * @param opType operation type
 	 * @see #getResolvedName()
@@ -109,7 +109,7 @@ public class Operation {
 	/**
 	 * Gets resolved name of the operation. Runtime stack resolution
 	 * occurs when the operation name is of the form:
-	 * <code>$class-marker:offset</code>. 
+	 * <code>$class-marker:offset</code>.
 	 * Example: <code>$com.nastel.jkool.tnt4j.tracker:0</code>
 	 *
 	 * @return name triggering operation
@@ -121,7 +121,8 @@ public class Operation {
 
 	/**
 	 * Gets resolved name of the method that triggered the operation.
-	 * 
+	 *
+	 * @param opName operation name
 	 * @return name triggering operation
 	 */
 	public static String getResolvedName(String opName) {
@@ -138,7 +139,7 @@ public class Operation {
 
 	/**
 	 * Gets resolved name of the method that triggered the operation.
-	 * 
+	 *
 	 * @param marker class marker to be used to locate the stack frame
 	 * @param offset offset from the located stack frame (must be >= 0)
 	 * @return name triggering operation
@@ -150,7 +151,7 @@ public class Operation {
 
 	/**
 	 * Gets resolved name of the method that triggered the operation.
-	 * 
+	 *
 	 * @param classMarker class marker to be used to locate the stack frame
 	 * @return name triggering operation
 	 */
@@ -161,7 +162,7 @@ public class Operation {
 
 	/**
 	 * Gets resolved name of the method that triggered the operation.
-	 * 
+	 *
 	 * @param classMarker class marker to be used to locate the stack frame
 	 * @param offset offset from the located stack frame (must be >= 0)
 	 * @return name triggering operation
@@ -374,7 +375,7 @@ public class Operation {
 	}
 
 	/**
-	 * Sets the wait time for the operation. 
+	 * Sets the wait time for the operation.
 	 * This value represents the time the operation spent waiting.
 	 *
 	 * @param wTime idle time for operation, in microseconds
@@ -519,7 +520,7 @@ public class Operation {
 	public void clearCorrelators() {
 		this.correlators.clear();
 	}
-	
+
 	/**
 	 * Gets the time the operation started.
 	 *
@@ -587,7 +588,7 @@ public class Operation {
 		}
 
 		if (startTimeNano > 0) {
-			stopTimeNano = System.nanoTime();	
+			stopTimeNano = System.nanoTime();
 			elapsedTimeNano = stopTimeNano - startTimeNano;
 		}
 
@@ -718,7 +719,7 @@ public class Operation {
 	}
 
 
-	
+
 	/**
 	 * Gets all available snapshot keys associated with this operation
 	 *
@@ -731,6 +732,7 @@ public class Operation {
 	/**
 	 * Gets a snapshot associated with a specific key/id
 	 *
+	 * @param snapId snapshot id
 	 * @return snapshot associated with a given id
 	 * @see Snapshot
 	 */
@@ -745,9 +747,9 @@ public class Operation {
 	 * @see Snapshot
 	 */
 	public void addSnapshot(Snapshot snapshot) {
-		snapshots.put(snapshot.getId(), snapshot);		
+		snapshots.put(snapshot.getId(), snapshot);
 	}
-	
+
 	/**
 	 * Gets the list of available snapshots
 	 *

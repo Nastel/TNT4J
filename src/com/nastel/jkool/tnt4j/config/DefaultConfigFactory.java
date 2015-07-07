@@ -20,7 +20,7 @@ package com.nastel.jkool.tnt4j.config;
  * <p>
  * This class provides a static way to get default configuration factory.
  * </p>
- * 
+ *
  * <pre>
  * {@code
  * TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(source);
@@ -28,35 +28,36 @@ package com.nastel.jkool.tnt4j.config;
  * ...
  * }
  * </pre>
- * 
+ *
  * @see TrackerConfigStore
  * @see TrackerConfig
- * 
+ *
  * @version $Revision: 5 $
- * 
+ *
  */
 public class DefaultConfigFactory  {
 	private static ConfigFactory factory = new ConfigFactoryStoreImpl();
-	
+
 	private DefaultConfigFactory() {
 	}
-	
+
 	/**
 	 * Set a default configuration factory implementation
-	 * 
+	 * @param fac configuration factory
+	 *
 	 * @return <code>ConfigFactory</code> instance
 	 */
 	public static ConfigFactory setDefaultConfigFactory(ConfigFactory fac) {
 		factory = fac;
 		return factory;
 	}
-	 
+
 	/**
 	 * Obtain a default tracking configuration factory
-	 * 
+	 *
 	 * @return default <code>ConfigFactory</code> instance
 	 */
 	public static ConfigFactory getInstance() {
 		return factory;
-	}	
+	}
 }

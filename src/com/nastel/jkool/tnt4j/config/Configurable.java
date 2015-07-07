@@ -23,20 +23,21 @@ import java.util.Map;
  * properties.
  * </p>
  * @version $Revision: 1 $
- * 
+ *
  */
 public interface Configurable {
 	/**
 	 * Obtain current configuration settings
-	 *  
+	 *
 	 * @return current configuration settings
 	 */
 	Map<String, Object> getConfiguration();
-	
+
 	/**
 	 * Apply given configuration settings
-	 *  
-	 *  @param settings apply given settings as configuration (name, value pairs)
+	 *
+	 * @param settings apply given settings as configuration (name, value pairs)
+	 * @throws ConfigException if error applying configuration settings
 	 */
 	void setConfiguration(Map<String, Object> settings) throws ConfigException;
 }

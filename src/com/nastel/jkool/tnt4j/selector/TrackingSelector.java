@@ -22,7 +22,7 @@ import com.nastel.jkool.tnt4j.repository.TokenRepository;
 import com.nastel.jkool.tnt4j.sink.Handle;
 
 /**
- * <p>Classes that implement this interface provide implementation for 
+ * <p>Classes that implement this interface provide implementation for
  * the <code>TrackingSelector</code> which allows conditional logging based on given sev/key/value combination.</p>
  *
  * @see OpLevel
@@ -34,40 +34,40 @@ public interface TrackingSelector extends Handle {
 	/**
 	 * Determine if a particular sev/key combination is trackable
 	 * Use this method to determine if tracking is enabled/disabled
-	 * for a specific sev/key pair. 
-	 * 
+	 * for a specific sev/key pair.
+	 *
 	 * <code>TrackingLogger.isSet(OpLevel.INFO, "orderapp.order.id");</code>
-	 * 
+	 *
 	 * @param sev severity of to be checked
 	 * @param key key associated with tracking activity
-	 * 
+	 * @return true if severity level set for given key
 	 * @see OpLevel
 	 */
 	boolean isSet(OpLevel sev, Object key);
-	
+
 	/**
 	 * Determine if a particular sev/key/value combination is trackable
 	 * Use this method to determine if tracking is enabled/disabled
-	 * for a specific key/value pair. Example, checking if order id 
+	 * for a specific key/value pair. Example, checking if order id
 	 * "723772" is trackable:
-	 * 
+	 *
 	 * <code>TrackingLogger.isSet(OpLevel.INFO, "orderapp.order.id", "723772");</code>
-	 * 
+	 *
 	 * @param sev severity of to be checked
 	 * @param key key associated with tracking activity
 	 * @param value associated value with a given key
-	 * 
+	 * @return true if severity level set for given key with specified value
 	 * @see OpLevel
 	 */
 	boolean isSet(OpLevel sev, Object key, Object value);
-	
+
 	/**
 	 * Set sev/key/value combination for tracking
-	 * 
+	 *
 	 * @param sev severity of to be checked
 	 * @param key key associated with tracking activity
 	 * @param value associated value with a given key
-	 * 
+	 *
 	 * @see OpLevel
 	 */
 	void set(OpLevel sev, Object key, Object value);
@@ -75,20 +75,20 @@ public interface TrackingSelector extends Handle {
 	/**
 	 * Set sev/key combination for tracking. This is the same as calling
 	 * <code>set(sev, key, null)</code>, where value is null.
-	 * 
+	 *
 	 * @param sev severity of to be checked
 	 * @param key key associated with tracking activity
-	 * 
+	 *
 	 * @see OpLevel
 	 */
 	void set(OpLevel sev, Object key);
 
 	/**
 	 * Get value of the specific key
-	 * 
+	 *
 	 * @param key key associated with tracking activity
 	 * @return value associated with a given key
-	 * 
+	 *
 	 */
 	Object get(Object key);
 
@@ -99,46 +99,46 @@ public interface TrackingSelector extends Handle {
 	 * return all true or false depending on the value of
 	 * <code>tnt4j.selector.undefined.isset=true</code>
 	 * property. Default is true.
-	 * 
+	 *
 	 * @return true if repository is defined, false otherwise
 	 */
 	boolean isDefined();
 
 	/**
 	 * Determine if a specific key exists
-	 * 
+	 *
 	 * @param key key associated with tracking activity
 	 * @return true if exists, false otherwise
-	 * 
+	 *
 	 */
 	boolean exists(Object key);
 
 	/**
 	 * Clear value for the specific key
-	 * 
+	 *
 	 * @param key key associated with tracking activity
-	 * 
+	 *
 	 */
 	void remove(Object key);
-	
+
 	/**
 	 * Obtain a list of keys available in the selector
-	 * 
+	 *
 	 * @return iterator containing all available keys
 	 */
 	Iterator<? extends Object> getKeys();
 
 	/**
 	 * Obtain an instance of the token repository associated with this selector
-	 * 
+	 *
 	 * @return handle to the token repository
 	 * @see TokenRepository
 	 */
 	TokenRepository getRepository();
-	
+
 	/**
 	 * Set an instance of the token repository associated with this selector
-	 * 
+	 *
 	 * @param repo token repository implementation
 	 * @see TokenRepository
 	 */

@@ -118,6 +118,7 @@ public class Activity extends Operation implements Trackable {
 	 * Register an activity listener for notifications when activity timing
 	 * events occur.
 	 *
+	 * @param listener activity listener to register
 	 * @see ActivityListener
 	 */
 	public void addActivityListener(ActivityListener listener) {
@@ -131,6 +132,7 @@ public class Activity extends Operation implements Trackable {
 	 * Remove an activity listener for notifications when activity timing
 	 * events occur.
 	 *
+	 * @param listener activity listener to remove
 	 * @see ActivityListener
 	 */
 	public void removeActivityListener(ActivityListener listener) {
@@ -202,6 +204,7 @@ public class Activity extends Operation implements Trackable {
 	 *
 	 * @return Activity tracking id
 	 */
+	@Override
 	public String getTrackingId() {
 		return tracking_id;
 	}
@@ -214,6 +217,7 @@ public class Activity extends Operation implements Trackable {
 	 * @throws NullPointerException if tracking id is <code>null</code>
 	 * @throws IllegalArgumentException if tracking id is empty or too long
 	 */
+	@Override
 	public void setTrackingId(String id) {
 		if (id == null)
 			throw new NullPointerException("tracking id must be a non-empty string");
@@ -271,12 +275,12 @@ public class Activity extends Operation implements Trackable {
 	public void add(Trackable item) {
 		if (item == null)
 			throw new NullPointerException("msg must be non-null");
-		
+
 		String tid = item.getTrackingId();
 		if (tid != null) {
 			idset.add(tid);
 		}
-		
+
 		Set<String> cid = item.getCorrelator();
 		if (cid != null) {
 			idset.addAll(cid);

@@ -39,35 +39,36 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	private static PooledLogger pooledLogger = new PooledLogger(Integer.getInteger("tnt4j.pooled.logger.pool", 5),
 			Integer.getInteger("tnt4j.pooled.logger.capacity", 5000));
-	
+
 	private EventSinkFactory sinkFactory;
-		
+
 	/**
-	 * Create a default buffered sink factory 
-	 * 
+	 * Create a default buffered sink factory
+	 *
 	 */
 	public BufferedEventSinkFactory() {
 	}
-	
+
 	/**
 	 * Create a default buffered sink factory with a given sink factory
 	 * used to create concrete event sinks.
-	 * 
+	 *
 	 * @param factory concrete event sink factory instance
 	 */
 	public BufferedEventSinkFactory(EventSinkFactory factory) {
 		sinkFactory = factory;
 	}
-	
+
 	/**
 	 * Obtain an instance of pooled logger, which allows logging of events
 	 * asynchronously by a thread pool.
-	 * 
+	 *
+	 * @return pooled logger instance
 	 */
 	public static PooledLogger getPooledLogger() {
 		return pooledLogger;
 	}
-	
+
 	@Override
 	public EventSink getEventSink(String name) {
 		return configureSink(new BufferedEventSink(sinkFactory.getEventSink(name)));

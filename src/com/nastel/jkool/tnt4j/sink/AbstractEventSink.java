@@ -132,7 +132,7 @@ public abstract class AbstractEventSink implements EventSink {
 		String newKey = obj.getClass().getSimpleName() + "-" + key;
 		return newKey;
 	}
-	
+
 	/**
 	 * Register an event sink listener for notifications when logging events occur when writing to event sink.
 	 *
@@ -400,25 +400,24 @@ public abstract class AbstractEventSink implements EventSink {
 			}
 		} catch (Throwable ex) {
 			notifyListeners(msg, ex);
-		}		
+		}
 	}
-	
+
 	/**
-	 * Check state of the sink before logging occurs. Throws <code>IllegalStateException</code>
-	 * if sink is in wrong state.
+	 * Check state of the sink before logging occurs.
 	 *
-	 * @throws IllegalStateException
+	 * @param sink event sink
+	 * @throws IllegalStateException if sink is in wrong state
 	 */
     public static void checkState(EventSink sink) throws IllegalStateException {
 		if (sink == null || !sink.isOpen())
 			throw new IllegalStateException("Sink closed or unavailable: sink=" + sink);
-    }	
+    }
 
 	/**
-	 * Override this method to check state of the sink before logging occurs. Throws <code>IllegalStateException</code>
-	 * if sink is in wrong state.
+	 * Override this method to check state of the sink before logging occurs.
 	 *
-	 * @throws IllegalStateException
+	 * @throws IllegalStateException if sink is in wrong state
 	 */
     protected void _checkState() throws IllegalStateException {
     	checkState(this);
@@ -427,8 +426,8 @@ public abstract class AbstractEventSink implements EventSink {
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 *
-	 * @param event
-	 *            to be sent to the sink
+	 * @param event to be sent to the sink
+	 * @throws Exception if error logging tracking event
 	 * @see TrackingEvent
 	 */
 	abstract protected void _log(TrackingEvent event) throws Exception;
@@ -436,8 +435,8 @@ public abstract class AbstractEventSink implements EventSink {
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 *
-	 * @param activity
-	 *            to be sent to the sink
+	 * @param activity to be sent to the sink
+	 * @throws Exception if error logging tracking activity
 	 * @see TrackingActivity
 	 */
 	abstract protected void _log(TrackingActivity activity) throws Exception;;
@@ -445,8 +444,8 @@ public abstract class AbstractEventSink implements EventSink {
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 *
-	 * @param snapshot
-	 *            string message to be logged
+	 * @param snapshot string message to be logged
+	 * @throws Exception if error logging snapshot
 	 * @see OpLevel
 	 */
 	abstract protected void _log(Snapshot snapshot) throws Exception;
@@ -462,10 +461,11 @@ public abstract class AbstractEventSink implements EventSink {
 	 *            string message to be logged
 	 * @param args
 	 *            arguments passed along the message
+	 * @throws Exception if logging message
 	 * @see OpLevel
 	 */
 	abstract protected void _log(Source src, OpLevel sev, String msg, Object... args) throws Exception;
-	
+
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 *
@@ -473,6 +473,8 @@ public abstract class AbstractEventSink implements EventSink {
 	 *            string message to be logged
 	 * @param args
 	 *            arguments passed along the message
+	 * @throws IOException if error writing to sink
+	 * @throws InterruptedException if interrupted during write operation
 	 */
 	abstract protected void _write(Object msg, Object...args) throws IOException, InterruptedException;
 }

@@ -24,7 +24,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
 /**
- * <p>Classes that implement this interface provide implementation for 
+ * <p>Classes that implement this interface provide implementation for
  * the <code>EventSink</code>, which provides an interface for underlying logging framework
  * storage destination. All event sink implementations should be wrapped with this interface.
  * </p>
@@ -56,7 +56,7 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * @see Source
 	 */
 	void setSource(Source src);
-	
+
 	/**
 	 * Obtains current/active <code>Source</code> handle associated
 	 * with the current sink.
@@ -72,22 +72,23 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * @return name associated with the event sink instance
 	 */
 	String getName();
-	
+
 	/**
 	 * Obtain event formatter instance associated with this sink
 	 *
 	 * @return event formatter instance
 	 */
 	EventFormatter getEventFormatter();
-	
-	
+
+
 	/**
 	 * Enable/disable filter checks on log() calls.
 	 *
+	 * @param flag {@code true} to enable filter checks, {@code false} to disable
 	 * @return event sink instance
 	 */
 	EventSink filterOnLog(boolean flag);
-	
+
 	/**
 	 * Check if a given event is loggable by the underlying sink -- passes all filters
 	 *
@@ -147,11 +148,12 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * @see TrackingEvent
 	 */
 	boolean isLoggable(TrackingEvent event);
-	
+
 	/**
 	 * Check of a certain log level is set/enabled
-	 * 
+	 *
 	 * @param sev severity level
+	 * @return {@code true} if severity level set, {@code false} if not
 	 * @see OpLevel
 	 */
 	boolean isSet(OpLevel sev);
@@ -167,7 +169,7 @@ public interface EventSink extends Sink, KeyValueStats {
 	/**
 	 * This method allows writing of <code>TrackingActivity</code> objects
 	 * to the underlying destination.
-	 * 
+	 *
 	 * @param activity to be sent to the sink
 	 * @see TrackingActivity
 	 */
@@ -176,7 +178,7 @@ public interface EventSink extends Sink, KeyValueStats {
 	/**
 	 * This method allows writing of <code>Snapshot<Property></code> objects
 	 * to the underlying destination.
-	 * 
+	 *
 	 * @param snapshot a set of properties
 	 * @see Snapshot
 	 */
@@ -191,7 +193,7 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * @see OpLevel
 	 */
 	void log(OpLevel sev, String msg, Object...args);
-		
+
 	/**
 	 * Log a given string message with a specified severity
 	 *
@@ -202,49 +204,55 @@ public interface EventSink extends Sink, KeyValueStats {
 	 * @see OpLevel
 	 */
 	void log(Source src, OpLevel sev, String msg, Object...args);
-		
+
 	/**
-	 * Register an event sink listener for notifications when errors 
-	 * occur when writing to event sink. 
-	 * 
+	 * Register an event sink listener for notifications when errors
+	 * occur when writing to event sink.
+	 *
+	 * @param listener event sink listener to register
 	 * @see SinkErrorListener
 	 */
 	void addSinkErrorListener(SinkErrorListener listener);
-	
+
 	/**
-	 * Remove an event sink listener for notifications when errors 
-	 * occur when writing to event sink. 
-	 * 
+	 * Remove an event sink listener for notifications when errors
+	 * occur when writing to event sink.
+	 *
+	 * @param listener event sink listener to remove
 	 * @see SinkErrorListener
 	 */
 	void removeSinkErrorListener(SinkErrorListener listener);
-	
+
 	/**
 	 * Register an event sink listener for notifications when logging events
-	 * occur when writing to event sink. 
-	 * 
+	 * occur when writing to event sink.
+	 *
+	 * @param listener event sink listener to register
 	 * @see SinkLogEventListener
 	 */
 	void addSinkLogEventListener(SinkLogEventListener listener);
-	
+
 	/**
-	 * Remove an event sink listener for notifications when logging events 
-	 * occur when writing to event sink. 
-	 * 
+	 * Remove an event sink listener for notifications when logging events
+	 * occur when writing to event sink.
+	 *
+	 * @param listener event sink listener to remove
 	 * @see SinkLogEventListener
 	 */
 	void removeSinkLogEventListener(SinkLogEventListener listener);
-	
+
 	/**
 	 * Register an event sink filter to selectively filter out certain events.
-	 * 
+	 *
+	 * @param listener event sink listener to register
 	 * @see SinkEventFilter
 	 */
 	void addSinkEventFilter(SinkEventFilter listener);
-	
+
 	/**
 	 * Remove an event sink filter.
-	 * 
+	 *
+	 * @param listener event sink listener to remove
 	 * @see SinkEventFilter
 	 */
 	void removeSinkEventFilter(SinkEventFilter listener);

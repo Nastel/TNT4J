@@ -20,10 +20,10 @@ package com.nastel.jkool.tnt4j.format;
  * Classes that implement this interface provide implementation for the <code>Formatter</code> interface.
  * This interface allows formatting of any object to a string.
  * </p>
- * 
- * 
+ *
+ *
  * @version $Revision: 1 $
- * 
+ *
  * @see DefaultFormatter
  */
 
@@ -33,6 +33,7 @@ public interface Formatter {
 	 *
 	 * @param obj object to be formatted as string
 	 * @param args arguments associated with the object
+	 * @return formatted object
 	 */
 	String format(Object obj, Object...args);
 }

@@ -17,7 +17,7 @@ package com.nastel.jkool.tnt4j.dump;
 
 /**
  * <p>
- * This class implements a default dump provider. This is an abstract class and 
+ * This class implements a default dump provider. This is an abstract class and
  * designed to be used for creating extension sub classes.
  * </p>
  *
@@ -29,11 +29,12 @@ package com.nastel.jkool.tnt4j.dump;
 
 abstract public class DefaultDumpProvider implements DumpProvider {
 	String pname, category;
-	
+
 	/**
 	 * Create a new default dump provider with given name and category
 	 *
 	 *@param name provider name
+	 *@param cat provider category
 	 */
 	public DefaultDumpProvider(String name, String cat) {
 		pname = name;

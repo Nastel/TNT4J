@@ -47,19 +47,21 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	private long usecs;
 	private long currentLamportClock = LamportCounter.incrementAndGet();
 
-	
+
 	/**
-	 * Returns Lamport clock value of this time stamp 
+	 * Returns Lamport clock value of this time stamp
 	 * (based on Lamport Clock algorithm)
 	 *
+	 * @return Lamport clock value
 	 */
 	public long getLamportClock() {
 		return currentLamportClock;
 	}
-	
+
 	/**
 	 * Returns UsecTimestamp based on current time with microsecond precision/accuracy
 	 *
+	 * @return UsecTimestamp for current time
 	 * @see com.nastel.jkool.tnt4j.utils.Utils#currentTimeUsec
 	 */
 	public static UsecTimestamp now() {
@@ -246,6 +248,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 * Sets UsecTimestamp based on specified microsecond timestamp.
 	 *
 	 * @param usecTime timestamp, in microsecond
+	 * @return current UsecTimestamp instance
 	 * @throws IllegalArgumentException if usecTime is negative
 	 */
 	public UsecTimestamp setTimeUsec(long usecTime) {
@@ -256,7 +259,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 		this.usecs = (int)(usecTime - (this.msecs * 1000));
 		return this;
 	}
-	
+
 	/**
 	 * @see #UsecTimestamp(Timestamp, long)
 	 */
@@ -291,14 +294,14 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 			throw new IllegalArgumentException("msecs must be non-negative");
 		if (usecs < 0 || usecs > 999)
 			throw new IllegalArgumentException("usecs must be in the range [0,999], inclusive");
-		
+
 		this.msecs = msecs;
 		this.usecs = usecs;
 		assignLamportClock(recvdLamportClock);
 	}
 
 	/**
-	 * Assign local Lamport clock based on the value of the received 
+	 * Assign local Lamport clock based on the value of the received
 	 * Lamport clock.
 	 *
 	 * @param recvdLamportClock received Lamport clock
@@ -313,7 +316,7 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 			}
 		}
 	}
-	
+
 	/**
 	 * Creates UsecTimestamp based on specified UsecTimestamp.
 	 *

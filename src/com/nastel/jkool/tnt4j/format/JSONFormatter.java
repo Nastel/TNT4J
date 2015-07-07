@@ -454,8 +454,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	/**
 	 * Format a given <code>Property</code> into JSON format
 	 *
-	 * @param prop
-	 *            property object to be formatted into JSON
+	 * @param prop property object to be formatted into JSON
+	 * @return formatted property as a JSON string
 	 * @see Property
 	 */
 	public String format(Property prop) {

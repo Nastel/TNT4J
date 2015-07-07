@@ -54,9 +54,9 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * <p>
  * Below is a example of the sample configuration file (tnt4j.properties):
  * </p>
- * 
+ *
  * <pre>
- * {@code
+ * <code>
  * ; source: * designates all sources, which is used as default for non matching sources
  * {
  * source: *
@@ -93,11 +93,11 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * like: com.nastel
  * enabled: true
  * }
- * }
+ * </code>
  * </pre>
- * 
+ *
  * Below is an example of how to use <code>TrackerConfigStore</code> when registering with the framework.
- * 
+ *
  * <pre>
  * {@code
  * TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(source);
@@ -105,33 +105,33 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * ...
  * }
  * </pre>
- * 
+ *
  * @see TokenRepository
  * @see TrackingSelector
  * @see EventFormatter
  * @see EventSinkFactory
- * 
+ *
  * @version $Revision: 11 $
- * 
+ *
  */
 
 public class TrackerConfigStore extends TrackerConfig {
 	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerConfigStore.class);
-	
+
 	public static final String TNT4J_PROPERTIES_KEY = "tnt4j.config";
 	public static final String TNT4J_PROPERTIES = "tnt4j.properties";
-	
+
 	private static final String DEFAULT_SOURCE = "*";
 	private static final String SOURCE_KEY = "source";
 	private static final String ENABLED_KEY = "enabled";
 	private static final String LIKE_KEY = "like";
-	
+
 	private String configFile = null;
 
 	/**
 	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
 	 * <code>tnt4j.config</code> property.
-	 * 
+	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
 	 */
@@ -142,7 +142,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	/**
 	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
 	 * <code>tnt4j.config</code> property.
-	 * 
+	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
 	 * @param type
@@ -155,21 +155,23 @@ public class TrackerConfigStore extends TrackerConfig {
 	/**
 	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
 	 * <code>tnt4j.config</code> property if fileName is null.
-	 * 
+	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
+	 * @param type
+	 * 			  type of the source instance
 	 * @param fileName
 	 *            configuration file name
 	 */
 	protected TrackerConfigStore(String source, SourceType type, String fileName) {
 		super(source, type);
-		initConfig(fileName);		
+		initConfig(fileName);
 	}
 
 	/**
 	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
 	 * <code>tnt4j.config</code> property.
-	 * 
+	 *
 	 * @param source
 	 *            source instance associated with the configuration
 	 */
@@ -179,7 +181,7 @@ public class TrackerConfigStore extends TrackerConfig {
 
 	/**
 	 * Create an default configuration with a specific source name and a given file name;
-	 * 
+	 *
 	 * @param source
 	 *            source instance associated with the configuration
 	 * @param fileName
@@ -189,12 +191,12 @@ public class TrackerConfigStore extends TrackerConfig {
 		super(source);
 		initConfig(fileName);
 	}
-	
+
 	private void initConfig(String fileName) {
 		configFile = fileName == null ? System.getProperty(TNT4J_PROPERTIES_KEY, TNT4J_PROPERTIES) : fileName;
 		setProperty(TNT4J_PROPERTIES_KEY, configFile);
 		Map<String, Properties> configMap = loadConfiguration(configFile);
-		loadConfigProps(configMap);		
+		loadConfigProps(configMap);
 	}
 
 	private Object createConfigurableObject(String classProp, String prefix) {
@@ -250,7 +252,7 @@ public class TrackerConfigStore extends TrackerConfig {
 		Map<String, Properties> map = null;
 		try {
 			map = loadConfigResource(configFile);
-			logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, file={1}, config.size={2}, tid={3}", 
+			logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, file={1}, config.size={2}, tid={3}",
 						srcName, configFile, map.size(), Thread.currentThread().getId());
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, "Unable to load configuration: source={0}, file={1}", srcName, configFile, e);
@@ -270,7 +272,7 @@ public class TrackerConfigStore extends TrackerConfig {
 				String like = props.getProperty(LIKE_KEY);
 				String enabled = props.getProperty(ENABLED_KEY);
 				if (enabled != null && enabled.equalsIgnoreCase("true")) {
-					logger.log(OpLevel.WARNING, 
+					logger.log(OpLevel.WARNING,
 							"Disabling properties for source={0}, like={1}, enabled={2}", key, like, enabled);
 					continue;
 				}
@@ -278,7 +280,7 @@ public class TrackerConfigStore extends TrackerConfig {
 					props = map.get(like);
 					if (props == null) {
 						props = map.get(DEFAULT_SOURCE);
-						logger.log(OpLevel.WARNING, 
+						logger.log(OpLevel.WARNING,
 								"Properties for source={0}, like={1} not found, assigning default set={2}",
 								key, like, DEFAULT_SOURCE);
 					}
@@ -293,11 +295,11 @@ public class TrackerConfigStore extends TrackerConfig {
 		return map;
 	}
 
-	
+
 	private BufferedReader getConfigReader(String fileName) throws IOException {
 		BufferedReader reader = null;
 		IOException exc = null;
-		
+
 		try {
 			if (fileName != null) {
 				reader = new BufferedReader(new FileReader(fileName));
@@ -306,7 +308,7 @@ public class TrackerConfigStore extends TrackerConfig {
 		} catch (IOException err) {
 			exc = err;
 		}
-		
+
 		String tnt4JResource = "/" + TNT4J_PROPERTIES;
 		InputStream ins = getClass().getResourceAsStream(tnt4JResource);
 		if (ins == null) {
@@ -325,11 +327,11 @@ public class TrackerConfigStore extends TrackerConfig {
 			line = reader.readLine();
 			if (line != null) {
 				line = line.trim();
-				if ((line.length() == 0) 
-						|| line.startsWith("{") 
-						|| line.startsWith(";") 
-						|| line.startsWith("#") 
-						|| line.startsWith("//") 
+				if ((line.length() == 0)
+						|| line.startsWith("{")
+						|| line.startsWith(";")
+						|| line.startsWith("#")
+						|| line.startsWith("//")
 						|| line.endsWith("}")) {
 					continue;
 				}

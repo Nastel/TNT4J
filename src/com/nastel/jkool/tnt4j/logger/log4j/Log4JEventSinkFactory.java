@@ -35,7 +35,7 @@ import com.nastel.jkool.tnt4j.sink.EventSink;
  *
  */
 public class Log4JEventSinkFactory extends AbstractEventSinkFactory {
-	
+
 	@Override
 	public EventSink getEventSink(String name) {
 		return configureSink(new Log4JEventSink(name, System.getProperties(), new DefaultFormatter()));
@@ -50,12 +50,12 @@ public class Log4JEventSinkFactory extends AbstractEventSinkFactory {
     public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
 		return configureSink(new Log4JEventSink(name, props, frmt));
    }
-	
+
 	/**
 	 * Static method to obtain default event sink
-	 * 
-	 * @param name name of the application/event sink to get
 	 *
+	 * @param name name of the application/event sink to get
+	 * @return event sink
 	 */
 	public static EventSink defaultEventSink(String name) {
 		return new Log4JEventSink(name, System.getProperties(), new DefaultFormatter());
@@ -63,9 +63,9 @@ public class Log4JEventSinkFactory extends AbstractEventSinkFactory {
 
 	/**
 	 * Static method to obtain default event sink
-	 * 
-	 * @param clazz class for which to get the event sink
 	 *
+	 * @param clazz class for which to get the event sink
+	 * @return event sink
 	 */
 	public static EventSink defaultEventSink(Class<?> clazz) {
 	    return defaultEventSink(clazz.getName());

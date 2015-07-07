@@ -43,46 +43,46 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 /**
  * <p>
  * Concrete class that implements <code>Tracker</code> interface. This class implements integration with
- * <code>EventSink</code>. Do not use this class directly. This class is instantiated by the 
- * <code>DefaultTrackerFactory.getInstance(...)</code> or <code>TrackingLogger.getInstance(...)</code> calls. 
- * Access to this class is thread safe. <code>TrackingLogger.tnt(...)</code> method will trigger 
+ * <code>EventSink</code>. Do not use this class directly. This class is instantiated by the
+ * <code>DefaultTrackerFactory.getInstance(...)</code> or <code>TrackingLogger.getInstance(...)</code> calls.
+ * Access to this class is thread safe. <code>TrackingLogger.tnt(...)</code> method will trigger
  * logging to <code>EventSink</code> configured in <code>TrackingConfig</code>.
  * </p>
- * 
+ *
  * @see TrackerConfig
  * @see TrackingEvent
  * @see TrackingActivity
  * @see EventSink
  * @see OpLevel
  * @see Source
- * 
+ *
  * @version $Revision: 21 $
- * 
+ *
  */
-public class TrackerImpl implements Tracker, SinkErrorListener {	
+public class TrackerImpl implements Tracker, SinkErrorListener {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerImpl.class);
 	private static ThreadLocal<LightStack<TrackingActivity>> ACTIVITY_STACK = new ThreadLocal<LightStack<TrackingActivity>>();
-	
+
 	public static final String KEY_CONFIG_SOURCE = "config";
-	public static final NullActivity NULL_ACTIVITY = new NullActivity();	
-	public static final NullEvent NULL_EVENT = new NullEvent();	
-	
+	public static final NullActivity NULL_ACTIVITY = new NullActivity();
+	public static final NullEvent NULL_EVENT = new NullEvent();
+
 	private String id;
 	private EventSink eventSink;
 	private TrackerConfig tConfig;
 	private TrackingSelector selector;
 	private TrackingFilter filter;
 	private volatile boolean openFlag = false, keepContext = true;
-	private AtomicLong activityCount = new AtomicLong(0); 
-	private AtomicLong eventCount = new AtomicLong(0); 
-	private AtomicLong msgCount = new AtomicLong(0); 
-	private AtomicLong snapCount = new AtomicLong(0); 
-	private AtomicLong errorCount = new AtomicLong(0); 
-	private AtomicLong pushCount = new AtomicLong(0); 
-	private AtomicLong popCount = new AtomicLong(0); 
-	private AtomicLong noopCount = new AtomicLong(0); 
-	private AtomicLong overheadNanos = new AtomicLong(0); 
-	
+	private AtomicLong activityCount = new AtomicLong(0);
+	private AtomicLong eventCount = new AtomicLong(0);
+	private AtomicLong msgCount = new AtomicLong(0);
+	private AtomicLong snapCount = new AtomicLong(0);
+	private AtomicLong errorCount = new AtomicLong(0);
+	private AtomicLong pushCount = new AtomicLong(0);
+	private AtomicLong popCount = new AtomicLong(0);
+	private AtomicLong noopCount = new AtomicLong(0);
+	private AtomicLong overheadNanos = new AtomicLong(0);
+
 	protected TrackerImpl(TrackerConfig config) {
 		id = Utils.newUUID();
 		tConfig = config;
@@ -96,12 +96,12 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			handle.open();
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
-			logger.log(OpLevel.ERROR, 
+			logger.log(OpLevel.ERROR,
 					"Failed to open handle={4}, vm.name={0}, tid={1}, event.sink={2}, source={3}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), handle, e);
-		} 
+		}
 	}
-		
+
 	private synchronized void openEventSink() {
 		try {
 			if (tConfig.getSinkLogEventListener() != null) {
@@ -114,12 +114,12 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			eventSink.open();
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
-			logger.log(OpLevel.ERROR, 
+			logger.log(OpLevel.ERROR,
 					"Failed to open event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
-		} 
+		}
 	}
-	
+
 	private synchronized void closeEventSink() {
 		try {
 			if (eventSink != null) {
@@ -131,28 +131,28 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 				}
 				eventSink.removeSinkErrorListener(this);
 				eventSink.close();
-			}	
+			}
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
-			logger.log(OpLevel.ERROR, 
+			logger.log(OpLevel.ERROR,
 					"Failed to close event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
 		}
 	}
-	
+
 	private synchronized void resetEventSink() {
 		try {
 			if (eventSink != null) {
 				eventSink.close();
-			}	
+			}
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
-			logger.log(OpLevel.ERROR, 
+			logger.log(OpLevel.ERROR,
 					"Failed to reset event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
 		}
 	}
-	
+
 	private void reportActivity(TrackingActivity activity) throws IOException, URISyntaxException {
 		try {
 			if (!eventSink.isOpen()) {
@@ -162,7 +162,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (!activity.isStopped()) {
 				activity.stop();
 			}
-			eventSink.log(activity);	
+			eventSink.log(activity);
 			snapCount.addAndGet(activity.getSnapshotCount());
 			activityCount.incrementAndGet();
 		}
@@ -177,7 +177,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (!event.isStopped()) {
 				event.stop();
 			}
-			eventSink.log(event);						
+			eventSink.log(event);
 			eventCount.incrementAndGet();
 		}
 	}
@@ -191,7 +191,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	 * Push an instance of <code>TrackingActivity</code> on top of the stack.
 	 * Invoke this when activity starts. The stack is maintained per thread in
 	 * thread local.
-	 * 
+	 *
 	 * @param item activity to be pushed on the current stack
 	 * @return current tracker instance
 	 */
@@ -211,12 +211,12 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		pushCount.incrementAndGet();
 		return this;
 	}
-	
+
 	/**
 	 * Pop an instance of <code>TrackingActivity</code> from the top the stack.
 	 * Invoke this method when activity stops. The stack is maintained per thread in
 	 * thread local.
-	 * 
+	 *
 	 * @param item activity to be popped from the current stack
 	 * @return current tracker instance
 	 * @exception EmptyStackException
@@ -233,18 +233,19 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 		return this;
 	}
-	
+
 	/**
 	 * Add a given number of nanoseconds to overhead count.
 	 * Should be called by package members to account for tracking
 	 * overhead.
-	 * 
+	 *
+	 * @param delta amount to add to overhead count
 	 * @return current tracker instance
 	 */
 	protected long countOverheadNanos(long delta) {
 		return overheadNanos.addAndGet(delta);
 	}
-	
+
 	@Override
 	public String toString() {
 		return getClass().getSimpleName()
@@ -253,7 +254,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 				+ ", sink=" + eventSink
 				+ "}";
 	}
-	
+
 	@Override
 	public Map<String, Object> getStats() {
 		Map<String, Object> stats = new LinkedHashMap<String, Object>();
@@ -272,11 +273,11 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		stats.put(Utils.qualify(this, KEY_ACTIVITIES_STARTED), pushCount.get());
 		stats.put(Utils.qualify(this, KEY_ACTIVITIES_STOPPED), popCount.get());
 		stats.put(Utils.qualify(this, KEY_STACK_DEPTH), getStackSize());
-		stats.put(Utils.qualify(this, KEY_OVERHEAD_USEC), (long)(overheadNanos.get()/1000));
+		stats.put(Utils.qualify(this, KEY_OVERHEAD_USEC), overheadNanos.get()/1000);
 		if (eventSink != null) eventSink.getStats(stats);
 		return this;
 	}
-	
+
 	@Override
 	public void resetStats() {
 		activityCount.set(0);
@@ -302,7 +303,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			return NULL_ACTIVITY;
 		}
 	}
-	
+
 	@Override
 	public TrackingActivity getRootActivity() {
 		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
@@ -313,7 +314,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			return NULL_ACTIVITY;
 		}
 	}
-	
+
 	@Override
 	public StackTraceElement[] getStackTrace() {
 		StackTraceElement[] activityTrace = null;
@@ -323,15 +324,15 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			int index = 0;
 			for (int i = (stack.size()-1); i >=0; i--) {
 				TrackingActivity act = stack.get(i);
-				activityTrace[index++] = new StackTraceElement(act.getSource().getName(), 
-						act.getResolvedName(), 
+				activityTrace[index++] = new StackTraceElement(act.getSource().getName(),
+						act.getResolvedName(),
 						act.getTrackingId() + ":" + act.getParentId(),
 						act.getIdCount());
 			}
 		}
-		return activityTrace;		
+		return activityTrace;
 	}
-	
+
 	@Override
 	public TrackingActivity[] getActivityStack() {
 		TrackingActivity[] activityTrace = null;
@@ -344,20 +345,20 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 				activityTrace[index++] = act;
 			}
 		}
-		return activityTrace;		
+		return activityTrace;
 	}
-	
+
 	@Override
 	public int getStackSize() {
 		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
 		return stack != null? stack.size(): 0;
 	}
-	
+
 	@Override
 	public void setTrackingFilter(TrackingFilter tfilt) {
 		filter = tfilt;
 	}
-	
+
 	@Override
 	public Source getSource() {
 		return tConfig.getSource();
@@ -368,7 +369,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	    return eventSink;
     }
 
-	
+
 	@Override
 	public TrackingActivity newActivity() {
 		return newActivity(OpLevel.INFO, Operation.NOOP);
@@ -405,16 +406,16 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	@Override
     public void tnt(TrackingActivity activity) {
 		long start = System.nanoTime();
-		try  { 
+		try  {
 			if (!activity.isNoop()) {
-				reportActivity(activity); 
+				reportActivity(activity);
 			} else {
 				noopCount.incrementAndGet();
 			}
 		}
 		catch (Throwable ex) {
 			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.ERROR, 
+				logger.log(OpLevel.ERROR,
 					"Failed to track activity: signature={0}, tid={1}, event.sink={2}, source={3}",
 					activity.getTrackingId(), Thread.currentThread().getId(), eventSink, getSource(), ex);
 			}
@@ -426,7 +427,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	@Override
 	public void tnt(TrackingEvent event) {
 		long start = System.nanoTime();
-		try  { 
+		try  {
 			if (!event.isNoop()) {
 				reportEvent(event);
 			} else {
@@ -434,7 +435,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			}
 		} catch (Throwable ex) {
 			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.ERROR, 
+				logger.log(OpLevel.ERROR,
 						"Failed to track event: signature={0}, tid={1}, event.sink={2}, source={3}",
 						event.getTrackingId(), Thread.currentThread().getId(), eventSink, getSource(), ex);
 			}
@@ -452,7 +453,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			snapCount.incrementAndGet();
 		} catch (Throwable ex) {
 			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.ERROR, 
+				logger.log(OpLevel.ERROR,
 					"Failed to track snapshot: signature={0}, tid={1}, event.sink={2}, snapshot={3}",
 					snapshot.getTrackingId(), Thread.currentThread().getId(), eventSink, snapshot, ex);
 			}
@@ -465,11 +466,11 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
     public void log(OpLevel sev, String msg, Object... args) {
 		long start = System.nanoTime();
 		try {
-			eventSink.log(getSource(), sev, msg, args);				
+			eventSink.log(getSource(), sev, msg, args);
 			msgCount.incrementAndGet();
 		} catch (Throwable ex) {
 			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.ERROR, 
+				logger.log(OpLevel.ERROR,
 					"Failed to log message: severity={0}, msg={1}", sev, msg, ex);
 			}
 		} finally {
@@ -492,7 +493,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 	}
 
-	
+
 	@Override
 	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag,
 	        String msg, Object... args) {
@@ -508,7 +509,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			countOverheadNanos(System.nanoTime() - start);
 		}
 	}
-	
+
 	@Override
 	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, byte[] msg, Object... args) {
 		long start = System.nanoTime();
@@ -524,7 +525,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 	}
 
-	
+
 	@Override
 	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag,
 	        byte[] msg, Object... args) {
@@ -540,7 +541,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			countOverheadNanos(System.nanoTime() - start);
 		}
 	}
-	
+
 	@Override
 	protected void finalize() throws Throwable {
 		try {
@@ -549,7 +550,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			super.finalize();
 		}
 	}
-	
+
 	@Override
     public TrackingSelector getTrackingSelector() {
 	    return selector;
@@ -571,7 +572,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			openIOHandle(selector);
 			openEventSink();
 			openFlag = true;
-			logger.log(OpLevel.DEBUG, 
+			logger.log(OpLevel.DEBUG,
 				"Tracker opened vm.name={0}, tid={1}, event.sink={2}, source={3}",
 				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource());
 		}
@@ -583,12 +584,12 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		try {
 			closeEventSink();
 			Utils.close(selector);
-			logger.log(OpLevel.DEBUG, 
+			logger.log(OpLevel.DEBUG,
 				"Tracker closed vm.name={0}, tid={1}, event.sink={2}, source={3}",
 				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource());
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
-			logger.log(OpLevel.ERROR, 
+			logger.log(OpLevel.ERROR,
 				"Failed to close tracker vm.name={0}, tid={1}, event.sink={2}, source={3}",
 				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
 		} finally {
@@ -600,7 +601,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
     public void sinkError(SinkError ev) {
 		errorCount.incrementAndGet();
 		if (logger.isSet(OpLevel.DEBUG)) {
-			logger.log(OpLevel.ERROR, 
+			logger.log(OpLevel.ERROR,
 				"Sink write error: count={4}, vm.name={0}, tid={1}, event.sink={2}, source={3}",
 				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), errorCount.get(), ev.getCause());
 		}

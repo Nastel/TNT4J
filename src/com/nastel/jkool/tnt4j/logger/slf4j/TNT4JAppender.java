@@ -32,8 +32,8 @@ import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.ValueTypes;
-import com.nastel.jkool.tnt4j.logger.AppenderTools;
 import com.nastel.jkool.tnt4j.logger.AppenderConstants;
+import com.nastel.jkool.tnt4j.logger.AppenderTools;
 import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -47,7 +47,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  * <p>This appender has the following behavior:</p>
  * <ul>
- * 
+ *
  * <li>This appender does not require a layout.</li>
  * <li>TNT4J hash tags can be passed using logback messages (using <code>#tag=value</code> convention) as well as {@code MDC}.</li>
  * <li>All messages logged to this appender will be sent to all defined sinks as configured by tnt4j configuration.</li>
@@ -81,7 +81,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * <tr><td><b>end</b></td>				<td>End an activity (collection of related events/messages)</td></tr>
  * <tr><td><b>app</b></td>				<td>Application/source name</td></tr>
  * </table>
- * 
+ *
  * <p>The following '#' hash tag annotations are supported for reporting events:</p>
  * <table>
  * <tr><td><b>app</b></td>				<td>Application/source name</td></tr>
@@ -102,32 +102,32 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * <tr><td><b>ent</b></td>				<td>End time, as the number of microseconds since epoch</td></tr>
  * <tr><td><b>%[data-type][:value-type]/user-key</b></td><td>User defined key/value pair and data-type->[s|i|l|f|n|d|b] are type specifiers (i=Integer, l=Long, d=Double, f=Float, n=Number, s=String, b=Boolean) (e.g #%i/myfield=7634732)</td></tr>
  * </table>
- * 
+ *
  * Value types are optional and defined in {@link ValueTypes}. It is highly recommended to annotate user defined properties with data-type and value-type.
  *
  * <p>An example of annotating (TNT4J) a single log message using logback:</p>
  * <p><code>logger.error("Operation Failed #app=MyApp #opn=save #rsn=" + filename + "  #rcd="
  *  + errno + " #msg='My error message'");</code></p>
- *  
- *  
+ *
+ *
  * <p>An example of reporting a TNT4J activity using logback (activity is a related collection of events):</p>
  * <p><code>logger.info("Starting order processing #app=MyApp #beg=" + activityName);</code></p>
  * <p><code></code></p>
  * <p><code>logger.debug("Operation processing #app=MyApp #opn=save #rsn=" + filename);</code></p>
  * <p><code>logger.error("Operation Failed #app=MyApp #opn=save #rsn=" + filename + "  #rcd=" + errno);</code></p>
  * <p><code>logger.info("Finished order processing #app=MyApp #end=" + activityName + " #%l/order=" + orderNo + " #%d:currency/amount=" + amount);</code></p>
- *  
+ *
  * @version $Revision: 1 $
- * 
+ *
  */
 public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements AppenderConstants {
 	public static final String SNAPSHOT_CATEGORY = "LogBack";
 	private static final ThreadLocal<Long> EVENT_TIMER = new ThreadLocal<Long>();
-	
+
 	private TrackingLogger logger;
 	private String sourceName;
 	private SourceType sourceType = SourceType.APPL;
-	
+
 	private boolean metricsOnException = true;
 	private long metricsFrequency = 60, lastSnapshot = 0;
 
@@ -147,7 +147,7 @@ public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements Appen
             addStatus(new ErrorStatus("Unable to create tnt4j tracker instance=" + getName()
             		+ ", source=" + sourceName
             		+ ", type=" + sourceType, this, e));
-        }		
+        }
 	}
 
 	@Override
@@ -162,7 +162,7 @@ public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements Appen
 		if (!isStarted()) {
 			return;
 		}
-		
+
 		long lastReport = System.currentTimeMillis();
 		ThrowableProxy throwableProxy = (ThrowableProxy) event.getThrowableProxy();
 		Throwable ex = throwableProxy == null ? null : throwableProxy.getThrowable();
@@ -201,22 +201,22 @@ public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements Appen
 				activity.tnt(tev);
 			}
 		}
-	}	
+	}
 
 	/**
 	 * Process a given logback event into a TNT4J event object {@link TrackingEvent}.
-	 * 
+	 *
 	 * @param attrs a set of name/value pairs
 	 * @param activity tnt4j activity associated with current message
 	 * @param jev logging event object
 	 * @param eventMsg string message associated with this event
 	 * @param ex exception associated with this event
-	 * 
+	 *
 	 * @return tnt4j tracking event object
 	 */
-	private TrackingEvent processEventMessage(Map<String, String> attrs, 
-			TrackingActivity activity, 
-			ILoggingEvent jev, 
+	private TrackingEvent processEventMessage(Map<String, String> attrs,
+			TrackingActivity activity,
+			ILoggingEvent jev,
 			StackTraceElement frame,
 			String eventMsg,
 			Throwable ex) {
@@ -225,16 +225,16 @@ public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements Appen
 		long evTime = jev.getTimeStamp()*1000; // convert to usec
 		long startTime = 0, endTime = 0;
 		Snapshot snapshot = null;
-	
+
 		OpCompCode ccode = getOpCompCode(jev);
 		OpLevel level = getOpLevel(jev);
-		
+
 		TrackingEvent event = logger.newEvent(level, frame.getMethodName(), null, eventMsg);
 		event.setTag(jev.getThreadName());
 		event.getOperation().setResource(frame.getClassName());
 		event.setLocation(frame.getFileName() + ":" + frame.getLineNumber());
 		event.setSource(logger.getConfiguration().getSourceFactory().newSource(jev.getLoggerName()));
-		
+
 		for (Map.Entry<String, String> entry: attrs.entrySet()) {
 			String key = entry.getKey();
 			String value = entry.getValue();
@@ -278,10 +278,10 @@ public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements Appen
 				}
 				snapshot.add(AppenderTools.toProperty(key, value));
 			}
-		}		
+		}
 		startTime = startTime <= 0 ? (evTime - elapsedTimeUsec): evTime;
 		endTime = endTime <= 0 ? (startTime + elapsedTimeUsec): endTime;
-		
+
 		event.start(startTime);
 		event.stop(ccode, rcode, ex, endTime);
 		return event;
@@ -296,18 +296,19 @@ public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements Appen
 	public String getSourceName() {
 		return sourceName;
 	}
-	
+
 	/**
 	 * Set source name associated with this appender.
 	 * This name is used tnt4j source for loading tnt4j configuration.
 	 *
+	 * @param name source name
 	 */
 	public void setSourceName(String name) {
 		sourceName = name;
 	}
-	
+
 	/**
-	 * Obtain source type associated with this appender see {@code SourceType} 
+	 * Obtain source type associated with this appender see {@code SourceType}
 	 *
 	 * @return source type string representation
 	 * @see SourceType
@@ -315,9 +316,9 @@ public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements Appen
 	public String getSourceType() {
 		return sourceType.toString();
 	}
-	
+
 	/**
-	 * Assign default source type string see {@code SourceType} 
+	 * Assign default source type string see {@code SourceType}
 	 *
 	 * @param type source type string representation, see {@code SourceType}
 	 * @see SourceType
@@ -334,7 +335,7 @@ public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements Appen
 	public boolean getMetricsOnException() {
 		return metricsOnException;
 	}
-	
+
 	/**
 	 * Direct appender to generate metrics log entries with exception when
 	 * set to true, false otherwise.
@@ -344,18 +345,19 @@ public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements Appen
 	public void setMetricsOnException(boolean flag) {
 		metricsOnException = flag;
 	}
-	
+
 	/**
 	 * Appender generates metrics based on a given frequency in seconds.
 	 *
+	 * @return metrics frequency, in seconds
 	 */
 	public long getMetricsFrequency() {
 		return metricsFrequency;
 	}
-	
+
 	/**
 	 * Set metric collection frequency seconds.
-	 * 
+	 *
 	 * @param freq number of seconds
 	 */
 	public void setMetricsFrequency(long freq) {
@@ -370,17 +372,17 @@ public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements Appen
 	protected long getElapsedNanosSinceLastEvent() {
 		Long last = EVENT_TIMER.get();
 		long now = System.nanoTime(), elapsedNanos = 0;
-		
+
 		elapsedNanos = last != null? now - last.longValue(): elapsedNanos;
 		EVENT_TIMER.set(now);
 		return elapsedNanos;
 	}
-	
+
 	/**
-	 * Map <b>ILoggingEvent</b> logging event level to TNT4J {@link OpLevel}. 
+	 * Map <b>ILoggingEvent</b> logging event level to TNT4J {@link OpLevel}.
 	 *
 	 * @param event logback logging event object
-	 * @return TNT4J {@link OpLevel}. 
+	 * @return TNT4J {@link OpLevel}.
 	 */
 	protected OpLevel getOpLevel(ILoggingEvent event) {
 		Level lvl = event.getLevel();
@@ -404,14 +406,14 @@ public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements Appen
 		}
 		else {
 			return OpLevel.INFO;
-		}	
+		}
 	}
 
 	/**
-	 * Map <b>ILoggingEvent</b> logging event level to TNT4J {@link OpCompCode}. 
+	 * Map <b>ILoggingEvent</b> logging event level to TNT4J {@link OpCompCode}.
 	 *
 	 * @param event logback logging event object
-	 * @return TNT4J {@link OpCompCode}. 
+	 * @return TNT4J {@link OpCompCode}.
 	 */
 	protected OpCompCode getOpCompCode(ILoggingEvent event) {
 		Level lvl = event.getLevel();
@@ -435,6 +437,6 @@ public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements Appen
 		}
 		else {
 			return OpCompCode.SUCCESS;
-		}	
+		}
 	}
 }

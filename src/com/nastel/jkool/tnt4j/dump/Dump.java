@@ -21,10 +21,10 @@ import com.nastel.jkool.tnt4j.core.PropertySnapshot;
  * <p>
  * This class provides a concrete implementation of <code>DumpCollection</code> interface.
  * </p>
- * 
- * 
+ *
+ *
  * @version $Revision: 10 $
- * 
+ *
  * @see DumpProvider
  * @see DumpCollection
  */
@@ -36,12 +36,12 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	/**
 	 * Create a new instance of <code>Dump</code>
 	 * instance.
-	 * 
+	 *
 	 * @param name
 	 *            of the generated dump
 	 * @param prvd
 	 *            dump provider that generates the dump
-	 * 
+	 *
 	 * @see DumpProvider
 	 */
 	public Dump(String name, DumpProvider prvd) {
@@ -51,12 +51,14 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	/**
 	 * Create a new instance of <code>Dump</code>
 	 * instance.
-	 * 
+	 *
+	 * @param cat
+	 *            of the generated dump
 	 * @param name
 	 *            of the generated dump
 	 * @param prvd
 	 *            dump provider that generates the dump
-	 * 
+	 *
 	 * @see DumpProvider
 	 */
 	public Dump(String cat, String name, DumpProvider prvd) {
@@ -66,7 +68,7 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	/**
 	 * Create a new instance of <code>Dump</code>
 	 * instance.
-	 * 
+	 *
 	 * @param cat
 	 *            category of the dump
 	 * @param name
@@ -86,7 +88,7 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	/**
 	 * Create a new instance of <code>Dump</code>
 	 * instance.
-	 * 
+	 *
 	 * @param name
 	 *            of the generated dump
 	 * @param prvd

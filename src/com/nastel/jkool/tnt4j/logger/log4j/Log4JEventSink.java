@@ -38,14 +38,14 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * <code>EventSink</code> implementation that routes log messages to log4j. This implementation is designed to log
  * messages to log4j framework.
  * </p>
- * 
- * 
+ *
+ *
  * @see TrackingEvent
  * @see EventFormatter
  * @see OpLevel
- * 
+ *
  * @version $Revision: 11 $
- * 
+ *
  */
 public class Log4JEventSink extends AbstractEventSink {
 	private static final String[] log4JSevMap = { "INFO", "TRACE", "DEBUG", "INFO", "INFO", "WARN", "ERROR", "FATAL",
@@ -57,14 +57,14 @@ public class Log4JEventSink extends AbstractEventSink {
 
 	/**
 	 * Create a new log4j backed event sink
-	 * 
+	 *
 	 * @param name
 	 *            log4j event category/application name
 	 * @param props
 	 *            java properties used by the event sink
 	 * @param frmt
 	 *            event formatter used to format event entries
-	 * 
+	 *
 	 */
 	public Log4JEventSink(String name, Properties props, EventFormatter frmt) {
 		super(name, frmt);
@@ -85,9 +85,9 @@ public class Log4JEventSink extends AbstractEventSink {
 
 	@Override
     protected void _log(Snapshot snapshot) {
-		logger.log(getL4JLevel(snapshot.getSeverity()), getEventFormatter().format(snapshot));		
+		logger.log(getL4JLevel(snapshot.getSeverity()), getEventFormatter().format(snapshot));
 	}
-	
+
 	@Override
 	protected void _log(Source src, OpLevel sev, String msg, Object... args) {
 		logger.log(getL4JLevel(sev), getEventFormatter().format(src, sev, msg, args), Utils.getThrowable(args));
@@ -100,9 +100,9 @@ public class Log4JEventSink extends AbstractEventSink {
 
 	/**
 	 * Maps <code>TrackingEvent</code> severity to log4j Level.
-	 * 
-	 * @param ev
-	 *            application tracking event
+	 *
+	 * @param ev application tracking event
+	 * @return log4j level
 	 * @see OpType
 	 */
 	public Level getL4JLevel(TrackingEvent ev) {
@@ -111,9 +111,9 @@ public class Log4JEventSink extends AbstractEventSink {
 
 	/**
 	 * Maps <code>ActivityStatus</code> severity to log4j Level.
-	 * 
-	 * @param status
-	 *            application activity status
+	 *
+	 * @param status application activity status
+	 * @return log4j level
 	 * @see ActivityStatus
 	 */
 	public Level getL4JLevel(ActivityStatus status) {
@@ -122,9 +122,9 @@ public class Log4JEventSink extends AbstractEventSink {
 
 	/**
 	 * Maps <code>OpLevel</code> severity to log4j Level.
-	 * 
-	 * @param sev
-	 *            severity level
+	 *
+	 * @param sev severity level
+	 * @return log4j level
 	 * @see OpType
 	 */
 	public Level getL4JLevel(OpLevel sev) {

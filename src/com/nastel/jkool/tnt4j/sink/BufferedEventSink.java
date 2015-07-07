@@ -34,10 +34,10 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * flushes it to a specified out sink using a separate thread. <code>BufferedSink</code> decouples
  * writer from the actual sink write and can improve performance during bursts.
  * </p>
- * 
- * 
+ *
+ *
  * @version $Revision: 1 $
- * 
+ *
  * @see EventSink
  * @see SinkError
  * @see SinkErrorListener
@@ -50,13 +50,13 @@ public class BufferedEventSink implements EventSink {
 
 	private Source source;
 	private EventSink outSink = null;
-	private AtomicLong dropCount = new AtomicLong(0), skipCount = new AtomicLong(0);	
+	private AtomicLong dropCount = new AtomicLong(0), skipCount = new AtomicLong(0);
 
 	/**
-	 * Create a buffered sink instance with a specified out sink 
+	 * Create a buffered sink instance with a specified out sink
 	 * maximum capacity. Event will be dropped if capacity is exceeded.
 	 * Obtain drop counts and queue sizes using <code>getDropCount()</code> method.
-	 * 
+	 *
 	 * @param sink out sink where events/log message are written out
 	 */
 	public BufferedEventSink(EventSink sink) {
@@ -66,23 +66,23 @@ public class BufferedEventSink implements EventSink {
 
 	/**
 	 * Obtain total number of events/log messages dropped since last reset.
-	 * 
+	 *
 	 * @return total number of dropped messages since last reset
 	 */
 	public long getDropCount() {
 		return dropCount.get();
 	}
-			
+
 	/**
 	 * Obtain total number of events/log messages skipped since last reset.
 	 * Events are skipped when don't pass sink filters.
-	 * 
+	 *
 	 * @return total number of skipped messages since last reset
 	 */
 	public long getSkipCount() {
 		return skipCount.get();
 	}
-			
+
 	@Override
     public String getName() {
 	    return outSink.getName();
@@ -152,7 +152,7 @@ public class BufferedEventSink implements EventSink {
 			skipCount.incrementAndGet();
 		}
     }
-	
+
 	@Override
     public void log(OpLevel sev, String msg, Object... args) {
 		log(source, sev, msg, args);
@@ -243,10 +243,12 @@ public class BufferedEventSink implements EventSink {
     public Source getSource() {
 	    return source;
     }
-	
+
 	/**
 	 * Convert object array into an array of strings
 	 *
+	 * @param args array of objects
+	 * @return array of string objects
 	 */
 	protected Object [] resolveArguments(Object...args) {
 		if (args == null || args.length == 0) return null;
@@ -256,12 +258,11 @@ public class BufferedEventSink implements EventSink {
 		}
 		return strings;
 	}
- 
+
 	/**
-	 * Override this method to check state of the sink before logging occurs. Throws <code>IllegalStateException</code>
-	 * if sink is in wrong state.
+	 * Override this method to check state of the sink before logging occurs.
 	 *
-	 * @throws IllegalStateException
+	 * @throws IllegalStateException if sink is in wrong state
 	 */
     protected void _checkState() throws IllegalStateException {
     	AbstractEventSink.checkState(this);
@@ -275,7 +276,7 @@ public class BufferedEventSink implements EventSink {
 	@Override
     public boolean isLoggable(Source source, OpLevel level, String msg, Object... args) {
 	    return outSink.isLoggable(source, level, msg, args);
-    }	
+    }
 
 	@Override
     public boolean isLoggable(Snapshot snapshot) {
