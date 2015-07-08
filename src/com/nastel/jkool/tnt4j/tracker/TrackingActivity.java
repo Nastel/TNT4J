@@ -15,11 +15,9 @@
  */
 package com.nastel.jkool.tnt4j.tracker;
 
-import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
-import java.util.List;
 
 import com.nastel.jkool.tnt4j.TrackingLogger;
 import com.nastel.jkool.tnt4j.core.Activity;
@@ -31,9 +29,7 @@ import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Operation;
 import com.nastel.jkool.tnt4j.core.Property;
-import com.nastel.jkool.tnt4j.core.PropertySnapshot;
 import com.nastel.jkool.tnt4j.core.Snapshot;
-import com.nastel.jkool.tnt4j.core.ValueTypes;
 import com.nastel.jkool.tnt4j.utils.Useconds;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
@@ -64,48 +60,21 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 9 $
  */
 public class TrackingActivity extends Activity {
-	public static final String DEFAULT_SNAPSHOT_CATEGORY = "Java";
-	public static final String SNAPSHOT_CATEGORY_GC = "GarbageCollector";
-
-	public static final String SNAPSHOT_CPU = "CPU";
-	public static final String SNAPSHOT_ACTIVITY = "Activity";
-	public static final String SNAPSHOT_MEMORY = "Memory";
-	public static final String SNAPSHOT_THREAD = "Thread";
-
-	public static final String DEFAULT_PROPERTY_LOAD_AVG = "SystemLoadAvg";
-	public static final String DEFAULT_PROPERTY_CPU_TIME = "TotalCpuUsec";
-	public static final String DEFAULT_PROPERTY_TOTAL_USER_TIME = "TotalCpuUserUsec";
-	public static final String DEFAULT_PROPERTY_SLACK_TIME = "SlackUsec";
-	public static final String DEFAULT_PROPERTY_WALL_TIME = "WallUsec";
-	public static final String DEFAULT_PROPERTY_OVERHEAD_TIME = "OverheadUsec";
-
-	public static final String DEFAULT_PROPERTY_COUNT = "Count";
-	public static final String DEFAULT_PROPERTY_DAEMON_COUNT = "DaemonCount";
-	public static final String DEFAULT_PROPERTY_STARTED_COUNT = "StartedCount";
-	public static final String DEFAULT_PROPERTY_PEAK_COUNT = "PeakCount";
-
-	public static final String DEFAULT_PROPERTY_BLOCKED_COUNT = "BlockedCount";
-	public static final String DEFAULT_PROPERTY_WAITED_COUNT = "WaitedCount";
-	public static final String DEFAULT_PROPERTY_BLOCKED_TIME = "BlockedUsec";
-	public static final String DEFAULT_PROPERTY_WAITED_TIME = "WaitUsec";
-
-	public static final String DEFAULT_PROPERTY_MAX_BYTES = "MaxBytes";
-	public static final String DEFAULT_PROPERTY_TOTAL_BYTES = "TotalBytes";
-	public static final String DEFAULT_PROPERTY_FREE_BYTES = "FreeBytes";
-	public static final String DEFAULT_PROPERTY_USED_BYTES = "UsedBytes";
-	public static final String DEFAULT_PROPERTY_USAGE = "Usage";
-
-	public static final String DEFAULT_PROPERTY_TIME = "Time";
-	public static final String DEFAULT_PROPERTY_VALID = "isValid";
+	private static ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
 
 	private boolean reportStarts = false;
 	private int startStopCount = 0;
-	private long startCPUTime = 0, stopCPUTime = 0, startBlockTime = 0, stopBlockTime = 0, startWaitTime = 0,
-	        stopWaitTime = 0, startBlockCount = 0, stopBlockCount = 0, startWaitCount = 0, stopWaitCount = 0,
-	        overHeadTimeNano = 0, lastEventNanos = 0;
-	private ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
+	private long startCPUTime = 0;
+	private long stopCPUTime = 0;
+	private long startBlockTime = 0;
+	private long stopBlockTime = 0;
+	private long startWaitTime = 0;
+	private long stopWaitTime = 0;
+	private long lastEventNanos = 0;
+	private boolean cpuTimingSupported = false;
+	private boolean contTimingSupported = false;
+	private boolean enableTiming = false;
 	private ThreadInfo ownerThread = null;
-	private boolean appendProps = true, cpuTimingSupported = false, contTimingSupported = false, enableTiming = false;
 	private TrackerImpl tracker = null;
 
 	/**
@@ -410,8 +379,6 @@ public class TrackingActivity extends Activity {
 			tracker.push(this);
 			if (enableTiming) {
 				startCPUTime = cpuTimingSupported ? tmbean.getThreadCpuTime(ownerThread.getThreadId()) : 0;
-				startBlockCount = ownerThread.getBlockedCount();
-				startWaitCount = ownerThread.getWaitedCount();
 				if (contTimingSupported) {
 					startBlockTime = ownerThread.getBlockedTime();
 					startWaitTime = ownerThread.getWaitedTime();
@@ -421,7 +388,6 @@ public class TrackingActivity extends Activity {
 				tracker.tnt(this);
 			}
 			long delta = (System.nanoTime() - start);
-			overHeadTimeNano += delta;
 			tracker.countOverheadNanos(delta);
 		}
 	}
@@ -562,21 +528,6 @@ public class TrackingActivity extends Activity {
 	public void stop(long stopTimeUsec, long elapsedUsec) {
 		finishTiming();
 		super.stop(stopTimeUsec, elapsedUsec);
-		finishActivity();
-	}
-
-	/**
-	 * Enable/disable appending of default snapshot when activity stops. When set to true
-	 * <code>takePropertySnapshot()</code> is called when activity is stopped using <code>stop()</code> method. This can
-	 * be useful when you want to append a defined set of default properties every time an activity is stopped.
-	 * 
-	 * @param flag
-	 *            append default snapshot with name "SYSTEM"
-	 * @return current tracking activity instance
-	 */
-	public TrackingActivity appendDefaultSnapshot(boolean flag) {
-		appendProps = flag;
-		return this;
 	}
 
 	private void finishTiming() {
@@ -584,8 +535,6 @@ public class TrackingActivity extends Activity {
 			long start = System.nanoTime();
 			startStopCount++;
 			if (startCPUTime > 0) {
-				stopBlockCount = ownerThread.getBlockedCount();
-				stopWaitCount = ownerThread.getWaitedCount();
 				if (contTimingSupported) {
 					stopBlockTime = ownerThread.getBlockedTime();
 					stopWaitTime = ownerThread.getWaitedTime();
@@ -595,15 +544,7 @@ public class TrackingActivity extends Activity {
 			}
 			tracker.pop(this);
 			long delta = (System.nanoTime() - start);
-			overHeadTimeNano += delta;
 			tracker.countOverheadNanos(delta);
-		}
-	}
-
-	private void finishActivity() {
-		if (appendProps && (startStopCount == 2)) {
-			startStopCount++;
-			appendProperties();
 		}
 	}
 
@@ -664,80 +605,6 @@ public class TrackingActivity extends Activity {
 	 */
 	public long getWaitedTimeUsec() {
 		return stopWaitTime > 0? ((stopWaitTime - startWaitTime) * 1000): -1;
-	}
-
-	/**
-	 * This method appends a default set of properties when activity timing stops. Developers should override this
-	 * method to add user defined set of properties. By default this method appends default set of properties defined by
-	 * <code>DEFAULT_PROPERTY_XXX</code> property values. Example:
-	 * <code>TrackingActivity.DEFAULT_PROPERTY_CPU_TOTAL_TIME</code>.
-	 */
-	protected void appendProperties() {
-		long start = System.nanoTime();
-		PropertySnapshot cpu = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_CPU, getSeverity());
-		double load = ManagementFactory.getOperatingSystemMXBean().getSystemLoadAverage();
-		if (load >= 0) {
-			cpu.add(new Property(DEFAULT_PROPERTY_LOAD_AVG, load, ValueTypes.VALUE_TYPE_GAUGE));
-		}
-		if (cpuTimingSupported) {
-			cpu.add(DEFAULT_PROPERTY_COUNT, ManagementFactory.getOperatingSystemMXBean().getAvailableProcessors());
-			cpu.add(new Property(DEFAULT_PROPERTY_CPU_TIME, ((double) tmbean.getThreadCpuTime(ownerThread.getThreadId()) / 1000.0d), ValueTypes.VALUE_TYPE_AGE_USEC));
-			cpu.add(new Property(DEFAULT_PROPERTY_TOTAL_USER_TIME, ((double) tmbean.getThreadUserTime(ownerThread.getThreadId()) / 1000.0d), ValueTypes.VALUE_TYPE_AGE_USEC));
-		}
-		this.add(cpu);
-
-		PropertySnapshot thread = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_THREAD, getSeverity());
-		thread.add(new Property(DEFAULT_PROPERTY_COUNT, tmbean.getThreadCount(), ValueTypes.VALUE_TYPE_GAUGE));
-		thread.add(new Property(DEFAULT_PROPERTY_DAEMON_COUNT, tmbean.getDaemonThreadCount(), ValueTypes.VALUE_TYPE_GAUGE));
-		thread.add(new Property(DEFAULT_PROPERTY_STARTED_COUNT, tmbean.getTotalStartedThreadCount(), ValueTypes.VALUE_TYPE_COUNTER));
-		thread.add(new Property(DEFAULT_PROPERTY_PEAK_COUNT, tmbean.getPeakThreadCount(), ValueTypes.VALUE_TYPE_GAUGE));
-		thread.add(new Property(DEFAULT_PROPERTY_BLOCKED_COUNT, ownerThread.getBlockedCount(), ValueTypes.VALUE_TYPE_COUNTER));
-		thread.add(new Property(DEFAULT_PROPERTY_WAITED_COUNT, ownerThread.getWaitedCount(), ValueTypes.VALUE_TYPE_COUNTER));
-		if (contTimingSupported) {
-			thread.add(new Property(DEFAULT_PROPERTY_BLOCKED_TIME, ownerThread.getBlockedTime() * 1000, ValueTypes.VALUE_TYPE_AGE_USEC));
-			thread.add(new Property(DEFAULT_PROPERTY_WAITED_TIME, ownerThread.getWaitedTime() * 1000, ValueTypes.VALUE_TYPE_AGE_USEC));
-		}
-		this.add(thread);
-
-		PropertySnapshot mem = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_MEMORY, getSeverity());
-		long usedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-		double memPct = (double) ((double) usedMem / (double) Runtime.getRuntime().totalMemory());
-		mem.add(new Property(DEFAULT_PROPERTY_MAX_BYTES, Runtime.getRuntime().maxMemory(), ValueTypes.VALUE_TYPE_SIZE_BYTE));
-		mem.add(new Property(DEFAULT_PROPERTY_TOTAL_BYTES, Runtime.getRuntime().totalMemory(), ValueTypes.VALUE_TYPE_SIZE_BYTE));
-		mem.add(new Property(DEFAULT_PROPERTY_FREE_BYTES, Runtime.getRuntime().freeMemory(), ValueTypes.VALUE_TYPE_SIZE_BYTE));
-		mem.add(new Property(DEFAULT_PROPERTY_USED_BYTES, usedMem, ValueTypes.VALUE_TYPE_SIZE_BYTE));
-		mem.add(new Property(DEFAULT_PROPERTY_USAGE, memPct, ValueTypes.VALUE_TYPE_PERCENT));
-		this.add(mem);
-
-		List<GarbageCollectorMXBean> gcList = ManagementFactory.getGarbageCollectorMXBeans();
-		for (GarbageCollectorMXBean gc : gcList) {
-			PropertySnapshot gcSnap = new PropertySnapshot(SNAPSHOT_CATEGORY_GC, gc.getName(), getSeverity());
-			gcSnap.add(new Property(DEFAULT_PROPERTY_COUNT, gc.getCollectionCount(), ValueTypes.VALUE_TYPE_COUNTER));
-			gcSnap.add(new Property(DEFAULT_PROPERTY_TIME, gc.getCollectionTime(), ValueTypes.VALUE_TYPE_AGE_MSEC));
-			gcSnap.add(new Property(DEFAULT_PROPERTY_VALID, gc.isValid()));
-			this.add(gcSnap);
-		}
-
-		if (startCPUTime > 0) {
-			PropertySnapshot activity = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_ACTIVITY, getSeverity());
-			if (cpuTimingSupported) {
-				long cpuUsed = getUsedCpuTimeNanos();
-				double cpuUsec = ((double) cpuUsed / 1000.0d);
-				activity.add(new Property(DEFAULT_PROPERTY_CPU_TIME, cpuUsec));
-				long slackTime = (long) (getElapsedTime() - getWaitTime() - cpuUsec);
-				activity.add(new Property(DEFAULT_PROPERTY_SLACK_TIME, slackTime, ValueTypes.VALUE_TYPE_AGE_USEC));
-				activity.add(new Property(DEFAULT_PROPERTY_WALL_TIME, (cpuUsec + getWaitTime()), ValueTypes.VALUE_TYPE_AGE_USEC));
-			}
-			activity.add(new Property(DEFAULT_PROPERTY_BLOCKED_COUNT, (stopBlockCount - startBlockCount), ValueTypes.VALUE_TYPE_GAUGE));
-			activity.add(new Property(DEFAULT_PROPERTY_WAITED_COUNT, (stopWaitCount - startWaitCount), ValueTypes.VALUE_TYPE_GAUGE));
-			if (contTimingSupported) {
-				activity.add(new Property(DEFAULT_PROPERTY_BLOCKED_TIME, ((stopBlockTime - startBlockTime) * 1000), ValueTypes.VALUE_TYPE_AGE_USEC));
-				activity.add(new Property(DEFAULT_PROPERTY_WAITED_TIME, ((stopWaitTime - startWaitTime) * 1000), ValueTypes.VALUE_TYPE_AGE_USEC));
-			}
-			overHeadTimeNano += (System.nanoTime() - start);
-			activity.add(new Property(DEFAULT_PROPERTY_OVERHEAD_TIME, ((double) overHeadTimeNano / 1000.0d), ValueTypes.VALUE_TYPE_AGE_USEC));
-			this.add(activity);
-		}
 	}
 
 	@Override

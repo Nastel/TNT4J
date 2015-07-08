@@ -91,12 +91,6 @@ public class NullActivity extends TrackingActivity {
 	}
 
 	@Override
-	public TrackingActivity appendDefaultSnapshot(boolean flag) {
-		super.appendDefaultSnapshot(false);
-		return this;
-	}
-
-	@Override
 	public void tnt(TrackingEvent event) {
 	}
 	

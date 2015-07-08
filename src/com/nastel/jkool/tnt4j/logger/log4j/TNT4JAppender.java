@@ -215,13 +215,13 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 			if (reportMetrics) {
 				// report a single tracking event as part of an activity
 				activity = logger.newActivity(tev.getSeverity(), event.getThreadName());
-				activity.start(tev.getOperation().getStartTime().getTimeUsec());
+				activity.start();
 				activity.setResource(event.getLocationInformation().getClassName());
 				activity.setSource(tev.getSource()); // use event's source name for this activity
 				activity.setException(ex);
 				activity.setStatus(ex != null ? ActivityStatus.EXCEPTION : ActivityStatus.END);
 				activity.tnt(tev);
-				activity.stop(tev.getOperation().getEndTime().getTimeUsec(), 0);
+				activity.stop();
 				logger.tnt(activity);
 				lastSnapshot = lastReport;
 			} else if (activity.isNoop()) {
