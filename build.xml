@@ -89,7 +89,7 @@
              version="true"
              nodeprecatedlist="false"
              nodeprecated="false">
-      <arg value="-Xdoclint:none"/>		<!-- remove this if not using Java 8 -->
+      <!-- <arg value="-Xdoclint:none"/>		enable for Java 8 -->
       <classpath>
         <fileset dir="${lib}">
           <include name="**/*.jar"/>
