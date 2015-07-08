@@ -222,8 +222,7 @@ class ThreadContext {
 			startBlockTime = ownerThread.getBlockedTime();
 			startWaitTime = ownerThread.getWaitedTime();
 		}
-		long delta = (System.nanoTime() - start);
-		overHeadTimeNano += delta;	
+		overHeadTimeNano += (System.nanoTime() - start);	
 	}
 	
 	protected void end() {
@@ -239,8 +238,7 @@ class ThreadContext {
 			}
 			stopBlockCount = ownerThread.getBlockedCount();
 			stopWaitCount = ownerThread.getWaitedCount();
-			long delta = (System.nanoTime() - start);
-			overHeadTimeNano += delta;	
+			overHeadTimeNano += (System.nanoTime() - start);
 		}
 	}
 }
