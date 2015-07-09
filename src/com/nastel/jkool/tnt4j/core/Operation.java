@@ -15,6 +15,9 @@
  */
 package com.nastel.jkool.tnt4j.core;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadInfo;
+import java.lang.management.ThreadMXBean;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -57,26 +60,43 @@ public class Operation {
 	public static final String NOOP = "NOOP";
 
 
+	private long				elapsedTimeUsec;
+	private long				elapsedTimeNano, startTimeNano, stopTimeNano;
+	private long				waitTimeUsec;
+	private long          		pid;
+	private long          		tid;
+	private int					opRC = 0;
+
 	private String				opName;
+	private String			    resource;
+	private String				user;
+	private String				exceptionStr;
+	private String				location;
+
 	private OpType				opType;
 	private OpCompCode			opCC = OpCompCode.SUCCESS;
 	private OpLevel				opLevel = OpLevel.INFO;
 	private UsecTimestamp		startTime;
 	private UsecTimestamp		endTime;
-	private String			    resource;
-	private String				user;
-	private long				elapsedTime;
-	private long				elapsedTimeNano, startTimeNano, stopTimeNano;
-	private long				waitTime;
-	private int					opRC = 0;
-	private String				exceptionStr;
 	private Throwable			exHandle;
-	private String				location;
-	private long          		pid;
-	private long          		tid;
+	
 	private HashSet<String> 	correlators = new HashSet<String>(89);
 	private HashMap<String, Snapshot>	snapshots =  new HashMap<String, Snapshot>(32);
 
+	// timing attributes
+	private int startStopCount = 0;
+	private long startCPUTime = 0;
+	private long stopCPUTime = 0;
+	private long startBlockTime = 0;
+	private long stopBlockTime = 0;
+	private long startWaitTime = 0;
+	private long stopWaitTime = 0;
+	private boolean enableTiming = false;
+	private ThreadInfo ownerThread = null;
+	private boolean cpuTimingSupported = ManagementFactory.getThreadMXBean().isThreadCpuTimeEnabled();
+	private boolean contTimingSupported = ManagementFactory.getThreadMXBean().isThreadContentionMonitoringEnabled();
+
+	
 	/**
 	 * Creates a Operation with the specified properties.
 	 * Operation name can be any name or a relative name based
@@ -91,10 +111,29 @@ public class Operation {
 	 * @see #getResolvedName()
 	 */
 	public Operation(String opname, OpType opType) {
+		this(opname, opType, true);
+	}
+
+	/**
+	 * Creates a Operation with the specified properties.
+	 * Operation name can be any name or a relative name based
+	 * on the current thread stack trace. The relative operation name
+	 * must be specified as follows: <code>$class-marker:offset</code>.
+	 * Example: <code>$com.nastel.jkool.tnt4j.tracker:0</code>
+	 * This name results in the actual operation name computed at runtime based on
+	 * current thread stack at the time when <code>getResolvedName</code> is called.
+	 *
+	 * @param opname function name triggering operation
+	 * @param opType operation type
+	 * @param threadTiming enable/disable cpu, wait, block timing between start/stop
+	 * @see #getResolvedName()
+	 */
+	public Operation(String opname, OpType opType, boolean threadTiming) {
 		setName(opname);
 		setType(opType);
 		setTID(Thread.currentThread().getId());
 		setPID(Utils.getVMPID());
+		enableTiming = threadTiming;
 	}
 
 	/**
@@ -350,8 +389,8 @@ public class Operation {
 	 *
 	 * @return elapsed time for operation, in microseconds
 	 */
-	public long getElapsedTime() {
-		return elapsedTime;
+	public long getElapsedTimeUsec() {
+		return elapsedTimeUsec;
 	}
 
 	/**
@@ -366,12 +405,13 @@ public class Operation {
 
 	/**
 	 * Gets the wait time for the operation.
-	 * This value represents the time the operation spent waiting.
+	 * This value is only valid after stop and 
+	 * represents the time the operation spent waiting/blocked
 	 *
 	 * @return wait time for operation, in microseconds
 	 */
-	public long getWaitTime() {
-		return waitTime;
+	public long getWaitTimeUsec() {
+		return waitTimeUsec;
 	}
 
 	/**
@@ -381,10 +421,10 @@ public class Operation {
 	 * @param wTime idle time for operation, in microseconds
 	 * @throws IllegalArgumentException if waitTime is negative
 	 */
-	public void setWaitTime(long wTime) {
+	public void setWaitTimeUsec(long wTime) {
 		if (wTime < 0)
 			throw new IllegalArgumentException("waitTime must be non-negative");
-		this.waitTime = wTime;
+		this.waitTimeUsec = wTime;
 	}
 
 
@@ -418,7 +458,7 @@ public class Operation {
 	 */
 	public void setException(Throwable t) {
 		exHandle = t;
-		setException(t == null ? null : t.toString());
+		setException(Utils.printThrowable(exHandle));
 	}
 
 	/**
@@ -537,8 +577,10 @@ public class Operation {
 	 * @throws IllegalArgumentException if startTime or startTimeUsec is negative
 	 */
 	public void start(long startTimeUsec) {
+		long start = System.nanoTime();
 		this.startTimeNano = System.nanoTime();
 		this.startTime = new UsecTimestamp(startTimeUsec);
+		_start(start);
 	}
 
 
@@ -559,6 +601,7 @@ public class Operation {
 	 * Indicates that the operation has started immediately.
 	 */
 	public void start() {
+		enableTiming = true;
 		start(Useconds.CURRENT.get());
 	}
 
@@ -580,6 +623,7 @@ public class Operation {
 	 *  or if the stop time is less than the previously specified start time
 	 */
 	public void stop(long stopTimeUsec, long elaspedUsec) {
+		long start = System.nanoTime();
 		endTime = new UsecTimestamp(stopTimeUsec);
 
 		if (startTime == null) {
@@ -600,7 +644,8 @@ public class Operation {
 					+ ", delta.usec=" + (endTime.getTimeUsec() - startTime.getTimeUsec()));
 			}
 		}
-		elapsedTime = endTime.difference(startTime);
+		elapsedTimeUsec = endTime.difference(startTime);
+		_stop(start);
 	}
 
 	/**
@@ -633,6 +678,131 @@ public class Operation {
 	 */
 	public void stop() {
 		stop(Useconds.CURRENT.get(), 0);
+	}
+
+	/**
+	 * Return thread handle that owns this activity. Owner is the tread that
+	 * started this activity when <code>TrackingActivity.start()</code> is called.
+	 * There can only be one thread that owns an activity. All thread/activity metrics
+	 * are computed based on the owner thread.
+	 * It is possible, but not recommended to use the same <code>TrackingActivity</code>
+	 * instance across multiple threads, where start/stop are run across thread boundaries.
+	 * 
+	 * @return thread owner info
+	 */	
+	public ThreadInfo getThreadInfo() {
+		return ownerThread;
+	}
+	
+	private void _start(long start) {
+		if (startStopCount == 0) {
+			startStopCount++;
+			if (enableTiming) {
+				ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
+				ownerThread = tmbean.getThreadInfo(Thread.currentThread().getId());
+				startCPUTime = cpuTimingSupported ? tmbean.getThreadCpuTime(ownerThread.getThreadId()) : 0;
+				if (contTimingSupported) {
+					startBlockTime = ownerThread.getBlockedTime();
+					startWaitTime = ownerThread.getWaitedTime();
+				}
+			}
+			onStart(start);
+		}
+	}
+	
+	private void _stop(long start) {
+		if (startStopCount == 1) {
+			startStopCount++;
+			if (startCPUTime > 0) {
+				if (contTimingSupported) {
+					stopBlockTime = ownerThread.getBlockedTime();
+					stopWaitTime = ownerThread.getWaitedTime();
+					setWaitTimeUsec(((stopWaitTime - startWaitTime) + (stopBlockTime - startBlockTime)) * 1000);
+				}
+				stopCPUTime = getCurrentCpuTimeNano();
+			}
+			onStop(start);
+		}
+	}
+	
+	/**
+	 * Override this method to implement logic once operation started.
+	 * 
+	 */
+	protected void onStart(long timer) {		
+	}
+	
+	/**
+	 * Override this method to implement logic once operation stopped.
+	 * 
+	 */
+	protected void onStop(long timer) {		
+	}
+	
+	/**
+	 * This method returns total CPU time in nanoseconds currently used by the thread
+	 * that owns this operation. Owner thread is the one that started this operation.
+	 * Owner thread can be obtained by calling {@link #getThreadInfo()}
+	 * 
+	 * @return total currently used CPU time in nanoseconds
+	 */
+	public long getCurrentCpuTimeNano() {
+		return (cpuTimingSupported && (ownerThread != null)? ManagementFactory.getThreadMXBean().getThreadCpuTime(ownerThread.getThreadId()) : -1);
+	}
+
+	/**
+	 * This method returns total CPU time in nanoseconds used since the start. If the operation has
+	 * stopped the value returned is an elapsed CPU time since between start/stop calls. 
+	 * If the operation has not stopped yet, the value is the current used CPU time since the start until now.
+	 * 
+	 * @return total used CPU time in nanoseconds
+	 */
+	public long getUsedCpuTimeNano() {
+		if (stopCPUTime > 0)
+			return (stopCPUTime - startCPUTime);
+		else if (startCPUTime > 0) {
+			return (getCurrentCpuTimeNano() - startCPUTime);
+		} else {
+			return -1;
+		}
+	}
+
+	/**
+	 * This method returns total wall time computed between start/stop/current-time.
+	 * wall-time is computed as total used cpu + blocked time + wait time.
+	 * 
+	 * @return total wall time in microseconds
+	 */
+	public long getWallTimeUsec() {
+		long wallTime = -1;
+		if (stopCPUTime > 0) {
+			long cpuUsed = getUsedCpuTimeNano();
+			double cpuUsec = ((double) cpuUsed / 1000.0d);
+			wallTime = (long) (cpuUsec + getWaitTimeUsec());
+		} else {
+			long cpuUsed = getUsedCpuTimeNano();
+			double cpuUsec = ((double) cpuUsed / 1000.0d);			
+			long blockTime = ownerThread.getBlockedTime();
+			long waitTime = ownerThread.getWaitedTime();
+			wallTime = (long) (cpuUsec + ((waitTime - startWaitTime) * 1000) + ((blockTime - startBlockTime) * 1000));
+		}
+		return wallTime;
+	}
+
+	/**
+	 * This method returns total block time computed after activity has stopped.
+	 * @return total blocked time in microseconds, -1 if not stopped yet
+	 */
+	public long getOnlyBlockedTimeUsec() {
+		return stopBlockTime > 0? ((stopBlockTime - startBlockTime) * 1000): -1;
+	}
+
+	/**
+	 * This method returns total wait time computed after activity has stopped.
+	 * @return total waited time in microseconds, -1 if not stopped yet
+	 */
+	public long getOnlyWaitTimeUsec() {
+		return stopWaitTime > 0? ((stopWaitTime - startWaitTime) * 1000): -1;
 	}
 
 	/**
@@ -709,8 +879,9 @@ public class Operation {
 		   .append("ReasonCode:").append(getReasonCode()).append(",")
 		   .append("PID:").append(getPID()).append(",")
 		   .append("TID:").append(getTID()).append(",")
-		   .append("ElapsedUsec:").append(getElapsedTime()).append(",")
-		   .append("WaitUsec:").append(getWaitTime()).append(",")
+		   .append("ElapsedUsec:").append(getElapsedTimeUsec()).append(",")
+		   .append("WaitUsec:").append(getWaitTimeUsec()).append(",")
+		   .append("WallUsec:").append(getWallTimeUsec()).append(",")
 		   .append("StartTime:[").append(sTime == null ? "null" : sTime.toString()).append("],")
 		   .append("EndTime:[").append(eTime == null ? "null" : eTime.toString()).append("],")
 		   .append("Exception:").append(getExceptionString()).append("}");

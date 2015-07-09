@@ -151,9 +151,9 @@ public class DefaultActivityListener implements ActivityListener {
 				long cpuUsed = getUsedCpuTimeNanos(ctx);
 				double cpuUsec = ((double) cpuUsed / 1000.0d);
 				snapshot.add(new Property(DEFAULT_PROPERTY_CPU_TIME, cpuUsec));
-				long slackTime = (long) (activity.getElapsedTime() - activity.getWaitTime() - cpuUsec);
+				long slackTime = (long) (activity.getElapsedTimeUsec() - activity.getWaitTimeUsec() - cpuUsec);
 				snapshot.add(new Property(DEFAULT_PROPERTY_SLACK_TIME, slackTime, ValueTypes.VALUE_TYPE_AGE_USEC));
-				snapshot.add(new Property(DEFAULT_PROPERTY_WALL_TIME, (cpuUsec + activity.getWaitTime()), ValueTypes.VALUE_TYPE_AGE_USEC));
+				snapshot.add(new Property(DEFAULT_PROPERTY_WALL_TIME, (cpuUsec + activity.getWaitTimeUsec()), ValueTypes.VALUE_TYPE_AGE_USEC));
 			}
 			snapshot.add(new Property(DEFAULT_PROPERTY_BLOCKED_COUNT, (ctx.stopBlockCount - ctx.startBlockCount), ValueTypes.VALUE_TYPE_GAUGE));
 			snapshot.add(new Property(DEFAULT_PROPERTY_WAITED_COUNT, (ctx.stopWaitCount - ctx.startWaitCount), ValueTypes.VALUE_TYPE_GAUGE));

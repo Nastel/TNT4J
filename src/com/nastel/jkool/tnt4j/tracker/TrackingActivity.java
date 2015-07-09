@@ -15,10 +15,6 @@
  */
 package com.nastel.jkool.tnt4j.tracker;
 
-import java.lang.management.ManagementFactory;
-import java.lang.management.ThreadInfo;
-import java.lang.management.ThreadMXBean;
-
 import com.nastel.jkool.tnt4j.TrackingLogger;
 import com.nastel.jkool.tnt4j.core.Activity;
 import com.nastel.jkool.tnt4j.core.ActivityListener;
@@ -60,21 +56,8 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 9 $
  */
 public class TrackingActivity extends Activity {
-	private static ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
-
 	private boolean reportStarts = false;
-	private int startStopCount = 0;
-	private long startCPUTime = 0;
-	private long stopCPUTime = 0;
-	private long startBlockTime = 0;
-	private long stopBlockTime = 0;
-	private long startWaitTime = 0;
-	private long stopWaitTime = 0;
 	private long lastEventNanos = 0;
-	private boolean cpuTimingSupported = false;
-	private boolean contTimingSupported = false;
-	private boolean enableTiming = false;
-	private ThreadInfo ownerThread = null;
 	private TrackerImpl tracker = null;
 
 	/**
@@ -113,7 +96,6 @@ public class TrackingActivity extends Activity {
 		tracker = trk;
 		setSeverity(level);
 		setLocation(trk.getSource());
-		initJavaTiming();
 	}
 
 	/**
@@ -137,14 +119,17 @@ public class TrackingActivity extends Activity {
 		tracker = trk;
 		setSeverity(level);
 		setLocation(trk.getSource());
-		initJavaTiming();
 	}
 
-	private void initJavaTiming() {
-		cpuTimingSupported = tmbean.isThreadCpuTimeEnabled();
-		contTimingSupported = tmbean.isThreadContentionMonitoringEnabled();
+	/**
+	 * Obtain {@link Tracker} instance associated with this activity
+	 * 
+	 * @return {@link Tracker} instance associated with this activity
+	 */
+	public Tracker getTracker() {
+		return tracker;
 	}
-
+	
 	private long getLastElapsedUsec() {
 		long elapsedUsec = lastEventNanos > 0? (System.nanoTime() - lastEventNanos)/1000: 0;
 		return elapsedUsec;
@@ -358,41 +343,6 @@ public class TrackingActivity extends Activity {
 	}
 
 	/**
-	 * Return thread handle that owns this activity. Owner is the tread that
-	 * started this activity when <code>TrackingActivity.start()</code> is called.
-	 * There can only be one thread that owns an activity. All thread/activity metrics
-	 * are computed based on the owner thread.
-	 * It is possible, but not recommended to use the same <code>TrackingActivity</code>
-	 * instance across multiple threads, where start/stop are run across thread boundaries.
-	 * 
-	 * @return thread owner info
-	 */	
-	public ThreadInfo getThreadInfo() {
-		return ownerThread;
-	}
-	
-	private void initActivity() {
-		if (startStopCount == 0) {
-			long start = System.nanoTime();
-			ownerThread = tmbean.getThreadInfo(Thread.currentThread().getId());
-			startStopCount++;
-			tracker.push(this);
-			if (enableTiming) {
-				startCPUTime = cpuTimingSupported ? tmbean.getThreadCpuTime(ownerThread.getThreadId()) : 0;
-				if (contTimingSupported) {
-					startBlockTime = ownerThread.getBlockedTime();
-					startWaitTime = ownerThread.getWaitedTime();
-				}
-			}
-			if (reportStarts) {
-				tracker.tnt(this);
-			}
-			long delta = (System.nanoTime() - start);
-			tracker.countOverheadNanos(delta);
-		}
-	}
-
-	/**
 	 * Instruct activity to report start activity events into the underlying tracker associated with this activity. An
 	 * tracking event will be logged when <code>start(..)</code> method call is made.
 	 * 
@@ -401,19 +351,6 @@ public class TrackingActivity extends Activity {
 	 */
 	public void reportStart(boolean flag) {
 		reportStarts = flag;
-	}
-
-	@Override
-	public void start() {
-		enableTiming = true;
-		initActivity();
-		super.start();
-	}
-
-	@Override
-	public void start(long startTimeUsec) {
-		initActivity();
-		super.start(startTimeUsec);
 	}
 
 	/**
@@ -520,91 +457,22 @@ public class TrackingActivity extends Activity {
 		setException(ex);
 		setStatus(status);
 		setCompCode(ccode);
-		finishTiming();
-		stop(Useconds.CURRENT.get(), elapsedUsec);
+		super.stop(Useconds.CURRENT.get(), elapsedUsec);
 	}
 
-	@Override
-	public void stop(long stopTimeUsec, long elapsedUsec) {
-		finishTiming();
-		super.stop(stopTimeUsec, elapsedUsec);
-	}
-
-	private void finishTiming() {
-		if (startStopCount == 1) {
-			long start = System.nanoTime();
-			startStopCount++;
-			if (startCPUTime > 0) {
-				if (contTimingSupported) {
-					stopBlockTime = ownerThread.getBlockedTime();
-					stopWaitTime = ownerThread.getWaitedTime();
-					setWaitTime(((stopWaitTime - startWaitTime) + (stopBlockTime - startBlockTime)) * 1000);
-				}
-				stopCPUTime = getCurrentCpuTimeNanos();
-			}
-			tracker.pop(this);
-			long delta = (System.nanoTime() - start);
-			tracker.countOverheadNanos(delta);
+	protected void onStart(long start) {
+		tracker.push(this);
+		if (reportStarts) {
+			tracker.tnt(this);
 		}
+		long delta = (System.nanoTime() - start);
+		tracker.countOverheadNanos(delta);
 	}
 
-	/**
-	 * This method returns total CPU time in nanoseconds currently used by the current thread.
-	 * run this method only after activity is started.
-	 * 
-	 * @return total currently used CPU time in nanoseconds
-	 */
-	public long getCurrentCpuTimeNanos() {
-		return (cpuTimingSupported && (ownerThread != null)? tmbean.getThreadCpuTime(ownerThread.getThreadId()) : -1);
-	}
-
-	/**
-	 * This method returns total CPU time in nanoseconds used since the start of this activity. If the activity has
-	 * stopped the value returned is an elapsed CPU time since between activity start/stop calls. If the activity has
-	 * not stopped yet, the value is the current used CPU time since the start until now.
-	 * 
-	 * @return total used CPU time in nanoseconds
-	 */
-	public long getUsedCpuTimeNanos() {
-		if (stopCPUTime > 0)
-			return (stopCPUTime - startCPUTime);
-		else if (startCPUTime > 0) {
-			return (getCurrentCpuTimeNanos() - startCPUTime);
-		} else {
-			return -1;
-		}
-	}
-
-	/**
-	 * This method returns total wall time computed after activity has stopped.
-	 * wall-time is computed as total used cpu + blocked time + wait time.
-	 * 
-	 * @return total wall time of this activity
-	 */
-	public long getWallTimeUsec() {
-		long wallTime = -1;
-		if (stopCPUTime > 0) {
-			long cpuUsed = getUsedCpuTimeNanos();
-			double cpuUsec = ((double) cpuUsed / 1000.0d);
-			wallTime = (long) (cpuUsec + getWaitTime());
-		}
-		return wallTime;
-	}
-
-	/**
-	 * This method returns total block time computed after activity has stopped.
-	 * @return total blocked time in microseconds, -1 if not stopped yet
-	 */
-	public long getBlockedTimeUsec() {
-		return stopBlockTime > 0? ((stopBlockTime - startBlockTime) * 1000): -1;
-	}
-
-	/**
-	 * This method returns total wait time computed after activity has stopped.
-	 * @return total waited time in microseconds, -1 if not stopped yet
-	 */
-	public long getWaitedTimeUsec() {
-		return stopWaitTime > 0? ((stopWaitTime - startWaitTime) * 1000): -1;
+	protected void onStop(long start) {
+		tracker.pop(this);
+		long delta = (System.nanoTime() - start);
+		tracker.countOverheadNanos(delta);
 	}
 
 	@Override

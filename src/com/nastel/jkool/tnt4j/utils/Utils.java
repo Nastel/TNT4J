@@ -15,6 +15,7 @@
  */
 package com.nastel.jkool.tnt4j.utils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -141,7 +142,26 @@ public class Utils {
     	return CLIENT_CODE_STACK_INDEX;
     }
 
+
 	/**
+	 * Obtain string representation of a throwable object
+	 *
+	 * @param ex exception
+	 * @return string representation including stack trace
+	 */
+	public static String printThrowable(Throwable ex) {
+		try {
+			if (ex == null) return null;
+			ByteArrayOutputStream os = new ByteArrayOutputStream();
+			PrintStream ps = new PrintStream(os);
+			ex.printStackTrace(ps);
+			return os.toString("UTF8");
+		} catch (UnsupportedEncodingException e) {
+			return ex.toString();
+		}
+	}
+    
+    /**
 	 * Print given message, stack trace to the underlying print stream
 	 *
 	 * @param msg user defined message

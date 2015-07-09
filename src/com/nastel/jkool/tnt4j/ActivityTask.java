@@ -106,7 +106,7 @@ public class ActivityTask implements Runnable {
 		if (doSample()) {
 			logger.tnt(activity);
 		}
-		return activity.getElapsedTime();
+		return activity.getElapsedTimeUsec();
 	}
 	
 	/**

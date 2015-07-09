@@ -239,10 +239,10 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			jsonString.append(Utils.quote(JSON_END_TIME_USEC_LABEL)).append(ATTR_SEP).append(
 			        event.getOperation().getEndTime().getTimeUsec()).append(ATTR_JSON);
 			jsonString.append(Utils.quote(JSON_ELAPSED_TIME_USEC_LABEL)).append(ATTR_SEP).append(
-			        event.getOperation().getElapsedTime()).append(ATTR_JSON);
-			if (event.getOperation().getWaitTime() > 0) {
+			        event.getOperation().getElapsedTimeUsec()).append(ATTR_JSON);
+			if (event.getOperation().getWaitTimeUsec() > 0) {
 				jsonString.append(Utils.quote(JSON_WAIT_TIME_USEC_LABEL)).append(ATTR_SEP).append(
-				        event.getOperation().getWaitTime()).append(ATTR_JSON);
+				        event.getOperation().getWaitTimeUsec()).append(ATTR_JSON);
 			}
 			if (event.getMessageAge() > 0) {
 				jsonString.append(Utils.quote(JSON_MSG_AGE_USEC_LABEL)).append(ATTR_SEP).append(event.getMessageAge())
@@ -363,10 +363,10 @@ public class JSONFormatter implements EventFormatter, Configurable {
 			jsonString.append(Utils.quote(JSON_END_TIME_USEC_LABEL)).append(ATTR_SEP).append(
 			        activity.getEndTime().getTimeUsec()).append(ATTR_JSON);
 			jsonString.append(Utils.quote(JSON_ELAPSED_TIME_USEC_LABEL)).append(ATTR_SEP).append(
-			        activity.getElapsedTime()).append(ATTR_JSON);
-			if (activity.getWaitTime() > 0) {
+			        activity.getElapsedTimeUsec()).append(ATTR_JSON);
+			if (activity.getWaitTimeUsec() > 0) {
 				jsonString.append(Utils.quote(JSON_WAIT_TIME_USEC_LABEL)).append(ATTR_SEP).append(
-				        activity.getWaitTime()).append(ATTR_JSON);
+				        activity.getWaitTimeUsec()).append(ATTR_JSON);
 			}
 		}
 		jsonString.append(Utils.quote(JSON_ID_COUNT_LABEL)).append(ATTR_SEP).append(activity.getIdCount()).append(ATTR_JSON);

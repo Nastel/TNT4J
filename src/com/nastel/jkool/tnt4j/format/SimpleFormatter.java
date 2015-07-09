@@ -87,14 +87,14 @@ public class SimpleFormatter extends DefaultFormatter {
 		if (event.getOperation().getReasonCode() != 0) {
 			msg.append("rcode: '").append(event.getOperation().getReasonCode()).append("'").append(separator);
 		}
-		if (event.getOperation().getElapsedTime() != 0) {
-			msg.append("usec: '").append(event.getOperation().getElapsedTime()).append("'").append(separator);
+		if (event.getOperation().getElapsedTimeUsec() != 0) {
+			msg.append("usec: '").append(event.getOperation().getElapsedTimeUsec()).append("'").append(separator);
 		}
 		if (event.getMessageAge() != 0) {
 			msg.append("age.usec: '").append(event.getMessageAge()).append("'").append(separator);
 		}
-		if (event.getOperation().getWaitTime() != 0) {
-			msg.append("wait.usec: '").append(event.getOperation().getWaitTime()).append("'").append(separator);
+		if (event.getOperation().getWaitTimeUsec() != 0) {
+			msg.append("wait.usec: '").append(event.getOperation().getWaitTimeUsec()).append("'").append(separator);
 		}
 		if (event.getTag() != null) {
 			msg.append("tag: '").append(event.getTag()).append("'").append(separator);
@@ -143,11 +143,11 @@ public class SimpleFormatter extends DefaultFormatter {
 		if (activity.getResource() != null) {
 			msg.append("resource: '").append(activity.getResource()).append("'").append(separator);
 		}
-		if (activity.getElapsedTime() != 0) {
-			msg.append("usec: '").append(activity.getElapsedTime()).append("'").append(separator);
+		if (activity.getElapsedTimeUsec() != 0) {
+			msg.append("usec: '").append(activity.getElapsedTimeUsec()).append("'").append(separator);
 		}
-		if (activity.getWaitTime() != 0) {
-			msg.append("wait.usec: '").append(activity.getWaitTime()).append("'").append(separator);
+		if (activity.getWaitTimeUsec() != 0) {
+			msg.append("wait.usec: '").append(activity.getWaitTimeUsec()).append("'").append(separator);
 		}
 		if (activity.getStartTime() != null) {
 			msg.append("start.time: '").append(activity.getStartTime()).append("'").append(separator);

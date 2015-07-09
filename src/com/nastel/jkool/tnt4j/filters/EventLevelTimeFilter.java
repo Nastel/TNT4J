@@ -111,11 +111,11 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	@Override
 	public boolean filter(EventSink sink, TrackingEvent event) {
 		if (elapsedUsec >= 0) {
-			if (event.getOperation().getElapsedTime() < elapsedUsec)
+			if (event.getOperation().getElapsedTimeUsec() < elapsedUsec)
 				return false;
 		}
 		if (waitUsec >= 0) {
-			if (event.getOperation().getWaitTime() < waitUsec)
+			if (event.getOperation().getWaitTimeUsec() < waitUsec)
 				return false;
 		}
 		if (msgPattern != null) {
@@ -128,11 +128,11 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	@Override
 	public boolean filter(EventSink sink, TrackingActivity activity) {
 		if (elapsedUsec >= 0) {
-			if (activity.getElapsedTime() < elapsedUsec)
+			if (activity.getElapsedTimeUsec() < elapsedUsec)
 				return false;
 		}
 		if (waitUsec >= 0) {
-			if (activity.getWaitTime() < waitUsec)
+			if (activity.getWaitTimeUsec() < waitUsec)
 				return false;
 		}
 		if (wallUsec >= 0) {

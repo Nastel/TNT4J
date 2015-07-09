@@ -166,6 +166,12 @@ public class Activity extends Operation implements Trackable {
 	}
 
 	@Override
+	public void start() {
+		super.start();
+		notifyStarted();
+	}
+
+	@Override
 	public void start(long startTimeUsec) {
 		super.start(startTimeUsec);
 		notifyStarted();
@@ -180,12 +186,6 @@ public class Activity extends Operation implements Trackable {
 	@Override
 	public void stop(long stopTimeUsec, long elaspedUsec) {
 		super.stop(stopTimeUsec, elaspedUsec);
-		notifyStopped();
-	}
-
-	@Override
-	public void stop(UsecTimestamp stopTime, long elaspedUsec) {
-		super.stop(stopTime, elaspedUsec);
 		notifyStopped();
 	}
 
@@ -374,7 +374,7 @@ public class Activity extends Operation implements Trackable {
 			.append("Type:").append(sType == null ? "null" : sType.toString()).append(",")
 			.append("PID:").append(getPID()).append(",")
 			.append("TID:").append(getTID()).append(",")
-		    .append("ElapsedUsec:").append(getElapsedTime()).append(",")
+		    .append("ElapsedUsec:").append(getElapsedTimeUsec()).append(",")
 		    .append("FQName:").append(getSource().getFQName()).append(",")
 			.append("IdCount=").append(getIdCount()).append(",")
 			.append("SnapCount=").append(getSnapshotCount()).append(",")
