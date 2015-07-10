@@ -375,6 +375,7 @@ public class Activity extends Operation implements Trackable {
 			.append("PID:").append(getPID()).append(",")
 			.append("TID:").append(getTID()).append(",")
 		    .append("ElapsedUsec:").append(getElapsedTimeUsec()).append(",")
+		    .append("WallUsec:").append(getWallTimeUsec()).append(",")
 		    .append("FQName:").append(getSource().getFQName()).append(",")
 			.append("IdCount=").append(getIdCount()).append(",")
 			.append("SnapCount=").append(getSnapshotCount()).append(",")
