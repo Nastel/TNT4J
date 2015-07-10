@@ -120,7 +120,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  *
  */
 public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants {
-	public static final String SNAPSHOT_CATEGORY		= "Log4J";
+	public static final String SNAPSHOT_CATEGORY = "Log4J";
 
 	private static final ThreadLocal<Long> EVENT_TIMER = new ThreadLocal<Long>();
 
@@ -180,7 +180,7 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 			logger = TrackingLogger.getInstance(sourceName, sourceType);
 	        logger.open();
         } catch (IOException e) {
-	        LogLog.error("Unable to create tnt4j tracker instance=" + getName()
+	        LogLog.error("Unable to create tracker instance=" + getName()
 	        		+ ", source=" + sourceName
 	        		+ ", type=" + sourceType, e);
         }

@@ -144,7 +144,7 @@ public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements Appen
 	        logger.open();
 			super.start();
         } catch (IOException e) {
-            addStatus(new ErrorStatus("Unable to create tnt4j tracker instance=" + getName()
+            addStatus(new ErrorStatus("Unable to create tracker instance=" + getName()
             		+ ", source=" + sourceName
             		+ ", type=" + sourceType, this, e));
         }
