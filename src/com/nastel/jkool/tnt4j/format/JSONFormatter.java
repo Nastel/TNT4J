@@ -95,6 +95,7 @@ public class JSONFormatter implements EventFormatter, Configurable {
 	public static final String JSON_EXCEPTION_LABEL = "exception";
 	public static final String JSON_SNAPSHOTS_LABEL = "snapshots";
 	public static final String JSON_ID_SET_LABEL = "id-set";
+	public static final String JSON_TOKEN = "token";
 
 	protected static final String START = "{";
 	protected static final String START_LINE = "{\n";
