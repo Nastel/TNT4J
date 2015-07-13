@@ -460,6 +460,7 @@ public class TrackingActivity extends Activity {
 		super.stop(Useconds.CURRENT.get(), elapsedUsec);
 	}
 
+	@Override
 	protected void onStart(long start) {
 		tracker.push(this);
 		if (reportStarts) {
@@ -469,6 +470,7 @@ public class TrackingActivity extends Activity {
 		tracker.countOverheadNanos(delta);
 	}
 
+	@Override
 	protected void onStop(long start) {
 		tracker.pop(this);
 		long delta = (System.nanoTime() - start);
