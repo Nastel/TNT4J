@@ -90,7 +90,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * </p>
  *
  * <pre>
- * {@code
+ * <code>
  * TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(source);
  * TrackingLogger tracker = TrackingLogger.getInstance(config.build()); // register and obtain Tracker logger instance
  * TrackingActivity activity = tracker.newActivity(); // create a new activity instance
@@ -116,14 +116,14 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * 	activity.tnt(jms_event); // track and trace tracking event within given activity
  * 	tracker.tnt(activity); // report a tracking activity
  * }
- * }
+ * </code>
  * </pre>
  *
  * Source may take advantage of <code>TrackingLogger</code> conditional logging using <code>TrackingLogger.isSet()</code>
  * based on applications specific tokens. Below is an example of conditional logging:
  *
  * <pre>
- * {@code
+ * <code>
  * TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(source);
  * TrackingLogger tracker = TrackingLogger.getInstance(config.build()); // register and obtain Tracker logger instance
  * TrackingActivity activity = tracker.newActivity(); // create a new activity instance
@@ -152,7 +152,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *	}
  * 	tracker.tnt(activity); // report a tracking activity
  * }
- * }
+ * </code>
  * </pre>
  *
  * <code>TrackingLogger</code> provides a capability to simplify and automate application specific dump handling. An application
@@ -196,7 +196,7 @@ public class TrackingLogger implements Tracker {
 	private static final String TRACKER_CONFIG = System.getProperty("tnt4j.tracking.logger.config");
 
 	private static Map<TrackingLogger, StackTraceElement[]> TRACKERS = Collections.synchronizedMap(new WeakHashMap<TrackingLogger, StackTraceElement[]>(89));
-	
+
 	private static Vector<DumpProvider> DUMP_PROVIDERS = new Vector<DumpProvider>(10, 10);
 	private static Vector<DumpSink> DUMP_DESTINATIONS = new Vector<DumpSink>(10, 10);
 	private static Vector<DumpListener> DUMP_LISTENERS = new Vector<DumpListener>(10, 10);
@@ -209,7 +209,7 @@ public class TrackingLogger implements Tracker {
 
 	private Tracker logger;
 	private TrackingSelector selector;
-	
+
 	static {
 		// load configuration and initialize default factories
 		initJavaTiming();
@@ -263,9 +263,9 @@ public class TrackingLogger implements Tracker {
 	}
 
 	private static void registerTracker(TrackingLogger tracker) {
-		TRACKERS.put(tracker, Thread.currentThread().getStackTrace());		
+		TRACKERS.put(tracker, Thread.currentThread().getStackTrace());
 	}
-	
+
 	/** Cannot instantiate. */
     private TrackingLogger(Tracker trg) {
     	logger = trg;
@@ -276,13 +276,13 @@ public class TrackingLogger implements Tracker {
 	 * Obtain an allocation stack trace for the specified logger instance
 	 *
 	 * @param logger instance
-	 *  
+	 *
 	 * @return an allocation stack trace for the logger instance
 	 */
     public static StackTraceElement[] getTrackerStackTrace(TrackingLogger logger) {
     	return TRACKERS.get(logger);
     }
-    
+
 	/**
 	 * Obtain an a list of all registered/active logger instances.
 	 *
@@ -299,9 +299,9 @@ public class TrackingLogger implements Tracker {
     		return copy;
     	}
     }
-    
+
 	/**
-	 * Obtain a stack trace list for all tracker allocations to 
+	 * Obtain a stack trace list for all tracker allocations to
 	 * determine where the tracker instances have been instantiated
 	 *
 	 * @return a list of stack traces for each allocated tracker
@@ -317,7 +317,7 @@ public class TrackingLogger implements Tracker {
     		return copy;
     	}
     }
-    
+
 	/**
 	 * Obtain an instance of <code>TrackingLogger</code> logger.
 	 *
@@ -515,10 +515,10 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Get value associated with a give key from the tracking selector repository.
+	 * Get value associated with a given key from the tracking selector repository.
 	 *
 	 * @param key key associated with tracking activity
-	 *
+	 * @return value for specified key, or {@code null} if key not found
 	 */
 	public Object get(Object key) {
 		if (logger != null) {
@@ -545,6 +545,7 @@ public class TrackingLogger implements Tracker {
 	 *
 	 * @see TrackerConfig
 	 */
+	@Override
 	public void close() {
 		if (logger != null) {
 			factory.close(logger);
@@ -559,9 +560,9 @@ public class TrackingLogger implements Tracker {
 	 * by <code>MessageFormat</code>. This logging type is more efficient than
 	 * string concatenation.
 	 * <pre>
-	 * {@code
+	 * <code>
 	 * logger.log(OpLevel.DEBUG, "My message arg{0}, arg{1}", parm1, parm2);
-	 * }
+	 * </code>
 	 * </pre>
 	 * @param level
 	 *            severity level
@@ -573,6 +574,7 @@ public class TrackingLogger implements Tracker {
 	 * @see java.text.MessageFormat
 	 * @throws IllegalStateException when tracker is not initialized
 	 */
+	@Override
 	public void log(OpLevel level, String msg, Object...args) {
 		checkState();
 		logger.log(level, msg, args);
@@ -584,9 +586,9 @@ public class TrackingLogger implements Tracker {
 	 * by <code>MessageFormat</code>. This logging type is more efficient than
 	 * string concatenation.
 	 * <pre>
-	 * {@code
+	 * <code>
 	 * logger.debug("My message arg{0}, arg{1}", parm1, parm2);
-	 * }
+	 * </code>
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -605,9 +607,9 @@ public class TrackingLogger implements Tracker {
 	 * by <code>MessageFormat</code>. This logging type is more efficient than
 	 * string concatenation.
 	 * <pre>
-	 * {@code
+	 * <code>
 	 * logger.trace("My message arg{0}, arg{1}", parm1, parm2);
-	 * }
+	 * </code>
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -626,9 +628,9 @@ public class TrackingLogger implements Tracker {
 	 * by <code>MessageFormat</code>. This logging type is more efficient than
 	 * string concatenation.
 	 * <pre>
-	 * {@code
+	 * <code>
 	 * logger.error("My error message arg{0}, arg{1}", parm1, parm2);
-	 * }
+	 * </code>
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -647,9 +649,9 @@ public class TrackingLogger implements Tracker {
 	 * by <code>MessageFormat</code>. This logging type is more efficient than
 	 * string concatenation.
 	 * <pre>
-	 * {@code
+	 * <code>
 	 * logger.fatal("My error message arg{0}, arg{1}", parm1, parm2);
-	 * }
+	 * </code>
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -668,9 +670,9 @@ public class TrackingLogger implements Tracker {
 	 * by <code>MessageFormat</code>. This logging type is more efficient than
 	 * string concatenation.
 	 * <pre>
-	 * {@code
+	 * <code>
 	 * logger.halt("My error message arg{0}, arg{1}", parm1, parm2);
-	 * }
+	 * </code>
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -689,9 +691,9 @@ public class TrackingLogger implements Tracker {
 	 * by <code>MessageFormat</code>. This logging type is more efficient than
 	 * string concatenation.
 	 *  <pre>
-	 * {@code
+	 * <code>
 	 * logger.warn("My message arg{0}, arg{1}", parm1, parm2);
-	 * }
+	 * </code>
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -710,9 +712,9 @@ public class TrackingLogger implements Tracker {
 	 * by <code>MessageFormat</code>. This logging type is more efficient than
 	 * string concatenation.
 	 * <pre>
-	 * {@code
+	 * <code>
 	 * logger.info("My message arg{0}, arg{1}", parm1, parm2);
-	 * }
+	 * </code>
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -731,9 +733,9 @@ public class TrackingLogger implements Tracker {
 	 * by <code>MessageFormat</code>. This logging type is more efficient than
 	 * string concatenation.
 	 *  <pre>
-	 * {@code
+	 * <code>
 	 * logger.success("My message arg{0}, arg{1}", parm1, parm2);
-	 * }
+	 * </code>
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -756,6 +758,7 @@ public class TrackingLogger implements Tracker {
 	 * @throws IllegalStateException when tracker is not initialized
 	 * @see TrackingActivity
 	 */
+	@Override
 	public void tnt(TrackingActivity activity) {
 		if (activity == null) return;
 		checkState();
@@ -770,6 +773,7 @@ public class TrackingLogger implements Tracker {
 	 * @throws IllegalStateException when tracker is not initialized
 	 * @see TrackingEvent
 	 */
+	@Override
 	public void tnt(TrackingEvent event) {
 		if (event == null) return;
 		checkState();
@@ -779,13 +783,14 @@ public class TrackingLogger implements Tracker {
 
 	/**
 	 * Report a single snapshot.
-	 * 
+	 *
 	 * @param snapshot
 	 *            snapshot to be tracked and logged
 	 * @throws IllegalStateException when tracker is not initialized
 	 * @see Snapshot
 	 * @see Property
 	 */
+	@Override
 	public void tnt(Snapshot snapshot) {
 		if (snapshot == null) return;
 		checkState();
@@ -869,7 +874,7 @@ public class TrackingLogger implements Tracker {
 		checkState();
 		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 		Throwable ex = Utils.getThrowable(args);
-		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, 
+		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex,
 				Useconds.CURRENT.get(), elapsed);
 		logger.tnt(event);
 	}
@@ -950,7 +955,7 @@ public class TrackingLogger implements Tracker {
 		checkState();
 		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 		Throwable ex = Utils.getThrowable(args);
-		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, 
+		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex,
 				Useconds.CURRENT.get(), elapsed);
 		logger.tnt(event);
 	}
@@ -974,6 +979,7 @@ public class TrackingLogger implements Tracker {
 	 * @see TrackingActivity
 	 * @throws IllegalStateException when tracker is not initialized
 	 */
+	@Override
 	public TrackingActivity newActivity() {
 		checkState();
 		return logger.newActivity(OpLevel.INFO);
@@ -987,6 +993,7 @@ public class TrackingLogger implements Tracker {
 	 * @see TrackingActivity
 	 * @throws IllegalStateException when tracker is not initialized
 	 */
+	@Override
 	public TrackingActivity newActivity(OpLevel level) {
 		checkState();
 		return logger.newActivity(level);
@@ -1002,6 +1009,7 @@ public class TrackingLogger implements Tracker {
 	 * @see TrackingActivity
 	 * @throws IllegalStateException when tracker is not initialized
 	 */
+	@Override
 	public TrackingActivity newActivity(OpLevel level, String name) {
 		checkState();
 		return logger.newActivity(level, name);
@@ -1019,6 +1027,7 @@ public class TrackingLogger implements Tracker {
 	 * @see TrackingActivity
 	 * @throws IllegalStateException when tracker is not initialized
 	 */
+	@Override
 	public TrackingActivity newActivity(OpLevel level, String name, String signature) {
 		checkState();
 		return logger.newActivity(level, name, signature);
@@ -1041,6 +1050,7 @@ public class TrackingLogger implements Tracker {
 	 * @see OpLevel
 	 * @see TrackingEvent
 	 */
+	@Override
 	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object...args) {
 		checkState();
 		return logger.newEvent(severity, opName, correlator, msg, args);
@@ -1069,6 +1079,7 @@ public class TrackingLogger implements Tracker {
 	 * @see OpType
 	 * @see OpLevel
 	 */
+	@Override
 	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator,
 	        String tag, String msg, Object...args) {
 		checkState();
@@ -1092,6 +1103,7 @@ public class TrackingLogger implements Tracker {
 	 * @see OpLevel
 	 * @see TrackingEvent
 	 */
+	@Override
 	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, byte[] msg, Object...args) {
 		checkState();
 		return logger.newEvent(severity, opName, correlator, msg, args);
@@ -1120,6 +1132,7 @@ public class TrackingLogger implements Tracker {
 	 * @see OpLevel
 	 * @throws IllegalStateException when tracker is not initialized
 	 */
+	@Override
 	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator,
 	        String tag, byte[] msg, Object...args) {
 		checkState();
@@ -1146,6 +1159,7 @@ public class TrackingLogger implements Tracker {
 	 * @see TrackingFilter
 	 * @throws IllegalStateException when tracker is not initialized
 	 */
+	@Override
 	public void setTrackingFilter(TrackingFilter filter) {
 		checkState();
 		logger.setTrackingFilter(filter);
@@ -1277,7 +1291,7 @@ public class TrackingLogger implements Tracker {
 	 * By default <code>PropertiesDumpProvider</code>,
 	 * <code>MXBeanDumpProvider</code>, <code>ThreadDumpProvider</code>,
 	 * <code>ThreadDeadlockDumpProvider</code> are auto registered with
-	 * <code>FileDumpSink<code> during initialization of
+	 * <code>FileDumpSink</code> during initialization of
 	 * <code>TrackingLogger</code> class.
 	 *
 	 * @param df user supplied dump destination associated with dump provider
@@ -1386,7 +1400,7 @@ public class TrackingLogger implements Tracker {
 
 	/**
 	 * Enable or disable UncaughtExceptionHandler hook that will automatically trigger a dump
-	 * on uncaught thread exceptions for all threads. 
+	 * on uncaught thread exceptions for all threads.
 	 *
 	 */
 	public static void dumpOnUncaughtException() {

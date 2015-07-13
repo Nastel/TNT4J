@@ -52,7 +52,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  * <p>Below is example of how to set <code>TrackingEvent</code> correlator and operation type for a sender application:
  * <pre>
- * {@code
+ * <code>
  * TrackingLogger.register("com.nastel.appl.name", "myserver"); // register and obtain Tracker logger instance
  * TrackingActivity activity = TrackingLogger.newActivity(); // create a new application activity timing
  * TrackingEvent event = TrackingLogger.newEvent(OpLevel.INFO, OpType.SEND, "SendOrder", "Sending order"); // create a sender tracking event
@@ -73,11 +73,11 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *	activity.tnt(event); // report a tracking event
  *	TrackingLogger.tnt(activity); // end activity timing
  * }
- * }
+ * </code>
  * </pre>
  * <p>Below is example of corresponding receiver application:
  * <pre>
- * {@code
+ * <code>
  * TrackingLogger tracker = TrackingLogger.getInstance("com.nastel.appl.name"); // register and obtain Tracker logger instance
  * TrackingActivity activity = tracker.newActivity(); // create a new application activity timing
  * TrackingEvent event = tracker.newEvent(OpLevel.INFO, OpType.RECEIVE, "RecvOrder", "Received order"); // create a receiver tracking event
@@ -98,7 +98,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *	activity.tnt(event); // report a tracking event
  *	tracker.tnt(activity); // end activity timing
  * }
- * }
+ * </code>
  * </pre>
  * @see Message
  * @see OpLevel
@@ -287,6 +287,7 @@ public class TrackingEvent extends Message implements Trackable {
 	 *
 	 * @param cids user-defined list of correlators
 	 */
+	@Override
 	public void setCorrelator(String...cids) {
 		operation.setCorrelator(cids);
 	}
@@ -297,6 +298,7 @@ public class TrackingEvent extends Message implements Trackable {
 	 *
 	 * @return user-defined list of correlators
 	 */
+	@Override
 	public Set<String> getCorrelator() {
 		return operation.getCorrelator();
 	}

@@ -20,7 +20,7 @@ import java.util.Properties;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 
 /**
- * <p>Classes that implement this interface provide implementation for 
+ * <p>Classes that implement this interface provide implementation for
  * the <code>EventSinkFactory</code>, which provides an interface to
  * create instances of event sinks bound to specific logging frameworks.</p>
  *
@@ -36,27 +36,30 @@ public interface EventSinkFactory {
 	 * Obtain an instance of <code>EventSink</code> by name
 	 *
 	 * @param name name of the category associated with the event log
+	 * @return event sink instance
 	 * @see EventSink
 	 */
 	EventSink getEventSink(String name);
-	
+
 	/**
-	 * Obtain an instance of <code>EventSink</code> by name and 
+	 * Obtain an instance of <code>EventSink</code> by name and
 	 * custom properties
 	 *
 	 * @param name name of the category associated with the event log
 	 * @param props properties associated with the event logger (implementation specific).
+	 * @return event sink instance
 	 * @see EventSink
 	 */
 	EventSink getEventSink(String name, Properties props);
 
 	/**
-	 * Obtain an instance of <code>EventSink</code> by name and 
+	 * Obtain an instance of <code>EventSink</code> by name and
 	 * custom properties
 	 *
 	 * @param name name of the category associated with the event log
 	 * @param props properties associated with the event logger (implementation specific).
 	 * @param frmt event formatter object to format events before writing to log
+	 * @return event sink instance
 	 * @see EventSink
 	 * @see EventFormatter
 	 */

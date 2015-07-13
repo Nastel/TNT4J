@@ -21,24 +21,24 @@ import java.io.IOException;
  * <p>
  * This interface defines a handle interface, which can be opened, closed.
  * </p>
- * 
- * 
+ *
+ *
  * @version $Revision: 1 $
- * 
+ *
  */
 public interface Handle extends java.io.Closeable {
 	/**
 	 * This method opens and prepares message destination for writing.
-	 * 
-	 * @throws IOException
+	 *
+	 * @throws IOException if error opening handle
 	 */
-	void open() throws IOException;
+	public void open() throws IOException;
 
 	/**
-	 * This method determines of the message destination is in open state 
+	 * This method determines of the message destination is in open state
 	 * and ready for writing.
-	 * 
+	 *
 	 * @return true if open, false otherwise.
 	 */
-	boolean isOpen();
+	public boolean isOpen();
 }

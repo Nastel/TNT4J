@@ -27,10 +27,10 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * This interface allows formatting of any object, tracking objects as well as log messages
  * to a string format.
  * </p>
- * 
- * 
+ *
+ *
  * @version $Revision: 2 $
- * 
+ *
  * @see Formatter
  */
 public interface EventFormatter extends Formatter {
@@ -38,23 +38,25 @@ public interface EventFormatter extends Formatter {
 	 * Format a given <code>TrackingEvent</code> and return a string
 	 *
 	 * @param event tracking event instance to be formatted
+	 * @return formatted tracking event
 	 * @see TrackingEvent
 	 */
 	String format(TrackingEvent event);
-	
+
 	/**
 	 * Format a given <code>TrackingActivity</code> and return a string
 	 *
 	 * @param activity tracking activity instance to be formatted
+	 * @return formatted tracking event
 	 * @see TrackingActivity
 	 */
 	String format(TrackingActivity activity);
 
 	/**
 	 * Format a given <code>PropertySnapshot</code> and return a string
-	 * 
-	 * @param snapshot
-	 *            snapshot object to be formatted
+	 *
+	 * @param snapshot snapshot object to be formatted
+	 * @return formatted snapshot
 	 * @see Snapshot
 	 */
 	String format(Snapshot snapshot);
@@ -66,6 +68,7 @@ public interface EventFormatter extends Formatter {
 	 * @param level severity level
 	 * @param msg message to be formatted
 	 * @param args arguments associated with the object
+	 * @return formatted message and severity
 	 * @see OpLevel
 	 */
 	String format(Source src, OpLevel level, String msg, Object...args);

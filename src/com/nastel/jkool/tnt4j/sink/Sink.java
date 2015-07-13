@@ -22,27 +22,28 @@ import java.io.IOException;
  * This interface defines a message destination end point. Message destination is
  * an entity that can be opened/closed as well as written to.
  * </p>
- * 
- * 
+ *
+ *
  * @version $Revision: 3 $
- * 
+ *
  */
 public interface Sink extends Handle {
 	/**
 	 * This method returns a connection handle associated with
-	 * the message destination. 
-	 * 
+	 * the message destination.
+	 *
 	 * @return underlying sink handle.
 	 */
 	Object getSinkHandle();
-		
+
 
 	/**
 	 * This method allows writing to the underlying message destination
-	 * 
+	 *
 	 * @param msg message to be written to the sink
 	 * @param args arguments associated with the message
-	 * @throws IOException, InterruptedException
+	 * @throws IOException if error writing to sink
+	 * @throws InterruptedException if interrupted during write operation
 	 */
 	void write(Object msg, Object...args) throws IOException, InterruptedException;
 }

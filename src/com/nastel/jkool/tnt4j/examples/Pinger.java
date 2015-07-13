@@ -24,10 +24,11 @@ import com.nastel.jkool.tnt4j.core.PropertySnapshot;
 
 public class Pinger {
 	/**
-	 * @throws InterruptedException 
 	 * Run TNT4J Pinger application to generate scheduled activity ping
-	 * 
+
 	 * @param args Usage: pinger-name activity-name period-ms
+	 * @throws InterruptedException if interrupted delaying for next ping interval
+	 * @throws IOException if error opening pinger
 	 */
 	public static void main(String[] args) throws InterruptedException, IOException {
 		if (args.length < 3) {
@@ -50,8 +51,8 @@ class PingHandler implements ActivityListener {
 	long pingCount = 0;
 	@Override
     public void started(Activity activity) {
-		System.out.println("START: activity.id=" + activity.getTrackingId() 
-				+ ", activity.name=" + activity.getName() 
+		System.out.println("START: activity.id=" + activity.getTrackingId()
+				+ ", activity.name=" + activity.getName()
 				+ ", started=" + activity.getStartTime());
 	}
 
@@ -62,10 +63,10 @@ class PingHandler implements ActivityListener {
 		PropertySnapshot snapshot = new PropertySnapshot("Pinger", "Stats");
 		snapshot.add("ping.count", pingCount);
 		activity.add(snapshot); // add property snapshot to activity
-		System.out.println("END: activity.id=" + activity.getTrackingId() 
-				+ ", activity.name=" + activity.getName() 
-				+ ", elapsed.usec=" + activity.getElapsedTime() 
-				+ ", snap.count=" + activity.getSnapshotCount() 
+		System.out.println("END: activity.id=" + activity.getTrackingId()
+				+ ", activity.name=" + activity.getName()
+				+ ", elapsed.usec=" + activity.getElapsedTimeUsec()
+				+ ", snap.count=" + activity.getSnapshotCount()
 				+ ", id.count=" + activity.getIdCount()
 				);
     }

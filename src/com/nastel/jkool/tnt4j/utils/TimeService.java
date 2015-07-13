@@ -34,19 +34,19 @@ import com.nastel.jkool.tnt4j.sink.EventSink;
  * This class implements a time service that delivers synchronized time using NTP.
  * Developers should use <code>TimeService.currentTimeMillis()</code> instead of calling
  * <code>System.currentTimeMillis()</code> to obtain synchronized and adjusted current time.
- * To enable NTP time synchronization set the following property: 
+ * To enable NTP time synchronization set the following property:
  * <code>tnt4j.time.server=ntp-server:port</code>,
  * otherwise <code>System.currentTimeMillis()</code> is returned.
- * 
+ *
  * @version $Revision: 1 $
  */
 public class TimeService {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TimeService.class);
-	
+
 	protected static final int ONE_K = 1000;
 	protected static final int ONE_M = 1000000;
 	protected static final boolean TIME_SERVER_VERBOSE = Boolean.getBoolean("tnt4j.time.server.verbose");
-	
+
 	private static final String TIME_SERVER = System.getProperty("tnt4j.time.server");
 	private static final long TIME_SERVER_TIMEOUT = Long.getLong("tnt4j.time.server.timeout", 10000);
 
@@ -56,30 +56,30 @@ public class TimeService {
 	static long updatedTime = 0;
 	static ScheduledExecutorService scheduler;
 	static ClockDriftMonitorTask clockSyncTask = null;
-	
+
 	static NTPUDPClient timeServer = new NTPUDPClient();
 	static TimeInfo timeInfo;
-		
+
 	static {
 		try {
 			timeOverheadNanos = calculateOverhead(ONE_M);
 			timeOverheadMillis = (timeOverheadNanos/ONE_M);
 			updateTime();
 		} catch (Throwable e) {
-			logger.log(OpLevel.ERROR, 
+			logger.log(OpLevel.ERROR,
 					"Unable to obtain NTP time: time.server={0}, timeout={1}",
 					TIME_SERVER, TIME_SERVER_TIMEOUT, e);
         } finally {
         	scheduleUpdates();
         }
 	}
-	
+
 	private TimeService() {
 	}
-	
+
 	/**
 	 * Schedule automatic clock synchronization with NTP and internal clocks
-	 * 
+	 *
 	 */
 	private static void scheduleUpdates() {
 		if (scheduler == null) {
@@ -88,46 +88,46 @@ public class TimeService {
 			scheduler.submit(clockSyncTask);
 		}
 	}
-	
+
 	/**
 	 * Obtain NTP connection host:port of the time server.
-	 * 
+	 *
 	 * @return time server connection string
 	 */
 	public static String getTimeServer() {
 		return TIME_SERVER;
 	}
-	
+
 	/**
 	 * Obtain time stamp when the NTP time was synchronized
-	 * 
+	 *
 	 * @return time stamp when NTP was updated
 	 */
 	public static long getLastUpdatedMillis() {
 		return updatedTime;
 	}
-	
+
 	/**
 	 * Obtain configured NTP server timeout
-	 * 
+	 *
 	 * @return time server timeout in milliseconds
 	 */
 	public static long getTimeServerTimeout() {
 		return TIME_SERVER_TIMEOUT;
 	}
-	
+
 	/**
 	 * Obtain NTP time and synchronize with NTP server
-	 * 
-	 * @throws IOException
+	 *
+	 * @throws IOException if error accessing time server
 	 */
 	public static void updateTime() throws IOException {
 		if (TIME_SERVER != null) {
-			timeServer.setDefaultTimeout((int)TIME_SERVER_TIMEOUT);		
+			timeServer.setDefaultTimeout((int)TIME_SERVER_TIMEOUT);
 			String [] pair = TIME_SERVER.split(":");
 			InetAddress hostAddr = InetAddress.getByName(pair[0]);
 			timeInfo = pair.length < 2? timeServer.getTime(hostAddr): timeServer.getTime(hostAddr, Integer.parseInt(pair[1]));
-			timeInfo.computeDetails();     
+			timeInfo.computeDetails();
 			adjustment = timeInfo.getOffset() - timeOverheadMillis;
 			updatedTime = currentTimeMillis();
 			if (TIME_SERVER_VERBOSE) {
@@ -136,86 +136,86 @@ public class TimeService {
 			}
 		}
 	}
-	
+
 	/**
 	 * Obtain measured overhead of calling <code>TimeService.currentTimeMillis()</code> in nanoseconds.
-	 * 
+	 *
 	 * @return total measured overhead in nanoseconds
 	 */
 	public static long getOverheadNanos() {
 		return  timeOverheadNanos;
 	}
-	
-	
+
+
 	/**
 	 * Obtain number of milliseconds since NTP time was synchronized
-	 * 
+	 *
 	 * @return time (ms) since last NTP synchronization
 	 */
 	public static long getUpdateAgeMillis() {
 		return TimeService.getLastUpdatedMillis() > 0? TimeService.currentTimeMillis() - TimeService.getLastUpdatedMillis(): -1;
 	}
-	
+
 	/**
 	 * Obtain NTP synchronized current time in milliseconds
-	 * 
+	 *
 	 * @return current NTP synchronized time in milliseconds
 	 */
 	public static long currentTimeMillis() {
 		return System.currentTimeMillis() + adjustment;
 	}
-	
+
 	/**
-	 * Obtain NTP synchronized current time in microseconds precision 
+	 * Obtain NTP synchronized current time in microseconds precision
 	 * (but necessarily accuracy)
-	 * 
+	 *
 	 * @return current NTP synchronized time in microseconds
 	 */
 	public static long currentTimeUsecs() {
 		return (System.currentTimeMillis() + adjustment)*ONE_K;
 	}
-	
+
 	/**
 	 * Obtain currently measured clock drift in milliseconds
-	 * 
+	 *
 	 * @return clock drift in milliseconds
 	 */
 	public static long getDriftMillis() {
 		return clockSyncTask.getDriftMillis();
 	}
-	
+
 	/**
 	 * Obtain measured total clock drift in milliseconds since start up
-	 * 
+	 *
 	 * @return total clock drift since start up
 	 */
 	public static long getTotalDriftMillis() {
 		return clockSyncTask.getTotalDriftMillis();
 	}
-	
+
 	/**
 	 * Obtain total number of times clocks have been updated to adjust
 	 * for drift.
-	 * 
+	 *
 	 * @return number of times updated to adjust for cock drift
 	 */
 	public static long getDriftUpdateCount() {
 		return clockSyncTask.getDriftUpdateCount();
 	}
-	
+
 	/**
 	 * Obtain currently measured clock drift interval in milliseconds
-	 * 
+	 *
 	 * @return clock drift interval in milliseconds
 	 */
 	public static long getDriftIntervalMillis() {
 		return clockSyncTask.getIntervalMillis();
 	}
-	
+
 	/**
 	 * Calculate overhead of <code>TimeService.currentTimeMillis()</code> based on a given number of
 	 * iterations.
-	 * 
+	 *
 	 * @param runs number of iterations
 	 * @return calculated overhead of getting timestamp
 	 */
@@ -227,7 +227,7 @@ public class TimeService {
 		}
 		return ((System.nanoTime() - start)/runs);
 	}
-	
+
 	private static long _calculateOverheadCost(long runs) {
 		return runs;
 	}
@@ -236,34 +236,34 @@ public class TimeService {
 class TimeServiceThreadFactory implements ThreadFactory {
 	int count = 0;
 	String prefix;
-	
+
 	TimeServiceThreadFactory(String pfix) {
 		prefix = pfix;
 	}
-	
+
 	@Override
     public Thread newThread(Runnable r) {
 		Thread task = new Thread(r, prefix + "-" + count++);
 		task.setDaemon(true);
 		return task;
-    }	
+    }
 }
 
 class ClockDriftMonitorTask implements Runnable {
 	private static final long TIME_CLOCK_DRIFT_SAMPLE = Integer.getInteger("tnt4j.time.server.drift.sample.ms", 10000);
 	private static final long TIME_CLOCK_DRIFT_LIMIT = Integer.getInteger("tnt4j.time.server.drift.limit.ms", 1);
 
-	long interval, drift, updateCount = 0, totalDrift;	
+	long interval, drift, updateCount = 0, totalDrift;
 	EventSink logger;
-	
+
 	ClockDriftMonitorTask(EventSink lg) {
 		logger = lg;
 	}
-	
+
 	public long getIntervalMillis() {
 		return interval;
 	}
-	
+
 	public long getDriftMillis() {
 		return drift;
 	}
@@ -275,24 +275,24 @@ class ClockDriftMonitorTask implements Runnable {
 	public long getDriftUpdateCount() {
 		return updateCount;
 	}
-	
+
 	private void syncClocks() {
 		try {
 			TimeService.updateTime();
 			Useconds.CURRENT.sync();
 			updateCount++;
 			if (TimeService.TIME_SERVER_VERBOSE) {
-				logger.log(OpLevel.DEBUG, 
-					"Updated clocks: drift.ms={0}, interval.ms={1}, total.drift.ms={2}, updates={3}", 
+				logger.log(OpLevel.DEBUG,
+					"Updated clocks: drift.ms={0}, interval.ms={1}, total.drift.ms={2}, updates={3}",
 					drift, interval, totalDrift, updateCount);
 			}
 		} catch (Throwable ex) {
-			logger.log(OpLevel.ERROR, "Failed to update clocks: last.updated={0}, age.ms={1}", 
+			logger.log(OpLevel.ERROR, "Failed to update clocks: last.updated={0}, age.ms={1}",
 					new Date(TimeService.getLastUpdatedMillis()),
 					TimeService.getUpdateAgeMillis(), ex);
 		}
-	}	
-		
+	}
+
 	@Override
 	public void run() {
 		long start = System.nanoTime();

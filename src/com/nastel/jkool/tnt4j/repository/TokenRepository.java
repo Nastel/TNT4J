@@ -21,8 +21,8 @@ import com.nastel.jkool.tnt4j.sink.Handle;
 
 
 /**
- * <p>Classes that implement this interface provide implementation for 
- * the <code>TokenRepository</code> which provides 
+ * <p>Classes that implement this interface provide implementation for
+ * the <code>TokenRepository</code> which provides
  * interface to the underlying tokens(key/value pairs).</p>
  *
  *
@@ -31,10 +31,10 @@ import com.nastel.jkool.tnt4j.sink.Handle;
  */
 public interface TokenRepository extends Handle {
 	/**
-	 * EVENT_EXCEPTION indicates that an exception has occurred in the underlying repository 
+	 * EVENT_EXCEPTION indicates that an exception has occurred in the underlying repository
 	 */
 	public static final int EVENT_EXCEPTION = 0;
-	
+
 	/**
 	 * EVENT_ADD_KEY indicates that a new key/value pair has been added
 	 */
@@ -59,32 +59,32 @@ public interface TokenRepository extends Handle {
 	 * EVENT_CLEAR indicates that repository has been reloaded/refreshed
 	 */
 	public static final int EVENT_RELOAD = 5;
-	
+
 	/**
 	 * Determine of the token repository is defined.
 	 * Undefined <code>TokenRepository<code> will always fail to open.
-	 * 
+	 *
 	 * @return true if repository is defined, false otherwise
 	 */
 	boolean isDefined();
 
 	/**
 	 * Obtain a name associated with the repository.
-	 * 
+	 *
 	 * @return repository name
 	 */
 	String getName();
 
 	/**
 	 * Removes the mapping for the specified key from this repository if present.
-	 * 
+	 *
 	 * @param key key whose mapping is to be removed from the repository
 	 */
 	void remove(String key);
 
 	/**
 	 * Obtain the value associated with the given key
-	 * 
+	 *
 	 * @param key key whose mapping is to be obtained
 	 * @return get the value associated with the specified key
 	 */
@@ -92,7 +92,7 @@ public interface TokenRepository extends Handle {
 
 	/**
 	 * Set the key/value pair within the repository
-	 * 
+	 *
 	 * @param key key whose mapping is to be obtained
 	 * @param value value associated with the key
 	 */
@@ -100,7 +100,7 @@ public interface TokenRepository extends Handle {
 
 	/**
 	 * Obtain a list of keys available in the repository
-	 * 
+	 *
 	 * @return iterator containing all available keys
 	 */
 	Iterator<? extends Object> getKeys();
@@ -108,16 +108,18 @@ public interface TokenRepository extends Handle {
 	/**
 	 * Register a repository listener for notifications in change of state of
 	 * the underlying repository.
-	 * 
+	 *
+	 * @param listener token repository listener to register
 	 * @see TokenRepositoryListener
 	 */
-	void addRepositoryListener(TokenRepositoryListener listener);	
-	
+	void addRepositoryListener(TokenRepositoryListener listener);
+
 	/**
 	 * Remove a repository listener for notifications in change of state of
 	 * the underlying repository.
-	 * 
+	 *
+	 * @param listener token repository listener to remove
 	 * @see TokenRepositoryListener
 	 */
-	void removeRepositoryListener(TokenRepositoryListener listener);	
+	void removeRepositoryListener(TokenRepositoryListener listener);
 }

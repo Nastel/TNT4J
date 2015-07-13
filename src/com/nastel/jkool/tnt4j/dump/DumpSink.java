@@ -23,14 +23,13 @@ import com.nastel.jkool.tnt4j.sink.Sink;
  * <p>
  * This interface defines a dump destination end point. Dump destination
  * allows writing of <code>DumpCollection</code> instances. Classes that implement
- * this interface should handle formatting and forwarding to the actual destination that 
+ * this interface should handle formatting and forwarding to the actual destination that
  * can handle dump collections such as cloud services, analyzer service, central logging
  * services, files, etc.
  * </p>
- * 
- * 
+ *
  * @version $Revision: 1 $
- * 
+ *
  * @see DumpCollection
  */
 
@@ -38,9 +37,10 @@ public interface DumpSink extends Sink {
 	/**
 	 * This method allows writing of <code>DumpCollection</code> objects
 	 * to the underlying destination.
-	 * 
+	 *
+	 * @param dump dump collection
 	 * @see DumpCollection
-	 * @throws IOException
+	 * @throws IOException if error writing to sink
 	 */
-	void write(DumpCollection dump) throws IOException;
+	public void write(DumpCollection dump) throws IOException;
 }

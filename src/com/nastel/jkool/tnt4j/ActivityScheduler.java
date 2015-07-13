@@ -29,20 +29,20 @@ import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 
 /**
- * <p> 
+ * <p>
  * This class allows scheduled execution of tracking activities
  * based on user defined interval.
  * </p>
- * 
- * 
+ *
+ *
  * @version $Revision: 1 $
- * 
+ *
  * @see TrackingActivity
  * @see ActivityListener
  */
 public class ActivityScheduler {
 	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2, new TaskThreadFactory("ActivityScheduler/task"));
-	
+
 	private String name;
 	private TrackingLogger logger;
 	private ScheduledFuture<?> future;
@@ -50,7 +50,7 @@ public class ActivityScheduler {
 
 	/**
 	 * Creates a scheduler with specified name
-	 * 
+	 *
 	 * @param name scheduler name
 	 */
 	public ActivityScheduler(String name) {
@@ -59,10 +59,10 @@ public class ActivityScheduler {
 
 	/**
 	 * Creates a scheduler with specified name
-	 * 
+	 *
 	 * @param name scheduler name
 	 * @param listener activity listener invoked when scheduled activity starts and stops
-	 * 
+	 *
 	 * @see ActivityListener
 	 */
 	public ActivityScheduler(String name, ActivityListener listener) {
@@ -72,19 +72,19 @@ public class ActivityScheduler {
 		this.logger = TrackingLogger.getInstance(config.build());
 		this.logger.setKeepThreadContext(false);
 	}
-	
+
 	/**
 	 * Name associated with this object
-	 * 
+	 *
 	 * @return object name
 	 */
 	public String getName() {
 		return name;
 	}
-	
+
 	/**
 	 * Assign an activity listener to be used when scheduled activity starts/stops
-	 * 
+	 *
 	 * @param listener activity listener invoked when scheduled activity starts and stops
 	 * @return instance of the same scheduler
 	 * @see ActivityListener
@@ -93,39 +93,39 @@ public class ActivityScheduler {
 		logger.getConfiguration().setActivityListener(listener);
 		return this;
 	}
-	
+
 	/**
 	 * Get an activity listener used when scheduled activity starts/stops
-	 * 
+	 *
 	 * @return return currently associated activity listener
 	 * @see ActivityListener
 	 */
 	public ActivityListener getListener() {
 		return logger.getConfiguration().getActivityListener();
 	}
-	
+
 	/**
 	 * Schedule activity with a specified period in milliseconds
-	 * 
+	 *
 	 * @param period in milliseconds
 	 */
 	public void schedule(long period) {
 		schedule("ActivityTask", period, period, TimeUnit.MILLISECONDS);
 	}
-	
+
 	/**
 	 * Schedule activity with a specified period in milliseconds
-	 * 
+	 *
 	 * @param name activity name
 	 * @param period in milliseconds
 	 */
 	public void schedule(String name, long period) {
 		schedule(name, period, period, TimeUnit.MILLISECONDS);
 	}
-	
+
 	/**
 	 * Schedule activity with a given name and timing details
-	 * 
+	 *
 	 * @param name activity name
 	 * @param period in specified time units
 	 * @param tunit time unit for period
@@ -133,10 +133,10 @@ public class ActivityScheduler {
 	public void schedule(String name, long period, TimeUnit tunit) {
 		schedule(name, period, period, TimeUnit.MILLISECONDS);
 	}
-	
+
 	/**
 	 * Schedule activity with a given name and timing details
-	 * 
+	 *
 	 * @param name activity name
 	 * @param initialDelay in specified time units
 	 * @param period in specified time units
@@ -148,7 +148,7 @@ public class ActivityScheduler {
 
 	/**
 	 * Schedule activity with a given name and timing details
-	 * 
+	 *
 	 * @param name activity name
 	 * @param level severity level
 	 * @param initialDelay in specified time units
@@ -163,29 +163,29 @@ public class ActivityScheduler {
 			throw new IllegalStateException("Already scheduled");
 		}
 	}
-		
+
 	/**
 	 * Cancel currently scheduled activity
-	 * 
+	 *
 	 */
 	public void cancel() {
 		cancel(false);
 	}
-	
+
 	/**
 	 * Cancel currently scheduled activity
-	 * 
+	 *
 	 * @param interrupt may interrupt currently running activity
 	 */
 	public void cancel (boolean interrupt) {
 		future.cancel(interrupt);
 	}
-	
-	
+
+
 	/**
 	 * Open current scheduled activity instance.
-	 * @throws IOException 
-	 * 
+	 * @throws IOException if error opening instance
+	 *
 	 */
 	public void open() throws IOException {
 		logger.open();
@@ -193,13 +193,13 @@ public class ActivityScheduler {
 
 	/**
 	 * Close current scheduled activity instance.
-	 * 
+	 *
 	 */
 	public void close() {
-		try { 
+		try {
 			cancel(true);
 			if (future != null) {
-				future.get(); 
+				future.get();
 			}
 		}
 		catch (Throwable ex) {}
@@ -207,16 +207,16 @@ public class ActivityScheduler {
 			logger.close();
 		}
 	}
-	
+
 	/**
 	 * Obtain <code>TrackingLogger</code> instance for logging
-	 * 
+	 *
 	 * @return tracking logger instance
 	 */
 	public TrackingLogger getLogger() {
 		return this.logger;
 	}
-	
+
 	/**
 	 * Override this calls to return custom instances of
 	 * <code>Runnable</code> which will be invoked per specified
@@ -234,15 +234,15 @@ public class ActivityScheduler {
 class TaskThreadFactory implements ThreadFactory {
 	int count = 0;
 	String prefix;
-	
+
 	TaskThreadFactory(String pfix) {
 		prefix = pfix;
 	}
-	
+
 	@Override
     public Thread newThread(Runnable r) {
 		Thread task = new Thread(r, prefix + "-" + count++);
 		task.setDaemon(true);
 		return task;
-    }	
+    }
 }

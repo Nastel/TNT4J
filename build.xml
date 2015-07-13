@@ -73,6 +73,7 @@
     <javadoc destdir="${doc}"
              sourcepath="${src}"
              packagenames="${docpkg}"
+		     source="${source}"
              Doctitle="Track And Trace API (TNT4J) API Specification - Java"
              Windowtitle="Track And Trace API (TNT4J) - Java"
              Overview="${src}/overview.html"
@@ -88,6 +89,7 @@
              version="true"
              nodeprecatedlist="false"
              nodeprecated="false">
+      <!-- <arg value="-Xdoclint:none"/>		enable for Java 8 -->
       <classpath>
         <fileset dir="${lib}">
           <include name="**/*.jar"/>

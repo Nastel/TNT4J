@@ -24,9 +24,9 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 /**
  * <p>
  * This class implements a default dump formatter. Dumps are formatted as follows using JSON.
- * 
+ *
  * <pre>
- * {@code
+ * <code>
  * {
  * "dump.status": "START",
  * "server.name": "XOMEGA",
@@ -61,27 +61,27 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * "dump.time.string": "<time-stamp-string>"
  * "dump.elapsed.ms=": 1334
  * }
- * }
+ * </code>
  * </pre>
  * </p>
- * 
- * 
+ *
+ *
  * @version $Revision: 10 $
- * 
+ *
  * @see DumpSink
  * @see DumpFormatter
  * @see DumpCollection
  */
 public class DefaultDumpFormatter implements DumpFormatter {
 	private static ThreadLocal<Long> TIME_TABLE = new ThreadLocal<Long>();
-	
+
 	private static final String INDENT = "\t";
 	private static final String NEWLINE = "\n";
 	private static final String END_ATTR = ",\n";
-		
+
 	private String _format(DumpCollection dump, String padding) {
 		StringBuilder buffer = new StringBuilder(1024);
-		
+
 		buffer.append(padding).append(Utils.quote("dump.name")).append(": ").append(Utils.quote(dump.getName())).append(END_ATTR);
 		buffer.append(padding).append(Utils.quote("dump.category")).append(": ").append(Utils.quote(dump.getCategory())).append(END_ATTR);
 		buffer.append(padding).append(Utils.quote("dump.provider")).append(": ").append(Utils.quote(dump.getDumpProvider().getProviderName())).append(END_ATTR);
@@ -90,7 +90,7 @@ public class DefaultDumpFormatter implements DumpFormatter {
 		buffer.append(padding).append(Utils.quote("dump.time.stamp")).append(": ").append(dump.getTime()).append(END_ATTR);
 		buffer.append(padding).append(Utils.quote("dump.snapshot")).append(": {\n");
 		int startLen = buffer.length();
-		
+
 		String subPadding = padding + INDENT;
 		for (Property entry : dump.getSnapshot()) {
 			if (buffer.length() > startLen) {
@@ -104,13 +104,13 @@ public class DefaultDumpFormatter implements DumpFormatter {
 			} else if (value instanceof Number) {
 				buffer.append(subPadding).append(Utils.quote(entry.getKey())).append(": ").append(value);
 			} else {
-				buffer.append(subPadding).append(Utils.quote(entry.getKey())).append(": ").append(Utils.quote(value));				
+				buffer.append(subPadding).append(Utils.quote(entry.getKey())).append(": ").append(Utils.quote(value));
 			}
 		}
 		buffer.append(NEWLINE).append(padding).append("}");
-		return buffer.toString();		
+		return buffer.toString();
 	}
-	
+
 	@Override
 	public String format(DumpCollection dump) {
 		return _format(dump, "");
