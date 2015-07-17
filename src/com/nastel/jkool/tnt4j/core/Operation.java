@@ -131,8 +131,8 @@ public class Operation {
 	public Operation(String opname, OpType opType, boolean threadTiming) {
 		setName(opname);
 		setType(opType);
-		setTID(Thread.currentThread().getId());
 		setPID(Utils.getVMPID());
+		setTID(Thread.currentThread().getId());
 		enableTiming = threadTiming;
 	}
 

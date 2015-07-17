@@ -25,6 +25,7 @@ import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.source.DefaultSourceFactory;
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
@@ -489,8 +490,12 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		jsonString.append(Utils.quote(JSON_SEVERITY_NO_LABEL)).append(ATTR_SEP).append(level.ordinal()).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_TYPE_LABEL)).append(ATTR_SEP).append(Utils.quote(OpType.EVENT)).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_TYPE_NO_LABEL)).append(ATTR_SEP).append(OpType.EVENT.ordinal()).append(ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_PID_LABEL)).append(ATTR_SEP).append(Thread.currentThread().getId()).append(ATTR_JSON);
-		jsonString.append(Utils.quote(JSON_TID_LABEL)).append(ATTR_SEP).append(Utils.getVMPID()).append(ATTR_JSON);
+		
+		jsonString.append(Utils.quote(JSON_PID_LABEL)).append(ATTR_SEP).append(Utils.getVMPID()).append(ATTR_JSON);
+		jsonString.append(Utils.quote(JSON_TID_LABEL)).append(ATTR_SEP).append(Thread.currentThread().getId()).append(ATTR_JSON);
+		
+		String usrName = StringEscapeUtils.escapeJson(source == null? DefaultSourceFactory.getInstance().getRootSource().getUser(): source.getUser()); 
+		jsonString.append(Utils.quote(JSON_USER_LABEL)).append(ATTR_SEP).append(Utils.quote(usrName)).append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_TIME_USEC_LABEL)).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
 		if (source != null) {
 			jsonString.append(Utils.quote(JSON_SOURCE_LABEL)).append(ATTR_SEP).append(Utils.quote(source.getName()))
