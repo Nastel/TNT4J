@@ -92,8 +92,8 @@ public class Activity extends Operation implements Trackable {
 	public Activity(String id, Source appl) {
 		super(appl.getName(), OpType.ACTIVITY);
 		setTrackingId(id);
-		setTID(Thread.currentThread().getId());
 		setSource(appl);
+		setTID(Thread.currentThread().getId());
 	}
 
 	/**

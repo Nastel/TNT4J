@@ -32,7 +32,7 @@ import com.nastel.jkool.tnt4j.source.Source;
  * @see UsecTimestamp
  * @version $Revision: 8 $
  */
-public class PropertySnapshot  implements Snapshot {
+public class PropertySnapshot implements Snapshot {
 	public static final String CATEGORY_DEFAULT = "Default";
 	
 	private OpLevel level;

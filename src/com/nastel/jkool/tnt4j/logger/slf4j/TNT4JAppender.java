@@ -169,7 +169,7 @@ public class TNT4JAppender extends AppenderBase <ILoggingEvent> implements Appen
 		String eventMsg = event.getFormattedMessage();
 
 		HashMap<String, String> attrs = new HashMap<String, String>();
-		AppenderTools.parseEventMessage(attrs, eventMsg);
+		AppenderTools.parseEventMessage(attrs, eventMsg ,'#');
 
 		boolean activityMessage = AppenderTools.isActivityInstruction(attrs);
 		if (activityMessage) {

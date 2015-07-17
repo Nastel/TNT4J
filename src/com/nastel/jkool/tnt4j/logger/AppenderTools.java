@@ -178,19 +178,21 @@ public class AppenderTools implements AppenderConstants {
 	}
 
 	/**
-	 * Parse a a given message into a map of key/value pairs. Tags are identified by '#key=value .. #keyN=value'
+	 * Parse a given message into a map of key/value pairs. Tags are identified by '#key=value .. #keyN=value'
 	 * sequence. String values should be enclosed in single quotes.
 	 *
 	 * @param tags
 	 *            a set of name/value pairs
 	 * @param msg
 	 *            string message to be parsed
+	 * @param delm
+	 *            tag eye catcher
 	 * @return a map of parsed name/value pairs from a given string message.
 	 */
-	public static Map<String, String> parseEventMessage(Map<String, String> tags, String msg) {
+	public static Map<String, String> parseEventMessage(Map<String, String> tags, String msg, char delm) {
 		int curPos = 0;
 		while (curPos < msg.length()) {
-			if (msg.charAt(curPos) != '#') {
+			if (msg.charAt(curPos) != delm) {
 				curPos++;
 				continue;
 			}

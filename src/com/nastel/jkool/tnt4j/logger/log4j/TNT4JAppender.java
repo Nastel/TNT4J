@@ -199,7 +199,7 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 		Throwable ex = ti != null ? ti.getThrowable() : null;
 
 		HashMap<String, String> attrs = new HashMap<String, String>();
-		AppenderTools.parseEventMessage(attrs, eventMsg);
+		AppenderTools.parseEventMessage(attrs, eventMsg, '#');
 
 		boolean activityMessage = AppenderTools.isActivityInstruction(attrs);
 		if (activityMessage) {
@@ -237,7 +237,7 @@ public class TNT4JAppender extends AppenderSkeleton implements AppenderConstants
 	/**
 	 * Obtain elapsed nanoseconds since last log4j event
 	 *
-	 * @return elapsed nanoseconds since last log4j even
+	 * @return elapsed nanoseconds since last log4j event
 	 */
 	protected long getElapsedNanosSinceLastEvent() {
 		Long last = EVENT_TIMER.get();
