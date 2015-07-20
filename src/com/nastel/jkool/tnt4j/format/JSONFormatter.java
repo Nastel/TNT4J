@@ -25,6 +25,7 @@ import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.core.ValueTypes;
 import com.nastel.jkool.tnt4j.source.DefaultSourceFactory;
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.source.SourceType;
@@ -468,9 +469,8 @@ public class JSONFormatter implements EventFormatter, Configurable {
 		        .append(ATTR_JSON);
 		jsonString.append(Utils.quote(JSON_TYPE_LABEL)).append(ATTR_SEP).append(Utils.quote(prop.getDataType()))
 		        .append(ATTR_JSON);
-		if (prop.getValueType() != null) {
-			jsonString.append(Utils.quote(JSON_VALUE_TYPE_LABEL)).append(ATTR_SEP)
-			     .append(Utils.quote(prop.getValueType())).append(ATTR_JSON);
+		if (prop.getValueType() != null && !prop.getValueType().equalsIgnoreCase(ValueTypes.VALUE_TYPE_NONE)) {
+			jsonString.append(Utils.quote(JSON_VALUE_TYPE_LABEL)).append(ATTR_SEP).append(Utils.quote(prop.getValueType())).append(ATTR_JSON);
 		}
 		if (value instanceof Number) {
 			jsonString.append(Utils.quote(JSON_VALUE_LABEL)).append(ATTR_SEP).append(value);
