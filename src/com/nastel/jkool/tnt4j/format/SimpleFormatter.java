@@ -216,7 +216,7 @@ public class SimpleFormatter extends DefaultFormatter {
 		}
 		msg.append(") {");
 		for (Property prop : snap.getSnapshot()) {
-			msg.append("\n\t\t").append(prop.getKey()).append(": '").append(prop.getValue()).append(":").append(prop.getValueType()).append("'");
+			msg.append("\n\t\t").append(prop.getKey()).append(": '").append(prop.getValue()).append(":").append(prop.getDataType()).append(":").append(prop.getValueType()).append("'");
 		}
 		msg.append("\n\t}");	
 		return msg;

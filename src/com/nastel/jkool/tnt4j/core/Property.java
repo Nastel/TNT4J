@@ -33,7 +33,7 @@ import java.util.Date;
 public class Property {
 	private String  		key;
 	private Object			value;
-	private String			valueType;
+	private String			valueType = ValueTypes.VALUE_TYPE_NONE;
 
 
 	/**
@@ -66,7 +66,7 @@ public class Property {
 	 * @param val property value
 	 */
 	public void set(String key, Object val) {
-		set(key, val, null);
+		set(key, val, ValueTypes.VALUE_TYPE_NONE);
 	}
 
 
@@ -80,7 +80,7 @@ public class Property {
 	public void set(String key, Object val, String valType) {
 		this.key = key;
 		this.value = val;
-		this.valueType = (((valType == null) && (val instanceof Boolean))? ValueTypes.VALUE_TYPE_FLAG: valType);
+		this.valueType = (((valType.equalsIgnoreCase(ValueTypes.VALUE_TYPE_NONE)) && (val instanceof Boolean))? ValueTypes.VALUE_TYPE_FLAG: valType);
 	}
 
 

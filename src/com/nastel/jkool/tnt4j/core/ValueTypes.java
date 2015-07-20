@@ -21,6 +21,8 @@ package com.nastel.jkool.tnt4j.core;
  * @version $Revision: 1 $
  */
 public interface ValueTypes {
+	public static final String VALUE_TYPE_NONE = "none";
+	
 	// currency types
 	public static final String VALUE_TYPE_CURRENCY = "currency";
 	public static final String VALUE_TYPE_CURRENCY_USD = "currency.usd";
