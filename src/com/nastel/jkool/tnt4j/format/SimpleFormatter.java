@@ -19,11 +19,14 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TimeZone;
 
+import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.UsecTimestamp;
+import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
@@ -187,6 +190,16 @@ public class SimpleFormatter extends DefaultFormatter {
 		StringBuilder msg = new StringBuilder(1024);
 		return format(msg, snap).toString();
 	}
+	
+	@Override
+    public String format(Source src, OpLevel level, String msg, Object...args) {
+		String formatted = super.format(src, level, msg, args);
+		Throwable error = Utils.getThrowable(args);
+		if (error != null) {
+			formatted += "\nThrowable {\n" + Utils.printThrowable(error) + "}";
+		}
+		return formatted;
+    }
 	
 	protected StringBuilder format(StringBuilder msg, Snapshot snap) {
 		msg.append("Snapshot(fqn: '").append(snap.getId()).append("'").append(separator);

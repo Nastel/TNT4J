@@ -252,11 +252,12 @@ public class BufferedEventSink implements EventSink {
 	 */
 	protected Object [] resolveArguments(Object...args) {
 		if (args == null || args.length == 0) return null;
-		String [] strings = new String[args.length];
-		for (int i=0; i < args.length; i++) {
-			strings[i] = String.valueOf(args[i]);
+		for (int i = 0; i < args.length; i++) {
+			if (!(args[i] instanceof Throwable)) {
+				args[i] = String.valueOf(args[i]);
+			}
 		}
-		return strings;
+		return args;
 	}
 
 	/**
