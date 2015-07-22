@@ -15,6 +15,7 @@
  */
 package com.nastel.jkool.tnt4j.sink;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
@@ -41,6 +42,22 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 
 	boolean append = true;;
 	String fileName = UsecTimestamp.getTimeStamp("yyyy-MM-dd") + ".log";
+	
+	/**
+	 * Create a default sink factory with default file name based on
+	 * current timestamp: yyyy-MM-dd.log.
+	 */
+	public FileEventSinkFactory() {
+	}
+	
+	/**
+	 * Create a sink factory with a given file name.
+	 * 
+	 * @param fname file name
+	 */
+	public FileEventSinkFactory(String fname) {
+		fileName = fname;
+	}
 	
 	@Override
 	public EventSink getEventSink(String name) {
