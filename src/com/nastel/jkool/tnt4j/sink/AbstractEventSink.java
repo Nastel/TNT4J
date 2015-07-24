@@ -53,10 +53,10 @@ public abstract class AbstractEventSink implements EventSink {
 	protected ArrayList<SinkLogEventListener> logListeners = new ArrayList<SinkLogEventListener>(10);
 	protected ArrayList<SinkEventFilter> filters = new ArrayList<SinkEventFilter>(10);
 
-	private boolean filterCheck = true;
 	private String name;
-	private EventFormatter formatter;
 	private Source source;
+	private boolean filterCheck = true;
+	private EventFormatter formatter;
 	private AtomicLong loggedActivities = new AtomicLong(0);
 	private AtomicLong loggedEvents = new AtomicLong(0);
 	private AtomicLong loggedMsgs = new AtomicLong(0);
