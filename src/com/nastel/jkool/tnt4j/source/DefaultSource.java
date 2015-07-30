@@ -51,7 +51,6 @@ public class DefaultSource implements Source {
 		setType(type);
 		setSource(root);
 		setUser(userName);
-		setDefaultInfo();
 	}
 
 	@Override
@@ -211,7 +210,7 @@ public class DefaultSource implements Source {
 		return str.toString();
 	}
 
-	private void setDefaultInfo() {
+	protected void setDefaultInfo() {
 		setInfo(System.getProperty("os.name") + ", Version: " + System.getProperty("os.version") + ", Arch: "
 		        + System.getProperty("os.arch"));
 	}
