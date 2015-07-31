@@ -33,6 +33,7 @@ import java.nio.charset.CharsetEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -412,11 +413,35 @@ public class Utils {
 	 *
 	 * @param str
 	 *            string handle
-	 * @return Returns true if the string is null or empty
+	 * @return true if the string is null or empty
 	 */
 	public static boolean isEmpty(String str) {
 		boolean empty = (str == null || str.trim().length() == 0);
 		return empty;
+	}
+
+	/**
+	 * Returns true if a collection is null or empty
+	 *
+	 * @param col
+	 *            collection to be tested if empty
+	 * @return true if the collection is null or empty
+	 */
+	public static boolean isEmpty(Collection<?> col) {
+		if (col == null) return true;
+		return col.isEmpty();
+	}
+
+	/**
+	 * Returns true if a map is null or empty
+	 *
+	 * @param map
+	 *            map to be tested if empty
+	 * @return true if the collection is null or empty
+	 */
+	public static boolean isEmpty(Map<?, ?> map) {
+		if (map == null) return true;
+		return map.isEmpty();
 	}
 
 	/**
