@@ -561,7 +561,7 @@ public class TrackingLogger implements Tracker {
 	 * string concatenation.
 	 * <pre>
 	 * <code>
-	 * logger.log(OpLevel.DEBUG, "My message arg{0}, arg{1}", parm1, parm2);
+	 * logger.log(OpLevel.DEBUG, "My message arg={0}, arg={1}", parm1, parm2);
 	 * </code>
 	 * </pre>
 	 * @param level
@@ -587,7 +587,7 @@ public class TrackingLogger implements Tracker {
 	 * string concatenation.
 	 * <pre>
 	 * <code>
-	 * logger.debug("My message arg{0}, arg{1}", parm1, parm2);
+	 * logger.debug("My message arg={0}, arg={1}", parm1, parm2);
 	 * </code>
 	 * </pre>
 	 * @param msg
@@ -608,7 +608,7 @@ public class TrackingLogger implements Tracker {
 	 * string concatenation.
 	 * <pre>
 	 * <code>
-	 * logger.trace("My message arg{0}, arg{1}", parm1, parm2);
+	 * logger.trace("My message arg={0}, arg={1}", parm1, parm2);
 	 * </code>
 	 * </pre>
 	 * @param msg
@@ -629,7 +629,7 @@ public class TrackingLogger implements Tracker {
 	 * string concatenation.
 	 * <pre>
 	 * <code>
-	 * logger.error("My error message arg{0}, arg{1}", parm1, parm2);
+	 * logger.error("My error message arg={0}, arg={1}", parm1, parm2);
 	 * </code>
 	 * </pre>
 	 * @param msg
@@ -650,7 +650,7 @@ public class TrackingLogger implements Tracker {
 	 * string concatenation.
 	 * <pre>
 	 * <code>
-	 * logger.fatal("My error message arg{0}, arg{1}", parm1, parm2);
+	 * logger.fatal("My error message arg={0}, arg={1}", parm1, parm2);
 	 * </code>
 	 * </pre>
 	 * @param msg
@@ -671,7 +671,7 @@ public class TrackingLogger implements Tracker {
 	 * string concatenation.
 	 * <pre>
 	 * <code>
-	 * logger.halt("My error message arg{0}, arg{1}", parm1, parm2);
+	 * logger.halt("My error message arg={0}, arg={1}", parm1, parm2);
 	 * </code>
 	 * </pre>
 	 * @param msg
@@ -692,7 +692,7 @@ public class TrackingLogger implements Tracker {
 	 * string concatenation.
 	 *  <pre>
 	 * <code>
-	 * logger.warn("My message arg{0}, arg{1}", parm1, parm2);
+	 * logger.warn("My message arg={0}, arg={1}", parm1, parm2);
 	 * </code>
 	 * </pre>
 	 * @param msg
@@ -713,7 +713,7 @@ public class TrackingLogger implements Tracker {
 	 * string concatenation.
 	 * <pre>
 	 * <code>
-	 * logger.info("My message arg{0}, arg{1}", parm1, parm2);
+	 * logger.info("My message arg={0}, arg={1}", parm1, parm2);
 	 * </code>
 	 * </pre>
 	 * @param msg
@@ -734,7 +734,7 @@ public class TrackingLogger implements Tracker {
 	 * string concatenation.
 	 *  <pre>
 	 * <code>
-	 * logger.success("My message arg{0}, arg{1}", parm1, parm2);
+	 * logger.success("My message arg={0}, arg={1}", parm1, parm2);
 	 * </code>
 	 * </pre>
 	 * @param msg
