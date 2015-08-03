@@ -74,4 +74,5 @@ interface JSONLabels {
 	static final String JSON_EXCEPTION_LABEL = Utils.quote("exception");
 	static final String JSON_SNAPSHOTS_LABEL = Utils.quote("snapshots");
 	static final String JSON_ID_SET_LABEL = Utils.quote("id-set");
+	static final String JSON_TOKEN = Utils.quote("token");
 }
