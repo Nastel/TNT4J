@@ -192,15 +192,15 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  */
 public class TrackingLogger implements Tracker {
-	private static final String TRACKER_SOURCE = System.getProperty("tnt4j.tracking.logger.source", TrackingLogger.class.getName());
 	private static final String TRACKER_CONFIG = System.getProperty("tnt4j.tracking.logger.config");
+	private static final String TRACKER_SOURCE = System.getProperty("tnt4j.tracking.logger.source", TrackingLogger.class.getName());
 
+	private static ConcurrentHashMap<DumpProvider, List<DumpSink>> DUMP_DEST_TABLE = new ConcurrentHashMap<DumpProvider, List<DumpSink>>(49);
 	private static Map<TrackingLogger, StackTraceElement[]> TRACKERS = Collections.synchronizedMap(new WeakHashMap<TrackingLogger, StackTraceElement[]>(89));
 
 	private static Vector<DumpProvider> DUMP_PROVIDERS = new Vector<DumpProvider>(10, 10);
 	private static Vector<DumpSink> DUMP_DESTINATIONS = new Vector<DumpSink>(10, 10);
 	private static Vector<DumpListener> DUMP_LISTENERS = new Vector<DumpListener>(10, 10);
-	private static ConcurrentHashMap<DumpProvider, List<DumpSink>> DUMP_DEST_TABLE = new ConcurrentHashMap<DumpProvider, List<DumpSink>>(49);
 
 	private static final DumpHook dumpHook = new DumpHook();
 	private static DumpSinkFactory dumpFactory = null;
