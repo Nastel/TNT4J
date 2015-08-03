@@ -74,7 +74,6 @@ interface JSONLabels {
 	static final String JSON_EXCEPTION_FIELD = "exception";
 	static final String JSON_SNAPSHOTS_FIELD = "snapshots";
 	static final String JSON_ID_SET_FIELD = "id-set";
-	static final String JSON_TOKEN_FIELD = "token";
 
 	// JSON elements
 	static final String JSON_NAME_LABEL = Utils.quote(JSON_NAME_FIELD);
@@ -122,5 +121,4 @@ interface JSONLabels {
 	static final String JSON_EXCEPTION_LABEL = Utils.quote(JSON_EXCEPTION_FIELD);
 	static final String JSON_SNAPSHOTS_LABEL = Utils.quote(JSON_SNAPSHOTS_FIELD);
 	static final String JSON_ID_SET_LABEL = Utils.quote(JSON_ID_SET_FIELD);
-	static final String JSON_TOKEN_LABEL = Utils.quote(JSON_TOKEN_FIELD);
 }
