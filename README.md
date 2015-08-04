@@ -6,7 +6,7 @@ Why track and trace your applications?
 * Trace application behavior, performance to improve diagnostics
 * Track end-user behavior to improve usability, customer satisfaction
 * Track topology, communications, relationships between entities
-* Track messages, binary, text, video, image, voice, etc.
+* Track messages, binary, text, JSON, XML, video, image, voice.
 * Track location, mobility, GPS of your applications, users
 * Track anything worth tracking in your application
 * Know you application: what, where, when, why 
@@ -14,14 +14,15 @@ Why track and trace your applications?
 <b>Several key features make TNT4J a prime choice for your java application:</b>
 
 ### SLF4J Event Sink Integration
-TNT4J provides SLF4J event sink implementation. Other logging frameworks can be supported by implementing `EventSinkFactory` & `EventSink` interfaces. 
+TNT4J provides SLF4J event sink implementation via `com.nastel.jkool.tnt4j.logger.slf4j.SLF4JEventSinkFactory` event sink factory.
+Other logging frameworks can be supported by implementing `EventSinkFactory` & `EventSink` interfaces. 
 TNT4J default integration is with SLF4J/SimpleLogger. 
 
-All TNT4J messages can be routed via a SLF4J event sink and therefore can take advantage of the underlying logging frameworks. 
-TNT4J includes `TNT4JAppender` for Logback (SLF4J) which allows developers to send event messages to TNT4J via this corresponding 
-appenders and take advantage of TNT4J functionality.
+All TNT4J messages can be routed via a SLF4J event sink and therefore can take advantage of the underlying logging frameworks supported by SLF4J. 
 
-Developers may also enrich event messages and pass context to TNT4J using hashtag enrichment scheme. Hash tags are used to decorate event messages with important meta data about each log message. This meta data is used to generate TNT4J tracking events:
+Developers may also enrich event messages and pass context to TNT4J using hash tag enrichment scheme.
+Hash tags are used to decorate event messages with important meta data about each log message. 
+This meta data is used to generate TNT4J tracking events:
 ```java
 logger.info("Starting a tnt4j activity #beg=Test, #app=" + Log4JTest.class.getName());
 logger.warn("First log message #app=" + Log4JTest.class.getName() + ", #msg='1 Test warning message'");
@@ -57,7 +58,7 @@ Not specifying a qualifier defaults to auto detection of type by `TNT4JAppender`
 First `number` qualifier is tested and defaults to `string` if the test fails (e.g. `#order-no=62627`). 
 
 ### Performance
-No need to concatenate messages before logging. String concatenation is expensive especialy in loops. Simply log using message patterns as follows and TNT4J will resolve the message only if it actually gets logged:
+No need to concatenate messages before logging. String concatenation is expensive especially in loops. Simply log using message patterns as follows and TNT4J will resolve the message only if it actually gets logged:
 ```java
 logger.debug("My message {0}, {1}, {2}", arg0, arg1, arg3);
 ```
@@ -425,13 +426,16 @@ java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -Dtnt4j.config=config/tnt4j.
 * `-Dtnt4j.dump.provider.default=true` java property registers all default dump providers (memory, stack, logging stats).
 * `-Dtnt4j.formatter.json.newline=true` java property directs `JSONFormatter` to append new line when formatting log entries.
 
-See `<timestamp>.log` and `<vmid>.dump` file for output produced by `com.nastel.jkool.tnt4j.examples.TNT4JTest`.
+See `<timestamp>.log` and `<vmid>.dump` files for output produced by `com.nastel.jkool.tnt4j.examples.FolderMonitor`.
 See `config/tnt4j.properties` for TNT4J configuration: factories, formatters, listeners, etc. See Wiki for more information.
 
 Known Projects Using TNT4J
 ===============================================
-* Simple Web End-User Tracking -- TrackingFilter (https://github.com/Nastel/TrackingFilter)
+* Simple End-User Tracking for Java EE -- TrackingFilter (https://github.com/Nastel/TrackingFilter)
 * JMX Streaming Agent - PingJMX (https://github.com/Nastel/PingJMX)
 * Cloud Event Streaming Library - JESL (https://github.com/Nastel/JESL)
-* Streaming Analytics Service -- jkoolcloud.com (https://www.jkoolcloud.com)
+* TNT4J/Log4J 1.2 Appender (https://github.com/Nastel/tnt4j-log4j12)
+* TNT4J/Logback Appender (https://github.com/Nastel/tnt4j-logback)
+* TNT4Spark - tracking for Apache Spark (https://github.com/Nastel/TNT4Spark)
+* Log & Metric Analytics Service -- jkoolcloud.com (https://www.jkoolcloud.com)
 * Application Performance Monitoring -- AutoPilot M6 (http://www.nastel.com/products/autopilot-m6.html)
