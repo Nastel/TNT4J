@@ -15,7 +15,7 @@ Why track and trace your applications?
 
 ### SLF4J Event Sink Integration
 TNT4J provides SLF4J event sink implementation. Other logging frameworks can be supported by implementing `EventSinkFactory` & `EventSink` interfaces. 
-TNT4J default integration is with SLF4J. 
+TNT4J default integration is with SLF4J/SimpleLogger. 
 
 All TNT4J messages can be routed via a SLF4J event sink and therefore can take advantage of the underlying logging frameworks. 
 TNT4J includes `TNT4JAppender` for Logback (SLF4J) which allows developers to send event messages to TNT4J via this corresponding 
@@ -415,11 +415,12 @@ To build TNT4J:
 	
 Running Samples
 ===============================================
-* Directory Monitor (`com.nastel.jkool.tnt4j.examples.FolderMonitor`)
+* Directory Monitor (`com.nastel.jkool.tnt4j.examples.FolderMonitor`). Monitors a given directory for added, modified, deleted files.
 ```java	
-java -Dtnt4j.config=config/tnt4j.properties -Dtnt4j.dump.on.vm.shutdown=true -Dtnt4j.dump.provider.default=true -classpath tnt4j-api-final-all.jar com.nastel.jkool.tnt4j.examples.FolderMonitor /temp
+java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -Dtnt4j.config=config/tnt4j.properties -Dtnt4j.dump.on.vm.shutdown=true -Dtnt4j.dump.provider.default=true -classpath tnt4j-api-final-all.jar com.nastel.jkool.tnt4j.examples.FolderMonitor /temp
 ```
 <b>Command line arguments:</b>
+* `-Dorg.slf4j.simpleLogger.defaultLogLevel=debug` -- default logging level for SLF4J simple logger binding.
 * `-Dtnt4j.dump.on.vm.shutdown=true` java property allows application state dumps generated automatically upon VM shutdown.
 * `-Dtnt4j.dump.provider.default=true` java property registers all default dump providers (memory, stack, logging stats).
 * `-Dtnt4j.formatter.json.newline=true` java property directs `JSONFormatter` to append new line when formatting log entries.
