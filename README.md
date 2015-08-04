@@ -13,12 +13,13 @@ Why track and trace your applications?
 
 <b>Several key features make TNT4J a prime choice for your java application:</b>
 
-### SLF4J & LOG4J Integration
-TNT4J integrates with SLF4J & LOG4J. Other logging frameworks can be supported by implementing `EventSinkFactory` & `EventSink` interfaces. 
+### SLF4J Event Sink Integration
+TNT4J provides SLF4J event sink implementation. Other logging frameworks can be supported by implementing `EventSinkFactory` & `EventSink` interfaces. 
 TNT4J default integration is with SLF4J. 
 
-All TNT4J messages can be routed via a SLF4J/LOG4J event sink and therefore can take advantage of the underlying logging framework. 
-TNT4J includes `TNT4JAppender` for log4j & Logback (SLF4J) which allows developers to send event messages to TNT4J via this corresponding appenders and take advantage of TNT4J functionality.
+All TNT4J messages can be routed via a SLF4J event sink and therefore can take advantage of the underlying logging frameworks. 
+TNT4J includes `TNT4JAppender` for Logback (SLF4J) which allows developers to send event messages to TNT4J via this corresponding 
+appenders and take advantage of TNT4J functionality.
 
 Developers may also enrich event messages and pass context to TNT4J using hashtag enrichment scheme. Hash tags are used to decorate event messages with important meta data about each log message. This meta data is used to generate TNT4J tracking events:
 ```java
@@ -52,19 +53,9 @@ All `value-type` qualifiers are defined in `com.nastel.jkool.tnt4j.core.ValueTyp
 	timestamp	-- timestamp
 	addr 		-- generic address
 ```
-Not specifying a qualifier defaults to auto detection of type by `TNT4JAppender`. First `number` qualifier is tested and defaults to `string` if the test fails (e.g. `#order-no=62627`). User defined fields are reported as a TNT4J snapshot with `Log4j` category and snapshot name set to activity name set by `#beg`, `#end`, `#opn` tags.
+Not specifying a qualifier defaults to auto detection of type by `TNT4JAppender`. 
+First `number` qualifier is tested and defaults to `string` if the test fails (e.g. `#order-no=62627`). 
 
-Below is a sample log4j appender configuration:
-```
-### Default TNT4J Appender configuration
-log4j.appender.tnt4j=com.nastel.jkool.tnt4j.logger.log4j.TNT4JAppender
-log4j.appender.tnt4j.SourceName=com.log4j.Test
-log4j.appender.tnt4j.SourceType=APPL
-log4j.appender.tnt4j.MetricsOnException=true
-log4j.appender.tnt4j.MetricsFrequency=60
-log4j.appender.tnt4j.layout=org.apache.log4j.PatternLayout
-log4j.appender.tnt4j.layout.ConversionPattern=%d{ABSOLUTE} %-5p [%c{1}] %m%n
-```
 ### Performance
 No need to concatenate messages before logging. String concatenation is expensive especialy in loops. Simply log using message patterns as follows and TNT4J will resolve the message only if it actually gets logged:
 ```java
@@ -74,7 +65,7 @@ TNT4J enhances logging performance by supporting asynchronous pooled logging, wh
 ```
 ...
 event.sink.factory: com.nastel.jkool.tnt4j.sink.BufferedEventSinkFactory
-event.sink.factory.EventSinkFactory: com.nastel.jkool.tnt4j.logger.log4j.Log4JEventSinkFactory
+event.sink.factory.EventSinkFactory: com.nastel.jkool.tnt4j.logger.slf4j.SLF4JEventSinkFactory
 ...
 ```
 ### Simplicity & Clean Code
@@ -88,7 +79,7 @@ logger.debug("My message {0}, {1}, {2}", arg0, arg1, arg2);
 All conditional logging can be consolidated into a single listener object. 
 
 ### Flexible Filtering
-Filter out not only based on category/severity (as log4j), but also based on performance objectives. Example: log events only if their elapsed time or wait times are greater than a ceratin value. TNT4J allows users to register filters within `tnt4j.properties` without changing application code. Create your own filters which would allow you to filter events out based on user defined criteria and inject filters using `tnt4j.properties`.
+Filter out not only based on category/severity (as slf4j), but also based on performance objectives. Example: log events only if their elapsed time or wait times are greater than a ceratin value. TNT4J allows users to register filters within `tnt4j.properties` without changing application code. Create your own filters which would allow you to filter events out based on user defined criteria and inject filters using `tnt4j.properties`.
 See  `tnt4j.properties` and `com.nastel.jkool.tnt4j.filters.EventLevelTimeFilter` for details.
 Register filters via declarations in `tnt4j.properties` or in your application by creating your own event filter.
 ```java
@@ -341,7 +332,9 @@ class MyEventFilter implements SinkEventFilter {
 	}
 }
 ```
-Embed TNT4J into your application and realize the benefits in matter if minutes. TNT4J can take advantage of other lower level logging frameworks such as log4j, slf4j. Default TNT4J binding is based on slf4j.
+Embed TNT4J into your application and realize the benefits in matter if minutes. 
+TNT4J can take advantage of other lower level logging frameworks such as slf4j, log4j.
+Default TNT4J binding is based on slf4j.
 
 About TNT4J
 ======================================
@@ -410,9 +403,7 @@ TNT4J depends on the following external packages:
 * Apache commons logging 1.2.17 (http://commons.apache.org/proper/commons-logging/)
 * Apache commons net 3.3 (http://commons.apache.org/proper/commons-net/)
 * Apache commons codec 1.9 (http://commons.apache.org/proper/commons-codec/)
-* Apache Log4J 1.2.17 (http://logging.apache.org/log4j/1.2/)
 * SLF4J 1.7.12 (http://www.slf4j.org/)
-* Logback Project 1.1.3 (http://logback.qos.ch/)
 * Java UUID Generator (JUG) 3.1.3 (http://wiki.fasterxml.com/JugHome/)
 
 To build TNT4J:
@@ -424,16 +415,11 @@ To build TNT4J:
 	
 Running Samples
 ===============================================
-* Simple TNT4J Sample application (`com.nastel.jkool.tnt4j.examples.TNT4JTest`):
-```java	
-java -javaagent:tnt4j-api.jar -Dtnt4j.config=config/tnt4j.properties -Dtnt4j.token.repository=config/tnt4j-tokens.properties  -Dtnt4j.dump.on.vm.shutdown=true -Dtnt4j.dump.provider.default=true -Dtnt4j.formatter.json.newline=true -classpath tnt4j-api-final-all.jar com.nastel.jkool.tnt4j.examples.TNT4JTest com.myco.TestApp MYSERVER "Test log message" correlator1 "TestCommand"  TestLocation
-```
 * Directory Monitor (`com.nastel.jkool.tnt4j.examples.FolderMonitor`)
 ```java	
 java -Dtnt4j.config=config/tnt4j.properties -Dtnt4j.dump.on.vm.shutdown=true -Dtnt4j.dump.provider.default=true -classpath tnt4j-api-final-all.jar com.nastel.jkool.tnt4j.examples.FolderMonitor /temp
 ```
 <b>Command line arguments:</b>
-* `-javaagent:tnt4j-api.jar` command line option is required by `ObjectDumpProvider` to calculate object deep and shallow memory sizes. Use this only if your application makes use of `ObjectDumpProvider` to dump object state.
 * `-Dtnt4j.dump.on.vm.shutdown=true` java property allows application state dumps generated automatically upon VM shutdown.
 * `-Dtnt4j.dump.provider.default=true` java property registers all default dump providers (memory, stack, logging stats).
 * `-Dtnt4j.formatter.json.newline=true` java property directs `JSONFormatter` to append new line when formatting log entries.

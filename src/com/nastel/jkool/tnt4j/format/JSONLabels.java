@@ -28,7 +28,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 
 interface JSONLabels {
-	// JSON elements
+	// JSON fields
 	static final String JSON_NAME_FIELD = "name";
 	static final String JSON_CATEGORY_FIELD = "category";
 	static final String JSON_STATUS_FIELD = "status";
@@ -75,7 +75,7 @@ interface JSONLabels {
 	static final String JSON_SNAPSHOTS_FIELD = "snapshots";
 	static final String JSON_ID_SET_FIELD = "id-set";
 
-	// JSON elements
+	// JSON quoted fields
 	static final String JSON_NAME_LABEL = Utils.quote(JSON_NAME_FIELD);
 	static final String JSON_CATEGORY_LABEL = Utils.quote(JSON_CATEGORY_FIELD);
 	static final String JSON_STATUS_LABEL = Utils.quote(JSON_STATUS_FIELD);
