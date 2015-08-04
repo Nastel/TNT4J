@@ -395,7 +395,7 @@ How to Build TNT4J
 
 Requirements
 * JDK 1.7+
-* ANT (http://ant.apache.org/)
+* Apache ANT (http://ant.apache.org/)
 
 TNT4J depends on the following external packages:
 * Apache commons configuration 1.10 (http://commons.apache.org/proper/commons-configuration/)
