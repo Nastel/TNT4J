@@ -76,8 +76,8 @@ public class Operation {
 	private OpType				opType;
 	private OpCompCode			opCC = OpCompCode.SUCCESS;
 	private OpLevel				opLevel = OpLevel.INFO;
-	private UsecTimestamp		startTime;
-	private UsecTimestamp		endTime;
+	private long				startTimeUs;
+	private long				endTimeUs;
 	private Throwable			exHandle;
 	
 	private HashSet<String> 	correlators = new HashSet<String>(89);
@@ -292,7 +292,7 @@ public class Operation {
 	 * @return true if operation was started, false otherwise
 	 */
 	public boolean isStarted() {
-		return (this.startTime != null);
+		return (this.startTimeUs > 0);
 	}
 
 	/**
@@ -301,7 +301,7 @@ public class Operation {
 	 * @return true if operation was stopped, false otherwise
 	 */
 	public boolean isStopped() {
-		return (this.endTime != null);
+		return (this.endTimeUs > 0);
 	}
 
 	/**
@@ -567,7 +567,7 @@ public class Operation {
 	 * @return operation start time
 	 */
 	public UsecTimestamp getStartTime() {
-		return startTime;
+		return new UsecTimestamp(startTimeUs);
 	}
 
 	/**
@@ -579,7 +579,7 @@ public class Operation {
 	public void start(long startTimeUsec) {
 		long start = System.nanoTime();
 		this.startTimeNano = System.nanoTime();
-		this.startTime = new UsecTimestamp(startTimeUsec);
+		this.startTimeUs = startTimeUsec;
 		_start(start);
 	}
 
@@ -611,7 +611,7 @@ public class Operation {
 	 * @return operation end time
 	 */
 	public UsecTimestamp getEndTime() {
-		return endTime;
+		return new UsecTimestamp(endTimeUs);
 	}
 
 	/**
@@ -624,11 +624,11 @@ public class Operation {
 	 */
 	public void stop(long stopTimeUsec, long elaspedUsec) {
 		long start = System.nanoTime();
-		endTime = new UsecTimestamp(stopTimeUsec);
+		endTimeUs = stopTimeUsec;
 
-		if (startTime == null) {
+		if (startTimeUs <= 0) {
 			long startUsec = stopTimeUsec - elaspedUsec;
-			startTime = new UsecTimestamp(startUsec);
+			startTimeUs = startUsec;
 		}
 
 		if (startTimeNano > 0) {
@@ -636,15 +636,16 @@ public class Operation {
 			elapsedTimeNano = stopTimeNano - startTimeNano;
 		}
 
-		if (endTime.compareTo(startTime) < 0) {
+		if (endTimeUs < startTimeUs) {
 			if (startTimeNano > 0) {
-				startTime.setTimeUsec(endTime.getTimeUsec() - (elapsedTimeNano/1000));
+				startTimeUs = endTimeUs - (elapsedTimeNano/1000);
 			} else {
-				throw new IllegalArgumentException("end.time='" + endTime + "' is less than start.time='" + startTime + "'"
-					+ ", delta.usec=" + (endTime.getTimeUsec() - startTime.getTimeUsec()));
+				throw new IllegalArgumentException("end.time=" + endTimeUs
+						+ " is less than start.time=" + startTimeUs
+						+ ", delta.usec=" + (endTimeUs - startTimeUs));
 			}
-		}
-		elapsedTimeUsec = endTime.difference(startTime);
+		} 
+		elapsedTimeUsec = endTimeUs - startTimeUs;
 		_stop(start);
 	}
 
@@ -845,14 +846,13 @@ public class Operation {
 			return false;
 		}
 
-		if (startTime == null) {
-			if (other.startTime != null)
-				return false;
-		}
-		else if (!startTime.equals(other.startTime)) {
+		if (startTimeUs != other.startTimeUs) {
 			return false;
 		}
 
+		if (endTimeUs != other.endTimeUs) {
+			return false;
+		}
 		return true;
 	}
 
