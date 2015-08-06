@@ -25,6 +25,7 @@ import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
@@ -151,7 +152,7 @@ public class AppenderTools implements AppenderConstants {
 					|| key.equals(PARAM_END_LABEL)
 					|| key.equals(PARAM_APPL_LABEL)) {
 				// skip and process later
-			} else if (activity != null) {
+			} else if ((activity != null) && !Utils.isEmpty(key) && !Utils.isEmpty(value)) {
 				// add unknown attribute into snapshot
 				if (snapshot == null) {
 					snapshot = logger.newSnapshot(category, activity.getName());
