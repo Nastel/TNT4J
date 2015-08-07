@@ -27,12 +27,12 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 3 $
  */
 public class DefaultSource implements Source {
-	private Source parentSource;
 	private String sname;
-	private SourceType sourceType;
 	private String user;
 	private String url;
 	private String info;
+	private Source parentSource;
+	private SourceType sourceType;
 
 	/**
 	 * Creates an Source object with the specified properties.
