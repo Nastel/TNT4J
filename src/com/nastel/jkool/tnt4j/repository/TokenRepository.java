@@ -17,7 +17,7 @@ package com.nastel.jkool.tnt4j.repository;
 
 import java.util.Iterator;
 
-import com.nastel.jkool.tnt4j.sink.Handle;
+import com.nastel.jkool.tnt4j.core.Handle;
 
 
 /**

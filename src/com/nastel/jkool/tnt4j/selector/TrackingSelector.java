@@ -17,9 +17,9 @@ package com.nastel.jkool.tnt4j.selector;
 
 import java.util.Iterator;
 
+import com.nastel.jkool.tnt4j.core.Handle;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.repository.TokenRepository;
-import com.nastel.jkool.tnt4j.sink.Handle;
 
 /**
  * <p>Classes that implement this interface provide implementation for

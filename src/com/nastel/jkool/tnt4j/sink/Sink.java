@@ -17,6 +17,8 @@ package com.nastel.jkool.tnt4j.sink;
 
 import java.io.IOException;
 
+import com.nastel.jkool.tnt4j.core.Handle;
+
 /**
  * <p>
  * This interface defines a message destination end point. Message destination is
