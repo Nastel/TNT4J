@@ -5,7 +5,7 @@
     <title>TNT4J by Nastel</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen">
-    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
   </head>
@@ -30,7 +30,7 @@
 <li>Trace application behavior, performance to improve diagnostics</li>
 <li>Track end-user behavior to improve usability, customer satisfaction</li>
 <li>Track topology, communications, relationships between entities</li>
-<li>Track messages, binary, text, video, image, voice, etc.</li>
+<li>Track messages, binary, text, JSON, XML, video, image, voice.</li>
 <li>Track location, mobility, GPS of your applications, users</li>
 <li>Track anything worth tracking in your application</li>
 <li>Know you application: what, where, when, why </li>
@@ -39,15 +39,17 @@
 <p><b>Several key features make TNT4J a prime choice for your java application:</b></p>
 
 <h3>
-<a id="slf4j--log4j-integration" class="anchor" href="#slf4j--log4j-integration" aria-hidden="true"><span class="octicon octicon-link"></span></a>SLF4J &amp; LOG4J Integration</h3>
+<a id="slf4j-event-sink-integration" class="anchor" href="#slf4j-event-sink-integration" aria-hidden="true"><span class="octicon octicon-link"></span></a>SLF4J Event Sink Integration</h3>
 
-<p>TNT4J integrates with SLF4J &amp; LOG4J. Other logging frameworks can be supported by implementing <code>EventSinkFactory</code> &amp; <code>EventSink</code> interfaces. 
-TNT4J default integration is with SLF4J. </p>
+<p>TNT4J provides SLF4J event sink implementation via <code>com.nastel.jkool.tnt4j.logger.slf4j.SLF4JEventSinkFactory</code> event sink factory.
+Other logging frameworks can be supported by implementing <code>EventSinkFactory</code> &amp; <code>EventSink</code> interfaces. 
+TNT4J default integration is with SLF4J/SimpleLogger. </p>
 
-<p>All TNT4J messages can be routed via a SLF4J/LOG4J event sink and therefore can take advantage of the underlying logging framework. 
-TNT4J includes <code>TNT4JAppender</code> for log4j &amp; Logback (SLF4J) which allows developers to send event messages to TNT4J via this corresponding appenders and take advantage of TNT4J functionality.</p>
+<p>All TNT4J messages can be routed via a SLF4J event sink and therefore can take advantage of the underlying logging frameworks supported by SLF4J. </p>
 
-<p>Developers may also enrich event messages and pass context to TNT4J using hashtag enrichment scheme. Hash tags are used to decorate event messages with important meta data about each log message. This meta data is used to generate TNT4J tracking events:</p>
+<p>Developers may also enrich event messages and pass context to TNT4J using hash tag enrichment scheme.
+Hash tags are used to decorate event messages with important meta data about each log message. 
+This meta data is used to generate TNT4J tracking events:</p>
 
 <div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>info(<span class="pl-s"><span class="pl-pds">"</span>Starting a tnt4j activity #beg=Test, #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-smi">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName());
 logger<span class="pl-k">.</span>warn(<span class="pl-s"><span class="pl-pds">"</span>First log message #app=<span class="pl-pds">"</span></span> <span class="pl-k">+</span> <span class="pl-smi">Log4JTest</span><span class="pl-k">.</span>class<span class="pl-k">.</span>getName() <span class="pl-k">+</span> <span class="pl-s"><span class="pl-pds">"</span>, #msg='1 Test warning message'<span class="pl-pds">"</span></span>);
@@ -81,24 +83,13 @@ logger<span class="pl-k">.</span>info(<span class="pl-s"><span class="pl-pds">"<
     addr        -- generic address
 </code></pre>
 
-<p>Not specifying a qualifier defaults to auto detection of type by <code>TNT4JAppender</code>. First <code>number</code> qualifier is tested and defaults to <code>string</code> if the test fails (e.g. <code>#order-no=62627</code>). User defined fields are reported as a TNT4J snapshot with <code>Log4j</code> category and snapshot name set to activity name set by <code>#beg</code>, <code>#end</code>, <code>#opn</code> tags.</p>
-
-<p>Below is a sample log4j appender configuration:</p>
-
-<pre><code>### Default TNT4J Appender configuration
-log4j.appender.tnt4j=com.nastel.jkool.tnt4j.logger.log4j.TNT4JAppender
-log4j.appender.tnt4j.SourceName=com.log4j.Test
-log4j.appender.tnt4j.SourceType=APPL
-log4j.appender.tnt4j.MetricsOnException=true
-log4j.appender.tnt4j.MetricsFrequency=60
-log4j.appender.tnt4j.layout=org.apache.log4j.PatternLayout
-log4j.appender.tnt4j.layout.ConversionPattern=%d{ABSOLUTE} %-5p [%c{1}] %m%n
-</code></pre>
+<p>Not specifying a qualifier defaults to auto detection of type by <code>TNT4JAppender</code>. 
+First <code>number</code> qualifier is tested and defaults to <code>string</code> if the test fails (e.g. <code>#order-no=62627</code>). </p>
 
 <h3>
 <a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h3>
 
-<p>No need to concatenate messages before logging. String concatenation is expensive especialy in loops. Simply log using message patterns as follows and TNT4J will resolve the message only if it actually gets logged:</p>
+<p>No need to concatenate messages before logging. String concatenation is expensive especially in loops. Simply log using message patterns as follows and TNT4J will resolve the message only if it actually gets logged:</p>
 
 <div class="highlight highlight-java"><pre>logger<span class="pl-k">.</span>debug(<span class="pl-s"><span class="pl-pds">"</span>My message {0}, {1}, {2}<span class="pl-pds">"</span></span>, arg0, arg1, arg3);</pre></div>
 
@@ -106,7 +97,7 @@ log4j.appender.tnt4j.layout.ConversionPattern=%d{ABSOLUTE} %-5p [%c{1}] %m%n
 
 <pre><code>...
 event.sink.factory: com.nastel.jkool.tnt4j.sink.BufferedEventSinkFactory
-event.sink.factory.EventSinkFactory: com.nastel.jkool.tnt4j.logger.log4j.Log4JEventSinkFactory
+event.sink.factory.EventSinkFactory: com.nastel.jkool.tnt4j.logger.slf4j.SLF4JEventSinkFactory
 ...
 </code></pre>
 
@@ -124,7 +115,7 @@ logger<span class="pl-k">.</span>debug(<span class="pl-s"><span class="pl-pds">"
 <h3>
 <a id="flexible-filtering" class="anchor" href="#flexible-filtering" aria-hidden="true"><span class="octicon octicon-link"></span></a>Flexible Filtering</h3>
 
-<p>Filter out not only based on category/severity (as log4j), but also based on performance objectives. Example: log events only if their elapsed time or wait times are greater than a ceratin value. TNT4J allows users to register filters within <code>tnt4j.properties</code> without changing application code. Create your own filters which would allow you to filter events out based on user defined criteria and inject filters using <code>tnt4j.properties</code>.
+<p>Filter out not only based on category/severity (as slf4j), but also based on performance objectives. Example: log events only if their elapsed time or wait times are greater than a ceratin value. TNT4J allows users to register filters within <code>tnt4j.properties</code> without changing application code. Create your own filters which would allow you to filter events out based on user defined criteria and inject filters using <code>tnt4j.properties</code>.
 See  <code>tnt4j.properties</code> and <code>com.nastel.jkool.tnt4j.filters.EventLevelTimeFilter</code> for details.
 Register filters via declarations in <code>tnt4j.properties</code> or in your application by creating your own event filter.</p>
 
@@ -379,7 +370,9 @@ logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span
     }
 }</pre></div>
 
-<p>Embed TNT4J into your application and realize the benefits in matter if minutes. TNT4J can take advantage of other lower level logging frameworks such as log4j, slf4j. Default TNT4J binding is based on slf4j.</p>
+<p>Embed TNT4J into your application and realize the benefits in matter if minutes. 
+TNT4J can take advantage of other lower level logging frameworks such as slf4j, log4j.
+Default TNT4J binding is based on slf4j.</p>
 
 <h1>
 <a id="about-tnt4j" class="anchor" href="#about-tnt4j" aria-hidden="true"><span class="octicon octicon-link"></span></a>About TNT4J</h1>
@@ -462,7 +455,7 @@ Wiki is available at <a href="https://github.com/Nastel/TNT4J/wiki">https://gith
 
 <ul>
 <li>JDK 1.7+</li>
-<li>ANT (<a href="http://ant.apache.org/">http://ant.apache.org/</a>)</li>
+<li>Apache ANT (<a href="http://ant.apache.org/">http://ant.apache.org/</a>)</li>
 </ul>
 
 <p>TNT4J depends on the following external packages:</p>
@@ -474,9 +467,7 @@ Wiki is available at <a href="https://github.com/Nastel/TNT4J/wiki">https://gith
 <li>Apache commons logging 1.2.17 (<a href="http://commons.apache.org/proper/commons-logging/">http://commons.apache.org/proper/commons-logging/</a>)</li>
 <li>Apache commons net 3.3 (<a href="http://commons.apache.org/proper/commons-net/">http://commons.apache.org/proper/commons-net/</a>)</li>
 <li>Apache commons codec 1.9 (<a href="http://commons.apache.org/proper/commons-codec/">http://commons.apache.org/proper/commons-codec/</a>)</li>
-<li>Apache Log4J 1.2.17 (<a href="http://logging.apache.org/log4j/1.2/">http://logging.apache.org/log4j/1.2/</a>)</li>
 <li>SLF4J 1.7.12 (<a href="http://www.slf4j.org/">http://www.slf4j.org/</a>)</li>
-<li>Logback Project 1.1.3 (<a href="http://logback.qos.ch/">http://logback.qos.ch/</a>)</li>
 <li>Java UUID Generator (JUG) 3.1.3 (<a href="http://wiki.fasterxml.com/JugHome/">http://wiki.fasterxml.com/JugHome/</a>)</li>
 </ul>
 
@@ -498,22 +489,16 @@ Wiki is available at <a href="https://github.com/Nastel/TNT4J/wiki">https://gith
 <a id="running-samples" class="anchor" href="#running-samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Running Samples</h1>
 
 <ul>
-<li>Simple TNT4J Sample application (<code>com.nastel.jkool.tnt4j.examples.TNT4JTest</code>):</li>
+<li>Directory Monitor (<code>com.nastel.jkool.tnt4j.examples.FolderMonitor</code>). Monitors a given directory for added, modified, deleted files.</li>
 </ul>
 
-<div class="highlight highlight-java"><pre>java <span class="pl-k">-</span>javaagent<span class="pl-k">:</span>tnt4j<span class="pl-k">-</span>api<span class="pl-k">.</span>jar <span class="pl-k">-</span><span class="pl-smi">Dtnt4j</span><span class="pl-k">.</span>config<span class="pl-k">=</span>config<span class="pl-k">/</span>tnt4j<span class="pl-k">.</span>properties <span class="pl-k">-</span><span class="pl-smi">Dtnt4j</span><span class="pl-k">.</span>token<span class="pl-k">.</span>repository<span class="pl-k">=</span>config<span class="pl-k">/</span>tnt4j<span class="pl-k">-</span>tokens<span class="pl-k">.</span>properties  <span class="pl-k">-</span><span class="pl-smi">Dtnt4j</span><span class="pl-k">.</span>dump<span class="pl-k">.</span>on<span class="pl-k">.</span>vm<span class="pl-k">.</span>shutdown<span class="pl-k">=</span><span class="pl-c1">true</span> <span class="pl-k">-</span><span class="pl-smi">Dtnt4j</span><span class="pl-k">.</span>dump<span class="pl-k">.</span>provider<span class="pl-k">.</span><span class="pl-k">default</span><span class="pl-k">=</span><span class="pl-c1">true</span> <span class="pl-k">-</span><span class="pl-smi">Dtnt4j</span><span class="pl-k">.</span>formatter<span class="pl-k">.</span>json<span class="pl-k">.</span>newline<span class="pl-k">=</span><span class="pl-c1">true</span> <span class="pl-k">-</span>classpath tnt4j<span class="pl-k">-</span>api<span class="pl-k">-</span><span class="pl-k">final</span><span class="pl-k">-</span>all<span class="pl-k">.</span>jar <span class="pl-smi">com.nastel.jkool.tnt4j.examples<span class="pl-k">.</span>TNT4JTest</span> <span class="pl-smi">com.myco<span class="pl-k">.</span>TestApp</span> <span class="pl-c1">MYSERVER</span> <span class="pl-s"><span class="pl-pds">"</span>Test log message<span class="pl-pds">"</span></span> correlator1 <span class="pl-s"><span class="pl-pds">"</span>TestCommand<span class="pl-pds">"</span></span>  <span class="pl-smi">TestLocation</span></pre></div>
-
-<ul>
-<li>Directory Monitor (<code>com.nastel.jkool.tnt4j.examples.FolderMonitor</code>)</li>
-</ul>
-
-<div class="highlight highlight-java"><pre>java <span class="pl-k">-</span><span class="pl-smi">Dtnt4j</span><span class="pl-k">.</span>config<span class="pl-k">=</span>config<span class="pl-k">/</span>tnt4j<span class="pl-k">.</span>properties <span class="pl-k">-</span><span class="pl-smi">Dtnt4j</span><span class="pl-k">.</span>dump<span class="pl-k">.</span>on<span class="pl-k">.</span>vm<span class="pl-k">.</span>shutdown<span class="pl-k">=</span><span class="pl-c1">true</span> <span class="pl-k">-</span><span class="pl-smi">Dtnt4j</span><span class="pl-k">.</span>dump<span class="pl-k">.</span>provider<span class="pl-k">.</span><span class="pl-k">default</span><span class="pl-k">=</span><span class="pl-c1">true</span> <span class="pl-k">-</span>classpath tnt4j<span class="pl-k">-</span>api<span class="pl-k">-</span><span class="pl-k">final</span><span class="pl-k">-</span>all<span class="pl-k">.</span>jar <span class="pl-smi">com.nastel.jkool.tnt4j.examples<span class="pl-k">.</span>FolderMonitor</span> <span class="pl-k">/</span>temp</pre></div>
+<div class="highlight highlight-java"><pre>java <span class="pl-k">-</span><span class="pl-smi">Dorg</span><span class="pl-k">.</span>slf4j<span class="pl-k">.</span>simpleLogger<span class="pl-k">.</span>defaultLogLevel<span class="pl-k">=</span>debug <span class="pl-k">-</span><span class="pl-smi">Dtnt4j</span><span class="pl-k">.</span>config<span class="pl-k">=</span>config<span class="pl-k">/</span>tnt4j<span class="pl-k">.</span>properties <span class="pl-k">-</span><span class="pl-smi">Dtnt4j</span><span class="pl-k">.</span>dump<span class="pl-k">.</span>on<span class="pl-k">.</span>vm<span class="pl-k">.</span>shutdown<span class="pl-k">=</span><span class="pl-c1">true</span> <span class="pl-k">-</span><span class="pl-smi">Dtnt4j</span><span class="pl-k">.</span>dump<span class="pl-k">.</span>provider<span class="pl-k">.</span><span class="pl-k">default</span><span class="pl-k">=</span><span class="pl-c1">true</span> <span class="pl-k">-</span>classpath tnt4j<span class="pl-k">-</span>api<span class="pl-k">-</span><span class="pl-k">final</span><span class="pl-k">-</span>all<span class="pl-k">.</span>jar <span class="pl-smi">com.nastel.jkool.tnt4j.examples<span class="pl-k">.</span>FolderMonitor</span> <span class="pl-k">/</span>temp</pre></div>
 
 <p><b>Command line arguments:</b></p>
 
 <ul>
 <li>
-<code>-javaagent:tnt4j-api.jar</code> command line option is required by <code>ObjectDumpProvider</code> to calculate object deep and shallow memory sizes. Use this only if your application makes use of <code>ObjectDumpProvider</code> to dump object state.</li>
+<code>-Dorg.slf4j.simpleLogger.defaultLogLevel=debug</code> -- default logging level for SLF4J simple logger binding.</li>
 <li>
 <code>-Dtnt4j.dump.on.vm.shutdown=true</code> java property allows application state dumps generated automatically upon VM shutdown.</li>
 <li>
@@ -522,18 +507,22 @@ Wiki is available at <a href="https://github.com/Nastel/TNT4J/wiki">https://gith
 <code>-Dtnt4j.formatter.json.newline=true</code> java property directs <code>JSONFormatter</code> to append new line when formatting log entries.</li>
 </ul>
 
-<p>See <code>&lt;timestamp&gt;.log</code> and <code>&lt;vmid&gt;.dump</code> file for output produced by <code>com.nastel.jkool.tnt4j.examples.TNT4JTest</code>.
-See <code>config/tnt4j.properties</code> for TNT4J configuration: factories, formatters, listeners, etc. See Wiki for more information.</p>
+<p>See <code>&lt;timestamp&gt;.log</code> and <code>&lt;vmid&gt;.dump</code> files for output produced by <code>com.nastel.jkool.tnt4j.examples.FolderMonitor</code>.
+See <code>config/tnt4j.properties</code> for TNT4J configuration: factories, formatters, listeners, etc.
+See Wiki for more information.</p>
 
 <h1>
 <a id="known-projects-using-tnt4j" class="anchor" href="#known-projects-using-tnt4j" aria-hidden="true"><span class="octicon octicon-link"></span></a>Known Projects Using TNT4J</h1>
 
 <ul>
-<li>Simple Web End-User Tracking -- TrackingFilter (<a href="https://github.com/Nastel/TrackingFilter">https://github.com/Nastel/TrackingFilter</a>)</li>
+<li>Simple End-User Tracking for Java EE - TrackingFilter (<a href="https://github.com/Nastel/TrackingFilter">https://github.com/Nastel/TrackingFilter</a>)</li>
 <li>JMX Streaming Agent - PingJMX (<a href="https://github.com/Nastel/PingJMX">https://github.com/Nastel/PingJMX</a>)</li>
 <li>Cloud Event Streaming Library - JESL (<a href="https://github.com/Nastel/JESL">https://github.com/Nastel/JESL</a>)</li>
-<li>Streaming Analytics Service -- jkoolcloud.com (<a href="https://www.jkoolcloud.com">https://www.jkoolcloud.com</a>)</li>
-<li>Application Performance Monitoring -- AutoPilot M6 (<a href="http://www.nastel.com/products/autopilot-m6.html">http://www.nastel.com/products/autopilot-m6.html</a>)</li>
+<li>TNT4J/Log4J 1.2 Appender (<a href="https://github.com/Nastel/tnt4j-log4j12">https://github.com/Nastel/tnt4j-log4j12</a>)</li>
+<li>TNT4J/Logback Appender (<a href="https://github.com/Nastel/tnt4j-logback">https://github.com/Nastel/tnt4j-logback</a>)</li>
+<li>TNT4Spark - tracking for Apache Spark (<a href="https://github.com/Nastel/TNT4Spark">https://github.com/Nastel/TNT4Spark</a>)</li>
+<li>Log &amp; Metric Analytics Service - jkoolcloud.com (<a href="https://www.jkoolcloud.com">https://www.jkoolcloud.com</a>)</li>
+<li>Application Performance Monitoring - AutoPilot M6 (<a href="http://www.nastel.com/products/autopilot-m6.html">http://www.nastel.com/products/autopilot-m6.html</a>)</li>
 </ul>
 
       <footer class="site-footer">
@@ -547,4 +536,3 @@ See <code>config/tnt4j.properties</code> for TNT4J configuration: factories, for
   
   </body>
 </html>
-
