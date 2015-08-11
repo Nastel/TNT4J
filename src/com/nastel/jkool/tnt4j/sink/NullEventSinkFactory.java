@@ -35,16 +35,16 @@ public class NullEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
     public EventSink getEventSink(String name) {
-	    return new NullEventSink(name);
+	    return configureSink(new NullEventSink(name));
     }
 
 	@Override
     public EventSink getEventSink(String name, Properties props) {
-	    return new NullEventSink(name);
+	    return configureSink(new NullEventSink(name));
     }
 
 	@Override
     public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-	    return new NullEventSink(name, frmt);
+	    return configureSink(new NullEventSink(name, frmt));
     }
 }
