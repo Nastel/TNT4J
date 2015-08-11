@@ -387,6 +387,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		jsonString.append(JSON_NAME_LABEL).append(ATTR_SEP).append(Utils.quote(snap.getName())).append(ATTR_JSON);
 		jsonString.append(JSON_COUNT_LABEL).append(ATTR_SEP).append(snap.size()).append(ATTR_JSON);
 		jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(snap.getTimeStamp().getTimeUsec()).append(ATTR_JSON);
+		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(snap.getTTL()).append(ATTR_JSON);
 
 		Source source = snap.getSource();
 		if (source != null) {
@@ -406,7 +407,6 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(snap.getSeverity().ordinal()).append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP).append(Utils.quote(snap.getType())).append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_NO_LABEL).append(ATTR_SEP).append(snap.getType().ordinal());
-		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(snap.getTTL()).append(ATTR_JSON);
 		if (snap.size() > 0) {
 			jsonString.append(ATTR_JSON);
 			jsonString.append(JSON_PROPERTIES_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON).append(

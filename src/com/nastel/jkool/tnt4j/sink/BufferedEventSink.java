@@ -115,7 +115,7 @@ public class BufferedEventSink implements EventSink {
 		_checkState();
 		String txtMsg = String.valueOf(msg);
 		if (isLoggable(OpLevel.NONE, txtMsg, args)) {
-			boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, null, OpLevel.NONE, ttl, txtMsg, resolveArguments(args)));
+			boolean flag = BufferedEventSinkFactory.getPooledLogger().offer(new SinkLogEvent(outSink, getSource(), OpLevel.NONE, (ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, txtMsg, resolveArguments(args)));
 			if (!flag) dropCount.incrementAndGet();
 		} else {
 			skipCount.incrementAndGet();

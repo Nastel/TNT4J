@@ -109,6 +109,8 @@ public class SinkLogEvent extends EventObject implements TTL {
 	 *            source associated with the event
 	 * @param sev
 	 *            log severity
+	 * @param ttl
+	 *            time to live in seconds
 	 * @param msg
 	 *            log message object
 	 * @param args
@@ -123,6 +125,7 @@ public class SinkLogEvent extends EventObject implements TTL {
 		}
 		level = sev;
 		evSrc = evSource;
+		this.ttl = ttl;
 	}
 
 	/**

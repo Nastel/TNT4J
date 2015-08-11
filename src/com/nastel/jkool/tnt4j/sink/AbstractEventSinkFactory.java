@@ -43,7 +43,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  */
 
-abstract public class AbstractEventSinkFactory implements EventSinkFactory, Configurable {
+abstract public class AbstractEventSinkFactory implements EventSinkFactory, Configurable, TTL {
 	private SinkEventFilter eventFilter = null;
 	private SinkErrorListener errorListener = null;
 	private SinkLogEventListener eventListener = null;
@@ -80,13 +80,15 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 		return sink;
 	}
 
-	/**
-	 * Gets time to live in seconds
-	 *
-	 * @return time to live in seconds
-	 */
+
+	@Override
 	public long getTTL() {
 		return ttl;
+	}
+	
+	@Override
+	public void setTTL(long ttl) {
+		this.ttl = ttl;
 	}
 	
 	@Override
@@ -99,7 +101,7 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 		config = props;
 		Object ttlValue = config.get("TTL");
 		if (ttlValue != null) {
-			ttl = Long.parseLong(ttlValue.toString());
+			setTTL(Long.parseLong(ttlValue.toString()));
 		}
 		eventFilter = (SinkEventFilter) Utils.createConfigurableObject("Filter", "Filter.", config);
 		errorListener = (SinkErrorListener) Utils.createConfigurableObject("ErrorListener", "ErrorListener.", config);
