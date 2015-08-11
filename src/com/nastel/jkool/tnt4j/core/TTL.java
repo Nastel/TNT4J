@@ -28,12 +28,12 @@ public interface TTL {
 	static final long TTL_CONTEXT = -100;
 
 	/**
-	 * Time to live NONE, don't store
+	 * Time to live NONE, disable persistence
 	 */
 	static final long TTL_NONE = -1;
 
 	/**
-	 * Time to live default -- as per underlying storage
+	 * Time to live is default -- as per underlying sink implementation
 	 */
 	static final long TTL_DEFAULT = 0;
 
@@ -45,8 +45,8 @@ public interface TTL {
 	long getTTL();
 
 	/**
-	 * Sets time to live in seconds. Negative number implies no time to live and instructs underlying tracker not to
-	 * store this operation.
+	 * Sets time to live in seconds. 
+	 * Negative number implies no TTL and instructs underlying sinks to disable persistence.
 	 *
 	 * @param ttl
 	 *            time to live in seconds
