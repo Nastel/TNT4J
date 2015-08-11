@@ -328,7 +328,7 @@ class MyEventFilter implements SinkEventFilter {
 	}
 	
 	@Override
-	public boolean filter(EventSink arg0, Source src, OpLevel level, String msg, Object... args) {
+	public boolean filter(EventSink arg0, long ttl, Source src, OpLevel level, String msg, Object... args) {
 		return logger.isSet(level, "myappl.token");
 	}
 }
