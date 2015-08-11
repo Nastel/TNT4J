@@ -103,7 +103,7 @@ class PathEventFilter implements SinkEventFilter {
     }
 
 	@Override
-    public boolean filter(EventSink sink, Source source, OpLevel level, String msg, Object... args) {
+    public boolean filter(EventSink sink, long ttl, Source source, OpLevel level, String msg, Object... args) {
 	    return true;
     }
 }

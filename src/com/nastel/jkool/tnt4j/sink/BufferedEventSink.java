@@ -286,7 +286,12 @@ public class BufferedEventSink implements EventSink {
 
 	@Override
     public boolean isLoggable(Source source, OpLevel level, String msg, Object... args) {
-	    return outSink.isLoggable(source, level, msg, args);
+	    return outSink.isLoggable(getTTL(), source, level, msg, args);
+    }
+
+	@Override
+    public boolean isLoggable(long ttl_sec, Source source, OpLevel level, String msg, Object... args) {
+	    return outSink.isLoggable(ttl_sec, source, level, msg, args);
     }
 
 	@Override

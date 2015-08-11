@@ -49,6 +49,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	public static final String ELAPSED_USEC = "ElapsedUsec";
 	public static final String WAIT_USEC = "WaitUsec";
 	public static final String WALL_USEC = "WallUsec";
+	public static final String TTL_SEC = "TTL";
 	public static final String MSG_PATTERN = "MsgRegex";
 
 	private static final long TTL_UNDEFINED = -100;
@@ -154,7 +155,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	}
 
 	@Override
-	public boolean filter(EventSink sink, Source source, OpLevel level, String msg, Object... args) {
+	public boolean filter(EventSink sink, long ttl, Source source, OpLevel level, String msg, Object... args) {
 		if (msgPattern != null) {
 			if (!msgPattern.matcher(msg).matches()) {
 				return false;
@@ -183,10 +184,8 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 		Object wallStr = config.get(WALL_USEC);
 		wallUsec = (wallStr != null ? Long.parseLong(wallStr.toString()) : wallUsec);
 
-		Object ttlValue = config.get("TTL");
-		if (ttlValue != null) {
-			ttl = Long.parseLong(ttlValue.toString());
-		}
+		Object ttlValue = config.get(TTL_SEC);
+		ttl = (ttlValue != null ? Long.parseLong(ttlValue.toString()) : ttl);
 
 		Object regex = config.get(MSG_PATTERN);
 		msgRegx = (regex != null ? regex.toString() : null);

@@ -114,7 +114,7 @@ public class ThresholdEventFilter implements SinkEventFilter {
 	}
 
 	@Override
-	public boolean filter(EventSink sink, OpLevel level, String msg, Object... args) {
+	public boolean filter(EventSink sink, long ttl, Source source, OpLevel level, String msg, Object... args) {
 		return (level.ordinal() >= threshold.ordinal()) && sink.isSet(level);
 	}
 }

@@ -123,6 +123,24 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Check if a given event is loggable by the underlying sink -- passes all filters
 	 *
+	 * @param ttl
+	 *            time to live in seconds {@link TTL}
+	 * @param source
+	 *            message source
+	 * @param level
+	 *            severity level of the event message
+	 * @param msg
+	 *            event message
+	 * @param args
+	 *            argument list passed along with the message
+	 * @return true if event passed all filters, false otherwise
+	 * @see OpLevel
+	 */
+	boolean isLoggable(long ttl, Source source, OpLevel level, String msg, Object... args);
+
+	/**
+	 * Check if a given event is loggable by the underlying sink -- passes all filters
+	 *
 	 * @param snapshot
 	 *            snapshot
 	 * @return true if event passed all filters, false otherwise

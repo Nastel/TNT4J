@@ -17,6 +17,7 @@ package com.nastel.jkool.tnt4j.sink;
 
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.core.TTL;
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -79,6 +80,8 @@ public interface SinkEventFilter {
 	 * 
 	 * @param sink
 	 *            event sink where filter request is coming from
+	 * @param ttl
+	 *            time to live in seconds {@link TTL}
 	 * @param source
 	 *            event message source
 	 * @param level
@@ -91,5 +94,5 @@ public interface SinkEventFilter {
 	 * @see OpLevel
 	 * @see EventSink
 	 */
-	boolean filter(EventSink sink, Source source, OpLevel level, String msg, Object... args);
+	boolean filter(EventSink sink, long ttl, Source source, OpLevel level, String msg, Object... args);
 }

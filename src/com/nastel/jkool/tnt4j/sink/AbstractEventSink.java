@@ -80,7 +80,7 @@ public abstract class AbstractEventSink implements EventSink {
 
 	/**
 	 * Create an event sink with a given name
-	 * and event formatter and default {@link TTL.TTL_CONTEXT}
+	 * and event formatter and default {@link TTL}
 	 * 
 	 * @param nm event sink name
 	 * @param fmt event formatter instance
@@ -273,10 +273,15 @@ public abstract class AbstractEventSink implements EventSink {
 
 	@Override
 	public boolean isLoggable(Source source, OpLevel level, String msg, Object... args) {
+		return isLoggable(getTTL(), source, level, msg, args);
+	}
+
+	@Override
+	public boolean isLoggable(long ttl, Source source, OpLevel level, String msg, Object... args) {
 		boolean pass = true;
 		if (filters.size() == 0) return pass;
 		for (SinkEventFilter filter : filters) {
-			pass = (pass && filter.filter(this, source, level, msg, args));
+			pass = (pass && filter.filter(this, ttl, source, level, msg, args));
 			if (!pass) {
 				skipCount.incrementAndGet();
 				break;
@@ -419,7 +424,7 @@ public abstract class AbstractEventSink implements EventSink {
 	@Override
 	public void log(long ttl_sec, Source src, OpLevel sev, String msg, Object... args) {
 		_checkState();
-		boolean doLog = filterCheck? isLoggable(source, sev, msg): true;
+		boolean doLog = filterCheck? isLoggable(ttl_sec, source, sev, msg): true;
 		if (doLog) {
 			try {
 				_log(ttl_sec, src, sev, msg, args);
