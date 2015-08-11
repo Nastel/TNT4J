@@ -25,6 +25,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.core.TTL;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
@@ -40,6 +41,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  * @version $Revision: 9 $
  *
+ * @see TTL
  * @see EventSink
  * @see SinkError
  * @see SinkErrorListener
@@ -56,6 +58,7 @@ public abstract class AbstractEventSink implements EventSink {
 	private String name;
 	private Source source;
 	private boolean filterCheck = true;
+	private long ttl = TTL.TTL_CONTEXT;
 	private EventFormatter formatter;
 	private AtomicLong loggedActivities = new AtomicLong(0);
 	private AtomicLong loggedEvents = new AtomicLong(0);
@@ -72,6 +75,12 @@ public abstract class AbstractEventSink implements EventSink {
 
 	public AbstractEventSink(String nm, EventFormatter fmt) {
 		name = nm;
+		formatter = fmt;
+	}
+
+	public AbstractEventSink(String nm, long ttl, EventFormatter fmt) {
+		name = nm;
+		this.ttl = ttl;
 		formatter = fmt;
 	}
 
@@ -316,6 +325,9 @@ public abstract class AbstractEventSink implements EventSink {
 		boolean doLog = filterCheck? isLoggable(activity): true;
 		if (doLog) {
 			try {
+				if (ttl != TTL.TTL_CONTEXT) {
+					activity.setTTL(ttl);
+				}
 				_log(activity);
 				loggedActivities.incrementAndGet();
 				loggedSnaps.addAndGet(activity.getSnapshotCount());
@@ -335,6 +347,9 @@ public abstract class AbstractEventSink implements EventSink {
 		boolean doLog = filterCheck? isLoggable(event): true;
 		if (doLog) {
 			try {
+				if (ttl != TTL.TTL_CONTEXT) {
+					event.setTTL(ttl);
+				}
 				_log(event);
 				loggedEvents.incrementAndGet();
 				loggedSnaps.addAndGet(event.getOperation().getSnapshotCount());
@@ -354,6 +369,9 @@ public abstract class AbstractEventSink implements EventSink {
 		boolean doLog = filterCheck? isLoggable(snapshot): true;
 		if (doLog) {
 			try {
+				if (ttl != TTL.TTL_CONTEXT) {
+					snapshot.setTTL(ttl);
+				}
 				_log(snapshot);
 				loggedSnaps.incrementAndGet();
 				lastTime.set(System.currentTimeMillis());
@@ -368,20 +386,20 @@ public abstract class AbstractEventSink implements EventSink {
 
 	@Override
 	public void log(OpLevel sev, String msg, Object... args) {
-		log(source, sev, msg, args);
+		log((ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, source, sev, msg, args);
 	}
 
 	@Override
-	public void log(Source src, OpLevel sev, String msg, Object... args) {
+	public void log(long ttl_sec, Source src, OpLevel sev, String msg, Object... args) {
 		_checkState();
 		boolean doLog = filterCheck? isLoggable(source, sev, msg): true;
 		if (doLog) {
 			try {
-				_log(src, sev, msg, args);
+				_log(ttl_sec, src, sev, msg, args);
 				loggedMsgs.incrementAndGet();
 				lastTime.set(System.currentTimeMillis());
 				if (logListeners.size() > 0) {
-					notifyListeners(new SinkLogEvent(this, src, sev, msg, args));
+					notifyListeners(new SinkLogEvent(this, src, sev, ttl_sec, msg, args));
 				}
 			} catch (Throwable ex) {
 				notifyListeners(msg, ex);
@@ -396,13 +414,23 @@ public abstract class AbstractEventSink implements EventSink {
 			sinkWrites.incrementAndGet();
 			lastTime.set(System.currentTimeMillis());
 			if (logListeners.size() > 0) {
-				notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, msg, args));
+				notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, ttl, msg, args));
 			}
 		} catch (Throwable ex) {
 			notifyListeners(msg, ex);
 		}
 	}
 
+	@Override
+	public long getTTL() {
+		return ttl;
+	}
+
+	@Override
+	public void setTTL(long ttl) {
+		this.ttl = ttl;
+	}
+	
 	/**
 	 * Check state of the sink before logging occurs.
 	 *
@@ -453,6 +481,8 @@ public abstract class AbstractEventSink implements EventSink {
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 *
+	 * @param ttl
+	 *            time to live in seconds {@link TTL}
 	 * @param src
 	 *            event source handle
 	 * @param sev
@@ -464,7 +494,7 @@ public abstract class AbstractEventSink implements EventSink {
 	 * @throws Exception if logging message
 	 * @see OpLevel
 	 */
-	abstract protected void _log(Source src, OpLevel sev, String msg, Object... args) throws Exception;
+	abstract protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception;
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.

@@ -91,11 +91,11 @@ public class SocketEventSink extends AbstractEventSink {
 	}
 	
 	@Override
-	protected void _log(Source src, OpLevel sev, String msg, Object...args)  throws IOException {
+	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object...args)  throws IOException {
 		if (logSink != null) {
-			logSink.log(src, sev, msg, args);
+			logSink.log(ttl, src, sev, msg, args);
 		}
-		writeLine(getEventFormatter().format(src, sev, msg, args));
+		writeLine(getEventFormatter().format(ttl, src, sev, msg, args));
 	}
 
 	@Override

@@ -528,4 +528,15 @@ public class TrackingEvent extends Message implements Trackable {
     public void setSource(Source src) {
 		source = src;
 	}
+
+	@Override
+    public long getTTL() {
+	    // TODO Auto-generated method stub
+	    return operation.getTTL();
+    }
+
+	@Override
+    public void setTTL(long ttl) {
+		operation.setTTL(ttl);
+	}
 }

@@ -35,6 +35,7 @@ import com.nastel.jkool.tnt4j.source.Source;
 public class PropertySnapshot implements Snapshot {
 	public static final String CATEGORY_DEFAULT = "Default";
 	
+	private long ttl = Operation.TTL_DEFAULT;
 	private OpLevel level;
 	private OpType opType = OpType.SNAPSHOT;
 	private String id = null;
@@ -327,5 +328,15 @@ public class PropertySnapshot implements Snapshot {
 			return ((Snapshot)obj).getId().equals(id);
 		}
 		return false;
+	}
+
+	@Override
+    public long getTTL() {
+	    return ttl;
+    }
+
+	@Override
+    public void setTTL(long ttl) {
+		this.ttl = ttl;
 	}
 }

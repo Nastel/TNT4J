@@ -48,7 +48,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  * @version $Revision: 12 $
  */
-public class Operation {
+public class Operation implements TTL {
 	/**
 	 * Current stack frame class marker prefix
 	 */
@@ -76,6 +76,7 @@ public class Operation {
 	private OpType				opType;
 	private OpCompCode			opCC = OpCompCode.SUCCESS;
 	private OpLevel				opLevel = OpLevel.INFO;
+	private long				ttlSec = Trackable.TTL_DEFAULT; // 0 is default time to live
 	private long				startTimeUs;
 	private long				endTimeUs;
 	private Throwable			exHandle;
@@ -254,6 +255,16 @@ public class Operation {
 	 */
 	public void setTID(long tid) {
 		this.tid = tid;
+	}
+
+	@Override
+	public long getTTL() {
+		return ttlSec;
+	}
+
+	@Override
+	public void setTTL(long ttl) {
+		this.ttlSec = ttl;
 	}
 
 	/**
@@ -919,6 +930,7 @@ public class Operation {
 	 */
 	public void addSnapshot(Snapshot snapshot) {
 		snapshots.put(snapshot.getId(), snapshot);
+		snapshot.setTTL(getTTL());
 	}
 
 	/**

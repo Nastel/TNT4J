@@ -110,9 +110,9 @@ public class FileEventSink extends AbstractEventSink {
 	}	
 
 	@Override
-    protected void _log(Source src, OpLevel sev, String msg, Object... args) {
+    protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) {
 		PrintStream printer = fileSink.getPrintStream();
-		printer.println(getEventFormatter().format(src, sev, msg, args));		
+		printer.println(getEventFormatter().format(ttl, src, sev, msg, args));		
 		printer.flush();
 	}	
 }

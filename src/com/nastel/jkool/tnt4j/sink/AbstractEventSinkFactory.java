@@ -19,6 +19,7 @@ import java.util.Map;
 
 import com.nastel.jkool.tnt4j.config.ConfigException;
 import com.nastel.jkool.tnt4j.config.Configurable;
+import com.nastel.jkool.tnt4j.core.TTL;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -36,6 +37,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  * @see EventSink
  * @see Configurable
+ * @see TTL
  *
  * @version $Revision: 1 $
  *
@@ -45,6 +47,7 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	private SinkEventFilter eventFilter = null;
 	private SinkErrorListener errorListener = null;
 	private SinkLogEventListener eventListener = null;
+	private long ttl = TTL.TTL_CONTEXT;
 
 	protected Map<String, Object> config = null;
 
@@ -73,9 +76,19 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 		if (eventListener != null) {
 			sink.addSinkLogEventListener(eventListener);
 		}
+		sink.setTTL(ttl);
 		return sink;
 	}
 
+	/**
+	 * Gets time to live in seconds
+	 *
+	 * @return time to live in seconds
+	 */
+	public long getTTL() {
+		return ttl;
+	}
+	
 	@Override
 	public Map<String, Object> getConfiguration() {
 		return config;
@@ -84,6 +97,10 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	@Override
 	public void setConfiguration(Map<String, Object> props) throws ConfigException {
 		config = props;
+		Object ttlValue = config.get("TTL");
+		if (ttlValue != null) {
+			ttl = Long.parseLong(ttlValue.toString());
+		}
 		eventFilter = (SinkEventFilter) Utils.createConfigurableObject("Filter", "Filter.", config);
 		errorListener = (SinkErrorListener) Utils.createConfigurableObject("ErrorListener", "ErrorListener.", config);
 		eventListener = (SinkLogEventListener) Utils.createConfigurableObject("EventListener", "EventListener.", config);

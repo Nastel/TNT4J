@@ -64,6 +64,7 @@ public interface EventFormatter extends Formatter {
 	/**
 	 * Format a given message and severity level combo
 	 *
+	 * @param ttl time to live in seconds
 	 * @param src event source
 	 * @param level severity level
 	 * @param msg message to be formatted
@@ -71,5 +72,5 @@ public interface EventFormatter extends Formatter {
 	 * @return formatted message and severity
 	 * @see OpLevel
 	 */
-	String format(Source src, OpLevel level, String msg, Object...args);
+	String format(long ttl, Source src, OpLevel level, String msg, Object...args);
 }

@@ -192,8 +192,8 @@ public class SimpleFormatter extends DefaultFormatter {
 	}
 	
 	@Override
-    public String format(Source src, OpLevel level, String msg, Object...args) {
-		String formatted = super.format(src, level, msg, args);
+    public String format(long ttl, Source src, OpLevel level, String msg, Object...args) {
+		String formatted = super.format(ttl, src, level, msg, args);
 		Throwable error = Utils.getThrowable(args);
 		if (error != null) {
 			formatted += "\nThrowable {\n" + Utils.printThrowable(error) + "}";

@@ -256,7 +256,7 @@ class LoggingTask implements Runnable {
 		}  else if (sinkO instanceof Snapshot) {
 			outSink.log(event.getSnapshot());
 		} else if (event.getEventSource() != null){
-			outSink.log(event.getEventSource(), event.getSeverity(),
+			outSink.log(event.getTTL(), event.getEventSource(), event.getSeverity(),
 					String.valueOf(sinkO), event.getArguments());
 		} else {
 			outSink.log(event.getSeverity(), String.valueOf(sinkO),

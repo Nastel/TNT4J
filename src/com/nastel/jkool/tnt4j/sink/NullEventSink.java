@@ -92,6 +92,6 @@ public class NullEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	protected void _log(Source src, OpLevel sev, String msg, Object... args) throws Exception {
+	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception {
 	}
 }

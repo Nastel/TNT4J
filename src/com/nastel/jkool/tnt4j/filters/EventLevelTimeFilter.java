@@ -50,6 +50,8 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	public static final String WAIT_USEC = "WaitUsec";
 	public static final String WALL_USEC = "WallUsec";
 	public static final String MSG_PATTERN = "MsgRegex";
+
+	private static final long TTL_UNDEFINED = -100;
 	
 	OpLevel sevLimit;
 	Pattern msgPattern;
@@ -57,6 +59,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	long elapsedUsec = -1;
 	long waitUsec = -1;
 	long wallUsec = -1;
+	private long ttl = TTL_UNDEFINED;
 	Map<String, Object> config = null;
 
 	/**
@@ -122,6 +125,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 			if (!msgPattern.matcher(event.getMessagePattern()).matches())
 				return false;
 		}
+		if (ttl != TTL_UNDEFINED) event.setTTL(ttl);
 		return (event.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(event.getSeverity());
 	}
 
@@ -139,11 +143,13 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 			if (activity.getWallTimeUsec() < wallUsec)
 				return false;
 		}
+		if (ttl != TTL_UNDEFINED) activity.setTTL(ttl);
 		return (activity.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(activity.getSeverity());
 	}
 
 	@Override
 	public boolean filter(EventSink sink, Snapshot snapshot) {
+		if (ttl != TTL_UNDEFINED) snapshot.setTTL(ttl);
 		return (snapshot.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(snapshot.getSeverity());
 	}
 
@@ -176,6 +182,11 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 		
 		Object wallStr = config.get(WALL_USEC);
 		wallUsec = (wallStr != null ? Long.parseLong(wallStr.toString()) : wallUsec);
+
+		Object ttlValue = config.get("TTL");
+		if (ttlValue != null) {
+			ttl = Long.parseLong(ttlValue.toString());
+		}
 
 		Object regex = config.get(MSG_PATTERN);
 		msgRegx = (regex != null ? regex.toString() : null);

@@ -156,31 +156,31 @@ public class SLF4JEventSink extends AbstractEventSink {
 	}
 	
 	@Override
-	protected void _log(Source src, OpLevel sev, String msg, Object... args) {
+	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) {
 		switch (sev) {
 		case HALT:
 		case FATAL:
 		case CRITICAL:
 		case FAILURE:
 		case ERROR:
-			logger.error(getEventFormatter().format(src, sev, msg, args), Utils.getThrowable(args));
+			logger.error(getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
 			break;
 		case DEBUG:
-			logger.debug(getEventFormatter().format(src, sev, msg, args), Utils.getThrowable(args));
+			logger.debug(getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
 			break;
 		case INFO:
 		case SUCCESS:
 		case NONE:
-			logger.info(getEventFormatter().format(src, sev, msg, args), Utils.getThrowable(args));
+			logger.info(getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
 			break;
 		case TRACE:
-			logger.trace(getEventFormatter().format(src, sev, msg, args), Utils.getThrowable(args));
+			logger.trace(getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
 			break;
 		case WARNING:
-			logger.warn(getEventFormatter().format(src, sev, msg, args), Utils.getThrowable(args));
+			logger.warn(getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
 			break;
 		default:
-			logger.info(getEventFormatter().format(src, sev, msg, args), Utils.getThrowable(args));
+			logger.info(getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
 			break;
 		}
 	}

@@ -117,7 +117,7 @@ public class DefaultFormatter implements EventFormatter, Configurable   {
     }
 	
 	@Override
-    public String format(Source src, OpLevel level, String msg, Object...args) {
+    public String format(long ttl, Source src, OpLevel level, String msg, Object...args) {
 		String srcName = src != null? src.getFQName(): DefaultSourceFactory.getInstance().getRootSource().getFQName();
 		return Utils.format(formatString, UsecTimestamp.getTimeStamp(timeZone), level, Utils.format(msg, args), srcName);
     }

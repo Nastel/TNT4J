@@ -164,6 +164,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		        Utils.quote(event.getOperation().getCompCode())).append(ATTR_JSON);
 		jsonString.append(JSON_COMP_CODE_NO_LABEL).append(ATTR_SEP).append(event.getOperation().getCompCode().ordinal()).append(ATTR_JSON);
 		jsonString.append(JSON_REASON_CODE_LABEL).append(ATTR_SEP).append(event.getOperation().getReasonCode()).append(ATTR_JSON);
+		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(event.getTTL()).append(ATTR_JSON);
 
 		if (!Utils.isEmpty(event.getLocation())) {
 			String escaped = StringEscapeUtils.escapeJson(event.getLocation()); // escape double quote chars
@@ -291,10 +292,9 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		jsonString.append(JSON_TID_LABEL).append(ATTR_SEP).append(activity.getTID()).append(ATTR_JSON);
 		jsonString.append(JSON_COMP_CODE_LABEL).append(ATTR_SEP).append(
 		        Utils.quote(activity.getCompCode())).append(ATTR_JSON);
-		jsonString.append(JSON_COMP_CODE_NO_LABEL).append(ATTR_SEP).append(
-		        activity.getCompCode().ordinal()).append(ATTR_JSON);
-		jsonString.append(JSON_REASON_CODE_LABEL).append(ATTR_SEP).append(activity.getReasonCode())
-		        .append(ATTR_JSON);
+		jsonString.append(JSON_COMP_CODE_NO_LABEL).append(ATTR_SEP).append(activity.getCompCode().ordinal()).append(ATTR_JSON);
+		jsonString.append(JSON_REASON_CODE_LABEL).append(ATTR_SEP).append(activity.getReasonCode()).append(ATTR_JSON);
+		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(activity.getTTL()).append(ATTR_JSON);
 		if (!Utils.isEmpty(activity.getLocation())) {
 			String escaped = StringEscapeUtils.escapeJson(activity.getLocation()); // escape double quote chars
 			jsonString.append(JSON_LOCATION_LABEL).append(ATTR_SEP).append(Utils.quote(escaped)).append(ATTR_JSON);
@@ -406,6 +406,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(snap.getSeverity().ordinal()).append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP).append(Utils.quote(snap.getType())).append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_NO_LABEL).append(ATTR_SEP).append(snap.getType().ordinal());
+		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(snap.getTTL()).append(ATTR_JSON);
 		if (snap.size() > 0) {
 			jsonString.append(ATTR_JSON);
 			jsonString.append(JSON_PROPERTIES_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON).append(
@@ -444,7 +445,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	}
 
 	@Override
-	public String format(Source source, OpLevel level, String msg, Object... args) {
+	public String format(long ttl, Source source, OpLevel level, String msg, Object... args) {
 		StringBuilder jsonString = new StringBuilder(1024);
 		jsonString.append(START_JSON);
 		jsonString.append(JSON_SEVERITY_LABEL).append(ATTR_SEP).append(Utils.quote(level)).append(ATTR_JSON);
@@ -457,6 +458,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		
 		String usrName = StringEscapeUtils.escapeJson(source == null? DefaultSourceFactory.getInstance().getRootSource().getUser(): source.getUser()); 
 		jsonString.append(JSON_USER_LABEL).append(ATTR_SEP).append(Utils.quote(usrName)).append(ATTR_JSON);
+		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(ttl).append(ATTR_JSON);
 		jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
 		if (source != null) {
 			jsonString.append(JSON_SOURCE_LABEL).append(ATTR_SEP).append(Utils.quote(source.getName())).append(ATTR_JSON);

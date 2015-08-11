@@ -19,6 +19,7 @@ import java.util.EventObject;
 
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.core.TTL;
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
@@ -37,7 +38,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 3 $
  * 
  */
-public class SinkLogEvent extends EventObject {
+public class SinkLogEvent extends EventObject implements TTL {
 	private static final long serialVersionUID = 1L;
 
 	private Object logObj = null;
@@ -46,6 +47,7 @@ public class SinkLogEvent extends EventObject {
 	private Source evSrc = null;
 	private OpLevel level = OpLevel.NONE;
 	private Object[] argList = null;
+	private long ttl;
 
 	/**
 	 * Create a new log event instance
@@ -62,6 +64,7 @@ public class SinkLogEvent extends EventObject {
 		level = msg.getSeverity();
 		evSrc = msg.getSource();
 		argList = msg.getMessageArgs();
+		ttl = msg.getTTL();
 	}
 
 	/**
@@ -77,6 +80,7 @@ public class SinkLogEvent extends EventObject {
 		logObj = msg;
 		error = msg.getThrowable();
 		evSrc = msg.getSource();
+		ttl = msg.getTTL();	
 	}
 
 	/**
@@ -93,6 +97,7 @@ public class SinkLogEvent extends EventObject {
 		logObj = snap;
 		snapshot = snap;
 		evSrc = snap.getSource();
+		ttl = snap.getTTL();	
 	}
 
 	/**
@@ -109,7 +114,7 @@ public class SinkLogEvent extends EventObject {
 	 * @param args
 	 *            argument list associated with the message
 	 */
-	public SinkLogEvent(EventSink sink, Source evSource, OpLevel sev, Object msg, Object... args) {
+	public SinkLogEvent(EventSink sink, Source evSource, OpLevel sev, long ttl, Object msg, Object... args) {
 		super(sink);
 		logObj = msg;
 		if (args != null && args.length > 0) {
@@ -188,9 +193,20 @@ public class SinkLogEvent extends EventObject {
 		return super.toString() 
 			+ "{source: " + getSource()
 			+ ", sev: " + level
+			+ ", ttl: " + ttl
 			+ ", log.obj: " + Utils.quote(logObj)
 			+ ", ev.source: " + Utils.quote(evSrc)
 		    + ", exception: " + Utils.quote(error)
 		    + "}";
+	}
+
+	@Override
+    public long getTTL() {
+	    return ttl;
+    }
+
+	@Override
+    public void setTTL(long ttl) {
+		this.ttl = ttl;
 	}
 }

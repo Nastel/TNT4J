@@ -29,8 +29,7 @@ import com.nastel.jkool.tnt4j.source.Source;
  * 
  * @version $Revision: 2 $
  */
-public interface Trackable {
-		
+public interface Trackable extends TTL {
 	/**
 	 * Set current/active <code>Source</code> with the trackable entity
 	 *

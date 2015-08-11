@@ -18,6 +18,7 @@ package com.nastel.jkool.tnt4j.sink;
 import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.core.TTL;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
@@ -29,7 +30,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * storage destination. All event sink implementations should be wrapped with this interface.
  * </p>
  *
- *
+ * @see TTL
  * @see OpLevel
  * @see Source
  * @see TrackingEvent
@@ -38,7 +39,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  * @version $Revision: 7 $
  *
  */
-public interface EventSink extends Sink, KeyValueStats {
+public interface EventSink extends Sink, TTL, KeyValueStats {
 	static final String KEY_SINK_ERROR_COUNT = "sink-errors";
 	static final String KEY_LOGGED_MSGS = "sink-messages";
 	static final String KEY_SINK_WRITES= "sink-direct-writes";
@@ -197,13 +198,14 @@ public interface EventSink extends Sink, KeyValueStats {
 	/**
 	 * Log a given string message with a specified severity
 	 *
+	 * @param ttl time to live in seconds {@link TTL}
 	 * @param src log message source info
 	 * @param sev message severity to log
 	 * @param msg string message to be logged
 	 * @param args arguments passed along the message
 	 * @see OpLevel
 	 */
-	void log(Source src, OpLevel sev, String msg, Object...args);
+	void log(long ttl, Source src, OpLevel sev, String msg, Object...args);
 
 	/**
 	 * Register an event sink listener for notifications when errors

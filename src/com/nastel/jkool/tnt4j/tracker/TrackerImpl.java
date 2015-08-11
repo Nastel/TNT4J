@@ -30,6 +30,7 @@ import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Operation;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.core.TTL;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
 import com.nastel.jkool.tnt4j.sink.DefaultEventSinkFactory;
 import com.nastel.jkool.tnt4j.sink.EventSink;
@@ -466,7 +467,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
     public void log(OpLevel sev, String msg, Object... args) {
 		long start = System.nanoTime();
 		try {
-			eventSink.log(getSource(), sev, msg, args);
+			eventSink.log(TTL.TTL_DEFAULT, getSource(), sev, msg, args);
 			msgCount.incrementAndGet();
 		} catch (Throwable ex) {
 			if (logger.isSet(OpLevel.DEBUG)) {

@@ -288,6 +288,7 @@ public class Activity extends Operation implements Trackable {
 		if (item instanceof Snapshot) {
 			addSnapshot((Snapshot)item);
 		}
+		item.setTTL(getTTL());
 		item.setParentId(this);
 	}
 
