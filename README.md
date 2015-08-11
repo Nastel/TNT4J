@@ -10,6 +10,7 @@ Why track and trace your applications?
 * Track location, mobility, GPS of your applications, users
 * Track anything worth tracking in your application
 * Know you application: what, where, when, why 
+* Events may have TTL for sinks that support event expiration
 
 <b>Several key features make TNT4J a prime choice for your java application:</b>
 
