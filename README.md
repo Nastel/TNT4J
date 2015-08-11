@@ -313,12 +313,12 @@ class MyEventFilter implements SinkEventFilter {
 	}
 
 	@Override
-	public boolean filter(EventSink arg0, TrackingEvent event) {
+	public boolean filter(EventSink sink, TrackingEvent event) {
 		return logger.isSet(event.getSeverity(), "myappl.token");
 	}
 
 	@Override
-	public boolean filter(EventSink arg0, TrackingActivity activity) {
+	public boolean filter(EventSink sink, TrackingActivity activity) {
 		return logger.isSet(activity.getSeverity(), "myappl.token");
 	}
 
@@ -328,7 +328,7 @@ class MyEventFilter implements SinkEventFilter {
 	}
 	
 	@Override
-	public boolean filter(EventSink arg0, long ttl, Source src, OpLevel level, String msg, Object... args) {
+	public boolean filter(EventSink sink, long ttl, Source src, OpLevel level, String msg, Object... args) {
 		return logger.isSet(level, "myappl.token");
 	}
 }
