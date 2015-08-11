@@ -45,8 +45,8 @@ public interface TTL {
 	long getTTL();
 
 	/**
-	 * Sets time to live in seconds. 
-	 * Negative number implies no TTL and instructs underlying sinks to disable persistence.
+	 * Sets time to live in seconds. Negative number implies no TTL and instructs underlying sinks to disable
+	 * persistence.
 	 *
 	 * @param ttl
 	 *            time to live in seconds
