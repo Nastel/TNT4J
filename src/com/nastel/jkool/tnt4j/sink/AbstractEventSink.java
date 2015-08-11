@@ -69,19 +69,41 @@ public abstract class AbstractEventSink implements EventSink {
 	private AtomicLong errorCount = new AtomicLong(0);
 	private AtomicLong skipCount = new AtomicLong(0);
 
+	/**
+	 * Create an event sink with a given name
+	 * 
+	 * @param nm event sink name
+	 */
 	public AbstractEventSink(String nm) {
-		name = nm;
+		this.name = nm;
 	}
 
+	/**
+	 * Create an event sink with a given name
+	 * and event formatter and default {@link TTL.TTL_CONTEXT}
+	 * 
+	 * @param nm event sink name
+	 * @param fmt event formatter instance
+	 */
 	public AbstractEventSink(String nm, EventFormatter fmt) {
-		name = nm;
-		formatter = fmt;
+		this.name = nm;
+		this.formatter = fmt;
 	}
 
+	/**
+	 * Create an event sink with a given name
+	 * and event formatter
+	 * 
+	 * @param nm event sink name
+	 * @param ttl time to live for events written to this sink
+	 * @param fmt event formatter instance
+	 * 
+	 * @see TTL
+	 */
 	public AbstractEventSink(String nm, long ttl, EventFormatter fmt) {
-		name = nm;
+		this.name = nm;
 		this.ttl = ttl;
-		formatter = fmt;
+		this.formatter = fmt;
 	}
 
 	@Override
@@ -386,7 +408,12 @@ public abstract class AbstractEventSink implements EventSink {
 
 	@Override
 	public void log(OpLevel sev, String msg, Object... args) {
-		log((ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, source, sev, msg, args);
+		log(source, sev, msg, args);
+	}
+
+	@Override
+	public void log(Source src, OpLevel sev, String msg, Object... args) {
+		log((ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, src, sev, msg, args);
 	}
 
 	@Override

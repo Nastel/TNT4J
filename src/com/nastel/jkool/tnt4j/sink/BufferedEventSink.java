@@ -160,7 +160,12 @@ public class BufferedEventSink implements EventSink {
 
 	@Override
     public void log(OpLevel sev, String msg, Object... args) {
-		log((ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, source, sev, msg, args);
+		log(source, sev, msg, args);
+    }
+
+	@Override
+    public void log(Source src, OpLevel sev, String msg, Object... args) {
+		log((ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, src, sev, msg, args);
     }
 
 	@Override

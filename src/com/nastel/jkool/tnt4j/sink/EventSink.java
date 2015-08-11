@@ -198,6 +198,17 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Log a given string message with a specified severity
 	 *
+	 * @param src log message source info
+	 * @param sev message severity to log
+	 * @param msg string message to be logged
+	 * @param args arguments passed along the message
+	 * @see OpLevel
+	 */
+	void log(Source src, OpLevel sev, String msg, Object...args);
+
+	/**
+	 * Log a given string message with a specified severity
+	 *
 	 * @param ttl time to live in seconds {@link TTL}
 	 * @param src log message source info
 	 * @param sev message severity to log
