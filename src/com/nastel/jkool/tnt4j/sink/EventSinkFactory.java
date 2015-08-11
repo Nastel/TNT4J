@@ -17,6 +17,7 @@ package com.nastel.jkool.tnt4j.sink;
 
 import java.util.Properties;
 
+import com.nastel.jkool.tnt4j.core.TTL;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 
 /**
@@ -31,7 +32,7 @@ import com.nastel.jkool.tnt4j.format.EventFormatter;
  * @version $Revision: 2 $
  *
  */
-public interface EventSinkFactory {
+public interface EventSinkFactory extends TTL {
 	/**
 	 * Obtain an instance of <code>EventSink</code> by name
 	 *

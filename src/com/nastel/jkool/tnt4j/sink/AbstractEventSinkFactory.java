@@ -43,7 +43,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  */
 
-abstract public class AbstractEventSinkFactory implements EventSinkFactory, Configurable, TTL {
+abstract public class AbstractEventSinkFactory implements EventSinkFactory, Configurable {
 	private SinkEventFilter eventFilter = null;
 	private SinkErrorListener errorListener = null;
 	private SinkLogEventListener eventListener = null;

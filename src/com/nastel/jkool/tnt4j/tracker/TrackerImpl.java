@@ -467,7 +467,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
     public void log(OpLevel sev, String msg, Object... args) {
 		long start = System.nanoTime();
 		try {
-			eventSink.log(TTL.TTL_DEFAULT, getSource(), sev, msg, args);
+			eventSink.log(eventSink.getTTL(), getSource(), sev, msg, args);
 			msgCount.incrementAndGet();
 		} catch (Throwable ex) {
 			if (logger.isSet(OpLevel.DEBUG)) {

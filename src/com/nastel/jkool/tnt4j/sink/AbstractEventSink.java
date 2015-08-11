@@ -414,7 +414,7 @@ public abstract class AbstractEventSink implements EventSink {
 			sinkWrites.incrementAndGet();
 			lastTime.set(System.currentTimeMillis());
 			if (logListeners.size() > 0) {
-				notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, ttl, msg, args));
+				notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, (ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, msg, args));
 			}
 		} catch (Throwable ex) {
 			notifyListeners(msg, ex);
