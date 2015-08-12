@@ -24,6 +24,7 @@ import com.nastel.jkool.tnt4j.core.ActivityStatus;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.core.ValueTypes;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
@@ -65,10 +66,10 @@ public class AppenderTools implements AppenderConstants {
 			int sIdx = key.indexOf(":");
 			if (sIdx > 0) {
 				int eIdx = key.indexOf("/");
-				return ((eIdx - sIdx) > 1? key.substring(sIdx+1, eIdx): null);
+				return ((eIdx - sIdx) > 1? key.substring(sIdx+1, eIdx): ValueTypes.VALUE_TYPE_NONE);
 			}
 		}
-		return null;
+		return ValueTypes.VALUE_TYPE_NONE;
 	}
 
 	/**
