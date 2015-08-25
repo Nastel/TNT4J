@@ -395,7 +395,7 @@ How to Build TNT4J
 =========================================
 
 Requirements
-* JDK 1.7+
+* JDK 1.6+
 * Apache ANT (http://ant.apache.org/)
 
 TNT4J depends on the following external packages:
@@ -415,27 +415,13 @@ To build TNT4J:
 	* Check ../build/tnt4j for output
 	* JavaDoc will be located under ../build/tnt4j/doc
 	
-Running Samples
-===============================================
-* Directory Monitor (`com.nastel.jkool.tnt4j.examples.FolderMonitor`). Monitors a given directory for added, modified, deleted files.
-```java	
-java -Dorg.slf4j.simpleLogger.defaultLogLevel=debug -Dtnt4j.config=config/tnt4j.properties -Dtnt4j.dump.on.vm.shutdown=true -Dtnt4j.dump.provider.default=true -classpath tnt4j-api-final-all.jar com.nastel.jkool.tnt4j.examples.FolderMonitor /temp
-```
-<b>Command line arguments:</b>
-* `-Dorg.slf4j.simpleLogger.defaultLogLevel=debug` -- default logging level for SLF4J simple logger binding.
-* `-Dtnt4j.dump.on.vm.shutdown=true` java property allows application state dumps generated automatically upon VM shutdown.
-* `-Dtnt4j.dump.provider.default=true` java property registers all default dump providers (memory, stack, logging stats).
-* `-Dtnt4j.formatter.json.newline=true` java property directs `JSONFormatter` to append new line when formatting log entries.
-
-See `<timestamp>.log` and `<vmid>.dump` files for output produced by `com.nastel.jkool.tnt4j.examples.FolderMonitor`.
-See `config/tnt4j.properties` for TNT4J configuration: factories, formatters, listeners, etc.
-See Wiki for more information.
 
 Known Projects Using TNT4J
 ===============================================
 * Simple End-User Tracking for Java EE - TrackingFilter (https://github.com/Nastel/TrackingFilter)
 * JMX Streaming Agent - PingJMX (https://github.com/Nastel/PingJMX)
 * Cloud Event Streaming Library - JESL (https://github.com/Nastel/JESL)
+* TNT4J/Samples (https://github.com/Nastel/tnt4j-examples)
 * TNT4J/Log4J 1.2 Appender (https://github.com/Nastel/tnt4j-log4j12)
 * TNT4J/Logback Appender (https://github.com/Nastel/tnt4j-logback)
 * TNT4Spark - tracking for Apache Spark (https://github.com/Nastel/TNT4Spark)
