@@ -115,7 +115,6 @@
    <echo message="Copying TNT4J configuration" level="info"/>
 	<copy todir="${project-build}/config">
 		<fileset dir="${root}/config">
-			<include name="log4j.properties"/>
 			<include name="tnt4j.properties"/>
 			<include name="tnt4j-tokens.properties"/>
 		</fileset>
