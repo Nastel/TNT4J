@@ -536,22 +536,24 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 * format pattern, milliseconds.
 	 *
 	 * @param pattern format pattern
-	 * @param msecs milliseconds
+	 * @param usecs milliseconds
 	 * @return formatted date/time string based on pattern
 	 */
-	public static String getTimeStamp(String pattern, long msecs) {
-		return getTimeStamp(pattern, msecs, 0);
+	public static String getTimeStamp(String pattern, long usecs) {
+		long msecs = usecs/1000L;
+		return getTimeStamp(pattern, msecs, (usecs - msecs*1000));
 	}
 
 	/**
 	 * Returns the string representation of the timestamp based on the default
-	 * format pattern, milliseconds.
+	 * format pattern, microseconds.
 	 *
-	 * @param msecs milliseconds
+	 * @param usecs microseconds
 	 * @return formatted date/time string based on pattern
 	 */
-	public static String getTimeStamp(long msecs) {
-		return getTimeStamp(null, msecs, 0);
+	public static String getTimeStamp(long usecs) {
+		long msecs = usecs/1000L;
+		return getTimeStamp(null, msecs, (usecs - msecs*1000));
 	}
 
 	/**

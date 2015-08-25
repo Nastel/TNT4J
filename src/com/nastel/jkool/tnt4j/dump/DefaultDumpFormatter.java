@@ -86,7 +86,7 @@ public class DefaultDumpFormatter implements DumpFormatter {
 		buffer.append(padding).append(Utils.quote("dump.category")).append(": ").append(Utils.quote(dump.getCategory())).append(END_ATTR);
 		buffer.append(padding).append(Utils.quote("dump.provider")).append(": ").append(Utils.quote(dump.getDumpProvider().getProviderName())).append(END_ATTR);
 		buffer.append(padding).append(Utils.quote("dump.provider.category")).append(": ").append(Utils.quote(dump.getDumpProvider().getCategoryName())).append(END_ATTR);
-		buffer.append(padding).append(Utils.quote("dump.time.string")).append(": ").append(Utils.quote(UsecTimestamp.getTimeStamp(dump.getTime()))).append(END_ATTR);
+		buffer.append(padding).append(Utils.quote("dump.time.string")).append(": ").append(Utils.quote(UsecTimestamp.getTimeStamp(dump.getTime(),0))).append(END_ATTR);
 		buffer.append(padding).append(Utils.quote("dump.time.stamp")).append(": ").append(dump.getTime()).append(END_ATTR);
 		buffer.append(padding).append(Utils.quote("dump.snapshot")).append(": {\n");
 		int startLen = buffer.length();
