@@ -31,9 +31,9 @@ import java.util.Date;
  * @version $Revision: 7 $
  */
 public class Property {
-	private String  		key;
-	private Object			value;
-	private String			valueType = ValueTypes.VALUE_TYPE_NONE;
+	private String	key;
+	private Object	value;
+	private String	valueType = ValueTypes.VALUE_TYPE_NONE;
 
 
 	/**
