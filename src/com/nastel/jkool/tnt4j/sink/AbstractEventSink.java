@@ -418,7 +418,7 @@ public abstract class AbstractEventSink implements EventSink {
 
 	@Override
 	public void log(Source src, OpLevel sev, String msg, Object... args) {
-		log((ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, src, sev, msg, args);
+		log(ttl, src, sev, msg, args);
 	}
 
 	@Override
@@ -427,11 +427,12 @@ public abstract class AbstractEventSink implements EventSink {
 		boolean doLog = filterCheck? isLoggable(ttl_sec, source, sev, msg): true;
 		if (doLog) {
 			try {
-				_log(ttl_sec, src, sev, msg, args);
+				long nttl = ((ttl_sec != TTL.TTL_CONTEXT)? ttl_sec: TTL.TTL_DEFAULT);
+				_log(nttl, src, sev, msg, args);
 				loggedMsgs.incrementAndGet();
 				lastTime.set(System.currentTimeMillis());
 				if (logListeners.size() > 0) {
-					notifyListeners(new SinkLogEvent(this, src, sev, ttl_sec, msg, args));
+					notifyListeners(new SinkLogEvent(this, src, sev, nttl, msg, args));
 				}
 			} catch (Throwable ex) {
 				notifyListeners(msg, ex);

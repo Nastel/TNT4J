@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.core.TTL;
 import com.nastel.jkool.tnt4j.sink.EventSink;
 import com.nastel.jkool.tnt4j.sink.SinkEventFilter;
 import com.nastel.jkool.tnt4j.source.Source;
@@ -51,8 +52,6 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	public static final String WALL_USEC = "WallUsec";
 	public static final String TTL_SEC = "TTL";
 	public static final String MSG_PATTERN = "MsgRegex";
-
-	private static final long TTL_UNDEFINED = -100;
 	
 	OpLevel sevLimit;
 	Pattern msgPattern;
@@ -60,7 +59,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	long elapsedUsec = -1;
 	long waitUsec = -1;
 	long wallUsec = -1;
-	private long ttl = TTL_UNDEFINED;
+	private long ttl = TTL.TTL_CONTEXT;
 	Map<String, Object> config = null;
 
 	/**
@@ -126,7 +125,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 			if (!msgPattern.matcher(event.getMessagePattern()).matches())
 				return false;
 		}
-		if (ttl != TTL_UNDEFINED) event.setTTL(ttl);
+		if (ttl != TTL.TTL_CONTEXT) event.setTTL(ttl);
 		return (event.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(event.getSeverity());
 	}
 
@@ -144,13 +143,13 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 			if (activity.getWallTimeUsec() < wallUsec)
 				return false;
 		}
-		if (ttl != TTL_UNDEFINED) activity.setTTL(ttl);
+		if (ttl != TTL.TTL_CONTEXT) activity.setTTL(ttl);
 		return (activity.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(activity.getSeverity());
 	}
 
 	@Override
 	public boolean filter(EventSink sink, Snapshot snapshot) {
-		if (ttl != TTL_UNDEFINED) snapshot.setTTL(ttl);
+		if (ttl != TTL.TTL_CONTEXT) snapshot.setTTL(ttl);
 		return (snapshot.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(snapshot.getSeverity());
 	}
 

@@ -79,4 +79,11 @@ public interface SourceFactory {
 	 * @return source handle representing the path.
 	 */
 	Source newFromFQN(String fqn);
+	
+	/**
+	 * Gets streaming source name (sender name)
+	 * 
+	 * @return streaming source name (sender name)
+	 */
+	String getSSN();
 }

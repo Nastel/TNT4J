@@ -82,7 +82,8 @@ public class Operation implements TTL {
 	private Throwable			exHandle;
 	
 	private HashSet<String> 	correlators = new HashSet<String>(89);
-	private HashMap<String, Snapshot>	snapshots =  new HashMap<String, Snapshot>(32);
+	private HashMap<String, Snapshot>	snapshots =  new HashMap<String, Snapshot>(89);
+	private HashMap<String, Property> 	properties = new HashMap<String, Property>(89);
 
 	// timing attributes
 	private int startStopCount = 0;
@@ -565,11 +566,19 @@ public class Operation implements TTL {
 	}
 
 	/**
-	 * Remove all correlators from this message
+	 * Remove all correlators
 	 *
 	 */
 	public void clearCorrelators() {
 		this.correlators.clear();
+	}
+
+	/**
+	 * Remove all properties
+	 *
+	 */
+	public void clearProperties() {
+		this.properties.clear();
 	}
 
 	/**
@@ -900,14 +909,61 @@ public class Operation implements TTL {
 		return str.toString();
 	}
 
+	/**
+	 * Gets all available property keys associated with this operation
+	 *
+	 * @return a set of all available property keys
+	 */
+	public Set<String> getPropertyKeys() {
+		return properties.keySet();
+	}
 
+	/**
+	 * Add a user defined property
+	 *
+	 * @param prop property to be added
+	 * @see Property
+	 */
+	public void addProperty(Property prop) {
+		properties.put(prop.getKey(), prop);
+	}
 
+	/**
+	 * Gets a property associated with a specific key/id
+	 *
+	 * @param key property id
+	 * @return property associated with a given key
+	 * @see Snapshot
+	 */
+	public Property getProperty(Object key) {
+		return properties.get(key);
+	}
+
+	/**
+	 * Gets the list of available properties
+	 *
+	 * @return list of available properties
+	 * @see Property
+	 */
+	public Collection<Property> getProperties() {
+		return properties.values();
+	}
+
+	/**
+	 * Gets the number of available properties.
+	 *
+	 * @return number of available properties
+	 */
+	public int getPropertyCount() {
+		return properties != null ? properties.size() : 0;
+	}
+	
 	/**
 	 * Gets all available snapshot keys associated with this operation
 	 *
 	 * @return a set of all available snapshot keys
 	 */
-	public Set<String> getSnapshotIds() {
+	public Set<String> getSnapshotKeys() {
 		return snapshots.keySet();
 	}
 

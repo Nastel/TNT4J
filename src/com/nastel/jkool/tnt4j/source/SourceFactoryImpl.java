@@ -42,6 +42,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  */
 public class SourceFactoryImpl implements SourceFactory, Configurable {
 	public final static String UNKNOWN_SOURCE = "UNKNOWN";
+	public final static String DEFAULT_SOURCE_ROOT_SSN = System.getProperty("tnt4j.source.root.ssn", "tnt4j");
 	public final static String DEFAULT_SOURCE_ROOT_FQN = System.getProperty("tnt4j.source.root.fqname", "RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?");
 	
 	private final static String TNT4J_SOURCE_PFIX = "tnt4j.source.";	
@@ -79,6 +80,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 
 	private Map<String, Object> config = null;
 	private String rootFqn = DEFAULT_SOURCE_ROOT_FQN;
+	private String rootSSN = DEFAULT_SOURCE_ROOT_SSN;
 	private String [] defaultSources = DEFAULT_SOURCES.clone();
 	private Source rootSource = null;
 
@@ -108,7 +110,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 
 	@Override
     public Source newSource(String name, SourceType tp, Source parent, String user) {
-	    return new DefaultSource(getNameFromType(name, tp), tp, parent, user);
+	    return new DefaultSource(this, getNameFromType(name, tp), tp, parent, user);
     }
 
 	@Override
@@ -136,6 +138,9 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 		if (config.get("RootFQN") != null) {
 			rootFqn = config.get("RootFQN") != null? config.get("RootFQN").toString(): DEFAULT_SOURCE_ROOT_FQN;
 			rootSource = newFromFQN(rootFqn);			
+		}		
+		if (config.get("RootSSN") != null) {
+			rootSSN = config.get("RootSSN") != null? config.get("RootSSN").toString(): DEFAULT_SOURCE_ROOT_SSN;
 		}
    }
 	
@@ -201,7 +206,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 			String sName = tk.nextToken();
 			String[] pair = sName.split("=");
 			SourceType type = SourceType.valueOf(pair[0]);
-			DefaultSource source = new DefaultSource(getNameFromType(pair[1], type), type, null,  getNameFromType("?", SourceType.USER));
+			DefaultSource source = new DefaultSource(this, getNameFromType(pair[1], type), type, null,  getNameFromType("?", SourceType.USER));
 			if (child != null)
 				child.setSource(source);
 			if (root == null)
@@ -210,5 +215,9 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 		}
 		return root;		
 	}
-	
+
+	@Override
+	public String getSSN() {
+		return rootSSN;
+	}	
 }

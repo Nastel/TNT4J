@@ -30,9 +30,10 @@ public class DefaultSource implements Source {
 	private String sname;
 	private String user;
 	private String url;
-	private String info;
+	private String ssname;
 	private Source parentSource;
 	private SourceType sourceType;
+	private SourceFactory factory;
 
 	/**
 	 * Creates an Source object with the specified properties.
@@ -46,7 +47,8 @@ public class DefaultSource implements Source {
 	 * @param userName
 	 *            user name associated with this source
 	 */
-	public DefaultSource(String name, SourceType type, Source root, String userName) {
+	public DefaultSource(SourceFactory fac, String name, SourceType type, Source root, String userName) {
+		factory = fac;
 		setName(name);
 		setType(type);
 		setSource(root);
@@ -120,13 +122,13 @@ public class DefaultSource implements Source {
 	}
 
 	@Override
-	public String getInfo() {
-		return info;
+	public String getSSN() {
+		return !Utils.isEmpty(ssname)? ssname: (parentSource != null? parentSource.getSSN(): ssname);
 	}
 
 	@Override
-	public void setInfo(String inf) {
-		this.info = inf;
+	public void setSSN(String ssn) {
+		this.ssname = ssn;
 	}
 
 	@Override
@@ -154,6 +156,7 @@ public class DefaultSource implements Source {
 		int result = 1;
 
 		result = prime * result + ((sname == null) ? 0 : sname.hashCode());
+		result = prime * result + ((ssname == null) ? 0 : ssname.hashCode());
 		result = prime * result + ((user == null) ? 0 : user.hashCode());
 		result = prime * result + ((sourceType == null) ? 0 : sourceType.hashCode());
 
@@ -204,14 +207,14 @@ public class DefaultSource implements Source {
 
 		str.append(super.toString()).append("{").append("FQName: ").append(getFQName()).append(",").append("Name: ")
 		        .append(getName()).append(",").append("User: ").append(getUser()).append(",").append("Type: ")
-		        .append(getType()).append(",").append("URL: ").append(getUrl()).append(",").append("OS: ")
-		        .append(Utils.quote(getInfo())).append("}");
+		        .append(getType()).append(",").append("URL: ").append(Utils.quote(getUrl())).append(",").append("SSN: ")
+		        .append(Utils.quote(getSSN())).append("}");
 
 		return str.toString();
 	}
 
-	protected void setDefaultInfo() {
-		setInfo(System.getProperty("os.name") + ", Version: " + System.getProperty("os.version") + ", Arch: "
-		        + System.getProperty("os.arch"));
+	@Override
+	public SourceFactory getSourceFactory() {
+		return factory;
 	}
 }

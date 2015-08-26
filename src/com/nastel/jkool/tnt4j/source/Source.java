@@ -83,20 +83,18 @@ public interface Source {
 	void setUrl(String url);
 
 	/**
+	 * Gets streaming source name (sender name)
 	 * 
-	 * Gets source info string.
-	 * 
-	 * @return source info
+	 * @return streaming source name (sender name)
 	 */
-	String getInfo();
+	String getSSN();
 
 	/**
-	 * Sets source info associated with this source
+	 * Sets streaming source name (sender name)
 	 * 
-	 * @param inf
-	 *            info associated with the source
+	 * @param ssn streaming source name (sender name)
 	 */
-	void setInfo(String inf);
+	void setSSN(String ssn);
 
 	/**
 	 * Gets source type.
@@ -104,4 +102,11 @@ public interface Source {
 	 * @return container type
 	 */
 	SourceType getType();
+
+	/**
+	 * Gets source factory.
+	 * 
+	 * @return source factory
+	 */
+	SourceFactory getSourceFactory();
 }

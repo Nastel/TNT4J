@@ -45,7 +45,7 @@ interface JSONLabels {
 	static final String JSON_SOURCE_FIELD = "source";
 	static final String JSON_SOURCE_URL_FIELD = "source-url";
 	static final String JSON_SOURCE_FQN_FIELD = "source-fqn";
-	static final String JSON_SOURCE_INFO_FIELD = "source-info";
+	static final String JSON_SOURCE_SSN_FIELD = "source-ssn";
 	static final String JSON_RESOURCE_FIELD = "resource";
 	static final String JSON_OPERATION_FIELD = "operation";
 	static final String JSON_LOCATION_FIELD = "location";
@@ -71,6 +71,7 @@ interface JSONLabels {
 	static final String JSON_MSG_TEXT_FIELD = "msg-text";
 	static final String JSON_ID_COUNT_FIELD = "id-count";
 	static final String JSON_SNAPSHOT_COUNT_FIELD = "snap-count";
+	static final String JSON_PROPERTY_COUNT_FIELD = "prop-count";
 	static final String JSON_EXCEPTION_FIELD = "exception";
 	static final String JSON_SNAPSHOTS_FIELD = "snapshots";
 	static final String JSON_ID_SET_FIELD = "id-set";
@@ -93,7 +94,7 @@ interface JSONLabels {
 	static final String JSON_SOURCE_LABEL = Utils.quote(JSON_SOURCE_FIELD);
 	static final String JSON_SOURCE_URL_LABEL = Utils.quote(JSON_SOURCE_URL_FIELD);
 	static final String JSON_SOURCE_FQN_LABEL = Utils.quote(JSON_SOURCE_FQN_FIELD);
-	static final String JSON_SOURCE_INFO_LABEL = Utils.quote(JSON_SOURCE_INFO_FIELD);
+	static final String JSON_SOURCE_SSN_LABEL = Utils.quote(JSON_SOURCE_SSN_FIELD);
 	static final String JSON_RESOURCE_LABEL = Utils.quote(JSON_RESOURCE_FIELD);
 	static final String JSON_OPERATION_LABEL = Utils.quote(JSON_OPERATION_FIELD);
 	static final String JSON_LOCATION_LABEL = Utils.quote(JSON_LOCATION_FIELD);
@@ -119,6 +120,7 @@ interface JSONLabels {
 	static final String JSON_MSG_TEXT_LABEL = Utils.quote(JSON_MSG_TEXT_FIELD);
 	static final String JSON_ID_COUNT_LABEL = Utils.quote(JSON_ID_COUNT_FIELD);
 	static final String JSON_SNAPSHOT_COUNT_LABEL = Utils.quote(JSON_SNAPSHOT_COUNT_FIELD);
+	static final String JSON_PROPERTY_COUNT_LABEL = Utils.quote(JSON_PROPERTY_COUNT_FIELD);
 	static final String JSON_EXCEPTION_LABEL = Utils.quote(JSON_EXCEPTION_FIELD);
 	static final String JSON_SNAPSHOTS_LABEL = Utils.quote(JSON_SNAPSHOTS_FIELD);
 	static final String JSON_ID_SET_LABEL = Utils.quote(JSON_ID_SET_FIELD);
