@@ -895,6 +895,7 @@ public class Operation implements TTL {
 		   .append("Resource:").append(res == null ? "null" : res.toString()).append(",")
 		   .append("User:").append(getUser()).append(",")
 		   .append("SnapCount=").append(getSnapshotCount()).append(",")
+		   .append("PropCount=").append(getPropertyCount()).append(",")
 		   .append("CompCode:").append(getCompCode()).append(",")
 		   .append("ReasonCode:").append(getReasonCode()).append(",")
 		   .append("PID:").append(getPID()).append(",")
