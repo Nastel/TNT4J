@@ -15,6 +15,7 @@
  */
 package com.nastel.jkool.tnt4j.core;
 
+import java.util.Collection;
 import java.util.Set;
 
 import com.nastel.jkool.tnt4j.source.Source;
@@ -61,6 +62,13 @@ public interface Trackable extends TTL {
 	 * @param cid tracking correlator list
 	 */
 	void setCorrelator(String...cid);
+	
+	/**
+	 * Sets tracking correlators
+	 *
+	 * @param cids tracking correlator list
+	 */
+	void setCorrelator(Collection<String> cids);
 	
 	/**
 	 * Gets operation type associated with the trackable instance

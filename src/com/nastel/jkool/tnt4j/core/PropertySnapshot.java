@@ -259,6 +259,11 @@ public class PropertySnapshot implements Snapshot {
 	}
 
 	@Override
+    public void setCorrelator(Collection<String> clist) {
+		this.correlators.addAll(clist);
+	}
+
+	@Override
     public String getParentId() {
 	    return parent_id;
     }

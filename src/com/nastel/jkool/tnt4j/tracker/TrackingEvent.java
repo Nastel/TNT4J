@@ -362,23 +362,16 @@ public class TrackingEvent extends Message implements Trackable {
     }
 
 
-	/**
-	 * Sets correlators, which are user-defined values that relate two separate
-	 * operations as belonging to the same activity.
-	 *
-	 * @param cids user-defined list of correlators
-	 */
 	@Override
 	public void setCorrelator(String...cids) {
 		operation.setCorrelator(cids);
 	}
 
-	/**
-	 * Gets correlators, which are  user-defined values that relate two separate
-	 * operations as belonging to the same activity.
-	 *
-	 * @return user-defined list of correlators
-	 */
+	@Override
+    public void setCorrelator(Collection<String> cids) {
+		operation.setCorrelator(cids);
+    }
+
 	@Override
 	public Set<String> getCorrelator() {
 		return operation.getCorrelator();
