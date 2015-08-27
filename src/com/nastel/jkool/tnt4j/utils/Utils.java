@@ -55,6 +55,11 @@ import com.nastel.jkool.tnt4j.config.Configurable;
 public class Utils {
 
 	/**
+	 * Current stack frame class marker prefix
+	 */
+	public static final String OP_STACK_MARKER_PREFIX = "$";
+
+	/**
 	 * ASCII character set.
 	 */
 	public static final String ASCII = "US-ASCII";
@@ -445,6 +450,63 @@ public class Utils {
 	}
 
 	/**
+	 * Gets resolved name of the method that triggered the operation using
+	 * current stack frame.
+	 *
+	 * @param opName operation name
+	 * @return name triggering operation
+	 */
+	public static String getMethodNameFromStack(String opName) {
+		if (!opName.startsWith(OP_STACK_MARKER_PREFIX)) {
+			return opName;
+		} else {
+			String marker = opName.substring(1);
+			String[] pair = marker.split(":");
+			int offset = pair.length == 2? Integer.parseInt(pair[1]): 0;
+			StackTraceElement item = Utils.getStackFrame(pair[0], offset);
+			return item.toString();
+		}
+	}
+
+	/**
+	 * Gets resolved name of the method that triggered the operation using
+	 * current stack frame.
+	 *
+	 * @param marker class marker to be used to locate the stack frame
+	 * @param offset offset from the located stack frame (must be >= 0)
+	 * @return name triggering operation
+	 */
+	public static String getMethodNameFromStack(String marker, int offset) {
+		StackTraceElement item = Utils.getStackFrame(marker, offset);
+		return item.toString();
+	}
+
+	/**
+	 * Gets resolved name of the method that triggered the operation using
+	 * current stack frame.
+	 *
+	 * @param classMarker class marker to be used to locate the stack frame
+	 * @return name triggering operation
+	 */
+	public static String getMethodNameFromStack(Class<?> classMarker) {
+		StackTraceElement item = Utils.getStackFrame(classMarker.getName(), 0);
+		return item.toString();
+	}
+
+	/**
+	 * Gets resolved name of the method that triggered the operation using
+	 * current stack frame.
+	 *
+	 * @param classMarker class marker to be used to locate the stack frame
+	 * @param offset offset from the located stack frame (must be >= 0)
+	 * @return name triggering operation
+	 */
+	public static String getMethodNameFromStack(Class<?> classMarker, int offset) {
+		StackTraceElement item = Utils.getStackFrame(classMarker.getName(), offset);
+		return item.toString();
+	}
+
+	/**
 	 * Resolves the specified host name to its IP Address. If no host name is given, then resolves local host IP
 	 * Address.
 	 *
@@ -464,7 +526,6 @@ public class Utils {
 			hostIp = host.getHostAddress();
 		} catch (UnknownHostException e) {
 		}
-
 		return hostIp;
 	}
 

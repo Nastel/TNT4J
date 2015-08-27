@@ -49,10 +49,6 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 12 $
  */
 public class Operation implements TTL {
-	/**
-	 * Current stack frame class marker prefix
-	 */
-	public static final String OP_STACK_MARKER_PREFIX = "$";
 
 	/**
 	 * Noop operation name
@@ -154,63 +150,9 @@ public class Operation implements TTL {
 	 * Example: <code>$com.nastel.jkool.tnt4j.tracker:0</code>
 	 *
 	 * @return name triggering operation
-	 * @see #OP_STACK_MARKER_PREFIX
 	 */
 	public String getResolvedName() {
-		return getResolvedName(opName);
-	}
-
-	/**
-	 * Gets resolved name of the method that triggered the operation.
-	 *
-	 * @param opName operation name
-	 * @return name triggering operation
-	 */
-	public static String getResolvedName(String opName) {
-		if (!opName.startsWith(OP_STACK_MARKER_PREFIX)) {
-			return opName;
-		} else {
-			String marker = opName.substring(1);
-			String[] pair = marker.split(":");
-			int offset = pair.length == 2? Integer.parseInt(pair[1]): 0;
-			StackTraceElement item = Utils.getStackFrame(pair[0], offset);
-			return item.toString();
-		}
-	}
-
-	/**
-	 * Gets resolved name of the method that triggered the operation.
-	 *
-	 * @param marker class marker to be used to locate the stack frame
-	 * @param offset offset from the located stack frame (must be >= 0)
-	 * @return name triggering operation
-	 */
-	public static String getResolvedName(String marker, int offset) {
-		StackTraceElement item = Utils.getStackFrame(marker, offset);
-		return item.toString();
-	}
-
-	/**
-	 * Gets resolved name of the method that triggered the operation.
-	 *
-	 * @param classMarker class marker to be used to locate the stack frame
-	 * @return name triggering operation
-	 */
-	public static String getResolvedName(Class<?> classMarker) {
-		StackTraceElement item = Utils.getStackFrame(classMarker.getName(), 0);
-		return item.toString();
-	}
-
-	/**
-	 * Gets resolved name of the method that triggered the operation.
-	 *
-	 * @param classMarker class marker to be used to locate the stack frame
-	 * @param offset offset from the located stack frame (must be >= 0)
-	 * @return name triggering operation
-	 */
-	public static String getResolvedName(Class<?> classMarker, int offset) {
-		StackTraceElement item = Utils.getStackFrame(classMarker.getName(), offset);
-		return item.toString();
+		return Utils.getMethodNameFromStack(opName);
 	}
 
 	/**
