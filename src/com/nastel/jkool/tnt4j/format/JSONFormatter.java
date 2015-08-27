@@ -52,7 +52,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	private static final boolean NEWLINE_FORMAT = Boolean.getBoolean("tnt4j.formatter.json.newline");
-	
+
 	protected static final String START = "{";
 	protected static final String START_LINE = "{\n";
 	protected static final String END = "}";
@@ -275,7 +275,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		        Utils.quote(activity.getSource().getName())).append(ATTR_JSON);
 		jsonString.append(JSON_SOURCE_FQN_LABEL).append(ATTR_SEP).append(
 		        Utils.quote(activity.getSource().getFQName())).append(ATTR_JSON);
-		
+
 		String info = activity.getSource().getSourceFactory().getSSN();
 		if (!Utils.isEmpty(info)) {
 			String escaped = StringEscapeUtils.escapeJson(info); // escape double quote chars
@@ -336,7 +336,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			}
 		}
 		jsonString.append(JSON_ID_COUNT_LABEL).append(ATTR_SEP).append(activity.getIdCount()).append(ATTR_JSON);
-		jsonString.append(JSON_SNAPSHOT_COUNT_LABEL).append(ATTR_SEP).append(activity.getSnapshotCount());
+		jsonString.append(JSON_SNAPSHOT_COUNT_LABEL).append(ATTR_SEP).append(activity.getSnapshotCount()).append(ATTR_JSON);
 		jsonString.append(JSON_PROPERTY_COUNT_LABEL).append(ATTR_SEP).append(activity.getPropertyCount());
 
 		String exStr = activity.getExceptionString();
@@ -465,11 +465,11 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(level.ordinal()).append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP).append(Utils.quote(OpType.EVENT)).append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_NO_LABEL).append(ATTR_SEP).append(OpType.EVENT.ordinal()).append(ATTR_JSON);
-		
+
 		jsonString.append(JSON_PID_LABEL).append(ATTR_SEP).append(Utils.getVMPID()).append(ATTR_JSON);
 		jsonString.append(JSON_TID_LABEL).append(ATTR_SEP).append(Thread.currentThread().getId()).append(ATTR_JSON);
-		
-		String usrName = StringEscapeUtils.escapeJson(source == null? DefaultSourceFactory.getInstance().getRootSource().getUser(): source.getUser()); 
+
+		String usrName = StringEscapeUtils.escapeJson(source == null? DefaultSourceFactory.getInstance().getRootSource().getUser(): source.getUser());
 		jsonString.append(JSON_USER_LABEL).append(ATTR_SEP).append(Utils.quote(usrName)).append(ATTR_JSON);
 		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(ttl).append(ATTR_JSON);
 		jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
@@ -479,8 +479,8 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			String ssn = source.getSourceFactory().getSSN();
 			if (!Utils.isEmpty(ssn)) {
 				jsonString.append(ATTR_JSON);
-				String escaped = StringEscapeUtils.escapeJson(ssn); // escape double quote chars				
-				jsonString.append(JSON_SOURCE_SSN_LABEL).append(ATTR_SEP).append(Utils.quote(escaped));				
+				String escaped = StringEscapeUtils.escapeJson(ssn); // escape double quote chars
+				jsonString.append(JSON_SOURCE_SSN_LABEL).append(ATTR_SEP).append(Utils.quote(escaped));
 			}
 			if (!Utils.isEmpty(source.getUrl())) {
 				jsonString.append(ATTR_JSON);
