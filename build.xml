@@ -42,7 +42,7 @@
     <javac destdir="${classes}" debug="true" debuglevel="${debuglevel}" source="${source}" target="${target}">
       <src path="${src}"/>
       <classpath>
-        <fileset dir="${project-build}/lib"/>
+        <fileset dir="${lib}"/>
       </classpath>
     </javac>
   </target>
