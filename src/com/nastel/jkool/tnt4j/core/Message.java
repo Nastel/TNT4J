@@ -16,6 +16,7 @@
 package com.nastel.jkool.tnt4j.core;
 
 import java.nio.charset.Charset;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -223,8 +224,7 @@ public class Message {
 	}
 
 	/**
-	 * Sets message tags, which are user-defined value associated with the message,
-	 * truncating if necessary.
+	 * Sets message tags, which are user-defined values associated with the message
 	 *
 	 * @param tlist user-defined list of message tags
 	 */
@@ -234,6 +234,15 @@ public class Message {
 				this.tags.add(tlist[i]);
 			}
 		}
+	}
+
+	/**
+	 * Sets message tags, which are user-defined values associated with the message.
+	 *
+	 * @param tlist user-defined list of message tags
+	 */
+	public void setTag(Collection<String> tlist) {
+		this.tags.addAll(tlist);
 	}
 
 	/**

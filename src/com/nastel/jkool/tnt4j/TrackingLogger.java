@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -972,84 +973,30 @@ public class TrackingLogger implements Tracker {
 		return logger.newSnapshot(cat, name, level);
     }
 
-	/**
-	 * Create a new application activity via <code>TrackingActivity</code> object instance.
-	 *
-	 * @return a new application activity object instance
-	 * @see TrackingActivity
-	 * @throws IllegalStateException when tracker is not initialized
-	 */
 	@Override
 	public TrackingActivity newActivity() {
 		checkState();
 		return logger.newActivity(OpLevel.INFO);
 	}
 
-	/**
-	 * Create a new application activity via <code>TrackingActivity</code> object instance.
-	 *
-	 * @param level activity severity level
-	 * @return a new application activity object instance
-	 * @see TrackingActivity
-	 * @throws IllegalStateException when tracker is not initialized
-	 */
 	@Override
 	public TrackingActivity newActivity(OpLevel level) {
 		checkState();
 		return logger.newActivity(level);
 	}
 
-	/**
-	 * Create a new application activity via <code>TrackingActivity</code> object instance.
-	 *
-	 * @param level activity severity level
-	 * @param name
-	 *            user defined activity name
-	 * @return a new application activity object instance
-	 * @see TrackingActivity
-	 * @throws IllegalStateException when tracker is not initialized
-	 */
 	@Override
 	public TrackingActivity newActivity(OpLevel level, String name) {
 		checkState();
 		return logger.newActivity(level, name);
 	}
 
-	/**
-	 * Create a new application activity via <code>TrackingActivity</code> object instance.
-	 *
-	 * @param level activity severity level
-	 * @param name
-	 *            user defined activity name
-	 * @param signature
-	 *            user defined activity signature (should be unique)
-	 * @return a new application activity object instance
-	 * @see TrackingActivity
-	 * @throws IllegalStateException when tracker is not initialized
-	 */
 	@Override
 	public TrackingActivity newActivity(OpLevel level, String name, String signature) {
 		checkState();
 		return logger.newActivity(level, name, signature);
 	}
 
-	/**
-	 * Create a new instance of tracking event that can be timed and reported. This constructor will assign a unique
-	 * event signature using newUUID() call
-	 *
-	 * @param severity
-	 *            severity level
-	 * @param opName
-	 *            operation name associated with this event (tracking event name)
-	 * @param correlator
-	 *            associated with this event (could be unique or passed from a correlated activity)
-	 * @param msg
-	 *            text message associated with this event
-	 * @param args argument list passed along the message
-	 * @throws IllegalStateException when tracker is not initialized
-	 * @see OpLevel
-	 * @see TrackingEvent
-	 */
 	@Override
 	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object...args) {
 		checkState();
@@ -1057,28 +1004,6 @@ public class TrackingLogger implements Tracker {
 	}
 
 
-	/**
-	 * Create a new instance of tracking event that can be timed and reported. This constructor will assign a unique
-	 * event signature using newUUID() call
-	 *
-	 * @param severity
-	 *            severity level
-	 * @param opType
-	 *            operation type
-	 * @param opName
-	 *            operation name associated with this event (tracking event name)
-	 * @param correlator
-	 *            associated with this event (could be unique or passed from a correlated activity)
-	 * @param tag
-	 *            associated with this event
-	 * @param msg
-	 *            text message associated with this event
-	 * @param args argument list passed along the message
-	 * @throws IllegalStateException when tracker is not initialized
-	 * @see TrackingEvent
-	 * @see OpType
-	 * @see OpLevel
-	 */
 	@Override
 	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator,
 	        String tag, String msg, Object...args) {
@@ -1086,23 +1011,6 @@ public class TrackingLogger implements Tracker {
 		return logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 	}
 
-	/**
-	 * Create a new instance of tracking event that can be timed and reported. This constructor will assign a unique
-	 * event signature using newUUID() call
-	 *
-	 * @param severity
-	 *            severity level
-	 * @param opName
-	 *            operation name associated with this event (tracking event name)
-	 * @param correlator
-	 *            associated with this event (could be unique or passed from a correlated activity)
-	 * @param msg
-	 *            binary message associated with this event
-	 * @param args argument list passed along the message
-	 * @throws IllegalStateException when tracker is not initialized
-	 * @see OpLevel
-	 * @see TrackingEvent
-	 */
 	@Override
 	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, byte[] msg, Object...args) {
 		checkState();
@@ -1110,28 +1018,6 @@ public class TrackingLogger implements Tracker {
 	}
 
 
-	/**
-	 * Create a new instance of tracking event that can be timed and reported. This constructor will assign a unique
-	 * event signature using newUUID() call
-	 *
-	 * @param severity
-	 *            severity level
-	 * @param opType
-	 *            operation type
-	 * @param opName
-	 *            operation name associated with this event (tracking event name)
-	 * @param correlator
-	 *            associated with this event (could be unique or passed from a correlated activity)
-	 * @param tag
-	 *            associated with this event
-	 * @param msg
-	 *            binary message associated with this event
-	 * @param args argument list passed along the message
-	 * @see TrackingEvent
-	 * @see OpType
-	 * @see OpLevel
-	 * @throws IllegalStateException when tracker is not initialized
-	 */
 	@Override
 	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator,
 	        String tag, byte[] msg, Object...args) {
@@ -1139,6 +1025,34 @@ public class TrackingLogger implements Tracker {
 		return logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 	}
 
+	@Override
+    public TrackingEvent newEvent(OpLevel severity, String opName, Collection<String> correlators, String msg,
+            Object... args) {
+		checkState();
+		return logger.newEvent(severity, opName, correlators, msg, args);
+    }
+
+	@Override
+    public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, Collection<String> correlators,
+            Collection<String> tags, String msg, Object... args) {
+		checkState();
+		return logger.newEvent(severity, opType, opName, correlators, tags, msg, args);
+    }
+
+	@Override
+    public TrackingEvent newEvent(OpLevel severity, String opName, Collection<String> correlators, byte[] msg,
+            Object... args) {
+		checkState();
+		return logger.newEvent(severity, opName, correlators, msg, args);
+    }
+
+	@Override
+    public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, Collection<String> correlators,
+            Collection<String> tags, byte[] msg, Object... args) {
+		checkState();
+		return logger.newEvent(severity, opType, opName, correlators, tags, msg, args);
+    }
+	
 	/**
 	 * Returns currently registered <code>Tracker</code> logger associated with the current thread. <code>Tracker</code>
 	 * logger is associated with the current thread after the register() call. <code>Tracker</code> logger instance is

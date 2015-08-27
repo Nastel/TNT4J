@@ -566,6 +566,16 @@ public class Operation implements TTL {
 	}
 
 	/**
+	 * Sets correlators, which are a user-defined values to relate two separate
+	 * operations as belonging to the same activity.
+	 *
+	 * @param clist user-defined correlators
+	 */
+	public void setCorrelator(Collection<String> clist) {
+		this.correlators.addAll(clist);
+	}
+
+	/**
 	 * Remove all correlators
 	 *
 	 */

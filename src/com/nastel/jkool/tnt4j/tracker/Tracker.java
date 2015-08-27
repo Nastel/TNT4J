@@ -15,6 +15,8 @@
  */
 package com.nastel.jkool.tnt4j.tracker;
 
+import java.util.Collection;
+
 import com.nastel.jkool.tnt4j.config.TrackerConfig;
 import com.nastel.jkool.tnt4j.core.Activity;
 import com.nastel.jkool.tnt4j.core.Handle;
@@ -296,6 +298,21 @@ public interface Tracker extends Handle, KeyValueStats {
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
+	 * This constructor will assign a unique event signature using newUUID() call
+	 * NOOP event instance <code>NullEvent</code> is returned
+	 * when <code>TrackingFilter</code> is set and returns false.
+	 *
+	 * @param severity severity level
+	 * @param opName operation name associated with this event (tracking event name)
+	 * @param correlators associated with this event (could be unique or passed from a correlated activity)
+	 * @param msg text message associated with this event
+	 * @param args argument list passed along with the message
+	 * @return tracking event instance
+	 */
+	TrackingEvent newEvent(OpLevel severity, String opName, Collection<String> correlators, String msg, Object...args);
+
+	/**
+	 * Create a new instance of tracking event that can be timed and reported.
 	 * NOOP event instance <code>NullEvent</code> is returned
 	 * when <code>TrackingFilter</code> is set and returns false.
 	 *
@@ -314,6 +331,24 @@ public interface Tracker extends Handle, KeyValueStats {
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
+	 * NOOP event instance <code>NullEvent</code> is returned
+	 * when <code>TrackingFilter</code> is set and returns false.
+	 *
+	 * @param severity severity level
+	 * @param opType operation type
+	 * @param opName operation name associated with this event (tracking event name)
+	 * @param correlators associated with this event (could be unique or passed from a correlated activity)
+	 * @param tags associated with this event
+	 * @param msg text message associated with this event
+	 * @param args argument list passed along with the message
+	 * @return tracking event instance
+	 * @see OpLevel
+	 * @see OpType
+	 */
+	TrackingEvent newEvent(OpLevel severity, OpType opType, String opName,  Collection<String> correlators,  Collection<String> tags, String msg, Object...args);
+
+	/**
+	 * Create a new instance of tracking event that can be timed and reported.
 	 * This constructor will assign a unique event signature using newUUID() call
 	 * NOOP event instance <code>NullEvent</code> is returned
 	 * when <code>TrackingFilter</code> is set and returns false.
@@ -326,6 +361,21 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @return tracking event instance
 	 */
 	TrackingEvent newEvent(OpLevel severity, String opName, String correlator, byte[] msg, Object...args);
+
+	/**
+	 * Create a new instance of tracking event that can be timed and reported.
+	 * This constructor will assign a unique event signature using newUUID() call
+	 * NOOP event instance <code>NullEvent</code> is returned
+	 * when <code>TrackingFilter</code> is set and returns false.
+	 *
+	 * @param severity severity level
+	 * @param opName operation name associated with this event (tracking event name)
+	 * @param correlators associated with this event (could be unique or passed from a correlated activity)
+	 * @param msg binary message associated with this event
+	 * @param args argument list passed along with the message
+	 * @return tracking event instance
+	 */
+	TrackingEvent newEvent(OpLevel severity, String opName, Collection<String> correlators, byte[] msg, Object...args);
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
@@ -344,4 +394,22 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @see OpType
 	 */
 	TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag, byte[] msg, Object...args);
+
+	/**
+	 * Create a new instance of tracking event that can be timed and reported.
+	 * NOOP event instance <code>NullEvent</code> is returned
+	 * when <code>TrackingFilter</code> is set and returns false.
+	 *
+	 * @param severity severity level
+	 * @param opType operation type
+	 * @param opName operation name associated with this event (tracking event name)
+	 * @param correlators associated with this event (could be unique or passed from a correlated activity)
+	 * @param tags associated with this event
+	 * @param msg binary message associated with this event
+	 * @param args argument list passed along with the message
+	 * @return tracking event instance
+	 * @see OpLevel
+	 * @see OpType
+	 */
+	TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, Collection<String> correlators, Collection<String> tags, byte[] msg, Object...args);
 }

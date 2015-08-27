@@ -17,6 +17,7 @@ package com.nastel.jkool.tnt4j.tracker;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.EmptyStackException;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -541,6 +542,70 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			countOverheadNanos(System.nanoTime() - start);
 		}
 	}
+
+	@Override
+    public TrackingEvent newEvent(OpLevel severity, String opName, Collection<String> correlators, String msg,
+            Object... args) {
+		long start = System.nanoTime();
+		try {
+			if (!isTrackingEnabled(severity, opName, correlators, msg, args)) {
+				return NULL_EVENT;
+			}
+			TrackingEvent event = new TrackingEvent(getSource(), severity, opName, correlators, msg, args);
+			event.getOperation().setUser(tConfig.getSource().getUser());
+			return event;
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
+		}
+    }
+
+	@Override
+    public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, Collection<String> correlators,
+            Collection<String> tags, String msg, Object... args) {
+		long start = System.nanoTime();
+		try {
+			if (!isTrackingEnabled(severity, opName, correlators, tags, msg, args)) {
+				return NULL_EVENT;
+			}
+			TrackingEvent event = new TrackingEvent(getSource(), severity, opType, opName, correlators, tags, msg, args);
+			event.getOperation().setUser(tConfig.getSource().getUser());
+			return event;
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
+		}
+    }
+
+	@Override
+    public TrackingEvent newEvent(OpLevel severity, String opName, Collection<String> correlators, byte[] msg,
+            Object... args) {
+		long start = System.nanoTime();
+		try {
+			if (!isTrackingEnabled(severity, opName, correlators, msg, args)) {
+				return NULL_EVENT;
+			}
+			TrackingEvent event = new TrackingEvent(getSource(), severity, opName, correlators, msg, args);
+			event.getOperation().setUser(tConfig.getSource().getUser());
+			return event;
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
+		}
+    }
+
+	@Override
+    public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, Collection<String> correlators,
+            Collection<String> tags, byte[] msg, Object... args) {
+		long start = System.nanoTime();
+		try {
+			if (!isTrackingEnabled(severity, opName, correlators, tags, msg, args)) {
+				return NULL_EVENT;
+			}
+			TrackingEvent event = new TrackingEvent(getSource(), severity, opType, opName, correlators, tags, msg, args);
+			event.getOperation().setUser(tConfig.getSource().getUser());
+			return event;
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
+		}
+    }
 
 	@Override
 	protected void finalize() throws Throwable {
