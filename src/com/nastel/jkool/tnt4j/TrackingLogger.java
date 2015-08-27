@@ -998,6 +998,12 @@ public class TrackingLogger implements Tracker {
 	}
 
 	@Override
+    public TrackingEvent newEvent(String opName, String msg, Object... args) {
+		checkState();
+		return logger.newEvent(opName, msg, args);
+    }
+
+	@Override
 	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object...args) {
 		checkState();
 		return logger.newEvent(severity, opName, correlator, msg, args);

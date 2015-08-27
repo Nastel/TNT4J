@@ -287,6 +287,19 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * NOOP event instance <code>NullEvent</code> is returned
 	 * when <code>TrackingFilter</code> is set and returns false.
 	 *
+	 * @param opName operation name associated with this event (tracking event name)
+	 * @param msg text message associated with this event
+	 * @param args argument list passed along with the message
+	 * @return tracking event instance
+	 */
+	TrackingEvent newEvent(String opName, String msg, Object...args);
+
+	/**
+	 * Create a new instance of tracking event that can be timed and reported.
+	 * This constructor will assign a unique event signature using newUUID() call
+	 * NOOP event instance <code>NullEvent</code> is returned
+	 * when <code>TrackingFilter</code> is set and returns false.
+	 *
 	 * @param severity severity level
 	 * @param opName operation name associated with this event (tracking event name)
 	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
