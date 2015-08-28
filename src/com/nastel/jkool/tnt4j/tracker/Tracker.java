@@ -23,6 +23,7 @@ import com.nastel.jkool.tnt4j.core.Handle;
 import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
+import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
 import com.nastel.jkool.tnt4j.sink.EventSink;
@@ -212,7 +213,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	TrackingActivity newActivity(OpLevel level, String name, String signature);
 
 	/**
-	 * Create a new application snapshot via <code>Snapshot</code> object instance.
+	 * Create a new application snapshot via {@link Snapshot} object instance.
 	 *
 	 * @param cat category name
 	 * @param name snapshot name
@@ -222,7 +223,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	Snapshot newSnapshot(String cat, String name);
 
 	/**
-	 * Create a new application snapshot via <code>Snapshot</code> object instance.
+	 * Create a new application snapshot via {@link Snapshot} object instance.
 	 *
 	 * @param cat category name
 	 * @param name snapshot name
@@ -231,6 +232,28 @@ public interface Tracker extends Handle, KeyValueStats {
 	 * @see Snapshot
 	 */
 	Snapshot newSnapshot(String cat, String name, OpLevel level);
+
+	/**
+	 * Create a new property via {@link Property} instance.
+	 *
+	 * @param key property key
+	 * @param val property value
+	 * @return valType value type {@link ValueTypes}
+	 * @see Property
+	 * @see ValueTypes
+	 */
+	Property newProperty(String key, Object val);
+
+	/**
+	 * Create a new property via {@link Property} instance.
+	 *
+	 * @param key property key
+	 * @param val property value
+	 * @return valType value type {@link ValueTypes}
+	 * @see Property
+	 * @see ValueTypes
+	 */
+	Property newProperty(String key, Object val, String valType);
 
 	/**
 	 * Track and Trace a single application tracking activity

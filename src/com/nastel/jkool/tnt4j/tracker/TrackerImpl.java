@@ -29,6 +29,7 @@ import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Operation;
+import com.nastel.jkool.tnt4j.core.Property;
 import com.nastel.jkool.tnt4j.core.PropertySnapshot;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
@@ -700,6 +701,16 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	    PropertySnapshot snapshot = new PropertySnapshot(cat, name, level);
 	    snapshot.setSource(getSource());
 	    return snapshot;
+    }
+
+	@Override
+    public Property newProperty(String key, Object val) {
+	    return new Property(key, val);
+    }
+
+	@Override
+    public Property newProperty(String key, Object val, String valType) {
+	    return new Property(key, val, valType);
     }
 
 	@Override

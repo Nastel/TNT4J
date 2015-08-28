@@ -973,6 +973,19 @@ public class TrackingLogger implements Tracker {
 		return logger.newSnapshot(cat, name, level);
     }
 
+
+	@Override
+    public Property newProperty(String key, Object val) {
+		checkState();
+		return logger.newProperty(key, val);
+    }
+
+	@Override
+    public Property newProperty(String key, Object val, String valType) {
+		checkState();
+		return logger.newProperty(key, val, valType);
+    }
+
 	@Override
 	public TrackingActivity newActivity() {
 		checkState();
