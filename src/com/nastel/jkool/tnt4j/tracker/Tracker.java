@@ -24,6 +24,7 @@ import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Property;
+import com.nastel.jkool.tnt4j.core.ValueTypes;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
 import com.nastel.jkool.tnt4j.sink.EventSink;
@@ -40,7 +41,7 @@ import com.nastel.jkool.tnt4j.source.Source;
  * instances of <code>TrackingEvent</code> and use <code>tnt()</code> method to report and log tracking activities
  * and associated tracking events.
  *
- * <p>A <code>Tracker</code> <code>newActivity()</code> method should be used to create application activities <code>TrackingActivity</code>.
+ * <p>A <code>Tracker</code> <code>newActivity()</code> method should be used to create application activities {@link TrackingActivity}.
  * <code>Tracker</code> instance should be obtained per thread or use a helper <code>TrackingLogger</code> class.</p>
  *
  * @see TrackingEvent
@@ -72,7 +73,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	String getId();
 
 	/**
-	 * Obtains current/active <code>Source</code> handle associated
+	 * Obtains current/active {@link Source} handle associated
 	 * with the current thread.
 	 *
 	 * @return current active source handle associated with this thread
@@ -81,25 +82,25 @@ public interface Tracker extends Handle, KeyValueStats {
 	Source getSource();
 
 	/**
-	 * Obtains current <code>TrackingSelector</code> associated with this <code>Tracker</code>
+	 * Obtains current {@link TrackingSelector} associated with this <code>Tracker</code>
 	 * instance. Tracking selectors allow conditional logging based on a sev/key/value combinations
 	 *
-	 * @return current <code>TrackingSelector</code> instance associated with the current tracker
+	 * @return current {@link TrackingSelector} instance associated with the current tracker
 	 * @see TrackingSelector
 	 */
 	TrackingSelector getTrackingSelector();
 
 	/**
-	 * Obtains current <code>EventSink</code> associated with this <code>Tracker</code>
+	 * Obtains current {@link EventSink} associated with this <code>Tracker</code>
 	 * instance.
 	 *
-	 * @return current <code>EventSink</code> instance
+	 * @return current {@link EventSink} instance
 	 * @see EventSink
 	 */
 	EventSink getEventSink();
 
 	/**
-	 * Obtains current/active <code>TrackerConfig</code> configuration associated with
+	 * Obtains current/active {@link TrackerConfig} configuration associated with
 	 * the current tracker instance.
 	 *
 	 * @return current tracking configuration
@@ -108,7 +109,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	TrackerConfig getConfiguration();
 
 	/**
-	 * Obtains the top most active <code>TrackingActivity</code> instance
+	 * Obtains the top most active {@link TrackingActivity} instance
 	 * at the top of the stack, <code>NullActivity</code> if none is available.
 	 * Current activity is within the scope of the current thread.
 	 *
@@ -118,7 +119,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	TrackingActivity getCurrentActivity();
 
 	/**
-	 * Obtains the bottom most active <code>TrackingActivity</code> instance
+	 * Obtains the bottom most active {@link TrackingActivity} instance
 	 * at the bottom of the stack, <code>NullActivity</code> if none is available.
 	 * This represents the root (first) activity.
 	 * Root activity is within the scope of the current thread.
@@ -167,7 +168,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	boolean getKeepThreadContext();
 
 	/**
-	 * Create a new application activity via <code>TrackingActivity</code> object instance.
+	 * Create a new application activity via {@link TrackingActivity} object instance.
 	 * NOOP activity instance <code>NullActivity</code> is returned
 	 * when <code>TrackingFilter</code> is set and returns false.
 	 *
@@ -177,7 +178,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	TrackingActivity newActivity();
 
 	/**
-	 * Create a new application activity via <code>TrackingActivity</code> object instance.
+	 * Create a new application activity via {@link TrackingActivity} object instance.
 	 * NOOP activity instance <code>NullActivity</code> is returned
 	 * when <code>TrackingFilter</code> is set and returns false.
 	 *
@@ -188,7 +189,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	TrackingActivity newActivity(OpLevel level);
 
 	/**
-	 * Create a new application activity via <code>TrackingActivity</code> object instance.
+	 * Create a new application activity via {@link TrackingActivity} object instance.
 	 * NOOP activity instance <code>NullActivity</code> is returned
 	 * when <code>TrackingFilter</code> is set and returns false.
 	 *
@@ -200,7 +201,7 @@ public interface Tracker extends Handle, KeyValueStats {
 	TrackingActivity newActivity(OpLevel level, String name);
 
 	/**
-	 * Create a new application activity via <code>TrackingActivity</code> object instance.
+	 * Create a new application activity via {@link TrackingActivity} object instance.
 	 * NOOP activity instance <code>NullActivity</code> is returned
 	 * when <code>TrackingFilter</code> is set and returns false.
 	 *
