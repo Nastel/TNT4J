@@ -419,7 +419,7 @@ To build TNT4J:
 Known Projects Using TNT4J
 ===============================================
 * Simple End-User Tracking for Java EE - TrackingFilter (https://github.com/Nastel/TrackingFilter)
-* JMX Streaming Agent - Stream-JMX (https://github.com/Nastel/PingJMX)
+* JMX Streaming Agent - Stream-JMX (https://github.com/Nastel/tnt4j-stream-jmx)
 * jKool Event Streaming Library - JESL (https://github.com/Nastel/JESL)
 * TNT4J/Samples (https://github.com/Nastel/tnt4j-examples)
 * TNT4J/Log4J 1.2 Appender (https://github.com/Nastel/tnt4j-log4j12)
