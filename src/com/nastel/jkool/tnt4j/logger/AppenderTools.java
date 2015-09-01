@@ -149,6 +149,8 @@ public class AppenderTools implements AppenderConstants {
 				activity.setUser(value);
 			} else if (key.equalsIgnoreCase(PARAM_SEVERITY_LABEL)) {
 				activity.setSeverity(OpLevel.valueOf(value));
+			} else if (key.equalsIgnoreCase(PARAM_EXCEPTION_LABEL)) {
+				activity.setException(value);
 			} else if (key.equalsIgnoreCase(PARAM_BEGIN_LABEL)
 					|| key.equals(PARAM_END_LABEL)
 					|| key.equals(PARAM_APPL_LABEL)) {

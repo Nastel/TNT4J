@@ -37,6 +37,7 @@ public interface AppenderConstants {
 	static final String PARAM_OP_TYPE_LABEL = "opt";
 	static final String PARAM_RESOURCE_LABEL = "rsn";
 	static final String PARAM_MSG_DATA_LABEL = "msg";
+	static final String PARAM_EXCEPTION_LABEL = "exc";
 	static final String PARAM_SEVERITY_LABEL = "sev";
 	static final String PARAM_COMP_CODE_LABEL = "ccd";
 	static final String PARAM_REASON_CODE_LABEL = "rcd";
