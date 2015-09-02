@@ -415,15 +415,14 @@ To build TNT4J:
 	* Check ../build/tnt4j for output
 	* JavaDoc will be located under ../build/tnt4j/doc
 	
-
 Known Projects Using TNT4J
 ===============================================
-* Simple End-User Tracking for Java EE - TrackingFilter (https://github.com/Nastel/TrackingFilter)
-* JMX Streaming Agent - Stream-JMX (https://github.com/Nastel/tnt4j-stream-jmx)
 * jKool Event Streaming Library - JESL (https://github.com/Nastel/JESL)
-* TNT4J/Samples (https://github.com/Nastel/tnt4j-examples)
-* TNT4J/Log4J 1.2 Appender (https://github.com/Nastel/tnt4j-log4j12)
-* TNT4J/Logback Appender (https://github.com/Nastel/tnt4j-logback)
-* TNT4Spark - tracking for Apache Spark (https://github.com/Nastel/TNT4Spark)
+* TNT4J/Samples - (https://github.com/Nastel/tnt4j-examples)
+* TNT4J/ServletFilter End-User Tracking - (https://github.com/Nastel/tnt4j-servlet-filter)
+* TNT4J/JMX - Stream-JMX (https://github.com/Nastel/tnt4j-stream-jmx)
+* TNT4J/Log4J 1.2 Appender - (https://github.com/Nastel/tnt4j-log4j12)
+* TNT4J/Logback Appender - (https://github.com/Nastel/tnt4j-logback)
+* TNT4J/Spark - tracking for Apache Spark (https://github.com/Nastel/tnt4j-spark)
 * Log & Metric Analytics Service - jkoolcloud.com (https://www.jkoolcloud.com)
 * Application Performance Monitoring - AutoPilot M6 (http://www.nastel.com/products/autopilot-m6.html)
