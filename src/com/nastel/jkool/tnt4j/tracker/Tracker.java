@@ -29,6 +29,7 @@ import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
 import com.nastel.jkool.tnt4j.sink.EventSink;
 import com.nastel.jkool.tnt4j.source.Source;
+import com.nastel.jkool.tnt4j.uuid.UUIDFactory;
 
 
 /**
@@ -52,7 +53,7 @@ import com.nastel.jkool.tnt4j.source.Source;
  * @version $Revision: 5 $
  *
  */
-public interface Tracker extends Handle, KeyValueStats {
+public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 	static final String KEY_ACTIVITY_COUNT = "tracker-activities";
 	static final String KEY_EVENT_COUNT = "tracker-events";
 	static final String KEY_MSG_COUNT = "tracker-messages";

@@ -1479,6 +1479,18 @@ public class TrackingLogger implements Tracker {
 		checkState();
 		return logger.getId();
     }
+
+	@Override
+    public String newUUID() {
+		checkState();
+		return logger.newUUID();
+    }
+
+	@Override
+    public String newUUID(Object obj) {
+		checkState();
+		return logger.newUUID(obj);
+    }
 }
 
 class DumpHook extends Thread implements Thread.UncaughtExceptionHandler {

@@ -73,7 +73,7 @@ public class TrackingActivity extends Activity {
 	 * @see #setTrackingId(String)
 	 */
 	protected TrackingActivity(OpLevel level, String name) {
-		super(Utils.newUUID(), name);
+		super(null, name);
 		setSeverity(level);
 	}
 
@@ -92,7 +92,7 @@ public class TrackingActivity extends Activity {
 	 * @see #setTrackingId(String)
 	 */
 	protected TrackingActivity(OpLevel level, String name, TrackerImpl trk) {
-		super(Utils.newUUID(), name, trk.getSource());
+		super(trk.newUUID(), name, trk.getSource());
 		tracker = trk;
 		setSeverity(level);
 		setLocation(trk.getSource());

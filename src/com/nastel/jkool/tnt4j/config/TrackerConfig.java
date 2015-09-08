@@ -37,6 +37,8 @@ import com.nastel.jkool.tnt4j.source.SourceFactory;
 import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.DefaultTrackerFactory;
 import com.nastel.jkool.tnt4j.tracker.TrackerFactory;
+import com.nastel.jkool.tnt4j.uuid.DefaultUUIDFactory;
+import com.nastel.jkool.tnt4j.uuid.UUIDFactory;
 
 /**
  * <p>
@@ -68,6 +70,7 @@ public class TrackerConfig {
 
 	TrackerFactory trFactory;
 	SourceFactory sourceFactory;
+	UUIDFactory uuidFactory;
 	EventSinkFactory defEvFactory;
 	EventSinkFactory evFactory;
 	DumpSinkFactory dpFactory;
@@ -140,6 +143,30 @@ public class TrackerConfig {
 	 */
 	public Properties getProperties() {
 		return props;
+	}
+
+	/**
+	 * Set default UUID factory to generate UUIDs
+	 *
+	 * @param uuidf
+	 *            UUID factory instance
+	 * @see UUIDFactory
+	 *
+	 * @return current source factory
+	 */
+	public TrackerConfig setUUIDFactory(UUIDFactory uuidf) {
+		uuidFactory = uuidf;
+		return this;
+	}
+
+	/**
+	 * Set default UUID factory instance
+	 *
+	 * @see UUIDFactory
+	 * @return current UUID factory
+	 */
+	public UUIDFactory getUUIDFactory() {
+		return uuidFactory;
 	}
 
 	/**
@@ -499,6 +526,9 @@ public class TrackerConfig {
 	 * @return <code>TrackerConfig</code> instance with initialized configuration elements
 	 */
 	public TrackerConfig build() {
+		if (uuidFactory == null)
+			uuidFactory = DefaultUUIDFactory.getInstance();
+
 		if (sourceFactory == null)
 			sourceFactory = DefaultSourceFactory.getInstance();
 

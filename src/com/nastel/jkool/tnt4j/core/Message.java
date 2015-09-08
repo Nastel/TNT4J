@@ -61,12 +61,10 @@ public class Message {
 
 
 	/**
-	 * Creates a message object with generated, unique signature.
+	 * Creates a message object with empty signature.
 	 *
-	 * @throws NullPointerException if any arguments are <code>null</code>
 	 */
 	public Message() {
-		this(Utils.newUUID());
 	}
 
 	/**

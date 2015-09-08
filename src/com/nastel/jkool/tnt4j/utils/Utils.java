@@ -41,9 +41,6 @@ import java.util.Properties;
 
 import org.apache.commons.lang3.SerializationUtils;
 
-import com.fasterxml.uuid.EthernetAddress;
-import com.fasterxml.uuid.Generators;
-import com.fasterxml.uuid.impl.TimeBasedGenerator;
 import com.nastel.jkool.tnt4j.config.ConfigException;
 import com.nastel.jkool.tnt4j.config.Configurable;
 
@@ -86,11 +83,7 @@ public class Utils {
 
 	public static final int CLIENT_CODE_STACK_INDEX;
 
-	private static TimeBasedGenerator uuidGenerator;
-
 	static {
-		EthernetAddress nic = EthernetAddress.fromInterface();
-		uuidGenerator = Generators.timeBasedGenerator(nic);
 		int index = 0;
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 		for (StackTraceElement frame : stack) {
@@ -127,15 +120,6 @@ public class Utils {
 	public static String qualify(Object obj, String key) {
 		String newKey = obj.getClass().getSimpleName() + "-" + key;
 		return newKey;
-	}
-
-	/**
-	 * Return a new GUID as string
-	 *
-	 * @return return GUID string representation
-	 */
-	public static String newUUID() {
-		return uuidGenerator.generate().toString();
 	}
 
 	/**

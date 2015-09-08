@@ -42,6 +42,7 @@ import com.nastel.jkool.tnt4j.source.SourceFactory;
 import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.TrackerFactory;
 import com.nastel.jkool.tnt4j.utils.Utils;
+import com.nastel.jkool.tnt4j.uuid.UUIDFactory;
 
 /**
  * <p>
@@ -216,6 +217,7 @@ public class TrackerConfigStore extends TrackerConfig {
 				logger.log(OpLevel.DEBUG, "Loaded properties source={0}, tid={1}, properties={2}", srcName, Thread.currentThread().getId(), props);
 			}
 			setDefaultEventSinkFactory((EventSinkFactory) createConfigurableObject("default.event.sink.factory", "default.event.sink.factory."));
+			setUUIDFactory((UUIDFactory) createConfigurableObject("uuid.factory", "uuid.factory."));
 			setSourceFactory((SourceFactory) createConfigurableObject("source.factory", "source.factory."));
 			setTrackerFactory((TrackerFactory) createConfigurableObject("tracker.factory", "tracker.factory."));
 			setEventSinkFactory((EventSinkFactory) createConfigurableObject("event.sink.factory", "event.sink.factory."));

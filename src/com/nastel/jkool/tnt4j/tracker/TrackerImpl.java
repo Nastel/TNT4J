@@ -86,8 +86,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	private AtomicLong overheadNanos = new AtomicLong(0);
 
 	protected TrackerImpl(TrackerConfig config) {
-		id = Utils.newUUID();
 		tConfig = config;
+		id = tConfig.getUUIDFactory().newUUID();
 		selector = tConfig.getTrackingSelector();
 		eventSink = tConfig.getEventSink();
 		open();
@@ -394,7 +394,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (!isTrackingEnabled(level, name, signature)) {
 				return NULL_ACTIVITY;
 			}
-			signature = (signature == null)? Utils.newUUID(): signature;
+			signature = (signature == null)? tConfig.getUUIDFactory().newUUID(): signature;
 			TrackingActivity luw = new TrackingActivity(level, name, signature, this);
 			luw.setPID(Utils.getVMPID());
 			if (tConfig.getActivityListener() != null) {
@@ -728,5 +728,15 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	@Override
     public String getId() {
 	    return id;
+    }
+
+	@Override
+    public String newUUID() {
+	    return tConfig.getUUIDFactory().newUUID();
+    }
+
+	@Override
+    public String newUUID(Object obj) {
+	    return tConfig.getUUIDFactory().newUUID(obj);
     }
 }
