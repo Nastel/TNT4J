@@ -177,14 +177,8 @@ public class Message {
 	 * Could be any string that will uniquely identify this message.
 	 *
 	 * @param signature unique signature identifying message
-	 * @throws NullPointerException if signature is <code>null</code>
-	 * @throws IllegalArgumentException if signature is empty or is too long
 	 */
 	public void setTrackingId(String signature) {
-		if (signature == null)
-			throw new NullPointerException("signature must be a non-empty string");
-		if (signature.length() == 0)
-			throw new IllegalArgumentException("signature must be a non-empty string");
 		this.signature = signature;
 	}
 
