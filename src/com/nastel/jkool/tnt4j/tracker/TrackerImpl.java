@@ -394,7 +394,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (!isTrackingEnabled(level, name, signature)) {
 				return NULL_ACTIVITY;
 			}
-			signature = (signature == null)? TrackingEvent.newUUID(): signature;
+			signature = (signature == null)? Utils.newUUID(): signature;
 			TrackingActivity luw = new TrackingActivity(level, name, signature, this);
 			luw.setPID(Utils.getVMPID());
 			if (tConfig.getActivityListener() != null) {

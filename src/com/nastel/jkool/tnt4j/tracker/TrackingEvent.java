@@ -167,16 +167,6 @@ public class TrackingEvent extends Message implements Trackable {
 	}
 
 	/**
-	 * Return newly generated random/unique UUID that can be used as event signature and or correlator
-	 *
-	 * @return UUID in string form
-	 */
-	public static String newUUID() {
-		return Utils.newUUID();
-	}
-
-
-	/**
 	 * Create a new NOOP tracking event
 	 * This constructor will assign a unique event signature using newUUID() call
 	 *
@@ -260,7 +250,7 @@ public class TrackingEvent extends Message implements Trackable {
 	 * @see OpType
 	 */
 	protected TrackingEvent(Source src, OpLevel severity, OpType opType, String opName, String correlator, String tag, String msg, Object...args) {
-		super(newUUID(), msg, args);
+		super(null, msg, args);
 		operation = new Operation(opName, opType);
 		operation.setSeverity(severity);
 		operation.setCorrelator(correlator);
@@ -285,7 +275,7 @@ public class TrackingEvent extends Message implements Trackable {
 	 * @see OpType
 	 */
 	protected TrackingEvent(Source src, OpLevel severity, OpType opType, String opName, Collection<String> correlators, Collection<String> tags, String msg, Object...args) {
-		super(newUUID(), msg, args);
+		super(null, msg, args);
 		operation = new Operation(opName, opType);
 		operation.setSeverity(severity);
 		operation.setCorrelator(correlators);
@@ -310,7 +300,7 @@ public class TrackingEvent extends Message implements Trackable {
 	 * @see OpType
 	 */
 	protected TrackingEvent(Source src, OpLevel severity, OpType opType, String opName, Collection<String> correlators, Collection<String> tags, byte[] msg, Object...args) {
-		super(newUUID(), msg, args);
+		super(null, msg, args);
 		operation = new Operation(opName, opType);
 		operation.setSeverity(severity);
 		operation.setCorrelator(correlators);
@@ -335,7 +325,7 @@ public class TrackingEvent extends Message implements Trackable {
 	 * @see OpType
 	 */
 	protected TrackingEvent(Source src, OpLevel severity, OpType opType, String opName, String correlator, String tag, byte[] msg, Object...args) {
-		super(newUUID(), msg, args);
+		super(null, msg, args);
 		operation = new Operation(opName, opType);
 		operation.setSeverity(severity);
 		operation.setCorrelator(correlator);

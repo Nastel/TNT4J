@@ -24,8 +24,8 @@ package com.nastel.jkool.tnt4j.core;
 public enum OpType {
 	OTHER, NOOP, CALL, ACTIVITY, EVENT, SNAPSHOT,
 	START, STOP, OPEN, CLOSE, SEND, RECEIVE,
-	INQUIRE, SET, BROWSE, REQUEST, RESPONSE,
-	ADD, UPDATE, REMOVE, CLEAR, DATAGRAM;
+	INQUIRE, SET, BROWSE, ADD, UPDATE,
+	REMOVE, CLEAR, DATAGRAM;
 
 	private static OpType[] enumList = OpType.values();
 
