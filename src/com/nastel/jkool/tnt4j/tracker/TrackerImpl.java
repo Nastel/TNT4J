@@ -384,7 +384,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public TrackingActivity newActivity(OpLevel level, String name) {
-		return newActivity(level, name, TrackingEvent.newUUID());
+		return newActivity(level, name, null);
 	}
 
 	@Override
@@ -394,6 +394,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (!isTrackingEnabled(level, name, signature)) {
 				return NULL_ACTIVITY;
 			}
+			signature = (signature == null)? TrackingEvent.newUUID(): signature;
 			TrackingActivity luw = new TrackingActivity(level, name, signature, this);
 			luw.setPID(Utils.getVMPID());
 			if (tConfig.getActivityListener() != null) {
