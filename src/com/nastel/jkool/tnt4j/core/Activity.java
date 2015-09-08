@@ -268,13 +268,12 @@ public class Activity extends Operation implements Trackable {
 	 */
 	public void add(Trackable item) {
 		if (item == null)
-			throw new NullPointerException("msg must be non-null");
+			throw new NullPointerException("trackable item must be non-null");
 
 		String tid = item.getTrackingId();
 		if (tid != null) {
 			idset.add(tid);
 		}
-
 		Set<String> cid = item.getCorrelator();
 		if (cid != null) {
 			idset.addAll(cid);
@@ -283,7 +282,7 @@ public class Activity extends Operation implements Trackable {
 			addSnapshot((Snapshot)item);
 		}
 		item.setTTL(getTTL());
-		item.setParentId(this);
+		item.setParentId(this);		
 	}
 
 	/**
@@ -343,8 +342,7 @@ public class Activity extends Operation implements Trackable {
 		if (tracking_id == null) {
 			if (other.tracking_id != null)
 				return false;
-		}
-		else if (!tracking_id.equals(other.tracking_id)) {
+		} else if (!tracking_id.equals(other.tracking_id)) {
 			return false;
 		}
 		return true;

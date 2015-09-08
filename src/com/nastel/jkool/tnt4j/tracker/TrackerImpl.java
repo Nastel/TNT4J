@@ -87,7 +87,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	protected TrackerImpl(TrackerConfig config) {
 		tConfig = config;
-		id = tConfig.getUUIDFactory().newUUID();
+		id = newUUID();
 		selector = tConfig.getTrackingSelector();
 		eventSink = tConfig.getEventSink();
 		open();
@@ -394,7 +394,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (!isTrackingEnabled(level, name, signature)) {
 				return NULL_ACTIVITY;
 			}
-			signature = (signature == null)? tConfig.getUUIDFactory().newUUID(): signature;
+			signature = (signature == null)? newUUID(): signature;
 			TrackingActivity luw = new TrackingActivity(level, name, signature, this);
 			luw.setPID(Utils.getVMPID());
 			if (tConfig.getActivityListener() != null) {
