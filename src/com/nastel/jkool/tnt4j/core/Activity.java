@@ -214,15 +214,9 @@ public class Activity extends Operation implements Trackable {
 	 * Could be any string that will uniquely identify this Activity.
 	 *
 	 * @param id Activity tracking id
-	 * @throws NullPointerException if tracking id is <code>null</code>
-	 * @throws IllegalArgumentException if tracking id is empty or too long
 	 */
 	@Override
 	public void setTrackingId(String id) {
-		if (id == null)
-			throw new NullPointerException("tracking id must be a non-empty string");
-		if (id.length() == 0)
-			throw new IllegalArgumentException("tracking id must be a non-empty string");
 		this.tracking_id = id;
 	}
 
