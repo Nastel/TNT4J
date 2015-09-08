@@ -131,8 +131,9 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	public String format(TrackingEvent event) {
 		StringBuilder jsonString = new StringBuilder(1024);
 
+		jsonString.append(START_JSON);
 		if (!Utils.isEmpty(event.getTrackingId())) {
-			jsonString.append(START_JSON).append(JSON_TRACK_ID_LABEL).append(ATTR_SEP).append(
+			jsonString.append(JSON_TRACK_ID_LABEL).append(ATTR_SEP).append(
 		        Utils.quote(event.getTrackingId())).append(ATTR_JSON);
 		}
 		if (!Utils.isEmpty(event.getParentId())) {
@@ -265,8 +266,9 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		String END_JSON = newLineFormat ? END_LINE : END;
 		String ATTR_JSON = newLineFormat ? ATTR_END_LINE : ATTR_END;
 
+		jsonString.append(START_JSON);
 		if (!Utils.isEmpty(activity.getTrackingId())) {
-			jsonString.append(START_JSON).append(JSON_TRACK_ID_LABEL).append(ATTR_SEP).append(
+			jsonString.append(JSON_TRACK_ID_LABEL).append(ATTR_SEP).append(
 		        Utils.quote(activity.getTrackingId())).append(ATTR_JSON);
 		}
 		if (!Utils.isEmpty(activity.getParentId())) {
