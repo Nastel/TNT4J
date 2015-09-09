@@ -48,7 +48,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * {@link EventSink}. Do not use this class directly. This class is instantiated by the
  * <code>DefaultTrackerFactory.getInstance(...)</code> or <code>TrackingLogger.getInstance(...)</code> calls.
  * Access to this class is thread safe. <code>TrackingLogger.tnt(...)</code> method will trigger
- * logging to {@link EventSink} configured in <code>TrackingConfig</code>.
+ * logging to {@link EventSink} configured in {@link TrackerConfig}.
  * </p>
  *
  * @see TrackerConfig
