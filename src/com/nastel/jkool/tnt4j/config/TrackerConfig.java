@@ -506,6 +506,7 @@ public class TrackerConfig {
 	public TrackerConfig cloneConfig() {
 		TrackerConfig config = new TrackerConfig(sourceHandle);
 		config.setProperties(this.props);
+		config.uuidFactory = this.uuidFactory;
 		config.sourceFactory = this.sourceFactory;
 		config.trFactory = this.trFactory;
 		config.evFactory = this.evFactory;
