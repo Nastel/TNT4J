@@ -110,7 +110,9 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 
 	@Override
     public Source newSource(String name, SourceType tp, Source parent, String user) {
-	    return new DefaultSource(this, getNameFromType(name, tp), tp, parent, user);
+		DefaultSource src =  new DefaultSource(this, getNameFromType(name, tp), tp, parent, user);
+		src.setSSN(getSSN());
+		return src;
     }
 
 	@Override
