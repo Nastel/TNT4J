@@ -201,12 +201,13 @@ public class BufferedEventSink implements EventSink {
 
 	@Override
     public boolean isOpen() {
-	    return outSink.isOpen();
+	    return true;
     }
 
 	@Override
-    public void open() throws IOException {
-		outSink.open();
+    public void open() {
+		// open asynchronously PooledLogger should handle it
+		// outSink.open();
 	}
 
 	@Override

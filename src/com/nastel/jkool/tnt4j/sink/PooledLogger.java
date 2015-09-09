@@ -15,6 +15,7 @@
  */
 package com.nastel.jkool.tnt4j.sink;
 
+import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
@@ -242,13 +243,24 @@ class LoggingTask implements Runnable {
 		eventQ = eq;
     }
 
-	protected void logEvent(SinkLogEvent event, long start) {
+	protected void checkState(EventSink sink) throws IOException {
+		if (!sink.isOpen()) {
+			synchronized (sink) {
+				// check for open again
+				if (!sink.isOpen()) {
+					sink.open();
+				}
+			}
+		}
+		//check if the sink is in valid write state
+		AbstractEventSink.checkState(sink);
+	}
+	
+	protected void logEvent(SinkLogEvent event, long start) throws IOException {
 		Object sinkO = event.getSinkObject();
 		EventSink outSink = event.getEventSink();
 
-		//check if the sink is in valid write state
-		AbstractEventSink.checkState(outSink);
-
+		checkState(outSink);
 		if (sinkO instanceof TrackingEvent) {
 			outSink.log((TrackingEvent)sinkO);
 		} else if (sinkO instanceof TrackingActivity) {
