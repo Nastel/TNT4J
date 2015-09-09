@@ -55,6 +55,7 @@ public class PooledLogger implements KeyValueStats {
 
 	static final String KEY_Q_SIZE = "pooled-queue-size";
 	static final String KEY_Q_CAPACITY = "pooled-queue-capacity";
+	static final String KEY_Q_TASKS = "pooled-queue-tasks";
 	static final String KEY_OBJECTS_DROPPED = "pooled-objects-dropped";
 	static final String KEY_OBJECTS_LOGGED = "pooled-objects-logged";
 	static final String KEY_EXCEPTION_COUNT = "pooled-exceptions";
@@ -77,10 +78,10 @@ public class PooledLogger implements KeyValueStats {
      * @param threadPoolSize number of threads that will be used to log all enqueued events.
      * @param maxCapacity maximum queue capacity to hold incoming events, exceeding capacity will drop incoming events.
      */
-	public PooledLogger(int threadPoolSize, int maxCapacity) {
+	public PooledLogger(String name, int threadPoolSize, int maxCapacity) {
 		poolSize = threadPoolSize;
 		capacity = maxCapacity;
-		threadPool = Executors.newFixedThreadPool(poolSize, new LoggingThreadFactory("PooledLogger(" + threadPoolSize + "," + capacity + ")/task-"));
+		threadPool = Executors.newFixedThreadPool(poolSize, new LoggingThreadFactory("PooledLogger(" + name + "," + poolSize + "," + capacity + ")/task-"));
 		eventQ = new ArrayBlockingQueue<SinkLogEvent>(capacity);
 		start();
 	}
@@ -96,6 +97,7 @@ public class PooledLogger implements KeyValueStats {
     public KeyValueStats getStats(Map<String, Object> stats) {
 	    stats.put(Utils.qualify(this, KEY_Q_SIZE), eventQ.size());
 	    stats.put(Utils.qualify(this, KEY_Q_CAPACITY), capacity);
+	    stats.put(Utils.qualify(this, KEY_Q_TASKS), poolSize);
 	    stats.put(Utils.qualify(this, KEY_OBJECTS_DROPPED), dropCount.get());
 	    stats.put(Utils.qualify(this, KEY_OBJECTS_LOGGED), loggedCount.get());
 	    stats.put(Utils.qualify(this, KEY_EXCEPTION_COUNT), exceptionCount.get());

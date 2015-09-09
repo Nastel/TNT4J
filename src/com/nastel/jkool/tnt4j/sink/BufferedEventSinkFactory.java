@@ -37,11 +37,12 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  */
 public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
-	private static PooledLogger pooledLogger = new PooledLogger(Integer.getInteger("tnt4j.pooled.logger.pool", 5),
-			Integer.getInteger("tnt4j.pooled.logger.capacity", 5000));
-
-	private EventSinkFactory sinkFactory;
-
+	private static int MAX_POOL_SIZE = Integer.getInteger("tnt4j.pooled.logger.pool", 5);
+	private static int MAX_CAPACITY = Integer.getInteger("tnt4j.pooled.logger.capacity", 10000);
+	
+	EventSinkFactory sinkFactory;
+	PooledLogger pooledLogger = null;
+	
 	/**
 	 * Create a default buffered sink factory
 	 *
@@ -65,28 +66,47 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	 *
 	 * @return pooled logger instance
 	 */
-	public static PooledLogger getPooledLogger() {
+	protected PooledLogger getPooledLogger() {
 		return pooledLogger;
 	}
 
 	@Override
 	public EventSink getEventSink(String name) {
-		return configureSink(new BufferedEventSink(sinkFactory.getEventSink(name)));
+		return configureSink(new BufferedEventSink(this, sinkFactory.getEventSink(name)));
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
-		return configureSink(new BufferedEventSink(sinkFactory.getEventSink(name, props)));
+		return configureSink(new BufferedEventSink(this, sinkFactory.getEventSink(name, props)));
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-		return configureSink(new BufferedEventSink(sinkFactory.getEventSink(name, props, frmt)));
+		return configureSink(new BufferedEventSink(this, sinkFactory.getEventSink(name, props, frmt)));
 	}
 
 	@Override
 	public void setConfiguration(Map<String, Object> props) throws ConfigException {
-		sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory", "EventSinkFactory.", props);
 		super.setConfiguration(props);
+		sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory", "EventSinkFactory.", props);
+		
+		Object nameObj = props.get("Name");
+		String name = nameObj == null? Integer.toHexString(System.identityHashCode(this)): nameObj.toString();
+		
+		Object threadPool = props.get("PoolSize");
+		int poolSize = threadPool == null? MAX_POOL_SIZE: Integer.parseInt(threadPool.toString());
+		
+		Object qCapacity = props.get("Capacity");
+		int capacity = qCapacity == null? MAX_CAPACITY: Integer.parseInt(qCapacity.toString());
+		pooledLogger = new PooledLogger(name, poolSize, capacity);
+	}
+	
+	@Override
+	protected void finalize() throws Throwable {
+		try {
+			pooledLogger.stop();
+		} finally {
+			super.finalize();
+		}
 	}
 }
