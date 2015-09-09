@@ -17,6 +17,8 @@ package com.nastel.jkool.tnt4j.sink;
 
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 import com.nastel.jkool.tnt4j.config.ConfigException;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
@@ -40,8 +42,10 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	private static int MAX_POOL_SIZE = Integer.getInteger("tnt4j.pooled.logger.pool", 5);
 	private static int MAX_CAPACITY = Integer.getInteger("tnt4j.pooled.logger.capacity", 10000);
 	
+	private static final ConcurrentMap<String, PooledLogger> POOLED_LOGGERS = new ConcurrentHashMap<String, PooledLogger>();
+	
 	EventSinkFactory sinkFactory;
-	PooledLogger pooledLogger = null;
+	PooledLogger pooledLogger;
 	
 	/**
 	 * Create a default buffered sink factory
@@ -90,21 +94,31 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 		super.setConfiguration(props);
 		sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory", "EventSinkFactory.", props);
 		
-		Object nameObj = props.get("Name");
-		String name = nameObj == null? Integer.toHexString(System.identityHashCode(this)): nameObj.toString();
+		String loggerKey = Integer.toHexString(System.identityHashCode(this));
+		Object nameObj = props.get("PoolName");
+		String loggerName = nameObj == null? loggerKey: nameObj.toString();
 		
 		Object threadPool = props.get("PoolSize");
 		int poolSize = threadPool == null? MAX_POOL_SIZE: Integer.parseInt(threadPool.toString());
 		
-		Object qCapacity = props.get("Capacity");
+		Object qCapacity = props.get("PoolCapacity");
 		int capacity = qCapacity == null? MAX_CAPACITY: Integer.parseInt(qCapacity.toString());
-		pooledLogger = new PooledLogger(name, poolSize, capacity);
+		pooledLogger = new PooledLogger(loggerName, poolSize, capacity);
+		POOLED_LOGGERS.putIfAbsent(loggerName, new PooledLogger(loggerName, poolSize, capacity));
+		
+		pooledLogger = POOLED_LOGGERS.get(loggerName);
+		pooledLogger.start();
 	}
 	
 	@Override
 	protected void finalize() throws Throwable {
 		try {
-			pooledLogger.stop();
+			String loggerKey = Integer.toHexString(System.identityHashCode(this));
+			PooledLogger lg = POOLED_LOGGERS.get(loggerKey);
+			if (lg != null) {
+				POOLED_LOGGERS.remove(loggerKey);
+				lg.stop();
+			}
 		} finally {
 			super.finalize();
 		}
