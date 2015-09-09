@@ -25,16 +25,17 @@ import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
- * <p>Buffered implementation of <code>EventSinkFactory</code> interface, which
- * creates instances of <code>BufferedEventSink</code>. This factory relies on the
- * specified concrete <code>EventSinkFactory</code> instance specified by <code>EventSinkFactory</code>
+ * <p>Buffered implementation of {@link EventSinkFactory} interface, which
+ * creates instances of {@link BufferedEventSink}. This factory relies on the
+ * specified concrete {@link EventSinkFactory} instance specified by {@link EventSinkFactory}
  * configuration attribute. This factory uses specified event sink factory to create event sinks and wraps
- * then with instances of <code>BufferedEventSink</code>.
+ * then with instances of {@link BufferedEventSink}.
  *
  *
  * @see EventSink
  * @see BufferedEventSink
- *
+ * @see PooledLogger
+ * 
  * @version $Revision: 1 $
  *
  */
@@ -46,12 +47,14 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	
 	EventSinkFactory sinkFactory;
 	PooledLogger pooledLogger;
-	
+	String factoryName;
+
 	/**
 	 * Create a default buffered sink factory
 	 *
 	 */
 	public BufferedEventSinkFactory() {
+		this(null);
 	}
 
 	/**
@@ -61,6 +64,7 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	 * @param factory concrete event sink factory instance
 	 */
 	public BufferedEventSinkFactory(EventSinkFactory factory) {
+		factoryName = Integer.toHexString(System.identityHashCode(this));
 		sinkFactory = factory;
 	}
 
@@ -69,6 +73,7 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	 * asynchronously by a thread pool.
 	 *
 	 * @return pooled logger instance
+	 * @see PooledLogger
 	 */
 	protected PooledLogger getPooledLogger() {
 		return pooledLogger;
@@ -94,18 +99,21 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 		super.setConfiguration(props);
 		sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory", "EventSinkFactory.", props);
 		
-		String loggerKey = Integer.toHexString(System.identityHashCode(this));
+		// obtain all optional attributes
 		Object nameObj = props.get("PoolName");
-		String loggerName = nameObj == null? loggerKey: nameObj.toString();
+		String loggerName = nameObj == null? factoryName: nameObj.toString();
 		
 		Object threadPool = props.get("PoolSize");
 		int poolSize = threadPool == null? MAX_POOL_SIZE: Integer.parseInt(threadPool.toString());
 		
 		Object qCapacity = props.get("PoolCapacity");
 		int capacity = qCapacity == null? MAX_CAPACITY: Integer.parseInt(qCapacity.toString());
+		
+		// create and register pooled logger instance if not yet available
 		pooledLogger = new PooledLogger(loggerName, poolSize, capacity);
 		POOLED_LOGGERS.putIfAbsent(loggerName, new PooledLogger(loggerName, poolSize, capacity));
 		
+		// obtain the required logger and attempt to start
 		pooledLogger = POOLED_LOGGERS.get(loggerName);
 		pooledLogger.start();
 	}
@@ -113,10 +121,9 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	@Override
 	protected void finalize() throws Throwable {
 		try {
-			String loggerKey = Integer.toHexString(System.identityHashCode(this));
-			PooledLogger lg = POOLED_LOGGERS.get(loggerKey);
+			PooledLogger lg = POOLED_LOGGERS.get(factoryName);
 			if (lg != null) {
-				POOLED_LOGGERS.remove(loggerKey);
+				POOLED_LOGGERS.remove(factoryName);
 				lg.stop();
 			}
 		} finally {
