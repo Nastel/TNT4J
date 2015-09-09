@@ -528,11 +528,11 @@ public class TrackerConfig {
 	public TrackerConfig build() {
 		if (uuidFactory == null)
 			uuidFactory = DefaultUUIDFactory.getInstance();
-
 		if (sourceFactory == null)
 			sourceFactory = DefaultSourceFactory.getInstance();
-
-		sourceHandle = sourceFactory.newSource(srcName, srcType);
+		if (sourceHandle == null)
+			sourceHandle = sourceFactory.newSource(srcName, srcType);		
+		
 		if (trFactory == null)
 			trFactory = new DefaultTrackerFactory();
 		if (evFactory == null)
