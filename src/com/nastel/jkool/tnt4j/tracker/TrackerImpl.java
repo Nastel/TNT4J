@@ -44,11 +44,11 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
- * Concrete class that implements <code>Tracker</code> interface. This class implements integration with
- * <code>EventSink</code>. Do not use this class directly. This class is instantiated by the
+ * Concrete class that implements {@link Tracker} interface. This class implements integration with
+ * {@link EventSink}. Do not use this class directly. This class is instantiated by the
  * <code>DefaultTrackerFactory.getInstance(...)</code> or <code>TrackingLogger.getInstance(...)</code> calls.
  * Access to this class is thread safe. <code>TrackingLogger.tnt(...)</code> method will trigger
- * logging to <code>EventSink</code> configured in <code>TrackingConfig</code>.
+ * logging to {@link EventSink} configured in <code>TrackingConfig</code>.
  * </p>
  *
  * @see TrackerConfig
@@ -74,7 +74,6 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	private TrackerConfig tConfig;
 	private TrackingSelector selector;
 	private TrackingFilter filter;
-	private volatile boolean openFlag = false, keepContext = true;
 	private AtomicLong activityCount = new AtomicLong(0);
 	private AtomicLong eventCount = new AtomicLong(0);
 	private AtomicLong msgCount = new AtomicLong(0);
@@ -84,6 +83,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	private AtomicLong popCount = new AtomicLong(0);
 	private AtomicLong noopCount = new AtomicLong(0);
 	private AtomicLong overheadNanos = new AtomicLong(0);
+	private volatile boolean openFlag = false, keepContext = true;
 
 	protected TrackerImpl(TrackerConfig config) {
 		tConfig = config;
@@ -395,12 +395,12 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 				return NULL_ACTIVITY;
 			}
 			signature = (signature == null)? newUUID(): signature;
-			TrackingActivity luw = new TrackingActivity(level, name, signature, this);
-			luw.setPID(Utils.getVMPID());
+			TrackingActivity activity = new TrackingActivity(level, name, signature, this);
+			activity.setPID(Utils.getVMPID());
 			if (tConfig.getActivityListener() != null) {
-				luw.addActivityListener(tConfig.getActivityListener());
+				activity.addActivityListener(tConfig.getActivityListener());
 			}
-			return luw;
+			return activity;
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
 		}
