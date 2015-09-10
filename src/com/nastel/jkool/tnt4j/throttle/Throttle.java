@@ -80,7 +80,7 @@ public interface Throttle {
 	 * @param maxBps maximum bytes/second rate
 	 * @return same throttled instance
 	 */
-	Throttle setLimits(long maxMps, long maxBps);
+	Throttle setLimits(int maxMps, int maxBps);
 
 	/**
 	 * Get current message/second rate
@@ -131,7 +131,7 @@ public interface Throttle {
 	 * Called on every message/byte chunk received.
 	 * This call will block to satisfy max throttle limits.
 	 *
-	 * @return same throttled instance
+	 * @return time spend to enforce the rates in seconds.
 	 */
-	Throttle throttle(long msgCount, long byteCount) throws InterruptedException;
+	double throttle(int msgCount, int byteCount);
 }

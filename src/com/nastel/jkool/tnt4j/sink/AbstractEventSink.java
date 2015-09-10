@@ -28,6 +28,7 @@ import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.TTL;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.source.Source;
+import com.nastel.jkool.tnt4j.throttle.Throttle;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -59,6 +60,7 @@ public abstract class AbstractEventSink implements EventSink {
 	private Source source;
 	private boolean filterCheck = true;
 	private long ttl = TTL.TTL_CONTEXT;
+	private Throttle limiter;
 	private EventFormatter formatter;
 	private AtomicLong loggedActivities = new AtomicLong(0);
 	private AtomicLong loggedEvents = new AtomicLong(0);
@@ -145,6 +147,15 @@ public abstract class AbstractEventSink implements EventSink {
 		if (lastTime.get() > 0) {
 			stats.put(Utils.qualify(this, KEY_LAST_TIMESTAMP), new Date(lastTime.get()));
 			stats.put(Utils.qualify(this, KEY_LAST_AGE), (System.currentTimeMillis() - lastTime.get()));
+		}
+		if (limiter != null) {
+			stats.put(Utils.qualify(this, "throttle-enabled"), limiter.isThrottled());
+			stats.put(Utils.qualify(this, "throttle-mps"), limiter.getCurrentMPS());
+			stats.put(Utils.qualify(this, "throttle-bps"), limiter.getCurrentBPS());
+			stats.put(Utils.qualify(this, "throttle-max-mps"), limiter.getMaxMPS());
+			stats.put(Utils.qualify(this, "throttle-max-bps"), limiter.getMaxBPS());
+			stats.put(Utils.qualify(this, "throttle-delay-count"), limiter.getDelayCount());
+			stats.put(Utils.qualify(this, "throttle-delay-time-sec"), limiter.getTotalDelayTime());
 		}
 		return this;
 	}
@@ -355,6 +366,7 @@ public abstract class AbstractEventSink implements EventSink {
 				if (ttl != TTL.TTL_CONTEXT) {
 					activity.setTTL(ttl);
 				}
+				_limiter(1, 0);
 				_log(activity);
 				loggedActivities.incrementAndGet();
 				loggedSnaps.addAndGet(activity.getSnapshotCount());
@@ -377,6 +389,7 @@ public abstract class AbstractEventSink implements EventSink {
 				if (ttl != TTL.TTL_CONTEXT) {
 					event.setTTL(ttl);
 				}
+				_limiter(1, event.getSize());
 				_log(event);
 				loggedEvents.incrementAndGet();
 				loggedSnaps.addAndGet(event.getOperation().getSnapshotCount());
@@ -399,6 +412,7 @@ public abstract class AbstractEventSink implements EventSink {
 				if (ttl != TTL.TTL_CONTEXT) {
 					snapshot.setTTL(ttl);
 				}
+				_limiter(1, 0);
 				_log(snapshot);
 				loggedSnaps.incrementAndGet();
 				lastTime.set(System.currentTimeMillis());
@@ -428,6 +442,7 @@ public abstract class AbstractEventSink implements EventSink {
 		if (doLog) {
 			try {
 				long nttl = ((ttl_sec != TTL.TTL_CONTEXT)? ttl_sec: TTL.TTL_DEFAULT);
+				_limiter(1, msg.length());
 				_log(nttl, src, sev, msg, args);
 				loggedMsgs.incrementAndGet();
 				lastTime.set(System.currentTimeMillis());
@@ -464,6 +479,16 @@ public abstract class AbstractEventSink implements EventSink {
 		this.ttl = ttl;
 	}
 	
+	@Override
+	public void setLimiter(Throttle limiter) {
+		this.limiter = limiter;
+	}
+	
+	@Override
+	public Throttle getLimiter() {
+		return limiter;
+	}
+	
 	/**
 	 * Check state of the sink before logging occurs.
 	 *
@@ -482,6 +507,17 @@ public abstract class AbstractEventSink implements EventSink {
 	 */
     protected void _checkState() throws IllegalStateException {
     	checkState(this);
+    }
+
+	/**
+	 * Override this method to check state of the sink before logging occurs.
+	 *
+	 * @throws IllegalStateException if sink is in wrong state
+	 */
+    protected void _limiter(int msgCount, int byteCount) throws IllegalStateException {
+    	if (limiter != null) {
+    		limiter.throttle(msgCount, byteCount);
+    	}
     }
 
 	/**

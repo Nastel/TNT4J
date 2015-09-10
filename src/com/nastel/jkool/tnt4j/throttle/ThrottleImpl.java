@@ -17,23 +17,27 @@ package com.nastel.jkool.tnt4j.throttle;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.google.common.util.concurrent.RateLimiter;
+
 /**
- * Default throttle implementation (thread safe).
+ * Default throttle implementation (thread safe) based on Google Guava Library
+ * {@code https://code.google.com/p/guava-libraries/}
  *
  * @version $Revision: 1 $
  */
 public class ThrottleImpl implements Throttle {
 	
 	boolean doThrottle = false;
-	long maxMPS = UNLIMITED, maxBPS = UNLIMITED, start = 0;
+	int maxMPS = UNLIMITED, maxBPS = UNLIMITED;
+	long start = 0;
 	
-	AtomicLong currentMPS = new AtomicLong(0);
-	AtomicLong currentBPS = new AtomicLong(0);
 	AtomicLong byteCount = new AtomicLong(0);
 	AtomicLong msgCount = new AtomicLong(0);
 	AtomicLong sleepCount = new AtomicLong(0);
 	AtomicLong lastSleep = new AtomicLong(0);
 	AtomicLong delayCount = new AtomicLong(0);
+	
+	RateLimiter bpsLimiter, mpsLimiter;
 	
 	public ThrottleImpl(int maxMps, int maxBps, boolean enabled) {
 		setLimits(maxMps, maxBps);
@@ -51,7 +55,7 @@ public class ThrottleImpl implements Throttle {
     }
 
 	@Override
-    public Throttle setLimits(long maxMps, long maxBps) {
+    public Throttle setLimits(int maxMps, int maxBps) {
 		maxMPS = maxMps;
 		maxBPS = maxBps;
 	    return this;
@@ -59,12 +63,14 @@ public class ThrottleImpl implements Throttle {
 
 	@Override
     public long getCurrentMPS() {
-	    return currentMPS.get();
+		long elapsed = Math.max(System.currentTimeMillis() - start, 1);
+		return (msgCount.get() * 1000L / elapsed);
     }
 
 	@Override
     public long getCurrentBPS() {
-	    return currentBPS.get();
+		long elapsed = Math.max(System.currentTimeMillis() - start, 1);
+		return (byteCount.get() * 1000L / elapsed);
     }
 
 	@Override
@@ -72,6 +78,8 @@ public class ThrottleImpl implements Throttle {
 		doThrottle = flag;
 		if (doThrottle) {
 			start = System.currentTimeMillis();
+			bpsLimiter = RateLimiter.create(maxBPS);
+			mpsLimiter = RateLimiter.create(maxMPS);
 		}
 	    return this;
     }
@@ -82,9 +90,9 @@ public class ThrottleImpl implements Throttle {
     }
 
 	@Override
-    public Throttle throttle(long msgs, long bytes) throws InterruptedException {
+    public double throttle(int msgs, int bytes) {
 		if (!doThrottle || ( msgs == 0 && bytes == 0)) {
-			return this;
+			return 0;
 		}
 		
 		// Check the throttle.
@@ -94,26 +102,25 @@ public class ThrottleImpl implements Throttle {
 		if (msgs > 0) {
 			msgCount.addAndGet(msgs);
 		}	
-		long elapsed = Math.max(System.currentTimeMillis() - start, 1);
 
-		long wakeElapsedByBps = 0, wakeElapsedByMps = 0;
-		currentBPS.set(byteCount.get() * 1000L / elapsed);
-		currentMPS.set(msgCount.get() * 1000L / elapsed);
-		if (currentBPS.get() > maxBPS) {
-			wakeElapsedByBps = (byteCount.get() * 1000L / maxBPS);
+		double wakeElapsedSecByBps = 0;
+		double wakeElapsedSecByMps = 0;
+		
+		int delayCounter = 0;
+		if (maxBPS > UNLIMITED) {
+			wakeElapsedSecByBps = bpsLimiter.acquire(bytes);
+			if (wakeElapsedSecByBps > 0) delayCounter++;
 		}	
-		if (currentMPS.get() > maxMPS) {
-			wakeElapsedByMps = (msgCount.get() * 1000L / maxMPS);
+		if (maxMPS > UNLIMITED) {
+			wakeElapsedSecByMps = mpsLimiter.acquire(msgs);
+			if (wakeElapsedSecByMps > 0) delayCounter++;
 		}	
-		// sleep for the longest of the too
-		long wakeElapsed = Math.max(wakeElapsedByBps, wakeElapsedByMps);
-		long sleepTime = wakeElapsed - elapsed;
+		double sleepTime = wakeElapsedSecByBps + wakeElapsedSecByMps;
 		if (sleepTime > 0) {
-			sleepCount.addAndGet(sleepTime);
-			delayCount.incrementAndGet();
-			Thread.sleep(sleepTime);
+			sleepCount.addAndGet((long) sleepTime);
+			delayCount.addAndGet(delayCounter);
 		}
-	    return this;
+	    return sleepTime;
     }
 
 	@Override
@@ -122,8 +129,6 @@ public class ThrottleImpl implements Throttle {
 		msgCount.set(0);
 		sleepCount.set(0);
 		delayCount.set(0);
-		currentBPS.set(0);
-		currentMPS.set(0);
 		start = System.currentTimeMillis();
 		return this;
 	}

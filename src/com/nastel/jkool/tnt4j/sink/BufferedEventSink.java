@@ -25,6 +25,7 @@ import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.TTL;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.source.Source;
+import com.nastel.jkool.tnt4j.throttle.Throttle;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -87,6 +88,16 @@ public class BufferedEventSink implements EventSink {
 		return skipCount.get();
 	}
 
+	@Override
+	public void setLimiter(Throttle limiter) {
+		outSink.getLimiter();
+	}
+	
+	@Override
+	public Throttle getLimiter() {
+		return outSink.getLimiter();
+	}
+	
 	@Override
     public String getName() {
 	    return outSink.getName();

@@ -20,6 +20,8 @@ import java.util.Map;
 import com.nastel.jkool.tnt4j.config.ConfigException;
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.core.TTL;
+import com.nastel.jkool.tnt4j.throttle.DefaultThrottleFactory;
+import com.nastel.jkool.tnt4j.throttle.Throttle;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -48,6 +50,7 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	private SinkErrorListener errorListener = null;
 	private SinkLogEventListener eventListener = null;
 	private long ttl = TTL.TTL_CONTEXT;
+	private Throttle limiter = null;
 
 	protected Map<String, Object> config = null;
 
@@ -77,6 +80,7 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 			sink.addSinkLogEventListener(eventListener);
 		}
 		sink.setTTL(ttl);
+		sink.setLimiter(limiter);
 		return sink;
 	}
 
@@ -102,6 +106,15 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 		Object ttlValue = config.get("TTL");
 		if (ttlValue != null) {
 			setTTL(Long.parseLong(ttlValue.toString()));
+		}
+		Object throttleFlag = config.get("Throttle");
+		Object maxMps = config.get("MaxMPS");
+		Object maxBps = config.get("MaxBPS");
+		if (maxMps != null || maxBps != null) {
+			int maxmps = maxMps != null? Integer.parseInt(maxMps.toString()): 0;
+			int maxbps = maxBps != null? Integer.parseInt(maxBps.toString()): 0;
+			boolean throttle = throttleFlag != null? Boolean.parseBoolean(throttleFlag.toString()): true;
+			limiter = DefaultThrottleFactory.getInstance().newThrottle(maxmps, maxbps, throttle);
 		}
 		eventFilter = (SinkEventFilter) Utils.createConfigurableObject("Filter", "Filter.", config);
 		errorListener = (SinkErrorListener) Utils.createConfigurableObject("ErrorListener", "ErrorListener.", config);

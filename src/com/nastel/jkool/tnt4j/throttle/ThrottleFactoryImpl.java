@@ -16,7 +16,8 @@
 package com.nastel.jkool.tnt4j.throttle;
 
 /**
- * Default throttle factory implementation
+ * Default throttle factory implementation based on Google Guava Library
+ * {@code https://code.google.com/p/guava-libraries/}
  *
  * @version $Revision: 1 $
  */
