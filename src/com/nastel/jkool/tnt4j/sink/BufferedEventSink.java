@@ -90,7 +90,7 @@ public class BufferedEventSink implements EventSink {
 
 	@Override
 	public void setLimiter(Throttle limiter) {
-		outSink.getLimiter();
+		outSink.setLimiter(limiter);
 	}
 	
 	@Override

@@ -17,6 +17,7 @@ package com.nastel.jkool.tnt4j.throttle;
 
 import java.util.concurrent.atomic.AtomicLong;
 
+import com.google.common.util.concurrent.AtomicDouble;
 import com.google.common.util.concurrent.RateLimiter;
 
 /**
@@ -33,9 +34,10 @@ public class ThrottleImpl implements Throttle {
 	
 	AtomicLong byteCount = new AtomicLong(0);
 	AtomicLong msgCount = new AtomicLong(0);
-	AtomicLong sleepCount = new AtomicLong(0);
-	AtomicLong lastSleep = new AtomicLong(0);
 	AtomicLong delayCount = new AtomicLong(0);
+
+	AtomicDouble sleepCount = new AtomicDouble(0);
+	AtomicDouble lastSleep = new AtomicDouble(0);
 	
 	RateLimiter bpsLimiter, mpsLimiter;
 	
@@ -117,7 +119,8 @@ public class ThrottleImpl implements Throttle {
 		}	
 		double sleepTime = wakeElapsedSecByBps + wakeElapsedSecByMps;
 		if (sleepTime > 0) {
-			sleepCount.addAndGet((long) sleepTime);
+			lastSleep.set(sleepTime);
+			sleepCount.addAndGet(sleepTime);
 			delayCount.addAndGet(delayCounter);
 		}
 	    return sleepTime;
@@ -149,12 +152,12 @@ public class ThrottleImpl implements Throttle {
     }
 
 	@Override
-    public long getLastDelayTime() {
+    public double getLastDelayTime() {
 	    return lastSleep.get();
     }
 
 	@Override
-    public long getTotalDelayTime() {
+    public double getTotalDelayTime() {
 	    return sleepCount.get();
     }
 	

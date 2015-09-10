@@ -32,18 +32,18 @@ public interface Throttle {
 	long getDelayCount();
 	
 	/**
-	 * Get last time in (ms) blocked to achieve msgs/byte rates
+	 * Get last time in (seconds) blocked to achieve msgs/byte rates
 	 *
-	 * @return number of ms blocked to achieve msgs/byte rates
+	 * @return number of seconds blocked to achieve msgs/byte rates
 	 */
-	long getLastDelayTime();
+	double getLastDelayTime();
 	
 	/**
-	 * Get total time (ms) blocked to achieve msgs/byte rates
+	 * Get total time (seconds) blocked to achieve msgs/byte rates
 	 *
-	 * @return total time (ms) blocked to achieve msgs/byte rates
+	 * @return total time (seconds) blocked to achieve msgs/byte rates
 	 */
-	long getTotalDelayTime();
+	double getTotalDelayTime();
 	
 	/**
 	 * Get accumulated byte count since start or last reset

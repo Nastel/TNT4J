@@ -155,6 +155,7 @@ public abstract class AbstractEventSink implements EventSink {
 			stats.put(Utils.qualify(this, "throttle-max-mps"), limiter.getMaxMPS());
 			stats.put(Utils.qualify(this, "throttle-max-bps"), limiter.getMaxBPS());
 			stats.put(Utils.qualify(this, "throttle-delay-count"), limiter.getDelayCount());
+			stats.put(Utils.qualify(this, "throttle-delay-last-sec"), limiter.getLastDelayTime());
 			stats.put(Utils.qualify(this, "throttle-delay-time-sec"), limiter.getTotalDelayTime());
 		}
 		return this;
@@ -168,11 +169,6 @@ public abstract class AbstractEventSink implements EventSink {
 		loggedMsgs.set(0);
 		sinkWrites.set(0);
 		skipCount.set(0);
-	}
-
-	protected String qualify(Object obj, String key) {
-		String newKey = obj.getClass().getSimpleName() + "-" + key;
-		return newKey;
 	}
 
 	/**
@@ -458,6 +454,7 @@ public abstract class AbstractEventSink implements EventSink {
 	@Override
 	public void write(Object msg, Object...args) throws IOException, InterruptedException {
 		try {
+			_limiter(msg);
 			_write(msg, args);
 			sinkWrites.incrementAndGet();
 			lastTime.set(System.currentTimeMillis());
@@ -480,8 +477,8 @@ public abstract class AbstractEventSink implements EventSink {
 	}
 	
 	@Override
-	public void setLimiter(Throttle limiter) {
-		this.limiter = limiter;
+	public void setLimiter(Throttle limit) {
+		this.limiter = limit;
 	}
 	
 	@Override
@@ -510,13 +507,25 @@ public abstract class AbstractEventSink implements EventSink {
     }
 
 	/**
-	 * Override this method to check state of the sink before logging occurs.
-	 *
-	 * @throws IllegalStateException if sink is in wrong state
+	 * Applies rate limiting on mps/bps
+	 * 
+	 * @param msgCount messages sent
+	 * @param byteCount bytes sent
 	 */
-    protected void _limiter(int msgCount, int byteCount) throws IllegalStateException {
+    protected void _limiter(int msgCount, int byteCount) {
     	if (limiter != null) {
     		limiter.throttle(msgCount, byteCount);
+    	}
+    }
+
+	/**
+	 * Applies rate limiting on mps/bps
+	 * 
+	 * @param obj object to be sent
+	 */
+    protected void _limiter(Object obj) {
+    	if (limiter != null) {
+   			limiter.throttle(1, String.valueOf(obj).length());
     	}
     }
 
