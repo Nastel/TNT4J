@@ -11,6 +11,7 @@ Why track and trace your applications?
 * Track anything worth tracking in your application
 * Know you application: what, where, when, why 
 * Events may have TTL (time-to-live) for sinks that support event expiration
+* Event rate limiter (throttle control) based on mps, bps (message/sec, bytes/sec)
 
 <b>Several key features make TNT4J a prime choice for your java application:</b>
 
