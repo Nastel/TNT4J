@@ -23,7 +23,6 @@ package com.nastel.jkool.tnt4j.uuid;
  * @see UUIDFactory
  * @version $Revision: 1 $
  */
-
 public class DefaultUUIDFactory {
 	private static UUIDFactory factory = new JUGFactoryImpl();
 	
