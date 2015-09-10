@@ -36,13 +36,14 @@ import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.source.SourceFactory;
 import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.tracker.DefaultTrackerFactory;
+import com.nastel.jkool.tnt4j.tracker.Tracker;
 import com.nastel.jkool.tnt4j.tracker.TrackerFactory;
 import com.nastel.jkool.tnt4j.uuid.DefaultUUIDFactory;
 import com.nastel.jkool.tnt4j.uuid.UUIDFactory;
 
 /**
  * <p>
- * This class consolidates all configuration for creating <code>Tracker</code> instances. Developers should use this
+ * This class consolidates all configuration for creating {@link Tracker} instances. Developers should use this
  * class and override default configuration with user defined elements.
  * </p>
  *
@@ -170,7 +171,7 @@ public class TrackerConfig {
 	}
 
 	/**
-	 * Set default source factory to generate <code>Source</code> instances
+	 * Set default source factory to generate {@link Source} instances
 	 *
 	 * @param sfac
 	 *            source factory instance
@@ -194,7 +195,7 @@ public class TrackerConfig {
 	}
 
 	/**
-	 * Set default tracker factory to generate <code>Tracker</code> instances
+	 * Set default tracker factory to generate {@link Tracker} instances
 	 *
 	 * @param tFactory
 	 *            tracker factory instance
@@ -316,7 +317,7 @@ public class TrackerConfig {
 	}
 
 	/**
-	 * Set configuration event sink factory. Event sink factory is used to create <code>EventSink</code> instances,
+	 * Set configuration event sink factory. Event sink factory is used to create {@link EventSink} instances,
 	 * where all events, activities and messages are logged.
 	 *
 	 * @param evSinkFactory
@@ -332,7 +333,7 @@ public class TrackerConfig {
 
 	/**
 	 * Set default event sink factory. Default Event sink factory is used to create
-	 * <code>EventSink</code> instances for all logging activities.
+	 * {@link EventSink} instances for all logging activities.
 	 *
 	 * @param evSinkFactory
 	 *            event sink factory instance
@@ -410,7 +411,7 @@ public class TrackerConfig {
 	 * @param defValue
 	 *            default value if key does not exist
 	 *
-	 * @return value associated with the given key or <code>defValue</code> if non exist
+	 * @return value associated with the given key or {@code defValue} if non exist
 	 */
 	public Object getProperty(String key, String defValue) {
 		return props.getProperty(key, defValue);
@@ -472,10 +473,10 @@ public class TrackerConfig {
 	}
 
 	/**
-	 * Get event logger instance created by <code>EventSinkFactory</code>
+	 * Get event logger instance created by {@link EventSinkFactory}
 	 *
 	 * @see EventSink
-	 * @return new event logger instance created by <code>EventSinkFactory</code>
+	 * @return new event logger instance created by {@link EventSinkFactory}
 	 */
 	public EventSink getEventSink() {
 		EventSink sink = evFactory.getEventSink(sourceHandle.getName(), props, evFormatter);
@@ -484,13 +485,13 @@ public class TrackerConfig {
 	}
 
 	/**
-	 * Get event logger instance created by <code>EventSinkFactory</code>
+	 * Get event logger instance created by {@link EventSinkFactory}
 	 *
 	 * @param frm
 	 *            user defined event formatter used to format tracking events
 	 * @see EventSink
 	 * @see EventFormatter
-	 * @return new event logger instance created by <code>EventSinkFactory</code>
+	 * @return new event logger instance created by {@link EventSinkFactory}
 	 */
 	public EventSink getEventSink(EventFormatter frm) {
 		EventSink sink = evFactory.getEventSink(sourceHandle.getName(), props, frm);
@@ -501,7 +502,7 @@ public class TrackerConfig {
 	/**
 	 * Clone current tracking configuration instance and return a new one
 	 *
-	 * @return new <code>TrackerConfig</code> instance with cloned values from the current instance
+	 * @return new {@link TrackerConfig} instance with cloned values from the current instance
 	 */
 	public TrackerConfig cloneConfig() {
 		TrackerConfig config = new TrackerConfig(sourceHandle);
@@ -524,7 +525,7 @@ public class TrackerConfig {
 	 * Build configuration based on specified configuration elements. This method must be called before passing
 	 * configuration to initialize other objects:
 	 *
-	 * @return <code>TrackerConfig</code> instance with initialized configuration elements
+	 * @return {@link TrackerConfig} instance with initialized configuration elements
 	 */
 	public TrackerConfig build() {
 		if (uuidFactory == null)
@@ -533,7 +534,6 @@ public class TrackerConfig {
 			sourceFactory = DefaultSourceFactory.getInstance();
 		if (sourceHandle == null)
 			sourceHandle = sourceFactory.newSource(srcName, srcType);		
-		
 		if (trFactory == null)
 			trFactory = new DefaultTrackerFactory();
 		if (evFactory == null)
@@ -544,9 +544,8 @@ public class TrackerConfig {
 			dpFactory = new DefaultDumpSinkFactory();
 		if (evFormatter == null)
 			evFormatter = new DefaultFormatter();
-		if (tSelector == null) {
+		if (tSelector == null)
 			tSelector = new DefaultTrackingSelector();
-		}
 		return this;
 	}
 
