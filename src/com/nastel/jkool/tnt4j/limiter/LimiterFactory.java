@@ -15,12 +15,17 @@
  */
 package com.nastel.jkool.tnt4j.limiter;
 
+/**
+ * Factory interface to create instances of rate limiter implementations.
+ *
+ * @version $Revision: 1 $
+ */
 public interface LimiterFactory {
 	/**
-	 * Create a new limiter (0 means unlimited)
+	 * Create a new limiter
 	 * 
-	 * @param maxMps maximum message/second rate
-	 * @param maxBps maximum bytes/second rate
+	 * @param maxMps maximum message/second rate (0 means unlimited)
+	 * @param maxBps maximum bytes/second rate (0 means unlimited)
 	 * @return new limiter instance
 	 */
 	Limiter newLimiter(int maxMps, int maxBps, boolean enabled);
