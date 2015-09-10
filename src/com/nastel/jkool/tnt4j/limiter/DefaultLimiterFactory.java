@@ -13,38 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nastel.jkool.tnt4j.throttle;
+package com.nastel.jkool.tnt4j.limiter;
 
 /**
- * This class allows developer to set and obtain actual {@link ThrottleFactory} implementation
- * instance. Developers may create their own and set it globally using {@code setDefaultThrottleFactory}
+ * This class allows developer to set and obtain actual {@link LimiterFactory} implementation
+ * instance. Developers may create their own and set it globally using {@code setDefaultLimiterFactory}
  * 
- * @see ThrottleFactory
+ * @see LimiterFactory
  * @version $Revision: 1 $
  */
-public class DefaultThrottleFactory {
-	private static ThrottleFactory factory = new ThrottleFactoryImpl();
+public class DefaultLimiterFactory {
+	private static LimiterFactory factory = new LimiterFactoryImpl();
 	
-	private DefaultThrottleFactory() {
+	private DefaultLimiterFactory() {
 	}
 	
 	/**
 	 * Set a global default throttle factory implementation
 	 * 
-	 * @param tfac throttle factory instance
-	 * @return {@link ThrottleFactory} instance
+	 * @param fac limiter factory instance
+	 * @return {@link LimiterFactory} instance
 	 */
-	public static ThrottleFactory setDefaultThrottleFactory(ThrottleFactory tfac) {
-		factory = tfac;
+	public static LimiterFactory setDefaultLimiterFactory(LimiterFactory fac) {
+		factory = fac;
 		return factory;
 	}
 	
 	/**
-	 * Obtain a default throttle factory
+	 * Obtain a default limiter factory
 	 * 
-	 * @return {@link ThrottleFactory} instance
+	 * @return {@link LimiterFactory} instance
 	 */
-	public static ThrottleFactory getInstance() {
+	public static LimiterFactory getInstance() {
 		return factory;
 	}	
 }

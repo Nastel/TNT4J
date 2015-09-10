@@ -21,7 +21,6 @@ import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.TTL;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.source.Source;
-import com.nastel.jkool.tnt4j.throttle.Throttle;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
@@ -55,20 +54,20 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	 * Get rate limiter (throttle control)
 	 *
 	 * @return bps/mps rate limiter
-	 * @see Throttle
+	 * @see EventLimiter
 	 */
-	Throttle getLimiter();
+	EventLimiter getLimiter();
 	
 	/**
 	 * Set rate limiter (throttle control)
 	 *
 	 * @param limiter bps/mps rate limiter
-	 * @see Throttle
+	 * @see EventLimiter
 	 */
-	void setLimiter(Throttle limiter);
+	void setLimiter(EventLimiter limiter);
 	
 	/**
-	 * Set current/active <code>Source</code> with the sink
+	 * Set current/active limiter with the sink
 	 *
 	 * @param src event source handle
 	 * @see Source
@@ -76,7 +75,7 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	void setSource(Source src);
 
 	/**
-	 * Obtains current/active <code>Source</code> handle associated
+	 * Obtains current/active limiter handle associated
 	 * with the current sink.
 	 *
 	 * @return current source handle

@@ -28,7 +28,6 @@ import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.TTL;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.source.Source;
-import com.nastel.jkool.tnt4j.throttle.Throttle;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -60,7 +59,7 @@ public abstract class AbstractEventSink implements EventSink {
 	private Source source;
 	private boolean filterCheck = true;
 	private long ttl = TTL.TTL_CONTEXT;
-	private Throttle limiter;
+	private EventLimiter limiter;
 	private EventFormatter formatter;
 	private AtomicLong loggedActivities = new AtomicLong(0);
 	private AtomicLong loggedEvents = new AtomicLong(0);
@@ -149,14 +148,15 @@ public abstract class AbstractEventSink implements EventSink {
 			stats.put(Utils.qualify(this, KEY_LAST_AGE), (System.currentTimeMillis() - lastTime.get()));
 		}
 		if (limiter != null) {
-			stats.put(Utils.qualify(this, "throttle-enabled"), limiter.isThrottled());
-			stats.put(Utils.qualify(this, "throttle-mps"), limiter.getCurrentMPS());
-			stats.put(Utils.qualify(this, "throttle-bps"), limiter.getCurrentBPS());
-			stats.put(Utils.qualify(this, "throttle-max-mps"), limiter.getMaxMPS());
-			stats.put(Utils.qualify(this, "throttle-max-bps"), limiter.getMaxBPS());
-			stats.put(Utils.qualify(this, "throttle-delay-count"), limiter.getDelayCount());
-			stats.put(Utils.qualify(this, "throttle-delay-last-sec"), limiter.getLastDelayTime());
-			stats.put(Utils.qualify(this, "throttle-delay-time-sec"), limiter.getTotalDelayTime());
+			stats.put(Utils.qualify(this, "limiter-enabled"), limiter.getLimiter().isEnabled());
+			stats.put(Utils.qualify(this, "limiter-mps"), limiter.getLimiter().getMPS());
+			stats.put(Utils.qualify(this, "limiter-bps"), limiter.getLimiter().getBPS());
+			stats.put(Utils.qualify(this, "limiter-max-mps"), limiter.getLimiter().getMaxMPS());
+			stats.put(Utils.qualify(this, "limiter-max-bps"), limiter.getLimiter().getMaxBPS());
+			stats.put(Utils.qualify(this, "limiter-deny-count"), limiter.getLimiter().getDenyCount());
+			stats.put(Utils.qualify(this, "limiter-delay-count"), limiter.getLimiter().getDelayCount());
+			stats.put(Utils.qualify(this, "limiter-delay-last-sec"), limiter.getLimiter().getLastDelayTime());
+			stats.put(Utils.qualify(this, "limiter-delay-time-sec"), limiter.getLimiter().getTotalDelayTime());
 		}
 		return this;
 	}
@@ -362,7 +362,7 @@ public abstract class AbstractEventSink implements EventSink {
 				if (ttl != TTL.TTL_CONTEXT) {
 					activity.setTTL(ttl);
 				}
-				_limiter(1, 0);
+				if (!_limiter(1, 0)) return;
 				_log(activity);
 				loggedActivities.incrementAndGet();
 				loggedSnaps.addAndGet(activity.getSnapshotCount());
@@ -385,7 +385,7 @@ public abstract class AbstractEventSink implements EventSink {
 				if (ttl != TTL.TTL_CONTEXT) {
 					event.setTTL(ttl);
 				}
-				_limiter(1, event.getSize());
+				if (!_limiter(1, event.getSize())) return;
 				_log(event);
 				loggedEvents.incrementAndGet();
 				loggedSnaps.addAndGet(event.getOperation().getSnapshotCount());
@@ -408,7 +408,7 @@ public abstract class AbstractEventSink implements EventSink {
 				if (ttl != TTL.TTL_CONTEXT) {
 					snapshot.setTTL(ttl);
 				}
-				_limiter(1, 0);
+				if (!_limiter(1, 0)) return;
 				_log(snapshot);
 				loggedSnaps.incrementAndGet();
 				lastTime.set(System.currentTimeMillis());
@@ -438,7 +438,7 @@ public abstract class AbstractEventSink implements EventSink {
 		if (doLog) {
 			try {
 				long nttl = ((ttl_sec != TTL.TTL_CONTEXT)? ttl_sec: TTL.TTL_DEFAULT);
-				_limiter(1, msg.length());
+				if (!_limiter(1, msg.length())) return;
 				_log(nttl, src, sev, msg, args);
 				loggedMsgs.incrementAndGet();
 				lastTime.set(System.currentTimeMillis());
@@ -454,7 +454,7 @@ public abstract class AbstractEventSink implements EventSink {
 	@Override
 	public void write(Object msg, Object...args) throws IOException, InterruptedException {
 		try {
-			_limiter(msg);
+			if (!_limiter(msg)) return;
 			_write(msg, args);
 			sinkWrites.incrementAndGet();
 			lastTime.set(System.currentTimeMillis());
@@ -477,12 +477,12 @@ public abstract class AbstractEventSink implements EventSink {
 	}
 	
 	@Override
-	public void setLimiter(Throttle limit) {
+	public void setLimiter(EventLimiter limit) {
 		this.limiter = limit;
 	}
 	
 	@Override
-	public Throttle getLimiter() {
+	public EventLimiter getLimiter() {
 		return limiter;
 	}
 	
@@ -511,22 +511,26 @@ public abstract class AbstractEventSink implements EventSink {
 	 * 
 	 * @param msgCount messages sent
 	 * @param byteCount bytes sent
+	 * @return true if permit obtained, false otherwise
 	 */
-    protected void _limiter(int msgCount, int byteCount) {
+    protected boolean _limiter(int msgCount, int byteCount) {
     	if (limiter != null) {
-    		limiter.throttle(msgCount, byteCount);
+    		return limiter.obtain(msgCount, byteCount);
     	}
+    	return true;
     }
 
 	/**
 	 * Applies rate limiting on mps/bps
 	 * 
 	 * @param obj object to be sent
+	 * @return true if permit obtained, false otherwise
 	 */
-    protected void _limiter(Object obj) {
+    protected boolean _limiter(Object obj) {
     	if (limiter != null) {
-   			limiter.throttle(1, String.valueOf(obj).length());
-    	}
+    		return limiter.obtain(1, String.valueOf(obj).length());
+    	} 
+    	return true;
     }
 
 	/**

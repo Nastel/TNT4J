@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nastel.jkool.tnt4j.throttle;
+package com.nastel.jkool.tnt4j.limiter;
 
 /**
- * Default throttle factory implementation based on Google Guava Library
+ * Default rate limiter factory implementation based on Google Guava Library
  * {@code https://code.google.com/p/guava-libraries/}
  *
  * @version $Revision: 1 $
  */
-public class ThrottleFactoryImpl implements ThrottleFactory {
+public class LimiterFactoryImpl implements LimiterFactory {
 
 	@Override
-    public Throttle newThrottle(int maxMps, int maxBps, boolean enabled) {
-	    return new ThrottleImpl(maxMps, maxBps, enabled);
+    public Limiter newLimiter(int maxMps, int maxBps, boolean enabled) {
+	    return new LimiterImpl(maxMps, maxBps, enabled);
     }
 }

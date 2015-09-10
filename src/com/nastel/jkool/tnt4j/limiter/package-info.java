@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2015 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.nastel.jkool.tnt4j.throttle;
 
-public interface ThrottleFactory {
-	/**
-	 * Create a new throttle (0 means unlimited)
-	 * 
-	 * @param maxMps maximum message/second rate
-	 * @param maxBps maximum bytes/second rate
-	 * @return new throttled instance
-	 */
-	Throttle newThrottle(int maxMps, int maxBps, boolean enabled);
-}
+/**
+ * TNT4J rate limiter framework implementation
+ * 
+ * @author albert
+ * @version 1.0
+ */
+package com.nastel.jkool.tnt4j.limiter;
