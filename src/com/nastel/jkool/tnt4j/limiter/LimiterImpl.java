@@ -31,7 +31,7 @@ public class LimiterImpl implements Limiter {
 	
 	boolean doLimit = false;
 	int maxMPS = UNLIMITED, maxBPS = UNLIMITED;
-	long start = 0;
+	long start = System.currentTimeMillis();
 	
 	AtomicLong byteCount = new AtomicLong(0);
 	AtomicLong msgCount = new AtomicLong(0);
@@ -100,16 +100,10 @@ public class LimiterImpl implements Limiter {
 
 	@Override
     public boolean tryObtain(int msgs, int bytes, long timeout, TimeUnit unit) {
-		if (!doLimit || ( msgs == 0 && bytes == 0)) {
+		count(msgs, bytes);
+		if (!doLimit || (msgs == 0 && bytes == 0)) {
 			return true;
 		}
-		// Check the throttle.
-		if (bytes > 0) {
-			byteCount.addAndGet(bytes);
-		}
-		if (msgs > 0) {
-			msgCount.addAndGet(msgs);
-		}	
 
 		boolean permit = false;
 		if (maxBPS > UNLIMITED) {
@@ -126,18 +120,11 @@ public class LimiterImpl implements Limiter {
 	
 	@Override
     public double obtain(int msgs, int bytes) {
+		count(msgs, bytes);
 		if (!doLimit || ( msgs == 0 && bytes == 0)) {
 			return 0;
 		}
 		
-		// Check the throttle.
-		if (bytes > 0) {
-			byteCount.addAndGet(bytes);
-		}
-		if (msgs > 0) {
-			msgCount.addAndGet(msgs);
-		}	
-
 		double wakeElapsedSecByBps = 0;
 		double wakeElapsedSecByMps = 0;
 		
@@ -159,7 +146,15 @@ public class LimiterImpl implements Limiter {
 	    return sleepTime;
 	}
 
- 
+	protected void count(int msgs, int bytes) {
+		if (bytes > 0) {
+			byteCount.addAndGet(bytes);
+		}
+		if (msgs > 0) {
+			msgCount.addAndGet(msgs);
+		}			
+	}
+	
 	@Override
     public Limiter reset() {
 		byteCount.set(0);

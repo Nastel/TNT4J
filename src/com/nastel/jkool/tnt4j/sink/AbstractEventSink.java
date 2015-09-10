@@ -153,6 +153,8 @@ public abstract class AbstractEventSink implements EventSink {
 			stats.put(Utils.qualify(this, "limiter-bps"), limiter.getLimiter().getBPS());
 			stats.put(Utils.qualify(this, "limiter-max-mps"), limiter.getLimiter().getMaxMPS());
 			stats.put(Utils.qualify(this, "limiter-max-bps"), limiter.getLimiter().getMaxBPS());
+			stats.put(Utils.qualify(this, "limiter-total-msgs"), limiter.getLimiter().getTotalMsgs());
+			stats.put(Utils.qualify(this, "limiter-total-bytes"), limiter.getLimiter().getTotalBytes());
 			stats.put(Utils.qualify(this, "limiter-deny-count"), limiter.getLimiter().getDenyCount());
 			stats.put(Utils.qualify(this, "limiter-delay-count"), limiter.getLimiter().getDelayCount());
 			stats.put(Utils.qualify(this, "limiter-delay-last-sec"), limiter.getLimiter().getLastDelayTime());
