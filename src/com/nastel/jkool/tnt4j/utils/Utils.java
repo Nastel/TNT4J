@@ -118,7 +118,7 @@ public class Utils {
 	 * @return return GUID string representation
 	 */
 	public static String qualify(Object obj, String key) {
-		String newKey = Integer.toHexString(System.identityHashCode(obj)) + "/" + obj.getClass().getSimpleName() + "/" + key;
+		String newKey = obj.getClass().getSimpleName() + "/" + key;
 		return newKey;
 	}
 
