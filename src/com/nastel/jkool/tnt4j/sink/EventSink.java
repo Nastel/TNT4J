@@ -23,6 +23,7 @@ import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>Classes that implement this interface provide implementation for
@@ -40,16 +41,6 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
  *
  */
 public interface EventSink extends Sink, TTL, KeyValueStats {
-	static final String KEY_SINK_ERROR_COUNT = "sink-errors";
-	static final String KEY_LOGGED_MSGS = "sink-messages";
-	static final String KEY_SINK_WRITES= "sink-direct-writes";
-	static final String KEY_LOGGED_EVENTS = "sink-events";
-	static final String KEY_LOGGED_ACTIVITIES = "sink-activities";
-	static final String KEY_LOGGED_SNAPSHOTS = "sink-snapshots";
-	static final String KEY_SKIPPED_COUNT = "sink-skipped";
-	static final String KEY_LAST_TIMESTAMP = "sink-last-timestamp";
-	static final String KEY_LAST_AGE = "sink-last-age-ms";
-
 	/**
 	 * Get rate limiter (throttle control)
 	 *

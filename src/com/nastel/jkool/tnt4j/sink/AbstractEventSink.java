@@ -34,8 +34,8 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
- * This class implements a default abstract class for <code>EventSink</code>. Developers should subclass from this class
- * for all event sinks.
+ * This class implements a default abstract class for {@link EventSink}. Developers should subclass from this class
+ * for all event sink implementations.
  * </p>
  *
  *
@@ -43,12 +43,13 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  * @see TTL
  * @see EventSink
+ * @see EventSinkStats
  * @see SinkError
  * @see SinkErrorListener
  * @see SinkLogEvent
  * @see SinkLogEventListener
  */
-public abstract class AbstractEventSink implements EventSink {
+public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(AbstractEventSink.class);
 
 	protected ArrayList<SinkErrorListener> errorListeners = new ArrayList<SinkErrorListener>(10);
@@ -61,6 +62,8 @@ public abstract class AbstractEventSink implements EventSink {
 	private long ttl = TTL.TTL_CONTEXT;
 	private EventLimiter limiter;
 	private EventFormatter formatter;
+
+	// internal event sink statistics
 	private AtomicLong loggedActivities = new AtomicLong(0);
 	private AtomicLong loggedEvents = new AtomicLong(0);
 	private AtomicLong loggedMsgs = new AtomicLong(0);
@@ -148,17 +151,17 @@ public abstract class AbstractEventSink implements EventSink {
 			stats.put(Utils.qualify(this, KEY_LAST_AGE), (System.currentTimeMillis() - lastTime.get()));
 		}
 		if (limiter != null) {
-			stats.put(Utils.qualify(this, "limiter-enabled"), limiter.getLimiter().isEnabled());
-			stats.put(Utils.qualify(this, "limiter-mps"), limiter.getLimiter().getMPS());
-			stats.put(Utils.qualify(this, "limiter-bps"), limiter.getLimiter().getBPS());
-			stats.put(Utils.qualify(this, "limiter-max-mps"), limiter.getLimiter().getMaxMPS());
-			stats.put(Utils.qualify(this, "limiter-max-bps"), limiter.getLimiter().getMaxBPS());
-			stats.put(Utils.qualify(this, "limiter-total-msgs"), limiter.getLimiter().getTotalMsgs());
-			stats.put(Utils.qualify(this, "limiter-total-bytes"), limiter.getLimiter().getTotalBytes());
-			stats.put(Utils.qualify(this, "limiter-deny-count"), limiter.getLimiter().getDenyCount());
-			stats.put(Utils.qualify(this, "limiter-delay-count"), limiter.getLimiter().getDelayCount());
-			stats.put(Utils.qualify(this, "limiter-delay-last-sec"), limiter.getLimiter().getLastDelayTime());
-			stats.put(Utils.qualify(this, "limiter-delay-time-sec"), limiter.getLimiter().getTotalDelayTime());
+			stats.put(Utils.qualify(this, KEY_LIMITER_ENABLED), limiter.getLimiter().isEnabled());
+			stats.put(Utils.qualify(this, KEY_LIMITER_MPS), limiter.getLimiter().getMPS());
+			stats.put(Utils.qualify(this, KEY_LIMITER_BPS), limiter.getLimiter().getBPS());
+			stats.put(Utils.qualify(this, KEY_LIMITER_MAX_MPS), limiter.getLimiter().getMaxMPS());
+			stats.put(Utils.qualify(this, KEY_LIMITER_MAX_BPS), limiter.getLimiter().getMaxBPS());
+			stats.put(Utils.qualify(this, KEY_LIMITER_TOTAL_MSGS), limiter.getLimiter().getTotalMsgs());
+			stats.put(Utils.qualify(this, KEY_LIMITER_TOTAL_BYTES), limiter.getLimiter().getTotalBytes());
+			stats.put(Utils.qualify(this, KEY_LIMITER_TOTAL_DENIED), limiter.getLimiter().getDenyCount());
+			stats.put(Utils.qualify(this, KEY_LIMITER_TOTAL_DELAYS), limiter.getLimiter().getDelayCount());
+			stats.put(Utils.qualify(this, KEY_LIMITER_LAST_DELAY_TIME), limiter.getLimiter().getLastDelayTime());
+			stats.put(Utils.qualify(this, KEY_LIMITER_TOTAL_DELAY_TIME), limiter.getLimiter().getTotalDelayTime());
 		}
 		return this;
 	}
@@ -173,11 +176,6 @@ public abstract class AbstractEventSink implements EventSink {
 		skipCount.set(0);
 	}
 
-	/**
-	 * Register an event sink listener for notifications when logging events occur when writing to event sink.
-	 *
-	 * @see SinkLogEventListener
-	 */
 	@Override
 	public void addSinkLogEventListener(SinkLogEventListener listener) {
 		synchronized (logListeners) {
@@ -185,11 +183,6 @@ public abstract class AbstractEventSink implements EventSink {
 		}
 	}
 
-	/**
-	 * Remove an event sink listener for notifications when logging events occur when writing to event sink.
-	 *
-	 * @see SinkLogEventListener
-	 */
 	@Override
 	public void removeSinkLogEventListener(SinkLogEventListener listener) {
 		synchronized (logListeners) {
@@ -197,11 +190,6 @@ public abstract class AbstractEventSink implements EventSink {
 		}
 	}
 
-	/**
-	 * Register an event sink listener for notifications when errors occur when writing to event sink.
-	 *
-	 * @see SinkErrorListener
-	 */
 	@Override
 	public void addSinkErrorListener(SinkErrorListener listener) {
 		synchronized (errorListeners) {
@@ -209,11 +197,6 @@ public abstract class AbstractEventSink implements EventSink {
 		}
 	}
 
-	/**
-	 * Remove an event sink listener for notifications when errors occur when writing to event sink.
-	 *
-	 * @see SinkErrorListener
-	 */
 	@Override
 	public void removeSinkErrorListener(SinkErrorListener listener) {
 		synchronized (errorListeners) {
