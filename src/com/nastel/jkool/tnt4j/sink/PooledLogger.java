@@ -54,8 +54,8 @@ public class PooledLogger implements KeyValueStats {
 	protected static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(PooledLogger.class);
 
 	static final String KEY_Q_SIZE = "pooled-queue-size";
-	static final String KEY_Q_CAPACITY = "pooled-queue-capacity";
 	static final String KEY_Q_TASKS = "pooled-queue-tasks";
+	static final String KEY_Q_CAPACITY = "pooled-queue-capacity";
 	static final String KEY_OBJECTS_DROPPED = "pooled-objects-dropped";
 	static final String KEY_OBJECTS_LOGGED = "pooled-objects-logged";
 	static final String KEY_EXCEPTION_COUNT = "pooled-exceptions";
@@ -85,7 +85,7 @@ public class PooledLogger implements KeyValueStats {
 		threadPool = Executors.newFixedThreadPool(poolSize, new LoggingThreadFactory("PooledLogger(" + name + "," + poolSize + "," + capacity + ")/task-"));
 		eventQ = new ArrayBlockingQueue<SinkLogEvent>(capacity);
 	}
-
+	
 	@Override
     public Map<String, Object> getStats() {
 	    Map<String, Object> stats = new LinkedHashMap<String, Object>();
@@ -245,8 +245,6 @@ class LoggingThreadFactory implements ThreadFactory {
 }
 
 class LoggingTask implements Runnable {
-	private static final int ERROR_REPORT_WINDOW = Integer.getInteger("tnt4j.logger.error.frequency", 30000);
-
 	PooledLogger pooledLogger;
 	BlockingQueue<SinkLogEvent> eventQ;
 
@@ -268,53 +266,57 @@ class LoggingTask implements Runnable {
 		AbstractEventSink.checkState(sink);
 	}
 	
-	protected void logEvent(SinkLogEvent event, long start) throws IOException {
+	protected void sendEvent(SinkLogEvent event) {
 		Object sinkO = event.getSinkObject();
 		EventSink outSink = event.getEventSink();
 
-		checkState(outSink);
 		if (sinkO instanceof TrackingEvent) {
-			outSink.log((TrackingEvent)sinkO);
+			outSink.log((TrackingEvent) sinkO);
 		} else if (sinkO instanceof TrackingActivity) {
-			outSink.log((TrackingActivity)sinkO);
-		}  else if (sinkO instanceof Snapshot) {
+			outSink.log((TrackingActivity) sinkO);
+		} else if (sinkO instanceof Snapshot) {
 			outSink.log(event.getSnapshot());
 		} else if (event.getEventSource() != null) {
-			outSink.log(event.getTTL(), event.getEventSource(), event.getSeverity(),
-					String.valueOf(sinkO), event.getArguments());
+			outSink.log(event.getTTL(), 
+					event.getEventSource(),
+					event.getSeverity(), 
+					String.valueOf(sinkO),
+			        event.getArguments());
 		} else {
-			outSink.log(event.getTTL(), outSink.getSource(), event.getSeverity(),
-					String.valueOf(sinkO), event.getArguments());
+			outSink.log(event.getTTL(),
+					outSink.getSource(),
+					event.getSeverity(),
+					String.valueOf(sinkO),
+			        event.getArguments());
 		}
-		pooledLogger.loggedCount.incrementAndGet();
-		long elaspedNanos = System.nanoTime() - start;
-		pooledLogger.totalNanos.addAndGet(elaspedNanos);
+		pooledLogger.loggedCount.incrementAndGet();		
+	}
+	
+	protected void logEvent(SinkLogEvent event, long start) throws IOException {
+		try {
+			checkState(event.getEventSink());
+			sendEvent(event);
+		} finally {
+			long elaspedNanos = System.nanoTime() - start;
+			pooledLogger.totalNanos.addAndGet(elaspedNanos);
+		}
 	}
 
     @Override
     public void run() {
     	try {
-    		long lastError = 0;
-    		boolean errorState = false;
 			while (true) {
 				SinkLogEvent event = eventQ.take();
+				long start = System.nanoTime();
 				try {
-					long start = System.nanoTime();
 					logEvent(event, start);
-					if (errorState) {
-						pooledLogger.recoveryCount.incrementAndGet();
-						errorState = false;
-					}
 				} catch (Throwable err) {
-					errorState = true;
-					long thisError = System.currentTimeMillis();
+					pooledLogger.dropCount.incrementAndGet();
 					pooledLogger.exceptionCount.incrementAndGet();
-					if ((thisError - lastError) >= ERROR_REPORT_WINDOW) {
-						lastError = thisError;
-						PooledLogger.logger.log(OpLevel.ERROR,
-							"Error during processing: error.count={0}, event.source={1}, event.sink={2}",
-							pooledLogger.exceptionCount.get(), event.getEventSource(), event.getEventSink(), err);
-					}
+					PooledLogger.logger.log(OpLevel.ERROR,
+						"Error during processing: total.error.count={0}, sink.error.count={1}, event.source={2}, event.sink={3}",
+						pooledLogger.exceptionCount.get(), event.getEventSink().getErrorCount(), 
+						event.getEventSource(), event.getEventSink(), err);
 				}
 			}
 		} catch (Throwable e) {

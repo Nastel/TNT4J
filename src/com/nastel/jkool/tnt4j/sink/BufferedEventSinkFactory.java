@@ -48,6 +48,7 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	EventSinkFactory sinkFactory;
 	PooledLogger pooledLogger;
 	String factoryName;
+	boolean blockWrites = false;
 
 	/**
 	 * Create a default buffered sink factory
@@ -81,17 +82,17 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name) {
-		return configureSink(new BufferedEventSink(this, sinkFactory.getEventSink(name)));
+		return configureSink(new BufferedEventSink(this, sinkFactory.getEventSink(name), blockWrites));
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
-		return configureSink(new BufferedEventSink(this, sinkFactory.getEventSink(name, props)));
+		return configureSink(new BufferedEventSink(this, sinkFactory.getEventSink(name, props), blockWrites));
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-		return configureSink(new BufferedEventSink(this, sinkFactory.getEventSink(name, props, frmt)));
+		return configureSink(new BufferedEventSink(this, sinkFactory.getEventSink(name, props, frmt), blockWrites));
 	}
 
 	@Override
@@ -108,6 +109,9 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 		
 		Object qCapacity = props.get("PoolCapacity");
 		int capacity = qCapacity == null? MAX_CAPACITY: Integer.parseInt(qCapacity.toString());
+		
+		Object blockMode = props.get("BlockWrites");
+		blockWrites = blockMode == null? blockWrites: Boolean.parseBoolean(blockMode.toString());
 		
 		// create and register pooled logger instance if not yet available
 		pooledLogger = new PooledLogger(loggerName, poolSize, capacity);

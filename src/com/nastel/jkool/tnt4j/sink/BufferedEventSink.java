@@ -32,7 +32,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 /**
  * <p>
  * This class implements a buffered event sink, which buffers events into a memory queue and then
- * flushes it to a specified out sink using a separate thread. <code>BufferedSink</code> decouples
+ * flushes it to a specified out sink using a separate thread. {@code BufferedEvenSink} decouples
  * writer from the actual sink write and can improve performance during bursts.
  * </p>
  *
@@ -50,6 +50,7 @@ public class BufferedEventSink implements EventSink {
 	static final String KEY_OBJECTS_SKIPPED = "buffered-objects-skipped";
 
 	private long ttl = TTL.TTL_CONTEXT;
+	private boolean block = false;
 	private Source source;
 	private EventSink outSink = null;
 	private BufferedEventSinkFactory factory;
@@ -59,12 +60,16 @@ public class BufferedEventSink implements EventSink {
 	 * Create a buffered sink instance with a specified out sink
 	 * maximum capacity. Event will be dropped if capacity is exceeded.
 	 * Obtain drop counts and queue sizes using <code>getDropCount()</code> method.
-	 *
+	 * 
+	 * @param f buffered event sink factory
 	 * @param sink out sink where events/log message are written out
+	 * @param blocking set to true to block if full, false to drop messages if full
+	 * 
 	 */
-	public BufferedEventSink(BufferedEventSinkFactory f, EventSink sink) {
+	public BufferedEventSink(BufferedEventSinkFactory f, EventSink sink, boolean blocking) {
 		factory = f;
 		outSink = sink;
+		block = blocking;
 		sink.filterOnLog(false); // disable filtering on the underlying sink (prevent double filters)
 	}
 
@@ -127,8 +132,8 @@ public class BufferedEventSink implements EventSink {
 		_checkState();
 		String txtMsg = String.valueOf(msg);
 		if (isLoggable(OpLevel.NONE, txtMsg, args)) {
-			boolean flag = factory.getPooledLogger().offer(new SinkLogEvent(outSink, getSource(), OpLevel.NONE, (ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, txtMsg, resolveArguments(args)));
-			if (!flag) dropCount.incrementAndGet();
+			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, getSource(), OpLevel.NONE, (ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, txtMsg, resolveArguments(args));
+			_writeEvent(sinkEvent, block);
 		} else {
 			skipCount.incrementAndGet();
 		}
@@ -139,8 +144,8 @@ public class BufferedEventSink implements EventSink {
 		_checkState();
 		if (isLoggable(activity)) {
 			if (ttl != TTL.TTL_CONTEXT) activity.setTTL(ttl);
-			boolean flag = factory.getPooledLogger().offer(new SinkLogEvent(outSink, activity));
-			if (!flag) dropCount.incrementAndGet();
+			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, activity);
+			_writeEvent(sinkEvent, block);
 		} else {
 			skipCount.incrementAndGet();
 		}
@@ -151,20 +156,20 @@ public class BufferedEventSink implements EventSink {
 		_checkState();
 		if (isLoggable(event)) {
 			if (ttl != TTL.TTL_CONTEXT) event.setTTL(ttl);
-			boolean flag = factory.getPooledLogger().offer(new SinkLogEvent(outSink, event));
-			if (!flag) dropCount.incrementAndGet();
+			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, event);
+			_writeEvent(sinkEvent, block);
 		} else {
 			skipCount.incrementAndGet();
 		}
     }
 
 	@Override
-    public void log(Snapshot props) {
+    public void log(Snapshot snapshot) {
 		_checkState();
-		if (isLoggable(props)) {
-			if (ttl != TTL.TTL_CONTEXT) props.setTTL(ttl);
-			boolean flag = factory.getPooledLogger().offer(new SinkLogEvent(outSink, props));
-			if (!flag) dropCount.incrementAndGet();
+		if (isLoggable(snapshot)) {
+			if (ttl != TTL.TTL_CONTEXT) snapshot.setTTL(ttl);
+			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, snapshot);
+			_writeEvent(sinkEvent, block);
 		} else {
 			skipCount.incrementAndGet();
 		}
@@ -184,13 +189,26 @@ public class BufferedEventSink implements EventSink {
     public void log(long ttl_sec, Source src, OpLevel sev, String msg, Object... args) {
 		_checkState();
 		if (isLoggable(sev, msg, args)) {
-			boolean flag = factory.getPooledLogger().offer(new SinkLogEvent(outSink, src, sev, ttl_sec, msg, resolveArguments(args)));
-			if (!flag) dropCount.incrementAndGet();
+			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, src, sev, ttl_sec, msg, resolveArguments(args));
+			_writeEvent(sinkEvent, block);
 		} else {
 			skipCount.incrementAndGet();
 		}
     }
 
+	private void _writeEvent(SinkLogEvent sinkEvent, boolean sync) {
+		if (sync) {
+			try {
+				factory.getPooledLogger().put(sinkEvent);
+			} catch (Throwable ex) {
+				dropCount.incrementAndGet();
+			}
+		} else {
+			boolean flag = factory.getPooledLogger().offer(sinkEvent);
+			if (!flag) dropCount.incrementAndGet();
+		}		
+	}
+	
 	@Override
     public void removeSinkErrorListener(SinkErrorListener listener) {
 		outSink.removeSinkErrorListener(listener);
@@ -336,4 +354,24 @@ public class BufferedEventSink implements EventSink {
     public void setTTL(long ttl) {
 		this.ttl = ttl;
 	}
+
+	@Override
+    public boolean errorState() {
+	    return outSink.errorState();
+    }
+
+	@Override
+    public Throwable getLastError() {
+	    return outSink.getLastError();
+    }
+
+	@Override
+    public long getLastErrorTime() {
+	    return outSink.getLastErrorTime();
+    }
+
+	@Override
+    public long getErrorCount() {
+	    return outSink.getErrorCount();
+    }
 }

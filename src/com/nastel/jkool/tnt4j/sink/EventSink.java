@@ -23,7 +23,6 @@ import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
-import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>Classes that implement this interface provide implementation for
@@ -41,6 +40,36 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  */
 public interface EventSink extends Sink, TTL, KeyValueStats {
+	
+	/**
+	 * Determine of sink is in error state -- meaning no successful write/log
+	 * since last error;
+	 *
+	 * @return last error occurred when writing to sink, null if none
+	 */
+	boolean errorState();
+
+	/**
+	 * Get last error occurred when writing to sink
+	 *
+	 * @return last error occurred when writing to sink, null if none
+	 */
+	Throwable getLastError();
+
+	/**
+	 * Get time (ms) when last error occurred
+	 *
+	 * @return time (ms) when last error occurred
+	 */
+	long getLastErrorTime();
+
+	/**
+	 * Get total number of errors occurred on the sink
+	 *
+	 * @return total number of errors occurred on the sink
+	 */
+	long getErrorCount();
+	
 	/**
 	 * Get rate limiter (throttle control)
 	 *

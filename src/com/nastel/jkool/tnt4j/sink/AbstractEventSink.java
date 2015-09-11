@@ -62,6 +62,9 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	private long ttl = TTL.TTL_CONTEXT;
 	private EventLimiter limiter;
 	private EventFormatter formatter;
+	private Throwable lastError;
+	private long lastErrorTime = 0;
+	private boolean errorState = false;
 
 	// internal event sink statistics
 	private AtomicLong loggedActivities = new AtomicLong(0);
@@ -111,6 +114,26 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	}
 
 	@Override
+	public boolean errorState() {
+		return errorState;
+	}
+	
+	@Override
+	public Throwable getLastError() {
+		return lastError;
+	}
+
+	@Override
+	public long getLastErrorTime() {
+		return lastErrorTime;
+	}
+
+	@Override
+	public long getErrorCount() {
+		return errorCount.get();
+	}
+	
+	@Override
 	public void setSource(Source src) {
 		source = src;
 	}
@@ -143,6 +166,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		stats.put(Utils.qualify(this, KEY_LOGGED_EVENTS), loggedEvents.get());
 		stats.put(Utils.qualify(this, KEY_LOGGED_SNAPSHOTS), loggedSnaps.get());
 		stats.put(Utils.qualify(this, KEY_SINK_ERROR_COUNT), errorCount.get());
+		stats.put(Utils.qualify(this, KEY_SINK_ERROR_STATE), errorState());
 		stats.put(Utils.qualify(this, KEY_LOGGED_MSGS), loggedMsgs.get());
 		stats.put(Utils.qualify(this, KEY_SINK_WRITES), sinkWrites.get());
 		stats.put(Utils.qualify(this, KEY_SKIPPED_COUNT), skipCount.get());
@@ -244,6 +268,11 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 */
 	protected void notifyListeners(Object msg, Throwable ex) {
 		errorCount.incrementAndGet();
+		if (!errorState) {
+			lastError = ex;
+			errorState = true;
+			lastErrorTime = System.currentTimeMillis();
+		}
 		if (errorListeners.size() > 0) {
 			SinkError event = new SinkError(this, msg, ex);
 			notifyListeners(event);
@@ -352,6 +381,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 				loggedActivities.incrementAndGet();
 				loggedSnaps.addAndGet(activity.getSnapshotCount());
 				lastTime.set(System.currentTimeMillis());
+				errorState = false;
 				if (logListeners.size() > 0) {
 					notifyListeners(new SinkLogEvent(this, activity));
 				}
@@ -375,6 +405,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 				loggedEvents.incrementAndGet();
 				loggedSnaps.addAndGet(event.getOperation().getSnapshotCount());
 				lastTime.set(System.currentTimeMillis());
+				errorState = false;
 				if (logListeners.size() > 0) {
 					notifyListeners(new SinkLogEvent(this, event));
 				}
@@ -397,6 +428,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 				_log(snapshot);
 				loggedSnaps.incrementAndGet();
 				lastTime.set(System.currentTimeMillis());
+				errorState = false;
 				if (logListeners.size() > 0) {
 					notifyListeners(new SinkLogEvent(this, snapshot));
 				}
@@ -427,6 +459,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 				_log(nttl, src, sev, msg, args);
 				loggedMsgs.incrementAndGet();
 				lastTime.set(System.currentTimeMillis());
+				errorState = false;
 				if (logListeners.size() > 0) {
 					notifyListeners(new SinkLogEvent(this, src, sev, nttl, msg, args));
 				}
@@ -443,6 +476,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 			_write(msg, args);
 			sinkWrites.incrementAndGet();
 			lastTime.set(System.currentTimeMillis());
+			errorState = false;
 			if (logListeners.size() > 0) {
 				notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, (ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, msg, args));
 			}
