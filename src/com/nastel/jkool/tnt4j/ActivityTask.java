@@ -22,7 +22,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 /**
  * <p> 
  * This class implements a runnable task implementation
- * scheduled by <code>ActivityScheduler</code>.
+ * scheduled by {@link ActivityScheduler}.
  * </p>
  * 
  * 
@@ -41,7 +41,7 @@ public class ActivityTask implements Runnable {
 	
 	/**
 	 * Create a task for a specific logger, default activity name
-	 * and <code>OpLevel.SUCCESS</code> severity
+	 * and {@code OpLevel.SUCCESS} severity
 	 * 
 	 * @param lg tracking logger instance
 	 */
@@ -51,7 +51,7 @@ public class ActivityTask implements Runnable {
 	
 	/**
 	 * Create a task for a specific logger, activity name
-	 * and <code>OpLevel.SUCCESS</code> severity
+	 * and {@code OpLevel.SUCCESS} severity
 	 * 
 	 * @param lg tracking logger instance
 	 * @param name activity name
@@ -96,8 +96,8 @@ public class ActivityTask implements Runnable {
 	/**
 	 * This method is called when activity ends
 	 * Override this method to change behavior when activity ends.
-	 * This method also reports activity via configured <code>TrackingLogger</code>
-	 * instance conditional upon {@link #doSample()} returning true.
+	 * This method also reports activity via configured {@code TrackingLogger}
+	 * instance conditional upon {{@link #doSample()} returning true.
 	 * 
 	 * @return elapsed time of the activity in microseconds.
 	 */
@@ -114,7 +114,7 @@ public class ActivityTask implements Runnable {
 	 * Override this method to change behavior when activity ends.
 	 * Return true to allow tracking of current activity, false to
 	 * ignore tracking. 
-	 * By default if <code>OpType.NOOP</code> are ignored.
+	 * By default if {@code OpType.NOOP} are ignored.
 	 * 
 	 * @return true to track current activity, false to ignore
 	 */

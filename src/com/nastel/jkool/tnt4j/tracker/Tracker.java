@@ -34,16 +34,18 @@ import com.nastel.jkool.tnt4j.uuid.UUIDFactory;
 
 /**
  * <p>Classes that implement this interface provide implementation for
- * the <code>Tracker</code> logger.</p>
+ * the {@link Tracker} logger.</p>
  *
- * <p>A <code>TrackingEvent</code> represents a specific tracking event that application creates for
+ * <p>A {@link TrackingEvent} represents a specific tracking event that application creates for
  * every discrete activity such as JDBC, JMS, SOAP or any other relevant application activity.
- * Source developers must obtain a <code>Tracker</code> instance via <code>TrackingLogger</code>, create
- * instances of <code>TrackingEvent</code> and use <code>tnt()</code> method to report and log tracking activities
- * and associated tracking events.
+ * Source developers must obtain a {@link Tracker} instance via {@code TrackingLogger}, create
+ * instances of {@link TrackingEvent} and use {@code tnt(...)} method to report and 
+ * log tracking activities and associated tracking events.
  *
- * <p>A <code>Tracker</code> <code>newActivity()</code> method should be used to create application activities {@link TrackingActivity}.
- * <code>Tracker</code> instance should be obtained per thread or use a helper <code>TrackingLogger</code> class.</p>
+ * <p>A {@link Tracker} {@code #newActivity()} method should be used to create application activities
+ * {@link TrackingActivity}. {@link Tracker} instance should be obtained per thread or 
+ * use a helper {@code TrackingLogger} class.
+ * </p>
  *
  * @see TrackingEvent
  * @see OpLevel
@@ -83,7 +85,7 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 	Source getSource();
 
 	/**
-	 * Obtains current {@link TrackingSelector} associated with this <code>Tracker</code>
+	 * Obtains current {@link TrackingSelector} associated with this {@link Tracker}
 	 * instance. Tracking selectors allow conditional logging based on a sev/key/value combinations
 	 *
 	 * @return current {@link TrackingSelector} instance associated with the current tracker
@@ -92,7 +94,7 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 	TrackingSelector getTrackingSelector();
 
 	/**
-	 * Obtains current {@link EventSink} associated with this <code>Tracker</code>
+	 * Obtains current {@link EventSink} associated with this {@link Tracker}
 	 * instance.
 	 *
 	 * @return current {@link EventSink} instance
@@ -111,21 +113,21 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 
 	/**
 	 * Obtains the top most active {@link TrackingActivity} instance
-	 * at the top of the stack, <code>NullActivity</code> if none is available.
+	 * at the top of the stack, {@link NullActivity} if none is available.
 	 * Current activity is within the scope of the current thread.
 	 *
-	 * @return current active tracking activity or <code>NullActivity</code> when no such activity exists.
+	 * @return current active tracking activity or {@link NullActivity} when no such activity exists.
 	 * @see NullActivity
 	 */
 	TrackingActivity getCurrentActivity();
 
 	/**
 	 * Obtains the bottom most active {@link TrackingActivity} instance
-	 * at the bottom of the stack, <code>NullActivity</code> if none is available.
+	 * at the bottom of the stack, {@link NullActivity} if none is available.
 	 * This represents the root (first) activity.
 	 * Root activity is within the scope of the current thread.
 	 *
-	 * @return root tracking activity or <code>NullActivity</code> when no such activity exists.
+	 * @return root tracking activity or {@link NullActivity} when no such activity exists.
 	 * @see NullActivity
 	 */
 	TrackingActivity getRootActivity();
@@ -170,8 +172,8 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 
 	/**
 	 * Create a new application activity via {@link TrackingActivity} object instance.
-	 * NOOP activity instance <code>NullActivity</code> is returned
-	 * when <code>TrackingFilter</code> is set and returns false.
+	 * NOOP activity instance {@link NullActivity} is returned
+	 * when {@link TrackingFilter} is set and returns false.
 	 *
 	 * @return a new application activity object instance with severity set to OpLevel.INFO.
 	 * @see TrackingActivity
@@ -180,8 +182,8 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 
 	/**
 	 * Create a new application activity via {@link TrackingActivity} object instance.
-	 * NOOP activity instance <code>NullActivity</code> is returned
-	 * when <code>TrackingFilter</code> is set and returns false.
+	 * NOOP activity instance {@link NullActivity} is returned
+	 * when {@link TrackingFilter} is set and returns false.
 	 *
 	 * @param level activity severity level
 	 * @return a new application activity object instance
@@ -191,8 +193,8 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 
 	/**
 	 * Create a new application activity via {@link TrackingActivity} object instance.
-	 * NOOP activity instance <code>NullActivity</code> is returned
-	 * when <code>TrackingFilter</code> is set and returns false.
+	 * NOOP activity instance {@link NullActivity} is returned
+	 * when {@link TrackingFilter} is set and returns false.
 	 *
 	 * @param level activity severity level
 	 * @param name user defined logical name of the activity
@@ -203,8 +205,8 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 
 	/**
 	 * Create a new application activity via {@link TrackingActivity} object instance.
-	 * NOOP activity instance <code>NullActivity</code> is returned
-	 * when <code>TrackingFilter</code> is set and returns false.
+	 * NOOP activity instance {@link NullActivity} is returned
+	 * when {@link TrackingFilter} is set and returns false.
 	 *
 	 * @param level activity severity level
 	 * @param name activity name
@@ -259,7 +261,7 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 
 	/**
 	 * Track and Trace a single application tracking activity
-	 * Activities of type <code>OpType.NOOP</code> are ignored.
+	 * Activities of type {@code OpType.NOOP} are ignored.
 	 *
 	 * @param activity application activity to be reported
 	 * @see TrackingActivity
@@ -269,7 +271,7 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 	/**
 	 * Track and Trace a single application tracking event as
 	 * a separate application activity.
-	 * Events of type <code>OpType.NOOP</code> are ignored.
+	 * Events of type {@code OpType.NOOP} are ignored.
 	 *
 	 * @param event application tracking event to be reported
 	 * @see TrackingEvent
@@ -309,8 +311,8 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 * This constructor will assign a unique event signature using newUUID() call
-	 * NOOP event instance <code>NullEvent</code> is returned
-	 * when <code>TrackingFilter</code> is set and returns false.
+	 * NOOP event instance {@code NullEvent} is returned
+	 * when {@link TrackingFilter} is set and returns false.
 	 *
 	 * @param opName operation name associated with this event (tracking event name)
 	 * @param msg text message associated with this event
@@ -322,8 +324,8 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 * This constructor will assign a unique event signature using newUUID() call
-	 * NOOP event instance <code>NullEvent</code> is returned
-	 * when <code>TrackingFilter</code> is set and returns false.
+	 * NOOP event instance {@code NullEvent} is returned
+	 * when {@link TrackingFilter} is set and returns false.
 	 *
 	 * @param severity severity level
 	 * @param opName operation name associated with this event (tracking event name)
@@ -337,8 +339,8 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 * This constructor will assign a unique event signature using newUUID() call
-	 * NOOP event instance <code>NullEvent</code> is returned
-	 * when <code>TrackingFilter</code> is set and returns false.
+	 * NOOP event instance {@code NullEvent} is returned
+	 * when {@link TrackingFilter} is set and returns false.
 	 *
 	 * @param severity severity level
 	 * @param opName operation name associated with this event (tracking event name)
@@ -351,8 +353,8 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
-	 * NOOP event instance <code>NullEvent</code> is returned
-	 * when <code>TrackingFilter</code> is set and returns false.
+	 * NOOP event instance {@code NullEvent} is returned
+	 * when {@link TrackingFilter} is set and returns false.
 	 *
 	 * @param severity severity level
 	 * @param opType operation type
@@ -369,8 +371,8 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
-	 * NOOP event instance <code>NullEvent</code> is returned
-	 * when <code>TrackingFilter</code> is set and returns false.
+	 * NOOP event instance {@code NullEvent} is returned
+	 * when {@link TrackingFilter} is set and returns false.
 	 *
 	 * @param severity severity level
 	 * @param opType operation type
@@ -388,8 +390,8 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 * This constructor will assign a unique event signature using newUUID() call
-	 * NOOP event instance <code>NullEvent</code> is returned
-	 * when <code>TrackingFilter</code> is set and returns false.
+	 * NOOP event instance {@code NullEvent} is returned
+	 * when {@link TrackingFilter} is set and returns false.
 	 *
 	 * @param severity severity level
 	 * @param opName operation name associated with this event (tracking event name)
@@ -403,8 +405,8 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 * This constructor will assign a unique event signature using newUUID() call
-	 * NOOP event instance <code>NullEvent</code> is returned
-	 * when <code>TrackingFilter</code> is set and returns false.
+	 * NOOP event instance {@code NullEvent} is returned
+	 * when {@link TrackingFilter} is set and returns false.
 	 *
 	 * @param severity severity level
 	 * @param opName operation name associated with this event (tracking event name)
@@ -417,8 +419,8 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
-	 * NOOP event instance <code>NullEvent</code> is returned
-	 * when <code>TrackingFilter</code> is set and returns false.
+	 * NOOP event instance {@code NullEvent} is returned
+	 * when {@link TrackingFilter} is set and returns false.
 	 *
 	 * @param severity severity level
 	 * @param opType operation type
@@ -435,8 +437,8 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
-	 * NOOP event instance <code>NullEvent</code> is returned
-	 * when <code>TrackingFilter</code> is set and returns false.
+	 * NOOP event instance {@code NullEvent} is returned
+	 * when {@link TrackingFilter} is set and returns false.
 	 *
 	 * @param severity severity level
 	 * @param opType operation type

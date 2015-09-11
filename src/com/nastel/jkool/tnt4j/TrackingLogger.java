@@ -68,22 +68,22 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
- * <code>TrackingLogger</code> is a helper class with calls to <code>Tracker</code> logging interface.
+ * {@code TrackingLogger} is a helper class with calls to {@link Tracker} logging interface.
  * </p>
- * Application should use this helper class instead of obtaining a <code>Tracker</code> logger instance per thread using
- * <code>TrackerFactory</code>. <code>TrackingLogger</code> obtains the <code>Tracker</code> logger instance and stores
+ * Application should use this helper class instead of obtaining a {@link Tracker} logger instance per thread using
+ * {@link TrackerFactory}. {@code TrackingLogger} obtains the {@link Tracker} logger instance and stores
  * it in thread local associated for each thread.
  *
  * <p>
- * A <code>TrackingEvent</code> represents a specific tracking event that application creates for every discrete
+ * A {@link TrackingEvent} represents a specific tracking event that application creates for every discrete
  * activity such as JDBC, JMS, SOAP or any other relevant application activity. Application developers must obtain a
- * <code>Tracker</code> instance via <code>TrackerFactory</code>, create instances of <code>TrackingEvent</code> and use
- * <code>log()</code> calls to report tracking activities, events and log messages.
+ * {@link Tracker} instance via {@link TrackerFactory}, create instances of {@link TrackingEvent} and use
+ * {@code log()} calls to report tracking activities, events and log messages.
  *
  * <p>
- * <code>TrackingActivity</code> <code>start()/stop()</code> method calls used to mark application activity boundaries.
- * Applications must create instances of <code>TrackingEvent</code> using <code>TrackingLogger.newEvent()</code> method to
- * time individual sub-activities and report them using <code>TrackerLogger.tnt()</code> method call.
+ * {@link TrackingActivity} {@code start()/stop()} method calls used to mark application activity boundaries.
+ * Applications must create instances of {@link TrackingEvent} using {@code TrackingLogger.newEvent()} method to
+ * time individual sub-activities and report them using {@code TrackerLogger.tnt()} method call.
  * </p>
  *
  * <p>
@@ -91,7 +91,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * </p>
  *
  * <pre>
- * <code>
+ * {@code 
  * TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(source);
  * TrackingLogger tracker = TrackingLogger.getInstance(config.build()); // register and obtain Tracker logger instance
  * TrackingActivity activity = tracker.newActivity(); // create a new activity instance
@@ -117,14 +117,14 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * 	activity.tnt(jms_event); // track and trace tracking event within given activity
  * 	tracker.tnt(activity); // report a tracking activity
  * }
- * </code>
+ * }
  * </pre>
  *
- * Source may take advantage of <code>TrackingLogger</code> conditional logging using <code>TrackingLogger.isSet()</code>
+ * Source may take advantage of {@code TrackingLogger} conditional logging using {@code TrackingLogger.isSet()}
  * based on applications specific tokens. Below is an example of conditional logging:
  *
  * <pre>
- * <code>
+ * {@code 
  * TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(source);
  * TrackingLogger tracker = TrackingLogger.getInstance(config.build()); // register and obtain Tracker logger instance
  * TrackingActivity activity = tracker.newActivity(); // create a new activity instance
@@ -153,15 +153,15 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *	}
  * 	tracker.tnt(activity); // report a tracking activity
  * }
- * </code>
+ * }
  * </pre>
  *
- * <code>TrackingLogger</code> provides a capability to simplify and automate application specific dump handling. An application
+ * {@code TrackingLogger} provides a capability to simplify and automate application specific dump handling. An application
  * dump is a collection of application's internal metrics that can be used for problem diagnostics. Source must create
- * an instance of <code>DumpProvider</code> and register it with <code>TrackingLogger</code> optionally associate it with a given
- * dump destination <code>DumpSink</code>(where dump is written to). Dumps can be generated using <code>TrackingLogger.dump()</code>
- * or can be triggered on JVM shutdown using <code>TrackingLogger.dumpOnShutdown(true)</code>. By default, <code>TrackingLogger</code>
- * uses file based <code>DefaultDumpSinkFactory</code> to generate instances of <code>DumpSink</code>.
+ * an instance of {@code DumpProvider} and register it with {@code TrackingLogger} optionally associate it with a given
+ * dump destination {@code DumpSink}(where dump is written to). Dumps can be generated using {@code TrackingLogger.dump()}
+ * or can be triggered on JVM shutdown using {@code TrackingLogger.dumpOnShutdown(true)}. By default, {@code TrackingLogger}
+ * uses file based {@code DefaultDumpSinkFactory} to generate instances of {@code DumpSink}.
  *
  * <pre>
  * {@code
@@ -320,7 +320,7 @@ public class TrackingLogger implements Tracker {
     }
 
 	/**
-	 * Obtain an instance of <code>TrackingLogger</code> logger.
+	 * Obtain an instance of {@code TrackingLogger} logger.
 	 *
 	 * @param config
 	 *            tracking configuration to be used to create a tracker instance
@@ -335,7 +335,7 @@ public class TrackingLogger implements Tracker {
 
 
 	/**
-	 * Obtain an instance of <code>TrackingLogger</code> logger.
+	 * Obtain an instance of {@code TrackingLogger} logger.
 	 *
 	 * @param sourceName
 	 *            application source name associated with this logger
@@ -350,7 +350,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Obtain an instance of <code>TrackingLogger</code> logger.
+	 * Obtain an instance of {@code TrackingLogger} logger.
 	 *
 	 * @param sourceName
 	 *            application source name associated with this logger
@@ -367,7 +367,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Obtain an instance of <code>TrackingLogger</code> logger based on
+	 * Obtain an instance of {@code TrackingLogger} logger based on
 	 * a given class.
 	 *
 	 * @param clazz
@@ -384,7 +384,7 @@ public class TrackingLogger implements Tracker {
 
 
 	/**
-	 * Register a user defined tracker factory. Default is <code>DefaultTrackerFactory</code>.
+	 * Register a user defined tracker factory. Default is {@code DefaultTrackerFactory}.
 	 *
 	 * @param fac
 	 *            User defined tracker factory
@@ -397,7 +397,7 @@ public class TrackingLogger implements Tracker {
 
 	/**
 	 * Register a user defined dump destination factory used to generate instances of
-	 * <code>DumpSink</code>. Default is <code>DefaultDumpSinkFactory</code>.
+	 * {@code DumpSink}. Default is {@code DefaultDumpSinkFactory}.
 	 *
 	 * @param defFac
 	 *            User default dump destination factory
@@ -414,7 +414,7 @@ public class TrackingLogger implements Tracker {
 
 	/**
 	 * Return currently registered dump sink factory.
-	 * Default is <code>DefaultDumpSinkFactory</code>.
+	 * Default is {@code DefaultDumpSinkFactory}.
 	 *
 	 * @return currently registered dump sink factory
 	 * @see DumpSinkFactory
@@ -428,7 +428,7 @@ public class TrackingLogger implements Tracker {
 	 * Determine of a particular sev/key/value combination is trackable. Use this method to determine if tracking is
 	 * enabled/disabled for a specific key/value pair. Example, checking if order id "723772" is trackable:
 	 *
-	 * <code>logger.isSet(OpLevel.INFO, "orderapp.order.id", "723772");</code>
+	 * {@code logger.isSet(OpLevel.INFO, "orderapp.order.id", "723772");}
 	 *
 	 * @param sev
 	 *            severity of to be checked
@@ -448,7 +448,7 @@ public class TrackingLogger implements Tracker {
 
 	/**
 	 * Determine of a particular sev/key is trackable. Use this method to determine if tracking is enabled/disabled for a
-	 * specific severity. This call is equivalent to <code>logger.isSet(sev, key, null);</code>
+	 * specific severity. This call is equivalent to {@code logger.isSet(sev, key, null);}
 	 *
 	 * @param sev
 	 *            severity of to be checked
@@ -467,10 +467,11 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Determine of a particular sev for the registered application name used in <code>TrackingLogger.getInstance()</code> call.
+	 * Determine if a particular sev for the registered application name 
+	 * used in {@code TrackingLogger.getInstance()} call.
 	 * Use this method to determine if tracking is enabled/disabled for a
 	 * specific severity. This call is equivalent to
-	 * <code>logger.getTracker().getEventSink().isSet(sev)</code>
+	 * {@code logger.getTracker().getEventSink().isSet(sev)}
 	 *
 	 * @param sev
 	 *            severity of to be checked
@@ -502,7 +503,7 @@ public class TrackingLogger implements Tracker {
 
 	/**
 	 * Set sev/key combination for tracking. This is the same as calling
-	 * <code>set(sev, key, null)</code>, where value is null.
+	 * {@code set(sev, key, null)}, where value is null.
 	 *
 	 * @param sev severity of to be checked
 	 * @param key key associated with tracking activity
@@ -541,7 +542,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Close this instance of <code>TrackingLogger</code>. Existing <code>Tracker</code> logger
+	 * Close this instance of {@code TrackingLogger}. Existing {@link Tracker} logger
 	 * (if already opened) is closed and released.
 	 *
 	 * @see TrackerConfig
@@ -558,12 +559,12 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Log a single message with a given severity level and a number of
 	 * user supplied arguments. Message pattern is based on the format defined
-	 * by <code>MessageFormat</code>. This logging type is more efficient than
+	 * by {@code MessageFormat}. This logging type is more efficient than
 	 * string concatenation.
 	 * <pre>
-	 * <code>
+	 * {@code 
 	 * logger.log(OpLevel.DEBUG, "My message arg={0}, arg={1}", parm1, parm2);
-	 * </code>
+	 * }
 	 * </pre>
 	 * @param level
 	 *            severity level
@@ -584,12 +585,12 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Log a single DEBUG message and a number of user supplied arguments.
 	 * Message pattern is based on the format defined
-	 * by <code>MessageFormat</code>. This logging type is more efficient than
+	 * by {@code MessageFormat}. This logging type is more efficient than
 	 * string concatenation.
 	 * <pre>
-	 * <code>
+	 * {@code 
 	 * logger.debug("My message arg={0}, arg={1}", parm1, parm2);
-	 * </code>
+	 * }
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -605,12 +606,12 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Log a single TRACE message and a number of user supplied arguments.
 	 * Message pattern is based on the format defined
-	 * by <code>MessageFormat</code>. This logging type is more efficient than
+	 * by {@code MessageFormat}. This logging type is more efficient than
 	 * string concatenation.
 	 * <pre>
-	 * <code>
+	 * {@code 
 	 * logger.trace("My message arg={0}, arg={1}", parm1, parm2);
-	 * </code>
+	 * }
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -626,12 +627,12 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Log a single ERROR message and a number of user supplied arguments.
 	 * Message pattern is based on the format defined
-	 * by <code>MessageFormat</code>. This logging type is more efficient than
+	 * by {@code MessageFormat}. This logging type is more efficient than
 	 * string concatenation.
 	 * <pre>
-	 * <code>
+	 * {@code 
 	 * logger.error("My error message arg={0}, arg={1}", parm1, parm2);
-	 * </code>
+	 * }
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -647,12 +648,12 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Log a single FATAL message and a number of user supplied arguments.
 	 * Message pattern is based on the format defined
-	 * by <code>MessageFormat</code>. This logging type is more efficient than
+	 * by {@code MessageFormat}. This logging type is more efficient than
 	 * string concatenation.
 	 * <pre>
-	 * <code>
+	 * {@code 
 	 * logger.fatal("My error message arg={0}, arg={1}", parm1, parm2);
-	 * </code>
+	 * }
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -668,12 +669,12 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Log a single HALT message and a number of user supplied arguments.
 	 * Message pattern is based on the format defined
-	 * by <code>MessageFormat</code>. This logging type is more efficient than
+	 * by {@code MessageFormat}. This logging type is more efficient than
 	 * string concatenation.
 	 * <pre>
-	 * <code>
+	 * {@code 
 	 * logger.halt("My error message arg={0}, arg={1}", parm1, parm2);
-	 * </code>
+	 * }
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -689,12 +690,12 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Log a single WARNING message and a number of user supplied arguments.
 	 * Message pattern is based on the format defined
-	 * by <code>MessageFormat</code>. This logging type is more efficient than
+	 * by {@code MessageFormat}. This logging type is more efficient than
 	 * string concatenation.
 	 *  <pre>
-	 * <code>
+	 * {@code 
 	 * logger.warn("My message arg={0}, arg={1}", parm1, parm2);
-	 * </code>
+	 * }
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -710,12 +711,12 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Log a single INFO message and a number of user supplied arguments.
 	 * Message pattern is based on the format defined
-	 * by <code>MessageFormat</code>. This logging type is more efficient than
+	 * by {@code MessageFormat}. This logging type is more efficient than
 	 * string concatenation.
 	 * <pre>
-	 * <code>
+	 * {@code 
 	 * logger.info("My message arg={0}, arg={1}", parm1, parm2);
-	 * </code>
+	 * }
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -731,12 +732,12 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Log a single SUCCESS message and a number of user supplied arguments.
 	 * Message pattern is based on the format defined
-	 * by <code>MessageFormat</code>. This logging type is more efficient than
+	 * by {@code MessageFormat}. This logging type is more efficient than
 	 * string concatenation.
 	 *  <pre>
-	 * <code>
+	 * {@code 
 	 * logger.success("My message arg={0}, arg={1}", parm1, parm2);
-	 * </code>
+	 * }
 	 * </pre>
 	 * @param msg
 	 *            message or message pattern
@@ -750,8 +751,8 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Report a single tracking activity. Call after instance of <code>TrackingActivity</code>
-	 * has been completed using <code>TrackingActivity.stop()</code> and <code>TrackingActivity.tnt()</code>
+	 * Report a single tracking activity. Call after instance of {@link TrackingActivity}
+	 * has been completed using {@code TrackingActivity.stop()} and {@code TrackingActivity.tnt()}
 	 * calls.
 	 *
 	 * @param activity
@@ -767,8 +768,8 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Report a single tracking event as a single activity. Call after instance of <code>TrackingEvent</code>
-	 * has been completed using <code>TrackingEvent.stop()</code> call.
+	 * Report a single tracking event as a single activity. Call after instance of {@link TrackingEvent}
+	 * has been completed using {@code TrackingEvent.stop()} call.
 	 * @param event
 	 *            tracking event to be reported as a single activity
 	 * @throws IllegalStateException when tracker is not initialized
@@ -1073,11 +1074,11 @@ public class TrackingLogger implements Tracker {
     }
 	
 	/**
-	 * Returns currently registered <code>Tracker</code> logger associated with the current thread. <code>Tracker</code>
-	 * logger is associated with the current thread after the register() call. <code>Tracker</code> logger instance is
+	 * Returns currently registered {@link Tracker} logger associated with the current thread. {@link Tracker}
+	 * logger is associated with the current thread after the register() call. {@link Tracker} logger instance is
 	 * not thread safe.
 	 *
-	 * @return <code>Tracker</code> logger associated with the current thread or null of non available.
+	 * @return {@link Tracker} logger associated with the current thread or null of non available.
 	 * @see Tracker
 	 */
 	public Tracker getTracker() {
@@ -1179,7 +1180,7 @@ public class TrackingLogger implements Tracker {
 
 	/**
 	 * Add and register a dump listener, which is triggered when dump is generated by
-	 * <code>dump()</code> call.
+	 * {@code dump()} call.
 	 *
 	 * @param lst user supplied dump listener
 	 * @see DumpListener
@@ -1190,7 +1191,7 @@ public class TrackingLogger implements Tracker {
 
 	/**
 	 * Remove a dump listener, which is triggered when dump is generated by
-	 * <code>dump()</code> call.
+	 * {@code dump()} call.
 	 *
 	 * @param lst user supplied dump listener
 	 * @see DumpListener
@@ -1200,10 +1201,10 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Add and register a dump provider. Instances of <code>DumpProvider</code>
+	 * Add and register a dump provider. Instances of {@code DumpProvider}
 	 * provide implementation for underlying classes that generate application
 	 * specific dumps. By default supplied dump provider is associated with a
-	 * default <code>DumpSink</code>.
+	 * default {@code DumpSink}.
 	 *
 	 * @param dp user supplied dump provider
 	 *
@@ -1215,17 +1216,17 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Add and register a dump provider with a user specified <code>DumpSink</code>.
-	 * Instances of <code>DumpProvider</code> interface
+	 * Add and register a dump provider with a user specified {@code DumpSink}.
+	 * Instances of {@code DumpProvider} interface
 	 * provide implementation for underlying classes that generate application
 	 * specific dumps. This dump provider will be triggered for the specified
-	 * <code>DumpSink</code> only. Instance of <code>DumpSink</code> can be
-	 * created by <code>DumpDestinatonFactory</code>.
-	 * By default <code>PropertiesDumpProvider</code>,
-	 * <code>MXBeanDumpProvider</code>, <code>ThreadDumpProvider</code>,
-	 * <code>ThreadDeadlockDumpProvider</code> are auto registered with
-	 * <code>FileDumpSink</code> during initialization of
-	 * <code>TrackingLogger</code> class.
+	 * {@code DumpSink} only. Instance of {@code DumpSink} can be
+	 * created by {@code DumpDestinatonFactory}.
+	 * By default {@code PropertiesDumpProvider},
+	 * {@code MXBeanDumpProvider}, {@code ThreadDumpProvider},
+	 * {@code ThreadDeadlockDumpProvider} are auto registered with
+	 * {@code FileDumpSink} during initialization of
+	 * {@code TrackingLogger} class.
 	 *
 	 * @param df user supplied dump destination associated with dump provider
 	 * @param dp user supplied dump provider
@@ -1257,11 +1258,11 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Generate dumps backed by registered <code>DumpProvider</code> instances
-	 * written to registered <code>DumpSink</code> instances. The method
+	 * Generate dumps backed by registered {@code DumpProvider} instances
+	 * written to registered {@code DumpSink} instances. The method
 	 * first opens all registered dump destinations and then iterates over all
-	 * dump providers to obtain dumps of instance <code>DumpCollection</code>.
-	 * Registered instances of <code>DumpListener</code> are triggered for
+	 * dump providers to obtain dumps of instance {@code DumpCollection}.
+	 * Registered instances of {@code DumpListener} are triggered for
 	 * before, after, error, complete conditions during this call.
 	 *
 	 * @see DumpListener
@@ -1275,11 +1276,11 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Generate dumps backed by registered <code>DumpProvider</code> instances
-	 * written to registered <code>DumpSink</code> instances. The method
+	 * Generate dumps backed by registered {@code DumpProvider} instances
+	 * written to registered {@code DumpSink} instances. The method
 	 * first opens all registered dump destinations and then iterates over all
-	 * dump providers to obtain dumps of instance <code>DumpCollection</code>.
-	 * Registered instances of <code>DumpListener</code> are triggered for
+	 * dump providers to obtain dumps of instance {@code DumpCollection}.
+	 * Registered instances of {@code DumpListener} are triggered for
 	 * before, after, error, complete conditions during this call.
 	 *
 	 * @param reason reason why dump is generated

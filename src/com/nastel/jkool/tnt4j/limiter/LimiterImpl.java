@@ -123,19 +123,19 @@ public class LimiterImpl implements Limiter {
 			return 0;
 		}
 		
-		double wakeElapsedSecByBps = 0;
-		double wakeElapsedSecByMps = 0;
+		double elapsedSecByBps = 0;
+		double elapsedSecByMps = 0;
 		
 		int delayCounter = 0;
 		if (maxBPS > UNLIMITED) {
-			wakeElapsedSecByBps = bpsLimiter.acquire(bytes);
-			if (wakeElapsedSecByBps > 0) delayCounter++;
+			elapsedSecByBps = bpsLimiter.acquire(bytes);
+			if (elapsedSecByBps > 0) delayCounter++;
 		}	
 		if (maxMPS > UNLIMITED) {
-			wakeElapsedSecByMps = mpsLimiter.acquire(msgs);
-			if (wakeElapsedSecByMps > 0) delayCounter++;
+			elapsedSecByMps = mpsLimiter.acquire(msgs);
+			if (elapsedSecByMps > 0) delayCounter++;
 		}	
-		double sleepTime = wakeElapsedSecByBps + wakeElapsedSecByMps;
+		double sleepTime = elapsedSecByBps + elapsedSecByMps;
 		if (sleepTime > 0) {
 			lastSleep.set(sleepTime);
 			sleepCount.addAndGet(sleepTime);

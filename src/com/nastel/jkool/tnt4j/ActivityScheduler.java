@@ -209,7 +209,7 @@ public class ActivityScheduler {
 	}
 
 	/**
-	 * Obtain <code>TrackingLogger</code> instance for logging
+	 * Obtain {@link TrackingLogger} instance for logging
 	 *
 	 * @return tracking logger instance
 	 */
@@ -219,12 +219,12 @@ public class ActivityScheduler {
 
 	/**
 	 * Override this calls to return custom instances of
-	 * <code>Runnable</code> which will be invoked per specified
+	 * {@code Runnable} which will be invoked per specified
 	 * schedule.
 	 * @param lg tracking logger instance
 	 * @param name of the new activity task
 	 * @param level associated with the task
-	 * @return <code>Runnable</code> instance
+	 * @return {@code Runnable} instance
 	 */
 	protected Runnable newActivityTask(TrackingLogger lg, String name, OpLevel level) {
 		return new ActivityTask(logger, name, level);
