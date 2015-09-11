@@ -24,6 +24,11 @@ package com.nastel.jkool.tnt4j.limiter;
 public class LimiterFactoryImpl implements LimiterFactory {
 
 	@Override
+    public Limiter newLimiter(int maxMps, int maxBps) {
+	    return new LimiterImpl(maxMps, maxBps, true);
+    }
+	
+	@Override
     public Limiter newLimiter(int maxMps, int maxBps, boolean enabled) {
 	    return new LimiterImpl(maxMps, maxBps, enabled);
     }

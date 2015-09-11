@@ -106,6 +106,13 @@ public interface Limiter {
 	long getBPS();
 
 	/**
+	 * Time since start/reset in milliseconds
+	 *
+	 * @return Time since start/reset in milliseconds
+	 */
+	long getAge();
+
+	/**
 	 * Get timestamp in (ms) since start/reset of this limiter
 	 *
 	 * @return timestamp in (ms) since start/reset of this limiter

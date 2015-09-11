@@ -67,14 +67,12 @@ public class LimiterImpl implements Limiter {
 
 	@Override
     public long getMPS() {
-		long elapsed = Math.max(System.currentTimeMillis() - start, 1);
-		return (msgCount.get() * 1000L / elapsed);
+		return (msgCount.get() * 1000L / getAge());
     }
 
 	@Override
     public long getBPS() {
-		long elapsed = Math.max(System.currentTimeMillis() - start, 1);
-		return (byteCount.get() * 1000L / elapsed);
+		return (byteCount.get() * 1000L / getAge());
     }
 
 	@Override
@@ -169,6 +167,11 @@ public class LimiterImpl implements Limiter {
     public long getStartTime() {
 	    return start;
     }
+
+	@Override
+	public long getAge() {
+		return Math.max(System.currentTimeMillis() - start, 1);
+	}
 
 	@Override
     public long getTotalBytes() {

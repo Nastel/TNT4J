@@ -22,10 +22,21 @@ package com.nastel.jkool.tnt4j.limiter;
  */
 public interface LimiterFactory {
 	/**
+	 * Create a new limiter. 
+	 * (equivalent to {@code newLimiter(maxMps, maxBps, true)})
+	 * 
+	 * @param maxMps maximum message/second rate (0 means unlimited)
+	 * @param maxBps maximum bytes/second rate (0 means unlimited)
+	 * @return new limiter instance
+	 */
+	Limiter newLimiter(int maxMps, int maxBps);
+
+	/**
 	 * Create a new limiter
 	 * 
 	 * @param maxMps maximum message/second rate (0 means unlimited)
 	 * @param maxBps maximum bytes/second rate (0 means unlimited)
+	 * @param enabled true to enable limiter, false otherwise
 	 * @return new limiter instance
 	 */
 	Limiter newLimiter(int maxMps, int maxBps, boolean enabled);
