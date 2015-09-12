@@ -29,7 +29,7 @@ public interface LimiterFactory {
 	 * @param maxBps maximum bytes/second rate (0 means unlimited)
 	 * @return new limiter instance
 	 */
-	Limiter newLimiter(int maxMps, int maxBps);
+	Limiter newLimiter(double maxMps, double maxBps);
 
 	/**
 	 * Create a new limiter
@@ -39,5 +39,5 @@ public interface LimiterFactory {
 	 * @param enabled true to enable limiter, false otherwise
 	 * @return new limiter instance
 	 */
-	Limiter newLimiter(int maxMps, int maxBps, boolean enabled);
+	Limiter newLimiter(double maxMps, double maxBps, boolean enabled);
 }

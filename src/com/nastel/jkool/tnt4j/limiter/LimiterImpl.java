@@ -30,7 +30,7 @@ import com.google.common.util.concurrent.RateLimiter;
 public class LimiterImpl implements Limiter {
 	
 	boolean doLimit = false;
-	int maxMPS = UNLIMITED, maxBPS = UNLIMITED;
+	double maxMPS = UNLIMITED, maxBPS = UNLIMITED;
 	long start = System.currentTimeMillis();
 	
 	AtomicLong byteCount = new AtomicLong(0);
@@ -43,36 +43,36 @@ public class LimiterImpl implements Limiter {
 	
 	RateLimiter bpsLimiter, mpsLimiter;
 	
-	public LimiterImpl(int maxMps, int maxBps, boolean enabled) {
+	public LimiterImpl(double maxMps, double maxBps, boolean enabled) {
 		setLimits(maxMps, maxBps);
 		setEnabled(enabled);
 	}
 	
 	@Override
-    public long getMaxMPS() {
+    public double getMaxMPS() {
 	    return maxMPS;
     }
 
 	@Override
-    public long getMaxBPS() {
+    public double getMaxBPS() {
 	    return maxBPS;
     }
 
 	@Override
-    public Limiter setLimits(int maxMps, int maxBps) {
+    public Limiter setLimits(double maxMps, double maxBps) {
 		maxMPS = maxMps;
 		maxBPS = maxBps;
 	    return this;
     }
 
 	@Override
-    public long getMPS() {
-		return (msgCount.get() * 1000L / getAge());
+    public double getMPS() {
+		return (double)(msgCount.get() * 1000.0 / (double)getAge());
     }
 
 	@Override
-    public long getBPS() {
-		return (byteCount.get() * 1000L / getAge());
+    public double getBPS() {
+		return (double)(byteCount.get() * 1000.0 / (double)getAge());
     }
 
 	@Override

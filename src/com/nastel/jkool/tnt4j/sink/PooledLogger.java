@@ -30,6 +30,8 @@ import com.google.common.util.concurrent.RateLimiter;
 import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
+import com.nastel.jkool.tnt4j.limiter.DefaultLimiterFactory;
+import com.nastel.jkool.tnt4j.limiter.Limiter;
 import com.nastel.jkool.tnt4j.tracker.TrackingActivity;
 import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -249,12 +251,12 @@ class LoggingThreadFactory implements ThreadFactory {
 class LoggingTask implements Runnable {
 	PooledLogger pooledLogger;
 	BlockingQueue<SinkLogEvent> eventQ;
-	RateLimiter errorLimiter;
+	Limiter errorLimiter;
 
 	public LoggingTask(PooledLogger logger, ArrayBlockingQueue<SinkLogEvent> eq) {
 		eventQ = eq;
 		pooledLogger = logger;
-		errorLimiter = RateLimiter.create(PooledLogger.ERROR_RATE);
+		errorLimiter = DefaultLimiterFactory.getInstance().newLimiter(PooledLogger.ERROR_RATE, 0);
    }
 
 	protected void checkState(EventSink sink) throws IOException {
@@ -321,7 +323,7 @@ class LoggingTask implements Runnable {
 				} catch (Throwable err) {
 					pooledLogger.dropCount.incrementAndGet();
 					pooledLogger.exceptionCount.incrementAndGet();
-					if (errorLimiter.tryAcquire()) {
+					if (errorLimiter.tryObtain(1, 0)) {
 						PooledLogger.logger.log(OpLevel.ERROR,
 								"Error during processing: total.error.count={0}, sink.error.count={1}, event.source={2}, event.sink={3}",
 								pooledLogger.exceptionCount.get(), event.getEventSink().getErrorCount(), 

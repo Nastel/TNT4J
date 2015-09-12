@@ -73,14 +73,14 @@ public interface Limiter {
 	 *
 	 * @return maximum allowed message rate, 0 means unlimited
 	 */
-	long getMaxMPS();
+	double getMaxMPS();
 	
 	/**
 	 * Get maximum allowed bytes/second rate
 	 *
 	 * @return maximum allowed byte rate, 0 means unlimited
 	 */
-	long getMaxBPS();
+	double getMaxBPS();
 
 	/**
 	 * Sets maximum limits (0 means unlimited)
@@ -89,21 +89,21 @@ public interface Limiter {
 	 * @param maxBps maximum bytes/second rate
 	 * @return same limiter instance
 	 */
-	Limiter setLimits(int maxMps, int maxBps);
+	Limiter setLimits(double maxMps, double maxBps);
 
 	/**
 	 * Get current message/second rate
 	 *
 	 * @return maximum allowed message rate
 	 */
-	long getMPS();
+	double getMPS();
 
 	/**
 	 * Get current bytes/second rate
 	 *
 	 * @return maximum allowed bytes rates
 	 */
-	long getBPS();
+	double getBPS();
 
 	/**
 	 * Time since start/reset in milliseconds
