@@ -80,8 +80,8 @@ public class LimiterImpl implements Limiter {
 		doLimit = flag;
 		if (doLimit) {
 			start = System.currentTimeMillis();
-			bpsLimiter = RateLimiter.create(maxBPS);
-			mpsLimiter = RateLimiter.create(maxMPS);
+			bpsLimiter = maxBPS > UNLIMITED? RateLimiter.create(maxBPS): bpsLimiter;
+			mpsLimiter = maxMPS > UNLIMITED? RateLimiter.create(maxMPS): mpsLimiter;
 		}
 	    return this;
     }
@@ -104,10 +104,10 @@ public class LimiterImpl implements Limiter {
 		}
 
 		boolean permit = false;
-		if (maxBPS > UNLIMITED) {
+		if (bpsLimiter != null) {
 			permit = bpsLimiter.tryAcquire(bytes, timeout, unit);
 		}	
-		if (maxMPS > UNLIMITED) {
+		if (mpsLimiter != null) {
 			permit = permit && mpsLimiter.tryAcquire(msgs, timeout, unit);
 		}	
 		if (!permit) {
@@ -127,11 +127,11 @@ public class LimiterImpl implements Limiter {
 		double elapsedSecByMps = 0;
 		
 		int delayCounter = 0;
-		if (maxBPS > UNLIMITED) {
+		if (bpsLimiter != null) {
 			elapsedSecByBps = bpsLimiter.acquire(bytes);
 			if (elapsedSecByBps > 0) delayCounter++;
 		}	
-		if (maxMPS > UNLIMITED) {
+		if (mpsLimiter != null) {
 			elapsedSecByMps = mpsLimiter.acquire(msgs);
 			if (elapsedSecByMps > 0) delayCounter++;
 		}	
