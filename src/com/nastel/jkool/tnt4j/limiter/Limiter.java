@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * @version $Revision: 1 $
  */
 public interface Limiter {
-	static final int UNLIMITED = 0;
+	static final double MAX_RATE = Double.MAX_VALUE;
 
 	/**
 	 * Total count of denied limiter requests using {@code tryThrottle()}

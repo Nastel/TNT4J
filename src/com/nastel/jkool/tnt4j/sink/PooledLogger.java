@@ -255,7 +255,7 @@ class LoggingTask implements Runnable {
 	public LoggingTask(PooledLogger logger, ArrayBlockingQueue<SinkLogEvent> eq) {
 		eventQ = eq;
 		pooledLogger = logger;
-		errorLimiter = DefaultLimiterFactory.getInstance().newLimiter(PooledLogger.ERROR_RATE, 0);
+		errorLimiter = DefaultLimiterFactory.getInstance().newLimiter(PooledLogger.ERROR_RATE, Limiter.MAX_RATE);
    }
 
 	protected void checkState(EventSink sink) throws IOException {

@@ -22,6 +22,7 @@ import com.nastel.jkool.tnt4j.config.ConfigException;
 import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.core.TTL;
 import com.nastel.jkool.tnt4j.limiter.DefaultLimiterFactory;
+import com.nastel.jkool.tnt4j.limiter.Limiter;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
@@ -112,8 +113,8 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 		Object maxMps = config.get("RateMaxMPS");
 		Object maxBps = config.get("RateMaxBPS");
 		if (maxMps != null || maxBps != null) {
-			int maxmps = maxMps != null? Integer.parseInt(maxMps.toString()): 0;
-			int maxbps = maxBps != null? Integer.parseInt(maxBps.toString()): 0;
+			double maxmps = maxMps != null? Double.parseDouble(maxMps.toString()): Limiter.MAX_RATE;
+			double maxbps = maxBps != null? Double.parseDouble(maxBps.toString()): Limiter.MAX_RATE;
 			boolean enabled = rateLimit != null? Boolean.parseBoolean(rateLimit.toString()): true;
 			long timeout = maxTimeout != null? Long.parseLong(maxTimeout.toString()): EventLimiter.BLOCK_UNTIL_GRANTED;
 			limiter = new EventLimiter(DefaultLimiterFactory.getInstance().newLimiter(maxmps, maxbps, enabled), timeout, TimeUnit.MILLISECONDS);

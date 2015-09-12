@@ -30,7 +30,6 @@ import com.google.common.util.concurrent.RateLimiter;
 public class LimiterImpl implements Limiter {
 	
 	boolean doLimit = false;
-	double maxMPS = UNLIMITED, maxBPS = UNLIMITED;
 	long start = System.currentTimeMillis();
 	
 	AtomicLong byteCount = new AtomicLong(0);
@@ -41,7 +40,8 @@ public class LimiterImpl implements Limiter {
 	AtomicDouble sleepCount = new AtomicDouble(0);
 	AtomicDouble lastSleep = new AtomicDouble(0);
 	
-	RateLimiter bpsLimiter, mpsLimiter;
+	RateLimiter bpsLimiter =  RateLimiter.create(MAX_RATE);
+	RateLimiter mpsLimiter =  RateLimiter.create(MAX_RATE);
 	
 	public LimiterImpl(double maxMps, double maxBps, boolean enabled) {
 		setLimits(maxMps, maxBps);
@@ -50,19 +50,19 @@ public class LimiterImpl implements Limiter {
 	
 	@Override
     public double getMaxMPS() {
-	    return maxMPS;
+	    return mpsLimiter.getRate();
     }
 
 	@Override
     public double getMaxBPS() {
-	    return maxBPS;
+	    return bpsLimiter.getRate();
     }
 
 	@Override
     public Limiter setLimits(double maxMps, double maxBps) {
-		maxMPS = maxMps;
-		maxBPS = maxBps;
-	    return this;
+		mpsLimiter.setRate(maxMps);
+		bpsLimiter.setRate(maxBps);
+		return this;
     }
 
 	@Override
@@ -80,8 +80,6 @@ public class LimiterImpl implements Limiter {
 		doLimit = flag;
 		if (doLimit) {
 			start = System.currentTimeMillis();
-			bpsLimiter = maxBPS > UNLIMITED? RateLimiter.create(maxBPS): bpsLimiter;
-			mpsLimiter = maxMPS > UNLIMITED? RateLimiter.create(maxMPS): mpsLimiter;
 		}
 	    return this;
     }
