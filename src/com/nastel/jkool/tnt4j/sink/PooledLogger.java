@@ -26,7 +26,6 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import com.google.common.util.concurrent.RateLimiter;
 import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.Snapshot;
