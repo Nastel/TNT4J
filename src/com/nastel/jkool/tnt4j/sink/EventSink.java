@@ -50,6 +50,15 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	boolean errorState();
 
 	/**
+	 * Set the sink into the error state due to some external condition.
+	 * Error state to set to true if exception is not null, false otherwise.
+	 *
+	 * @param ex current error
+	 * @return last error occurred when writing to sink, null if none
+	 */
+	Throwable setErrorState(Throwable ex);
+
+	/**
 	 * Get last error occurred when writing to sink
 	 *
 	 * @return last error occurred when writing to sink, null if none

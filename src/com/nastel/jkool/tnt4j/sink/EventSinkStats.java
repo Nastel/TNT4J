@@ -26,6 +26,8 @@ package com.nastel.jkool.tnt4j.sink;
 public interface EventSinkStats {
 	static final String KEY_SINK_ERROR_COUNT = "sink-errors";
 	static final String KEY_SINK_ERROR_STATE = "sink-error-state";
+	static final String KEY_SINK_ERROR_MSG = "sink-error-msg";
+	static final String KEY_SINK_ERROR_TIMESTAMP = "sink-error-timestamp";
 	static final String KEY_LOGGED_MSGS = "sink-messages";
 	static final String KEY_SINK_WRITES= "sink-direct-writes";
 	static final String KEY_LOGGED_EVENTS = "sink-events";

@@ -374,4 +374,9 @@ public class BufferedEventSink implements EventSink {
     public long getErrorCount() {
 	    return outSink.getErrorCount();
     }
+
+	@Override
+    public Throwable setErrorState(Throwable e) {
+	    return outSink.setErrorState(e);
+    }
 }

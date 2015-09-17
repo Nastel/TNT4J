@@ -114,6 +114,18 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	}
 
 	@Override
+	public Throwable setErrorState(Throwable ex) {
+		Throwable prevError = lastError;
+		errorState = ex != null;
+		if (ex != null) {
+			lastError  = ex;
+			lastErrorTime = System.currentTimeMillis();
+			errorCount.incrementAndGet();
+		}
+		return prevError;
+	}
+	
+	@Override
 	public boolean errorState() {
 		return errorState;
 	}
@@ -167,6 +179,10 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		stats.put(Utils.qualify(this, KEY_LOGGED_SNAPSHOTS), loggedSnaps.get());
 		stats.put(Utils.qualify(this, KEY_SINK_ERROR_COUNT), errorCount.get());
 		stats.put(Utils.qualify(this, KEY_SINK_ERROR_STATE), errorState());
+		if (lastError != null) {
+			stats.put(Utils.qualify(this, KEY_SINK_ERROR_MSG), (lastError != null? lastError.getMessage(): "none"));
+			stats.put(Utils.qualify(this, KEY_SINK_ERROR_TIMESTAMP), new Date(lastErrorTime));
+		}
 		stats.put(Utils.qualify(this, KEY_LOGGED_MSGS), loggedMsgs.get());
 		stats.put(Utils.qualify(this, KEY_SINK_WRITES), sinkWrites.get());
 		stats.put(Utils.qualify(this, KEY_SKIPPED_COUNT), skipCount.get());
@@ -267,12 +283,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 *            exception to be reported to all registered event listeners
 	 */
 	protected void notifyListeners(Object msg, Throwable ex) {
-		errorCount.incrementAndGet();
-		if (!errorState) {
-			lastError = ex;
-			errorState = true;
-			lastErrorTime = System.currentTimeMillis();
-		}
+		setErrorState(ex);
 		if (errorListeners.size() > 0) {
 			SinkError event = new SinkError(this, msg, ex);
 			notifyListeners(event);

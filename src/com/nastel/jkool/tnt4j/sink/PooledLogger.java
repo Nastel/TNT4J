@@ -55,6 +55,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 public class PooledLogger implements KeyValueStats {
 	protected static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(PooledLogger.class);
 	protected static final double ERROR_RATE = Double.valueOf(System.getProperty("tnt4j.pooled.logger.error.rate", "0.1"));
+	protected static final int REOPEN_FREQ = Integer.getInteger("tnt4j.pooled.logger.reopen.freq.ms", 30000);
 			
 	static final String KEY_Q_SIZE = "pooled-queue-size";
 	static final String KEY_Q_TASKS = "pooled-queue-tasks";
@@ -256,23 +257,41 @@ class LoggingTask implements Runnable {
 		eventQ = eq;
 		pooledLogger = logger;
 		errorLimiter = DefaultLimiterFactory.getInstance().newLimiter(PooledLogger.ERROR_RATE, Limiter.MAX_RATE);
-   }
+	}
 
-	protected void checkState(EventSink sink) throws IOException {
+	protected void openSink(EventSink sink) throws IOException {
+		// check for open again
+		if (!sink.isOpen()) {
+			try {
+				boolean lastErrorState = sink.errorState();
+				sink.open();
+				if (lastErrorState) {
+					sink.setErrorState(null);
+					pooledLogger.recoveryCount.incrementAndGet();
+				}
+			} catch (IOException e) {
+				sink.setErrorState(e);
+				throw e;
+			}
+		}
+	}
+
+	protected boolean isLoggable(EventSink sink) throws IOException {
 		if (!sink.isOpen()) {
 			synchronized (sink) {
-				boolean lastErrorState = sink.errorState();
-				// check for open again
-				if (!sink.isOpen()) {
-					sink.open();
-					if (lastErrorState) {
-						pooledLogger.recoveryCount.incrementAndGet();
+				if (sink.errorState()) {
+					long lastErrorTime = sink.getLastErrorTime();
+					long errorElapsed = System.currentTimeMillis() - lastErrorTime;
+					if (errorElapsed < PooledLogger.REOPEN_FREQ) {
+						return false;
 					}
 				}
+				openSink(sink);
 			}
 		}
 		//check if the sink is in valid write state
 		AbstractEventSink.checkState(sink);
+		return true;
 	}
 	
 	protected void sendEvent(SinkLogEvent event) {
@@ -303,14 +322,34 @@ class LoggingTask implements Runnable {
 	
 	protected void logEvent(SinkLogEvent event, long start) throws IOException {
 		try {
-			checkState(event.getEventSink());
-			sendEvent(event);
+			if (isLoggable(event.getEventSink())) {
+				sendEvent(event);
+			} else {
+				pooledLogger.dropCount.incrementAndGet();
+			}
 		} finally {
 			long elaspedNanos = System.nanoTime() - start;
 			pooledLogger.totalNanos.addAndGet(elaspedNanos);
 		}
 	}
 
+	protected void handleError(SinkLogEvent event, Throwable err) {
+		try {
+			pooledLogger.dropCount.incrementAndGet();
+			pooledLogger.exceptionCount.incrementAndGet();
+			if (errorLimiter.tryObtain(1, 0)) {
+				PooledLogger.logger.log(OpLevel.ERROR,
+						"Error during processing: total.error.count={0}, sink.error.count={1}, event.source={2}, event.sink={3}",
+				        pooledLogger.exceptionCount.get(), event.getEventSink().getErrorCount(),
+				        event.getEventSource(), event.getEventSink(), err);
+			}
+		} catch (Throwable ex) {
+			PooledLogger.logger.log(OpLevel.FAILURE, 
+					"Unexpected error during error handling: error.count={0}",
+			        pooledLogger.exceptionCount.get(), ex);
+		}
+	}
+	
     @Override
     public void run() {
     	try {
@@ -320,14 +359,7 @@ class LoggingTask implements Runnable {
 				try {
 					logEvent(event, start);
 				} catch (Throwable err) {
-					pooledLogger.dropCount.incrementAndGet();
-					pooledLogger.exceptionCount.incrementAndGet();
-					if (errorLimiter.tryObtain(1, 0)) {
-						PooledLogger.logger.log(OpLevel.ERROR,
-								"Error during processing: total.error.count={0}, sink.error.count={1}, event.source={2}, event.sink={3}",
-								pooledLogger.exceptionCount.get(), event.getEventSink().getErrorCount(), 
-								event.getEventSource(), event.getEventSink(), err);
-					}
+					handleError(event, err);
 				}
 			}
 		} catch (Throwable e) {

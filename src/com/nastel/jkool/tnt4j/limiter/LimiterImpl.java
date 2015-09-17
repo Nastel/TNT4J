@@ -101,11 +101,11 @@ public class LimiterImpl implements Limiter {
 			return true;
 		}
 
-		boolean permit = false;
-		if (bpsLimiter != null) {
+		boolean permit = true;
+		if ((bpsLimiter != null) && (bytes > 0)) {
 			permit = bpsLimiter.tryAcquire(bytes, timeout, unit);
 		}	
-		if (mpsLimiter != null) {
+		if ((mpsLimiter != null) && (msgs > 0)) {
 			permit = permit && mpsLimiter.tryAcquire(msgs, timeout, unit);
 		}	
 		if (!permit) {
