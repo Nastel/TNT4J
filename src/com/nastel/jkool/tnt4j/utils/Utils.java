@@ -363,6 +363,31 @@ public class Utils {
 	}
 
 	/**
+	 * Hide all parts of the string and leave only certain 
+	 * number of characters. 
+	 * Example: XXXX-47478 {@code hide("1234-47478", "X", 5)}
+	 *
+	 * @param str
+	 *            string to be replaced
+	 * @param hideChars
+	 *            hide chars to use during replacement
+	 * @param lastNo
+	 *            number of chars to leave at the end
+	 * @return Returns a quoted string, surrounded with double quote
+	 */
+	public static String hide(String str, String hideChars, int lastNo) {
+		int length = str.length() - lastNo;
+		if (length > 0) {
+			String toHide = str.substring(0, length);
+			if (!toHide.isEmpty()) {
+				toHide = toHide.replaceAll("([A-Za-z0-9_])", hideChars);
+			}
+			return toHide + str.substring(length, str.length());
+		} 
+		return str;
+	}
+	
+	/**
 	 * Returns a quoted string, surrounded with double quote
 	 *
 	 * @param str
