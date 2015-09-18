@@ -363,8 +363,8 @@ public class Utils {
 	}
 
 	/**
-	 * Hide all parts of the string and leave only certain 
-	 * number of characters. 
+	 * Hide some parts of the string and leave only certain 
+	 * number of characters at the end of the string. 
 	 * Example: XXXX-47478 {@code hide("1234-47478", "X", 5)}
 	 *
 	 * @param str
