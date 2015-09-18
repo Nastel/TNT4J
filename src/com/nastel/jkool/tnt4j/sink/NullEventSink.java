@@ -26,7 +26,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
 /**
  * <p>
- * This class implements <code>EvenSink</code> with NULL (empty) underlying output.
+ * This class implements {@link EventSink} with NOOP (empty) underlying output.
  * All events written to this sink are discarded.
  * </p>
  * 

@@ -24,9 +24,9 @@ import com.nastel.jkool.tnt4j.format.JSONFormatter;
 import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
- * <p>Concrete implementation of <code>EventSinkFactory</code> interface, which
- * creates instances of <code>EventSink</code>. This factory uses <code>SocketEventSink</code>
- * as the underlying sink provider provider and by default uses <code>JSONFormatter</code> to 
+ * <p>Concrete implementation of {@link EventSinkFactory} interface, which
+ * creates instances of {@link EventSink}. This factory uses {@link SocketEventSink}
+ * as the underlying sink provider provider and by default uses {@link JSONFormatter} to 
  * format log messages.</p>
  *
  *
@@ -92,7 +92,7 @@ public class SocketEventSinkFactory  extends AbstractEventSinkFactory  {
     }
 
 	/**
-	 * Obtain an instance of <code>EventSink</code> by name and 
+	 * Obtain an instance of {@link EventSink} by name and 
 	 * custom properties
 	 *
 	 * @param name name of the category associated with the event log

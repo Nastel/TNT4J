@@ -27,7 +27,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
 /**
  * <p>
- * This class implements <code>EvenSink</code> with file <code>FileSink</code> as the underlying storage.
+ * This class implements {@link EventSink} with file  {@link FileSink} as the underlying storage.
  * </p>
  * 
  * 

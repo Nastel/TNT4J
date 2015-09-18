@@ -27,8 +27,8 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>Abstract event sink factory class that all sink factories should subclass from.
- * Derived classes should call <code>configure()</code> before returning <code>EventSink</code>
- * instances back using <code>getEventSink()</code> method calls. See example below:
+ * Derived classes should call {@code configure()} before returning {@link EventSink}
+ * instances back using {@code getEventSink()} method calls. See example below:
  * </p>
  *<pre>
  *<code>
@@ -38,9 +38,9 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *</code>
  *</pre>
  *
+ * @see TTL
  * @see EventSink
  * @see Configurable
- * @see TTL
  *
  * @version $Revision: 1 $
  *
@@ -50,18 +50,45 @@ abstract public class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	private SinkEventFilter eventFilter = null;
 	private SinkErrorListener errorListener = null;
 	private SinkLogEventListener eventListener = null;
-	private long ttl = TTL.TTL_CONTEXT;
 	private EventLimiter limiter = null;
+	private long ttl = TTL.TTL_CONTEXT;
 
 	protected Map<String, Object> config = null;
 
 	/**
-	 * Obtain the default instance of <code>SinkEventFilter</code> configured for this factory.
+	 * Obtain the default instance of {@link SinkEventFilter} configured for this factory.
 	 *
 	 * @return default sink event filter instance
 	 */
 	public SinkEventFilter getDefaultEventFilter() {
 		return eventFilter;
+	}
+
+	/**
+	 * Obtain the default instance of {@link SinkErrorListener} configured for this factory.
+	 *
+	 * @return default sink error listener instance
+	 */
+	public SinkErrorListener getDefaultErrorListener() {
+		return errorListener;
+	}
+
+	/**
+	 * Obtain the default instance of {@link SinkLogEventListener} configured for this factory.
+	 *
+	 * @return default sink event listener instance
+	 */
+	public SinkLogEventListener getDefaultEventListener() {
+		return eventListener;
+	}
+
+	/**
+	 * Obtain the default instance of {@link EventLimiter} configured for this factory.
+	 *
+	 * @return default sink event limiter instance
+	 */
+	public EventLimiter getDefaultEventLimiter() {
+		return limiter;
 	}
 
 	/**

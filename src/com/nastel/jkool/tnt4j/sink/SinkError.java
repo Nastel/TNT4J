@@ -21,7 +21,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
- * An event class for reporting errors when writing to an instance of <code>EventSink</code>.
+ * An event class for reporting errors when writing to an instance of {@link EventSink}.
  * </p>
  * 
  * @see EventSink

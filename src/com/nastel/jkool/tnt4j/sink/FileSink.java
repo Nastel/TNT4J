@@ -26,7 +26,7 @@ import com.nastel.jkool.tnt4j.format.Formatter;
 
 /**
  * <p>
- * This class implements <code>Sink</code> with file as the underlying storage
+ * This class implements {@link Sink} with file as the underlying storage
  * </p>
  * 
  * 
@@ -55,7 +55,7 @@ public class FileSink implements Sink {
 
 	/**
 	 * Create a file based sink based on given filename, append flag.
-	 * and a <code>DefaultFormatter</code>.
+	 * and a {@link DefaultFormatter}.
 	 * 
 	 * @param filename for generating a sink instance
 	 * @param appnd append to the underlying destination
@@ -66,7 +66,7 @@ public class FileSink implements Sink {
 
 	/**
 	 * Create a file based sink based on given filename, append flag.
-	 * and a given <code>Formatter</code>.
+	 * and a given {@link Formatter}.
 	 * 
 	 * @param filename for writing to the sink
 	 * @param appnd append to the underlying destination

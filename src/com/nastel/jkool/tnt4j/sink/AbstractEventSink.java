@@ -210,6 +210,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	public void resetStats() {
 		loggedActivities.set(0);
 		loggedEvents.set(0);
+		loggedSnaps.set(0);
 		errorCount.set(0);
 		loggedMsgs.set(0);
 		sinkWrites.set(0);

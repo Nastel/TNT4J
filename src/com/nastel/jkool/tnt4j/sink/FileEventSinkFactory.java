@@ -24,9 +24,9 @@ import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.format.SimpleFormatter;
 
 /**
- * <p>Concrete implementation of <code>EventSinkFactory</code> interface, which
- * creates instances of <code>EventSink</code>. This factory uses <code>FileEventSink</code>
- * as the underlying sink provider provider and by default uses <code>SimpleFormatter</code> to 
+ * <p>Concrete implementation of {@link EventSinkFactory} interface, which
+ * creates instances of {@link EventSink}. This factory uses {@link FileEventSink}
+ * as the underlying sink provider provider and by default uses {@link SimpleFormatter} to 
  * format log messages.</p>
  *
  *

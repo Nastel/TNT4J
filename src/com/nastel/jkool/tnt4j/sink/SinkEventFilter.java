@@ -24,7 +24,7 @@ import com.nastel.jkool.tnt4j.tracker.TrackingEvent;
 
 /**
  * <p>
- * A simple event filter interface. Implementations of this interface are used with <code>EventSink</code> to filter out
+ * A simple event filter interface. Implementations of this interface are used with {@link EventSink} to filter out
  * logging events.
  * </p>
  * 

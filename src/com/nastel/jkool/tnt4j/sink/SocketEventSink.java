@@ -29,7 +29,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
- * This class implements <code>EventSink</code> with socket as  the underlying
+ * This class implements {@link EventSink} with socket as  the underlying
  * sink implementation.
  * </p>
  * 
