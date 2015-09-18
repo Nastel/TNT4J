@@ -320,16 +320,11 @@ class LoggingTask implements Runnable {
 		pooledLogger.loggedCount.incrementAndGet();		
 	}
 	
-	protected void logEvent(SinkLogEvent event, long start) throws IOException {
-		try {
-			if (isLoggable(event.getEventSink())) {
-				sendEvent(event);
-			} else {
-				pooledLogger.dropCount.incrementAndGet();
-			}
-		} finally {
-			long elaspedNanos = System.nanoTime() - start;
-			pooledLogger.totalNanos.addAndGet(elaspedNanos);
+	protected void logEvent(SinkLogEvent event) throws IOException {
+		if (isLoggable(event.getEventSink())) {
+			sendEvent(event);
+		} else {
+			pooledLogger.dropCount.incrementAndGet();
 		}
 	}
 
@@ -357,9 +352,12 @@ class LoggingTask implements Runnable {
 				SinkLogEvent event = eventQ.take();
 				long start = System.nanoTime();
 				try {
-					logEvent(event, start);
+					logEvent(event);
 				} catch (Throwable err) {
 					handleError(event, err);
+				} finally {
+					long elaspedNanos = System.nanoTime() - start;
+					pooledLogger.totalNanos.addAndGet(elaspedNanos);					
 				}
 			}
 		} catch (Throwable e) {
