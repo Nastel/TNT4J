@@ -61,6 +61,7 @@ public class PooledLogger implements KeyValueStats {
 	static final String KEY_Q_TASKS = "pooled-queue-tasks";
 	static final String KEY_Q_CAPACITY = "pooled-queue-capacity";
 	static final String KEY_OBJECTS_DROPPED = "pooled-objects-dropped";
+	static final String KEY_OBJECTS_SKIPPED = "pooled-objects-skipped";
 	static final String KEY_OBJECTS_LOGGED = "pooled-objects-logged";
 	static final String KEY_EXCEPTION_COUNT = "pooled-exceptions";
 	static final String KEY_RECOVERY_COUNT = "pooled-recovery-count";
@@ -72,6 +73,7 @@ public class PooledLogger implements KeyValueStats {
 	volatile boolean started = false;
 
 	AtomicLong dropCount = new AtomicLong(0);
+	AtomicLong skipCount = new AtomicLong(0);
 	AtomicLong loggedCount = new AtomicLong(0);
 	AtomicLong exceptionCount = new AtomicLong(0);
 	AtomicLong recoveryCount = new AtomicLong(0);
@@ -103,6 +105,7 @@ public class PooledLogger implements KeyValueStats {
 	    stats.put(Utils.qualify(this, KEY_Q_CAPACITY), capacity);
 	    stats.put(Utils.qualify(this, KEY_Q_TASKS), poolSize);
 	    stats.put(Utils.qualify(this, KEY_OBJECTS_DROPPED), dropCount.get());
+	    stats.put(Utils.qualify(this, KEY_OBJECTS_SKIPPED), skipCount.get());
 	    stats.put(Utils.qualify(this, KEY_OBJECTS_LOGGED), loggedCount.get());
 	    stats.put(Utils.qualify(this, KEY_EXCEPTION_COUNT), exceptionCount.get());
 	    stats.put(Utils.qualify(this, KEY_RECOVERY_COUNT), recoveryCount.get());
@@ -113,6 +116,7 @@ public class PooledLogger implements KeyValueStats {
 	@Override
     public void resetStats() {
 		dropCount.set(0);
+		skipCount.set(0);
 		loggedCount.set(0);
 		totalNanos.set(0);
 		recoveryCount.set(0);
@@ -131,11 +135,24 @@ public class PooledLogger implements KeyValueStats {
 
 	/**
 	 * Obtain total number of events/log messages dropped since last reset.
+	 * Dropped events occur when pooled queue is full and messages have nowhere
+	 * to go.
 	 *
 	 * @return total number of dropped messages since last reset
 	 */
 	public long getDropCount() {
 		return dropCount.get();
+	}
+
+	/**
+	 * Obtain total number of events/log messages skipped since last reset
+	 * due to underlying event sink either being in error state or 
+	 * unavailable for whatever reason.
+	 *
+	 * @return total number of skipped messages since last reset
+	 */
+	public long getSkipCount() {
+		return skipCount.get();
 	}
 
 	/**
@@ -324,13 +341,13 @@ class LoggingTask implements Runnable {
 		if (isLoggable(event.getEventSink())) {
 			sendEvent(event);
 		} else {
-			pooledLogger.dropCount.incrementAndGet();
+			pooledLogger.skipCount.incrementAndGet();
 		}
 	}
 
 	protected void handleError(SinkLogEvent event, Throwable err) {
 		try {
-			pooledLogger.dropCount.incrementAndGet();
+			pooledLogger.skipCount.incrementAndGet();
 			pooledLogger.exceptionCount.incrementAndGet();
 			if (errorLimiter.tryObtain(1, 0)) {
 				PooledLogger.logger.log(OpLevel.ERROR,
