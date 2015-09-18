@@ -68,8 +68,9 @@ public class PooledLogger implements KeyValueStats {
 	static final String KEY_TOTAL_TIME_USEC = "pooled-total-time-usec";
 
 	int poolSize, capacity;
-	ArrayBlockingQueue<SinkLogEvent> eventQ;
 	ExecutorService threadPool;
+	ArrayBlockingQueue<SinkLogEvent> eventQ;
+
 	volatile boolean started = false;
 
 	AtomicLong dropCount = new AtomicLong(0);
@@ -312,26 +313,26 @@ class LoggingTask implements Runnable {
 	}
 	
 	protected void sendEvent(SinkLogEvent event) {
-		Object sinkO = event.getSinkObject();
+		Object sinkObject = event.getSinkObject();
 		EventSink outSink = event.getEventSink();
 
-		if (sinkO instanceof TrackingEvent) {
-			outSink.log((TrackingEvent) sinkO);
-		} else if (sinkO instanceof TrackingActivity) {
-			outSink.log((TrackingActivity) sinkO);
-		} else if (sinkO instanceof Snapshot) {
+		if (sinkObject instanceof TrackingEvent) {
+			outSink.log((TrackingEvent) sinkObject);
+		} else if (sinkObject instanceof TrackingActivity) {
+			outSink.log((TrackingActivity) sinkObject);
+		} else if (sinkObject instanceof Snapshot) {
 			outSink.log(event.getSnapshot());
 		} else if (event.getEventSource() != null) {
 			outSink.log(event.getTTL(), 
 					event.getEventSource(),
 					event.getSeverity(), 
-					String.valueOf(sinkO),
+					String.valueOf(sinkObject),
 			        event.getArguments());
 		} else {
 			outSink.log(event.getTTL(),
 					outSink.getSource(),
 					event.getSeverity(),
-					String.valueOf(sinkO),
+					String.valueOf(sinkObject),
 			        event.getArguments());
 		}
 		pooledLogger.loggedCount.incrementAndGet();		
@@ -357,8 +358,8 @@ class LoggingTask implements Runnable {
 			}
 		} catch (Throwable ex) {
 			PooledLogger.logger.log(OpLevel.FAILURE, 
-					"Unexpected error during error handling: error.count={0}",
-			        pooledLogger.exceptionCount.get(), ex);
+					"Oops, error during error handling? error.count={0}, event={1}",
+			        pooledLogger.exceptionCount.get(), event, ex);
 		}
 	}
 	
