@@ -95,7 +95,7 @@ public class Utils {
 		CLIENT_CODE_STACK_INDEX = index;
 	}
 
-    private static long initVMID() {
+	private static long initVMID() {
 		String _vm_pid_del = System.getProperty("tnt4j.java.vm.pid.dlm", "@");
 		String vm_name = ManagementFactory.getRuntimeMXBean().getName();
 		try {
@@ -378,11 +378,11 @@ public class Utils {
 	public static String hide(String str, String hideChars, int lastNo) {
 		int length = str.length() - lastNo;
 		if (length > 0) {
-			String toHide = str.substring(0, length);
-			if (!toHide.isEmpty()) {
-				toHide = toHide.replaceAll("([A-Za-z0-9_])", hideChars);
+			String fake = str.substring(0, length);
+			if (!fake.isEmpty()) {
+				fake = fake.replaceAll(".", hideChars);
 			}
-			return toHide + str.substring(length, str.length());
+			return fake + str.substring(length, str.length());
 		} 
 		return str;
 	}
