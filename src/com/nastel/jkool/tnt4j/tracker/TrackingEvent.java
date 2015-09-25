@@ -23,6 +23,7 @@ import com.nastel.jkool.tnt4j.core.OpCompCode;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Operation;
+import com.nastel.jkool.tnt4j.core.Relate2;
 import com.nastel.jkool.tnt4j.core.Trackable;
 import com.nastel.jkool.tnt4j.core.UsecTimestamp;
 import com.nastel.jkool.tnt4j.source.Source;
@@ -110,11 +111,14 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 7 $
  *
  */
-public class TrackingEvent extends Message implements Trackable {
+public class TrackingEvent extends Message implements Trackable, Relate2<Source> {
 
 	private Source	source;
 	private String	parent;
 	Operation operation;
+	
+	private final Source [] relation = new Source[2];
+	private OpType relationType = OpType.NOOP;
 
 	/**
 	 * Return string representation of this tracking event
@@ -595,7 +599,6 @@ public class TrackingEvent extends Message implements Trackable {
 
 	@Override
     public long getTTL() {
-	    // TODO Auto-generated method stub
 	    return operation.getTTL();
     }
 
@@ -603,4 +606,37 @@ public class TrackingEvent extends Message implements Trackable {
     public void setTTL(long ttl) {
 		operation.setTTL(ttl);
 	}
+
+	@Override
+    public Relate2<Source> relate2(Source srcA, Source srcB, OpType type) {
+		relation[OBJ_ONE] = srcA;
+		relation[OBJ_TWO] = srcB;
+		relationType = type;
+		getOperation().setType(OpType.RELATION);
+	    return this;
+    }
+
+	@Override
+    public Relate2<Source> relate2(Source srcB, OpType type) {
+	    return relate2(getSource(), srcB, type);
+    }
+
+	@Override
+    public OpType get2Type() {
+	    return relationType;
+    }
+
+	@Override
+    public Source get2(int index) {
+	    return relation[index];
+    }
+
+	@Override
+    public Relate2<Source> clear2() {
+		relation[OBJ_ONE] = null;
+		relation[OBJ_TWO] = null;
+		relationType = OpType.NOOP;
+		getOperation().setType(OpType.EVENT);
+	    return this;
+    }
 }

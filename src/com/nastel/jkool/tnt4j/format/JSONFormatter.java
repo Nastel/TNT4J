@@ -24,6 +24,7 @@ import com.nastel.jkool.tnt4j.config.Configurable;
 import com.nastel.jkool.tnt4j.core.OpLevel;
 import com.nastel.jkool.tnt4j.core.OpType;
 import com.nastel.jkool.tnt4j.core.Property;
+import com.nastel.jkool.tnt4j.core.Relate2;
 import com.nastel.jkool.tnt4j.core.Snapshot;
 import com.nastel.jkool.tnt4j.core.ValueTypes;
 import com.nastel.jkool.tnt4j.source.DefaultSourceFactory;
@@ -151,10 +152,14 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			String escaped = StringEscapeUtils.escapeJson(event.getSource().getUrl()); // escape double quote chars
 			jsonString.append(JSON_SOURCE_URL_LABEL).append(ATTR_SEP).append(Utils.quote(escaped)).append(ATTR_JSON);
 		}
-		jsonString.append(JSON_SEVERITY_LABEL).append(ATTR_SEP).append(Utils.quote(event.getSeverity()))
-		        .append(ATTR_JSON);
-		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(event.getSeverity().ordinal())
-		        .append(ATTR_JSON);
+		if (event.get2(TrackingEvent.OBJ_ONE) != null) {
+			// we have a relation
+			jsonString.append(JSON_RELATE_TYPE_LABEL).append(ATTR_SEP).append(Utils.quote(event.get2Type())).append(ATTR_JSON);
+			jsonString.append(JSON_RELATE_FQN_A_LABEL).append(ATTR_SEP).append(Utils.quote(event.get2(TrackingEvent.OBJ_ONE).getFQName())).append(ATTR_JSON);
+			jsonString.append(JSON_RELATE_FQN_B_LABEL).append(ATTR_SEP).append(Utils.quote(event.get2(TrackingEvent.OBJ_TWO).getFQName())).append(ATTR_JSON);		
+		}
+		jsonString.append(JSON_SEVERITY_LABEL).append(ATTR_SEP).append(Utils.quote(event.getSeverity())).append(ATTR_JSON);
+		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(event.getSeverity().ordinal()).append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP).append(
 		        Utils.quote(event.getOperation().getType())).append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_NO_LABEL).append(ATTR_SEP).append(

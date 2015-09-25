@@ -21,10 +21,10 @@ import com.nastel.jkool.tnt4j.core.OpLevel;
 /**
  * <p>
  * A simple event filter interface for filtering out tracking activities and events. 
- * Implementations of this interface are registered with <code>Tracker</code> to filter out
- * tracking activities and tracking events. <code>isTrackingEnabled</code> is called from <code>Tracker</code> instances
- * when activities and events are created using <code>Tracker.newEvent</code> and <code>Tracker.newActvity</code> calls.
- * Any activity or event with <code>OpType.NOOP</code> is automatically filtered out.
+ * Implementations of this interface are registered with {@code Tracker} to filter out
+ * tracking activities and tracking events. {@code isTrackingEnabled} is called from {@code Tracker} instances
+ * when activities and events are created using {@code Tracker.newEvent}  and {@code Tracker.newActvity} calls.
+ * Any activity or event with {@code OpType.NOOP} is automatically filtered out.
  * </p>
  * 
  * @see Tracker
@@ -44,7 +44,7 @@ public interface TrackingFilter {
 	 * @param level
 	 *            severity level of the tracking event/activity
 	 * @param args
-	 *            a set of arguments passed to <code>Tracker.newEvent</code> and <code>Tracker.newActvity</code> calls
+	 *            a set of arguments passed to {@code Tracker.newEvent} and {@code Tracker.newActvity} calls
 	 * @return true if tracking is enabled
 	 * @see Tracker
 	 */

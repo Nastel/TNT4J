@@ -35,12 +35,12 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * </p>
  * 
  * <p>
- * Represents a collection of related <code>TrackingEvent</code> instances considered to be an application activity.
- * These are generally delimited by START/STOP (or START/STOP(EXCEPTION)) calls. <code>TrackingEvent</code> instances
- * can be created using <code>TrackingLogger</code> or <code>Tracker</code>. Source activities should be started and
- * stopped before being reported using <code>TrackingLogger.tnt()</code> or <code>Tracker.tnt()</code> calls.
- * <code>TrackingEvent</code> instances should be registered with a given activity using
- * <code>TrackingActivity.tnt()</code> call which adds and reports a given <code>TrackingEvent</code> with the activity.
+ * Represents a collection of related {@link TrackingEvent} instances considered to be an application activity.
+ * These are generally delimited by START/STOP (or START/STOP(EXCEPTION)) calls. {@link TrackingEvent} instances
+ * can be created using {@link TrackingLogger} or {@link Tracker}. Source activities should be started and
+ * stopped before being reported using {@code TrackingLogger.tnt()} or {@code Tracker.tnt()} calls.
+ * {@link TrackingEvent} instances should be registered with a given activity using
+ * {@code TrackingActivity.tnt()} call which adds and reports a given {@link TrackingEvent} with the activity.
  * </p>
  * 
  * @see Activity
@@ -67,7 +67,7 @@ public class TrackingActivity extends Activity {
 	 * @param name
 	 *            activity name
 	 * @throws NullPointerException
-	 *             if the signature is <code>null</code>
+	 *             if the signature is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if the signature is empty or is too long
 	 * @see #setTrackingId(String)
@@ -84,9 +84,9 @@ public class TrackingActivity extends Activity {
 	 * @param name
 	 *            activity name
 	 * @param trk
-	 *            <code>Tracker</code> instance associated with this activity
+	 *            {@link Tracker} instance associated with this activity
 	 * @throws NullPointerException
-	 *             if the signature is <code>null</code>
+	 *             if the signature is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if the signature is empty or is too long
 	 * @see #setTrackingId(String)
@@ -107,9 +107,9 @@ public class TrackingActivity extends Activity {
 	 * @param signature
 	 *            activity signature
 	 * @param trk
-	 *            <code>Tracker</code> instance associated with this activity
+	 *            {@link Tracker} instance associated with this activity
 	 * @throws NullPointerException
-	 *             if the signature is <code>null</code>
+	 *             if the signature is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if the signature is empty or is too long
 	 * @see #setTrackingId(String)
@@ -136,7 +136,7 @@ public class TrackingActivity extends Activity {
 	}
 	
 	/**
-	 * Track and Trace given <code>TrackingEvent</code> instance correlated with current activity
+	 * Track and Trace given {@link TrackingEvent} instance correlated with current activity
 	 * 
 	 * @param event tracking instance to be tracked
 	 */

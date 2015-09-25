@@ -45,7 +45,10 @@ interface JSONLabels {
 	static final String JSON_SOURCE_FIELD = "source";
 	static final String JSON_SOURCE_URL_FIELD = "source-url";
 	static final String JSON_SOURCE_FQN_FIELD = "source-fqn";
-	static final String JSON_SOURCE_SSN_FIELD = "source-ssn";
+	static final String JSON_SOURCE_SSN_FIELD = "source-ssn";	
+	static final String JSON_RELATE_FQN_A_FIELD = "relate-afqn";
+	static final String JSON_RELATE_FQN_B_FIELD = "relate-bfqn";
+	static final String JSON_RELATE_TYPE_FIELD = "relate-type";
 	static final String JSON_RESOURCE_FIELD = "resource";
 	static final String JSON_OPERATION_FIELD = "operation";
 	static final String JSON_LOCATION_FIELD = "location";
@@ -94,6 +97,9 @@ interface JSONLabels {
 	static final String JSON_SOURCE_LABEL = Utils.quote(JSON_SOURCE_FIELD);
 	static final String JSON_SOURCE_URL_LABEL = Utils.quote(JSON_SOURCE_URL_FIELD);
 	static final String JSON_SOURCE_FQN_LABEL = Utils.quote(JSON_SOURCE_FQN_FIELD);
+	static final String JSON_RELATE_FQN_A_LABEL = Utils.quote(JSON_RELATE_FQN_A_FIELD);
+	static final String JSON_RELATE_FQN_B_LABEL = Utils.quote(JSON_RELATE_FQN_B_FIELD);
+	static final String JSON_RELATE_TYPE_LABEL = Utils.quote(JSON_RELATE_TYPE_FIELD);	
 	static final String JSON_SOURCE_SSN_LABEL = Utils.quote(JSON_SOURCE_SSN_FIELD);
 	static final String JSON_RESOURCE_LABEL = Utils.quote(JSON_RESOURCE_FIELD);
 	static final String JSON_OPERATION_LABEL = Utils.quote(JSON_OPERATION_FIELD);
