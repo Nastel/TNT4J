@@ -612,7 +612,6 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 		relation[OBJ_ONE] = srcA;
 		relation[OBJ_TWO] = srcB;
 		relationType = type;
-		getOperation().setType(OpType.RELATION);
 	    return this;
     }
 
@@ -636,7 +635,6 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 		relation[OBJ_ONE] = null;
 		relation[OBJ_TWO] = null;
 		relationType = OpType.NOOP;
-		getOperation().setType(OpType.EVENT);
 	    return this;
     }
 }
