@@ -242,6 +242,22 @@ logger.tnt(OpLevel.INFO, OpType.RECEIVE, "ReceiveOrder", order_id,
 
 <b>TIP:</b> Developers should use `TimeServer.currentTimeMillis()` instead of `System.currentTimeMillis()` to obtain time adjusted to NTP time. TNT4J also maintains a microsecond resolution clock using `Useconds.CURRENT.get()` which returns the number of microseconds between the current time and midnight, January 1, 1970 UTC (NTP adjusted). TNT4J automatically measures and adjusts clock drift between NTP, `System.currentTimeMillis()` and `System.nanoTime()` clocks to ensure accurate microsecond precision/accuracy timing spanning VMs, devices, servers, geo locations.
 
+### Tracking Associations
+TNT4J allows developers to track associations between sources. Source is a logical definition of an entity such as application, server, network, geo location. 
+Here is an example of a source: `APP=WebAppl#SERVER=MYSERVER#DATACENTER=DC1#GEOADDR=New York`, which means application `WebAppl` deployed on server `MYSERVER`, located on datacenter `DC1`, located in `New York`. Say you want track an association between 2 applications that exchange data, where one application sends data to another:
+```java
+// post processing of activity: enrich activity with application metrics
+TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
+...
+TrackingEvent event = logger.newEvent(...);
+// create an association between 2 applications
+event.relate2(DefaultSourceFactory.getInstance().newFromFQN("APP=Orders#SERVER=HOST1#DATACENTER=DC1#GEOADDR=New York, NY"),
+	DefaultSourceFactory.getInstance().newFromFQN("APP=Billing#SERVER=HOST2#DATACENTER=DC1#GEOADDR=London, UK",
+	OpType.SEND);
+logger.tnt(event);
+```
+The snippet above creates the following asssociation: `Orders->SEND->Billing`, which expresses flow between `Orders` and `Billing` applications, where `Orders` and `Billing` are nodes and `SEND` is an edge.
+
 ### Logging Statistics
 TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors, overhead in usec and more. Do you know the overhead of your logging framework on your application?
 
