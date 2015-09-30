@@ -13,7 +13,7 @@
   <property name="docpkg"    value="com.nastel.jkool.tnt4j.*"/>
   <property name="src"       value="src"/>
   <property name="lib"       value="lib"/>
-  <property name="classes"   value="classes"/>
+  <property name="classes"   value="${project-build}/classes"/>
   <property name="doc"       value="${project-build}/doc"/>
   <property name="pkg"       value="${project-build}/tnt4j-api"/>
   <property name="jar"       value="${project-build}/tnt4j-api.jar"/>
