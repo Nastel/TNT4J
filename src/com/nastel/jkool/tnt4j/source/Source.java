@@ -37,6 +37,15 @@ public interface Source {
 	 */
 	String getFQName();
 
+
+	/**
+	 * Gets the fully qualified name used to identify this source type=source-name#parent-source
+	 * and append it to {@code StringBuilder}
+	 * 
+	 * @return returns {@code StringBuilder} instance containing appended source name
+	 */
+	StringBuilder getFQName(StringBuilder buff);
+
 	/**
 	 * Gets parent source
 	 * 

@@ -62,8 +62,18 @@ public class DefaultSource implements Source {
 
 	@Override
 	public String getFQName() {
-		return (parentSource == null) ? sourceType + "=" + sname : sourceType + "=" + sname + "#"
-		        + parentSource.getFQName();
+		StringBuilder buff = new StringBuilder(128);
+		return getFQName(buff).toString();
+	}
+
+	@Override
+    public StringBuilder getFQName(StringBuilder buff) {
+		buff.append(sourceType).append("=").append(sname);
+		if (parentSource != null) {
+			buff.append("#");
+			parentSource.getFQName(buff);
+		}
+		return buff;
 	}
 
 	/**
