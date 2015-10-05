@@ -30,11 +30,11 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
- * Simple implementation of <code>Formatter</code> interface provides simple/minimal formatting of
- * <code>TrackingActvity</code> and <code>TrackingEvent</code> as well as any object passed to <code>format()</code>
+ * Simple implementation of {@link Formatter} interface provides simple/minimal formatting of
+ * {@link TrackingActivity} and {@code TrackingEvent} as well as any object passed to {@code format()}
  * method call. Event entries are formatted as follows:
- * <code>event-text-msg {event-tracking-info}</code>
- * where <code>event-tracking-info</code> consists of <code>"name: value"</code> pairs.
+ * {@code event-text-msg {event-tracking-info}}
+ * where {@code event-tracking-info} consists of {@code "name: value"} pairs.
  * </p>
  * 
  * 
@@ -78,51 +78,55 @@ public class SimpleFormatter extends DefaultFormatter {
 	public String format(TrackingEvent event) {
 		StringBuilder msg = new StringBuilder(1024);
 		msg.append(event.getMessage()).append(" ");
-		msg.append("{time: '").append(UsecTimestamp.getTimeStamp(timeZone)).append("'").append(separator);
-		msg.append("sev: '").append(event.getSeverity()).append("'").append(separator);
-		msg.append("type: '").append(event.getOperation().getType()).append("'").append(separator);
-		msg.append("name: '").append(event.getOperation().getResolvedName()).append("'").append(separator);
-		msg.append("snap-count: '").append(event.getOperation().getSnapshotCount()).append("'").append(separator);
-		if (event.getOperation().getResource() != null) {
-			msg.append("resource: '").append(event.getOperation().getResource()).append("'").append(separator);
+		msg.append("{name: '").append(event.getOperation().getResolvedName()).append("'");
+		if (event.getOperation().getSnapshotCount() > 0) {
+			msg.append(separator);
+			msg.append("snap-count: '").append(event.getOperation().getSnapshotCount()).append("'");
 		}
-		msg.append("ccode: '").append(event.getOperation().getCompCode()).append("'").append(separator);
+		if (event.getOperation().getResource() != null) {
+			msg.append(separator);
+			msg.append("resource: '").append(event.getOperation().getResource()).append("'");
+		}
 		if (event.getOperation().getReasonCode() != 0) {
-			msg.append("rcode: '").append(event.getOperation().getReasonCode()).append("'").append(separator);
+			msg.append(separator);
+			msg.append("rcode: '").append(event.getOperation().getReasonCode()).append("'");
 		}
 		if (event.getOperation().getElapsedTimeUsec() != 0) {
-			msg.append("usec: '").append(event.getOperation().getElapsedTimeUsec()).append("'").append(separator);
+			msg.append(separator);
+			msg.append("usec: '").append(event.getOperation().getElapsedTimeUsec()).append("'");
 		}
 		if (event.getMessageAge() != 0) {
-			msg.append("age.usec: '").append(event.getMessageAge()).append("'").append(separator);
+			msg.append(separator);
+			msg.append("age.usec: '").append(event.getMessageAge()).append("'");
 		}
 		if (event.getOperation().getWaitTimeUsec() != 0) {
-			msg.append("wait.usec: '").append(event.getOperation().getWaitTimeUsec()).append("'").append(separator);
+			msg.append(separator);
+			msg.append("wait.usec: '").append(event.getOperation().getWaitTimeUsec()).append("'");
 		}
-		if (event.getTag() != null) {
-			msg.append("tag: '").append(event.getTag()).append("'").append(separator);
+		if (!event.getTag().isEmpty()) {
+			msg.append(separator);
+			msg.append("tag: '").append(event.getTag()).append("'");
 		}
-		if (event.getOperation().getCorrelator() != null) {
-			msg.append("corr-id: '").append(event.getOperation().getCorrelator()).append("'").append(separator);
+		if (!event.getOperation().getCorrelator().isEmpty()) {
+			msg.append(separator);
+			msg.append("corr-id: '").append(event.getOperation().getCorrelator()).append("'");
 		}
 		if (event.getOperation().getLocation() != null) {
-			msg.append("location: '").append(event.getOperation().getLocation()).append("'").append(separator);
-		}
-		if (event.getOperation().getThrowable() != null) {
-			msg.append("error: '").append(event.getOperation().getExceptionString()).append("'").append(separator);
+			msg.append(separator);
+			msg.append("location: '").append(event.getOperation().getLocation()).append("'");
 		}
 		if (event.getSource() != null) {
-			msg.append("source: '").append(event.getSource().getFQName()).append("'").append(separator);
+			msg.append(separator);
+			msg.append("source: '").append(event.getSource().getName()).append("'");
 		}
 		if (event.getParentId() != null) {
-			msg.append("parent-id: '").append(event.getParentId()).append("'").append(separator);
+			msg.append(separator);
+			msg.append("parent-id: '").append(event.getParentId()).append("'");
 		}
 		if (event.getTrackingId() != null) { 
-			msg.append("track-id: '").append(event.getTrackingId()).append("'").append(separator);
+			msg.append(separator);
+			msg.append("track-id: '").append(event.getTrackingId()).append("'");
 		}
-		msg.append("mime-type: '").append(event.getMimeType()).append("'").append(separator);
-		msg.append("charset: '").append(event.getCharset()).append("'").append(separator);
-		msg.append("encoding: '").append(event.getEncoding()).append("'");
 		if (event.getOperation().getSnapshotCount() > 0) {
 			msg.append(separator);
 			Collection<Snapshot> snapshots = event.getOperation().getSnapshots();
@@ -130,6 +134,10 @@ public class SimpleFormatter extends DefaultFormatter {
 				msg.append("\n\t");
 				format(msg, snap);
 			}
+		}
+		if (event.getOperation().getThrowable() != null) {
+			msg.append(separator);
+			msg.append("\nThrowable {\n").append(Utils.printThrowable(event.getOperation().getThrowable())).append("}");
 		}
 		msg.append("}");
 		return msg.toString();
@@ -142,37 +150,51 @@ public class SimpleFormatter extends DefaultFormatter {
 		msg.append("time: '").append(UsecTimestamp.getTimeStamp(timeZone)).append("'").append(separator);
 		msg.append("sev: '").append(activity.getSeverity()).append("'").append(separator);
 		msg.append("type: '").append(activity.getType()).append("'").append(separator);
-		msg.append("name: '").append(activity.getResolvedName()).append("'").append(separator);
+		msg.append("name: '").append(activity.getResolvedName()).append("'");
 		if (activity.getResource() != null) {
-			msg.append("resource: '").append(activity.getResource()).append("'").append(separator);
+			msg.append(separator);
+			msg.append("resource: '").append(activity.getResource()).append("'");
 		}
 		if (activity.getElapsedTimeUsec() != 0) {
-			msg.append("usec: '").append(activity.getElapsedTimeUsec()).append("'").append(separator);
+			msg.append(separator);
+			msg.append("usec: '").append(activity.getElapsedTimeUsec()).append("'");
 		}
 		if (activity.getWaitTimeUsec() != 0) {
-			msg.append("wait.usec: '").append(activity.getWaitTimeUsec()).append("'").append(separator);
+			msg.append(separator);
+			msg.append("wait.usec: '").append(activity.getWaitTimeUsec()).append("'");
 		}
 		if (activity.getStartTime() != null) {
-			msg.append("start.time: '").append(activity.getStartTime()).append("'").append(separator);
+			msg.append(separator);
+			msg.append("start.time: '").append(activity.getStartTime()).append("'");
 		}
 		if (activity.getEndTime() != null) {
-			msg.append("end.time: '").append(activity.getEndTime()).append("'").append(separator);
+			msg.append(separator);
+			msg.append("end.time: '").append(activity.getEndTime()).append("'");
 		}
 		if (activity.getLocation() != null) {
-			msg.append("location: '").append(activity.getLocation()).append("'").append(separator);
+			msg.append(separator);
+			msg.append("location: '").append(activity.getLocation()).append("'");
 		}
-		if (activity.getThrowable() != null) {
-			msg.append("error: '").append(activity.getExceptionString()).append("'").append(separator);
+		if (activity.getIdCount() > 0) {
+			msg.append(separator);
+			msg.append("id-count: '").append(activity.getIdCount()).append("'");
 		}
-		msg.append("pid: '").append(activity.getPID()).append("'").append(separator);
-		msg.append("tid: '").append(activity.getTID()).append("'").append(separator);
-		msg.append("id-count: '").append(activity.getIdCount()).append("'").append(separator);
-		msg.append("snap-count: '").append(activity.getSnapshotCount()).append("'").append(separator);
-		msg.append("source: '").append(activity.getSource().getFQName()).append("'").append(separator);
+		if (activity.getSnapshotCount() > 0) {
+			msg.append(separator);
+			msg.append("snap-count: '").append(activity.getSnapshotCount()).append("'");
+		}
+		if (activity.getSource() != null) {
+			msg.append(separator);
+			msg.append("source: '").append(activity.getSource().getName()).append("'");
+		}
 		if (activity.getParentId() != null) {
-			msg.append("parent-id: '").append(activity.getParentId()).append("'").append(separator);
+			msg.append(separator);
+			msg.append("parent-id: '").append(activity.getParentId()).append("'");
 		}
-		msg.append("track-id: '").append(activity.getTrackingId()).append("'");
+		if (activity.getTrackingId() != null) {
+			msg.append(separator);
+			msg.append("track-id: '").append(activity.getTrackingId()).append("'");
+		}
 		if (activity.getSnapshotCount() > 0) {
 			msg.append(separator);
 			Collection<Snapshot> snapshots = activity.getSnapshots();
@@ -180,6 +202,10 @@ public class SimpleFormatter extends DefaultFormatter {
 				msg.append("\n\t");
 				format(msg, snap);
 			}
+		}
+		if (activity.getThrowable() != null) {
+			msg.append(separator);
+			msg.append("\nThrowable {\n").append(Utils.printThrowable(activity.getThrowable())).append("}");
 		}
 		msg.append("}");
 		return msg.toString();
@@ -202,12 +228,7 @@ public class SimpleFormatter extends DefaultFormatter {
     }
 	
 	protected StringBuilder format(StringBuilder msg, Snapshot snap) {
-		msg.append("Snapshot(fqn: '").append(snap.getId()).append("'").append(separator);
-		msg.append("category: '" + snap.getCategory()).append("'").append(separator);
-		msg.append("name: '" + snap.getName()).append("'").append(separator);
-		msg.append("sev: '" + snap.getSeverity()).append("'").append(separator);
-		msg.append("type: '" + snap.getType()).append("'").append(separator);
-		msg.append("time: '" + snap.getTimeStamp()).append("'");
+		msg.append("Snapshot(fqn: '").append(snap.getId()).append("'");
 		if (snap.getSource() != null) {
 			msg.append(separator);
 			msg.append("source: '" + snap.getSource().getFQName()).append("'");
