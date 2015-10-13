@@ -79,6 +79,10 @@ public class SimpleFormatter extends DefaultFormatter {
 		StringBuilder msg = new StringBuilder(1024);
 		msg.append(event.getMessage()).append(" ");
 		msg.append("{name: '").append(event.getOperation().getResolvedName()).append("'");
+		if (event.getOperation().getPropertyCount() > 0) {
+			msg.append(separator);
+			msg.append("prop-count: '").append(event.getOperation().getPropertyCount()).append("'");
+		}
 		if (event.getOperation().getSnapshotCount() > 0) {
 			msg.append(separator);
 			msg.append("snap-count: '").append(event.getOperation().getSnapshotCount()).append("'");
@@ -127,8 +131,15 @@ public class SimpleFormatter extends DefaultFormatter {
 			msg.append(separator);
 			msg.append("track-id: '").append(event.getTrackingId()).append("'");
 		}
+		if (event.getOperation().getPropertyCount() > 0) {
+			Collection<Property> list = event.getOperation().getProperties();
+			msg.append("\n\t").append("Properties {");
+			for (Property prop : list) {
+				msg.append("\n\t\t").append(prop.getKey()).append(": '").append(prop.getValue()).append(":").append(prop.getDataType()).append(":").append(prop.getValueType()).append("'");
+			}
+			msg.append("\n\t}");	
+		}
 		if (event.getOperation().getSnapshotCount() > 0) {
-			msg.append(separator);
 			Collection<Snapshot> snapshots = event.getOperation().getSnapshots();
 			for (Snapshot snap : snapshots) {
 				msg.append("\n\t");
@@ -136,7 +147,6 @@ public class SimpleFormatter extends DefaultFormatter {
 			}
 		}
 		if (event.getOperation().getThrowable() != null) {
-			msg.append(separator);
 			msg.append("\nThrowable {\n").append(Utils.printThrowable(event.getOperation().getThrowable())).append("}");
 		}
 		msg.append("}");
@@ -229,10 +239,6 @@ public class SimpleFormatter extends DefaultFormatter {
 	
 	protected StringBuilder format(StringBuilder msg, Snapshot snap) {
 		msg.append("Snapshot(fqn: '").append(snap.getId()).append("'");
-		if (snap.getSource() != null) {
-			msg.append(separator);
-			msg.append("source: '" + snap.getSource().getFQName()).append("'");
-		}
 		String pid = snap.getParentId();
 		String tid = snap.getTrackingId();
 		Set<String> cid = snap.getCorrelator();

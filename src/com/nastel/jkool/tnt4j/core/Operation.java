@@ -624,12 +624,12 @@ public class Operation implements TTL {
 	/**
 	 * Indicates that the operation has stopped at the specified stop time.
 	 *
-	 * @param stopTime stop time, in microseconds
+	 * @param stopTimeUsec stop time, in microseconds
 	 * @throws IllegalArgumentException if stopTime is negative,
 	 *  or if the stop time is less than the previously specified start time
 	 */
-	public void stop(long stopTime) {
-		stop(stopTime, 0);
+	public void stop(long stopTimeUsec) {
+		stop(stopTimeUsec, 0);
 	}
 
 	/**
