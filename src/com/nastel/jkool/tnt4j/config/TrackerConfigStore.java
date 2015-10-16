@@ -46,7 +46,7 @@ import com.nastel.jkool.tnt4j.uuid.UUIDFactory;
 
 /**
  * <p>
- * This class consolidates all configuration for creating {@link Tracker} instances using a configuration file.
+ * This class consolidates all configuration for {@link TrackerFactory} using a configuration file.
  * Developers should use this class and override default configuration with user defined elements. Configuration is
  * loaded from a file specified by {@code tnt4j.config} property which set to {@code tnt4j.properties} by
  * default. Configuration specifies factories, formatters, token repositories and other elements required by the
