@@ -46,9 +46,9 @@ import com.nastel.jkool.tnt4j.uuid.UUIDFactory;
 
 /**
  * <p>
- * This class consolidates all configuration for creating <code>Tracker</code> instances using a configuration file.
+ * This class consolidates all configuration for creating {@link Tracker} instances using a configuration file.
  * Developers should use this class and override default configuration with user defined elements. Configuration is
- * loaded from a file specified by <code>tnt4j.config</code> property which set to <code>tnt4j.properties</code> by
+ * loaded from a file specified by {@code tnt4j.config} property which set to {@code tnt4j.properties} by
  * default. Configuration specifies factories, formatters, token repositories and other elements required by the
  * framework using JSON like convention.
  * </p>
@@ -97,7 +97,7 @@ import com.nastel.jkool.tnt4j.uuid.UUIDFactory;
  * </code>
  * </pre>
  *
- * Below is an example of how to use <code>TrackerConfigStore</code> when registering with the framework.
+ * Below is an example of how to use {@link TrackerConfigStore} when registering with the framework.
  *
  * <pre>
  * {@code
@@ -131,7 +131,7 @@ public class TrackerConfigStore extends TrackerConfig {
 
 	/**
 	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
-	 * <code>tnt4j.config</code> property.
+	 * {@code tnt4j.config} property.
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
@@ -142,7 +142,7 @@ public class TrackerConfigStore extends TrackerConfig {
 
 	/**
 	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
-	 * <code>tnt4j.config</code> property.
+	 * {@code tnt4j.config} property.
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
@@ -155,7 +155,7 @@ public class TrackerConfigStore extends TrackerConfig {
 
 	/**
 	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
-	 * <code>tnt4j.config</code> property if fileName is null.
+	 * {@code tnt4j.config} property if fileName is null.
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
@@ -171,7 +171,7 @@ public class TrackerConfigStore extends TrackerConfig {
 
 	/**
 	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
-	 * <code>tnt4j.config</code> property.
+	 * {@code tnt4j.config} property.
 	 *
 	 * @param source
 	 *            source instance associated with the configuration
