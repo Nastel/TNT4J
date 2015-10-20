@@ -436,12 +436,13 @@ To build TNT4J:
 Known Projects Using TNT4J
 ===============================================
 * jKool Event Streaming Library - JESL (https://github.com/Nastel/JESL)
-* TNT4J/Samples - (https://github.com/Nastel/tnt4j-examples)
 * TNT4J/Servlet-Filter - (https://github.com/Nastel/tnt4j-servlet-filter)
 * TNT4J/Stream-GC (https://github.com/Nastel/tnt4j-stream-gc)
 * TNT4J/Stream-JMX (https://github.com/Nastel/tnt4j-stream-jmx)
+* TNT4J/Syslogd - (https://github.com/Nastel/tnt4j-syslogd)
 * TNT4J/Log4J12 - (https://github.com/Nastel/tnt4j-log4j12)
 * TNT4J/Logback - (https://github.com/Nastel/tnt4j-logback)
-* TNT4J/Spark - tracking for Apache Spark (https://github.com/Nastel/tnt4j-spark)
+* TNT4J/Spark - (https://github.com/Nastel/tnt4j-spark)
+* TNT4J/Examples - (https://github.com/Nastel/tnt4j-examples)
 * Log & Metric Analytics Service - jkoolcloud.com (https://www.jkoolcloud.com)
 * Application Performance Monitoring - AutoPilot M6 (http://www.nastel.com/products/autopilot-m6.html)
