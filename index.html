@@ -280,6 +280,24 @@ logger<span class="pl-k">.</span>tnt(<span class="pl-smi">OpLevel</span><span cl
 <p><b>TIP:</b> Developers should use <code>TimeServer.currentTimeMillis()</code> instead of <code>System.currentTimeMillis()</code> to obtain time adjusted to NTP time. TNT4J also maintains a microsecond resolution clock using <code>Useconds.CURRENT.get()</code> which returns the number of microseconds between the current time and midnight, January 1, 1970 UTC (NTP adjusted). TNT4J automatically measures and adjusts clock drift between NTP, <code>System.currentTimeMillis()</code> and <code>System.nanoTime()</code> clocks to ensure accurate microsecond precision/accuracy timing spanning VMs, devices, servers, geo locations.</p>
 
 <h3>
+<a id="tracking-associations" class="anchor" href="#tracking-associations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tracking Associations</h3>
+
+<p>TNT4J allows developers to track associations between sources. Source is a logical definition of an entity such as application, server, network, geo location. 
+Here is an example of a source: <code>APP=WebAppl#SERVER=MYSERVER#DATACENTER=DC1#GEOADDR=New York</code>, which means application <code>WebAppl</code> deployed on server <code>MYSERVER</code>, located on datacenter <code>DC1</code>, located in <code>New York</code>. Say you want track an association between 2 applications that exchange data, where one application sends data to another:</p>
+
+<div class="highlight highlight-source-java"><pre><span class="pl-c">// post processing of activity: enrich activity with application metrics</span>
+<span class="pl-smi">TrackingLogger</span> logger <span class="pl-k">=</span> <span class="pl-smi">TrackingLogger</span><span class="pl-k">.</span>getInstance(<span class="pl-v">this</span><span class="pl-k">.</span>getClass());
+<span class="pl-c1">...</span>
+<span class="pl-smi">TrackingEvent</span> event <span class="pl-k">=</span> logger<span class="pl-k">.</span>newEvent(<span class="pl-c1">...</span>);
+<span class="pl-c">// create an association between 2 applications</span>
+event<span class="pl-k">.</span>relate2(<span class="pl-smi">DefaultSourceFactory</span><span class="pl-k">.</span>getInstance()<span class="pl-k">.</span>newFromFQN(<span class="pl-s"><span class="pl-pds">"</span>APP=Orders#SERVER=HOST1#DATACENTER=DC1#GEOADDR=New York, NY<span class="pl-pds">"</span></span>),
+    <span class="pl-smi">DefaultSourceFactory</span><span class="pl-k">.</span>getInstance()<span class="pl-k">.</span>newFromFQN(<span class="pl-s"><span class="pl-pds">"</span>APP=Billing#SERVER=HOST2#DATACENTER=DC1#GEOADDR=London, UK<span class="pl-pds">"</span></span>,
+    <span class="pl-smi">OpType</span><span class="pl-c1"><span class="pl-k">.</span>SEND</span>);
+logger<span class="pl-k">.</span>tnt(event);</pre></div>
+
+<p>The snippet above creates the following asssociation: <code>Orders-&gt;SEND-&gt;Billing</code>, which expresses flow between <code>Orders</code> and <code>Billing</code> applications, where <code>Orders</code> and <code>Billing</code> are nodes and <code>SEND</code> is an edge.</p>
+
+<h3>
 <a id="logging-statistics" class="anchor" href="#logging-statistics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Logging Statistics</h3>
 
 <p>TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors, overhead in usec and more. Do you know the overhead of your logging framework on your application?</p>
@@ -493,12 +511,14 @@ Wiki is available at <a href="https://github.com/Nastel/TNT4J/wiki">https://gith
 
 <ul>
 <li>jKool Event Streaming Library - JESL (<a href="https://github.com/Nastel/JESL">https://github.com/Nastel/JESL</a>)</li>
-<li>TNT4J/Samples - (<a href="https://github.com/Nastel/tnt4j-examples">https://github.com/Nastel/tnt4j-examples</a>)</li>
-<li>TNT4J/ServletFilter End-User Tracking - (<a href="https://github.com/Nastel/tnt4j-servlet-filter">https://github.com/Nastel/tnt4j-servlet-filter</a>)</li>
-<li>TNT4J/JMX - Stream-JMX (<a href="https://github.com/Nastel/tnt4j-stream-jmx">https://github.com/Nastel/tnt4j-stream-jmx</a>)</li>
-<li>TNT4J/Log4J 1.2 Appender - (<a href="https://github.com/Nastel/tnt4j-log4j12">https://github.com/Nastel/tnt4j-log4j12</a>)</li>
-<li>TNT4J/Logback Appender - (<a href="https://github.com/Nastel/tnt4j-logback">https://github.com/Nastel/tnt4j-logback</a>)</li>
-<li>TNT4J/Spark - tracking for Apache Spark (<a href="https://github.com/Nastel/tnt4j-spark">https://github.com/Nastel/tnt4j-spark</a>)</li>
+<li>TNT4J/Servlet-Filter - (<a href="https://github.com/Nastel/tnt4j-servlet-filter">https://github.com/Nastel/tnt4j-servlet-filter</a>)</li>
+<li>TNT4J/Stream-GC (<a href="https://github.com/Nastel/tnt4j-stream-gc">https://github.com/Nastel/tnt4j-stream-gc</a>)</li>
+<li>TNT4J/Stream-JMX (<a href="https://github.com/Nastel/tnt4j-stream-jmx">https://github.com/Nastel/tnt4j-stream-jmx</a>)</li>
+<li>TNT4J/Syslogd - (<a href="https://github.com/Nastel/tnt4j-syslogd">https://github.com/Nastel/tnt4j-syslogd</a>)</li>
+<li>TNT4J/Log4J12 - (<a href="https://github.com/Nastel/tnt4j-log4j12">https://github.com/Nastel/tnt4j-log4j12</a>)</li>
+<li>TNT4J/Logback - (<a href="https://github.com/Nastel/tnt4j-logback">https://github.com/Nastel/tnt4j-logback</a>)</li>
+<li>TNT4J/Spark - (<a href="https://github.com/Nastel/tnt4j-spark">https://github.com/Nastel/tnt4j-spark</a>)</li>
+<li>TNT4J/Examples - (<a href="https://github.com/Nastel/tnt4j-examples">https://github.com/Nastel/tnt4j-examples</a>)</li>
 <li>Log &amp; Metric Analytics Service - jkoolcloud.com (<a href="https://www.jkoolcloud.com">https://www.jkoolcloud.com</a>)</li>
 <li>Application Performance Monitoring - AutoPilot M6 (<a href="http://www.nastel.com/products/autopilot-m6.html">http://www.nastel.com/products/autopilot-m6.html</a>)</li>
 </ul>
