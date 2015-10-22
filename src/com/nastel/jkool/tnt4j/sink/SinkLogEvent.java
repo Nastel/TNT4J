@@ -48,6 +48,21 @@ public class SinkLogEvent extends EventObject implements TTL {
 	private OpLevel level = OpLevel.NONE;
 	private Object[] argList = null;
 	private long ttl;
+	private long startTimeNanos =  System.nanoTime();
+	private long stopTimeNanos = 0;
+
+	/**
+	 * Create a new log event instance designed as a signal
+	 * 
+	 * @param sink
+	 *            sink associated with the event
+	 * @param th
+	 *            thread associated with this event
+	 */
+	public SinkLogEvent(EventSink sink, Thread th) {
+		super(sink);
+		logObj = th;
+	}
 
 	/**
 	 * Create a new log event instance
@@ -129,6 +144,16 @@ public class SinkLogEvent extends EventObject implements TTL {
 	}
 
 	/**
+	 * Return Thread associated with event producer, null if not available
+	 * 
+	 * @return Thread associated with event producer, null if not available
+	 */
+	public Thread getSignal() {
+		return logObj instanceof Thread? (Thread)logObj: null;
+	}
+
+
+	/**
 	 * Return associated event sink with this event
 	 * 
 	 * @return event sink handle associated with this event
@@ -191,6 +216,26 @@ public class SinkLogEvent extends EventObject implements TTL {
 		return snapshot;
 	}
 
+	/**
+	 * This method is called when event processing is complete and
+	 * service time is calculated.
+	 * 
+	 * @return service time in nanoseconds
+	 */
+	public long complete() {
+		stopTimeNanos = System.nanoTime();
+		return stopTimeNanos - startTimeNanos;
+	}
+	
+	/**
+	 * Compute event service time
+	 * 
+	 * @return service time in nanoseconds
+	 */
+	public long getServiceTimeNanos() {
+		return stopTimeNanos > 0? stopTimeNanos - startTimeNanos: System.nanoTime() - startTimeNanos;
+	}
+	
 	@Override
 	public String toString() {
 		return super.toString() 

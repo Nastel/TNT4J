@@ -17,7 +17,9 @@ package com.nastel.jkool.tnt4j.sink;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.LockSupport;
 
 import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
@@ -379,4 +381,10 @@ public class BufferedEventSink implements EventSink {
     public Throwable setErrorState(Throwable e) {
 	    return outSink.setErrorState(e);
     }
+
+	@Override
+    public void flush() throws IOException {	
+		_writeEvent(new SinkLogEvent(outSink, Thread.currentThread()), true);
+		LockSupport.parkNanos(this, TimeUnit.SECONDS.toNanos(5));	
+	}
 }

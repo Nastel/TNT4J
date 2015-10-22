@@ -115,10 +115,23 @@ public class Utils {
 	 *
 	 * @param obj object to use
 	 * @param key key to qualify
-	 * @return return GUID string representation
+	 * @return string representation
 	 */
 	public static String qualify(Object obj, String key) {
 		String newKey = obj.getClass().getSimpleName() + "/" + key;
+		return newKey;
+	}
+
+	/**
+	 * Qualify given key with a given object class
+	 *
+	 * @param obj object to use
+	 * @param pfix key prefix
+	 * @param key key to qualify
+	 * @return string representation
+	 */
+	public static String qualify(Object obj, String pfix, String key) {
+		String newKey = obj.getClass().getSimpleName() + "/" + pfix + "/" + key;
 		return newKey;
 	}
 

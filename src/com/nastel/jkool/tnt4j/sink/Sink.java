@@ -48,4 +48,10 @@ public interface Sink extends Handle {
 	 * @throws InterruptedException if interrupted during write operation
 	 */
 	void write(Object msg, Object...args) throws IOException, InterruptedException;
+	
+	/**
+	 * Flush all buffered write requests (if any) out to sink
+	 *
+	 */
+	void flush() throws IOException;
 }

@@ -517,6 +517,10 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		return limiter;
 	}
 	
+	@Override
+	public void flush() throws IOException {
+	}
+
 	/**
 	 * Check state of the sink before logging occurs.
 	 *

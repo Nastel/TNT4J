@@ -132,6 +132,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 					eventSink.removeSinkEventFilter(tConfig.getSinkEventFilter());
 				}
 				eventSink.removeSinkErrorListener(this);
+				eventSink.flush();
 				eventSink.close();
 			}
 		} catch (Throwable e) {
@@ -145,6 +146,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	private synchronized void resetEventSink() {
 		try {
 			if (eventSink != null) {
+				eventSink.flush();
 				eventSink.close();
 			}
 		} catch (Throwable e) {

@@ -134,4 +134,11 @@ public class FileSink implements Sink {
 	public String toString() {
 		return super.toString() + "{file: " + file + ", append: " + append + ", is.open: " + isOpen() + "}";
 	}
+
+	@Override
+    public void flush() {
+		if (isOpen()) {
+			printer.flush();
+		}
+	}
 }

@@ -115,4 +115,11 @@ public class FileEventSink extends AbstractEventSink {
 		printer.println(getEventFormatter().format(ttl, src, sev, msg, args));		
 		printer.flush();
 	}	
+	
+	@Override
+	public void flush() {
+		if (isOpen()) {
+			fileSink.flush();
+		}
+	}
 }

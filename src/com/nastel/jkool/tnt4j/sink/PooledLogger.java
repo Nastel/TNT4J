@@ -25,6 +25,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.locks.LockSupport;
 
 import com.nastel.jkool.tnt4j.core.KeyValueStats;
 import com.nastel.jkool.tnt4j.core.OpLevel;
@@ -64,9 +65,12 @@ public class PooledLogger implements KeyValueStats {
 	static final String KEY_OBJECTS_SKIPPED = "pooled-objects-skipped";
 	static final String KEY_OBJECTS_LOGGED = "pooled-objects-logged";
 	static final String KEY_EXCEPTION_COUNT = "pooled-exceptions";
+	static final String KEY_SIGNAL_COUNT = "pooled-signals";
 	static final String KEY_RECOVERY_COUNT = "pooled-recovery-count";
 	static final String KEY_TOTAL_TIME_USEC = "pooled-total-time-usec";
+	static final String KEY_TOTAL_SERVICE_TIME_USEC = "pooled-total-service-time-usec";
 
+	String poolName;
 	int poolSize, capacity;
 	ExecutorService threadPool;
 	ArrayBlockingQueue<SinkLogEvent> eventQ;
@@ -75,10 +79,12 @@ public class PooledLogger implements KeyValueStats {
 
 	AtomicLong dropCount = new AtomicLong(0);
 	AtomicLong skipCount = new AtomicLong(0);
+	AtomicLong signalCount = new AtomicLong(0);
 	AtomicLong loggedCount = new AtomicLong(0);
 	AtomicLong exceptionCount = new AtomicLong(0);
 	AtomicLong recoveryCount = new AtomicLong(0);
 	AtomicLong totalNanos = new AtomicLong(0);
+	AtomicLong totalServiceNanos = new AtomicLong(0);
 
     /**
      * Create a pooled logger instance.
@@ -87,10 +93,20 @@ public class PooledLogger implements KeyValueStats {
      * @param maxCapacity maximum queue capacity to hold incoming events, exceeding capacity will drop incoming events.
      */
 	public PooledLogger(String name, int threadPoolSize, int maxCapacity) {
+		poolName = name;
 		poolSize = threadPoolSize;
 		capacity = maxCapacity;
 		threadPool = Executors.newFixedThreadPool(poolSize, new LoggingThreadFactory("PooledLogger(" + name + "," + poolSize + "," + capacity + ")/task-"));
 		eventQ = new ArrayBlockingQueue<SinkLogEvent>(capacity);
+	}
+	
+    /**
+     * Obtain pool name
+     * 
+     * @return pool name
+     */
+	public String getName() {
+		return poolName;
 	}
 	
 	@Override
@@ -102,15 +118,17 @@ public class PooledLogger implements KeyValueStats {
 
 	@Override
     public KeyValueStats getStats(Map<String, Object> stats) {
-	    stats.put(Utils.qualify(this, KEY_Q_SIZE), eventQ.size());
-	    stats.put(Utils.qualify(this, KEY_Q_CAPACITY), capacity);
-	    stats.put(Utils.qualify(this, KEY_Q_TASKS), poolSize);
-	    stats.put(Utils.qualify(this, KEY_OBJECTS_DROPPED), dropCount.get());
-	    stats.put(Utils.qualify(this, KEY_OBJECTS_SKIPPED), skipCount.get());
-	    stats.put(Utils.qualify(this, KEY_OBJECTS_LOGGED), loggedCount.get());
-	    stats.put(Utils.qualify(this, KEY_EXCEPTION_COUNT), exceptionCount.get());
-	    stats.put(Utils.qualify(this, KEY_RECOVERY_COUNT), recoveryCount.get());
-	    stats.put(Utils.qualify(this, KEY_TOTAL_TIME_USEC), totalNanos.get()/1000);
+	    stats.put(Utils.qualify(this, poolName, KEY_Q_SIZE), eventQ.size());
+	    stats.put(Utils.qualify(this, poolName, KEY_Q_CAPACITY), capacity);
+	    stats.put(Utils.qualify(this, poolName, KEY_Q_TASKS), poolSize);
+	    stats.put(Utils.qualify(this, poolName, KEY_OBJECTS_DROPPED), dropCount.get());
+	    stats.put(Utils.qualify(this, poolName, KEY_OBJECTS_SKIPPED), skipCount.get());
+	    stats.put(Utils.qualify(this, poolName, KEY_OBJECTS_LOGGED), loggedCount.get());
+	    stats.put(Utils.qualify(this, poolName, KEY_EXCEPTION_COUNT), exceptionCount.get());
+	    stats.put(Utils.qualify(this, poolName, KEY_RECOVERY_COUNT), recoveryCount.get());
+	    stats.put(Utils.qualify(this, poolName, KEY_SIGNAL_COUNT), signalCount.get());
+	    stats.put(Utils.qualify(this, poolName, KEY_TOTAL_TIME_USEC), totalNanos.get()/1000);
+	    stats.put(Utils.qualify(this, poolName, KEY_TOTAL_SERVICE_TIME_USEC), totalServiceNanos.get()/1000);
 	    return this;
     }
 
@@ -118,6 +136,7 @@ public class PooledLogger implements KeyValueStats {
     public void resetStats() {
 		dropCount.set(0);
 		skipCount.set(0);
+		signalCount.set(0);
 		loggedCount.set(0);
 		totalNanos.set(0);
 		recoveryCount.set(0);
@@ -132,6 +151,15 @@ public class PooledLogger implements KeyValueStats {
 	 */
 	public long getRecoveryCount() {
 		return recoveryCount.get();
+	}
+
+	/**
+	 * Obtain total number of signal messages processed
+	 *
+	 * @return total number of signal messages processed
+	 */
+	public long getSignalCount() {
+		return signalCount.get();
 	}
 
 	/**
@@ -338,8 +366,12 @@ class LoggingTask implements Runnable {
 		pooledLogger.loggedCount.incrementAndGet();		
 	}
 	
-	protected void logEvent(SinkLogEvent event) throws IOException {
-		if (isLoggable(event.getEventSink())) {
+	protected void processEvent(SinkLogEvent event) throws IOException {
+		if (event.getSignal() != null) {
+			pooledLogger.signalCount.incrementAndGet();
+			Thread signal = event.getSignal();
+			LockSupport.unpark(signal);
+		} else if (isLoggable(event.getEventSink())) {
 			sendEvent(event);
 		} else {
 			pooledLogger.skipCount.incrementAndGet();
@@ -370,10 +402,11 @@ class LoggingTask implements Runnable {
 				SinkLogEvent event = eventQ.take();
 				long start = System.nanoTime();
 				try {
-					logEvent(event);
+					processEvent(event);
 				} catch (Throwable err) {
 					handleError(event, err);
 				} finally {
+					pooledLogger.totalServiceNanos.addAndGet(event.complete());
 					long elaspedNanos = System.nanoTime() - start;
 					pooledLogger.totalNanos.addAndGet(elaspedNanos);					
 				}

@@ -125,6 +125,13 @@ public class SocketEventSink extends AbstractEventSink {
 	}
 	
 	@Override
+	public void flush() throws IOException {
+		if (isOpen()) {
+			outStream.flush();
+		}
+	}
+
+	@Override
 	public synchronized void close() throws IOException {
 		try {
 			if (isOpen()) {
