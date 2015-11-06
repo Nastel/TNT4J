@@ -396,14 +396,17 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			        Utils.quote(snap.getParentId())).append(ATTR_JSON);
 		}
 		if (!Utils.isEmpty(snap.getId())) {
-			jsonString.append(JSON_FQN_LABEL).append(ATTR_SEP)
-			        .append(Utils.quote(snap.getId())).append(ATTR_JSON);
+			String escaped = StringEscapeUtils.escapeJson(snap.getId()); // escape double quote chars
+			jsonString.append(JSON_FQN_LABEL).append(ATTR_SEP).append(Utils.quote(escaped)).append(ATTR_JSON);
 		}
 		if (!Utils.isEmpty(snap.getCategory())) {
 			jsonString.append(JSON_CATEGORY_LABEL).append(ATTR_SEP)
 			        .append(Utils.quote(snap.getCategory())).append(ATTR_JSON);
 		}
-		jsonString.append(JSON_NAME_LABEL).append(ATTR_SEP).append(Utils.quote(snap.getName())).append(ATTR_JSON);
+		if (!Utils.isEmpty(snap.getName())) {
+			String escaped = StringEscapeUtils.escapeJson(snap.getName()); // escape double quote chars
+			jsonString.append(JSON_NAME_LABEL).append(ATTR_SEP).append(Utils.quote(escaped)).append(ATTR_JSON);
+		}
 		jsonString.append(JSON_COUNT_LABEL).append(ATTR_SEP).append(snap.size()).append(ATTR_JSON);
 		jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(snap.getTimeStamp().getTimeUsec()).append(ATTR_JSON);
 		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(snap.getTTL()).append(ATTR_JSON);

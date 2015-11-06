@@ -267,36 +267,43 @@ public class TrackerConfigStore extends TrackerConfig {
 		BufferedReader reader = null;
 		try {
 			reader = getConfigReader(fileName);
-			Properties props = null;
+			Properties config = null;
 			do {
-				props = readStanza(reader);
-				String key = props.getProperty(SOURCE_KEY);
-				String like = props.getProperty(LIKE_KEY);
-				String enabled = props.getProperty(ENABLED_KEY);
+				config = readStanza(reader);
+				String key = config.getProperty(SOURCE_KEY);
+				String like = config.getProperty(LIKE_KEY);
+				String enabled = config.getProperty(ENABLED_KEY);
 				if (enabled != null && enabled.equalsIgnoreCase("true")) {
 					logger.log(OpLevel.WARNING,
 							"Disabling properties for source={0}, like={1}, enabled={2}", key, like, enabled);
 					continue;
 				}
 				if (like != null) {
-					props = map.get(like);
-					if (props == null) {
-						props = map.get(DEFAULT_SOURCE);
-						logger.log(OpLevel.WARNING,
-								"Properties for source={0}, like={1} not found, assigning default set={2}",
-								key, like, DEFAULT_SOURCE);
-					}
+					config = mergeConfig(key, like, config, map);
 				}
 				if (key != null) {
-					map.put(key, props);
+					map.put(key, config);
 				}
-			} while (props.size() > 0);
+			} while (config.size() > 0);
 		} finally {
 			Utils.close(reader);
 		}
 		return map;
 	}
 
+	private Properties mergeConfig(String key, String like, Properties config, Map<String, Properties> map) {
+		Properties copyFrom = map.get(like);
+		if (copyFrom == null) {
+			copyFrom = map.get(DEFAULT_SOURCE);
+			logger.log(OpLevel.WARNING, "Properties for source={0}, like={1} not found, assigning default set={2}",
+					key, like, DEFAULT_SOURCE);
+		}
+		// merge properties from "like" model with original
+		Properties merged = new Properties();
+		merged.putAll(copyFrom);
+		merged.putAll(config);
+		return merged;	
+	}
 
 	private BufferedReader getConfigReader(String fileName) throws IOException {
 		BufferedReader reader = null;
