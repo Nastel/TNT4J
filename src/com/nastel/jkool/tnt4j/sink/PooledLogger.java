@@ -370,6 +370,9 @@ class LoggingTask implements Runnable {
 		if (event.getSignal() != null) {
 			pooledLogger.signalCount.incrementAndGet();
 			Thread signal = event.getSignal();
+			if (event.getSignalType() == SinkLogEvent.SIGNAL_CLOSE) {
+				event.getEventSink().close();
+			}
 			LockSupport.unpark(signal);
 		} else if (isLoggable(event.getEventSink())) {
 			sendEvent(event);

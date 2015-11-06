@@ -41,12 +41,16 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 public class SinkLogEvent extends EventObject implements TTL {
 	private static final long serialVersionUID = 1L;
 
+	public static final int SIGNAL_PROCESS = 0;
+	public static final int SIGNAL_CLOSE = 1;
+	
 	private Object logObj = null;
 	private Snapshot snapshot = null;
 	private Throwable error = null;
 	private Source evSrc = null;
 	private OpLevel level = OpLevel.NONE;
 	private Object[] argList = null;
+	private int signalType = SIGNAL_PROCESS;
 	private long ttl;
 	private long startTimeNanos =  System.nanoTime();
 	private long stopTimeNanos = 0;
@@ -58,8 +62,10 @@ public class SinkLogEvent extends EventObject implements TTL {
 	 *            sink associated with the event
 	 * @param th
 	 *            thread associated with this event
+	 * @param signalType
+	 *            signal type
 	 */
-	public SinkLogEvent(EventSink sink, Thread th) {
+	public SinkLogEvent(EventSink sink, Thread th, int signalType) {
 		super(sink);
 		logObj = th;
 	}
@@ -150,6 +156,16 @@ public class SinkLogEvent extends EventObject implements TTL {
 	 */
 	public Thread getSignal() {
 		return logObj instanceof Thread? (Thread)logObj: null;
+	}
+
+
+	/**
+	 * Return signal type associated with this event
+	 * 
+	 * @return signal type associated with this event
+	 */
+	public int getSignalType() {
+		return signalType;
 	}
 
 

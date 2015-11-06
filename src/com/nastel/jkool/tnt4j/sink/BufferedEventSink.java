@@ -244,7 +244,7 @@ public class BufferedEventSink implements EventSink {
 
 	@Override
     public void close() throws IOException {
-		outSink.close();
+		flush(SinkLogEvent.SIGNAL_CLOSE);
     }
 
 	@Override
@@ -384,7 +384,11 @@ public class BufferedEventSink implements EventSink {
 
 	@Override
     public void flush() throws IOException {	
-		_writeEvent(new SinkLogEvent(outSink, Thread.currentThread()), true);
+		flush(SinkLogEvent.SIGNAL_PROCESS);
+	}
+	
+    protected void flush(int signalType) throws IOException {	
+		_writeEvent(new SinkLogEvent(outSink, Thread.currentThread(), signalType), true);
 		LockSupport.parkNanos(this, TimeUnit.SECONDS.toNanos(5));	
 	}
 }

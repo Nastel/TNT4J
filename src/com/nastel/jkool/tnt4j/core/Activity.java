@@ -166,26 +166,14 @@ public class Activity extends Operation implements Trackable {
 	}
 
 	@Override
-	public void start() {
-		super.start();
+	protected void onStart(long start) {	
+		super.onStart(start);
 		notifyStarted();
 	}
 
 	@Override
-	public void start(long startTimeUsec) {
-		super.start(startTimeUsec);
-		notifyStarted();
-	}
-
-	@Override
-	public void start(UsecTimestamp startTime) {
-		super.start(startTime);
-		notifyStarted();
-	}
-
-	@Override
-	public void stop(long stopTimeUsec, long elaspedUsec) {
-		super.stop(stopTimeUsec, elaspedUsec);
+	protected void onStop(long start) {	
+		super.onStop(start);
 		notifyStopped();
 	}
 

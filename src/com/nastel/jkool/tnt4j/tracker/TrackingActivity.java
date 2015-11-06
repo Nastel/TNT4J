@@ -467,12 +467,14 @@ public class TrackingActivity extends Activity {
 			tracker.tnt(this);
 		}
 		long delta = (System.nanoTime() - start);
+		super.onStart(start);
 		tracker.countOverheadNanos(delta);
 	}
 
 	@Override
 	protected void onStop(long start) {
 		tracker.pop(this);
+		super.onStop(start);
 		long delta = (System.nanoTime() - start);
 		tracker.countOverheadNanos(delta);
 	}
