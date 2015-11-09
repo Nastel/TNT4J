@@ -52,6 +52,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	private static final boolean NEWLINE_FORMAT = Boolean.getBoolean("tnt4j.formatter.json.newline");
+	private static final String DEF_OP_NAME = "log";
 
 	protected static final String START = "{";
 	protected static final String START_LINE = "{\n";
@@ -66,6 +67,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 
 	private Map<String, Object> config = null;
 	private boolean newLineFormat = true;
+	private String defOpName = DEF_OP_NAME;
 	private String START_JSON = START_LINE;
 	private String END_JSON = END_LINE;
 	private String ATTR_JSON = ATTR_END_LINE;
@@ -480,6 +482,8 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		jsonString.append(JSON_USER_LABEL).append(ATTR_SEP).append(Utils.quote(usrName)).append(ATTR_JSON);
 		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(ttl).append(ATTR_JSON);
 		jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
+		jsonString.append(JSON_OPERATION_LABEL).append(ATTR_SEP).append(Utils.quote(defOpName)).append(ATTR_JSON);
+
 		if (source != null) {
 			jsonString.append(JSON_SOURCE_LABEL).append(ATTR_SEP).append(Utils.quote(source.getName())).append(ATTR_JSON);
 			String ssn = source.getSourceFactory().getSSN();
@@ -548,6 +552,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		config = settings;
 		newLineFormat = config.get("Newline") != null ? Boolean.valueOf(config.get("Newline").toString())
 		        : newLineFormat;
+		defOpName = config.get("OpName") != null? config.get("OpName").toString(): defOpName;
 		initTags();
 	}
 }
