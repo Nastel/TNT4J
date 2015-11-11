@@ -436,6 +436,19 @@ public class Utils {
 	}
 
 	/**
+	 * Returns true if two specified objects are equal
+	 *
+	 * @param obj1
+	 *            first object
+	 * @param obj2
+	 *            second object
+	 * @return true if two specified objects are equal
+	 */
+	public static boolean equal(final Object obj1, final Object obj2) {
+		return obj1 == obj2 || (obj1 != null && obj1.equals(obj2));
+	}
+
+	/**
 	 * Returns true if the string is null or empty
 	 *
 	 * @param str
