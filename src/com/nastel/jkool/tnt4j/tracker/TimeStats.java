@@ -23,52 +23,26 @@ import java.util.concurrent.atomic.AtomicLong;
  *
  * @version $Revision: 1$
  */
-public class TimeStats<T> {
-	T userObject;
+public class TimeStats {
 	AtomicLong nanoStamp = new AtomicLong(0);
 	AtomicLong hitCount = new AtomicLong(0);
 	
 	/**
-	 * Create a time hit object with specified timer starting now and
-	 * null user defined object.
+	 * Create a time hit object with specified timer starting now.
 	 * 
 	 */
 	public TimeStats() {
-		this(System.nanoTime(), null);
+		this(System.nanoTime());
 	}
 	
 	/**
-	 * Create a time hit object with timer starting now and
-	 * specified user defined object.
-	 * 
-	 * @param obj user defined object
-	 */
-	public TimeStats(T obj) {
-		this(System.nanoTime(), obj);
-	}
-	
-	/**
-	 * Create a time hit object with specified timer and
-	 * null user defined object.
+	 * Create a time hit object with specified timer.
 	 * 
 	 * @param nanotime
 	 *            timer in nanoseconds
 	 */
 	public TimeStats(long nanotime) {
-		this(nanotime, null);
-	}
-
-	/**
-	 * Create a time hit object with specified timer and
-	 * user defined object.
-	 * 
-	 * @param nanotime
-	 *            timer in nanoseconds
-	 * @param obj user defined object
-	 */
-	public TimeStats(long nanotime, T obj) {
 		nanoStamp.set(nanotime);
-		userObject = obj;
 	}
 
 	/**
@@ -134,14 +108,5 @@ public class TimeStats<T> {
 	 */
 	public long getHitCount() {
 		return hitCount.get();
-	}
-	
-	/**
-	 * Obtain current user object associated with this entry
-	 * 
-	 * @return current user object associated with this entry, null if none.
-	 */
-	public T getUserObject() {
-		return userObject;
 	}
 }

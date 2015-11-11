@@ -58,7 +58,7 @@ public class DumpEvent extends EventObject {
 	private int type;
 	private DumpCollection dumpCollection;
 	private List<DumpSink> dumpDest;
-	private Throwable error = null;
+	private Throwable exception = null;
 
 	/**
 	 * Create a dump event with specific parameters
@@ -100,7 +100,7 @@ public class DumpEvent extends EventObject {
 		type = tp;
 		dumpCollection = dump;
 		dumpDest = list;
-		error = ex;
+		exception = ex;
 	}
 
 	/**
@@ -150,7 +150,7 @@ public class DumpEvent extends EventObject {
 	 * 
 	 */
 	public Throwable getCause() {
-		return error;
+		return exception;
 	}
 
 	@Override
@@ -159,7 +159,7 @@ public class DumpEvent extends EventObject {
 			+ "{Type:" + getTypeString() 
 			+ ", Dump: " + dumpCollection 
 			+ ", SinkList: " + dumpDest
-		    + ", Error: " + (error != null) 
+		    + ", Exception: " + (exception != null) 
 		    + "}";
 	}
 
