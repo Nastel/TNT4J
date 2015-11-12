@@ -24,17 +24,25 @@ import com.google.common.cache.CacheBuilder;
 
 /**
  * This class implements time tracker for a set of keys.
- * The class maintains a cache of timestamp hits and measures time
- * since the last hit on a set of keys.
+ * The class maintains a cache of time stamp hits and measures time
+ * since the last hit on a set of keys or by thread.
  *
  * @version $Revision: 1$
  */
 public class TimeTracker {
 
 	/*
-	 * Timing map maintains the number of nanoseconds since last event for a specific server/application combo.
+	 * Timing thread local maintains timing since last hit for specific thread
 	 */
+	private static final ThreadLocal<TimeStats> THREAD_TIMER = new ThreadLocal<TimeStats>();
+
+	/*
+	 * Timing map maintains timing since last hit for a specific key
+	 */	
 	final ConcurrentMap<String, TimeStats> EVENT_MAP;
+	/*
+	 * Timing cache maintains timing since last hit for a specific key
+	 */
 	final Cache<String, TimeStats> EVENT_CACHE;
 
 	/**
@@ -46,6 +54,30 @@ public class TimeTracker {
 	 */
 	public static TimeTracker newTracker(int capacity, long lifeSpan) {
 		return new TimeTracker(capacity, lifeSpan);
+	}
+	
+	/**
+	 * Hit and obtain elapsed nanoseconds since last hit based.
+	 * Time statistics is maintained per thread.
+	 * 
+	 * @return elapsed nanoseconds since last hit
+	 */
+	public static long hitAndGet() {
+		TimeStats timeStats = THREAD_TIMER.get();
+		if (timeStats == null) {
+			timeStats = new TimeStats();
+			THREAD_TIMER.set(timeStats);
+		}
+		return timeStats.hit();
+	}
+	
+	/**
+	 * Obtain time statistics maintained per thread
+	 * 
+	 * @return time statistics maintained per thread
+	 */
+	public static TimeStats getStats() {
+		return THREAD_TIMER.get();
 	}
 	
 	/**
@@ -62,19 +94,19 @@ public class TimeTracker {
 	}
 	
 	/**
-	 * Hit and obtain elapsed nanoseconds since last event
+	 * Hit and obtain elapsed nanoseconds since last hit
 	 * 
 	 * @param key
 	 *            timer key
-	 * @return elapsed nanoseconds since last event
+	 * @return elapsed nanoseconds since last hit
 	 */
 	public long hitAndGet(String key) {
-		TimeStats last = EVENT_MAP.get(key);
-		if (last == null) {
-			last = EVENT_MAP.putIfAbsent(key, new TimeStats());
-			last = last == null? EVENT_MAP.get(key): last;
+		TimeStats timeStats = EVENT_MAP.get(key);
+		if (timeStats == null) {
+			timeStats = EVENT_MAP.putIfAbsent(key, new TimeStats());
+			timeStats = timeStats == null? EVENT_MAP.get(key): timeStats;
 		}
-		return last.hit();
+		return timeStats.hit();
 	}
 	
 	/**
@@ -101,6 +133,15 @@ public class TimeTracker {
 		return last != null? last.getAgeNanos(): 0;
 	}	
 		
+	/**
+	 * Obtain time statistics for a specific key
+	 * 
+	 * @return time statistics for a specific key
+	 */
+	public TimeStats getStats(String key) {
+		return EVENT_MAP.get(key);
+	}
+	
 	/**
 	 * Get map of all time statistics maintained by this tracker
 	 * 
