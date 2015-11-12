@@ -217,6 +217,16 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 	TrackingActivity newActivity(OpLevel level, String name, String signature);
 
 	/**
+	 * Create a new application snapshot via {@link Snapshot} object instance
+	 * with default category and name as per tracker implementation.
+	 *
+	 * @param name snapshot name
+	 * @return a new application metric snapshot
+	 * @see Snapshot
+	 */
+	Snapshot newSnapshot(String name);
+
+	/**
 	 * Create a new application snapshot via {@link Snapshot} object instance.
 	 *
 	 * @param cat category name

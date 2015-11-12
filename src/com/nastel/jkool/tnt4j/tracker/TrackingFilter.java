@@ -21,9 +21,9 @@ import com.nastel.jkool.tnt4j.core.OpLevel;
 /**
  * <p>
  * A simple event filter interface for filtering out tracking activities and events. 
- * Implementations of this interface are registered with {@code Tracker} to filter out
- * tracking activities and tracking events. {@code isTrackingEnabled} is called from {@code Tracker} instances
- * when activities and events are created using {@code Tracker.newEvent}  and {@code Tracker.newActvity} calls.
+ * Implementations of this interface are registered with {@link Tracker} to filter out
+ * tracking activities and tracking events. {@link #isTrackingEnabled(Tracker, OpLevel, Object...)} is called from {@link Tracker} instances
+ * when activities and events are created using {@code Tracker.newEvent()}  and {@code Tracker.newActvity} calls.
  * Any activity or event with {@code OpType.NOOP} is automatically filtered out.
  * </p>
  * 

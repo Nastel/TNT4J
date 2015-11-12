@@ -64,6 +64,9 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 public class TrackerImpl implements Tracker, SinkErrorListener {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerImpl.class);
 	private static ThreadLocal<LightStack<TrackingActivity>> ACTIVITY_STACK = new ThreadLocal<LightStack<TrackingActivity>>();
+	
+	public static final String DEFAULT_SNAPSHOT_CAT_KEY = "tracker.default.snapshot.category";
+	public static final String DEFAULT_SNAPSHOT_CATEGORY = "None";
 
 	public static final String KEY_CONFIG_SOURCE = "config";
 	public static final NullActivity NULL_ACTIVITY = new NullActivity();
@@ -691,6 +694,11 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 		resetEventSink();
 	}
+
+	@Override
+    public Snapshot newSnapshot(String name) {
+	    return newSnapshot(tConfig.getProperty(DEFAULT_SNAPSHOT_CAT_KEY, DEFAULT_SNAPSHOT_CATEGORY), name);
+    }
 
 	@Override
     public Snapshot newSnapshot(String cat, String name) {

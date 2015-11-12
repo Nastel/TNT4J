@@ -399,7 +399,7 @@ public class TrackerConfig {
 	 *
 	 * @return value associated with the given key or null if non exist
 	 */
-	public Object getProperty(String key) {
+	public String getProperty(String key) {
 		return props.getProperty(key);
 	}
 
@@ -413,7 +413,7 @@ public class TrackerConfig {
 	 *
 	 * @return value associated with the given key or {@code defValue} if non exist
 	 */
-	public Object getProperty(String key, String defValue) {
+	public String getProperty(String key, String defValue) {
 		return props.getProperty(key, defValue);
 	}
 
