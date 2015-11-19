@@ -23,6 +23,13 @@ package com.nastel.jkool.tnt4j.core;
 public interface ValueTypes {
 	public static final String VALUE_TYPE_NONE = "none";
 	
+	// temperature types
+	public static final String VALUE_TYPE_TEMP_F = "temp.f";
+	public static final String VALUE_TYPE_TEMP_C = "temp.c";
+	
+	// Rates of change
+	public static final String VALUE_TYPE_RATE_SEC = "rate.sec";
+	
 	// currency types
 	public static final String VALUE_TYPE_CURRENCY = "currency";
 	public static final String VALUE_TYPE_CURRENCY_USD = "currency.usd";
