@@ -140,13 +140,31 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 *
 	 * @param timeStampStr timestamp string
 	 * @param formatStr format specification for timestamp string
+	 * @throws NullPointerException if timeStampStr is {@code null}
+	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
+	 * @throws ParseException if failed to parse string based on specified format
+	 */
+	public UsecTimestamp(String timeStampStr, String formatStr) throws ParseException {
+		this(timeStampStr, formatStr, TimeZone.getDefault());
+	}
+
+	/**
+	 * <p>Creates UsecTimestamp from string representation of timestamp in the
+	 * specified format.</p>
+	 * <p>This is based on {@link SimpleDateFormat}, but extends its support to
+	 * recognize microsecond fractional seconds.  If number of fractional second
+	 * characters is greater than 3, then it's assumed to be microseconds.
+	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of
+	 * {@link SimpleDateFormat}.
+	 *
+	 * @param timeStampStr timestamp string
+	 * @param formatStr format specification for timestamp string
 	 * @param timeZoneId time zone that timeStampStr represents. This is only needed when formatStr does not include
 	 *                   time zone specification and timeStampStr does not represent a string in local time zone.
 	 * @throws NullPointerException if timeStampStr is {@code null}
 	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
 	 * @throws ParseException if failed to parse string based on specified format
 	 * @see java.util.TimeZone
-	 * @since Revision: 10
 	 */
 	public UsecTimestamp(String timeStampStr, String formatStr, String timeZoneId) throws ParseException {
 		this(timeStampStr, formatStr, (StringUtils.isEmpty(timeZoneId) ? null : TimeZone.getTimeZone(timeZoneId)));
@@ -169,7 +187,6 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
 	 * @throws ParseException if failed to parse string based on specified format
 	 * @see java.util.TimeZone
-	 * @since Revision: 10
 	 */
 	public UsecTimestamp(String timeStampStr, String formatStr, TimeZone timeZone) throws ParseException {
 		if (timeStampStr == null)
@@ -592,24 +609,32 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(String pattern, TimeZone tz, long msecs, long usecs) {
+		String tsStr = null;
+
 		if (pattern == null) {
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS" + String.format("%03d",usecs) + " z");
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS" + String.format("%03d",usecs) + " XXX");
 			df.setTimeZone(tz);
-			return df.format(new Date(msecs));
+			tsStr = df.format(new Date(msecs));
 		}
 
-		int fracSecPos = pattern.indexOf('S');
-		if (fracSecPos < 0) {
+		if (tsStr == null) {
+			int fracSecPos = pattern.indexOf('S');
+			if (fracSecPos < 0) {
+				SimpleDateFormat df = new SimpleDateFormat(pattern);
+				df.setTimeZone(tz);
+				tsStr = df.format(new Date(msecs));
+			}
+		}
+
+		if (tsStr == null) {
+			String usecStr = String.format("%03d", usecs);
+			pattern = pattern.replaceFirst("SS*", "SSS" + usecStr);
 			SimpleDateFormat df = new SimpleDateFormat(pattern);
 			df.setTimeZone(tz);
-			return df.format(new Date(msecs));
+			tsStr = df.format(new Date(msecs));
 		}
 
-		String usecStr = String.format("%03d", usecs);
-		pattern = pattern.replaceFirst("SS*", "SSS" + usecStr);
-		SimpleDateFormat df = new SimpleDateFormat(pattern);
-		df.setTimeZone(tz);
-		return df.format(new Date(msecs));
+		return tsStr.replace(" Z", " 00:00");
 	}
 
 	/**
