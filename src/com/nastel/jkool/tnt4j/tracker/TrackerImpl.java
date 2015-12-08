@@ -89,6 +89,9 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	private volatile boolean openFlag = false, keepContext = true;
 
 	protected TrackerImpl(TrackerConfig config) {
+		if (!config.isBuilt()) {
+			throw new IllegalArgumentException("Uninitialized tracker configuration: use config.build()");
+		}
 		tConfig = config;
 		id = newUUID();
 		selector = tConfig.getTrackingSelector();

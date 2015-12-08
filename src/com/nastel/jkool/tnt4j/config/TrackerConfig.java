@@ -83,7 +83,9 @@ public class TrackerConfig {
 	TrackingSelector tSelector = null;
 
 	Properties props = new Properties();
-
+	boolean built = false;
+	
+	
 	/**
 	 * Create an empty configuration with a specific source name
 	 *
@@ -117,6 +119,15 @@ public class TrackerConfig {
 		sourceHandle = source;
 	}
 
+	/**
+	 * True of configuration was initialized and built using {{@link #build()}, false otherwise.
+	 *
+	 * @return True of configuration was initialized and built using {{@link #build()}, false otherwise
+	 */
+	public boolean isBuilt() {
+		return built;
+	}
+	
 	/**
 	 * Get configuration source handle
 	 *
@@ -518,6 +529,7 @@ public class TrackerConfig {
 		config.activityListener = this.activityListener;
 		config.sinkLogEventListener = this.sinkLogEventListener;
 		config.sinkFilter= this.sinkFilter;
+		config.built = this.built;
 		return config;
 	}
 
@@ -527,7 +539,7 @@ public class TrackerConfig {
 	 *
 	 * @return {@link TrackerConfig} instance with initialized configuration elements
 	 */
-	public TrackerConfig build() {
+	public synchronized TrackerConfig build() {
 		if (uuidFactory == null)
 			uuidFactory = DefaultUUIDFactory.getInstance();
 		if (sourceFactory == null)
@@ -546,6 +558,7 @@ public class TrackerConfig {
 			evFormatter = new DefaultFormatter();
 		if (tSelector == null)
 			tSelector = new DefaultTrackingSelector();
+		built = true;
 		return this;
 	}
 
@@ -553,7 +566,8 @@ public class TrackerConfig {
 	public String toString() {
 		return super.toString()
 			+ "{"
-			+ "source: " + sourceHandle
+			+ "built: " + built
+			+ ", source: " + sourceHandle
 			+ ", event.factory: " + evFactory
 			+ ", source.factory: " + sourceFactory
 			+ ", default.event.factory: " + defEvFactory
