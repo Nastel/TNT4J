@@ -386,7 +386,7 @@ public class Utils {
 	 *            hide chars to use during replacement
 	 * @param lastNo
 	 *            number of chars to leave at the end
-	 * @return Returns a quoted string, surrounded with double quote
+	 * @return String with characters at start of string replaced with specified {@code hideChars}
 	 */
 	public static String hide(String str, String hideChars, int lastNo) {
 		int length = str.length() - lastNo;
@@ -411,7 +411,7 @@ public class Utils {
 	 *            hide chars to use during replacement
 	 * @param startNo
 	 *            number of chars to leave at the start
-	 * @return Returns a quoted string, surrounded with double quote
+	 * @return String with characters at end of string replaced with specified {@code hideChars}
 	 */
 	public static String hideEnd(String str, String hideChars, int startNo) {
 		int length = str.length() - startNo;
