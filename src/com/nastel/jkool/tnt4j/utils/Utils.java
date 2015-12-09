@@ -163,7 +163,7 @@ public class Utils {
 			return ex.toString();
 		}
 	}
-    
+
     /**
 	 * Print given message, stack trace to the underlying print stream
 	 *
@@ -376,9 +376,9 @@ public class Utils {
 	}
 
 	/**
-	 * Hide some parts of the string and leave only certain 
-	 * number of characters at the end of the string. 
-	 * Example: XXXX-47478 {@code hide("1234-47478", "X", 5)}
+	 * Hide some parts of the string and leave only certain
+	 * number of characters at the end of the string.
+	 * Example: XXXXX47478 {@code hide("1234-47478", "X", 5)}
 	 *
 	 * @param str
 	 *            string to be replaced
@@ -396,10 +396,35 @@ public class Utils {
 				fake = fake.replaceAll(".", hideChars);
 			}
 			return fake + str.substring(length, str.length());
-		} 
+		}
 		return str;
 	}
-	
+
+	/**
+	 * Hide some parts of the string and leave only certain
+	 * number of characters at the start of the string.
+	 * Example: 1234-XXXXX {@code hideEnd("1234-47478", "X", 5)}
+	 *
+	 * @param str
+	 *            string to be replaced
+	 * @param hideChars
+	 *            hide chars to use during replacement
+	 * @param startNo
+	 *            number of chars to leave at the start
+	 * @return Returns a quoted string, surrounded with double quote
+	 */
+	public static String hideEnd(String str, String hideChars, int startNo) {
+		int length = str.length() - startNo;
+		if (length > 0) {
+			String fake = str.substring(startNo, str.length());
+			if (!fake.isEmpty()) {
+				fake = fake.replaceAll(".", hideChars);
+			}
+			return str.substring(0, startNo) + fake;
+		}
+		return str;
+	}
+
 	/**
 	 * Returns a quoted string, surrounded with double quote
 	 *
