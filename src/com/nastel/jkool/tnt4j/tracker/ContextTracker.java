@@ -22,9 +22,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * Helper class that allows sharing of variables within ThreaLocal.
- * This class is useful when passing correlators, tags and other key value
- * pairs within same thread execution.
+ * Helper class that allows sharing of variables within ThreaLocal. This class is useful when passing correlators, tags
+ * and other key value pairs within same thread execution.
  * 
  * @version $Revision: 1 $
  *
