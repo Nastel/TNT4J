@@ -25,8 +25,22 @@ import com.nastel.jkool.tnt4j.uuid.UUIDFactory;
  *
  */
 public class ContextRef {
+	/**
+	 * object id that should be unique within the JVM
+	 * 
+	 */
 	String objectId;
+
+	/**
+	 * correlation id associated with objectId
+	 * 
+	 */
 	String corrid;
+
+	/**
+	 * timer in nanoseconds when context was created
+	 * 
+	 */
 	long createdTimeNanos;
 	
 	/**
@@ -55,26 +69,37 @@ public class ContextRef {
 	 * a given unique id.
 	 * 
 	 * @param obj for which to create a reference
-	 * @param cid to be associated with this context reference
+	 * @param cid correlation to be associated with this context reference
 	 */
 	public ContextRef(Object obj, String cid) {
-		objectId = getObjectRef(obj);
+		this(getObjectRef(obj), cid);
+	}
+	
+	/**
+	 * Create a context reference for a given object with
+	 * a given unique id.
+	 * 
+	 * @param oid for which to create a reference
+	 * @param cid correlation to be associated with this context reference
+	 */
+	public ContextRef(String oid, String cid) {
+		objectId = oid;
 		corrid = cid;
 		createdTimeNanos = System.nanoTime();
 	}
 	
 	/**
-	 * Obtain object id (not its uuid). Use {{@link #cid()}
-	 * to obtain  correlation id associated with this object.
+	 * Obtain object id (not its correlation id). Use {@link #cid()}
+	 * to obtain correlation id associated with this object.
 	 * 
-	 * @return object id
+	 * @return object id associated with this context
 	 */
-	public String id() {
+	public String oid() {
 		return objectId;
 	}
 	
 	/**
-	 * Obtain object unique id (not its id). Use {{@link #id()}
+	 * Obtain object unique id (not its id). Use {@link #id()}
 	 * to obtain correlation id associated with this object.
 	 * 
 	 * @return object unique id
@@ -85,17 +110,12 @@ public class ContextRef {
 	
 	/**
 	 * Calculate elapsed nanoseconds from now to when
-	 * this context was created.
+	 * this context reference was created.
 	 * 
 	 * @return elapsed nanoseconds since context was created
 	 */
 	public long elapsedNanos() {
 		return System.nanoTime() - createdTimeNanos;
-	}
-	
-	@Override
-	public int hashCode() {
-		return objectId.hashCode();
 	}
 	
 	/**
@@ -106,5 +126,10 @@ public class ContextRef {
 	 */
 	public static String getObjectRef(Object obj) {
 		return obj.getClass().getName() + "@" + Integer.toHexString(System.identityHashCode(obj));		
+	}
+
+	@Override
+	public int hashCode() {
+		return objectId.hashCode();
 	}
 }

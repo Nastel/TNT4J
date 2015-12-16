@@ -26,7 +26,7 @@ import com.nastel.jkool.tnt4j.uuid.DefaultUUIDFactory;
 /**
  * Helper class that allows sharing of variables within ThreaLocal and across threads within the same JVM. 
  * This class is useful when passing correlators, tags and other key value pairs within and across threads. 
- * Use {{@link #trackRef(Object, String)} and {{@link #discardRef(Object)} to track object references across
+ * Use {{@link #getRef(Object, String)} and {{@link #clearRef(Object)} to track object references across
  * thread boundaries within the same JVM.
  * 
  * @version $Revision: 1 $
@@ -45,51 +45,54 @@ public class ContextTracker {
 	};
 
 	/**
-	 * Obtain a tracking reference {@link ContextRef} for a specific object.
-	 * Tracking reference is cached until {{@link #discardRef(Object)} is called.
+	 * Obtain a context reference {@link ContextRef} for a specific object.
+	 * Tracking reference is cached until {{@link #clearRef(Object)} is called.
 	 * Use this method to track object references across threads within the same JVM.
 	 * 
 	 * @param obj
-	 *            object for which tracking reference is obtained
-	 * @return tracking reference associated with the specified object
+	 *            object for which context reference is obtained
+	 * @return context reference associated with the specified object
 	 */
-	public ContextRef trackRef(Object obj) {
-		return trackRef(obj, DefaultUUIDFactory.getInstance().newUUID());
+	public ContextRef getRef(Object obj) {
+		return getRef(obj, DefaultUUIDFactory.getInstance().newUUID());
 	}
 	
 	/**
-	 * Obtain a tracking reference {@link ContextRef} for a specific object and
-	 * associate it with a specified UUID.
-	 * Tracking reference is cached until {{@link #discardRef(Object)} is called.
+	 * Obtain a context reference {@link ContextRef} for a specific object and
+	 * associate it with a specified correlation id.
+	 * Context reference is cached until {{@link #clearRef(Object)} is called.
 	 * Use this method to track object references across threads within the same JVM.
+	 * The thread passing object to another thread should call {@link #getRef(Object)}
+	 * and the thread that receives object should call {@link #clearRef(Object)}.
 	 * 
 	 * @param obj
-	 *            object for which tracking reference is obtained
-	 * @param uuid
-	 *            unique id to be associated with this object
-	 * @return tracking reference associated with the specified object
+	 *            object for which context reference is obtained
+	 * @param cid
+	 *            correlation id to be associated with this object
+	 * @return context reference associated with the specified object
 	 */
-	public ContextRef trackRef(Object obj, String uuid) {
+	public ContextRef getRef(Object obj, String cid) {
 		String refKey = ContextRef.getObjectRef(obj);
 		ContextRef ref = REF_MAP.get(refKey);
 		if (ref == null) {
-			ref = new ContextRef(obj, uuid);
-			ContextRef prev = REF_MAP.putIfAbsent(ref.id(), ref);
+			ref = new ContextRef(obj, cid);
+			ContextRef prev = REF_MAP.putIfAbsent(ref.oid(), ref);
 			ref = prev != null? prev: ref;
 		}
 		return ref;
 	}
 	
 	/**
-	 * Discard a tracking reference {@link ContextRef} for a specific object.
-	 * Tracking reference is cached until {{@link #discardRef(Object)} is called.
+	 * Discard a context reference {@link ContextRef} associated with a given object.
+	 * Context references are created and cached using {@link #getRef(Object)} and 
+	 * discarded using {@link #clearRef(Object)}.
 	 * Use this method to track object references across threads within the same JVM.
 	 * 
 	 * @param obj
 	 *            object whose reference is discarded
-	 * @return tracking reference associated with the specified object
+	 * @return context reference associated with the specified object
 	 */
-	public ContextRef discardRef(Object obj) {
+	public ContextRef clearRef(Object obj) {
 		String refKey = ContextRef.getObjectRef(obj);
 		ContextRef ref = REF_MAP.remove(refKey);
 		return ref;
@@ -164,7 +167,7 @@ public class ContextTracker {
 	}
 
 	/**
-	 * Clear all tracking reference key/value associated with current context
+	 * Clear all context reference key/value associated with current context
 	 * 
 	 */
 	public static void clearRefs() {
