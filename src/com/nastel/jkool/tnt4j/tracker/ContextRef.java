@@ -99,7 +99,7 @@ public class ContextRef {
 	}
 	
 	/**
-	 * Obtain object unique id (not its id). Use {@link #id()}
+	 * Obtain object unique id (not its id). Use {@link #cid()}
 	 * to obtain correlation id associated with this object.
 	 * 
 	 * @return object unique id
