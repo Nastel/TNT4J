@@ -33,8 +33,8 @@ import com.nastel.jkool.tnt4j.uuid.DefaultUUIDFactory;
  *
  */
 public class ContextTracker {
-	public static String JK_CORR_ID = "JK_CORR_ID";
-	public static String JK_RCORR_ID = "JK_RCORR_ID";
+	public static String JK_CORR_SESSION_ID = "JK_CORR_SID";
+	public static String JK_CORR_REQUEST_ID = "JK_CORR_RID";
 
 	private static final ConcurrentMap<String, ContextRef> REF_MAP = new ConcurrentHashMap<String, ContextRef>();
 	
@@ -101,23 +101,43 @@ public class ContextTracker {
 	
 	
 	/**
-	 * Associates the specified value with default key {@code JK_CORR_ID} with this map.
+	 * Associates the specified value with default key {@code JK_CORR_SESSION_ID} with this map.
 	 * 
 	 * @param value
-	 *            value to be associated with default key {@code JK_CORR_ID}
+	 *            value to be associated with default key {@code JK_CORR_SESSION_ID}
 	 * @return null if no previous value exists, previous value
 	 */
 	public static String set(String value) {
-		return set(JK_CORR_ID, value);
+		return set(JK_CORR_SESSION_ID, value);
 	}
 
 	/**
-	 * Get value associated with default key {@code JK_CORR_ID}
+	 * Get value associated with default key {@code JK_CORR_SESSION_ID}
 	 * 
-	 * @return value associated with default key {@code JK_CORR_ID}
+	 * @return value associated with default key {@code JK_CORR_SESSION_ID}
 	 */
 	public static String get() {
-		return get(JK_CORR_ID);
+		return get(JK_CORR_SESSION_ID);
+	}
+	
+	/**
+	 * Associates the specified value with default key {@code JK_CORR_SESSION_ID} with this map.
+	 * 
+	 * @param value
+	 *            value to be associated with default key {@code JK_CORR_SESSION_ID}
+	 * @return null if no previous value exists, previous value
+	 */
+	public static String setRequestId(String value) {
+		return set(JK_CORR_REQUEST_ID, value);
+	}
+
+	/**
+	 * Get value associated with default key {@code JK_CORR_SESSION_ID}
+	 * 
+	 * @return value associated with default key {@code JK_CORR_SESSION_ID}
+	 */
+	public static String getRequestId() {
+		return get(JK_CORR_REQUEST_ID);
 	}
 
 	/**
