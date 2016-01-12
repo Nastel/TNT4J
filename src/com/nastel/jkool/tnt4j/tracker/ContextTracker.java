@@ -34,6 +34,7 @@ import com.nastel.jkool.tnt4j.uuid.DefaultUUIDFactory;
  */
 public class ContextTracker {
 	public static String JK_CORR_ID = "JK_CORR_ID";
+	public static String JK_RCORR_ID = "JK_RCORR_ID";
 
 	private static final ConcurrentMap<String, ContextRef> REF_MAP = new ConcurrentHashMap<String, ContextRef>();
 	
