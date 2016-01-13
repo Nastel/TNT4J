@@ -121,10 +121,10 @@ public class ContextTracker {
 	}
 	
 	/**
-	 * Associates the specified value with default key {@code JK_CORR_SESSION_ID} with this map.
+	 * Associates the specified value with default key {@code JK_CORR_REQUEST_ID} with this map.
 	 * 
 	 * @param value
-	 *            value to be associated with default key {@code JK_CORR_SESSION_ID}
+	 *            value to be associated with default key {@code JK_CORR_REQUEST_ID}
 	 * @return null if no previous value exists, previous value
 	 */
 	public static String setRequestId(String value) {
@@ -132,9 +132,9 @@ public class ContextTracker {
 	}
 
 	/**
-	 * Get value associated with default key {@code JK_CORR_SESSION_ID}
+	 * Get value associated with default key {@code JK_CORR_REQUEST_ID}
 	 * 
-	 * @return value associated with default key {@code JK_CORR_SESSION_ID}
+	 * @return value associated with default key {@code JK_CORR_REQUEST_ID}
 	 */
 	public static String getRequestId() {
 		return get(JK_CORR_REQUEST_ID);
