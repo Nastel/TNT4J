@@ -81,6 +81,30 @@ public interface SourceFactory {
 	Source newFromFQN(String fqn);
 	
 	/**
+	 * Create a derived source based on a given fully qualified path and a
+	 * a default parent source. Same as {@code fromFQN(fqn, getRootSource())}
+	 * Format:
+	 * type=name|?#type=name...
+	 * Example: RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?
+	 * 
+	 * @param fqn fully qualified path for the source
+	 * @return source handle representing the path.
+	 */
+	Source fromFQN(String fqn);
+	
+	/**
+	 * Create a derived source based on a given fully qualified path and a
+	 * given parent source. Format:
+	 * type=name|?#type=name...
+	 * Example: RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?
+	 * 
+	 * @param fqn fully qualified path for the source
+	 * @param parent source
+	 * @return source handle representing the path.
+	 */
+	Source fromFQN(String fqn, Source parent);
+	
+	/**
 	 * Gets streaming source name (sender name)
 	 * 
 	 * @return streaming source name (sender name)

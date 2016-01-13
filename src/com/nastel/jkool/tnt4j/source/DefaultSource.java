@@ -42,16 +42,16 @@ public class DefaultSource implements Source {
 	 *            Name used to identify the source
 	 * @param type
 	 *            source type
-	 * @param root
+	 * @param parent
 	 *            parent source
 	 * @param userName
 	 *            user name associated with this source
 	 */
-	public DefaultSource(SourceFactory fac, String name, SourceType type, Source root, String userName) {
+	public DefaultSource(SourceFactory fac, String name, SourceType type, Source parent, String userName) {
 		factory = fac;
 		setName(name);
 		setType(type);
-		setSource(root);
+		setSource(parent);
 		setUser(userName);
 	}
 

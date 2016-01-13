@@ -89,8 +89,23 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	}
 	
 	@Override
+	public String getSSN() {
+		return rootSSN;
+	}
+
+	@Override
+    public Source fromFQN(String fqn) {
+	    return fromFQN(fqn, getRootSource());
+    }
+
+	@Override
+    public Source fromFQN(String fqn, Source parent) {
+	    return createFromFQN(fqn, parent);
+    }	
+
+	@Override
     public Source newFromFQN(String fqn) {
-		return createFromFQN(fqn);
+		return createFromFQN(fqn, null);
     }
 
 	@Override
@@ -153,7 +168,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	 * implementations.
 	 * </p>
 	 * 
-	 * @return current geo location
+	 * @return current GEO location
 	 */
 	public String getCurrentGeoAddr() {
 		return defaultSources[SourceType.GEOADDR.ordinal()];
@@ -161,11 +176,11 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	
 	/**
 	 * <p>
-	 * Returns current datacenter name, format is implementation specific.
+	 * Returns current data center name, format is implementation specific.
 	 * Developers should override this method for specific platforms.
 	 * </p>
 	 * 
-	 * @return current datacenter name
+	 * @return current data center name
 	 */
 	public String getCurrentDatacenter() {
 		return defaultSources[SourceType.DATACENTER.ordinal()];
@@ -201,25 +216,27 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	}
 
 	
-	private Source createFromFQN(String fqn) {
+	private Source createFromFQN(String fqn, Source parent) {
 		StringTokenizer tk = new StringTokenizer(fqn, "#");
 		DefaultSource child = null, root = null;
 		while (tk.hasMoreTokens()) {
 			String sName = tk.nextToken();
 			String[] pair = sName.split("=");
 			SourceType type = SourceType.valueOf(pair[0]);
-			DefaultSource source = new DefaultSource(this, getNameFromType(pair[1], type), type, null,  getNameFromType("?", SourceType.USER));
+			DefaultSource source = new DefaultSource(this, 
+					getNameFromType(pair[1], type), 
+					type, 
+					null,
+					getNameFromType("?", SourceType.USER));
 			if (child != null)
 				child.setSource(source);
 			if (root == null)
 				root = source;
 			child = source;
 		}
+		if (child != null) {
+			child.setSource(parent);
+		}
 		return root;		
 	}
-
-	@Override
-	public String getSSN() {
-		return rootSSN;
-	}	
 }
