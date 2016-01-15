@@ -32,11 +32,11 @@ import com.nastel.jkool.tnt4j.sink.EventSink;
 
 /**
  * This class implements a time service that delivers synchronized time using NTP.
- * Developers should use <code>TimeService.currentTimeMillis()</code> instead of calling
- * <code>System.currentTimeMillis()</code> to obtain synchronized and adjusted current time.
+ * Developers should use {@code TimeService.currentTimeMillis()} instead of calling
+ * {@code System.currentTimeMillis()} to obtain synchronized and adjusted current time.
  * To enable NTP time synchronization set the following property:
- * <code>tnt4j.time.server=ntp-server:port</code>,
- * otherwise <code>System.currentTimeMillis()</code> is returned.
+ * {@code tnt4j.time.server=ntp-server:port},
+ * otherwise {@code System.currentTimeMillis()} is returned.
  *
  * @version $Revision: 1 $
  */

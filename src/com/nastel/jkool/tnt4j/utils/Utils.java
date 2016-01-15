@@ -109,6 +109,20 @@ public class Utils {
 		return 0;
 	}
 
+	/**
+	 * Resolve variable given name to a global variable.
+	 * Global variables are referenced using: ${var} convention.
+	 *
+	 * @param name object to use
+	 * @return resolved variable or itself if not a variable
+	 */
+	public static String resolve(String name) {
+	    if (name.startsWith("${") && name.endsWith("}")) {
+	    	return System.getProperty(name.substring(2, name.length()-1), name);
+	    } else {
+	    	return name;
+	    }
+    }
 
 	/**
 	 * Qualify given key with a given object class

@@ -351,17 +351,9 @@ public class TrackerConfigStore extends TrackerConfig {
 				}
 				String key = line.substring(0, sepIndex).trim();
 				String value = line.substring(sepIndex+1).trim();
-				props.setProperty(key, resolve(value));
+				props.setProperty(key, Utils.resolve(value));
 			}
 		} while (line != null && !line.endsWith("}"));
 		return props;
 	}
-
-	private String resolve(String name) {
-	    if (name.startsWith("${") && name.endsWith("}")) {
-	    	return System.getProperty(name.substring(2, name.length()-1), name);
-	    } else {
-	    	return name;
-	    }
-    }
 }
