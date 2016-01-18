@@ -351,7 +351,7 @@ public class TrackerConfigStore extends TrackerConfig {
 				}
 				String key = line.substring(0, sepIndex).trim();
 				String value = line.substring(sepIndex+1).trim();
-				props.setProperty(key, Utils.resolve(value));
+				props.setProperty(key, Utils.resolve(value, value));
 			}
 		} while (line != null && !line.endsWith("}"));
 		return props;

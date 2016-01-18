@@ -201,7 +201,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	 * <p>
 	 * Obtains default name based on a given name/type pair ? name is converted into a default runtime binding.
 	 * $property converts property to java property binding.
-	 * Example: SERVER=? or PROCESS=${java.process}, where java property must be set to java.process=value. 
+	 * Example: SERVER=? or PROCESS=$java.process, where java property must be set to java.process=value. 
 	 * </p>
 	 * 
 	 * @param name source name
@@ -211,10 +211,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	 */
 	protected String getNameFromType(String name, SourceType type) {
 		if (name == null || name.equals("?")) return defaultSources[type.ordinal()];
-		if (name.startsWith("${") && name.endsWith("}")) {
-			return System.getProperty(name.substring(2, name.length()-1), UNKNOWN_SOURCE);
-		}
-		return name;
+		return Utils.resolve(name, UNKNOWN_SOURCE);
 	}
  
 	
