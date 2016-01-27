@@ -50,8 +50,6 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @see SinkLogEventListener
  */
 public abstract class AbstractEventSink implements EventSink, EventSinkStats {
-	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(AbstractEventSink.class);
-
 	protected ArrayList<SinkErrorListener> errorListeners = new ArrayList<SinkErrorListener>(10);
 	protected ArrayList<SinkLogEventListener> logListeners = new ArrayList<SinkLogEventListener>(10);
 	protected ArrayList<SinkEventFilter> filters = new ArrayList<SinkEventFilter>(10);
@@ -288,8 +286,8 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		if (errorListeners.size() > 0) {
 			SinkError event = new SinkError(this, msg, ex);
 			notifyListeners(event);
-		} else {
-			logger.log(OpLevel.ERROR, "Error when logging msg=''{0}''", msg, ex);
+		} else if (ex != null){
+			ex.printStackTrace(System.err);
 		}
 	}
 
