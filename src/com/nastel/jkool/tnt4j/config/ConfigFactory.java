@@ -15,6 +15,9 @@
  */
 package com.nastel.jkool.tnt4j.config;
 
+import java.util.Map;
+import java.util.Properties;
+
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.source.SourceType;
 
@@ -35,7 +38,7 @@ public interface ConfigFactory {
 	 * Create a default tracking configuration
 	 * 
 	 * @see TrackerConfig
-	 * @return new <code>TrackerConfig</code> instance with default values and factories
+	 * @return new {@link TrackerConfig} instance with default values and factories
 	 */
 	TrackerConfig getConfig();
 
@@ -45,7 +48,7 @@ public interface ConfigFactory {
 	 * @param source
 	 *            user defined source name
 	 * @see TrackerConfig
-	 * @return new <code>TrackerConfig</code> instance with default values and factories
+	 * @return new {@link TrackerConfig} instance with default values and factories
 	 */
 	TrackerConfig getConfig(String source);
 
@@ -57,7 +60,7 @@ public interface ConfigFactory {
 	 * @param type
 	 *            source type
 	 * @see TrackerConfig
-	 * @return new <code>TrackerConfig</code> instance with default values and factories
+	 * @return new {@link TrackerConfig} instance with default values and factories
 	 */
 	TrackerConfig getConfig(String source, SourceType type);
 
@@ -67,7 +70,7 @@ public interface ConfigFactory {
 	 * @param clazz
 	 *            class for which to obtain configuration
 	 * @see TrackerConfig
-	 * @return new <code>TrackerConfig</code> instance with default values and factories
+	 * @return new {@link TrackerConfig} instance with default values and factories
 	 */
 	TrackerConfig getConfig(Class<?> clazz);
 
@@ -77,9 +80,23 @@ public interface ConfigFactory {
 	 * @param source
 	 *            user defined source
 	 * @see TrackerConfig
-	 * @return new <code>TrackerConfig</code> instance with default values and factories
+	 * @return new {@link TrackerConfig} instance with default values and factories
 	 */
 	TrackerConfig getConfig(Source source);
+
+	/**
+	 * Create a default tracking configuration
+	 * 
+	 * @param source
+	 *            user defined source name
+	 * @param type
+	 *            source type
+	 * @param configMap
+	 *            configuration map containing source/properties configuration
+	 * @see TrackerConfig
+	 * @return new {@link TrackerConfig} instance with default values and factories
+	 */
+	TrackerConfig getConfig(String source, SourceType type, Map<String, Properties> configMap);
 
 	/**
 	 * Create a default tracking configuration
@@ -91,7 +108,7 @@ public interface ConfigFactory {
 	 * @param configName
 	 *            configuration name where configuration elements are read from (e.g. filename)
 	 * @see TrackerConfig
-	 * @return new <code>TrackerConfig</code> instance with default values and factories
+	 * @return new {@link TrackerConfig} instance with default values and factories
 	 */
 	TrackerConfig getConfig(String source, SourceType type, String configName);
 
@@ -105,9 +122,35 @@ public interface ConfigFactory {
 	 * @param configName
 	 *            configuration name where configuration elements are read from (e.g. filename)
 	 * @see TrackerConfig
-	 * @return new <code>TrackerConfig</code> instance with default values and factories
+	 * @return new {@link TrackerConfig} instance with default values and factories
 	 */
 	TrackerConfig getConfig(Class<?> clazz, SourceType type, String configName);
+
+	/**
+	 * Create a default tracking configuration
+	 * 
+	 * @param clazz
+	 *            class for which to obtain configuration
+	 * @param type
+	 *            source type
+	 * @param configMap
+	 *            configuration map containing source/properties configuration
+	 * @see TrackerConfig
+	 * @return new {@link TrackerConfig} instance with default values and factories
+	 */
+	TrackerConfig getConfig(Class<?> clazz, SourceType type, Map<String, Properties> configMap);
+
+	/**
+	 * Create a default tracking configuration
+	 * 
+	 * @param source
+	 *            user defined source
+	 * @param configMap
+	 *            configuration map containing source/properties configuration
+	 * @see TrackerConfig
+	 * @return new {@link TrackerConfig} instance with default values and factories
+	 */
+	TrackerConfig getConfig(Source source, Map<String, Properties> configMap);
 
 	/**
 	 * Create a default tracking configuration
@@ -117,7 +160,7 @@ public interface ConfigFactory {
 	 * @param configName
 	 *            configuration name where configuration elements are read from (e.g. filename)
 	 * @see TrackerConfig
-	 * @return new <code>TrackerConfig</code> instance with default values and factories
+	 * @return new {@link TrackerConfig} instance with default values and factories
 	 */
 	TrackerConfig getConfig(Source source, String configName);
 }

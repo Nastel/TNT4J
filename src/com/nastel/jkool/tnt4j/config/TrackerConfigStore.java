@@ -150,7 +150,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            source type
 	 */
 	protected TrackerConfigStore(String source, SourceType type) {
-		this(source, type, null);
+		this(source, type, (String) null);
 	}
 
 	/**
@@ -170,6 +170,49 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
+	 * Create an default configuration with a specific source name. Configuration is loaded from a
+	 * key/Properties map.
+	 *
+	 * @param source
+	 *            name of the source instance associated with the configuration
+	 * @param type
+	 *            type of the source instance
+	 * @param configMap
+	 *            configuration map containing source/properties configuration
+	 */
+	protected TrackerConfigStore(String source, SourceType type, Map<String, Properties> configMap) {
+		super(source, type);
+		loadConfigProps(configMap);
+	}
+	
+	/**
+	 * Create an default configuration with a specific source name. Configuration is loaded from a
+	 * key/Properties map.
+	 *
+	 * @param source
+	 *            name of the source instance associated with the configuration
+	 * @param configMap
+	 *            configuration map containing source/properties configuration
+	 */
+	protected TrackerConfigStore(String source, Map<String, Properties> configMap) {
+		super(source, SourceType.APPL);
+		loadConfigProps(configMap);
+	}
+	
+	/**
+	 * Create an default configuration with a specific source name and a given file name;
+	 *
+	 * @param source
+	 *            source instance associated with the configuration
+	 * @param configMap
+	 *            configuration map containing source/properties configuration
+	 */
+	protected TrackerConfigStore(Source source, Map<String, Properties> configMap) {
+		super(source);
+		loadConfigProps(configMap);
+	}
+
+	/**
 	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
 	 * {@code tnt4j.config} property.
 	 *
@@ -177,7 +220,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            source instance associated with the configuration
 	 */
 	protected TrackerConfigStore(Source source) {
-		this(source, null);
+		this(source, (String) null);
 	}
 
 	/**

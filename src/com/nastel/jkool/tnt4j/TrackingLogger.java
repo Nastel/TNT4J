@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Vector;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
@@ -354,6 +355,23 @@ public class TrackingLogger implements Tracker {
 	 *
 	 * @param sourceName
 	 *            application source name associated with this logger
+	 * @param configMap
+	 *            configuration map containing source/properties configuration
+	 * @return tracking logger instance
+	 * @see TrackerConfig
+	 */
+	public static TrackingLogger getInstance(String sourceName, Map<String, Properties> configMap) {
+		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName, SourceType.APPL, configMap);
+		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
+		registerTracker(tracker);
+		return tracker;
+	}
+
+	/**
+	 * Obtain an instance of {@code TrackingLogger} logger.
+	 *
+	 * @param sourceName
+	 *            application source name associated with this logger
 	 * @param type
 	 *            application source type associated with this logger
 	 * @return tracking logger instance
@@ -361,6 +379,25 @@ public class TrackingLogger implements Tracker {
 	 */
 	public static TrackingLogger getInstance(String sourceName, SourceType type) {
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName, type);
+		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
+		registerTracker(tracker);
+		return tracker;
+	}
+
+	/**
+	 * Obtain an instance of {@code TrackingLogger} logger.
+	 *
+	 * @param sourceName
+	 *            application source name associated with this logger
+	 * @param type
+	 *            application source type associated with this logger
+	 * @param configMap
+	 *            configuration map containing source/properties configuration
+	 * @return tracking logger instance
+	 * @see TrackerConfig
+	 */
+	public static TrackingLogger getInstance(String sourceName, SourceType type, Map<String, Properties> configMap) {
+		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName, type, configMap);
 		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
 		registerTracker(tracker);
 		return tracker;
@@ -377,6 +414,25 @@ public class TrackingLogger implements Tracker {
 	 */
 	public static TrackingLogger getInstance(Class<?> clazz) {
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(clazz);
+		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
+		registerTracker(tracker);
+		return tracker;
+	}
+
+
+	/**
+	 * Obtain an instance of {@code TrackingLogger} logger based on
+	 * a given class.
+	 *
+	 * @param clazz
+	 *            application class used as source name
+	 * @param configMap
+	 *            configuration map containing source/properties configuration
+	 * @return tracking logger instance
+	 * @see TrackerConfig
+	 */
+	public static TrackingLogger getInstance(Class<?> clazz, Map<String, Properties> configMap) {
+		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(clazz, SourceType.APPL, configMap);
 		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
 		registerTracker(tracker);
 		return tracker;

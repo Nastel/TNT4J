@@ -15,6 +15,9 @@
  */
 package com.nastel.jkool.tnt4j.config;
 
+import java.util.Map;
+import java.util.Properties;
+
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.source.SourceType;
 
@@ -82,4 +85,18 @@ public class ConfigFactoryStoreImpl implements ConfigFactory {
 		return getConfig(clazz.getName(), type, configName);
 	}
 
+	@Override
+    public TrackerConfig getConfig(String source, SourceType type, Map<String, Properties> configMap) {
+		return new TrackerConfigStore(source, type, configMap);
+	}
+
+	@Override
+    public TrackerConfig getConfig(Class<?> clazz, SourceType type, Map<String, Properties> configMap) {
+		return getConfig(clazz.getName(), type, configMap);
+    }
+
+	@Override
+    public TrackerConfig getConfig(Source source, Map<String, Properties> configMap) {
+		return new TrackerConfigStore(source, configMap);
+    }
 }
