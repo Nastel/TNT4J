@@ -15,12 +15,7 @@
  */
 package com.nastel.jkool.tnt4j.config;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -32,11 +27,7 @@ import com.nastel.jkool.tnt4j.dump.DumpSinkFactory;
 import com.nastel.jkool.tnt4j.format.EventFormatter;
 import com.nastel.jkool.tnt4j.repository.TokenRepository;
 import com.nastel.jkool.tnt4j.selector.TrackingSelector;
-import com.nastel.jkool.tnt4j.sink.DefaultEventSinkFactory;
-import com.nastel.jkool.tnt4j.sink.EventSink;
-import com.nastel.jkool.tnt4j.sink.EventSinkFactory;
-import com.nastel.jkool.tnt4j.sink.SinkEventFilter;
-import com.nastel.jkool.tnt4j.sink.SinkLogEventListener;
+import com.nastel.jkool.tnt4j.sink.*;
 import com.nastel.jkool.tnt4j.source.Source;
 import com.nastel.jkool.tnt4j.source.SourceFactory;
 import com.nastel.jkool.tnt4j.source.SourceType;
@@ -46,11 +37,13 @@ import com.nastel.jkool.tnt4j.uuid.UUIDFactory;
 
 /**
  * <p>
- * This class consolidates all configuration for {@link TrackerFactory} using a configuration file.
- * Developers should use this class and override default configuration with user defined elements. Configuration is
- * loaded from a file specified by {@code tnt4j.config} property which set to {@code tnt4j.properties} by
- * default. Configuration specifies factories, formatters, token repositories and other elements required by the
- * framework using JSON like convention.
+ * This class consolidates all configuration for {@link TrackerFactory} using a
+ * configuration file. Developers should use this class and override default
+ * configuration with user defined elements. Configuration is loaded from a file
+ * specified by {@code tnt4j.config} property which set to
+ * {@code tnt4j.properties} by default. Configuration specifies factories,
+ * formatters, token repositories and other elements required by the framework
+ * using JSON like convention.
  * </p>
  * <p>
  * Below is a example of the sample configuration file (tnt4j.properties):
@@ -97,7 +90,8 @@ import com.nastel.jkool.tnt4j.uuid.UUIDFactory;
  * </code>
  * </pre>
  *
- * Below is an example of how to use {@link TrackerConfigStore} when registering with the framework.
+ * Below is an example of how to use {@link TrackerConfigStore} when registering
+ * with the framework.
  *
  * <pre>
  * {@code
@@ -130,8 +124,9 @@ public class TrackerConfigStore extends TrackerConfig {
 	private String configFile = null;
 
 	/**
-	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
-	 * {@code tnt4j.config} property.
+	 * Create an default configuration with a specific source name.
+	 * Configuration is loaded from a file specified by {@code tnt4j.config}
+	 * property.
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
@@ -141,8 +136,9 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
-	 * {@code tnt4j.config} property.
+	 * Create an default configuration with a specific source name.
+	 * Configuration is loaded from a file specified by {@code tnt4j.config}
+	 * property.
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
@@ -154,13 +150,14 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
-	 * {@code tnt4j.config} property if fileName is null.
+	 * Create an default configuration with a specific source name.
+	 * Configuration is loaded from a file specified by {@code tnt4j.config}
+	 * property if fileName is null.
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
 	 * @param type
-	 * 			  type of the source instance
+	 *            type of the source instance
 	 * @param fileName
 	 *            configuration file name
 	 */
@@ -170,8 +167,9 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
-	 * {@code tnt4j.config} property.
+	 * Create an default configuration with a specific source name.
+	 * Configuration is loaded from a file specified by {@code tnt4j.config}
+	 * property.
 	 *
 	 * @param source
 	 *            source instance associated with the configuration
@@ -181,7 +179,8 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Create an default configuration with a specific source name and a given file name;
+	 * Create an default configuration with a specific source name and a given
+	 * file name;
 	 *
 	 * @param source
 	 *            source instance associated with the configuration
@@ -205,27 +204,39 @@ public class TrackerConfigStore extends TrackerConfig {
 		try {
 			return Utils.createConfigurableObject(classProp, prefix, props);
 		} catch (Throwable e) {
-			logger.log(OpLevel.ERROR, "Failed to create configurable instance class={0}, property={1}, prefix={2}", props.get(classProp), classProp, prefix, e);
+			logger.log(OpLevel.ERROR, "Failed to create configurable instance class={0}, property={1}, prefix={2}",
+					props.get(classProp), classProp, prefix, e);
 		}
 		return null;
 	}
 
 	private void loadConfigProps(Map<String, Properties> map) {
 		setProperties(loadProperties(map));
+		applyProperties();
+	}
+
+	/**
+	 * Applies properties defined configuration.
+	 */
+	public void applyProperties() {
 		if (props != null) {
 			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.DEBUG, "Loaded properties source={0}, tid={1}, properties={2}", srcName, Thread.currentThread().getId(), props);
+				logger.log(OpLevel.DEBUG, "Loaded properties source={0}, tid={1}, properties={2}", srcName,
+						Thread.currentThread().getId(), props);
 			}
 			setUUIDFactory((UUIDFactory) createConfigurableObject("uuid.factory", "uuid.factory."));
-			setDefaultEventSinkFactory((EventSinkFactory) createConfigurableObject("default.event.sink.factory", "default.event.sink.factory."));
+			setDefaultEventSinkFactory((EventSinkFactory) createConfigurableObject("default.event.sink.factory",
+					"default.event.sink.factory."));
 			setSourceFactory((SourceFactory) createConfigurableObject("source.factory", "source.factory."));
 			setTrackerFactory((TrackerFactory) createConfigurableObject("tracker.factory", "tracker.factory."));
-			setEventSinkFactory((EventSinkFactory) createConfigurableObject("event.sink.factory", "event.sink.factory."));
+			setEventSinkFactory(
+					(EventSinkFactory) createConfigurableObject("event.sink.factory", "event.sink.factory."));
 			setEventFormatter((EventFormatter) createConfigurableObject("event.formatter", "event.formatter."));
 			setTrackingSelector((TrackingSelector) createConfigurableObject("tracking.selector", "tracking.selector."));
 			setDumpSinkFactory((DumpSinkFactory) createConfigurableObject("dump.sink.factory", "dump.sink.factory."));
 			setActivityListener((ActivityListener) createConfigurableObject("activity.listener", "activity.listener."));
-			setSinkLogEventListener((SinkLogEventListener) createConfigurableObject("sink.log.listener", "sink.log.listener."));
+			setSinkLogEventListener(
+					(SinkLogEventListener) createConfigurableObject("sink.log.listener", "sink.log.listener."));
 			setSinkEventFilter((SinkEventFilter) createConfigurableObject("sink.event.filter", "sink.event.filter."));
 		}
 	}
@@ -233,7 +244,8 @@ public class TrackerConfigStore extends TrackerConfig {
 	private Properties loadProperties(Map<String, Properties> map) {
 		int maxKeyLen = 0;
 		Properties selectedSet = null;
-		if (map == null) return selectedSet;
+		if (map == null)
+			return selectedSet;
 		for (Entry<String, Properties> entry : map.entrySet()) {
 			if (entry.getKey().equals(DEFAULT_SOURCE)) {
 				selectedSet = entry.getValue();
@@ -254,8 +266,8 @@ public class TrackerConfigStore extends TrackerConfig {
 		Map<String, Properties> map = null;
 		try {
 			map = loadConfigResource(configFile);
-			logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, file={1}, config.size={2}, tid={3}",
-						srcName, configFile, map.size(), Thread.currentThread().getId());
+			logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, file={1}, config.size={2}, tid={3}", srcName,
+					configFile, map.size(), Thread.currentThread().getId());
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, "Unable to load configuration: source={0}, file={1}", srcName, configFile, e);
 		}
@@ -274,8 +286,8 @@ public class TrackerConfigStore extends TrackerConfig {
 				String like = config.getProperty(LIKE_KEY);
 				String enabled = config.getProperty(ENABLED_KEY);
 				if (enabled != null && enabled.equalsIgnoreCase("true")) {
-					logger.log(OpLevel.WARNING,
-							"Disabling properties for source={0}, like={1}, enabled={2}", key, like, enabled);
+					logger.log(OpLevel.WARNING, "Disabling properties for source={0}, like={1}, enabled={2}", key, like,
+							enabled);
 					continue;
 				}
 				if (like != null) {
@@ -295,14 +307,14 @@ public class TrackerConfigStore extends TrackerConfig {
 		Properties copyFrom = map.get(like);
 		if (copyFrom == null) {
 			copyFrom = map.get(DEFAULT_SOURCE);
-			logger.log(OpLevel.WARNING, "Properties for source={0}, like={1} not found, assigning default set={2}",
-					key, like, DEFAULT_SOURCE);
+			logger.log(OpLevel.WARNING, "Properties for source={0}, like={1} not found, assigning default set={2}", key,
+					like, DEFAULT_SOURCE);
 		}
 		// merge properties from "like" model with original
 		Properties merged = new Properties();
 		merged.putAll(copyFrom);
 		merged.putAll(config);
-		return merged;	
+		return merged;
 	}
 
 	private BufferedReader getConfigReader(String fileName) throws IOException {
@@ -321,13 +333,13 @@ public class TrackerConfigStore extends TrackerConfig {
 		String tnt4JResource = "/" + TNT4J_PROPERTIES;
 		InputStream ins = getClass().getResourceAsStream(tnt4JResource);
 		if (ins == null) {
-			FileNotFoundException ioe =  new FileNotFoundException("Resource '" + tnt4JResource + "' not found");
+			FileNotFoundException ioe = new FileNotFoundException("Resource '" + tnt4JResource + "' not found");
 			ioe.initCause(exc);
 			throw ioe;
 		}
 		reader = new BufferedReader(new InputStreamReader(ins));
 		return reader;
-    }
+	}
 
 	private Properties readStanza(BufferedReader reader) throws IOException {
 		String line = null;
@@ -336,21 +348,18 @@ public class TrackerConfigStore extends TrackerConfig {
 			line = reader.readLine();
 			if (line != null) {
 				line = line.trim();
-				if ((line.length() == 0)
-						|| line.startsWith("{")
-						|| line.startsWith(";")
-						|| line.startsWith("#")
-						|| line.startsWith("//")
-						|| line.endsWith("}")) {
+				if ((line.length() == 0) || line.startsWith("{") || line.startsWith(";") || line.startsWith("#")
+						|| line.startsWith("//") || line.endsWith("}")) {
 					continue;
 				}
 				int sepIndex = line.indexOf(":");
 				if (sepIndex <= 0) {
-					logger.log(OpLevel.WARNING, "Skipping invalid source={0}, file={1}, entry='{2}'", srcName, configFile, line);
+					logger.log(OpLevel.WARNING, "Skipping invalid source={0}, file={1}, entry='{2}'", srcName,
+							configFile, line);
 					continue;
 				}
 				String key = line.substring(0, sepIndex).trim();
-				String value = line.substring(sepIndex+1).trim();
+				String value = line.substring(sepIndex + 1).trim();
 				props.setProperty(key, Utils.resolve(value, value));
 			}
 		} while (line != null && !line.endsWith("}"));
