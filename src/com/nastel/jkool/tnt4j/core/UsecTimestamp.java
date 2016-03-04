@@ -91,6 +91,16 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
+	 * Creates UsecTimestamp based on specified microsecond timestamp.
+	 *
+	 * @param usecTime timestamp, in microsecond
+	 * @throws IllegalArgumentException if usecTime is negative
+	 */
+	public UsecTimestamp(Number usecTime) {
+		setTimeUsec(usecTime.longValue());
+	}
+
+	/**
 	 * Creates UsecTimestamp based on specified millisecond timestamp
 	 * and fractional microsecond.
 	 *
