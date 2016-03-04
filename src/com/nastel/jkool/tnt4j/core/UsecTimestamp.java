@@ -38,7 +38,10 @@ import com.nastel.jkool.tnt4j.utils.Useconds;
  *
  * @version $Revision: 6 $
  */
-public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Serializable {
+/**
+ *
+ */
+public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, Cloneable, Serializable {
 	private static final long serialVersionUID = 3658590467907047916L;
 
 	protected static AtomicLong LamportCounter = new AtomicLong(System.currentTimeMillis());
@@ -379,6 +382,46 @@ public class UsecTimestamp implements Comparable<UsecTimestamp>, Cloneable, Seri
 	 */
 	public long getTimeUsec() {
 		return msecs * 1000 + usecs;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>Returns {@link #getTimeUsec()} as an int, possibly truncated.</p>
+	 */
+	@Override
+	public int intValue() {
+		return (int)getTimeUsec();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>Returns {@link #getTimeUsec()}.</p>
+	 */
+	@Override
+	public long longValue() {
+		return getTimeUsec();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>Returns {@link #getTimeUsec()} as a float, possibly truncated.</p>
+	 */
+	@Override
+	public float floatValue() {
+		return getTimeUsec();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>Returns {@link #getTimeUsec()} as a double.</p>
+	 */
+	@Override
+	public double doubleValue() {
+		return getTimeUsec();
 	}
 
 	/**
