@@ -116,7 +116,7 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	private Source	source;
 	private String	parent;
 	Operation operation;
-	
+
 	private final Source [] relation = new Source[2];
 	private OpType relationType = OpType.NOOP;
 
@@ -343,6 +343,11 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	public void setParentId(Trackable parentObject) {
 		parent = parentObject.getTrackingId();
 		source = parentObject.getSource();
+	}
+
+	@Override
+	public void setParentId(String parentId) {
+		parent = parentId;
 	}
 
 	@Override

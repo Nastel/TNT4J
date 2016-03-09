@@ -166,13 +166,13 @@ public class Activity extends Operation implements Trackable {
 	}
 
 	@Override
-	protected void onStart(long start) {	
+	protected void onStart(long start) {
 		super.onStart(start);
 		notifyStarted();
 	}
 
 	@Override
-	protected void onStop(long start) {	
+	protected void onStop(long start) {
 		super.onStop(start);
 		notifyStopped();
 	}
@@ -242,6 +242,14 @@ public class Activity extends Operation implements Trackable {
 	 * {@inheritDoc}
 	 */
 	@Override
+	public void setParentId(String parentId) {
+		this.parentId = parentId;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public String getParentId() {
 		return parentId;
 	}
@@ -270,7 +278,7 @@ public class Activity extends Operation implements Trackable {
 			addSnapshot((Snapshot)item);
 		}
 		item.setTTL(getTTL());
-		item.setParentId(this);		
+		item.setParentId(this);
 	}
 
 	/**

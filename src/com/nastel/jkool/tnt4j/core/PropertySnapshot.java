@@ -27,14 +27,14 @@ import com.nastel.jkool.tnt4j.source.Source;
 /**
  * This class defines a snapshot/collection of <code>Property</code> instances. A collection of name, value pairs with
  * associated user defined name and a time stamp when the snapshot was generated.
- * 
+ *
  * @see Property
  * @see UsecTimestamp
  * @version $Revision: 8 $
  */
 public class PropertySnapshot implements Snapshot {
 	public static final String CATEGORY_DEFAULT = "Default";
-	
+
 	private long ttl = Operation.TTL_DEFAULT;
 	private OpLevel level;
 	private OpType opType = OpType.SNAPSHOT;
@@ -50,7 +50,7 @@ public class PropertySnapshot implements Snapshot {
 
 	/**
 	 * Constructs a Property snapshot with the specified name and current time stamp.
-	 * 
+	 *
 	 * @param name
 	 *            snapshot name
 	 */
@@ -60,7 +60,7 @@ public class PropertySnapshot implements Snapshot {
 
 	/**
 	 * Constructs a Property snapshot with the specified name and current time stamp.
-	 * 
+	 *
 	 * @param cat
 	 *            snapshot category name
 	 * @param name
@@ -72,7 +72,7 @@ public class PropertySnapshot implements Snapshot {
 
 	/**
 	 * Constructs a Property snapshot with the specified name and current time stamp.
-	 * 
+	 *
 	 * @param cat
 	 *            snapshot category name
 	 * @param name
@@ -86,7 +86,7 @@ public class PropertySnapshot implements Snapshot {
 
 	/**
 	 * Constructs a Property snapshot with the specified name, given time stamp.
-	 * 
+	 *
 	 * @param cat
 	 *            snapshot category name
 	 * @param name
@@ -101,10 +101,10 @@ public class PropertySnapshot implements Snapshot {
 	public PropertySnapshot(String cat, String name, OpLevel lvl, UsecTimestamp time) {
 		this(cat, name, lvl, OpType.SNAPSHOT, time);
 	}
-	
+
 	/**
 	 * Constructs a Property snapshot with the specified name, type, given time stamp .
-	 * 
+	 *
 	 * @param cat
 	 *            snapshot category name
 	 * @param name
@@ -133,6 +133,7 @@ public class PropertySnapshot implements Snapshot {
 	 *
 	 * @return current severity level
 	 */
+	@Override
 	public OpLevel getSeverity() {
 		return level;
 	}
@@ -148,7 +149,7 @@ public class PropertySnapshot implements Snapshot {
 
 	/**
 	 * Add a property with a given key and value
-	 * 
+	 *
 	 * @param key
 	 *            property key name
 	 * @param value
@@ -162,7 +163,7 @@ public class PropertySnapshot implements Snapshot {
 
 	/**
 	 * Add a property with a given key and value
-	 * 
+	 *
 	 * @param key
 	 *            property key name
 	 * @param value
@@ -177,7 +178,7 @@ public class PropertySnapshot implements Snapshot {
 
 	/**
 	 * Add a property with a given key and value
-	 * 
+	 *
 	 * @param key
 	 *            property key name
 	 * @param value
@@ -197,6 +198,7 @@ public class PropertySnapshot implements Snapshot {
 	 *
 	 * @see Source
 	 */
+	@Override
 	public void setSource(Source src) {
 		source = src;
 	}
@@ -289,6 +291,11 @@ public class PropertySnapshot implements Snapshot {
 	}
 
 	@Override
+	public void setParentId(String parentId) {
+		parent_id = parentId;
+	}
+
+	@Override
     public void setTrackingId(String signature) {
 		tracking_id = signature;
 	}
@@ -321,7 +328,7 @@ public class PropertySnapshot implements Snapshot {
 	    }
 	    return this;
     }
-	
+
 	@Override
 	public int hashCode() {
 		return id.hashCode();

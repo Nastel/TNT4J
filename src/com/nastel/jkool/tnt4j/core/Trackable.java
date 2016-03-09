@@ -27,7 +27,7 @@ import com.nastel.jkool.tnt4j.source.Source;
  * which uniquely identifies this instance, parent id -- tracking id of the parent
  * trackable instance and correlator which is a user defined token which could be
  * another tracking id from another trackable source.
- * 
+ *
  * @version $Revision: 2 $
  */
 public interface Trackable extends TTL {
@@ -38,7 +38,7 @@ public interface Trackable extends TTL {
 	 * @see Source
 	 */
 	void setSource(Source src);
-	
+
 	/**
 	 * Obtains current/active <code>Source</code> handle associated
 	 * with the current trackable objects
@@ -55,54 +55,61 @@ public interface Trackable extends TTL {
 	 * @return user-defined correlator
 	 */
 	Set<String> getCorrelator();
-	
+
 	/**
 	 * Sets tracking correlators
 	 *
 	 * @param cid tracking correlator list
 	 */
 	void setCorrelator(String...cid);
-	
+
 	/**
 	 * Sets tracking correlators
 	 *
 	 * @param cids tracking correlator list
 	 */
 	void setCorrelator(Collection<String> cids);
-	
+
 	/**
 	 * Gets operation type associated with the trackable instance
 	 *
 	 * @return operation type
 	 */
 	OpType getType();
-	
+
 	/**
 	 * Gets tracking signature associated with this trackable instance.
 	 *
 	 * @return item tracking signature
 	 */
 	String getTrackingId();
-	
+
 	/**
 	 * Gets parent's tracking id.
 	 *
 	 * @return parent's tracking id
 	 */
 	String getParentId();
-	
+
 	/**
 	 * Sets tracking signature
 	 *
 	 * @param signature tracking signature
 	 */
 	void setTrackingId(String signature);
-	
+
 	/**
 	 * Sets the parent object for this object.
-	 * 
+	 *
 	 * @param parentObject parent object
 	 * @throws IllegalArgumentException if parentObject is not a valid type of parent
 	 */
 	void setParentId(Trackable parentObject);
+
+	/**
+	 * Sets the parent ID for this object.
+	 *
+	 * @param parentId parent ID
+	 */
+	void setParentId(String parentId);
 }
