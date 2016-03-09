@@ -23,19 +23,19 @@ import com.nastel.jkool.tnt4j.source.SourceType;
 
 /**
  * <p>
- * This class implements a default configuration factory backed by <code>TrackerConfigStore</code> class.
+ * This class implements a default configuration factory backed by {@link TrackerConfigStore} class.
  * </p>
  * 
  * <pre>
  * {@code
  * TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(source);
- * TrackingLogger.register(config.build());
+ * TrackingLogger.getInstance(config.build());
  * ...
  * }
  * </pre>
  * 
- * @see TrackerConfigStore
  * @see TrackerConfig
+ * @see TrackerConfigStore
  * 
  * @version $Revision: 3 $
  * 

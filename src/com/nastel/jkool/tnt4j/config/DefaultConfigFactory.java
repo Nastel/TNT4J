@@ -45,7 +45,7 @@ public class DefaultConfigFactory  {
 	 * Set a default configuration factory implementation
 	 * @param fac configuration factory
 	 *
-	 * @return <code>ConfigFactory</code> instance
+	 * @return {@link ConfigFactory} instance
 	 */
 	public static ConfigFactory setDefaultConfigFactory(ConfigFactory fac) {
 		factory = fac;
@@ -55,7 +55,7 @@ public class DefaultConfigFactory  {
 	/**
 	 * Obtain a default tracking configuration factory
 	 *
-	 * @return default <code>ConfigFactory</code> instance
+	 * @return default {@link ConfigFactory} instance
 	 */
 	public static ConfigFactory getInstance() {
 		return factory;
