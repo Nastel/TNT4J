@@ -59,6 +59,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  *
  */
 public class DefaultEventSinkFactory {
+	private static final String DEFAULT_EVENT_FACTORY_KEY = "tnt4j.default.event.factory";
 	private static final String DEFAULT_FACTORY_CLASS = "com.nastel.jkool.tnt4j.logger.slf4j.SLF4JEventSinkFactory";
 	private static EventSinkFactory defaultFactory;
 
@@ -69,7 +70,7 @@ public class DefaultEventSinkFactory {
 	/**
 	 * Initialize default even sink factory based on given environment.
 	 * Default event sink factory can be specified using <code>tnt4j.default.event.factory</code>
-	 * java property and setting to the name of the class that implements <code>EventSinkFactory</code>
+	 * java property and setting to the name of the class that implements {@link EventSinkFactory}
 	 * interface. The given event sink factory class must provide a default public constructor with
 	 * no arguments.
 	 *
@@ -77,7 +78,7 @@ public class DefaultEventSinkFactory {
 	 */
 	private static void LoadDefaultFactory() {
 		if (defaultFactory == null) {
-			String defaultFactoryClass = System.getProperty("tnt4j.default.event.factory", DEFAULT_FACTORY_CLASS);
+			String defaultFactoryClass = System.getProperty(DEFAULT_EVENT_FACTORY_KEY, DEFAULT_FACTORY_CLASS);
 			defaultFactory = createEventSinkFactory(defaultFactoryClass);
 			if (defaultFactory == null && !defaultFactoryClass.equals(DEFAULT_FACTORY_CLASS)) {
 				defaultFactory = createEventSinkFactory(DEFAULT_FACTORY_CLASS);
@@ -86,11 +87,11 @@ public class DefaultEventSinkFactory {
 	}
 
 	/**
-	 * Create an instance of <code>EventSinkFactory</code> based on
+	 * Create an instance of {@link EventSinkFactory} based on
 	 * a given class name. The class must provide a default public constructor
 	 * with no arguments.
 	 *
-	 * @param className class name that implements <code>EventSinkFactory</code> interface.
+	 * @param className class name that implements {@link EventSinkFactory} interface.
 	 * @return event sink factory instance, null if not able to create an instance.
 	 * @see EventSinkFactory
 	 */
@@ -113,7 +114,7 @@ public class DefaultEventSinkFactory {
 	/**
 	 * Obtain a default event sink factory
 	 *
-	 * @return default <code>EventSinkFactory</code> instance
+	 * @return default {@link EventSinkFactory} instance
 	 */
 	public static EventSinkFactory getInstance() {
 		return defaultFactory;
@@ -123,7 +124,7 @@ public class DefaultEventSinkFactory {
 	 * Set a default event sink factory implementation
 	 *
 	 * @param factory event sink factory to use as default implementation
-	 * @return <code>EventSinkFactory</code> instance
+	 * @return {@link EventSinkFactory} instance
 	 */
 	public static EventSinkFactory setDefaultEventSinkFactory(EventSinkFactory factory) {
 		defaultFactory = factory != null? factory: defaultFactory;
