@@ -24,7 +24,7 @@ package com.nastel.jkool.tnt4j.source;
  */
 public enum SourceType {
 	GENERIC, USER, APPL, PROCESS, APPSERVER, SERVER, RUNTIME, VIRTUAL,
-	NETWORK, DEVICE, NETADDR, GEOADDR, DATACENTER;
+	NETWORK, DEVICE, NETADDR, GEOADDR, DATACENTER, DATASTORE, CACHE;
 
 	private static SourceType[] enumList = SourceType.values();
 
