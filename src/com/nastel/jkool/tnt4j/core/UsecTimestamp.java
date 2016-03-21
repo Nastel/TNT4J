@@ -38,9 +38,6 @@ import com.nastel.jkool.tnt4j.utils.Useconds;
  *
  * @version $Revision: 6 $
  */
-/**
- *
- */
 public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, Cloneable, Serializable {
 	private static final long serialVersionUID = 3658590467907047916L;
 
@@ -49,7 +46,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	private long msecs;
 	private long usecs;
 	private long currentLamportClock = LamportCounter.incrementAndGet();
-
 
 	/**
 	 * Returns Lamport clock value of this time stamp
@@ -665,7 +661,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		String tsStr = null;
 
 		if (pattern == null) {
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS" + String.format("%03d",usecs) + " XXX");
+			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS" + String.format("%03d",usecs) + " z");
 			df.setTimeZone(tz);
 			tsStr = df.format(new Date(msecs));
 		}
