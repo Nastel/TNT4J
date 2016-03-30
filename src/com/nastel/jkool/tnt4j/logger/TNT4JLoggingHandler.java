@@ -58,13 +58,15 @@ public class TNT4JLoggingHandler extends Handler {
 	/**
 	 * Activate & initialize logging handler
 	 *
+	 * @param name logger/source name
+	 * @param type source type
 	 */
-	protected void activate(String sourceName, SourceType type) {
+	protected void activate(String name, SourceType type) {
 		try {
-			logger = TrackingLogger.getInstance(sourceName, type);
+			logger = TrackingLogger.getInstance(name, type);
 	        logger.open();
         } catch (IOException e) {
-        	this.getErrorManager().error("Unable to create tracker instance=" + sourceName, e, ErrorManager.OPEN_FAILURE);
+        	this.getErrorManager().error("Unable to create tracker instance=" + name, e, ErrorManager.OPEN_FAILURE);
         }
 	}
 
