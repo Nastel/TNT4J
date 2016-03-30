@@ -17,6 +17,7 @@
   <property name="doc"       value="${project-build}/doc"/>
   <property name="pkg"       value="${project-build}/tnt4j-api"/>
   <property name="jar"       value="${project-build}/tnt4j-api.jar"/>
+  <property name="utilsjar"  value="${project-build}/tnt4j-api-utils.jar"/>
 
   <target name="init">
     <tstamp/>
@@ -67,7 +68,20 @@
     <echo message="Build of ${ant.project.name} Complete${line.separator}" level="info"/>
   </target>
 
-  <target name="doc" depends="tnt4j-api" description="build javadoc">
+  <target name="tnt4j-utils" depends="init,compile" description="build Utils">
+    <jar jarfile="${utilsjar}" basedir="${classes}" update="false">
+	  <include name="com/nastel/jkool/tnt4j/utils/*.class"/>
+      <manifest>
+        <attribute name="Implementation-Vendor" value="${vendor}"/>
+        <attribute name="Implementation-Title" value="${prodname} Utils"/>
+        <attribute name="Implementation-Version" value="${version}"/>
+      </manifest>
+    </jar>
+    
+    <echo message="Build of ${ant.project.name} Complete${line.separator}" level="info"/>
+  </target>
+
+  <target name="doc" depends="tnt4j-api,tnt4j-utils" description="build javadoc">
     <delete dir="${doc}"/>
 
     <copy file="overview.html" todir="${src}"/>
@@ -134,7 +148,7 @@
 	</zip> 
   </target>
 
-  <target name="tnt4j" depends="tnt4j-api" description="build executables"/>
+  <target name="tnt4j" depends="tnt4j-api, tnt4j-utils" description="build executables"/>
   <target name="all" depends="tnt4j-pkg" description="generate the distribution"/>
   <target name="rebuild" depends="clean,all" description="clean and build"/>
   
