@@ -28,6 +28,26 @@ import java.util.List;
 public class MathUtils {
 	
 	/**
+	 * Compute low Bollinger band value. Same as {@code getBBLow(List, 2, 20)}
+	 *
+	 * @param harray of numbers (measurements) sorted by time
+	 * @return low Bolligner band value
+	 */
+	public static double getBBLow(List<Number> harray) {
+		return getBBLow(harray, 2, 20);
+	}
+
+	/**
+	 * Compute high Bollinger band value. Same as {@code getBoHigh(List, 2, 20)}
+	 *
+	 * @param harray of numbers (measurements) sorted by time
+	 * @return high Bolligner band value
+	 */
+	public static double getBBHigh(List<Number> harray) {
+		return getBBHigh(harray, 2, 20);
+	}
+
+	/**
 	 * Compute low Bollinger band value. Typical values for N and K are 20 and 2, respectively.
 	 *
 	 * @param harray of numbers (measurements) sorted by time
@@ -35,7 +55,7 @@ public class MathUtils {
 	 * @param nPeriod an N-period moving average (EMA)
 	 * @return low Bolligner band value
 	 */
-	public static double getBollingerLow(List<Number> harray, int kTimes, int nPeriod) {
+	public static double getBBLow(List<Number> harray, int kTimes, int nPeriod) {
 		double low = 0;
 		if (harray != null && harray.size() >= nPeriod) {
 			double mean = getEMA(harray, nPeriod);
@@ -53,7 +73,7 @@ public class MathUtils {
 	 * @param nPeriod an N-period exponentially moving average (EMA)
 	 * @return high Bolligner band value
 	 */
-	public static double getBollingerHigh(List<Number> harray, int kTimes, int nPeriod) {
+	public static double getBBHigh(List<Number> harray, int kTimes, int nPeriod) {
 		double high = 0;
 		if (harray != null && harray.size() >= nPeriod) {
 			double mean = getEMA(harray, nPeriod);
