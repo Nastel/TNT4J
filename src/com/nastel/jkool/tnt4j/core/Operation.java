@@ -152,7 +152,7 @@ public class Operation implements TTL {
 	 * @return name triggering operation
 	 */
 	public String getResolvedName() {
-		return Utils.getMethodNameFromStack(opName);
+		return opName != null? Utils.getMethodNameFromStack(opName): opName;
 	}
 
 	/**
@@ -318,6 +318,15 @@ public class Operation implements TTL {
 	 */
 	public void setResource(String resource) {
 		this.resource = resource;
+	}
+
+	/**
+	 * Sets the resource associated with this operation.
+	 *
+	 * @param source resource name as a {@link Source}
+	 */
+	public void setResource(Source source) {
+		this.resource = source.getFQName();
 	}
 
 	/**

@@ -160,8 +160,11 @@ public class SimpleFormatter extends DefaultFormatter {
 		msg.append("time: '").append(UsecTimestamp.getTimeStamp(timeZone)).append("'").append(separator);
 		msg.append("sev: '").append(activity.getSeverity()).append("'").append(separator);
 		msg.append("type: '").append(activity.getType()).append("'").append(separator);
-		msg.append("name: '").append(activity.getResolvedName()).append("'");
-		if (activity.getResource() != null) {
+		
+		if (!Utils.isEmpty(activity.getResolvedName())) {
+			msg.append("name: '").append(activity.getResolvedName()).append("'");
+		}
+		if (!Utils.isEmpty(activity.getResource())) {
 			msg.append(separator);
 			msg.append("resource: '").append(activity.getResource()).append("'");
 		}
@@ -181,7 +184,7 @@ public class SimpleFormatter extends DefaultFormatter {
 			msg.append(separator);
 			msg.append("end.time: '").append(activity.getEndTime()).append("'");
 		}
-		if (activity.getLocation() != null) {
+		if (!Utils.isEmpty(activity.getLocation())) {
 			msg.append(separator);
 			msg.append("location: '").append(activity.getLocation()).append("'");
 		}
@@ -197,11 +200,11 @@ public class SimpleFormatter extends DefaultFormatter {
 			msg.append(separator);
 			msg.append("source: '").append(activity.getSource().getName()).append("'");
 		}
-		if (activity.getParentId() != null) {
+		if (!Utils.isEmpty(activity.getParentId())) {
 			msg.append(separator);
 			msg.append("parent-id: '").append(activity.getParentId()).append("'");
 		}
-		if (activity.getTrackingId() != null) {
+		if (!Utils.isEmpty(activity.getTrackingId())) {
 			msg.append(separator);
 			msg.append("track-id: '").append(activity.getTrackingId()).append("'");
 		}
