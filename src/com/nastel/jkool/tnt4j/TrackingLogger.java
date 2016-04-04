@@ -205,6 +205,7 @@ public class TrackingLogger implements Tracker {
 	private static Vector<DumpListener> DUMP_LISTENERS = new Vector<DumpListener>(10, 10);
 
 	private static final DumpHook dumpHook = new DumpHook();
+	private static final FlushHook flushHook = new FlushHook();
 	private static DumpSinkFactory dumpFactory = null;
 	private static DumpSink defaultDumpSink = null;
 	private static TrackerFactory factory = null;
@@ -224,6 +225,7 @@ public class TrackingLogger implements Tracker {
 		boolean enableDefaultDumpProviders = Boolean.getBoolean("tnt4j.dump.provider.default");
 		boolean dumpOnVmHook = Boolean.getBoolean("tnt4j.dump.on.vm.shutdown");
 		boolean dumpOnException= Boolean.getBoolean("tnt4j.dump.on.exception");
+		boolean flushOnVmHook= Boolean.getBoolean("tnt4j.flush.on.vm.shutdown");
 
 		if (enableDefaultDumpProviders) {
 			addDumpProvider(defaultDumpSink, new PropertiesDumpProvider(Utils.VM_NAME));
@@ -234,6 +236,7 @@ public class TrackingLogger implements Tracker {
 		}
 		if (dumpOnVmHook) dumpOnShutdown(dumpOnVmHook);
 		if (dumpOnException) dumpOnUncaughtException();
+		if (flushOnVmHook) flushOnShutdown(flushOnVmHook);
 	}
 
 	/**
@@ -301,6 +304,20 @@ public class TrackingLogger implements Tracker {
     		return copy;
     	}
     }
+
+	/**
+	 * Flush all available trackers
+	 *
+	 */
+	public static void flushAll() {
+		List<TrackingLogger> copy = getAllTrackers();
+		for (TrackingLogger logger: TRACKERS.keySet()) {
+			try {
+				logger.getEventSink().flush();
+			} catch (IOException e) {
+			}
+		}
+	}
 
 	/**
 	 * Obtain a stack trace list for all tracker allocations to
@@ -1384,7 +1401,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Enable or disable VM shutdown hook that will automatically trigger a dump.
+	 * Enable/disable VM shutdown hook that will automatically trigger a dump.
 	 *
 	 * @param flag enable/disable VM shutdown hook that triggers a dump
 	 */
@@ -1395,7 +1412,19 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Enable or disable UncaughtExceptionHandler hook that will automatically trigger a dump
+	 * Enable/disable VM shutdown hook that will automatically flush
+	 * all registered trackers.
+	 *
+	 * @param flag enable/disable VM shutdown hook that triggers a flush
+	 */
+	public static void flushOnShutdown(boolean flag) {
+		if (flag)
+			Runtime.getRuntime().addShutdownHook(flushHook);
+		else Runtime.getRuntime().removeShutdownHook(flushHook);
+	}
+
+	/**
+	 * Enable/disable {@code UncaughtExceptionHandler} hook that will automatically trigger a dump
 	 * on uncaught thread exceptions for all threads.
 	 *
 	 */
@@ -1554,17 +1583,4 @@ public class TrackingLogger implements Tracker {
 		checkState();
 		return logger.newUUID(obj);
     }
-}
-
-class DumpHook extends Thread implements Thread.UncaughtExceptionHandler {
-	@Override
-	public void uncaughtException(Thread t, Throwable e) {
-		TrackingLogger.dumpState(e);
-	}
-
-	@Override
-	public void run() {
-		setName("TrackingLogger/DumpHook");
-		TrackingLogger.dumpState(new Exception("VM-Shutdown"));
-	}
 }
