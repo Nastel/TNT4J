@@ -342,7 +342,8 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	@Override
 	public void setParentId(Trackable parentObject) {
 		parent = parentObject.getTrackingId();
-		source = parentObject.getSource();
+		if (source == null)
+			source = parentObject.getSource();
 	}
 
 	@Override
