@@ -309,7 +309,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 
 	@Override
 	public boolean isLoggable(long ttl, Source source, OpLevel level, String msg, Object... args) {
-		boolean pass = true;
+		boolean pass = isSet(level);
 		if (filters.size() == 0) return pass;
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, ttl, source, level, msg, args));
@@ -323,7 +323,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 
 	@Override
 	public boolean isLoggable(Snapshot snapshot) {
-		boolean pass = true;
+		boolean pass = isSet(snapshot.getSeverity());
 		if (filters.size() == 0) return pass;
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, snapshot));
@@ -337,7 +337,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 
 	@Override
 	public boolean isLoggable(TrackingActivity activity) {
-		boolean pass = true;
+		boolean pass = isSet(activity.getSeverity());
 		if (filters.size() == 0) return pass;
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, activity));
@@ -351,7 +351,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 
 	@Override
 	public boolean isLoggable(TrackingEvent event) {
-		boolean pass = true;
+		boolean pass = isSet(event.getSeverity());
 		if (filters.size() == 0) return pass;
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, event));
