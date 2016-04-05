@@ -20,10 +20,10 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.nastel.jkool.tnt4j.utils.TimeService;
@@ -304,8 +304,13 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 					}
 				}
 			}
-			dateFormat = StringUtils.isEmpty(locale) ? new SimpleDateFormat(formatStr)
-					: new SimpleDateFormat(formatStr, Locale.forLanguageTag(locale));
+			if (StringUtils.isEmpty(locale)) {
+				dateFormat = new SimpleDateFormat(formatStr);
+			} else {
+				// NOTE: adapting to LocaleUtils notation.
+				String l = locale.replace("-", "_");
+				dateFormat = new SimpleDateFormat(formatStr, LocaleUtils.toLocale(l));
+			}
 		}
 
 		dateFormat.setLenient(true);
