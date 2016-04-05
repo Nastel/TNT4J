@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -190,6 +191,29 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 *
 	 * @param timeStampStr timestamp string
 	 * @param formatStr format specification for timestamp string
+	 * @param timeZoneId time zone that timeStampStr represents. This is only needed when formatStr does not include
+	 *                   time zone specification and timeStampStr does not represent a string in local time zone.
+	 * @param locale locale for date format to use.
+	 * @throws NullPointerException if timeStampStr is {@code null}
+	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
+	 * @throws ParseException if failed to parse string based on specified format
+	 * @see java.util.TimeZone
+	 */
+	public UsecTimestamp(String timeStampStr, String formatStr, String timeZoneId, String locale) throws ParseException {
+		this(timeStampStr, formatStr, (StringUtils.isEmpty(timeZoneId) ? null : TimeZone.getTimeZone(timeZoneId)), locale);
+	}
+
+	/**
+	 * <p>Creates UsecTimestamp from string representation of timestamp in the
+	 * specified format.</p>
+	 * <p>This is based on {@link SimpleDateFormat}, but extends its support to
+	 * recognize microsecond fractional seconds. If number of fractional second
+	 * characters is greater than 3, then it's assumed to be microseconds.
+	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of
+	 * {@link SimpleDateFormat}.
+	 *
+	 * @param timeStampStr timestamp string
+	 * @param formatStr format specification for timestamp string
 	 * @param timeZone time zone that timeStampStr represents. This is only needed when formatStr does not include
 	 *                   time zone specification and timeStampStr does not represent a string in local time zone.
 	 * @throws NullPointerException if timeStampStr is {@code null}
@@ -198,6 +222,29 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @see java.util.TimeZone
 	 */
 	public UsecTimestamp(String timeStampStr, String formatStr, TimeZone timeZone) throws ParseException {
+		this(timeStampStr, formatStr, timeZone, null);
+	}
+
+	/**
+	 * <p>Creates UsecTimestamp from string representation of timestamp in the
+	 * specified format.</p>
+	 * <p>This is based on {@link SimpleDateFormat}, but extends its support to
+	 * recognize microsecond fractional seconds. If number of fractional second
+	 * characters is greater than 3, then it's assumed to be microseconds.
+	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of
+	 * {@link SimpleDateFormat}.
+	 *
+	 * @param timeStampStr timestamp string
+	 * @param formatStr format specification for timestamp string
+	 * @param timeZone time zone that timeStampStr represents. This is only needed when formatStr does not include
+	 *                   time zone specification and timeStampStr does not represent a string in local time zone.
+	 * @param locale locale for date format to use.
+	 * @throws NullPointerException if timeStampStr is {@code null}
+	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
+	 * @throws ParseException if failed to parse string based on specified format
+	 * @see java.util.TimeZone
+	 */
+	public UsecTimestamp(String timeStampStr, String formatStr, TimeZone timeZone, String locale) throws ParseException {
 		if (timeStampStr == null)
 			throw new NullPointerException("timeStampStr must be non-null");
 
@@ -257,7 +304,8 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 					}
 				}
 			}
-			dateFormat = new SimpleDateFormat(formatStr);
+			dateFormat = StringUtils.isEmpty(locale) ? new SimpleDateFormat(formatStr)
+					: new SimpleDateFormat(formatStr, Locale.forLanguageTag(locale));
 		}
 
 		dateFormat.setLenient(true);
