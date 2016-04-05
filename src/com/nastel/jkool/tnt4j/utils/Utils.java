@@ -126,6 +126,23 @@ public class Utils {
     }
 
 	/**
+	 * Resolve variable given name to a global variable.
+	 * Global variables are referenced using: $var convention.
+	 *
+	 * @param props a set of properties
+	 * @param name object to use
+	 * @param defValue default value if name undefined
+	 * @return resolved variable or itself if not a variable
+	 */
+	public static String resolve(Properties props, String name, String defValue) {
+	    if (name.startsWith("$")) {
+	    	return props.getProperty(name.substring(1), defValue);
+	    } else {
+	    	return name;
+	    }
+    }
+
+	/**
 	 * Qualify given key with a given object class
 	 *
 	 * @param obj object to use
