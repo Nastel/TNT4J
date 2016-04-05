@@ -36,6 +36,7 @@ import java.text.MessageFormat;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Map.Entry;
 import java.util.Properties;
 
@@ -81,6 +82,11 @@ public class Utils {
 	 */
 	public static final long VM_PID = initVMID();
 
+	/**
+	 * Random number generator
+	 */
+	private static Random rand = new Random();
+
 	public static final int CLIENT_CODE_STACK_INDEX;
 
 	static {
@@ -109,6 +115,21 @@ public class Utils {
 		return 0;
 	}
 
+	/**
+	 * Random number generator within a specified range (max, min inclusive) 
+	 *
+	 * @param min bottom of the range
+	 * @param max top of the range
+	 * @return random number between the specified range
+	 */
+	public static int randomRange(int min, int max) {
+		if (max < min) {
+			throw new IllegalArgumentException("max < min");
+		}
+		int range = max - min + 1;
+		return rand.nextInt(range) + min;		
+	}
+	
 	/**
 	 * Resolve variable given name to a global variable.
 	 * Global variables are referenced using: $var convention.

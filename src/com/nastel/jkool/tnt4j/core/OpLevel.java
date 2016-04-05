@@ -15,6 +15,8 @@
  */
 package com.nastel.jkool.tnt4j.core;
 
+import com.nastel.jkool.tnt4j.utils.Utils;
+
 
 /**
  * Provides list of valid operation message severity levels
@@ -25,6 +27,8 @@ package com.nastel.jkool.tnt4j.core;
 public enum OpLevel {
 	NONE, TRACE, DEBUG, INFO, SUCCESS, WARNING, ERROR, FAILURE, CRITICAL, FATAL, HALT;
 
+	public static final String ANY_LEVEL = "ANY";
+	
 	private static OpLevel[] enumList = OpLevel.values();
 
 	/**
@@ -43,21 +47,47 @@ public enum OpLevel {
 	}
 
 	/**
+	 * Randomly select a level between TRACE and last level
+	 *
+	 * @return randomly selected level within the range
+	 * @throws IllegalArgumentException if maxLevel < minLevel
+	 */
+	public static OpLevel anyLevel() {
+		return valueOf(Utils.randomRange(TRACE.ordinal(), (enumList.length-1)));
+	}
+	
+	/**
+	 * Randomly select a level based on a given level range
+	 *
+	 * @param minLevel minimum level number
+	 * @param maxLevel maximum level number
+	 * @return randomly selected level within specified range
+	 * @throws IllegalArgumentException if maxLevel < minLevel
+	 */
+	public static OpLevel anyLevel(int minLevel, int maxLevel) {
+		return valueOf(Utils.randomRange(minLevel, maxLevel));
+	}
+	
+	/**
 	 * Converts the specified object to a member of the enumeration.
 	 *
 	 * @param value object to convert
 	 * @return enumeration member
-	 * @throws NullPointerException if value is <code>null</code>
+	 * @throws NullPointerException if value is {@code null}
 	 * @throws IllegalArgumentException if object cannot be matched to a
 	 *  member of the enumeration
 	 */
 	public static OpLevel valueOf(Object value) {
 		if (value == null)
 			throw new NullPointerException("object must be non-null");
-		if (value instanceof Number)
+		if (value instanceof Number) {
 			return valueOf(((Number)value).intValue());
-		else if (value instanceof String)
+		} else if (value instanceof String) {
+			if (value.toString().equalsIgnoreCase(ANY_LEVEL)) {
+				return anyLevel();
+			}
 			return valueOf(value.toString());
+		}
 		throw new IllegalArgumentException("Cannot convert object of type '" + value.getClass().getName() + "' enum OpLevel");
 	}
 }
