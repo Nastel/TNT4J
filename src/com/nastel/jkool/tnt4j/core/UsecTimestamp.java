@@ -308,7 +308,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 				dateFormat = new SimpleDateFormat(formatStr);
 			} else {
 				// NOTE: adapting to LocaleUtils notation.
-				String l = locale.replace("-", "_");
+				String l = locale.replace('-', '_');
 				dateFormat = new SimpleDateFormat(formatStr, LocaleUtils.toLocale(l));
 			}
 		}
