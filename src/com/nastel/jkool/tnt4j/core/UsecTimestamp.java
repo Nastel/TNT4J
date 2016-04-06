@@ -23,11 +23,11 @@ import java.util.Date;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicLong;
 
-import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.nastel.jkool.tnt4j.utils.TimeService;
 import com.nastel.jkool.tnt4j.utils.Useconds;
+import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>Represents a timestamp that has microsecond accuracy. This timestamp also
@@ -304,13 +304,10 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 					}
 				}
 			}
-			if (StringUtils.isEmpty(locale)) {
-				dateFormat = new SimpleDateFormat(formatStr);
-			} else {
-				// NOTE: adapting to LocaleUtils notation.
-				String l = locale.replace('-', '_');
-				dateFormat = new SimpleDateFormat(formatStr, LocaleUtils.toLocale(l));
-			}
+
+			dateFormat = StringUtils.isEmpty(locale)
+					? new SimpleDateFormat(formatStr)
+					: new SimpleDateFormat(formatStr, Utils.getLocale(locale));
 		}
 
 		dateFormat.setLenient(true);

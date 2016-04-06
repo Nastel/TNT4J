@@ -33,14 +33,12 @@ import java.nio.charset.CharsetEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
 
+import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.nastel.jkool.tnt4j.config.ConfigException;
 import com.nastel.jkool.tnt4j.config.Configurable;
@@ -1073,5 +1071,25 @@ public class Utils {
 	public static Object deserialize(byte[] bytes) {
 	    return SerializationUtils.deserialize(bytes);
     }
+
+	/**
+	 * Constructs {@link Locale} object parsed from provided string.
+	 *
+	 * @param locale
+	 *            string defining locale
+	 *
+	 * @return parsed locale object, or {@code null} if can't parse {@param locale}
+	 *
+	 * @see org.apache.commons.lang3.LocaleUtils#toLocale(String)
+	 */
+	public static Locale getLocale(String locale) {
+		if (StringUtils.isEmpty(locale)) {
+			return null;
+		}
+
+		// NOTE: adapting to LocaleUtils notation
+		String l = locale.replace('-', '_');
+		return LocaleUtils.toLocale(l);
+	}
 
 }
