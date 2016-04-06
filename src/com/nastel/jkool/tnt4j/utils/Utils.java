@@ -33,8 +33,13 @@ import java.nio.charset.CharsetEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Random;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.SerializationUtils;
@@ -111,6 +116,24 @@ public class Utils {
 		} catch (Throwable e) {
 		}
 		return 0;
+	}
+
+	/**
+	 * Constructs a {@code Locale} object parsed from provided locale string.
+	 *
+	 * @param localeStr locale string representation
+	 * 
+	 * @see org.apache.commons.lang3.LocaleUtils#toLocale(String)
+	 * @return parsed locale object, or {@code null} if can't parse localeStr.
+	 */
+	public static Locale getLocale(String localeStr) {
+		if (StringUtils.isEmpty(localeStr)) {
+			return null;
+		}
+
+		// NOTE: adapting to LocaleUtils notation
+		String l = localeStr.replace('-', '_');
+		return LocaleUtils.toLocale(l);
 	}
 
 	/**
@@ -1071,25 +1094,4 @@ public class Utils {
 	public static Object deserialize(byte[] bytes) {
 	    return SerializationUtils.deserialize(bytes);
     }
-
-	/**
-	 * Constructs {@link Locale} object parsed from provided string.
-	 *
-	 * @param locale
-	 *            string defining locale
-	 *
-	 * @return parsed locale object, or {@code null} if can't parse {@param locale}
-	 *
-	 * @see org.apache.commons.lang3.LocaleUtils#toLocale(String)
-	 */
-	public static Locale getLocale(String locale) {
-		if (StringUtils.isEmpty(locale)) {
-			return null;
-		}
-
-		// NOTE: adapting to LocaleUtils notation
-		String l = locale.replace('-', '_');
-		return LocaleUtils.toLocale(l);
-	}
-
 }
