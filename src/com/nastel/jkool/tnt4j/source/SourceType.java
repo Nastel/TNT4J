@@ -17,7 +17,7 @@ package com.nastel.jkool.tnt4j.source;
 
 /**
  * Provides list of valid source types. Source is a logical nested entity that expresses container
- * of applications, servers, application servers, runtimes, etc.
+ * of application, server, application server, run-time, etc.
  *
  * @see Source
  * @version $Revision: 1 $
@@ -25,7 +25,7 @@ package com.nastel.jkool.tnt4j.source;
 public enum SourceType {
 	GENERIC, USER, APPL, PROCESS, APPSERVER, SERVER, RUNTIME, VIRTUAL,
 	NETWORK, DEVICE, NETADDR, GEOADDR, DATACENTER, DATASTORE, CACHE,
-	SERVICE;
+	SERVICE, QUEUE;
 
 	private static SourceType[] enumList = SourceType.values();
 
