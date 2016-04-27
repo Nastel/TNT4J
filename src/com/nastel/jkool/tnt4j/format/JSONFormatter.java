@@ -114,8 +114,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			jsonString.append(START_JSON);
 			jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
 
-			String msgText = Utils.format(obj.toString(), args);
-			msgText = StringEscapeUtils.escapeJson(msgText); // escape double quote chars
+			String msgText = StringEscapeUtils.escapeJson(Utils.format(obj.toString(), args)); // escape double quote chars
 			jsonString.append(JSON_MSG_TEXT_LABEL).append(ATTR_SEP).append(Utils.quote(msgText));
 			jsonString.append(END_JSON);
 			return jsonString.toString();

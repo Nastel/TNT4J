@@ -310,8 +310,8 @@ public class TrackingLogger implements Tracker {
 	 *
 	 */
 	public static void flushAll() {
-		List<TrackingLogger> copy = getAllTrackers();
-		for (TrackingLogger logger: TRACKERS.keySet()) {
+		List<TrackingLogger> trackers = getAllTrackers();
+		for (TrackingLogger logger: trackers) {
 			try {
 				logger.getEventSink().flush();
 			} catch (IOException e) {
