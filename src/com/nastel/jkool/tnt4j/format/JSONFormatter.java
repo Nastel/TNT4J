@@ -36,8 +36,8 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
- * JSON implementation of <code>Formatter</code> interface provides default formatting of <code>TrackingActvity</code>,
- * <code>TrackingEvent</code>, <code>Snapshot</code>, <code>Property</code> into JSON format.
+ * JSON implementation of {@link Formatter} interface provides default formatting of {@link TrackingActivity},
+ * {@link TrackingEvent}, {@link Snapshot}, {@link Property} into JSON format.
  * </p>
  *
  *
@@ -123,7 +123,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	}
 
 	/**
-	 * Format a given <code>TrackingEvent</code> into JSON format
+	 * Format a given {@link TrackingEvent} into JSON format
 	 *
 	 * @param event
 	 *            tracking event instance to be formatted
@@ -259,7 +259,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	}
 
 	/**
-	 * Format a given <code>TrackingActivity</code> into JSON format
+	 * Format a given {@link TrackingActivity} into JSON format
 	 *
 	 * @param activity
 	 *            tracking activity instance to be formatted
@@ -378,7 +378,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	}
 
 	/**
-	 * Format a given <code>Snapshot</code> into JSON format
+	 * Format a given {@link Snapshot} into JSON format
 	 *
 	 * @param snap
 	 *            snapshot object to be formatted into JSON
@@ -390,7 +390,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		jsonString.append(START_JSON);
 
 		if (!Utils.isEmpty(snap.getTrackingId())) {
-			jsonString.append(START_JSON).append(JSON_TRACK_ID_LABEL).append(ATTR_SEP).append(
+			jsonString.append(JSON_TRACK_ID_LABEL).append(ATTR_SEP).append(
 			        Utils.quote(snap.getTrackingId())).append(ATTR_JSON);
 		}
 		if (!Utils.isEmpty(snap.getParentId())) {
@@ -441,7 +441,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	}
 
 	/**
-	 * Format a given <code>Property</code> into JSON format
+	 * Format a given {@link Property} into JSON format
 	 *
 	 * @param prop property object to be formatted into JSON
 	 * @return formatted property as a JSON string
