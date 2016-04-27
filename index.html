@@ -20,7 +20,7 @@
 
     <section class="main-content">
       <h1>
-<a id="why-tnt4j-" class="anchor" href="#why-tnt4j-" aria-hidden="true"><span class="octicon octicon-link"></span></a>Why TNT4J </h1>
+<a id="why-tnt4j-" class="anchor" href="#why-tnt4j-" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Why TNT4J </h1>
 
 <p>TNT4J is about tracking and tracing activities, transactions, behavior and performance via an easy to use API that behaves much like a logging framework.</p>
 
@@ -41,7 +41,7 @@
 <p><b>Several key features make TNT4J a prime choice for your java application:</b></p>
 
 <h3>
-<a id="slf4j-event-sink-integration" class="anchor" href="#slf4j-event-sink-integration" aria-hidden="true"><span class="octicon octicon-link"></span></a>SLF4J Event Sink Integration</h3>
+<a id="slf4j-event-sink-integration" class="anchor" href="#slf4j-event-sink-integration" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>SLF4J Event Sink Integration</h3>
 
 <p>TNT4J provides SLF4J event sink implementation via <code>com.nastel.jkool.tnt4j.logger.slf4j.SLF4JEventSinkFactory</code> event sink factory.
 Other logging frameworks can be supported by implementing <code>EventSinkFactory</code> &amp; <code>EventSink</code> interfaces. 
@@ -89,7 +89,7 @@ logger<span class="pl-k">.</span>info(<span class="pl-s"><span class="pl-pds">"<
 First <code>number</code> qualifier is tested and defaults to <code>string</code> if the test fails (e.g. <code>#order-no=62627</code>). </p>
 
 <h3>
-<a id="performance" class="anchor" href="#performance" aria-hidden="true"><span class="octicon octicon-link"></span></a>Performance</h3>
+<a id="performance" class="anchor" href="#performance" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Performance</h3>
 
 <p>No need to concatenate messages before logging. String concatenation is expensive especially in loops. Simply log using message patterns as follows and TNT4J will resolve the message only if it actually gets logged:</p>
 
@@ -104,7 +104,7 @@ event.sink.factory.EventSinkFactory: com.nastel.jkool.tnt4j.logger.slf4j.SLF4JEv
 </code></pre>
 
 <h3>
-<a id="simplicity--clean-code" class="anchor" href="#simplicity--clean-code" aria-hidden="true"><span class="octicon octicon-link"></span></a>Simplicity &amp; Clean Code</h3>
+<a id="simplicity--clean-code" class="anchor" href="#simplicity--clean-code" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Simplicity &amp; Clean Code</h3>
 
 <p>No need to check for <code>isDebugEnabled()</code> before logging messages. Just register your own <code>SinkEventFilter</code> and consolidate all checking into a single listener.</p>
 
@@ -115,7 +115,7 @@ logger<span class="pl-k">.</span>debug(<span class="pl-s"><span class="pl-pds">"
 <p>All conditional logging can be consolidated into a single listener object. </p>
 
 <h3>
-<a id="flexible-filtering" class="anchor" href="#flexible-filtering" aria-hidden="true"><span class="octicon octicon-link"></span></a>Flexible Filtering</h3>
+<a id="flexible-filtering" class="anchor" href="#flexible-filtering" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Flexible Filtering</h3>
 
 <p>Filter out not only based on category/severity (as slf4j), but also based on performance objectives. Example: log events only if their elapsed time or wait times are greater than a ceratin value. TNT4J allows users to register filters within <code>tnt4j.properties</code> without changing application code. Create your own filters which would allow you to filter events out based on user defined criteria and inject filters using <code>tnt4j.properties</code>.
 See  <code>tnt4j.properties</code> and <code>com.nastel.jkool.tnt4j.filters.EventLevelTimeFilter</code> for details.
@@ -157,7 +157,7 @@ Register filters via declarations in <code>tnt4j.properties</code> or in your ap
 }</pre></div>
 
 <h3>
-<a id="granular-conditional-logging" class="anchor" href="#granular-conditional-logging" aria-hidden="true"><span class="octicon octicon-link"></span></a>Granular conditional logging</h3>
+<a id="granular-conditional-logging" class="anchor" href="#granular-conditional-logging" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Granular conditional logging</h3>
 
 <p>Log only what matters. Increase performance of your applications by decreasing the amount of logging your application produces while increasing the relevance and quality of the output.</p>
 
@@ -174,7 +174,7 @@ Consolidate conditional checks (<code>logger.isSet()</code>) into <code>SinkEven
 <div class="highlight highlight-source-java"><pre>logger<span class="pl-k">.</span>addSinkEventFilter(<span class="pl-k">new</span> <span class="pl-smi">MyLogFilter</span>());</pre></div>
 
 <h3>
-<a id="share-logging-context-across-apps" class="anchor" href="#share-logging-context-across-apps" aria-hidden="true"><span class="octicon octicon-link"></span></a>Share logging context across apps</h3>
+<a id="share-logging-context-across-apps" class="anchor" href="#share-logging-context-across-apps" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Share logging context across apps</h3>
 
 <p>Pass logging context across threads or applications.</p>
 
@@ -196,7 +196,7 @@ logger<span class="pl-k">.</span>set(<span class="pl-smi">OpLevel</span><span cl
 }</pre></div>
 
 <h3>
-<a id="state-logging" class="anchor" href="#state-logging" aria-hidden="true"><span class="octicon octicon-link"></span></a>State logging</h3>
+<a id="state-logging" class="anchor" href="#state-logging" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>State logging</h3>
 
 <p>Log application state to improve diagnostics of performance, resource utilization and other tough problems which are difficult  to trace using standard event logging techniques. Simply register your state dump provider (see <code>DumpProvider</code> interface) and export state variables specific to you application. Dump providers can be called on VM shutdown or on demand.</p>
 
@@ -208,7 +208,7 @@ logger<span class="pl-k">.</span>set(<span class="pl-smi">OpLevel</span><span cl
 <span class="pl-smi">TrackingLogger</span><span class="pl-k">.</span>dumpState();</pre></div>
 
 <h3>
-<a id="measurements--metrics" class="anchor" href="#measurements--metrics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Measurements &amp; Metrics</h3>
+<a id="measurements--metrics" class="anchor" href="#measurements--metrics" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Measurements &amp; Metrics</h3>
 
 <p>TNT4J is not just about logging messages, it is also about measurements and metrics such as response time, CPU, memory, block/wait times as well as user defined metrics. TNT4J lets you report metrics at the time of the logged event.
 Below is an example of creating a snapshot (collection of metrics) and attaching it to an activity:</p>
@@ -248,7 +248,7 @@ snapshot<span class="pl-k">.</span>add(<span class="pl-s"><span class="pl-pds">"
 logger<span class="pl-k">.</span>tnt(snapshot); <span class="pl-c">// report a property snapshot</span></pre></div>
 
 <h3>
-<a id="correlation-topology-time-synchronization" class="anchor" href="#correlation-topology-time-synchronization" aria-hidden="true"><span class="octicon octicon-link"></span></a>Correlation, Topology, Time Synchronization</h3>
+<a id="correlation-topology-time-synchronization" class="anchor" href="#correlation-topology-time-synchronization" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Correlation, Topology, Time Synchronization</h3>
 
 <p>Developers can relate events by grouping them into activities (activity is a collection of related events and sub-activities) or passing context -- correlator(s). Activity grouping and correlators create connectivity between events across thread, applications, server, runtime, location boundaries. TNT4J allows attachment of correlators when reporting tracking events: see <code>TrackingLogger.tnt(..)</code> calls for details. The API also allows relating tracking events across application and runtime boundaries using the same mechanism.</p>
 
@@ -280,7 +280,7 @@ logger<span class="pl-k">.</span>tnt(<span class="pl-smi">OpLevel</span><span cl
 <p><b>TIP:</b> Developers should use <code>TimeServer.currentTimeMillis()</code> instead of <code>System.currentTimeMillis()</code> to obtain time adjusted to NTP time. TNT4J also maintains a microsecond resolution clock using <code>Useconds.CURRENT.get()</code> which returns the number of microseconds between the current time and midnight, January 1, 1970 UTC (NTP adjusted). TNT4J automatically measures and adjusts clock drift between NTP, <code>System.currentTimeMillis()</code> and <code>System.nanoTime()</code> clocks to ensure accurate microsecond precision/accuracy timing spanning VMs, devices, servers, geo locations.</p>
 
 <h3>
-<a id="tracking-associations" class="anchor" href="#tracking-associations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Tracking Associations</h3>
+<a id="tracking-associations" class="anchor" href="#tracking-associations" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Tracking Associations</h3>
 
 <p>TNT4J allows developers to track associations between sources. Source is a logical definition of an entity such as application, server, network, geo location. 
 Here is an example of a source: <code>APP=WebAppl#SERVER=MYSERVER#DATACENTER=DC1#GEOADDR=New York</code>, which means application <code>WebAppl</code> deployed on server <code>MYSERVER</code>, located on datacenter <code>DC1</code>, located in <code>New York</code>. Say you want track an association between 2 applications that exchange data, where one application sends data to another:</p>
@@ -298,7 +298,7 @@ logger<span class="pl-k">.</span>tnt(event);</pre></div>
 <p>The snippet above creates the following asssociation: <code>Orders-&gt;SEND-&gt;Billing</code>, which expresses flow between <code>Orders</code> and <code>Billing</code> applications, where <code>Orders</code> and <code>Billing</code> are nodes and <code>SEND</code> is an edge.</p>
 
 <h3>
-<a id="logging-statistics" class="anchor" href="#logging-statistics" aria-hidden="true"><span class="octicon octicon-link"></span></a>Logging Statistics</h3>
+<a id="logging-statistics" class="anchor" href="#logging-statistics" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Logging Statistics</h3>
 
 <p>TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors, overhead in usec and more. Do you know the overhead of your logging framework on your application?</p>
 
@@ -330,7 +330,7 @@ logger<span class="pl-k">.</span>resetStats();</pre></div>
 }</pre></div>
 
 <h2>
-<a id="quick-examples" class="anchor" href="#quick-examples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Quick Examples</h2>
+<a id="quick-examples" class="anchor" href="#quick-examples" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Quick Examples</h2>
 
 <p>Here is a simple example of using TNT4J:</p>
 
@@ -395,7 +395,7 @@ TNT4J can take advantage of other lower level logging frameworks such as slf4j, 
 Default TNT4J binding is based on slf4j.</p>
 
 <h1>
-<a id="about-tnt4j" class="anchor" href="#about-tnt4j" aria-hidden="true"><span class="octicon octicon-link"></span></a>About TNT4J</h1>
+<a id="about-tnt4j" class="anchor" href="#about-tnt4j" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>About TNT4J</h1>
 
 <p>Track and Trace 4 Java API, Application logging framework for correlation, diagnostics and tracking of application activities within and across <b>multiple applications, runtime, servers, geo locations. This API is specifically designed to troubleshoot distributed, concurrent, multi-threaded, composite applications</b> and includes activity correlation, application state dumps, performance and user defined metrics.</p>
 
@@ -421,7 +421,7 @@ See Getting Started (<a href="https://github.com/Nastel/TNT4J/wiki/Getting-Start
 Wiki is available at <a href="https://github.com/Nastel/TNT4J/wiki">https://github.com/Nastel/TNT4J/wiki</a></p>
 
 <h1>
-<a id="tnt4j-mission" class="anchor" href="#tnt4j-mission" aria-hidden="true"><span class="octicon octicon-link"></span></a>TNT4J Mission</h1>
+<a id="tnt4j-mission" class="anchor" href="#tnt4j-mission" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>TNT4J Mission</h1>
 
 <ul>
 <li>Standard way to track application behavior, activities across users, apps, servers, devices, threads</li>
@@ -435,7 +435,7 @@ Wiki is available at <a href="https://github.com/Nastel/TNT4J/wiki">https://gith
 </ul>
 
 <h1>
-<a id="tnt4j-concepts" class="anchor" href="#tnt4j-concepts" aria-hidden="true"><span class="octicon octicon-link"></span></a>TNT4J Concepts</h1>
+<a id="tnt4j-concepts" class="anchor" href="#tnt4j-concepts" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>TNT4J Concepts</h1>
 
 <p>TNT4J is fully plug-in and play tracking, tracing and logging framework that consists of the following basic constructs:</p>
 
@@ -469,7 +469,7 @@ Wiki is available at <a href="https://github.com/Nastel/TNT4J/wiki">https://gith
 </ul>
 
 <h1>
-<a id="how-to-build-tnt4j" class="anchor" href="#how-to-build-tnt4j" aria-hidden="true"><span class="octicon octicon-link"></span></a>How to Build TNT4J</h1>
+<a id="how-to-build-tnt4j" class="anchor" href="#how-to-build-tnt4j" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to Build TNT4J</h1>
 
 <p>Requirements</p>
 
@@ -507,7 +507,7 @@ Wiki is available at <a href="https://github.com/Nastel/TNT4J/wiki">https://gith
 </ul>
 
 <h1>
-<a id="known-projects-using-tnt4j" class="anchor" href="#known-projects-using-tnt4j" aria-hidden="true"><span class="octicon octicon-link"></span></a>Known Projects Using TNT4J</h1>
+<a id="known-projects-using-tnt4j" class="anchor" href="#known-projects-using-tnt4j" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Known Projects Using TNT4J</h1>
 
 <ul>
 <li>jKool Event Streaming Library - JESL (<a href="https://github.com/Nastel/JESL">https://github.com/Nastel/JESL</a>)</li>
