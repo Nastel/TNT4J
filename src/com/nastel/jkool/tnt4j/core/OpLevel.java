@@ -25,7 +25,7 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * @version $Revision: 2 $
  */
 public enum OpLevel {
-	NONE, TRACE, DEBUG, INFO, SUCCESS, WARNING, ERROR, FAILURE, CRITICAL, FATAL, HALT;
+	NONE, TRACE, DEBUG, INFO, NOTICE, WARNING, ERROR, FAILURE, CRITICAL, FATAL, HALT;
 
 	public static final String ANY_LEVEL = "ANY";
 	

@@ -47,6 +47,7 @@ public class ActivityScheduler {
 	private TrackingLogger logger;
 	private ScheduledFuture<?> future;
 	private Runnable activityTask;
+	private OpLevel opLevel = OpLevel.INFO;
 
 	/**
 	 * Creates a scheduler with specified name
@@ -71,6 +72,24 @@ public class ActivityScheduler {
 		if (listener != null) config.setActivityListener(listener);
 		this.logger = TrackingLogger.getInstance(config.build());
 		this.logger.setKeepThreadContext(false);
+	}
+
+	/**
+	 * Assign a default severity level to all scheduled activity events
+	 *
+	 * @param severity associated with all timing activities, events
+	 */
+	public void setOpLevel(OpLevel severity) {
+		opLevel = severity;
+	}
+
+	/**
+	 * Default severity level for all scheduled activity events
+	 *
+	 * @return severity associated with all timing activities, events
+	 */
+	public OpLevel getOpLevel() {
+		return opLevel;
 	}
 
 	/**
@@ -143,21 +162,21 @@ public class ActivityScheduler {
 	 * @param tunit time unit for period
 	 */
 	public void schedule(String name, long initialDelay, long period, TimeUnit tunit) {
-		schedule(name, period, period, tunit, OpLevel.SUCCESS);
+		schedule(name, period, period, tunit, opLevel);
 	}
 
 	/**
 	 * Schedule activity with a given name and timing details
 	 *
 	 * @param name activity name
-	 * @param level severity level
 	 * @param initialDelay in specified time units
 	 * @param period in specified time units
 	 * @param tunit time unit for period
+	 * @param severity associated with all timing activities, events
 	 */
-	public void schedule(String name, long initialDelay, long period, TimeUnit tunit,  OpLevel level) {
+	public void schedule(String name, long initialDelay, long period, TimeUnit tunit,  OpLevel severity) {
 		if (future == null || future.isCancelled()) {
-			activityTask = newActivityTask(logger, name, level);
+			activityTask = newActivityTask(logger, name, severity);
 			future = scheduler.scheduleAtFixedRate(activityTask, initialDelay, period, tunit);
 		} else {
 			throw new IllegalStateException("Already scheduled");
@@ -219,15 +238,14 @@ public class ActivityScheduler {
 
 	/**
 	 * Override this calls to return custom instances of
-	 * {@code Runnable} which will be invoked per specified
-	 * schedule.
+	 * {@code Runnable} which will be invoked per specified schedule.
 	 * @param lg tracking logger instance
 	 * @param name of the new activity task
 	 * @param level associated with the task
 	 * @return {@code Runnable} instance
 	 */
 	protected Runnable newActivityTask(TrackingLogger lg, String name, OpLevel level) {
-		return new ActivityTask(logger, name, level);
+		return new ActivityTask(logger, name, (level == null? opLevel: level));
 	}
 }
 

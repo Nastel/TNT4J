@@ -46,7 +46,7 @@ public class ActivityTask implements Runnable {
 	 * @param lg tracking logger instance
 	 */
 	protected ActivityTask(TrackingLogger lg) {
-		this(lg, "ActivityTask", OpLevel.SUCCESS);
+		this(lg, "ActivityTask", OpLevel.INFO);
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public class ActivityTask implements Runnable {
 	 * @param name activity name
 	 */
 	protected ActivityTask(TrackingLogger lg, String name) {
-		this(lg, name, OpLevel.SUCCESS);
+		this(lg, name, OpLevel.INFO);
 	}
 	
 	/**

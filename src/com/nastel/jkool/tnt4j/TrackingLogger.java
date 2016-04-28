@@ -97,8 +97,8 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * TrackingLogger tracker = TrackingLogger.getInstance(config.build()); // register and obtain Tracker logger instance
  * TrackingActivity activity = tracker.newActivity(); // create a new activity instance
  * activity.start(); // start application activity timing
- * TrackingEvent event = tracker.newEvent(OpLevel.SUCCESS, "SQL-SELECT", "SQL customer lookup"); // create a tracking event
- * TrackingEvent jms_event = tracker.newEvent(OpLevel.SUCCESS, OpType.SEND, "JmsSend", "correlator", "Sending Message"); // create a tracking event
+ * TrackingEvent event = tracker.newEvent(OpLevel.INFO, "SQL-SELECT", "SQL customer lookup"); // create a tracking event
+ * TrackingEvent jms_event = tracker.newEvent(OpLevel.INFO, OpType.SEND, "JmsSend", "correlator", "Sending Message"); // create a tracking event
  * event.start(); // start timing a tracking event
  * try {
  * 	...
@@ -130,8 +130,8 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * TrackingLogger tracker = TrackingLogger.getInstance(config.build()); // register and obtain Tracker logger instance
  * TrackingActivity activity = tracker.newActivity(); // create a new activity instance
  * activity.start(); // start application activity timing
- * TrackingEvent event = tracker.newEvent(OpLevel.SUCCESS, "SQL-SELECT", "SQL customer lookup"); // create a tracking event
- * TrackingEvent jms_event = tracker.newEvent(OpLevel.SUCCESS, OpType.SEND, "JmsSend", "correlator", "Sending Message"); // create a tracking event
+ * TrackingEvent event = tracker.newEvent(OpLevel.NOTICE, "SQL-SELECT", "SQL customer lookup"); // create a tracking event
+ * TrackingEvent jms_event = tracker.newEvent(OpLevel.NOTICE, OpType.SEND, "JmsSend", "correlator", "Sending Message"); // create a tracking event
  * event.start(); // start timing a tracking event
  * try {
  * 	...
@@ -220,12 +220,12 @@ public class TrackingLogger implements Tracker {
 		DefaultEventSinkFactory.setDefaultEventSinkFactory(config.getDefaultEvenSinkFactory());
 		factory = config.getTrackerFactory();
 		dumpFactory = config.getDumpSinkFactory();
-
 		defaultDumpSink = dumpFactory.getInstance();
-		boolean enableDefaultDumpProviders = Boolean.getBoolean("tnt4j.dump.provider.default");
-		boolean dumpOnVmHook = Boolean.getBoolean("tnt4j.dump.on.vm.shutdown");
-		boolean dumpOnException= Boolean.getBoolean("tnt4j.dump.on.exception");
-		boolean flushOnVmHook= Boolean.getBoolean("tnt4j.flush.on.vm.shutdown");
+
+		boolean enableDefaultDumpProviders = config.getBoolean("tracker.dump.provider.default", Boolean.getBoolean("tnt4j.dump.provider.default"));
+		boolean dumpOnVmHook = config.getBoolean("tracker.dump.on.vm.shutdown", Boolean.getBoolean("tnt4j.dump.on.vm.shutdown"));
+		boolean dumpOnException= config.getBoolean("tracker.dump.on.exception", Boolean.getBoolean("tnt4j.dump.on.exception"));
+		boolean flushOnVmHook= config.getBoolean("tracker.flush.on.vm.shutdown", Boolean.getBoolean("tnt4j.flush.on.vm.shutdown"));
 
 		if (enableDefaultDumpProviders) {
 			addDumpProvider(defaultDumpSink, new PropertiesDumpProvider(Utils.VM_NAME));
@@ -803,13 +803,13 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Log a single SUCCESS message and a number of user supplied arguments.
+	 * Log a single NOTICE message and a number of user supplied arguments.
 	 * Message pattern is based on the format defined
 	 * by {@code MessageFormat}. This logging type is more efficient than
 	 * string concatenation.
 	 *  <pre>
 	 * {@code 
-	 * logger.success("My message arg={0}, arg={1}", parm1, parm2);
+	 * logger.notice("My message arg={0}, arg={1}", parm1, parm2);
 	 * }
 	 * </pre>
 	 * @param msg
@@ -819,8 +819,8 @@ public class TrackingLogger implements Tracker {
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
 	 */
-	public void success(String msg, Object...args) {
-		log(OpLevel.SUCCESS, msg, args);
+	public void notice(String msg, Object...args) {
+		log(OpLevel.NOTICE, msg, args);
 	}
 
 	/**

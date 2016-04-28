@@ -46,8 +46,8 @@ import com.nastel.jkool.tnt4j.utils.Utils;
  * <p>
  * Concrete class that implements {@link Tracker} interface. This class implements integration with
  * {@link EventSink}. Do not use this class directly. This class is instantiated by the
- * <code>DefaultTrackerFactory.getInstance(...)</code> or <code>TrackingLogger.getInstance(...)</code> calls.
- * Access to this class is thread safe. <code>TrackingLogger.tnt(...)</code> method will trigger
+ * {@code DefaultTrackerFactory.getInstance(...)} or  {@code TrackingLogger.getInstance(...)} calls.
+ * Access to this class is thread safe. {@code TrackingLogger.tnt(...)} method will trigger
  * logging to {@link EventSink} configured in {@link TrackerConfig}.
  * </p>
  *
@@ -77,6 +77,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	private TrackerConfig tConfig;
 	private TrackingSelector selector;
 	private TrackingFilter filter;
+	
+	// tracker statistics
 	private AtomicLong activityCount = new AtomicLong(0);
 	private AtomicLong eventCount = new AtomicLong(0);
 	private AtomicLong msgCount = new AtomicLong(0);
@@ -86,16 +88,21 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	private AtomicLong popCount = new AtomicLong(0);
 	private AtomicLong noopCount = new AtomicLong(0);
 	private AtomicLong overheadNanos = new AtomicLong(0);
-	private volatile boolean openFlag = false, keepContext = true;
+	private volatile boolean openFlag = false, keepContext = false;
 
 	protected TrackerImpl(TrackerConfig config) {
+		this(config, false);
+	}
+
+	protected TrackerImpl(TrackerConfig config, boolean keepContext) {
 		if (!config.isBuilt()) {
 			throw new IllegalArgumentException("Uninitialized tracker configuration: use config.build()");
 		}
-		tConfig = config;
-		id = newUUID();
-		selector = tConfig.getTrackingSelector();
-		eventSink = tConfig.getEventSink();
+		this.keepContext = keepContext;
+		this.tConfig = config;
+		this.id = newUUID();
+		this.selector = tConfig.getTrackingSelector();
+		this.eventSink = tConfig.getEventSink();
 		open();
 	}
 
@@ -198,7 +205,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 
 	/**
-	 * Push an instance of <code>TrackingActivity</code> on top of the stack.
+	 * Push an instance of {@link TrackingActivity} on top of the stack.
 	 * Invoke this when activity starts. The stack is maintained per thread in
 	 * thread local.
 	 *
@@ -223,7 +230,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 
 	/**
-	 * Pop an instance of <code>TrackingActivity</code> from the top the stack.
+	 * Pop an instance of {@link TrackingActivity} from the top the stack.
 	 * Invoke this method when activity stops. The stack is maintained per thread in
 	 * thread local.
 	 *
@@ -261,6 +268,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		return getClass().getSimpleName()
 				+ "{jid=" + Integer.toHexString(System.identityHashCode(this))
 				+ ", name=" + getSource().getName()
+				+ ", keep.context=" + keepContext
 				+ ", sink=" + eventSink
 				+ "}";
 	}

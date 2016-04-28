@@ -415,6 +415,34 @@ public class TrackerConfig {
 	}
 
 	/**
+	 * Obtain a boolean value associated with a given property
+	 *
+	 * @param key
+	 *            property key
+	 *
+	 * @return boolean value associated with the given key or false if non exist
+	 */
+	public boolean getBoolean(String key) {
+		return getBoolean(key, false);
+	}
+
+	/**
+	 * Obtain a boolean value associated with a given property
+	 *
+	 * @param key
+	 *            property key
+	 *
+	 * @param defValue
+	 *            default value if key not found
+	 *
+	 * @return boolean value associated with the given key or defValue if non exist
+	 */
+	public boolean getBoolean(String key, boolean defValue) {
+		Object value = props.getProperty(key);
+		return value != null? Boolean.getBoolean(value.toString()): defValue;
+	}
+
+	/**
 	 * Obtain a property associated with the given key in this configuration instance
 	 *
 	 * @param key

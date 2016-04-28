@@ -32,13 +32,14 @@ import com.nastel.jkool.tnt4j.utils.Utils;
 
 /**
  * <p>
- * <code>EventSink</code> implementation that routes log messages to SLF4J. This implementation is designed to log
- * messages to SLF4J framework.
+ * {@code EventSink} implementation that routes log messages to SLF4J. This implementation is designed to log
+ * messages over SLF4J framework.
  * </p>
  * 
  * 
  * @see TrackingEvent
  * @see EventFormatter
+ * @see AbstractEventSink
  * @see OpLevel
  * 
  * @version $Revision: 11 $
@@ -78,13 +79,13 @@ public class SLF4JEventSink extends AbstractEventSink {
 			logger.debug(getEventFormatter().format(event), event.getOperation().getThrowable());
 			break;
 		case INFO:
-		case SUCCESS:
 		case NONE:
 			logger.info(getEventFormatter().format(event), event.getOperation().getThrowable());
 			break;
 		case TRACE:
 			logger.trace(getEventFormatter().format(event), event.getOperation().getThrowable());
 			break;
+		case NOTICE:
 		case WARNING:
 			logger.warn(getEventFormatter().format(event), event.getOperation().getThrowable());
 			break;
@@ -109,13 +110,13 @@ public class SLF4JEventSink extends AbstractEventSink {
 			logger.debug(getEventFormatter().format(activity), ex);
 			break;
 		case INFO:
-		case SUCCESS:
 		case NONE:
 			logger.info(getEventFormatter().format(activity), ex);
 			break;
 		case TRACE:
 			logger.trace(getEventFormatter().format(activity), ex);
 			break;
+		case NOTICE:
 		case WARNING:
 			logger.warn(getEventFormatter().format(activity), ex);
 			break;
@@ -139,13 +140,13 @@ public class SLF4JEventSink extends AbstractEventSink {
 			logger.debug(getEventFormatter().format(snapshot));	
 			break;
 		case INFO:
-		case SUCCESS:
 		case NONE:
 			logger.info(getEventFormatter().format(snapshot));	
 			break;
 		case TRACE:
 			logger.trace(getEventFormatter().format(snapshot));	
 			break;
+		case NOTICE:
 		case WARNING:
 			logger.warn(getEventFormatter().format(snapshot));	
 			break;
@@ -169,13 +170,13 @@ public class SLF4JEventSink extends AbstractEventSink {
 			logger.debug(getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
 			break;
 		case INFO:
-		case SUCCESS:
 		case NONE:
 			logger.info(getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
 			break;
 		case TRACE:
 			logger.trace(getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
 			break;
+		case NOTICE:
 		case WARNING:
 			logger.warn(getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
 			break;
@@ -185,6 +186,30 @@ public class SLF4JEventSink extends AbstractEventSink {
 		}
 	}
 
+	@Override
+	public boolean isSet(OpLevel sev) {
+		switch (sev) {
+		case HALT:
+		case FATAL:
+		case CRITICAL:
+		case FAILURE:
+		case ERROR:
+			return logger.isErrorEnabled();
+		case DEBUG:
+			return logger.isDebugEnabled();
+		case INFO:
+		case NONE:
+			return logger.isInfoEnabled();
+		case TRACE:
+			return logger.isTraceEnabled();
+		case NOTICE:
+		case WARNING:
+			return logger.isWarnEnabled();
+		default:
+			return logger.isInfoEnabled();
+		}
+	}
+	
 	@Override
 	protected void _write(Object msg, Object... args) throws IOException {
 		logger.info(getEventFormatter().format(msg, args));
@@ -209,29 +234,5 @@ public class SLF4JEventSink extends AbstractEventSink {
 
 	@Override
 	public void close() throws IOException {
-	}
-
-	@Override
-	public boolean isSet(OpLevel sev) {
-		switch (sev) {
-		case HALT:
-		case FATAL:
-		case CRITICAL:
-		case FAILURE:
-		case ERROR:
-			return logger.isErrorEnabled();
-		case DEBUG:
-			return logger.isDebugEnabled();
-		case INFO:
-		case SUCCESS:
-		case NONE:
-			return logger.isInfoEnabled();
-		case TRACE:
-			return logger.isTraceEnabled();
-		case WARNING:
-			return logger.isWarnEnabled();
-		default:
-			return logger.isInfoEnabled();
-		}
-	}
+	}	
 }
