@@ -28,10 +28,10 @@ import com.google.common.util.concurrent.RateLimiter;
  * @version $Revision: 1 $
  */
 public class LimiterImpl implements Limiter {
-	
+
 	boolean doLimit = false;
 	long start = System.currentTimeMillis();
-	
+
 	AtomicLong byteCount = new AtomicLong(0);
 	AtomicLong msgCount = new AtomicLong(0);
 	AtomicLong delayCount = new AtomicLong(0);
@@ -39,40 +39,58 @@ public class LimiterImpl implements Limiter {
 
 	AtomicDouble sleepCount = new AtomicDouble(0);
 	AtomicDouble lastSleep = new AtomicDouble(0);
-	
-	RateLimiter bpsLimiter =  RateLimiter.create(MAX_RATE);
-	RateLimiter mpsLimiter =  RateLimiter.create(MAX_RATE);
-	
+
+	RateLimiter bpsLimiter = null;
+	RateLimiter mpsLimiter = null;
+
 	public LimiterImpl(double maxMps, double maxBps, boolean enabled) {
 		setLimits(maxMps, maxBps);
 		setEnabled(enabled);
 	}
-	
+
 	@Override
     public double getMaxMPS() {
-	    return mpsLimiter.getRate();
+	    return (mpsLimiter == null ? 0.0D : mpsLimiter.getRate());
     }
 
 	@Override
     public double getMaxBPS() {
-	    return bpsLimiter.getRate();
+	    return (bpsLimiter == null ? 0.0D : bpsLimiter.getRate());
     }
 
 	@Override
     public Limiter setLimits(double maxMps, double maxBps) {
-		mpsLimiter.setRate(maxMps);
-		bpsLimiter.setRate(maxBps);
+		if (maxMps > 0.0D) {
+			if (mpsLimiter == null)
+				mpsLimiter = RateLimiter.create(maxMps);
+			else
+				mpsLimiter.setRate(maxMps);
+		}
+		else {
+			mpsLimiter = null;
+		}
+
+		if (maxBps > 0.0D) {
+			if (bpsLimiter == null)
+				bpsLimiter = RateLimiter.create(maxBps);
+			else
+				bpsLimiter.setRate(maxBps);
+		}
+		else {
+			bpsLimiter = null;
+		}
+
 		return this;
     }
 
 	@Override
     public double getMPS() {
-		return (double)(msgCount.get() * 1000.0 / (double)getAge());
+		return msgCount.get() * 1000.0 / getAge();
     }
 
 	@Override
     public double getBPS() {
-		return (double)(byteCount.get() * 1000.0 / (double)getAge());
+		return byteCount.get() * 1000.0 / getAge();
     }
 
 	@Override
@@ -104,35 +122,35 @@ public class LimiterImpl implements Limiter {
 		boolean permit = true;
 		if ((bpsLimiter != null) && (bytes > 0)) {
 			permit = bpsLimiter.tryAcquire(bytes, timeout, unit);
-		}	
+		}
 		if ((mpsLimiter != null) && (msgs > 0)) {
 			permit = permit && mpsLimiter.tryAcquire(msgs, timeout, unit);
-		}	
+		}
 		if (!permit) {
 			denyCount.incrementAndGet();
 		}
 		return permit;
 	}
-	
+
 	@Override
     public double obtain(int msgs, int bytes) {
 		count(msgs, bytes);
 		if (!doLimit || ( msgs == 0 && bytes == 0)) {
 			return 0;
 		}
-		
+
 		double elapsedSecByBps = 0;
 		double elapsedSecByMps = 0;
-		
+
 		int delayCounter = 0;
 		if (bpsLimiter != null) {
 			elapsedSecByBps = bpsLimiter.acquire(bytes);
 			if (elapsedSecByBps > 0) delayCounter++;
-		}	
+		}
 		if (mpsLimiter != null) {
 			elapsedSecByMps = mpsLimiter.acquire(msgs);
 			if (elapsedSecByMps > 0) delayCounter++;
-		}	
+		}
 		double sleepTime = elapsedSecByBps + elapsedSecByMps;
 		if (sleepTime > 0) {
 			lastSleep.set(sleepTime);
@@ -148,9 +166,9 @@ public class LimiterImpl implements Limiter {
 		}
 		if (msgs > 0) {
 			msgCount.addAndGet(msgs);
-		}			
+		}
 	}
-	
+
 	@Override
     public Limiter reset() {
 		byteCount.set(0);
@@ -190,7 +208,7 @@ public class LimiterImpl implements Limiter {
     public double getTotalDelayTime() {
 	    return sleepCount.get();
     }
-	
+
 	@Override
     public long getDelayCount() {
 	    return delayCount.get();
