@@ -23,7 +23,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.nastel.jkool.tnt4j.source.DefaultSourceFactory;
 import com.nastel.jkool.tnt4j.source.Source;
+import com.nastel.jkool.tnt4j.source.SourceFactory;
 import com.nastel.jkool.tnt4j.source.SourceType;
 import com.nastel.jkool.tnt4j.utils.Useconds;
 import com.nastel.jkool.tnt4j.utils.Utils;
@@ -312,9 +314,32 @@ public class Operation implements TTL {
 	}
 
 	/**
+	 * Gets the resource associated with this operation as {@link Source}
+	 * implementation using default {@link DefaultSourceFactory} source factory.
+	 * 
+	 * @return resource as a {@link Source}
+	 */
+	public Source getResourceAsSource() {
+		return getResourceAsSource(DefaultSourceFactory.getInstance());
+	}
+
+	/**
+	 * Gets the resource associated with this operation as {@link Source}
+	 * implementation.
+	 * 
+	 * @param factory source factory implementation
+	 * @return resource as a {@link Source}
+	 */
+	public Source getResourceAsSource(SourceFactory factory) {
+		return factory.fromFQN(resource);
+	}
+
+	/**
 	 * Sets the resource associated with this operation.
+	 * The name should conform with {@link Source} FQN name
+	 * convention.
 	 *
-	 * @param resource resource for operation
+	 * @param resource name for operation
 	 */
 	public void setResource(String resource) {
 		this.resource = resource;
