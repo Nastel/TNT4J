@@ -16,8 +16,8 @@
 package com.nastel.jkool.tnt4j.source;
 
 /**
- * This class allows developer to set and obtain actual <code>SourceFactory</code> implementation
- * instance. Developers may create their own and set it globally using <code>setDefaultConfigFactory()</code>
+ * This class allows developer to set and obtain actual {@link SourceFactory} implementation
+ * instance. Developers may create their own and set it globally using {@link #setDefaultConfigFactory(SourceFactory)}
  * 
  * @see SourceFactory
  * @version $Revision: 1 $
@@ -33,7 +33,7 @@ public class DefaultSourceFactory {
 	 * Set a global default source factory implementation
 	 * 
 	 * @param fac source factory instance
-	 * @return <code>SourceFactory</code> instance
+	 * @return {@link SourceFactory} instance
 	 */
 	public static SourceFactory setDefaultConfigFactory(SourceFactory fac) {
 		factory = fac;
@@ -43,7 +43,7 @@ public class DefaultSourceFactory {
 	/**
 	 * Obtain a default source factory
 	 * 
-	 * @return default <code>SourceFactory</code> instance
+	 * @return default {@link SourceFactory} instance
 	 */
 	public static SourceFactory getInstance() {
 		return factory;
