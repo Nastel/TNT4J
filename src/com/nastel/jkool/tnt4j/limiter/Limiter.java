@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * Implementation if this interface provide limiter measurement and control
- * based on message/second (MPS) and/or bytes/second. 
+ * based on message/second (MPS) and/or bytes/second.
  *
  * @version $Revision: 1 $
  */
@@ -32,49 +32,49 @@ public interface Limiter {
 	 * @return Total count of denied limiter requests
 	 */
 	long getDenyCount();
-	
+
 	/**
 	 * Get total number of times throttling was invoked with delay (ms)
 	 *
 	 * @return total number of times throttling was invoked with delay (ms)
 	 */
 	long getDelayCount();
-	
+
 	/**
 	 * Get last time in (seconds) blocked to achieve msg/byte rates
 	 *
 	 * @return number of seconds blocked to achieve msg/byte rates
 	 */
 	double getLastDelayTime();
-	
+
 	/**
 	 * Get total time (seconds) blocked to achieve msg/byte rates
 	 *
 	 * @return total time (seconds) blocked to achieve msg/byte rates
 	 */
 	double getTotalDelayTime();
-	
+
 	/**
 	 * Get accumulated byte count since start or last reset
 	 *
 	 * @return accumulated byte count
 	 */
 	long getTotalBytes();
-	
+
 	/**
 	 * Get accumulated message count since start or last reset
 	 *
 	 * @return Get accumulated byte count
 	 */
 	long getTotalMsgs();
-	
+
 	/**
 	 * Get maximum allowed message/second rate
 	 *
 	 * @return maximum allowed message rate, 0 means unlimited
 	 */
 	double getMaxMPS();
-	
+
 	/**
 	 * Get maximum allowed bytes/second rate
 	 *
@@ -83,8 +83,15 @@ public interface Limiter {
 	double getMaxBPS();
 
 	/**
+	 * Gets number of milliseconds since last permit attempt.
+	 *
+	 * @return elapsed milliseconds since last permit attempt
+	 */
+	long getTimeSinceLastAccess();
+
+	/**
 	 * Sets maximum limits (0 means unlimited)
-	 * 
+	 *
 	 * @param maxMps maximum message/second rate
 	 * @param maxBps maximum bytes/second rate
 	 * @return same limiter instance
@@ -126,7 +133,7 @@ public interface Limiter {
 	 * @return same limiter instance
 	 */
 	Limiter reset();
-	
+
 	/**
 	 * Enable/disable throttling. {@code limiter()} will never block
 	 * if limiter is disabled.
@@ -142,11 +149,35 @@ public interface Limiter {
 	 * @return true if enabled, false otherwise
 	 */
 	boolean isEnabled();
-	
+
+	/**
+	 * Get the idle reset period, the maximum amount of time between limiter permits
+	 * before the limiter is reset.  Useful for applying throttling to individual
+	 * bursts of activity.
+	 *
+	 * @return idle reset period, in milliseconds (0 implies no idle reset)
+	 */
+	public long getIdleReset();
+
+	/**
+	 * <p>Set the idle reset period, the maximum amount of time between limiter permits
+	 * before the limiter is reset.  Useful for applying throttling to individual
+	 * bursts of activity.</p>
+	 *
+	 * <p>Setting this value to 0 disables idle reset, causing
+	 * the limiter to throttle by averaging the rates over the time the limiter has
+	 * been created, thus providing an average throughput, even if bursts would cause
+	 * it to exceed the defined maximum rates.</p>
+	 *
+	 * @param idleReset idle reset period, in milliseconds
+	 * @return same limiter instance
+	 */
+	public Limiter setIdleReset(long idleReset);
+
 	/**
 	 * Obtain permit for message/byte chunk.
 	 * This call may block to satisfy max limits.
-	 * 
+	 *
 	 * @param msgCount message count
 	 * @param byteCount byte count
 	 * @return time spend to enforce the rates in seconds.
