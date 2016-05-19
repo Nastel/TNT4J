@@ -450,7 +450,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		StringBuilder jsonString = new StringBuilder(1024);
 		jsonString.append(START_JSON);
 		Object value = prop.getValue();
-		jsonString.append(JSON_NAME_LABEL).append(ATTR_SEP).append(Utils.quote(prop.getKey())).append(ATTR_JSON);
+		jsonString.append(JSON_NAME_LABEL).append(ATTR_SEP).append(Utils.quote(StringEscapeUtils.escapeJson(prop.getKey()))).append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP).append(Utils.quote(prop.getDataType())).append(ATTR_JSON);
 		if (prop.getValueType() != null && !prop.getValueType().equalsIgnoreCase(ValueTypes.VALUE_TYPE_NONE)) {
 			jsonString.append(JSON_VALUE_TYPE_LABEL).append(ATTR_SEP).append(Utils.quote(prop.getValueType())).append(ATTR_JSON);
