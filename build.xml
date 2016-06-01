@@ -9,8 +9,8 @@
   <!-- Import default properties for jKool builds --> 
   <import file="${root}/build-properties.xml"/>
 
-  <property name="package"   value="com.nastel.jkool.*"/>
-  <property name="docpkg"    value="com.nastel.jkool.tnt4j.*"/>
+  <property name="package"   value="com.jkoolcloud.*"/>
+  <property name="docpkg"    value="com.jkoolcloud.tnt4j.*"/>
   <property name="src"       value="src"/>
   <property name="lib"       value="lib"/>
   <property name="classes"   value="${project-build}/classes"/>
@@ -61,7 +61,7 @@
         <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Implementation-Title" value="${prodname} API"/>
         <attribute name="Implementation-Version" value="${version}"/>
-		<attribute name="Premain-Class" value="com.nastel.jkool.tnt4j.utils.SizeOf"/>
+		<attribute name="Premain-Class" value="com.jkoolcloud.tnt4j.utils.SizeOf"/>
       </manifest>
     </jar>
     
@@ -70,7 +70,7 @@
 
   <target name="tnt4j-utils" depends="init,compile" description="build Utils">
     <jar jarfile="${utilsjar}" basedir="${classes}" update="false">
-	  <include name="com/nastel/jkool/tnt4j/utils/*.class"/>
+	  <include name="com/jkoolcloud/tnt4j/utils/*.class"/>
       <manifest>
         <attribute name="Implementation-Vendor" value="${vendor}"/>
         <attribute name="Implementation-Title" value="${prodname} Utils"/>

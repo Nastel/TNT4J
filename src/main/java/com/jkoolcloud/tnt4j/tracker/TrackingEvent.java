@@ -55,7 +55,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * <p>Below is example of how to set <code>TrackingEvent</code> correlator and operation type for a sender application:
  * <pre>
  * <code>
- * TrackingLogger logger = TrackingLogger.getInstance("com.nastel.appl.name"); // register and obtain Tracker logger instance
+ * TrackingLogger logger = TrackingLogger.getInstance("com.jkoolcloud.appl.name"); // register and obtain Tracker logger instance
  * TrackingActivity activity = logger.newActivity(); // create a new application activity timing
  * TrackingEvent event = logger.newEvent(OpLevel.INFO, OpType.SEND, "SendOrder", "Sending order"); // create a sender tracking event
  * activity.start(); // start application activity timing
@@ -80,7 +80,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * <p>Below is example of corresponding receiver application:
  * <pre>
  * <code>
- * TrackingLogger tracker = TrackingLogger.getInstance("com.nastel.appl.name"); // register and obtain Tracker logger instance
+ * TrackingLogger tracker = TrackingLogger.getInstance("com.jkoolcloud.appl.name"); // register and obtain Tracker logger instance
  * TrackingActivity activity = tracker.newActivity(); // create a new application activity timing
  * TrackingEvent event = tracker.newEvent(OpLevel.INFO, OpType.RECEIVE, "RecvOrder", "Received order"); // create a receiver tracking event
  * activity.start(); // start application activity timing
