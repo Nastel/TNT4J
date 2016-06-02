@@ -4,7 +4,7 @@
 
   <groupId>com.jkoolcloud</groupId>
   <artifactId>tnt4j</artifactId>
-  <version>2.3-SNAPSHOT</version>
+  <version>2.2</version>
   <packaging>jar</packaging>
 
   <name>tnt4j</name>
@@ -126,25 +126,6 @@
       </executions>
      </plugin>
      
-<plugin>
-    <groupId>org.apache.maven.plugins</groupId>
-    <artifactId>maven-antrun-plugin</artifactId>
-    <version>1.7</version>
-       <executions>
-          <execution>
-             <id>copy-jar-file</id>
-             <phase>install</phase>
-                <goals>
-                   <goal>run</goal>
-                </goals>
-                <configuration>
-                   <target name="copy jar file">
-                       <copy file="target/tnt4j-2.3-SNAPSHOT.jar" tofile="target/tnt4j.jar" />
-                    </target>
-                 </configuration>                       
-              </execution>
-           </executions>
-     </plugin>
      <plugin>
       <groupId>org.apache.maven.plugins</groupId>
       <artifactId>maven-gpg-plugin</artifactId>
