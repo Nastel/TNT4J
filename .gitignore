@@ -9,3 +9,5 @@
 /classes/
 .classpath
 .project
+/target/
+/.settings/

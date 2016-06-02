@@ -33,6 +33,14 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <product.vendor>jKool, LLC</product.vendor> 
   </properties>
+  
+  <distributionManagement>
+	 <repository>
+      	<id>bintray-amavashev2-jkoolcloud</id>
+      	<name>amavashev2-jkoolcloud</name>
+      	<url>https://api.bintray.com/maven/amavashev2/jkoolcloud/tnt4j/;publish=1;override=1</url>
+  	 </repository>
+  </distributionManagement>
 
   <dependencies>
 	<dependency>
@@ -137,7 +145,20 @@
               </execution>
            </executions>
      </plugin>
-     
+     <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-gpg-plugin</artifactId>
+      <version>1.5</version>
+      <executions>
+        <execution>
+          <id>sign-artifacts</id>
+          <phase>verify</phase>
+          <goals>
+            <goal>sign</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>
      
      
    </plugins>
