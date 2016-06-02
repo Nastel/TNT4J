@@ -148,7 +148,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * } finally {
  * 	activity.stop(); // end activity timing
  *	// conditional logging using isSet() method to check if a given token matches
- *	if (tracker.isSet(OpLevel.INFO, "com.nastel.appl.corr", "correlator")) {
+ *	if (tracker.isSet(OpLevel.INFO, "com.jkoolcloud.appl.corr", "correlator")) {
  *		activity.tnt(event); // track and trace tracking event within given activity
  *		activity.tnt(jms_event); // track and trace tracking event within given activity
  *	}

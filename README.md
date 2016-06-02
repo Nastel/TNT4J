@@ -16,7 +16,7 @@ Why track and trace your applications?
 <b>Several key features make TNT4J a prime choice for your java application:</b>
 
 ### SLF4J Event Sink Integration
-TNT4J provides SLF4J event sink implementation via `com.nastel.jkool.tnt4j.logger.slf4j.SLF4JEventSinkFactory` event sink factory.
+TNT4J provides SLF4J event sink implementation via `com.jkoolcloud.tnt4j.logger.slf4j.SLF4JEventSinkFactory` event sink factory.
 Other logging frameworks can be supported by implementing `EventSinkFactory` & `EventSink` interfaces. 
 TNT4J default integration is with SLF4J/SimpleLogger. 
 
@@ -44,7 +44,7 @@ User defined fields can be reported using `#[data-type][:value-type]/your-metric
 	%n/ -- number
 	%s/ -- string
 ```
-All `value-type` qualifiers are defined in `com.nastel.jkool.tnt4j.core.ValueTypes`. Examples:
+All `value-type` qualifiers are defined in `com.jkoolcloud.tnt4j.core.ValueTypes`. Examples:
 ```
 	currency 	-- generic currency
 	flag 		-- boolean flag
@@ -67,8 +67,8 @@ logger.debug("My message {0}, {1}, {2}", arg0, arg1, arg3);
 TNT4J enhances logging performance by supporting asynchronous pooled logging, which delegates logging to a dedicated thread pool. Use `BufferedEventSinkFactory` in your `tnt4.properties` configuration to enable this feature. See example below: 
 ```
 ...
-event.sink.factory: com.nastel.jkool.tnt4j.sink.BufferedEventSinkFactory
-event.sink.factory.EventSinkFactory: com.nastel.jkool.tnt4j.logger.slf4j.SLF4JEventSinkFactory
+event.sink.factory: com.jkoolcloud.tnt4j.sink.BufferedEventSinkFactory
+event.sink.factory.EventSinkFactory: com.jkoolcloud.tnt4j.logger.slf4j.SLF4JEventSinkFactory
 ...
 ```
 ### Simplicity & Clean Code
@@ -83,7 +83,7 @@ All conditional logging can be consolidated into a single listener object.
 
 ### Flexible Filtering
 Filter out not only based on category/severity (as slf4j), but also based on performance objectives. Example: log events only if their elapsed time or wait times are greater than a ceratin value. TNT4J allows users to register filters within `tnt4j.properties` without changing application code. Create your own filters which would allow you to filter events out based on user defined criteria and inject filters using `tnt4j.properties`.
-See  `tnt4j.properties` and `com.nastel.jkool.tnt4j.filters.EventLevelTimeFilter` for details.
+See  `tnt4j.properties` and `com.jkoolcloud.tnt4j.filters.EventLevelTimeFilter` for details.
 Register filters via declarations in `tnt4j.properties` or in your application by creating your own event filter.
 ```java
 logger.addSinkEventFilter(new ThresholdEventFilter(OpLevel.WARNING));

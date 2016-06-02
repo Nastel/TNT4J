@@ -76,9 +76,9 @@ import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
  * tracking.selector: com.jkoolcloud.tnt4j.selector.DefaultTrackingSelector
  * activity.listener: com.jkoolcloud.tnt4j.examples.MyActivityHandler
  * }
- * ;Stanza used for sources that start with com.nastel
+ * ;Stanza used for sources that start with com.jkoolcloud
  * {
- * source: com.nastel
+ * source: com.jkoolcloud
  * tracker.factory: com.jkoolcloud.tnt4j.tracker.DefaultTrackerFactory
  * dump.sink.factory: com.jkoolcloud.tnt4j.dump.DefaultDumpSinkFactory
  * event.sink.factory: com.jkoolcloud.tnt4j.sink.SocketEventSinkFactory
@@ -91,7 +91,7 @@ import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
  * ; define source based on configuration from another source defined above
  * {
  * source: org
- * like: com.nastel
+ * like: com.jkoolcloud
  * enabled: true
  * }
  * </code>
