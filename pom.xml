@@ -133,6 +133,41 @@
                     <failOnError>false</failOnError>
                 </configuration>
             </plugin>
+            <!--<plugin>-->
+            <!--<groupId>org.apache.maven.plugins</groupId>-->
+            <!--<artifactId>maven-gpg-plugin</artifactId>-->
+            <!--<version>1.5</version>-->
+            <!--<executions>-->
+            <!--<execution>-->
+            <!--<id>sign-artifacts</id>-->
+            <!--<phase>verify</phase>-->
+            <!--<goals>-->
+            <!--<goal>sign</goal>-->
+            <!--</goals>-->
+            <!--</execution>-->
+            <!--</executions>-->
+            <!--</plugin>-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>copy-jar-file</id>
+                        <phase>install</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target name="copy jar file">
+                                <copy file="target/tnt4j-${version}.jar" tofile="target/tnt4j.jar"/>
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+
         </plugins>
     </build>
 </project>
