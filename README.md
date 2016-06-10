@@ -427,11 +427,8 @@ TNT4J depends on the following external packages:
 * Java UUID Generator (JUG) 3.1.3 (http://wiki.fasterxml.com/JugHome/)
 
 To build TNT4J:
-* Download the above libraries and place into the tnt4j-master/lib folder
-* Compile and build using ANT: 
-	* ant all (run "ant clean" for clean builds)
-	* Check ../build/tnt4j for output
-	* JavaDoc will be located under ../build/tnt4j/doc
+*  Please use JCenter or Maven and these dependencies will be downloaded automatically. 
+*  You will need to point TNT4J to it's property file via the -Dtnt4j.config argument. This property file is located here in GitHub under the /config directory. If using JCenter or Maven, it can be found in the zip assembly along with the source code and javadoc.
 	
 Known Projects Using TNT4J
 ===============================================
