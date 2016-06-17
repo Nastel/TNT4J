@@ -113,17 +113,14 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 
 	@Override
 	public boolean filter(EventSink sink, TrackingEvent event) {
-		if (elapsedUsec >= 0) {
-			if (event.getOperation().getElapsedTimeUsec() < elapsedUsec)
-				return false;
+		if (elapsedUsec >= 0 && event.getOperation().getElapsedTimeUsec() < elapsedUsec) {
+			return false;
 		}
-		if (waitUsec >= 0) {
-			if (event.getOperation().getWaitTimeUsec() < waitUsec)
-				return false;
+		if (waitUsec >= 0 && event.getOperation().getWaitTimeUsec() < waitUsec) {
+			return false;
 		}
-		if (msgPattern != null) {
-			if (!msgPattern.matcher(event.getMessagePattern()).matches())
-				return false;
+		if (msgPattern != null && !msgPattern.matcher(event.getMessagePattern()).matches()) {
+			return false;
 		}
 		if (ttl != TTL.TTL_CONTEXT) event.setTTL(ttl);
 		return (event.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(event.getSeverity());
@@ -131,17 +128,14 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 
 	@Override
 	public boolean filter(EventSink sink, TrackingActivity activity) {
-		if (elapsedUsec >= 0) {
-			if (activity.getElapsedTimeUsec() < elapsedUsec)
-				return false;
+		if (elapsedUsec >= 0 && activity.getElapsedTimeUsec() < elapsedUsec) {
+			return false;
 		}
-		if (waitUsec >= 0) {
-			if (activity.getWaitTimeUsec() < waitUsec)
-				return false;
+		if (waitUsec >= 0 && activity.getWaitTimeUsec() < waitUsec) {
+			return false;
 		}
-		if (wallUsec >= 0) {
-			if (activity.getWallTimeUsec() < wallUsec)
-				return false;
+		if (wallUsec >= 0 && activity.getWallTimeUsec() < wallUsec) {
+			return false;
 		}
 		if (ttl != TTL.TTL_CONTEXT) activity.setTTL(ttl);
 		return (activity.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(activity.getSeverity());
@@ -155,10 +149,8 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 
 	@Override
 	public boolean filter(EventSink sink, long ttl, Source source, OpLevel level, String msg, Object... args) {
-		if (msgPattern != null) {
-			if (!msgPattern.matcher(msg).matches()) {
-				return false;
-			}
+		if (msgPattern != null && !msgPattern.matcher(msg).matches()) {
+			return false;
 		}
 		return (level.ordinal() >= sevLimit.ordinal()) && sink.isSet(level);
 	}

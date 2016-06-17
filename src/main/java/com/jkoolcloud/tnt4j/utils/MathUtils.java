@@ -27,6 +27,9 @@ import java.util.List;
  */
 public class MathUtils {
 	
+    private MathUtils() {
+    }
+    
 	/**
 	 * Compute low Bollinger band value. Same as {@code getBBLow(List, 2, 20)}
 	 *
