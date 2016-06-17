@@ -49,26 +49,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	private long currentLamportClock = LamportCounter.incrementAndGet();
 
 	/**
-	 * Returns Lamport clock value of this time stamp
-	 * (based on Lamport Clock algorithm)
-	 *
-	 * @return Lamport clock value
-	 */
-	public long getLamportClock() {
-		return currentLamportClock;
-	}
-
-	/**
-	 * Returns UsecTimestamp based on current time with microsecond precision/accuracy
-	 *
-	 * @return UsecTimestamp for current time
-	 * @see com.jkoolcloud.tnt4j.utils.Utils#currentTimeUsec
-	 */
-	public static UsecTimestamp now() {
-		return new UsecTimestamp();
-	}
-
-	/**
 	 * Creates UsecTimestamp based on current time with microsecond precision/accuracy
 	 *
 	 * @see com.jkoolcloud.tnt4j.utils.Utils#currentTimeUsec
@@ -319,6 +299,46 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		setTimestampValues(date.getTime(), 0, 0);
 		add(0, usecs);
 	}
+	
+	/**
+	 * Creates UsecTimestamp based on specified UsecTimestamp.
+	 *
+	 * @param other timestamp to copy
+	 * @throws NullPointerException if timestamp is <code>null</code>
+	 */
+	public UsecTimestamp(UsecTimestamp other) {
+		this(other.msecs, other.usecs, other.getLamportClock());
+	}
+
+	/**
+	 * Creates UsecTimestamp based on specified UsecTimestamp.
+	 *
+	 * @param date timestamp to copy
+	 * @throws NullPointerException if date is <code>null</code>
+	 */
+	public UsecTimestamp(Date date) {
+		setTimestampValues(date.getTime(), 0, 0);
+	}
+	
+	/**
+	 * Returns Lamport clock value of this time stamp
+	 * (based on Lamport Clock algorithm)
+	 *
+	 * @return Lamport clock value
+	 */
+	public long getLamportClock() {
+		return currentLamportClock;
+	}
+
+	/**
+	 * Returns UsecTimestamp based on current time with microsecond precision/accuracy
+	 *
+	 * @return UsecTimestamp for current time
+	 * @see com.jkoolcloud.tnt4j.utils.Utils#currentTimeUsec
+	 */
+	public static UsecTimestamp now() {
+		return new UsecTimestamp();
+	}
 
 	/**
 	 * Sets UsecTimestamp based on specified microsecond timestamp.
@@ -391,26 +411,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 				currentLamportClock = LamportCounter.incrementAndGet();
 			}
 		}
-	}
-
-	/**
-	 * Creates UsecTimestamp based on specified UsecTimestamp.
-	 *
-	 * @param other timestamp to copy
-	 * @throws NullPointerException if timestamp is <code>null</code>
-	 */
-	public UsecTimestamp(UsecTimestamp other) {
-		this(other.msecs, other.usecs, other.getLamportClock());
-	}
-
-	/**
-	 * Creates UsecTimestamp based on specified UsecTimestamp.
-	 *
-	 * @param date timestamp to copy
-	 * @throws NullPointerException if date is <code>null</code>
-	 */
-	public UsecTimestamp(Date date) {
-		setTimestampValues(date.getTime(), 0, 0);
 	}
 
 	/**

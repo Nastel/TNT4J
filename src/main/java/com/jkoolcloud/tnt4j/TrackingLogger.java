@@ -238,6 +238,12 @@ public class TrackingLogger implements Tracker {
 		if (dumpOnException) dumpOnUncaughtException();
 		if (flushOnVmHook) flushOnShutdown(flushOnVmHook);
 	}
+	
+	/** Cannot instantiate. */
+    private TrackingLogger(Tracker trg) {
+    	logger = trg;
+    	selector = logger.getTrackingSelector();
+    }
 
 	/**
 	 * Check and enable java timing for use by activities
@@ -270,12 +276,6 @@ public class TrackingLogger implements Tracker {
 	private static void registerTracker(TrackingLogger tracker) {
 		TRACKERS.put(tracker, Thread.currentThread().getStackTrace());
 	}
-
-	/** Cannot instantiate. */
-    private TrackingLogger(Tracker trg) {
-    	logger = trg;
-    	selector = logger.getTrackingSelector();
-    }
 
 	/**
 	 * Obtain an allocation stack trace for the specified logger instance

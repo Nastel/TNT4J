@@ -74,6 +74,12 @@ public class Utils {
 	 * 16-bit USC character set.
 	 */
 	public static final String UTF16 = "UTF-16BE";
+	
+
+	/**
+	 * Line feed.
+	 */
+	private static final String LINE_FEED = "\n";
 
 	/**
 	 * JVM runtime name
@@ -429,8 +435,6 @@ public class Utils {
 			throw new RuntimeException(ex);
 		}
 	}
-
-	private static final String LINE_FEED = "\n";
 
 	/**
 	 * Gets a MD5 message digester object
