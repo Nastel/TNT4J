@@ -33,8 +33,8 @@ import com.jkoolcloud.tnt4j.uuid.DefaultUUIDFactory;
  *
  */
 public class ContextTracker {
-	public static String JK_CORR_SESSION_ID = "JK_CORR_SID";
-	public static String JK_CORR_REQUEST_ID = "JK_CORR_RID";
+	public static final String JK_CORR_SESSION_ID = "JK_CORR_SID";
+	public static final String JK_CORR_REQUEST_ID = "JK_CORR_RID";
 
 	private static final ConcurrentMap<String, ContextRef> REF_MAP = new ConcurrentHashMap<String, ContextRef>();
 	
