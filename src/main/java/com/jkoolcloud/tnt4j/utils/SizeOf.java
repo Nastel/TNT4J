@@ -30,6 +30,10 @@ import java.util.Map;
  * @version $Revision: 2 $
  */
 public class SizeOf {
+    
+    private SizeOf() {
+    }
+    
 	/**
 	 * Instance of java.lang.instrument.Instrument injected by the Java VM
 	 *
