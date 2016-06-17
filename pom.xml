@@ -32,6 +32,7 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <product.vendor>jKool, LLC</product.vendor> 
+    <release.deploy.dir>../build/${project.name}</release.deploy.dir>
   </properties>
   
   <distributionManagement>
@@ -141,6 +142,20 @@
       </executions>
     </plugin>
     <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-gpg-plugin</artifactId>
+      <version>1.5</version>
+      <executions>
+        <execution>
+          <id>sign-artifacts</id>
+          <phase>verify</phase>
+          <goals>
+            <goal>sign</goal>
+          </goals>
+        </execution>
+      </executions>
+    </plugin>           
+    <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
         <version>2.6</version>
@@ -159,7 +174,20 @@
                 </goals>
             </execution>
         </executions>
-    </plugin>     
+    </plugin>  
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-clean-plugin</artifactId>
+        <version>3.0.0</version>
+        <inherited>false</inherited>
+        <configuration>
+            <filesets>
+                <fileset>
+                    <directory>${release.deploy.dir}</directory>
+                </fileset>
+            </filesets>
+        </configuration>
+     </plugin>   
    </plugins>
   </build>  
 </project>
