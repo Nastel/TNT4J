@@ -8,7 +8,7 @@
   <packaging>jar</packaging>
 
   <name>tnt4j</name>
-  <url>http://www.jkoolcloud.com/</url>
+  <url>http://www.jkoolcloud.com/</url> 
   <description>Data Streaming, Data Analytics</description>
   <licenses>
   <license>

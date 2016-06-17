@@ -38,7 +38,7 @@
     <dependencySets>
         <dependencySet>
             <useProjectArtifact>true</useProjectArtifact>
-            <useTransitiveDependencies>false</useTransitiveDependencies>
+            <useTransitiveDependencies>true</useTransitiveDependencies>
             <outputDirectory>libs</outputDirectory>
             <unpack>false</unpack>
         </dependencySet>
