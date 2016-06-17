@@ -39,6 +39,9 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class AppenderTools implements AppenderConstants {
 
+    private AppenderTools() {
+    }
+    
 	/**
 	 * Strip type qualifier from a given key
 	 *
