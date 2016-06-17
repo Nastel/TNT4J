@@ -717,7 +717,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		}
 
 		if (tsStr == null) {
-			int fracSecPos = pattern.indexOf('S');
+			int fracSecPos = pattern == null ? -1 : pattern.indexOf('S');
 			if (fracSecPos < 0) {
 				SimpleDateFormat df = new SimpleDateFormat(pattern);
 				df.setTimeZone(tz);
