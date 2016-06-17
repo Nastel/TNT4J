@@ -281,7 +281,7 @@ class TntToken {
 	}
 
 	public boolean isMatch(OpLevel sev, Object key, Object value) {
-		boolean match = false;
+		boolean match;
 		boolean sevMatch = (sev.ordinal() >= sevLimit.ordinal());
 		match = sevMatch
 		        && ((value != null && valuePatten != null)? valuePatten.matcher(value.toString()).matches(): true);		

@@ -101,7 +101,7 @@ public class SizeOf {
 			return 0;
 		}
 
-		long size = 0;
+		long size;
 		if (doneObj.containsKey(o)) {
 			return 0;
 		}
