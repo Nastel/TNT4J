@@ -368,8 +368,8 @@ public class Activity extends Operation implements Trackable {
 		    .append("FQName:").append(getSource().getFQName()).append(",")
 			.append("IdCount=").append(getIdCount()).append(",")
 			.append("SnapCount=").append(getSnapshotCount()).append(",")
-			.append("StartTime:[").append(sTime == null ? "null" : sTime.toString()).append("],")
-			.append("EndTime:[").append(eTime == null ? "null" : eTime.toString()).append("]}");
+			.append("StartTime:[").append(sTime.toString()).append("],")
+			.append("EndTime:[").append(eTime.toString()).append("]}");
 
 		return str.toString();
 	}
