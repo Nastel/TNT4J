@@ -511,9 +511,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @param other timestamp to add to current one
 	 */
 	public void add(UsecTimestamp other) {
-		if (!(other instanceof UsecTimestamp))
-			throw new ClassCastException("Cannot add " + this.getClass().getName() + " to " + other.getClass().getName());
-
 		add(other.msecs, other.usecs);
 	}
 
@@ -553,9 +550,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @param other timestamp to subtract from current one
 	 */
 	public void subtract(UsecTimestamp other) {
-		if (!(other instanceof UsecTimestamp))
-			throw new ClassCastException("Cannot subtract " + this.getClass().getName() + " and " + other.getClass().getName());
-
 		subtract(other.msecs, other.usecs);
 	}
 
@@ -601,8 +595,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return difference, in microseconds, between two timestamps
 	 */
 	public long difference(UsecTimestamp other) {
-		if (!(other instanceof UsecTimestamp))
-			throw new ClassCastException("Cannot compare " + this.getClass().getName() + " to " + other.getClass().getName());
 
 		long thisMsecs = this.msecs;
 		long thisUsecs = this.usecs;
