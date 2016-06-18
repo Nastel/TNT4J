@@ -32,8 +32,8 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class SinkError extends EventObject {
 	private static final long serialVersionUID = 1L;
 
-	private Throwable error;
-	private Object sinkObj;
+	private final Throwable error;
+	private final Object sinkObj;
 
 	/**
 	 * Create a new event instance

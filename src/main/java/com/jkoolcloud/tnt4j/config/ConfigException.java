@@ -30,7 +30,7 @@ import java.util.Properties;
 public class ConfigException extends Exception {
     private static final long serialVersionUID = 3062997853952792045L;
     
-    private Map<?, ?> config;
+    private final Map<?, ?> config;
     
 	/**
 	 * Create a configuration exception with a given message and
