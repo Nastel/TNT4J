@@ -126,7 +126,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 			} else {
 				// token only has severity limit specified
 				String sevValue = value.trim();
-				if (sevValue.length() > 0) {
+				if (!sevValue.isEmpty()) {
 					OpLevel sevLimit = OpLevel.valueOf(sevValue.toUpperCase());
 					tntToken = new TntToken(sevLimit, key, value, null);
 				}

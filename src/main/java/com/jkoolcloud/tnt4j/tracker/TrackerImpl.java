@@ -337,7 +337,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public StackTraceElement[] getStackTrace() {
 		StackTraceElement[] activityTrace = null;
 		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
-		if ((stack != null) && (stack.size() > 0)) {
+		if ((stack != null) && (!stack.isEmpty())) {
 			activityTrace = new StackTraceElement[stack.size()];
 			int index = 0;
 			for (int i = (stack.size()-1); i >=0; i--) {
@@ -355,7 +355,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public TrackingActivity[] getActivityStack() {
 		TrackingActivity[] activityTrace = null;
 		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
-		if ((stack != null) && (stack.size() > 0)) {
+		if ((stack != null) && (!stack.isEmpty())) {
 			activityTrace = new TrackingActivity[stack.size()];
 			int index = 0;
 			for (int i = (stack.size()-1); i >=0; i--) {
