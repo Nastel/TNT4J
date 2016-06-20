@@ -380,7 +380,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	private Properties readStanza(BufferedReader reader) throws IOException {
-		String line = null;
+		String line;
 		Properties props = new Properties();
 		do {
 			line = reader.readLine();

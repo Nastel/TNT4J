@@ -781,7 +781,7 @@ public class Operation implements TTL {
 	 * @return total wall time in microseconds
 	 */
 	public long getWallTimeUsec() {
-		long wallTime = -1;
+		long wallTime;
 		if (stopCPUTime > 0) {
 			long cpuUsed = getUsedCpuTimeNano();
 			double cpuUsec = ((double) cpuUsed / 1000.0d);

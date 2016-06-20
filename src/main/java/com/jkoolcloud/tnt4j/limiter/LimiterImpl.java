@@ -136,8 +136,8 @@ public class LimiterImpl implements Limiter {
 			return 0;
 		}
 
-		double elapsedSecByBps = 0;
-		double elapsedSecByMps = 0;
+		double elapsedSecByBps;
+		double elapsedSecByMps;
 		int delayCounter = 0;
 
 		elapsedSecByBps = bpsLimiter.acquire(bytes);
