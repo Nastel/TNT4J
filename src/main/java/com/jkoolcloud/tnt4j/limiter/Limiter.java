@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * @version $Revision: 1 $
  */
 public interface Limiter {
-	static final double MAX_RATE = Double.MAX_VALUE;
+	double MAX_RATE = Double.MAX_VALUE;
 
 	/**
 	 * Total count of denied limiter requests using {@code tryThrottle()}
@@ -157,7 +157,7 @@ public interface Limiter {
 	 *
 	 * @return idle reset period, in milliseconds (0 implies no idle reset)
 	 */
-	public long getIdleReset();
+	long getIdleReset();
 
 	/**
 	 * <p>Set the idle reset period, the maximum amount of time between limiter permits
@@ -172,7 +172,7 @@ public interface Limiter {
 	 * @param idleReset idle reset period, in milliseconds
 	 * @return same limiter instance
 	 */
-	public Limiter setIdleReset(long idleReset);
+	Limiter setIdleReset(long idleReset);
 
 	/**
 	 * Obtain permit for message/byte chunk.

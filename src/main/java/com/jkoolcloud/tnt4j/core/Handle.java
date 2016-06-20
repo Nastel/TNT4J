@@ -34,12 +34,12 @@ public interface Handle extends java.io.Closeable {
 	 *
 	 * @return true if open, false otherwise.
 	 */
-	public boolean isOpen();
+	boolean isOpen();
 
 	/**
 	 * This method opens and prepares message destination for writing.
 	 *
 	 * @throws IOException if error opening handle
 	 */
-	public void open() throws IOException;
+	void open() throws IOException;
 }

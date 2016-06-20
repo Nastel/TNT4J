@@ -25,33 +25,33 @@ package com.jkoolcloud.tnt4j.logger;
  * 
  */
 public interface AppenderConstants {
-	static final String PARAM_BEGIN_LABEL = "beg";
-	static final String PARAM_END_LABEL = "end";
+	String PARAM_BEGIN_LABEL = "beg";
+	String PARAM_END_LABEL = "end";
 
-	static final String PARAM_APPL_LABEL = "app";
-	static final String PARAM_USER_LABEL = "usr";
-	static final String PARAM_CORRELATOR_LABEL = "cid";
-	static final String PARAM_TAG_LABEL = "tag";
-	static final String PARAM_LOCATION_LABEL = "loc";
-	static final String PARAM_OP_NAME_LABEL = "opn";
-	static final String PARAM_OP_TYPE_LABEL = "opt";
-	static final String PARAM_RESOURCE_LABEL = "rsn";
-	static final String PARAM_MSG_DATA_LABEL = "msg";
-	static final String PARAM_EXCEPTION_LABEL = "exc";
-	static final String PARAM_SEVERITY_LABEL = "sev";
-	static final String PARAM_COMP_CODE_LABEL = "ccd";
-	static final String PARAM_REASON_CODE_LABEL = "rcd";
-	static final String PARAM_START_TIME_LABEL = "stt";
-	static final String PARAM_END_TIME_LABEL = "ent";
-	static final String PARAM_ELAPSED_TIME_LABEL = "elt";
-	static final String PARAM_AGE_TIME_LABEL = "age";
+	String PARAM_APPL_LABEL = "app";
+	String PARAM_USER_LABEL = "usr";
+	String PARAM_CORRELATOR_LABEL = "cid";
+	String PARAM_TAG_LABEL = "tag";
+	String PARAM_LOCATION_LABEL = "loc";
+	String PARAM_OP_NAME_LABEL = "opn";
+	String PARAM_OP_TYPE_LABEL = "opt";
+	String PARAM_RESOURCE_LABEL = "rsn";
+	String PARAM_MSG_DATA_LABEL = "msg";
+	String PARAM_EXCEPTION_LABEL = "exc";
+	String PARAM_SEVERITY_LABEL = "sev";
+	String PARAM_COMP_CODE_LABEL = "ccd";
+	String PARAM_REASON_CODE_LABEL = "rcd";
+	String PARAM_START_TIME_LABEL = "stt";
+	String PARAM_END_TIME_LABEL = "ent";
+	String PARAM_ELAPSED_TIME_LABEL = "elt";
+	String PARAM_AGE_TIME_LABEL = "age";
 
-	static final String TAG_TYPE_QUALIFIER = "%";
-	static final String TAG_TYPE_INTEGER = "%i";
-	static final String TAG_TYPE_LONG = "%l";
-	static final String TAG_TYPE_DOUBLE = "%d";
-	static final String TAG_TYPE_FLOAT = "%f";
-	static final String TAG_TYPE_NUMBER = "%n";
-	static final String TAG_TYPE_BOOLEAN = "%b";
-	static final String TAG_TYPE_STRING = "%s";
+	String TAG_TYPE_QUALIFIER = "%";
+	String TAG_TYPE_INTEGER = "%i";
+	String TAG_TYPE_LONG = "%l";
+	String TAG_TYPE_DOUBLE = "%d";
+	String TAG_TYPE_FLOAT = "%f";
+	String TAG_TYPE_NUMBER = "%n";
+	String TAG_TYPE_BOOLEAN = "%b";
+	String TAG_TYPE_STRING = "%s";
 }
