@@ -573,7 +573,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 * @throws Exception if error logging tracking event
 	 * @see TrackingEvent
 	 */
-	abstract protected void _log(TrackingEvent event) throws Exception;
+	protected abstract void _log(TrackingEvent event) throws Exception;
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.
@@ -582,7 +582,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 * @throws Exception if error logging tracking activity
 	 * @see TrackingActivity
 	 */
-	abstract protected void _log(TrackingActivity activity) throws Exception;;
+	protected abstract void _log(TrackingActivity activity) throws Exception;;
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.
@@ -591,7 +591,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 * @throws Exception if error logging snapshot
 	 * @see OpLevel
 	 */
-	abstract protected void _log(Snapshot snapshot) throws Exception;
+	protected abstract void _log(Snapshot snapshot) throws Exception;
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.
@@ -609,7 +609,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 * @throws Exception if logging message
 	 * @see OpLevel
 	 */
-	abstract protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception;
+	protected abstract void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception;
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.
@@ -621,5 +621,5 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 * @throws IOException if error writing to sink
 	 * @throws InterruptedException if interrupted during write operation
 	 */
-	abstract protected void _write(Object msg, Object...args) throws IOException, InterruptedException;
+	protected abstract void _write(Object msg, Object...args) throws IOException, InterruptedException;
 }

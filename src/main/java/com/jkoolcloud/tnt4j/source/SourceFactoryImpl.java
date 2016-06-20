@@ -41,13 +41,13 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * 
  */
 public class SourceFactoryImpl implements SourceFactory, Configurable {
-	public final static String UNKNOWN_SOURCE = "UNKNOWN";
-	public final static String DEFAULT_SOURCE_ROOT_SSN = System.getProperty("tnt4j.source.root.ssn", "tnt4j");
-	public final static String DEFAULT_SOURCE_ROOT_FQN = System.getProperty("tnt4j.source.root.fqname", "RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?");
+	public static final String UNKNOWN_SOURCE = "UNKNOWN";
+	public static final String DEFAULT_SOURCE_ROOT_SSN = System.getProperty("tnt4j.source.root.ssn", "tnt4j");
+	public static final String DEFAULT_SOURCE_ROOT_FQN = System.getProperty("tnt4j.source.root.fqname", "RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?");
 	
-	private final static String TNT4J_SOURCE_PFIX = "tnt4j.source.";	
-	private final static String USER_NAME_KEY = "user.name";	
-	private final static String [] DEFAULT_SOURCES;
+	private static final String TNT4J_SOURCE_PFIX = "tnt4j.source.";	
+	private static final String USER_NAME_KEY = "user.name";	
+	private static final String [] DEFAULT_SOURCES;
 	
 	static {
 		int i = 0;
