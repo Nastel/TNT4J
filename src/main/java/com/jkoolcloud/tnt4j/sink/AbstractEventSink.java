@@ -178,7 +178,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		stats.put(Utils.qualify(this, KEY_SINK_ERROR_COUNT), errorCount.get());
 		stats.put(Utils.qualify(this, KEY_SINK_ERROR_STATE), errorState());
 		if (lastError != null) {
-			stats.put(Utils.qualify(this, KEY_SINK_ERROR_MSG), (lastError != null? lastError.getMessage(): "none"));
+			stats.put(Utils.qualify(this, KEY_SINK_ERROR_MSG), lastError.getMessage());
 			stats.put(Utils.qualify(this, KEY_SINK_ERROR_TIMESTAMP), new Date(lastErrorTime));
 		}
 		stats.put(Utils.qualify(this, KEY_LOGGED_MSGS), loggedMsgs.get());

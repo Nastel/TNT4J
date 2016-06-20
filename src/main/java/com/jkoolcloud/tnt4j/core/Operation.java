@@ -889,8 +889,8 @@ public class Operation implements TTL {
 		   .append("ElapsedUsec:").append(getElapsedTimeUsec()).append(",")
 		   .append("WaitUsec:").append(getWaitTimeUsec()).append(",")
 		   .append("WallUsec:").append(getWallTimeUsec()).append(",")
-		   .append("StartTime:[").append(sTime == null ? "null" : sTime.toString()).append("],")
-		   .append("EndTime:[").append(eTime == null ? "null" : eTime.toString()).append("],")
+		   .append("StartTime:[").append(sTime.toString()).append("],")
+		   .append("EndTime:[").append(eTime.toString()).append("],")
 		   .append("Exception:").append(getExceptionString()).append("}");
 
 		return str.toString();
