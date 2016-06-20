@@ -103,8 +103,7 @@ public class DefaultEventSinkFactory {
 	 */
 	private static EventSinkFactory createEventSinkFactory(String className) {
 		try {
-			EventSinkFactory factory = (EventSinkFactory) Utils.createInstance(className);
-			return factory;
+			return (EventSinkFactory) Utils.createInstance(className);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}

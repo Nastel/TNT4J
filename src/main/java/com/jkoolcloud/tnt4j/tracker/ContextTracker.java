@@ -95,8 +95,7 @@ public class ContextTracker {
 	 */
 	public ContextRef clearRef(Object obj) {
 		String refKey = ContextRef.getObjectRef(obj);
-		ContextRef ref = REF_MAP.remove(refKey);
-		return ref;
+		return REF_MAP.remove(refKey);
 	}
 	
 	
