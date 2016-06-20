@@ -555,7 +555,7 @@ public class Utils {
 	 * @return true if the string is null or empty
 	 */
 	public static boolean isEmpty(String str) {
-		boolean empty = (str == null || str.trim().length() == 0);
+		boolean empty = (str == null || str.trim().isEmpty());
 		return empty;
 	}
 

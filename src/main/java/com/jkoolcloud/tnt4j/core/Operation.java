@@ -459,7 +459,7 @@ public class Operation implements TTL {
 	 * @see #setCompCode(OpCompCode)
 	 */
 	public void setException(String exceptionStr) {
-		if (exceptionStr != null && exceptionStr.length() == 0)
+		if (exceptionStr != null && exceptionStr.isEmpty())
 			exceptionStr = null;
 		this.exceptionStr = exceptionStr;
 	}
@@ -499,7 +499,7 @@ public class Operation implements TTL {
 	 * @param location location string for operation
 	 */
 	public void setLocation(String location) {
-		if (location != null && location.length() == 0)
+		if (location != null && location.isEmpty())
 			location = null;
 		this.location = location;
 	}

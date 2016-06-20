@@ -283,7 +283,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 */
 	protected void notifyListeners(Object msg, Throwable ex) {
 		setErrorState(ex);
-		if (errorListeners.size() > 0) {
+		if (!errorListeners.isEmpty()) {
 			SinkError event = new SinkError(this, msg, ex);
 			notifyListeners(event);
 		} else if (ex != null){
@@ -310,7 +310,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public boolean isLoggable(long ttl, Source source, OpLevel level, String msg, Object... args) {
 		boolean pass = isSet(level);
-		if (filters.size() == 0) return pass;
+		if (filters.isEmpty()) return pass;
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, ttl, source, level, msg, args));
 			if (!pass) {
@@ -324,7 +324,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public boolean isLoggable(Snapshot snapshot) {
 		boolean pass = isSet(snapshot.getSeverity());
-		if (filters.size() == 0) return pass;
+		if (filters.isEmpty()) return pass;
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, snapshot));
 			if (!pass) {
@@ -338,7 +338,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public boolean isLoggable(TrackingActivity activity) {
 		boolean pass = isSet(activity.getSeverity());
-		if (filters.size() == 0) return pass;
+		if (filters.isEmpty()) return pass;
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, activity));
 			if (!pass) {
@@ -352,7 +352,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public boolean isLoggable(TrackingEvent event) {
 		boolean pass = isSet(event.getSeverity());
-		if (filters.size() == 0) return pass;
+		if (filters.isEmpty()) return pass;
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, event));
 			if (!pass) {
@@ -392,7 +392,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 				loggedSnaps.addAndGet(activity.getSnapshotCount());
 				lastTime.set(System.currentTimeMillis());
 				errorState = false;
-				if (logListeners.size() > 0) {
+				if (!logListeners.isEmpty()) {
 					notifyListeners(new SinkLogEvent(this, activity));
 				}
 			} catch (Throwable ex) {
@@ -416,7 +416,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 				loggedSnaps.addAndGet(event.getOperation().getSnapshotCount());
 				lastTime.set(System.currentTimeMillis());
 				errorState = false;
-				if (logListeners.size() > 0) {
+				if (!logListeners.isEmpty()) {
 					notifyListeners(new SinkLogEvent(this, event));
 				}
 			} catch (Throwable ex) {
@@ -439,7 +439,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 				loggedSnaps.incrementAndGet();
 				lastTime.set(System.currentTimeMillis());
 				errorState = false;
-				if (logListeners.size() > 0) {
+				if (!logListeners.isEmpty()) {
 					notifyListeners(new SinkLogEvent(this, snapshot));
 				}
 			} catch (Throwable ex) {
@@ -470,7 +470,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 				loggedMsgs.incrementAndGet();
 				lastTime.set(System.currentTimeMillis());
 				errorState = false;
-				if (logListeners.size() > 0) {
+				if (!logListeners.isEmpty()) {
 					notifyListeners(new SinkLogEvent(this, src, sev, nttl, msg, args));
 				}
 			} catch (Throwable ex) {
@@ -487,7 +487,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 			sinkWrites.incrementAndGet();
 			lastTime.set(System.currentTimeMillis());
 			errorState = false;
-			if (logListeners.size() > 0) {
+			if (!logListeners.isEmpty()) {
 				notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, (ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, msg, args));
 			}
 		} catch (Throwable ex) {

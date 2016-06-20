@@ -334,7 +334,7 @@ public class TrackerConfigStore extends TrackerConfig {
 				if (key != null) {
 					map.put(key, config);
 				}
-			} while (config.size() > 0);
+			} while (!config.isEmpty());
 		} finally {
 			Utils.close(reader);
 		}
@@ -386,7 +386,7 @@ public class TrackerConfigStore extends TrackerConfig {
 			line = reader.readLine();
 			if (line != null) {
 				line = line.trim();
-				if ((line.length() == 0)
+				if ((line.isEmpty())
 						|| line.startsWith("{")
 						|| line.startsWith(";")
 						|| line.startsWith("#")
