@@ -17,8 +17,6 @@ package com.jkoolcloud.tnt4j.sink;
 
 import java.util.Map;
 import java.util.Properties;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
@@ -40,15 +38,10 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *
  */
 public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
-	private static int MAX_POOL_SIZE = Integer.getInteger("tnt4j.pooled.logger.pool", 5);
-	private static int MAX_CAPACITY = Integer.getInteger("tnt4j.pooled.logger.capacity", 10000);
-	
-	private static final ConcurrentMap<String, PooledLogger> POOLED_LOGGERS = new ConcurrentHashMap<String, PooledLogger>();
-	
-	EventSinkFactory sinkFactory;
-	PooledLogger pooledLogger;
-	String factoryName;
+	String poolFactoryClass;
 	boolean blockWrites = false;
+	EventSinkFactory sinkFactory;
+	PooledFactory pooledFactory;
 
 	/**
 	 * Create a default buffered sink factory
@@ -65,7 +58,6 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	 * @param factory concrete event sink factory instance
 	 */
 	public BufferedEventSinkFactory(EventSinkFactory factory) {
-		factoryName = Integer.toHexString(System.identityHashCode(this));
 		sinkFactory = factory;
 	}
 
@@ -77,7 +69,7 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	 * @see PooledLogger
 	 */
 	protected PooledLogger getPooledLogger() {
-		return pooledLogger;
+		return pooledFactory.getPooledLogger();
 	}
 
 	@Override
@@ -98,40 +90,9 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	@Override
 	public void setConfiguration(Map<String, Object> props) throws ConfigException {
 		super.setConfiguration(props);
-		sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory", "EventSinkFactory.", props);
-		
-		// obtain all optional attributes
-		Object nameObj = props.get("PoolName");
-		String loggerName = nameObj == null? factoryName: nameObj.toString();
-		
-		Object threadPool = props.get("PoolSize");
-		int poolSize = threadPool == null? MAX_POOL_SIZE: Integer.parseInt(threadPool.toString());
-		
-		Object qCapacity = props.get("PoolCapacity");
-		int capacity = qCapacity == null? MAX_CAPACITY: Integer.parseInt(qCapacity.toString());
-		
+		sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory", "EventSinkFactory.", props);		
+		pooledFactory = (PooledFactory) Utils.createConfigurableObject("PooledLoggerFactory", "PooledLoggerFactory.", props);		
 		Object blockMode = props.get("BlockWrites");
 		blockWrites = blockMode == null? blockWrites: Boolean.parseBoolean(blockMode.toString());
-		
-		// create and register pooled logger instance if not yet available
-		pooledLogger = new PooledLogger(loggerName, poolSize, capacity);
-		POOLED_LOGGERS.putIfAbsent(loggerName, new PooledLogger(loggerName, poolSize, capacity));
-		
-		// obtain the required logger and attempt to start
-		pooledLogger = POOLED_LOGGERS.get(loggerName);
-		pooledLogger.start();
-	}
-	
-	@Override
-	protected void finalize() throws Throwable {
-		try {
-			PooledLogger lg = POOLED_LOGGERS.get(factoryName);
-			if (lg != null) {
-				POOLED_LOGGERS.remove(factoryName);
-				lg.stop();
-			}
-		} finally {
-			super.finalize();
-		}
-	}
+	}	
 }

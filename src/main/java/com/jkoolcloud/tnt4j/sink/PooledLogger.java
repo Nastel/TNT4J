@@ -96,7 +96,6 @@ public class PooledLogger implements KeyValueStats {
 		poolName = name;
 		poolSize = threadPoolSize;
 		capacity = maxCapacity;
-		threadPool = Executors.newFixedThreadPool(poolSize, new LoggingThreadFactory("PooledLogger(" + name + "," + poolSize + "," + capacity + ")/task-"));
 		eventQ = new ArrayBlockingQueue<SinkLogEvent>(capacity);
 	}
 	
@@ -257,6 +256,7 @@ public class PooledLogger implements KeyValueStats {
      */
 	protected synchronized void start() {
 		if (started) return;
+		threadPool = Executors.newFixedThreadPool(poolSize, new LoggingThreadFactory("PooledLogger(" + poolName + "," + poolSize + "," + capacity + ")/task-"));
 		for (int i = 0; i < poolSize; i++) {
 			threadPool.execute(new LoggingTask(this, eventQ));
 		}
@@ -267,6 +267,7 @@ public class PooledLogger implements KeyValueStats {
      * Stop the the thread pool and all threads in this pooled logger.
      */
 	protected synchronized void stop() {
+		if (threadPool == null) return;
 		threadPool.shutdown();
 		try {
 	        threadPool.awaitTermination(20, TimeUnit.SECONDS);
