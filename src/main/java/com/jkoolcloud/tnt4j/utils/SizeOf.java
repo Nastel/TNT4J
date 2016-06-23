@@ -31,9 +31,7 @@ import java.util.Map;
  */
 public class SizeOf {
     
-    private SizeOf() {
-    }
-    
+   
 	/**
 	 * Instance of java.lang.instrument.Instrument injected by the Java VM
 	 *
@@ -44,6 +42,9 @@ public class SizeOf {
 	private static boolean SKIP_STATIC_FIELD = false;
 	private static boolean SKIP_FINAL_FIELD = false;
 	private static boolean SKIP_FLYWEIGHT_FIELD = false;
+	
+    private SizeOf() {
+    }
 
 	/**
 	 * Callback method used by the Java VM to inject the java.lang.instrument.Instrument instance
@@ -101,7 +102,7 @@ public class SizeOf {
 			return 0;
 		}
 
-		long size = 0;
+		long size;
 		if (doneObj.containsKey(o)) {
 			return 0;
 		}

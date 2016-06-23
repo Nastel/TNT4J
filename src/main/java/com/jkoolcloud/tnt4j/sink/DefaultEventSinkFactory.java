@@ -66,6 +66,12 @@ public class DefaultEventSinkFactory {
 	static {
 		LoadDefaultFactory();
 	}
+	
+	/**
+	 * Private constructor to prevent object instantiation
+	 *
+	 */
+	private DefaultEventSinkFactory() {}
 
 	/**
 	 * Initialize default even sink factory based on given environment.
@@ -104,12 +110,6 @@ public class DefaultEventSinkFactory {
 		}
 		return null;
 	}
-
-	/**
-	 * Private constructor to prevent object instantiation
-	 *
-	 */
-	private DefaultEventSinkFactory() {}
 
 	/**
 	 * Obtain a default event sink factory

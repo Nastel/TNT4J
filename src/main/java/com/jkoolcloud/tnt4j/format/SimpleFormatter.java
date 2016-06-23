@@ -253,7 +253,7 @@ public class SimpleFormatter extends DefaultFormatter {
 			msg.append(separator);
 			msg.append("track-id: '").append(tid).append("'");
 		}
-		if (cid.size() > 0) {
+		if (!cid.isEmpty()) {
 			msg.append(separator);
 			msg.append("corr-id: '").append(cid).append("'");
 		}

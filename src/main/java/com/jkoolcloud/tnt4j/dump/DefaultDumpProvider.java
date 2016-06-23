@@ -27,7 +27,7 @@ package com.jkoolcloud.tnt4j.dump;
  *
  */
 
-abstract public class DefaultDumpProvider implements DumpProvider {
+public abstract class DefaultDumpProvider implements DumpProvider {
 	String pname, category;
 
 	/**

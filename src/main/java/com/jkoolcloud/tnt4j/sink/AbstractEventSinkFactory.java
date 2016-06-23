@@ -46,7 +46,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *
  */
 
-abstract public class AbstractEventSinkFactory implements EventSinkFactory, Configurable {
+public abstract class AbstractEventSinkFactory implements EventSinkFactory, Configurable {
 	private SinkEventFilter eventFilter = null;
 	private SinkErrorListener errorListener = null;
 	private SinkLogEventListener eventListener = null;

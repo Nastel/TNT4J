@@ -44,6 +44,19 @@ public class TimeTracker {
 	 * Timing cache maintains timing since last hit for a specific key
 	 */
 	final Cache<String, TimeStats> EVENT_CACHE;
+	
+	/**
+	 * Create a time tracker with specified capacity and life span
+	 * 
+	 * @param capacity
+	 *            maximum capacity
+	 * @param lifeSpan life span in milliseconds
+	 */
+	private TimeTracker(int capacity, long lifeSpan) {
+		EVENT_CACHE = CacheBuilder.newBuilder().concurrencyLevel(Runtime.getRuntime().availableProcessors()).recordStats()
+				.maximumSize(capacity).expireAfterWrite(lifeSpan, TimeUnit.MILLISECONDS).build();	
+		EVENT_MAP = EVENT_CACHE.asMap();
+	}
 
 	/**
 	 * Create a default time tracker with specified capacity and life span
@@ -78,19 +91,6 @@ public class TimeTracker {
 	 */
 	public static TimeStats getStats() {
 		return THREAD_TIMER.get();
-	}
-	
-	/**
-	 * Create a time tracker with specified capacity and life span
-	 * 
-	 * @param capacity
-	 *            maximum capacity
-	 * @param lifeSpan life span in milliseconds
-	 */
-	private TimeTracker(int capacity, long lifeSpan) {
-		EVENT_CACHE = CacheBuilder.newBuilder().concurrencyLevel(Runtime.getRuntime().availableProcessors()).recordStats()
-				.maximumSize(capacity).expireAfterWrite(lifeSpan, TimeUnit.MILLISECONDS).build();	
-		EVENT_MAP = EVENT_CACHE.asMap();
 	}
 	
 	/**

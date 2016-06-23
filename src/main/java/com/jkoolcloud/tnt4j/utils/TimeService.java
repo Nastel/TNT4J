@@ -81,7 +81,7 @@ public class TimeService {
 	 * Schedule automatic clock synchronization with NTP and internal clocks
 	 *
 	 */
-	private static void scheduleUpdates() {
+	private static synchronized void scheduleUpdates() {
 		if (scheduler == null) {
 			scheduler = Executors.newScheduledThreadPool(1, new TimeServiceThreadFactory("TimeService/clock-sync"));
 			clockSyncTask = new ClockDriftMonitorTask(logger);

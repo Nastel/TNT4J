@@ -49,26 +49,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	private long currentLamportClock = LamportCounter.incrementAndGet();
 
 	/**
-	 * Returns Lamport clock value of this time stamp
-	 * (based on Lamport Clock algorithm)
-	 *
-	 * @return Lamport clock value
-	 */
-	public long getLamportClock() {
-		return currentLamportClock;
-	}
-
-	/**
-	 * Returns UsecTimestamp based on current time with microsecond precision/accuracy
-	 *
-	 * @return UsecTimestamp for current time
-	 * @see com.jkoolcloud.tnt4j.utils.Utils#currentTimeUsec
-	 */
-	public static UsecTimestamp now() {
-		return new UsecTimestamp();
-	}
-
-	/**
 	 * Creates UsecTimestamp based on current time with microsecond precision/accuracy
 	 *
 	 * @see com.jkoolcloud.tnt4j.utils.Utils#currentTimeUsec
@@ -319,6 +299,46 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		setTimestampValues(date.getTime(), 0, 0);
 		add(0, usecs);
 	}
+	
+	/**
+	 * Creates UsecTimestamp based on specified UsecTimestamp.
+	 *
+	 * @param other timestamp to copy
+	 * @throws NullPointerException if timestamp is <code>null</code>
+	 */
+	public UsecTimestamp(UsecTimestamp other) {
+		this(other.msecs, other.usecs, other.getLamportClock());
+	}
+
+	/**
+	 * Creates UsecTimestamp based on specified UsecTimestamp.
+	 *
+	 * @param date timestamp to copy
+	 * @throws NullPointerException if date is <code>null</code>
+	 */
+	public UsecTimestamp(Date date) {
+		setTimestampValues(date.getTime(), 0, 0);
+	}
+	
+	/**
+	 * Returns Lamport clock value of this time stamp
+	 * (based on Lamport Clock algorithm)
+	 *
+	 * @return Lamport clock value
+	 */
+	public long getLamportClock() {
+		return currentLamportClock;
+	}
+
+	/**
+	 * Returns UsecTimestamp based on current time with microsecond precision/accuracy
+	 *
+	 * @return UsecTimestamp for current time
+	 * @see com.jkoolcloud.tnt4j.utils.Utils#currentTimeUsec
+	 */
+	public static UsecTimestamp now() {
+		return new UsecTimestamp();
+	}
 
 	/**
 	 * Sets UsecTimestamp based on specified microsecond timestamp.
@@ -391,26 +411,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 				currentLamportClock = LamportCounter.incrementAndGet();
 			}
 		}
-	}
-
-	/**
-	 * Creates UsecTimestamp based on specified UsecTimestamp.
-	 *
-	 * @param other timestamp to copy
-	 * @throws NullPointerException if timestamp is <code>null</code>
-	 */
-	public UsecTimestamp(UsecTimestamp other) {
-		this(other.msecs, other.usecs, other.getLamportClock());
-	}
-
-	/**
-	 * Creates UsecTimestamp based on specified UsecTimestamp.
-	 *
-	 * @param date timestamp to copy
-	 * @throws NullPointerException if date is <code>null</code>
-	 */
-	public UsecTimestamp(Date date) {
-		setTimestampValues(date.getTime(), 0, 0);
 	}
 
 	/**
@@ -511,9 +511,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @param other timestamp to add to current one
 	 */
 	public void add(UsecTimestamp other) {
-		if (!(other instanceof UsecTimestamp))
-			throw new ClassCastException("Cannot add " + this.getClass().getName() + " to " + other.getClass().getName());
-
 		add(other.msecs, other.usecs);
 	}
 
@@ -553,9 +550,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @param other timestamp to subtract from current one
 	 */
 	public void subtract(UsecTimestamp other) {
-		if (!(other instanceof UsecTimestamp))
-			throw new ClassCastException("Cannot subtract " + this.getClass().getName() + " and " + other.getClass().getName());
-
 		subtract(other.msecs, other.usecs);
 	}
 
@@ -601,8 +595,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return difference, in microseconds, between two timestamps
 	 */
 	public long difference(UsecTimestamp other) {
-		if (!(other instanceof UsecTimestamp))
-			throw new ClassCastException("Cannot compare " + this.getClass().getName() + " to " + other.getClass().getName());
 
 		long thisMsecs = this.msecs;
 		long thisUsecs = this.usecs;

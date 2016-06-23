@@ -459,7 +459,7 @@ public class Operation implements TTL {
 	 * @see #setCompCode(OpCompCode)
 	 */
 	public void setException(String exceptionStr) {
-		if (exceptionStr != null && exceptionStr.length() == 0)
+		if (exceptionStr != null && exceptionStr.isEmpty())
 			exceptionStr = null;
 		this.exceptionStr = exceptionStr;
 	}
@@ -499,7 +499,7 @@ public class Operation implements TTL {
 	 * @param location location string for operation
 	 */
 	public void setLocation(String location) {
-		if (location != null && location.length() == 0)
+		if (location != null && location.isEmpty())
 			location = null;
 		this.location = location;
 	}
@@ -781,7 +781,7 @@ public class Operation implements TTL {
 	 * @return total wall time in microseconds
 	 */
 	public long getWallTimeUsec() {
-		long wallTime = -1;
+		long wallTime;
 		if (stopCPUTime > 0) {
 			long cpuUsed = getUsedCpuTimeNano();
 			double cpuUsec = ((double) cpuUsed / 1000.0d);
@@ -889,8 +889,8 @@ public class Operation implements TTL {
 		   .append("ElapsedUsec:").append(getElapsedTimeUsec()).append(",")
 		   .append("WaitUsec:").append(getWaitTimeUsec()).append(",")
 		   .append("WallUsec:").append(getWallTimeUsec()).append(",")
-		   .append("StartTime:[").append(sTime == null ? "null" : sTime.toString()).append("],")
-		   .append("EndTime:[").append(eTime == null ? "null" : eTime.toString()).append("],")
+		   .append("StartTime:[").append(sTime.toString()).append("],")
+		   .append("EndTime:[").append(eTime.toString()).append("],")
 		   .append("Exception:").append(getExceptionString()).append("}");
 
 		return str.toString();

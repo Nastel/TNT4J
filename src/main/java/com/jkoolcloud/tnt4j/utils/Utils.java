@@ -74,6 +74,12 @@ public class Utils {
 	 * 16-bit USC character set.
 	 */
 	public static final String UTF16 = "UTF-16BE";
+	
+
+	/**
+	 * Line feed.
+	 */
+	private static final String LINE_FEED = "\n";
 
 	/**
 	 * JVM runtime name
@@ -430,8 +436,6 @@ public class Utils {
 		}
 	}
 
-	private static final String LINE_FEED = "\n";
-
 	/**
 	 * Gets a MD5 message digester object
 	 *
@@ -555,7 +559,7 @@ public class Utils {
 	 * @return true if the string is null or empty
 	 */
 	public static boolean isEmpty(String str) {
-		boolean empty = (str == null || str.trim().length() == 0);
+		boolean empty = (str == null || str.trim().isEmpty());
 		return empty;
 	}
 
