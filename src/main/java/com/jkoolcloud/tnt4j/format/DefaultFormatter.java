@@ -31,9 +31,9 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
- * Default implementation of <code>Formatter</code> interface provides
- * default formatting of <code>TrackingActvity</code> and <code>TrackingEvent</code>
- * as well as any object passed to <code>format()</code> method call.
+ * Default implementation of {@link Formatter} interface provides
+ * default formatting of {@link TrackingActvity} and {@link TrackingEvent}
+ * as well as any object passed to {@code format()} method call.
  * </p>
  * 
  * 
@@ -131,9 +131,9 @@ public class DefaultFormatter implements EventFormatter, Configurable   {
 	public void setConfiguration(Map<String, Object> settings) {
 		config = settings;
 
-		String tz = Utils.getString("TimeZone", settings, null);
 		separator = Utils.getString("Separator", settings, SEPARATOR);
 		formatString = Utils.getString("Format", settings, formatString);
-		timeZone = (tz != null? TimeZone.getTimeZone(tz.toString()): timeZone);
+		String tz = Utils.getString("TimeZone", settings, "UTC");
+		timeZone = TimeZone.getTimeZone(tz);
 	}	
 }
