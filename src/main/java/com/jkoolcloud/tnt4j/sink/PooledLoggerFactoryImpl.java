@@ -22,6 +22,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
+import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
@@ -84,15 +85,9 @@ public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurabl
 	@Override
     public void setConfiguration(Map<String, Object> settings) throws ConfigException {
 		// obtain all optional attributes
-		Object nameObj = props.get("Name");
-		poolName = nameObj == null? DEFAULT_POOL_NAME: nameObj.toString();
-		
-		Object threadPool = props.get("Size");
-		int poolSize = threadPool == null? MAX_POOL_SIZE: Integer.parseInt(threadPool.toString());
-		
-		Object qCapacity = props.get("Capacity");
-		int capacity = qCapacity == null? MAX_CAPACITY: Integer.parseInt(qCapacity.toString());
-		
+		poolName = Utils.getString("Name", settings, DEFAULT_POOL_NAME);	
+		int poolSize = Utils.getInt("Size", settings, MAX_POOL_SIZE);
+		int capacity = Utils.getInt("Capacity", settings, MAX_CAPACITY);				
 		// create and register pooled logger instance if not yet available
 		PooledLogger pooledLogger = new PooledLogger(poolName, poolSize, capacity);
 		if (POOLED_LOGGERS.putIfAbsent(poolName, pooledLogger) == null) {

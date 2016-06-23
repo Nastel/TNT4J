@@ -37,6 +37,7 @@ import com.jkoolcloud.tnt4j.config.Configurable;
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.sink.DefaultEventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.EventSink;
+import com.jkoolcloud.tnt4j.utils.Utils;
 
 
 /**
@@ -194,11 +195,8 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	@Override
 	public void setConfiguration(Map<String, Object> props) throws ConfigException {
 		settings = props;
-		Object fileUrl = props.get("Url");
-		configName = fileUrl != null? fileUrl.toString(): configName;
-
-		Object delay = props.get("RefreshTime");
-		refDelay = delay != null? Long.parseLong(delay.toString()): refDelay;
+		configName = Utils.getString("Url", props, configName);
+		refDelay = Utils.getLong("RefreshTime", props, refDelay);
 	}
 
 	@Override

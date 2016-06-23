@@ -111,10 +111,9 @@ public class SocketEventSinkFactory  extends AbstractEventSinkFactory  {
 	@Override
     public void setConfiguration(Map<String, Object> settings) throws ConfigException {
 		super.setConfiguration(settings);
-		hostName = settings.get("Host") != null? settings.get("Host").toString(): hostName;
-		port = settings.get("Port") != null? Integer.parseInt(settings.get("Port").toString()): port;
-		eventSinkFactory = (EventSinkFactory) Utils.createConfigurableObject("eventSinkFactory", 
-					"eventSinkFactory.", settings);
+		hostName = Utils.getString("Host", settings, hostName);
+		port = Utils.getInt("Port", settings, port);
+		eventSinkFactory = (EventSinkFactory) Utils.createConfigurableObject("eventSinkFactory", "eventSinkFactory.", settings);
 		eventSinkFactory = eventSinkFactory == null? DefaultEventSinkFactory.getInstance(): eventSinkFactory;
     }
 }

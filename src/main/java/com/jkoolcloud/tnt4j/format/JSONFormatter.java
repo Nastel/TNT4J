@@ -549,9 +549,8 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	@Override
 	public void setConfiguration(Map<String, Object> settings) {
 		config = settings;
-		newLineFormat = config.get("Newline") != null ? Boolean.valueOf(config.get("Newline").toString())
-		        : newLineFormat;
-		defOpName = config.get("OpName") != null? config.get("OpName").toString(): defOpName;
+		newLineFormat = Utils.getBoolean("Newline", settings, newLineFormat);
+		defOpName = Utils.getString("OpName", settings, defOpName);
 		initTags();
 	}
 }

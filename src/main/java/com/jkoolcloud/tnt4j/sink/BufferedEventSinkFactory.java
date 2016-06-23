@@ -92,7 +92,6 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 		super.setConfiguration(props);
 		sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory", "EventSinkFactory.", props);		
 		pooledFactory = (PooledLoggerFactory) Utils.createConfigurableObject("PooledLoggerFactory", "PooledLoggerFactory.", props);		
-		Object blockMode = props.get("BlockWrites");
-		blockWrites = blockMode == null? blockWrites: Boolean.parseBoolean(blockMode.toString());
+		blockWrites = Utils.getBoolean("BlockWrites", props, blockWrites);
 	}	
 }

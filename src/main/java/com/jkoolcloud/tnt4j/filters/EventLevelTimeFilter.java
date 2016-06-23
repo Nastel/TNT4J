@@ -27,6 +27,7 @@ import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.sink.SinkEventFilter;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
+import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
@@ -163,23 +164,13 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	@Override
 	public void setConfiguration(Map<String, Object> settings) {
 		config = settings;
-		Object levelString = config.get(LEVEL);
-		sevLimit = (levelString != null ? OpLevel.valueOf(levelString) : sevLimit);
+		sevLimit = OpLevel.valueOf(Utils.getString(LEVEL, settings, sevLimit.toString()));
+		elapsedUsec = Utils.getLong(ELAPSED_USEC, settings, elapsedUsec);
+		waitUsec = Utils.getLong(WAIT_USEC, settings, waitUsec);
+		wallUsec = Utils.getLong(WALL_USEC, settings, wallUsec);
+		ttl = Utils.getLong(TTL_SEC, settings, ttl);;
 
-		Object elaspedStr = config.get(ELAPSED_USEC);
-		elapsedUsec = (elaspedStr != null ? Long.parseLong(elaspedStr.toString()) : elapsedUsec);
-
-		Object waitStr = config.get(WAIT_USEC);
-		waitUsec = (waitStr != null ? Long.parseLong(waitStr.toString()) : waitUsec);
-		
-		Object wallStr = config.get(WALL_USEC);
-		wallUsec = (wallStr != null ? Long.parseLong(wallStr.toString()) : wallUsec);
-
-		Object ttlValue = config.get(TTL_SEC);
-		ttl = (ttlValue != null ? Long.parseLong(ttlValue.toString()) : ttl);
-
-		Object regex = config.get(MSG_PATTERN);
-		msgRegx = (regex != null ? regex.toString() : null);
+		msgRegx = Utils.getString(MSG_PATTERN, settings, null);
 		if (msgRegx != null) {
 			msgPattern = Pattern.compile(msgRegx);
 		}

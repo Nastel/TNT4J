@@ -130,11 +130,10 @@ public class DefaultFormatter implements EventFormatter, Configurable   {
 	@Override
 	public void setConfiguration(Map<String, Object> settings) {
 		config = settings;
-		Object sep = config.get("Separator");
-		Object format = config.get("Format");
-		Object tz = config.get("TimeZone");
-		separator = (sep != null? sep.toString(): SEPARATOR);
-		formatString = format != null? format.toString(): formatString;
+
+		String tz = Utils.getString("TimeZone", settings, null);
+		separator = Utils.getString("Separator", settings, SEPARATOR);
+		formatString = Utils.getString("Format", settings, formatString);
 		timeZone = (tz != null? TimeZone.getTimeZone(tz.toString()): timeZone);
 	}	
 }

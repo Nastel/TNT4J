@@ -78,14 +78,14 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 		}
 	}
 
-	private Map<String, Object> config = null;
 	private String rootFqn = DEFAULT_SOURCE_ROOT_FQN;
 	private String rootSSN = DEFAULT_SOURCE_ROOT_SSN;
 	private String [] defaultSources = DEFAULT_SOURCES.clone();
-	private Source rootSource = null;
+
+	private Map<String, Object> config;
+	private Source rootSource;
 
 	public SourceFactoryImpl() {
-		rootSource = newFromFQN(rootFqn);
 	}
 	
 	@Override
@@ -152,13 +152,9 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 				defaultSources[type.ordinal()] = getNameFromType(String.valueOf(typeValue), type);
 			}
 		}
-		if (config.get("RootFQN") != null) {
-			rootFqn = config.get("RootFQN") != null? config.get("RootFQN").toString(): DEFAULT_SOURCE_ROOT_FQN;
-			rootSource = newFromFQN(rootFqn);			
-		}		
-		if (config.get("RootSSN") != null) {
-			rootSSN = config.get("RootSSN") != null? config.get("RootSSN").toString(): DEFAULT_SOURCE_ROOT_SSN;
-		}
+		rootFqn = Utils.getString("RootFQN", settings, DEFAULT_SOURCE_ROOT_FQN);
+		rootSource = newFromFQN(rootFqn);			
+		rootSSN = Utils.getString("RootSSN", settings, DEFAULT_SOURCE_ROOT_SSN);
    }
 	
 	/**
