@@ -15,6 +15,7 @@
  */
 package com.jkoolcloud.tnt4j.sink;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -24,7 +25,7 @@ import com.jkoolcloud.tnt4j.config.Configurable;
 
 /**
  * <p>
- * A pooled logger factory that manages access to {@link PooledLogger} instances.
+ * A pooled logger factory manages access to {@link PooledLogger} instances.
  * </p>
  * 
  * @see PooledLogger
@@ -32,7 +33,7 @@ import com.jkoolcloud.tnt4j.config.Configurable;
  * @version $Revision: 1 $
  * 
  */
-public class PooledLoggerFactoryImpl implements PooledFactory, Configurable {
+public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurable {
 
 	public static String DEFAULT_POOL_NAME = "default";
 	private static int MAX_POOL_SIZE = Integer.getInteger("tnt4j.pooled.logger.pool", 5);
@@ -69,7 +70,9 @@ public class PooledLoggerFactoryImpl implements PooledFactory, Configurable {
 	}
 
 	@Override
-    public Map<String, PooledLogger> getLoggers() {
+    public Map<String, PooledLogger> getPooledLoggers() {
+		Map<String, PooledLogger> copy = new HashMap<String, PooledLogger>();
+		copy.putAll(POOLED_LOGGERS);
 	    return POOLED_LOGGERS;
     }
 
@@ -96,5 +99,4 @@ public class PooledLoggerFactoryImpl implements PooledFactory, Configurable {
 			pooledLogger.start();
 		}		
     }
-
 }
