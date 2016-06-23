@@ -2,48 +2,48 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.jkoolcloud</groupId>
-  <artifactId>tnt4j</artifactId>
-  <version>2.2</version>
-  <packaging>jar</packaging>
+	<groupId>com.jkoolcloud</groupId>
+	<artifactId>tnt4j</artifactId>
+	<version>2.2</version>
+	<packaging>jar</packaging>
 
-  <name>tnt4j</name>
-  <url>http://www.jkoolcloud.com/</url> 
-  <description>Data Streaming, Data Analytics</description>
-  <licenses>
-  <license>
-    <name>The Apache License, Version 2.0</name>
-    <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-  </license>
-  </licenses> 
-  <developers>
+	<name>tnt4j</name>
+	<url>http://www.jkoolcloud.com/</url> 
+	<description>Data Streaming, Data Analytics</description>
+	<licenses>
+	<license>
+		<name>The Apache License, Version 2.0</name>
+		<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+	</license>
+	</licenses> 
+	<developers>
     <developer>
       <name>jKool Team</name>
       <email>support@jkoolcloud.com</email>
       <organization>jKool</organization>
       <organizationUrl>http://www.jkoolcloud.com</organizationUrl>
     </developer>
-  </developers>
-  <scm>
-    <connection>scm:git:git://github.com/Nastel/TNT4J</connection>
-    <developerConnection>scm:git:git//github.com/Nastel/TNT4J</developerConnection>
-    <url>https://github.com/Nastel/TNT4j</url>
-  </scm>
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <product.vendor>jKool, LLC</product.vendor> 
-    <release.deploy.dir>../build/${project.name}</release.deploy.dir>
-  </properties>
+	</developers>
+	<scm>
+		<connection>scm:git:git://github.com/Nastel/TNT4J</connection>
+		<developerConnection>scm:git:git//github.com/Nastel/TNT4J</developerConnection>
+		<url>https://github.com/Nastel/TNT4j</url>
+	</scm>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<product.vendor>jKool, LLC</product.vendor> 
+		<release.deploy.dir>../build/${project.name}</release.deploy.dir>
+	</properties>
   
-  <distributionManagement>
+	<distributionManagement>
 	 <repository>
       	<id>bintray-amavashev2-jkoolcloud</id>
       	<name>amavashev2-jkoolcloud</name>
       	<url>https://api.bintray.com/maven/amavashev2/jkoolcloud/tnt4j/;publish=1;override=1</url>
   	 </repository>
-  </distributionManagement>
+	</distributionManagement>
 
-  <dependencies>
+	<dependencies>
 	<dependency>
 	    <groupId>org.apache.commons</groupId>
 	    <artifactId>commons-lang3</artifactId>
@@ -84,8 +84,9 @@
 	    <artifactId>slf4j-api</artifactId>
 	    <version>1.7.12</version>
 	</dependency>
-  </dependencies>
-  <build>
+	</dependencies>
+  
+	<build>
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -96,8 +97,8 @@
           <fork>true</fork>
           <executable>${JAVA_HOME}/bin/javac</executable>
           <compilerVersion>1.6</compilerVersion>
-          <source>1.7</source>
-          <target>1.7</target>
+          <source>1.6</source>
+          <target>1.6</target>
         </configuration>
       </plugin>
       <plugin>
@@ -174,6 +175,6 @@
             </filesets>
         </configuration>
      </plugin>   
-   </plugins>
-  </build>  
+	</plugins>
+	</build>  
 </project>
