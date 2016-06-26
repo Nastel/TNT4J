@@ -37,29 +37,29 @@ public interface DumpProvider {
 	/**
 	 * DUMP_BEFORE generated before dump is written to one or more destination(s) 
 	 */
-	public static final int DUMP_BEFORE = 0;
+	int DUMP_BEFORE = 0;
 	
 	/**
 	 * DUMP_AFTER generated after dump is written to one or more destination(s) 
 	 */
-	public static final int DUMP_AFTER = 1;
+	int DUMP_AFTER = 1;
 
 	/**
 	 * DUMP_COMPLETE generated after all dumps are written to one or more destination(s) 
 	 */
-	public static final int DUMP_COMPLETE = 2;
+	int DUMP_COMPLETE = 2;
 	
 	/**
 	 * DUMP_ERROR generated when and error is encountered during dump generation 
 	 */
-	public static final int DUMP_ERROR = 3;
+	int DUMP_ERROR = 3;
 
 	/**
 	 * Name of the dump provider
 	 * 
 	 * @return name of the dump provider
 	 */
-	public String getProviderName();
+	String getProviderName();
 
 	/**
 	 * Name of the dump provider category
@@ -67,7 +67,7 @@ public interface DumpProvider {
 	 * @return name of the dump provider category
 	 * 
 	 */
-	public String getCategoryName();
+	String getCategoryName();
 
 	/**
 	 * Return the dump collection associated with this provider
@@ -75,5 +75,5 @@ public interface DumpProvider {
 	 * @return dump collection associated with this dump provider
 	 * 
 	 */
-	public DumpCollection getDump();
+	DumpCollection getDump();
 }

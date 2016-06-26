@@ -36,7 +36,7 @@ public interface DumpFormatter extends Formatter {
 	 * @param sink dump sink
 	 * @return opening stanza
 	 */
-	public String getOpenStanza(DumpSink sink);
+	String getOpenStanza(DumpSink sink);
 
 	/**
 	 * Obtain a formatted closing stanza
@@ -44,7 +44,7 @@ public interface DumpFormatter extends Formatter {
 	 * @param sink dump sink
 	 * @return closing stanza
 	 */
-	public String getCloseStanza(DumpSink sink);
+	String getCloseStanza(DumpSink sink);
 
 	/**
 	 * Obtain a formatted header associated with the given dump collection
@@ -52,7 +52,7 @@ public interface DumpFormatter extends Formatter {
 	 * @param dump user specified dump collection
 	 * @return formatted header
 	 */
-	public String getHeader(DumpCollection dump);
+	String getHeader(DumpCollection dump);
 
 	/**
 	 * Obtain a formatted footer associated with the given dump collection
@@ -60,7 +60,7 @@ public interface DumpFormatter extends Formatter {
 	 * @param dump user specified dump collection
 	 * @return formatted footer
 	 */
-	public String getFooter(DumpCollection dump);
+	String getFooter(DumpCollection dump);
 
 	/**
 	 * Format a given dump collection and return a string
@@ -68,5 +68,5 @@ public interface DumpFormatter extends Formatter {
 	 * @param dump user specified dump collection
 	 * @return formatted dump
 	 */
-	public String format(DumpCollection dump);
+	String format(DumpCollection dump);
 }

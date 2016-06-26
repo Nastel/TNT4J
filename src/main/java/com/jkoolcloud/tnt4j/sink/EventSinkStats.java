@@ -24,28 +24,28 @@ package com.jkoolcloud.tnt4j.sink;
  *
  */
 public interface EventSinkStats {
-	static final String KEY_SINK_ERROR_COUNT = "sink-errors";
-	static final String KEY_SINK_ERROR_STATE = "sink-error-state";
-	static final String KEY_SINK_ERROR_MSG = "sink-error-msg";
-	static final String KEY_SINK_ERROR_TIMESTAMP = "sink-error-timestamp";
-	static final String KEY_LOGGED_MSGS = "sink-messages";
-	static final String KEY_SINK_WRITES= "sink-direct-writes";
-	static final String KEY_LOGGED_EVENTS = "sink-events";
-	static final String KEY_LOGGED_ACTIVITIES = "sink-activities";
-	static final String KEY_LOGGED_SNAPSHOTS = "sink-snapshots";
-	static final String KEY_SKIPPED_COUNT = "sink-skipped";
-	static final String KEY_LAST_TIMESTAMP = "sink-last-timestamp";
-	static final String KEY_LAST_AGE = "sink-last-age-ms";
+	String KEY_SINK_ERROR_COUNT = "sink-errors";
+	String KEY_SINK_ERROR_STATE = "sink-error-state";
+	String KEY_SINK_ERROR_MSG = "sink-error-msg";
+	String KEY_SINK_ERROR_TIMESTAMP = "sink-error-timestamp";
+	String KEY_LOGGED_MSGS = "sink-messages";
+	String KEY_SINK_WRITES= "sink-direct-writes";
+	String KEY_LOGGED_EVENTS = "sink-events";
+	String KEY_LOGGED_ACTIVITIES = "sink-activities";
+	String KEY_LOGGED_SNAPSHOTS = "sink-snapshots";
+	String KEY_SKIPPED_COUNT = "sink-skipped";
+	String KEY_LAST_TIMESTAMP = "sink-last-timestamp";
+	String KEY_LAST_AGE = "sink-last-age-ms";
 
-	static final String KEY_LIMITER_ENABLED = "limiter-enabled";
-	static final String KEY_LIMITER_MPS = "limiter-mps";
-	static final String KEY_LIMITER_BPS = "limiter-bps";
-	static final String KEY_LIMITER_MAX_MPS = "limiter-max-mps";
-	static final String KEY_LIMITER_MAX_BPS = "limiter-max-bps";;
-	static final String KEY_LIMITER_TOTAL_MSGS = "limiter-total-msgs";
-	static final String KEY_LIMITER_TOTAL_BYTES = "limiter-total-bytes";
-	static final String KEY_LIMITER_TOTAL_DENIED = "limiter-total-denied";
-	static final String KEY_LIMITER_TOTAL_DELAYS = "limiter-total-delays";
-	static final String KEY_LIMITER_LAST_DELAY_TIME = "limiter-last-delay-sec";
-	static final String KEY_LIMITER_TOTAL_DELAY_TIME = "limiter-total-delay-time-sec";
+	String KEY_LIMITER_ENABLED = "limiter-enabled";
+	String KEY_LIMITER_MPS = "limiter-mps";
+	String KEY_LIMITER_BPS = "limiter-bps";
+	String KEY_LIMITER_MAX_MPS = "limiter-max-mps";
+	String KEY_LIMITER_MAX_BPS = "limiter-max-bps";;
+	String KEY_LIMITER_TOTAL_MSGS = "limiter-total-msgs";
+	String KEY_LIMITER_TOTAL_BYTES = "limiter-total-bytes";
+	String KEY_LIMITER_TOTAL_DENIED = "limiter-total-denied";
+	String KEY_LIMITER_TOTAL_DELAYS = "limiter-total-delays";
+	String KEY_LIMITER_LAST_DELAY_TIME = "limiter-last-delay-sec";
+	String KEY_LIMITER_TOTAL_DELAY_TIME = "limiter-total-delay-time-sec";
 }

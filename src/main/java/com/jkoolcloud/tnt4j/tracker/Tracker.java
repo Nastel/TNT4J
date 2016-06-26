@@ -56,16 +56,16 @@ import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
  *
  */
 public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
-	static final String KEY_ACTIVITY_COUNT = "tracker-activities";
-	static final String KEY_EVENT_COUNT = "tracker-events";
-	static final String KEY_MSG_COUNT = "tracker-messages";
-	static final String KEY_SNAPSHOT_COUNT = "tracker-snapshots";
-	static final String KEY_ACTIVITIES_STARTED = "tracker-started";
-	static final String KEY_ACTIVITIES_STOPPED = "tracker-stopped";
-	static final String KEY_NOOP_COUNT = "tracker-noops";
-	static final String KEY_ERROR_COUNT = "tracker-errors";
-	static final String KEY_STACK_DEPTH = "tracker-stack-depth";
-	static final String KEY_OVERHEAD_USEC = "tracker-overhead-usec";
+	String KEY_ACTIVITY_COUNT = "tracker-activities";
+	String KEY_EVENT_COUNT = "tracker-events";
+	String KEY_MSG_COUNT = "tracker-messages";
+	String KEY_SNAPSHOT_COUNT = "tracker-snapshots";
+	String KEY_ACTIVITIES_STARTED = "tracker-started";
+	String KEY_ACTIVITIES_STOPPED = "tracker-stopped";
+	String KEY_NOOP_COUNT = "tracker-noops";
+	String KEY_ERROR_COUNT = "tracker-errors";
+	String KEY_STACK_DEPTH = "tracker-stack-depth";
+	String KEY_OVERHEAD_USEC = "tracker-overhead-usec";
 
 
 	/**
