@@ -21,6 +21,7 @@ import java.util.Map;
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
 import com.jkoolcloud.tnt4j.core.UsecTimestamp;
+import com.jkoolcloud.tnt4j.utils.Utils;
 
 
 
@@ -95,10 +96,7 @@ public class DefaultDumpSinkFactory implements DumpSinkFactory, Configurable {
 	@Override
 	public void setConfiguration(Map<String, Object> props) throws ConfigException {
 		config = props;
-		Object flag  = props.get("Append");
-		append = flag == null? append: Boolean.valueOf(flag.toString());
-
-		Object dumpUrl = config.get("DumpLocation");
-		dumpLocation = dumpUrl != null? dumpUrl.toString(): dumpLocation;
+		append = Utils.getBoolean("Append", props, append);
+		dumpLocation = Utils.getString("DumpLocation", props, dumpLocation);
 	}
 }

@@ -41,7 +41,7 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	String poolFactoryClass;
 	boolean blockWrites = false;
 	EventSinkFactory sinkFactory;
-	PooledFactory pooledFactory;
+	PooledLoggerFactory pooledFactory;
 
 	/**
 	 * Create a default buffered sink factory
@@ -91,8 +91,7 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	public void setConfiguration(Map<String, Object> props) throws ConfigException {
 		super.setConfiguration(props);
 		sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory", "EventSinkFactory.", props);		
-		pooledFactory = (PooledFactory) Utils.createConfigurableObject("PooledLoggerFactory", "PooledLoggerFactory.", props);		
-		Object blockMode = props.get("BlockWrites");
-		blockWrites = blockMode == null? blockWrites: Boolean.parseBoolean(blockMode.toString());
+		pooledFactory = (PooledLoggerFactory) Utils.createConfigurableObject("PooledLoggerFactory", "PooledLoggerFactory.", props);		
+		blockWrites = Utils.getBoolean("BlockWrites", props, blockWrites);
 	}	
 }

@@ -74,9 +74,6 @@ public class DefaultTrackerFactory implements TrackerFactory, Configurable {
 	@Override
     public void setConfiguration(Map<String, Object> props) throws ConfigException {
 		config = props;
-		Object context = props.get("KeepThreadContext");
-		if (context != null) {
-			defaultKeepContext = Boolean.getBoolean(context.toString());
-		}
+		defaultKeepContext = Utils.getBoolean("KeepThreadContext", props, defaultKeepContext);
     }
 }

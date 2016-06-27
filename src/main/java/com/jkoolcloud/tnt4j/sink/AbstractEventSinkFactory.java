@@ -131,19 +131,12 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	@Override
 	public void setConfiguration(Map<String, Object> props) throws ConfigException {
 		config = props;
-		Object ttlValue = config.get("TTL");
-		if (ttlValue != null) {
-			setTTL(Long.parseLong(ttlValue.toString()));
-		}
-		Object rateLimit = config.get("RateLimit");
-		Object maxTimeout = config.get("RateTimeout");
-		Object maxMps = config.get("RateMaxMPS");
-		Object maxBps = config.get("RateMaxBPS");
-		if (maxMps != null || maxBps != null) {
-			double maxmps = maxMps != null? Double.parseDouble(maxMps.toString()): Limiter.MAX_RATE;
-			double maxbps = maxBps != null? Double.parseDouble(maxBps.toString()): Limiter.MAX_RATE;
-			boolean enabled = rateLimit != null? Boolean.parseBoolean(rateLimit.toString()): true;
-			long timeout = maxTimeout != null? Long.parseLong(maxTimeout.toString()): EventLimiter.BLOCK_UNTIL_GRANTED;
+		setTTL(Utils.getLong("TTL", props, getTTL()));
+		double maxmps = Utils.getDouble("RateMaxMPS", props, Limiter.MAX_RATE);
+		double maxbps = Utils.getDouble("RateMaxBPS", props, Limiter.MAX_RATE);
+		boolean enabled = Utils.getBoolean("RateLimit", props, false);
+		long timeout = Utils.getLong("RateTimeout", props, EventLimiter.BLOCK_UNTIL_GRANTED);
+		if (enabled) {
 			limiter = new EventLimiter(DefaultLimiterFactory.getInstance().newLimiter(maxmps, maxbps, enabled), timeout, TimeUnit.MILLISECONDS);
 		}
 		eventFilter = (SinkEventFilter) Utils.createConfigurableObject("Filter", "Filter.", config);
