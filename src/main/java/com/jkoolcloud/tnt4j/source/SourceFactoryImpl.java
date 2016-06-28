@@ -86,6 +86,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	private Source rootSource;
 
 	public SourceFactoryImpl() {
+		rootSource = newFromFQN(rootFqn);			
 	}
 	
 	@Override
