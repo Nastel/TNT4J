@@ -68,6 +68,7 @@ TNT4J enhances logging performance by supporting asynchronous pooled logging, wh
 ```
 ...
 event.sink.factory: com.jkoolcloud.tnt4j.sink.BufferedEventSinkFactory
+event.sink.factory.PooledLoggerFactory: com.jkoolcloud.tnt4j.sink.PooledLoggerFactoryImpl
 event.sink.factory.EventSinkFactory: com.jkoolcloud.tnt4j.logger.slf4j.SLF4JEventSinkFactory
 ...
 ```
@@ -351,13 +352,12 @@ class MyEventFilter implements SinkEventFilter {
 	}
 }
 ```
-Embed TNT4J into your application and realize the benefits in matter if minutes. 
+Embed TNT4J into your application and realize the benefits in a matter if minutes. 
 TNT4J can take advantage of other lower level logging frameworks such as slf4j, log4j.
 Default TNT4J binding is based on slf4j.
 
 About TNT4J
 ======================================
-
 Track and Trace 4 Java API, Application logging framework for correlation, diagnostics and tracking of application activities within and across <b>multiple applications, runtime, servers, geo locations. This API is specifically designed to troubleshoot distributed, concurrent, multi-threaded, composite applications</b> and includes activity correlation, application state dumps, performance and user defined metrics.
 
 Here is short list of TNT4J features:
@@ -413,7 +413,6 @@ How to Build TNT4J
 
 Requirements
 * JDK 1.6+
-* Apache ANT (http://ant.apache.org/)
 
 TNT4J depends on the following external packages:
 * Apache commons configuration 1.10 (http://commons.apache.org/proper/commons-configuration/)
