@@ -34,12 +34,15 @@ public class TimeTracker {
 	/*
 	 * Timing thread local maintains timing since last hit for specific thread
 	 */
-	private static final ThreadLocal<TimeStats> THREAD_TIMER = new ThreadLocal<TimeStats>();
+	private static final ThreadLocal<TimeStats> THREAD_TIMER = new ThreadLocal<TimeStats>() {
+		@Override protected TimeStats initialValue() { return new TimeStats(); }	
+	};
 
 	/*
 	 * Timing map maintains timing since last hit for a specific key
 	 */	
 	final ConcurrentMap<String, TimeStats> EVENT_MAP;
+	
 	/*
 	 * Timing cache maintains timing since last hit for a specific key
 	 */
@@ -76,12 +79,7 @@ public class TimeTracker {
 	 * @return elapsed nanoseconds since last hit
 	 */
 	public static long hitAndGet() {
-		TimeStats timeStats = THREAD_TIMER.get();
-		if (timeStats == null) {
-			timeStats = new TimeStats();
-			THREAD_TIMER.set(timeStats);
-		}
-		return timeStats.hit();
+		return THREAD_TIMER.get().hit();
 	}
 	
 	/**
