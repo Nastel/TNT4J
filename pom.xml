@@ -33,6 +33,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<product.vendor>jKool, LLC</product.vendor> 
 		<release.deploy.dir>../build/${project.name}</release.deploy.dir>
+		<gpg.skip.sign>false</gpg.skip.sign>
 	</properties>
   
 	<distributionManagement>
@@ -127,20 +128,23 @@
         </execution>
       </executions>
      </plugin>
-     <!--<plugin>-->
-     <!--<groupId>org.apache.maven.plugins</groupId>-->
-     <!--<artifactId>maven-gpg-plugin</artifactId>-->
-     <!--<version>1.5</version>-->
-     <!--<executions>-->
-     <!--<execution>-->
-     <!--<id>sign-artifacts</id>-->
-     <!--<phase>verify</phase>-->
-     <!--<goals>-->
-     <!--<goal>sign</goal>-->
-     <!--</goals>-->
-     <!--</execution>-->
-     <!--</executions>-->
-     <!--</plugin>-->
+     <plugin>
+       <groupId>org.apache.maven.plugins</groupId>
+       <artifactId>maven-gpg-plugin</artifactId>
+       <version>1.5</version>
+       <executions>
+         <execution>
+           <id>sign-artifacts</id>
+           <phase>verify</phase>
+           <goals>
+             <goal>sign</goal>
+           </goals>
+           <configuration>
+             <skip>${gpg.skip.sign}</skip>
+           </configuration>
+         </execution>
+       </executions>
+     </plugin>
     <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-assembly-plugin</artifactId>
