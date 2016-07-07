@@ -78,13 +78,6 @@ public interface Trackable extends TTL {
 	OpType getType();
 
 	/**
-	 * Gets tracking signature associated with this trackable instance.
-	 *
-	 * @return item tracking signature
-	 */
-	String getTrackingId();
-
-	/**
 	 * Gets parent's tracking id.
 	 *
 	 * @return parent's tracking id
@@ -92,11 +85,36 @@ public interface Trackable extends TTL {
 	String getParentId();
 
 	/**
-	 * Sets tracking signature
+	 * Get signature associated with this tracking instance.
+	 * Use signature for point to point temper detection. Signatures
+	 * should be computed based on contents of the trackable instance.
 	 *
-	 * @param signature tracking signature
+	 * @return item tracking identifier
 	 */
-	void setTrackingId(String signature);
+	String getSignature();
+
+	/**
+	 * Sets signature for temper detection/protection.
+	 * Use signature for point to point temper detection. Signatures
+	 * should be computed based on contents of the trackable instance.
+	 *
+	 * @param sign tracking identifier
+	 */
+	void setSignature(String sign);
+	
+	/**
+	 * Gets tracking identifier associated with this trackable instance.
+	 *
+	 * @return item tracking identifier
+	 */
+	String getTrackingId();
+
+	/**
+	 * Sets tracking identifier
+	 *
+	 * @param id tracking identifier
+	 */
+	void setTrackingId(String id);
 
 	/**
 	 * Sets the parent object for this object.

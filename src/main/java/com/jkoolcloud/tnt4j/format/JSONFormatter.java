@@ -137,6 +137,10 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			jsonString.append(JSON_TRACK_ID_LABEL).append(ATTR_SEP).append(
 		        Utils.quote(event.getTrackingId())).append(ATTR_JSON);
 		}
+		if (!Utils.isEmpty(event.getSignature())) {
+			jsonString.append(JSON_TRACK_SIGN_LABEL).append(ATTR_SEP).append(
+			        Utils.quote(event.getSignature())).append(ATTR_JSON);
+		}
 		if (!Utils.isEmpty(event.getParentId())) {
 			jsonString.append(JSON_PARENT_TRACK_ID_LABEL).append(ATTR_SEP).append(
 			        Utils.quote(event.getParentId())).append(ATTR_JSON);
@@ -276,6 +280,10 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			jsonString.append(JSON_TRACK_ID_LABEL).append(ATTR_SEP).append(
 		        Utils.quote(activity.getTrackingId())).append(ATTR_JSON);
 		}
+		if (!Utils.isEmpty(activity.getSignature())) {
+			jsonString.append(JSON_TRACK_SIGN_LABEL).append(ATTR_SEP).append(
+			        Utils.quote(activity.getSignature())).append(ATTR_JSON);
+		}
 		if (!Utils.isEmpty(activity.getParentId())) {
 			jsonString.append(JSON_PARENT_TRACK_ID_LABEL).append(ATTR_SEP).append(
 			        Utils.quote(activity.getParentId())).append(ATTR_JSON);
@@ -391,6 +399,10 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		if (!Utils.isEmpty(snap.getTrackingId())) {
 			jsonString.append(JSON_TRACK_ID_LABEL).append(ATTR_SEP).append(
 			        Utils.quote(snap.getTrackingId())).append(ATTR_JSON);
+		}
+		if (!Utils.isEmpty(snap.getSignature())) {
+			jsonString.append(JSON_TRACK_SIGN_LABEL).append(ATTR_SEP).append(
+			        Utils.quote(snap.getSignature())).append(ATTR_JSON);
 		}
 		if (!Utils.isEmpty(snap.getParentId())) {
 			jsonString.append(JSON_PARENT_TRACK_ID_LABEL).append(ATTR_SEP).append(

@@ -45,6 +45,7 @@ public class Activity extends Operation implements Trackable {
 	private Source appl;
 	private String tracking_id;
 	private String parentId;
+	private String sign;
 	private ActivityStatus status = ActivityStatus.BEGIN;
 
 	private HashSet<String> idset = new HashSet<String>(89);
@@ -372,5 +373,15 @@ public class Activity extends Operation implements Trackable {
 			.append("EndTime:[").append(eTime.toString()).append("]}");
 
 		return str.toString();
+	}
+
+	@Override
+    public String getSignature() {
+	    return sign;
+    }
+
+	@Override
+    public void setSignature(String sign) {
+		this.sign = sign;
 	}
 }

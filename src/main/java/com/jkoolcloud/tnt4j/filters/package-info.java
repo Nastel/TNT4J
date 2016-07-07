@@ -15,9 +15,9 @@
  */
 
 /**
- * TNT4J UUID & Signature factory implementation
+ * Concrete event filter implementations
  * 
  * @author albert
  * @version 1.0
  */
-package com.jkoolcloud.tnt4j.uuid;
+package com.jkoolcloud.tnt4j.filters;

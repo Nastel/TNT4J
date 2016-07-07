@@ -70,7 +70,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	public static final String KEY_CONFIG_SOURCE = "config";
 	public static final NullActivity NULL_ACTIVITY = new NullActivity();
-	public static final NullEvent NULL_EVENT = new NullEvent();
+	public static final NullEvent NULL_EVENT = new NullEvent(null);
 
 	private String id;
 	private EventSink eventSink;
@@ -504,7 +504,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (!isTrackingEnabled(OpLevel.NONE, opName, msg, args)) {
 				return NULL_EVENT;
 			}
-			TrackingEvent event = new TrackingEvent(getSource(), OpLevel.NONE, opName, (String)null, msg, args);
+			TrackingEvent event = new TrackingEvent(this, getSource(), OpLevel.NONE, opName, (String)null, msg, args);
 			event.getOperation().setUser(tConfig.getSource().getUser());
 			return event;
 		} finally {
@@ -519,7 +519,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (!isTrackingEnabled(severity, opName, correlator, msg, args)) {
 				return NULL_EVENT;
 			}
-			TrackingEvent event = new TrackingEvent(getSource(), severity, opName, correlator, msg, args);
+			TrackingEvent event = new TrackingEvent(this, getSource(), severity, opName, correlator, msg, args);
 			event.getOperation().setUser(tConfig.getSource().getUser());
 			return event;
 		} finally {
@@ -536,7 +536,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (!isTrackingEnabled(severity, opName, correlator, tag, msg, args)) {
 				return NULL_EVENT;
 			}
-			TrackingEvent event = new TrackingEvent(getSource(), severity, opType, opName, correlator, tag, msg, args);
+			TrackingEvent event = new TrackingEvent(this, getSource(), severity, opType, opName, correlator, tag, msg, args);
 			event.getOperation().setUser(tConfig.getSource().getUser());
 			return event;
 		} finally {
@@ -551,7 +551,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (!isTrackingEnabled(severity, opName, correlator, msg, args)) {
 				return NULL_EVENT;
 			}
-			TrackingEvent event = new TrackingEvent(getSource(), severity, opName, correlator, msg, args);
+			TrackingEvent event = new TrackingEvent(this, getSource(), severity, opName, correlator, msg, args);
 			event.getOperation().setUser(tConfig.getSource().getUser());
 			return event;
 		} finally {
@@ -568,7 +568,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (!isTrackingEnabled(severity, opName, correlator, tag, msg, args)) {
 				return NULL_EVENT;
 			}
-			TrackingEvent event = new TrackingEvent(getSource(), severity, opType, opName, correlator, tag, msg, args);
+			TrackingEvent event = new TrackingEvent(this, getSource(), severity, opType, opName, correlator, tag, msg, args);
 			event.getOperation().setUser(tConfig.getSource().getUser());
 			return event;
 		} finally {
@@ -584,7 +584,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (!isTrackingEnabled(severity, opName, correlators, msg, args)) {
 				return NULL_EVENT;
 			}
-			TrackingEvent event = new TrackingEvent(getSource(), severity, opName, correlators, msg, args);
+			TrackingEvent event = new TrackingEvent(this, getSource(), severity, opName, correlators, msg, args);
 			event.getOperation().setUser(tConfig.getSource().getUser());
 			return event;
 		} finally {
@@ -600,7 +600,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (!isTrackingEnabled(severity, opName, correlators, tags, msg, args)) {
 				return NULL_EVENT;
 			}
-			TrackingEvent event = new TrackingEvent(getSource(), severity, opType, opName, correlators, tags, msg, args);
+			TrackingEvent event = new TrackingEvent(this, getSource(), severity, opType, opName, correlators, tags, msg, args);
 			event.getOperation().setUser(tConfig.getSource().getUser());
 			return event;
 		} finally {
@@ -616,7 +616,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (!isTrackingEnabled(severity, opName, correlators, msg, args)) {
 				return NULL_EVENT;
 			}
-			TrackingEvent event = new TrackingEvent(getSource(), severity, opName, correlators, msg, args);
+			TrackingEvent event = new TrackingEvent(this, getSource(), severity, opName, correlators, msg, args);
 			event.getOperation().setUser(tConfig.getSource().getUser());
 			return event;
 		} finally {
@@ -632,7 +632,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (!isTrackingEnabled(severity, opName, correlators, tags, msg, args)) {
 				return NULL_EVENT;
 			}
-			TrackingEvent event = new TrackingEvent(getSource(), severity, opType, opName, correlators, tags, msg, args);
+			TrackingEvent event = new TrackingEvent(this, getSource(), severity, opType, opName, correlators, tags, msg, args);
 			event.getOperation().setUser(tConfig.getSource().getUser());
 			return event;
 		} finally {

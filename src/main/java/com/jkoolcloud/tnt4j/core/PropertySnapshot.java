@@ -43,6 +43,7 @@ public class PropertySnapshot implements Snapshot {
 	private String snapName = null;
 	private String tracking_id;
 	private String parent_id;
+	private String sign;
 	private UsecTimestamp timeStamp = null;
 	private Source source;
 	private HashSet<String> correlators = new HashSet<String>(89);
@@ -350,5 +351,15 @@ public class PropertySnapshot implements Snapshot {
 	@Override
     public void setTTL(long ttl) {
 		this.ttl = ttl;
+	}
+
+	@Override
+    public String getSignature() {
+	    return sign;
+    }
+
+	@Override
+    public void setSignature(String sign) {
+		this.sign = sign;
 	}
 }

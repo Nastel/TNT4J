@@ -411,7 +411,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 					event.setTTL(ttl);
 				}
 				if (!_limiter(1, event.getSize())) return;
-				_log(event);
+				_log(event.sign());
 				loggedEvents.incrementAndGet();
 				loggedSnaps.addAndGet(event.getOperation().getSnapshotCount());
 				lastTime.set(System.currentTimeMillis());

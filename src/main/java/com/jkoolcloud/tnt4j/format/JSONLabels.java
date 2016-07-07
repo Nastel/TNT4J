@@ -41,6 +41,7 @@ interface JSONLabels {
 	static final String JSON_VALUE_TYPE_FIELD = "value-type";
 	static final String JSON_CORR_ID_FIELD = "corrid";
 	static final String JSON_TRACK_ID_FIELD = "tracking-id";
+	static final String JSON_TRACK_SIGN_FIELD = "tracking-sign";
 	static final String JSON_PARENT_TRACK_ID_FIELD = "parent-id";
 	static final String JSON_SOURCE_FIELD = "source";
 	static final String JSON_SOURCE_URL_FIELD = "source-url";
@@ -93,6 +94,7 @@ interface JSONLabels {
 	static final String JSON_VALUE_TYPE_LABEL = Utils.quote(JSON_VALUE_TYPE_FIELD);
 	static final String JSON_CORR_ID_LABEL = Utils.quote(JSON_CORR_ID_FIELD);
 	static final String JSON_TRACK_ID_LABEL = Utils.quote(JSON_TRACK_ID_FIELD);
+	static final String JSON_TRACK_SIGN_LABEL = Utils.quote(JSON_TRACK_SIGN_FIELD);
 	static final String JSON_PARENT_TRACK_ID_LABEL = Utils.quote(JSON_PARENT_TRACK_ID_FIELD);
 	static final String JSON_SOURCE_LABEL = Utils.quote(JSON_SOURCE_FIELD);
 	static final String JSON_SOURCE_URL_LABEL = Utils.quote(JSON_SOURCE_URL_FIELD);

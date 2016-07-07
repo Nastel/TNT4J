@@ -32,6 +32,10 @@ import com.jkoolcloud.tnt4j.core.UsecTimestamp;
  */
 public class NullEvent extends TrackingEvent {
 
+	protected NullEvent(TrackerImpl tr) {
+	    super(tr);
+    }
+
 	@Override
 	public void start(long startTime) {
 	}

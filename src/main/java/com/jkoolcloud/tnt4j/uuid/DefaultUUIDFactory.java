@@ -18,7 +18,7 @@ package com.jkoolcloud.tnt4j.uuid;
 
 /**
  * This class allows developer to set and obtain actual {@link UUIDFactory} implementation
- * instance. Developers may create their own and set it globally using {@code setDefaultUUIDFactory}
+ * instance. Developers may create their own and set it globally using {@link #setDefaultUUIDFactory(UUIDFactory)}}
  * 
  * @see UUIDFactory
  * @version $Revision: 1 $

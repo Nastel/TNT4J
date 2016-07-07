@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 JKOOL, LLC.
+ * Copyright 2014-2015 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,11 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.jkoolcloud.tnt4j.uuid;
+
+import com.jkoolcloud.tnt4j.core.Message;
 
 /**
- * TNT4J UUID & Signature factory implementation
- * 
- * @author albert
- * @version 1.0
+ * Implements a null factory which returns null signatures
+ *
+ * @version $Revision: 1 $
  */
-package com.jkoolcloud.tnt4j.uuid;
+public class NullSignatureFactoryImpl implements SignatureFactory {
+
+	@Override
+    public String sign(Object obj) {
+	    return null;
+    }
+
+	@Override
+    public String sign(Message obj) {
+	    return null;
+    }
+}

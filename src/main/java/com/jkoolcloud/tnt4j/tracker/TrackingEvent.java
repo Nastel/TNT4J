@@ -15,6 +15,7 @@
  */
 package com.jkoolcloud.tnt4j.tracker;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Set;
 
@@ -115,7 +116,9 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 
 	private Source	source;
 	private String	parent;
+	private String  sign;
 	Operation operation;
+	private TrackerImpl tracker;
 
 	private final Source [] relation = new Source[2];
 	private OpType relationType = OpType.NOOP;
@@ -124,15 +127,17 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	 * Create a new NOOP tracking event
 	 * This constructor will assign a unique event signature using newUUID() call
 	 *
+	 * @param tr tracker instance
 	 */
-	protected TrackingEvent() {
-		this(null, OpLevel.NONE, OpType.NOOP, Operation.NOOP, (String)null, (String)null, (String)null);
+	protected TrackingEvent(TrackerImpl tr) {
+		this(tr, null, OpLevel.NONE, OpType.NOOP, Operation.NOOP, (String)null, (String)null, (String)null);
 	}
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 * This constructor will assign a unique event signature using newUUID() call
 	 *
+	 * @param tr tracker instance
 	 * @param src event source
 	 * @param severity severity level
 	 * @param opName operation name associated with this event (tracking event name)
@@ -140,14 +145,15 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	 * @param msg text message associated with this event
 	 * @param args argument list passed along side the message
 	 */
-	protected TrackingEvent(Source src, OpLevel severity, String opName, String correlator, String msg, Object...args) {
-		this(src, severity, OpType.EVENT, opName, correlator, null, msg, args);
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, String opName, String correlator, String msg, Object...args) {
+		this(tr, src, severity, OpType.EVENT, opName, correlator, null, msg, args);
 	}
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 * This constructor will assign a unique event signature using newUUID() call
 	 *
+	 * @param tr tracker instance
 	 * @param src event source
 	 * @param severity severity level
 	 * @param opName operation name associated with this event (tracking event name)
@@ -155,14 +161,15 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	 * @param msg text message associated with this event
 	 * @param args argument list passed along side the message
 	 */
-	protected TrackingEvent(Source src, OpLevel severity, String opName, Collection<String> correlators, String msg, Object...args) {
-		this(src, severity, OpType.EVENT, opName, correlators, null, msg, args);
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, String opName, Collection<String> correlators, String msg, Object...args) {
+		this(tr, src, severity, OpType.EVENT, opName, correlators, null, msg, args);
 	}
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 * This constructor will assign a unique event signature using newUUID() call
 	 *
+	 * @param tr tracker instance
 	 * @param src event source
 	 * @param severity severity level
 	 * @param opName operation name associated with this event (tracking event name)
@@ -170,14 +177,15 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	 * @param msg binary message associated with this event
 	 * @param args argument list passed along side the message
 	 */
-	protected TrackingEvent(Source src, OpLevel severity, String opName, String correlator, byte[] msg, Object...args) {
-		this(src, severity, OpType.EVENT, opName, correlator, null, msg, args);
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, String opName, String correlator, byte[] msg, Object...args) {
+		this(tr, src, severity, OpType.EVENT, opName, correlator, null, msg, args);
 	}
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 * This constructor will assign a unique event signature using newUUID() call
 	 *
+	 * @param tr tracker instance
 	 * @param src event source
 	 * @param severity severity level
 	 * @param opName operation name associated with this event (tracking event name)
@@ -185,13 +193,14 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	 * @param msg binary message associated with this event
 	 * @param args argument list passed along side the message
 	 */
-	protected TrackingEvent(Source src, OpLevel severity, String opName, Collection<String> correlators, byte[] msg, Object...args) {
-		this(src, severity, OpType.EVENT, opName, correlators, null, msg, args);
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, String opName, Collection<String> correlators, byte[] msg, Object...args) {
+		this(tr, src, severity, OpType.EVENT, opName, correlators, null, msg, args);
 	}
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 *
+	 * @param tr tracker instance
 	 * @param src event source
 	 * @param severity severity level
 	 * @param opType operation type
@@ -203,8 +212,9 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	 * @see OpLevel
 	 * @see OpType
 	 */
-	protected TrackingEvent(Source src, OpLevel severity, OpType opType, String opName, String correlator, String tag, String msg, Object...args) {
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, String correlator, String tag, String msg, Object...args) {
 		super(null, msg, args);
+		tracker = tr;
 		operation = new Operation(opName, opType);
 		operation.setSeverity(severity);
 		operation.setCorrelator(correlator);
@@ -217,6 +227,7 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 *
+	 * @param tr tracker instance
 	 * @param src event source
 	 * @param severity severity level
 	 * @param opType operation type
@@ -228,8 +239,9 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	 * @see OpLevel
 	 * @see OpType
 	 */
-	protected TrackingEvent(Source src, OpLevel severity, OpType opType, String opName, Collection<String> correlators, Collection<String> tags, String msg, Object...args) {
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, Collection<String> correlators, Collection<String> tags, String msg, Object...args) {
 		super(null, msg, args);
+		tracker = tr;
 		operation = new Operation(opName, opType);
 		operation.setSeverity(severity);
 		operation.setCorrelator(correlators);
@@ -242,6 +254,7 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 *
+	 * @param tr tracker instance
 	 * @param src event source
 	 * @param severity severity level
 	 * @param opType operation type
@@ -253,8 +266,9 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	 * @see OpLevel
 	 * @see OpType
 	 */
-	protected TrackingEvent(Source src, OpLevel severity, OpType opType, String opName, Collection<String> correlators, Collection<String> tags, byte[] msg, Object...args) {
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, Collection<String> correlators, Collection<String> tags, byte[] msg, Object...args) {
 		super(null, msg, args);
+		tracker = tr;		
 		operation = new Operation(opName, opType);
 		operation.setSeverity(severity);
 		operation.setCorrelator(correlators);
@@ -267,6 +281,7 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 *
+	 * @param tr tracker instance
 	 * @param src event source
 	 * @param severity severity level
 	 * @param opType operation type
@@ -278,8 +293,9 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	 * @see OpLevel
 	 * @see OpType
 	 */
-	protected TrackingEvent(Source src, OpLevel severity, OpType opType, String opName, String correlator, String tag, byte[] msg, Object...args) {
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, String correlator, String tag, byte[] msg, Object...args) {
 		super(null, msg, args);
+		tracker = tr;
 		operation = new Operation(opName, opType);
 		operation.setSeverity(severity);
 		operation.setCorrelator(correlator);
@@ -585,7 +601,7 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	}
 
 	/**
-	 * Obtain a handle to the <code>Operation</code> associated with this tracking event
+	 * Obtain a handle to the {@link Operation} associated with this tracking event
 	 *
 	 *@return operation handle associated with this event
 	 */
@@ -593,6 +609,21 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 		return operation;
 	}
 
+	/**
+	 * Sign current event with hash/signature based on trackers
+	 * configured signature factory.
+	 * 
+	 * @return signed self
+	 * @throws NoSuchAlgorithmException 
+	 *
+	 */
+	public TrackingEvent sign() throws NoSuchAlgorithmException {
+		if (tracker != null) {
+			setSignature(tracker.getConfiguration().getSignFactory().sign(this));
+		}
+		return this;
+	}
+	
 	@Override
     public OpType getType() {
 	    return operation.getType();
@@ -643,4 +674,14 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 		relationType = OpType.NOOP;
 	    return this;
     }
+
+	@Override
+    public String getSignature() {
+	    return sign;
+    }
+
+	@Override
+    public void setSignature(String sign) {
+		this.sign = sign;
+	}
 }

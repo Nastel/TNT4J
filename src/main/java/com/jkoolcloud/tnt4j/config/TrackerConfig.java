@@ -38,7 +38,9 @@ import com.jkoolcloud.tnt4j.source.SourceType;
 import com.jkoolcloud.tnt4j.tracker.DefaultTrackerFactory;
 import com.jkoolcloud.tnt4j.tracker.Tracker;
 import com.jkoolcloud.tnt4j.tracker.TrackerFactory;
+import com.jkoolcloud.tnt4j.uuid.DefaultSignatureFactory;
 import com.jkoolcloud.tnt4j.uuid.DefaultUUIDFactory;
+import com.jkoolcloud.tnt4j.uuid.SignatureFactory;
 import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
 
 /**
@@ -72,6 +74,7 @@ public class TrackerConfig {
 	TrackerFactory trFactory;
 	SourceFactory sourceFactory;
 	UUIDFactory uuidFactory;
+	SignatureFactory signFactory;
 	EventSinkFactory defEvFactory;
 	EventSinkFactory evFactory;
 	DumpSinkFactory dpFactory;
@@ -164,7 +167,7 @@ public class TrackerConfig {
 	 *            UUID factory instance
 	 * @see UUIDFactory
 	 *
-	 * @return current source factory
+	 * @return current UUID factory
 	 */
 	public TrackerConfig setUUIDFactory(UUIDFactory uuidf) {
 		uuidFactory = uuidf;
@@ -179,6 +182,30 @@ public class TrackerConfig {
 	 */
 	public UUIDFactory getUUIDFactory() {
 		return uuidFactory;
+	}
+
+	/**
+	 * Set default signature factory to generate message signatures
+	 *
+	 * @param sf
+	 *            signature factory instance
+	 * @see SignatureFactory
+	 *
+	 * @return current signature factory
+	 */
+	public TrackerConfig setSignFactory(SignatureFactory sf) {
+		signFactory = sf;
+		return this;
+	}
+
+	/**
+	 * Set default signature factory instance
+	 *
+	 * @see SignatureFactory
+	 * @return current signature factory
+	 */
+	public SignatureFactory getSignFactory() {
+		return signFactory;
 	}
 
 	/**
@@ -547,6 +574,7 @@ public class TrackerConfig {
 		TrackerConfig config = new TrackerConfig(sourceHandle);
 		config.setProperties(this.props);
 		config.uuidFactory = this.uuidFactory;
+		config.signFactory = this.signFactory;
 		config.sourceFactory = this.sourceFactory;
 		config.trFactory = this.trFactory;
 		config.evFactory = this.evFactory;
@@ -570,6 +598,8 @@ public class TrackerConfig {
 	public synchronized TrackerConfig build() {
 		if (uuidFactory == null)
 			uuidFactory = DefaultUUIDFactory.getInstance();
+		if (signFactory == null)
+			signFactory = DefaultSignatureFactory.getInstance();
 		if (sourceFactory == null)
 			sourceFactory = DefaultSourceFactory.getInstance();
 		if (sourceHandle == null)
@@ -598,6 +628,8 @@ public class TrackerConfig {
 			+ ", source: " + sourceHandle
 			+ ", event.factory: " + evFactory
 			+ ", source.factory: " + sourceFactory
+			+ ", uuid.factory: " + uuidFactory
+			+ ", sign.factory: " + signFactory
 			+ ", default.event.factory: " + defEvFactory
 			+ ", event.formatter: " + evFormatter
 			+ ", tracker.factory: " + trFactory
