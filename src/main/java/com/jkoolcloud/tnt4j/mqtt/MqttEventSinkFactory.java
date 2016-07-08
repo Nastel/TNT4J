@@ -184,7 +184,6 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 	 * @param client MQTT client
 	 * @param msg MQTT message instance
 	 * 
-	 * @return new MQTT message with specific contents
 	 */
 	public void publish(MqttClient client, MqttMessage msg) throws MqttPersistenceException, MqttException {
 		client.publish(topic, msg);
