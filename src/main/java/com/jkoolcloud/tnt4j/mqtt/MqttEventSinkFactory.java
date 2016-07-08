@@ -109,26 +109,26 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 	
 	@Override
     public EventSink getEventSink(String name) {
-	    return new MqttEventSink(this, name, null, new JSONFormatter(false));
+	    return configureSink(new MqttEventSink(this, name, null, new JSONFormatter(false)));
     }
 
 	@Override
     public EventSink getEventSink(String name, Properties props) {
-	    return new MqttEventSink(this, name, props, new JSONFormatter(false));
+	    return configureSink(new MqttEventSink(this, name, props, new JSONFormatter(false)));
     }
 
 	@Override
     public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-	    return new MqttEventSink(this, name, props, frmt);
+	    return configureSink(new MqttEventSink(this, name, props, frmt));
     }
 
 	@Override
     public void setConfiguration(Map<String, Object> settings) throws ConfigException {
 		super.setConfiguration(settings);
 		serverURI = Utils.getString("mqtt-server-url", settings, "tcp://localhost:1883");
-		topic = Utils.getString("mqtt-topic", settings, "tnt4jStream");
 		clientid = Utils.getString("mqtt-clientid", settings, MqttClient.generateClientId());
 		version = Utils.getInt("mqtt-version", settings, MqttConnectOptions.MQTT_VERSION_DEFAULT);
+		topic = Utils.getString("mqtt-topic", settings, topic);
 		userName = Utils.getString("mqtt-user", settings, userName);
 		userPwd = Utils.getString("mqtt-pwd", settings, userPwd);
 		keepAlive = Utils.getInt("mqtt-keepalive", settings, keepAlive);
@@ -169,6 +169,7 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 	/**
 	 * Create a new MQTT message with specific contents
 	 * 
+	 * @param bytes message contents
 	 * @return new MQTT message with specific contents
 	 */
 	public MqttMessage newMqttMessage(byte[] bytes) {
@@ -179,13 +180,25 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
     }
 	
 	/**
+	 * Create a new MQTT message with specific contents
+	 * 
+	 * @param contents message contents
+	 * @return new MQTT message with specific contents
+	 */
+	public MqttMessage newMqttMessage(String contents) {
+	    return newMqttMessage(contents.getBytes());
+    }
+	
+	/**
 	 * Publish message to a given MQTT client
 	 * 
+	 * @param evSink event sink
 	 * @param client MQTT client
 	 * @param msg MQTT message instance
 	 * 
 	 */
-	public void publish(MqttClient client, MqttMessage msg) throws MqttPersistenceException, MqttException {
-		client.publish(topic, msg);
+	public void publish(EventSink evSink, MqttClient client, MqttMessage msg) throws MqttPersistenceException, MqttException {
+		String mqttTopic = (topic == null? evSink.getName(): topic);
+		client.publish(mqttTopic, msg);
 	}
 }

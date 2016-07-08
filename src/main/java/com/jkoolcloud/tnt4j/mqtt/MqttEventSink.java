@@ -21,7 +21,6 @@ import java.util.Properties;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
@@ -50,19 +49,40 @@ public class MqttEventSink extends AbstractEventSink {
 	MqttClient mqttClient;
 	MqttEventSinkFactory factory;
 
-	protected MqttEventSink(MqttEventSinkFactory f, String nm) {
-		super(nm);
-		factory = f;
-	}
-
-	protected MqttEventSink(MqttEventSinkFactory f, String name, Properties props) {
+	/**
+	 * Create MQTT event sink
+	 * 
+	 * @param fc event sink factory
+	 * @param name event sink name
+	 */
+	protected MqttEventSink(MqttEventSinkFactory fc, String name) {
 		super(name);
-		factory = f;
+		factory = fc;
 	}
 
-	protected MqttEventSink(MqttEventSinkFactory f, String name, Properties props, EventFormatter frmt) {
+	/**
+	 * Create MQTT event sink
+	 * 
+	 * @param fc event sink factory
+	 * @param name event sink name
+	 * @param props event sink properties
+	 */
+	protected MqttEventSink(MqttEventSinkFactory fc, String name, Properties props) {
+		super(name);
+		factory = fc;
+	}
+
+	/**
+	 * Create MQTT event sink
+	 * 
+	 * @param fc event sink factory
+	 * @param name event sink name
+	 * @param props event sink properties
+	 * @param frmt event sink formatter
+	 */
+	protected MqttEventSink(MqttEventSinkFactory fc, String name, Properties props, EventFormatter frmt) {
 		super(name, frmt);
-		factory = f;
+		factory = fc;
 	}
 
 	@Override
@@ -102,38 +122,35 @@ public class MqttEventSink extends AbstractEventSink {
 
 	@Override
 	protected void _log(TrackingEvent event) throws Exception {
-		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(event).getBytes());
-		factory.publish(mqttClient, message);
+		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(event));
+		factory.publish(this, mqttClient, message);
 	}
 
 	@Override
 	protected void _log(TrackingActivity activity) throws Exception {
-		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(activity).getBytes());
-		factory.publish(mqttClient, message);
+		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(activity));
+		factory.publish(this, mqttClient, message);
 	}
 
 	@Override
 	protected void _log(Snapshot snapshot) throws Exception {
-		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(snapshot).getBytes());
-		factory.publish(mqttClient, message);
+		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(snapshot));
+		factory.publish(this, mqttClient, message);
 	}
 
 	@Override
 	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception {
-		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(ttl, src, sev, msg, args).getBytes());
-		factory.publish(mqttClient, message);
+		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(ttl, src, sev, msg, args));
+		factory.publish(this, mqttClient, message);
 	}
 
 	@Override
 	protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
 		try {
 			MqttMessage message = factory.newMqttMessage(getEventFormatter().format(msg, args).getBytes());
-			factory.publish(mqttClient, message);
-		} catch (MqttPersistenceException e) {
-			throw new IOException(e);
+			factory.publish(this, mqttClient, message);
 		} catch (MqttException e) {
 			throw new IOException(e);
-		}
+		} 
 	}
-
 }
