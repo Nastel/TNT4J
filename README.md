@@ -88,7 +88,7 @@ Configure event sink in `tnt4j.properties` as follows:
 ...
 event.sink.factory: com.jkoolcloud.tnt4j.mqtt.MqttEventSinkFactory
 event.sink.factory.mqtt-server-url: tcp://localhost:1883
-event.sink.factory.mqtt-topic: tnt4j/stream
+event.sink.factory.mqtt-topic: tnt4jStream
 event.sink.factory.mqtt-user: mqtt-user
 event.sink.factory.mqtt-pwd: mqtt-pwd
 ...

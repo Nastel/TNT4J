@@ -126,7 +126,7 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
     public void setConfiguration(Map<String, Object> settings) throws ConfigException {
 		super.setConfiguration(settings);
 		serverURI = Utils.getString("mqtt-server-url", settings, "tcp://localhost:1883");
-		topic = Utils.getString("mqtt-topic", settings, "tnt4j/eventStream");
+		topic = Utils.getString("mqtt-topic", settings, "tnt4jStream");
 		clientid = Utils.getString("mqtt-clientid", settings, MqttClient.generateClientId());
 		version = Utils.getInt("mqtt-version", settings, MqttConnectOptions.MQTT_VERSION_DEFAULT);
 		userName = Utils.getString("mqtt-user", settings, userName);
