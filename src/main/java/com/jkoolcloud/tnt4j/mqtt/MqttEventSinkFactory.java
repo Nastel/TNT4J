@@ -98,6 +98,11 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 	boolean cleanSession = true; 
 	
 	/**
+	 * MQTT enable SSL
+	 */
+	boolean ssl = false; 
+	
+	/**
 	 * MQTT message retention
 	 */
 	boolean retainMsg = false; 
@@ -105,7 +110,7 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 	/**
 	 * MQTT connection options
 	 */
-	MqttConnectOptions options;
+	MqttConnectOptions options = new MqttConnectOptions();
 	
 	@Override
     public EventSink getEventSink(String name) {
@@ -134,15 +139,17 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 		keepAlive = Utils.getInt("mqtt-keepalive", settings, keepAlive);
 		connTimeout = Utils.getInt("mqtt-timeout", settings, connTimeout);
 		cleanSession = Utils.getBoolean("mqtt-clean-session", settings, cleanSession);
+		ssl = Utils.getBoolean("mqtt-ssl", settings, ssl);
 
 		// message attributes
 		qos = Utils.getInt("mqtt-qos", settings, qos);
 		retainMsg = Utils.getBoolean("mqtt-retain", settings, retainMsg);
 
-		options = new MqttConnectOptions();
-		Properties connProps = new Properties();
-		connProps.putAll(settings);
-		options.setSSLProperties(connProps);
+		if (ssl) {
+			Properties connProps = new Properties();
+			connProps.putAll(settings);
+			options.setSSLProperties(connProps);
+		}
 		if (userName != null) {
 			options.setUserName(userName);
 		}
