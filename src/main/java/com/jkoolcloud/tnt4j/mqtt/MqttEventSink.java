@@ -34,8 +34,7 @@ import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 
 /**
  * <p>
- * This class implements {@link EventSink} with MQTT as the underlying sink
- * implementation.
+ * This class implements {@link EventSink} with MQTT as the underlying sink implementation.
  * </p>
  * 
  * 
@@ -50,91 +49,91 @@ public class MqttEventSink extends AbstractEventSink {
 
 	MqttClient mqttClient;
 	MqttEventSinkFactory factory;
-	
-	public MqttEventSink(MqttEventSinkFactory f, String nm) {
-	    super(nm);
-	    factory = f;
-    }
 
-	public MqttEventSink(MqttEventSinkFactory f, String name, Properties props) {
-	    super(name);
-	    factory = f;
-   }
+	protected MqttEventSink(MqttEventSinkFactory f, String nm) {
+		super(nm);
+		factory = f;
+	}
 
-	public MqttEventSink(MqttEventSinkFactory f, String name, Properties props, EventFormatter frmt) {
-	    super(name, frmt);
-	    factory = f;
-    }
+	protected MqttEventSink(MqttEventSinkFactory f, String name, Properties props) {
+		super(name);
+		factory = f;
+	}
 
-	@Override
-    public boolean isSet(OpLevel sev) {
-	    return true;
-    }
-
-	@Override
-    public Object getSinkHandle() {
-	    return mqttClient;
-    }
-
-	@Override
-    public boolean isOpen() {
-	    return mqttClient.isConnected();
-    }
-
-	@Override
-    public void open() throws IOException {
-		try {
-	        mqttClient = factory.newMqttClient();
-        } catch (MqttException e) {
-	        throw new IOException(e);
-        }
+	protected MqttEventSink(MqttEventSinkFactory f, String name, Properties props, EventFormatter frmt) {
+		super(name, frmt);
+		factory = f;
 	}
 
 	@Override
-    public void close() throws IOException {
-		if (mqttClient != null) {
-			try {
-	            mqttClient.close();
-            } catch (MqttException e) {
-    	        throw new IOException(e);
-            }
+	public boolean isSet(OpLevel sev) {
+		return true;
+	}
+
+	@Override
+	public Object getSinkHandle() {
+		return mqttClient;
+	}
+
+	@Override
+	public boolean isOpen() {
+		return mqttClient.isConnected();
+	}
+
+	@Override
+	public void open() throws IOException {
+		try {
+			mqttClient = factory.newMqttClient();
+		} catch (MqttException e) {
+			throw new IOException(e);
 		}
 	}
 
 	@Override
-    protected void _log(TrackingEvent event) throws Exception {
+	public void close() throws IOException {
+		if (mqttClient != null) {
+			try {
+				mqttClient.close();
+			} catch (MqttException e) {
+				throw new IOException(e);
+			}
+		}
+	}
+
+	@Override
+	protected void _log(TrackingEvent event) throws Exception {
 		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(event).getBytes());
 		factory.publish(mqttClient, message);
 	}
 
 	@Override
-    protected void _log(TrackingActivity activity) throws Exception {
+	protected void _log(TrackingActivity activity) throws Exception {
 		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(activity).getBytes());
 		factory.publish(mqttClient, message);
-    }
+	}
 
 	@Override
-    protected void _log(Snapshot snapshot) throws Exception {
+	protected void _log(Snapshot snapshot) throws Exception {
 		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(snapshot).getBytes());
 		factory.publish(mqttClient, message);
-    }
+	}
 
 	@Override
-    protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception {
+	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception {
 		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(ttl, src, sev, msg, args).getBytes());
 		factory.publish(mqttClient, message);
-    }
+	}
 
 	@Override
-    protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
+	protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
 		try {
 			MqttMessage message = factory.newMqttMessage(getEventFormatter().format(msg, args).getBytes());
-	        factory.publish(mqttClient, message);
-        } catch (MqttPersistenceException e) {
-	        throw new IOException(e);
-        } catch (MqttException e) {
-	        throw new IOException(e);
-        }
-    }
+			factory.publish(mqttClient, message);
+		} catch (MqttPersistenceException e) {
+			throw new IOException(e);
+		} catch (MqttException e) {
+			throw new IOException(e);
+		}
+	}
 
 }

@@ -23,6 +23,7 @@ import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
 import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
+import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
@@ -92,6 +93,16 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 	int connTimeout = 30; 
 	
 	/**
+	 * MQTT connection clean session flag
+	 */
+	boolean cleanSession = true; 
+	
+	/**
+	 * MQTT message retention
+	 */
+	boolean retainMsg = false; 
+	
+	/**
 	 * MQTT connection options
 	 */
 	MqttConnectOptions options;
@@ -120,9 +131,13 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 		version = Utils.getInt("mqtt-version", settings, MqttConnectOptions.MQTT_VERSION_DEFAULT);
 		userName = Utils.getString("mqtt-user", settings, userName);
 		userPwd = Utils.getString("mqtt-pwd", settings, userPwd);
-		qos = Utils.getInt("mqtt-qos", settings, qos);
 		keepAlive = Utils.getInt("mqtt-keepalive", settings, keepAlive);
 		connTimeout = Utils.getInt("mqtt-timeout", settings, connTimeout);
+		cleanSession = Utils.getBoolean("mqtt-clean-session", settings, cleanSession);
+
+		// message attributes
+		qos = Utils.getInt("mqtt-qos", settings, qos);
+		retainMsg = Utils.getBoolean("mqtt-retain", settings, retainMsg);
 
 		options = new MqttConnectOptions();
 		Properties connProps = new Properties();
@@ -137,6 +152,7 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 		options.setKeepAliveInterval(keepAlive);
 		options.setConnectionTimeout(connTimeout);
 		options.setMqttVersion(version);
+		options.setCleanSession(cleanSession);
     }
 
 	/**
@@ -145,18 +161,19 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 	 * @return MQTT client instance, connected
 	 */
 	public MqttClient newMqttClient() throws MqttException {
-	    MqttClient client = new MqttClient(serverURI, clientid);
+	    MqttClient client = new MqttClient(serverURI, clientid, new MemoryPersistence());
 	    client.connect(options);
 	    return client;
     }
 
 	/**
-	 * Create a new MQTT message with specific payload
+	 * Create a new MQTT message with specific contents
 	 * 
-	 * @return new MQTT message with specific payload
+	 * @return new MQTT message with specific contents
 	 */
 	public MqttMessage newMqttMessage(byte[] bytes) {
 	    MqttMessage msg = new MqttMessage(bytes);
+	    msg.setRetained(retainMsg);
 	    msg.setQos(qos);
 	    return msg;
     }
@@ -167,7 +184,7 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 	 * @param client MQTT client
 	 * @param msg MQTT message instance
 	 * 
-	 * @return new MQTT message with specific payload
+	 * @return new MQTT message with specific contents
 	 */
 	public void publish(MqttClient client, MqttMessage msg) throws MqttPersistenceException, MqttException {
 		client.publish(topic, msg);

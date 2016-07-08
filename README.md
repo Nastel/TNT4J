@@ -1,19 +1,98 @@
 Why TNT4J 
 =====================================
-TNT4J is about tracking and tracing activities, transactions, behavior and performance via an easy to use API that behaves much like a logging framework.
+TNT4J is about tracking and tracing applications, activities, transactions, behavior and performance via an easy to use API that behaves much like a logging framework.
 
 Why track and trace your applications?
-* Trace application behavior, performance to improve diagnostics
+* Track application behavior, performance to improve diagnostics
 * Track end-user behavior to improve usability, customer satisfaction
 * Track topology, communications, relationships between entities
 * Track messages, binary, text, JSON, XML, video, image, voice.
 * Track location, mobility, GPS of your applications, users
 * Track anything worth tracking in your application
-* Know you application: what, where, when, why 
+* Know your application: what, where, when, why 
 * Events may have TTL (time-to-live) for sinks that support event expiration
 * Event rate limiter (throttle control) based on mps, bps (message/sec, bytes/sec)
 
 <b>Several key features make TNT4J a prime choice for your java application:</b>
+
+## Quick Examples
+Here is a simple example of using TNT4J:
+
+```java
+TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
+try {
+   ...
+} catch (Exception e) {
+   logger.error("Failed to process request={0}", request_id, ex);
+}
+```
+Below is an example of using correlator and a relative class marker to locate caller's method call on the stack -- `$my.package.myclass:0`. This marker will resolve to the caller's method name above all the calls that start with `$my.package.myclass`.
+
+```java
+TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
+try {
+   ...
+} catch (Exception e) {
+   logger.tnt(OpLevel.ERROR, "$my.package.myclass:0", myCorrelator, 
+   	"Failed to process request={0}", request_id, ex);
+}
+```
+Consolidate all conditional logging checks into a single listener. Why call `isDebugEnabled()` before each log entry?
+
+```java
+TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
+logger.addSinkEventFilter(new MyEventFilter(logger));
+try {
+   logger.debug("My debug message {0}, {1}", arg0, arg1); // no need to gate this call
+   ...
+} catch (Exception e) {
+   logger.error("Failed to process request={0}", request_id, ex);
+}
+
+class MyEventFilter implements SinkEventFilter {
+	TaskLogger logger;
+
+	MyEventFilter(TaskLogger lg) {
+		logger = lg;
+	}
+
+	@Override
+	public boolean filter(EventSink sink, TrackingEvent event) {
+		return logger.isSet(event.getSeverity(), "myappl.token");
+	}
+
+	@Override
+	public boolean filter(EventSink sink, TrackingActivity activity) {
+		return logger.isSet(activity.getSeverity(), "myappl.token");
+	}
+
+	@Override
+	public boolean filter(EventSink sink, Snapshot snapshot) {
+		return logger.isSet(snapshot.getSeverity(), "myappl.token");
+	}
+	
+	@Override
+	public boolean filter(EventSink sink, long ttl, Source src, OpLevel level, String msg, Object... args) {
+		return logger.isSet(level, "myappl.token");
+	}
+}
+```
+Embed TNT4J into your application and realize the benefits in a matter if minutes. 
+TNT4J can take advantage of other lower level logging frameworks such as slf4j, log4j.
+Default TNT4J binding is based on slf4j.
+
+### Stream over MQTT
+Stream your events over MQTT using `com.jkoolcloud.tnt4j.mqtt.MqttEventSinkFactory` event sink factory.
+Configure event sink in `tnt4j.properties` as follows:
+```
+...
+event.sink.factory: com.jkoolcloud.tnt4j.mqtt.MqttEventSinkFactory
+event.sink.factory.mqtt-server-url: tcp://localhost:1883
+event.sink.factory.mqtt-topic: tnt4j/stream
+event.sink.factory.mqtt-user: mqtt-user
+event.sink.factory.mqtt-pwd: mqtt-pwd
+...
+```
 
 ### SLF4J Event Sink Integration
 TNT4J provides SLF4J event sink implementation via `com.jkoolcloud.tnt4j.logger.slf4j.SLF4JEventSinkFactory` event sink factory.
@@ -290,72 +369,6 @@ for (TrackingLogger lg: loggers) {
 }
 ```
 
-## Quick Examples
-Here is a simple example of using TNT4J:
-
-```java
-TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
-try {
-   ...
-} catch (Exception e) {
-   logger.error("Failed to process request={0}", request_id, ex);
-}
-```
-Below is an example of using correlator and a relative class marker to locate caller's method call on the stack -- `$my.package.myclass:0`. This marker will resolve to the caller's method name above all the calls that start with `$my.package.myclass`.
-
-```java
-TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
-try {
-   ...
-} catch (Exception e) {
-   logger.tnt(OpLevel.ERROR, "$my.package.myclass:0", myCorrelator, 
-   	"Failed to process request={0}", request_id, ex);
-}
-```
-Consolidate all conditional logging checks into a single listener. Why call `isDebugEnabled()` before each log entry?
-
-```java
-TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
-logger.addSinkEventFilter(new MyEventFilter(logger));
-try {
-   logger.debug("My debug message {0}, {1}", arg0, arg1); // no need to gate this call
-   ...
-} catch (Exception e) {
-   logger.error("Failed to process request={0}", request_id, ex);
-}
-
-class MyEventFilter implements SinkEventFilter {
-	TaskLogger logger;
-
-	MyEventFilter(TaskLogger lg) {
-		logger = lg;
-	}
-
-	@Override
-	public boolean filter(EventSink sink, TrackingEvent event) {
-		return logger.isSet(event.getSeverity(), "myappl.token");
-	}
-
-	@Override
-	public boolean filter(EventSink sink, TrackingActivity activity) {
-		return logger.isSet(activity.getSeverity(), "myappl.token");
-	}
-
-	@Override
-	public boolean filter(EventSink sink, Snapshot snapshot) {
-		return logger.isSet(snapshot.getSeverity(), "myappl.token");
-	}
-	
-	@Override
-	public boolean filter(EventSink sink, long ttl, Source src, OpLevel level, String msg, Object... args) {
-		return logger.isSet(level, "myappl.token");
-	}
-}
-```
-Embed TNT4J into your application and realize the benefits in a matter if minutes. 
-TNT4J can take advantage of other lower level logging frameworks such as slf4j, log4j.
-Default TNT4J binding is based on slf4j.
-
 About TNT4J
 ======================================
 Track and Trace 4 Java API, Application logging framework for correlation, diagnostics and tracking of application activities within and across <b>multiple applications, runtime, servers, geo locations. This API is specifically designed to troubleshoot distributed, concurrent, multi-threaded, composite applications</b> and includes activity correlation, application state dumps, performance and user defined metrics.
@@ -381,7 +394,7 @@ Wiki is available at https://github.com/Nastel/TNT4J/wiki
 
 TNT4J Mission
 =======================================
-* Standard way to track application behavior, activities across users, apps, servers, devices, threads
+* Easy way to track application behavior, activities across users, apps, servers, devices, threads
 * Dramatically reduce time it takes to troubleshoot application behavior using logging paradigm
 * Performance metrics and application state to reduce diagnostic time
 * Simple programming model for ease of use
@@ -423,6 +436,7 @@ TNT4J depends on the following external packages:
 * Apache commons codec 1.9 (http://commons.apache.org/proper/commons-codec/)
 * Google Guava Libraries (https://code.google.com/p/guava-libraries/)
 * SLF4J 1.7.12 (http://www.slf4j.org/)
+* Eclipse Paho MQTTv3 1.0.2 (http://www.eclipse.org/paho/)
 * Java UUID Generator (JUG) 3.1.3 (http://wiki.fasterxml.com/JugHome/)
 
 To build TNT4J:
