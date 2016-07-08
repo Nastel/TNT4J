@@ -114,6 +114,7 @@ public class MqttEventSink extends AbstractEventSink {
 		if (mqttClient != null) {
 			try {
 				mqttClient.close();
+				mqttClient.disconnect();
 			} catch (MqttException e) {
 				throw new IOException(e);
 			}
@@ -147,7 +148,7 @@ public class MqttEventSink extends AbstractEventSink {
 	@Override
 	protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
 		try {
-			MqttMessage message = factory.newMqttMessage(getEventFormatter().format(msg, args).getBytes());
+			MqttMessage message = factory.newMqttMessage(getEventFormatter().format(msg, args));
 			factory.publish(this, mqttClient, message);
 		} catch (MqttException e) {
 			throw new IOException(e);
