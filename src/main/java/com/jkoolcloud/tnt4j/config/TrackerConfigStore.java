@@ -42,7 +42,7 @@ import com.jkoolcloud.tnt4j.sink.SinkLogEventListener;
 import com.jkoolcloud.tnt4j.source.SourceType;
 import com.jkoolcloud.tnt4j.tracker.TrackerFactory;
 import com.jkoolcloud.tnt4j.utils.Utils;
-import com.jkoolcloud.tnt4j.uuid.SignatureFactory;
+import com.jkoolcloud.tnt4j.uuid.SignFactory;
 import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
 
 /**
@@ -268,7 +268,7 @@ public class TrackerConfigStore extends TrackerConfig {
 				logger.log(OpLevel.DEBUG, "Loaded properties source={0}, tid={1}, properties={2}", srcName, Thread.currentThread().getId(), props);
 			}
 			setUUIDFactory((UUIDFactory) createConfigurableObject("uuid.factory", "uuid.factory."));
-			setSignFactory((SignatureFactory) createConfigurableObject("sign.factory", "sign.factory."));
+			setSignFactory((SignFactory) createConfigurableObject("sign.factory", "sign.factory."));
 			setDefaultEventSinkFactory((EventSinkFactory) createConfigurableObject("default.event.sink.factory", "default.event.sink.factory."));
 			setSourceFactory((SourceFactory) createConfigurableObject("source.factory", "source.factory."));
 			setTrackerFactory((TrackerFactory) createConfigurableObject("tracker.factory", "tracker.factory."));

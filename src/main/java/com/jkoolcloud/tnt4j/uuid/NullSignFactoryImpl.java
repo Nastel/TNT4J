@@ -22,7 +22,7 @@ import com.jkoolcloud.tnt4j.core.Message;
  *
  * @version $Revision: 1 $
  */
-public class NullSignatureFactoryImpl implements SignatureFactory {
+public class NullSignFactoryImpl implements SignFactory {
 
 	@Override
     public String sign(Object obj) {

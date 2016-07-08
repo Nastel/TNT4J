@@ -29,7 +29,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *
  * @version $Revision: 1 $
  */
-public class HashSignatureFactoryImpl implements SignatureFactory, Configurable {
+public class HashSignFactoryImpl implements SignFactory, Configurable {
 	public static final String DEFAULT_HASH_ALGO = "MD5";
 
 	private String algo = DEFAULT_HASH_ALGO;
@@ -39,7 +39,7 @@ public class HashSignatureFactoryImpl implements SignatureFactory, Configurable 
 	 * Create a new signature factory using MD5 algorithm
 	 * 
 	 */
-	public HashSignatureFactoryImpl() {
+	public HashSignFactoryImpl() {
 		this(DEFAULT_HASH_ALGO);
 	}
 
@@ -50,7 +50,7 @@ public class HashSignatureFactoryImpl implements SignatureFactory, Configurable 
 	 * @param alg digest algorithm (e.g. MD5) 
 	 * 
 	 */
-	public HashSignatureFactoryImpl(String alg) {
+	public HashSignFactoryImpl(String alg) {
 		this.algo = alg;
 	}
 

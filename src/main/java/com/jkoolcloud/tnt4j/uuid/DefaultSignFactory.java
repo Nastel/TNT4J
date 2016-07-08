@@ -17,26 +17,26 @@
 package com.jkoolcloud.tnt4j.uuid;
 
 /**
- * This class allows developer to set and obtain actual {@link SignatureFactory} implementation
+ * This class allows developer to set and obtain actual {@link SignFactory} implementation
  * instance. Developers may create their own factory implementation
- * and set it globally using {@link #setDefaultSignatureFactory(SignatureFactory)}}
+ * and set it globally using {@link #setDefaultSignFactory(SignFactory)}}
  * 
- * @see SignatureFactory
+ * @see SignFactory
  * @version $Revision: 1 $
  */
-public class DefaultSignatureFactory {
-	private static SignatureFactory factory = new NullSignatureFactoryImpl();
+public class DefaultSignFactory {
+	private static SignFactory factory = new NullSignFactoryImpl();
 	
-	private DefaultSignatureFactory() {
+	private DefaultSignFactory() {
 	}
 	
 	/**
 	 * Set a global default signature factory implementation
 	 * 
 	 * @param sf signature factory instance
-	 * @return {@link SignatureFactory} instance
+	 * @return {@link SignFactory} instance
 	 */
-	public static SignatureFactory setDefaultSignatureFactory(SignatureFactory sf) {
+	public static SignFactory setDefaultSignFactory(SignFactory sf) {
 		factory = sf;
 		return factory;
 	}
@@ -44,9 +44,9 @@ public class DefaultSignatureFactory {
 	/**
 	 * Obtain a default signature factory
 	 * 
-	 * @return {@link SignatureFactory} instance
+	 * @return {@link SignFactory} instance
 	 */
-	public static SignatureFactory getInstance() {
+	public static SignFactory getInstance() {
 		return factory;
 	}	
 }

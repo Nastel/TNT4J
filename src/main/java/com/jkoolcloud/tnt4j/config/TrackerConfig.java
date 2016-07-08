@@ -38,9 +38,9 @@ import com.jkoolcloud.tnt4j.source.SourceType;
 import com.jkoolcloud.tnt4j.tracker.DefaultTrackerFactory;
 import com.jkoolcloud.tnt4j.tracker.Tracker;
 import com.jkoolcloud.tnt4j.tracker.TrackerFactory;
-import com.jkoolcloud.tnt4j.uuid.DefaultSignatureFactory;
+import com.jkoolcloud.tnt4j.uuid.DefaultSignFactory;
 import com.jkoolcloud.tnt4j.uuid.DefaultUUIDFactory;
-import com.jkoolcloud.tnt4j.uuid.SignatureFactory;
+import com.jkoolcloud.tnt4j.uuid.SignFactory;
 import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
 
 /**
@@ -74,7 +74,7 @@ public class TrackerConfig {
 	TrackerFactory trFactory;
 	SourceFactory sourceFactory;
 	UUIDFactory uuidFactory;
-	SignatureFactory signFactory;
+	SignFactory signFactory;
 	EventSinkFactory defEvFactory;
 	EventSinkFactory evFactory;
 	DumpSinkFactory dpFactory;
@@ -189,11 +189,11 @@ public class TrackerConfig {
 	 *
 	 * @param sf
 	 *            signature factory instance
-	 * @see SignatureFactory
+	 * @see SignFactory
 	 *
 	 * @return current signature factory
 	 */
-	public TrackerConfig setSignFactory(SignatureFactory sf) {
+	public TrackerConfig setSignFactory(SignFactory sf) {
 		signFactory = sf;
 		return this;
 	}
@@ -201,10 +201,10 @@ public class TrackerConfig {
 	/**
 	 * Set default signature factory instance
 	 *
-	 * @see SignatureFactory
+	 * @see SignFactory
 	 * @return current signature factory
 	 */
-	public SignatureFactory getSignFactory() {
+	public SignFactory getSignFactory() {
 		return signFactory;
 	}
 
@@ -599,7 +599,7 @@ public class TrackerConfig {
 		if (uuidFactory == null)
 			uuidFactory = DefaultUUIDFactory.getInstance();
 		if (signFactory == null)
-			signFactory = DefaultSignatureFactory.getInstance();
+			signFactory = DefaultSignFactory.getInstance();
 		if (sourceFactory == null)
 			sourceFactory = DefaultSourceFactory.getInstance();
 		if (sourceHandle == null)

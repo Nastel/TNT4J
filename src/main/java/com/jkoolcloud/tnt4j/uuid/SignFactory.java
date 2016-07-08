@@ -25,7 +25,7 @@ import com.jkoolcloud.tnt4j.core.Message;
  *
  * @version $Revision: 1 $
  */
-public interface SignatureFactory {
+public interface SignFactory {
 	/**
 	 * Return a new signature/hash
 	 * 
@@ -40,6 +40,7 @@ public interface SignatureFactory {
 	 * 
 	 * @param obj message instance for which hash is to be generated
 	 * @return string value of signature associated with a given object
+	 * @throws NoSuchAlgorithmException 
 	 */
 	String sign(Message obj) throws NoSuchAlgorithmException;
 }
