@@ -1,5 +1,5 @@
-Why TNT4J 
-=====================================
+TNT4J -- Track and Tracing API for Java
+=======================================
 TNT4J is about tracking and tracing applications, activities, transactions, behavior and performance via an easy to use API that behaves much like a logging framework.
 
 Why track and trace your applications?
