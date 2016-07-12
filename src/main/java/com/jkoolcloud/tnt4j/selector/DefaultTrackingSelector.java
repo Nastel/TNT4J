@@ -34,7 +34,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
- * <code>DefaultTrackingSelector</code> implements <code>TrackingSelector</code> interface and provides default file
+ * {@link DefaultTrackingSelector} implements {@link TrackingSelector} interface and provides default file
  * based implementation for a tracking selector. Selector file should contain entries as follows:
  * 
  * <code>key=SEV:value-regexp</code> Example (trace all severities, all orders):
@@ -54,7 +54,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	private PropertyListener listener = null;
 
 	/**
-	 * Create a default tracking selector. Each selector needs to be backed by a repository <code>TokenRepository</code>
+	 * Create a default tracking selector. Each selector needs to be backed by a repository {@link TokenRepository}
 	 * .
 	 * 
 	 */
@@ -62,7 +62,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	}
 
 	/**
-	 * Create a default tracking selector. Each selector needs to be backed by a repository <code>TokenRepository</code>
+	 * Create a default tracking selector. Each selector needs to be backed by a repository {@link TokenRepository}
 	 * .
 	 * 
 	 * @param repository

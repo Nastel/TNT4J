@@ -23,7 +23,7 @@ import com.jkoolcloud.tnt4j.repository.TokenRepository;
 
 /**
  * <p>Classes that implement this interface provide implementation for
- * the <code>TrackingSelector</code> which allows conditional logging based on given sev/key/value combination.</p>
+ * the {@link TrackingSelector} which allows conditional logging based on given sev/key/value combination.</p>
  *
  * @see OpLevel
  *
@@ -36,7 +36,7 @@ public interface TrackingSelector extends Handle {
 	 * Use this method to determine if tracking is enabled/disabled
 	 * for a specific sev/key pair.
 	 *
-	 * <code>TrackingLogger.isSet(OpLevel.INFO, "orderapp.order.id");</code>
+	 * {@code TrackingLogger.isSet(OpLevel.INFO, "orderapp.order.id");}
 	 *
 	 * @param sev severity of to be checked
 	 * @param key key associated with tracking activity
@@ -51,7 +51,7 @@ public interface TrackingSelector extends Handle {
 	 * for a specific key/value pair. Example, checking if order id
 	 * "723772" is trackable:
 	 *
-	 * <code>TrackingLogger.isSet(OpLevel.INFO, "orderapp.order.id", "723772");</code>
+	 * {@code TrackingLogger.isSet(OpLevel.INFO, "orderapp.order.id", "723772");}
 	 *
 	 * @param sev severity of to be checked
 	 * @param key key associated with tracking activity
@@ -74,7 +74,7 @@ public interface TrackingSelector extends Handle {
 
 	/**
 	 * Set sev/key combination for tracking. This is the same as calling
-	 * <code>set(sev, key, null)</code>, where value is null.
+	 * {@code set(sev, key, null)}, where value is null.
 	 *
 	 * @param sev severity of to be checked
 	 * @param key key associated with tracking activity
@@ -94,7 +94,7 @@ public interface TrackingSelector extends Handle {
 
 	/**
 	 * Determine of tracking selector is valid and defined
-	 * Undefined <code>TrackingSelector<code> does not have
+	 * Undefined {@link TrackingSelector} does not have
 	 * defined token repository and isSet() calls will either
 	 * return all true or false depending on the value of
 	 * <code>tnt4j.selector.undefined.isset=true</code>
