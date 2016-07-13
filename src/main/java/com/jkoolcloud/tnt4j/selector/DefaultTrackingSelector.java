@@ -19,15 +19,12 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.regex.Pattern;
 
-import com.jkoolcloud.tnt4j.repository.TokenRepositoryListener;
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.repository.FileTokenRepository;
 import com.jkoolcloud.tnt4j.repository.TokenRepository;
-import com.jkoolcloud.tnt4j.repository.TokenRepositoryEvent;
 import com.jkoolcloud.tnt4j.sink.DefaultEventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.utils.Utils;
@@ -48,10 +45,10 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(DefaultTrackingSelector.class);
 	private static final boolean DEFAULT_RETURN_UNDEFINED = Boolean.valueOf(System.getProperty("tnt4j.selector.undefined.isset", "true"));
-	private HashMap<Object, TntToken> tokenMap = new HashMap<Object, TntToken>(89);
+	private HashMap<Object, PropertyToken> tokenMap = new HashMap<Object, PropertyToken>(89);
 	private Map<String, Object> config = null;
 	private TokenRepository tokenRepository = null;
-	private PropertyListener listener = null;
+	private PropertyListenerImpl listener = null;
 
 	/**
 	 * Create a default tracking selector. Each selector needs to be backed by a repository {@link TokenRepository}
@@ -84,7 +81,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 		}
 		if (isDefined()) {
 			tokenRepository.open();
-			listener = new PropertyListener(this, logger);
+			listener = new PropertyListenerImpl(this, logger);
 			tokenRepository.addRepositoryListener(listener);
 			reloadConfig();
 		} else {
@@ -116,25 +113,25 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 		String value = String.valueOf(val);
 		int index = value.indexOf(":");
 		try {
-			TntToken tntToken = null;
+			PropertyToken propertyToken = null;
 			if (index > 0) {
 				// token consists of sev:reg-exp pair
 				String sevValue = value.substring(0, index);
 				String valuePattern = value.substring(index + 1);
 				OpLevel sevLimit = OpLevel.valueOf(sevValue.toUpperCase());
-				tntToken = new TntToken(sevLimit, key, value, valuePattern);
+				propertyToken = new PropertyToken(sevLimit, key, value, valuePattern);
 			} else {
 				// token only has severity limit specified
 				String sevValue = value.trim();
 				if (!sevValue.isEmpty()) {
 					OpLevel sevLimit = OpLevel.valueOf(sevValue.toUpperCase());
-					tntToken = new TntToken(sevLimit, key, value, null);
+					propertyToken = new PropertyToken(sevLimit, key, value, null);
 				}
 			}
-			if (tntToken != null) {
+			if (propertyToken != null) {
 				logger.log(OpLevel.DEBUG, 
-							"putkey: repository={0}, token={1}", tokenRepository, tntToken);
-				tokenMap.put(key, tntToken);
+							"putkey: repository={0}, token={1}", tokenRepository, propertyToken);
+				tokenMap.put(key, propertyToken);
 			}
 		} catch (Throwable ex) {
 			logger.log(OpLevel.ERROR, 
@@ -152,7 +149,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 		if (!isDefined()) {
 			return DEFAULT_RETURN_UNDEFINED;
 		}
-		TntToken token = tokenMap.get(key);
+		PropertyToken token = tokenMap.get(key);
 		return (token != null? token.isMatch(sev, key, value): false);
 	}
 
@@ -163,7 +160,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 
 	@Override
 	public Object get(Object key) {
-		TntToken token = tokenMap.get(key);
+		PropertyToken token = tokenMap.get(key);
 		return token != null ? token.getValue() : null;
 	}
 
@@ -218,81 +215,4 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
     public boolean isDefined() {
 		return (tokenRepository != null && tokenRepository.isDefined());
     }
-}
-
-class PropertyListener implements TokenRepositoryListener {
-	DefaultTrackingSelector selector = null;
-	EventSink logger = null;
-
-	public PropertyListener(DefaultTrackingSelector instance, EventSink log) {
-		selector = instance;
-		logger = log;
-	}
-
-	@Override
-	public void repositoryError(TokenRepositoryEvent event) {
-		logger.log(OpLevel.ERROR, "Repository error detected, event={0}", event, event.getCause());
-	}
-
-	@Override
-	public void repositoryChanged(TokenRepositoryEvent event) {
-		logger.log(OpLevel.DEBUG, "repositoryChanged source={0}, type={1}, {2}={3}",
-					event.getSource(), event.getType(), event.getKey(), event.getValue());
-		switch (event.getType()) {
-		case TokenRepository.EVENT_ADD_KEY:
-		case TokenRepository.EVENT_SET_KEY:
-			selector.putKey(event.getKey(), event.getValue());
-			break;
-		case TokenRepository.EVENT_CLEAR_KEY:
-			selector.remove(event.getKey());
-			break;
-		case TokenRepository.EVENT_CLEAR:
-			selector.clear();
-			break;
-		case TokenRepository.EVENT_RELOAD:
-			selector.reloadConfig();
-			break;
-		case TokenRepository.EVENT_EXCEPTION:
-			logger.log(OpLevel.ERROR, "Repository error detected, event={0}", event, event.getCause());
-			break;
-		}
-	}
-}
-
-class TntToken {
-	Object key;
-	String value;
-	String vPattern;
-	OpLevel sevLimit;
-	Pattern valuePatten;
-
-	public TntToken(OpLevel sev, Object k, String v, String vPtn) {
-		value = v;
-		key = k;
-		sevLimit = sev;
-		vPattern = vPtn;
-		if (vPattern != null) {
-			valuePatten = Pattern.compile(vPattern);
-		}
-	}
-
-	public String getValue() {
-		return value;
-	}
-
-	public boolean isMatch(OpLevel sev, Object key, Object value) {
-		boolean match;
-		boolean sevMatch = (sev.ordinal() >= sevLimit.ordinal());
-		match = sevMatch
-		        && ((value != null && valuePatten != null)? valuePatten.matcher(value.toString()).matches(): true);		
-		return match;
-	}
-
-	public String toString() {
-		return "Token{"
-			+ key + ":" + value
-			+ ", sev.level: " + sevLimit
-			+ ", value.pattern: " + vPattern
-			+ "}";
-	}
 }
