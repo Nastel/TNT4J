@@ -19,7 +19,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * This class provides a static way to get default event sink factory. Default event sink factory is
- * set to <code>com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory</code>.
+ * set to {@link com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory}.
  * Developers may initialize default event sink factory at runtime via code as follows:
  * <pre>
  * {@code
@@ -29,7 +29,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * }
  * </pre>
  * Another way to initialize to via a java property <code>tnt4j.default.event.factory</code>
- * java property and setting to the name of the class that implements <code>EventSinkFactory</code> interface.
+ * java property and setting to the name of the class that implements {@link EventSinkFactory} interface.
  * Example:
  * <pre>
  * {@code
