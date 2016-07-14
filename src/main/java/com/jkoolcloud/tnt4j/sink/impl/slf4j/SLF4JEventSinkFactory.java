@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jkoolcloud.tnt4j.logger.slf4j;
+package com.jkoolcloud.tnt4j.sink.impl.slf4j;
 
 import java.util.Properties;
 

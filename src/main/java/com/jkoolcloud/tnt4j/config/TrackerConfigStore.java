@@ -62,7 +62,7 @@ import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
  * ; source: * designates all sources, which is used as default for non matching sources
  * {
  * source: *
- * event.sink.factory: com.jkoolcloud.tnt4j.logger.slf4j.SLF4JEventSinkFactory
+ * event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory
  * event.source.factory: com.jkoolcloud.tnt4j.core.DefaultSourceFactory
  * event.formatter: com.jkoolcloud.tnt4j.format.DefaultFormatter
  * token.repository: com.jkoolcloud.tnt4j.repository.FileTokenRepository
@@ -71,7 +71,7 @@ import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
  * }
  * {
  * source: com
- * event.sink.factory: com.jkoolcloud.tnt4j.logger.slf4j.SLF4JEventSinkFactory
+ * event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory
  * event.formatter: com.jkoolcloud.tnt4j.format.DefaultFormatter
  * token.repository: com.jkoolcloud.tnt4j.repository.FileTokenRepository
  * tracking.selector: com.jkoolcloud.tnt4j.selector.DefaultTrackingSelector

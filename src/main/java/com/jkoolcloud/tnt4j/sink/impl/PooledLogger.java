@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jkoolcloud.tnt4j.sink;
+package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.io.IOException;
 import java.util.LinkedHashMap;
@@ -32,6 +32,10 @@ import com.jkoolcloud.tnt4j.core.KeyValueStats;
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.limiter.DefaultLimiterFactory;
 import com.jkoolcloud.tnt4j.limiter.Limiter;
+import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
+import com.jkoolcloud.tnt4j.sink.DefaultEventSinkFactory;
+import com.jkoolcloud.tnt4j.sink.EventSink;
+import com.jkoolcloud.tnt4j.sink.SinkLogEvent;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 import com.jkoolcloud.tnt4j.utils.Utils;

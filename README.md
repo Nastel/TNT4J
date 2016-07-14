@@ -82,11 +82,11 @@ TNT4J can take advantage of other lower level logging frameworks such as slf4j, 
 Default TNT4J binding is based on slf4j.
 
 ### Stream over MQTT
-Stream your events over MQTT using `com.jkoolcloud.tnt4j.logger.mqtt.MqttEventSinkFactory` event sink factory.
+Stream your events over MQTT using `com.jkoolcloud.tnt4j.sink.impl.mqtt.MqttEventSinkFactory` event sink factory.
 Configure event sink in `tnt4j.properties` as follows:
 ```
 ...
-event.sink.factory: com.jkoolcloud.tnt4j.logger.mqtt.MqttEventSinkFactory
+event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.mqtt.MqttEventSinkFactory
 event.sink.factory.mqtt-server-url: tcp://localhost:1883
 event.sink.factory.mqtt-topic: tnt4jStream
 event.sink.factory.mqtt-user: mqtt-user
@@ -95,7 +95,7 @@ event.sink.factory.mqtt-pwd: mqtt-pwd
 ```
 
 ### SLF4J Event Sink Integration
-TNT4J provides SLF4J event sink implementation via `com.jkoolcloud.tnt4j.logger.slf4j.SLF4JEventSinkFactory` event sink factory.
+TNT4J provides SLF4J event sink implementation via `com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory` event sink factory.
 Other logging frameworks can be supported by implementing `EventSinkFactory` & `EventSink` interfaces. 
 TNT4J default integration is with SLF4J/SimpleLogger. 
 
@@ -146,9 +146,9 @@ logger.debug("My message {0}, {1}, {2}", arg0, arg1, arg3);
 TNT4J enhances logging performance by supporting asynchronous pooled logging, which delegates logging to a dedicated thread pool. Use `BufferedEventSinkFactory` in your `tnt4.properties` configuration to enable this feature. See example below: 
 ```
 ...
-event.sink.factory: com.jkoolcloud.tnt4j.sink.BufferedEventSinkFactory
-event.sink.factory.PooledLoggerFactory: com.jkoolcloud.tnt4j.sink.PooledLoggerFactoryImpl
-event.sink.factory.EventSinkFactory: com.jkoolcloud.tnt4j.logger.slf4j.SLF4JEventSinkFactory
+event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.BufferedEventSinkFactory
+event.sink.factory.PooledLoggerFactory: com.jkoolcloud.tnt4j.sink.impl.PooledLoggerFactoryImpl
+event.sink.factory.EventSinkFactory: com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory
 ...
 ```
 ### Simplicity & Clean Code

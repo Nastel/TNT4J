@@ -13,12 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jkoolcloud.tnt4j.sink;
+package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.io.IOException;
 import java.io.PrintStream;
 
 import com.jkoolcloud.tnt4j.core.Snapshot;
+import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
+import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.format.EventFormatter;

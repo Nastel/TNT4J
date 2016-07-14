@@ -17,7 +17,7 @@ package com.jkoolcloud.tnt4j.dump;
 
 import java.io.IOException;
 
-import com.jkoolcloud.tnt4j.sink.FileSink;
+import com.jkoolcloud.tnt4j.sink.impl.FileSink;
 
 
 /**

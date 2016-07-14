@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jkoolcloud.tnt4j.sink;
+package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.io.IOException;
 import java.util.Map;
@@ -23,6 +23,14 @@ import java.util.concurrent.locks.LockSupport;
 
 import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.core.TTL;
+import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
+import com.jkoolcloud.tnt4j.sink.EventLimiter;
+import com.jkoolcloud.tnt4j.sink.EventSink;
+import com.jkoolcloud.tnt4j.sink.SinkError;
+import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
+import com.jkoolcloud.tnt4j.sink.SinkEventFilter;
+import com.jkoolcloud.tnt4j.sink.SinkLogEvent;
+import com.jkoolcloud.tnt4j.sink.SinkLogEventListener;
 import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.core.KeyValueStats;
 import com.jkoolcloud.tnt4j.core.OpLevel;

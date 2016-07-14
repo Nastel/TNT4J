@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jkoolcloud.tnt4j.sink;
+package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.util.Map;
 import java.util.Properties;
@@ -22,6 +22,9 @@ import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.core.UsecTimestamp;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.format.SimpleFormatter;
+import com.jkoolcloud.tnt4j.sink.AbstractEventSinkFactory;
+import com.jkoolcloud.tnt4j.sink.EventSink;
+import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**

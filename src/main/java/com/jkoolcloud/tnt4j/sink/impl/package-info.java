@@ -15,9 +15,9 @@
  */
 
 /**
- * MQTT event sink implementation
+ * TNT4J default concrete sink implementations
  * 
  * @author albert
  * @version 1.0
  */
-package com.jkoolcloud.tnt4j.logger.mqtt;
+package com.jkoolcloud.tnt4j.sink.impl;
