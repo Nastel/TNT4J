@@ -82,11 +82,11 @@ TNT4J can take advantage of other lower level logging frameworks such as slf4j, 
 Default TNT4J binding is based on slf4j.
 
 ### Stream over MQTT
-Stream your events over MQTT using `com.jkoolcloud.tnt4j.mqtt.MqttEventSinkFactory` event sink factory.
+Stream your events over MQTT using `com.jkoolcloud.tnt4j.logger.mqtt.MqttEventSinkFactory` event sink factory.
 Configure event sink in `tnt4j.properties` as follows:
 ```
 ...
-event.sink.factory: com.jkoolcloud.tnt4j.mqtt.MqttEventSinkFactory
+event.sink.factory: com.jkoolcloud.tnt4j.logger.mqtt.MqttEventSinkFactory
 event.sink.factory.mqtt-server-url: tcp://localhost:1883
 event.sink.factory.mqtt-topic: tnt4jStream
 event.sink.factory.mqtt-user: mqtt-user

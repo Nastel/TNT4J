@@ -20,4 +20,4 @@
  * @author albert
  * @version 1.0
  */
-package com.jkoolcloud.tnt4j.mqtt;
+package com.jkoolcloud.tnt4j.logger.mqtt;

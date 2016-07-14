@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jkoolcloud.tnt4j.mqtt;
+package com.jkoolcloud.tnt4j.logger.mqtt;
 
 import java.io.IOException;
 import java.util.Properties;
