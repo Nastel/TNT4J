@@ -1,4 +1,4 @@
-TNT4J -- Track and Tracing API for Java
+TNT4J -- Track and Trace API for Java
 =======================================
 TNT4J is about tracking and tracing applications, activities, transactions, behavior and performance via an easy to use API that behaves much like a logging framework.
 
@@ -388,7 +388,6 @@ Here is short list of TNT4J features:
 * Extensible activity, sink, error listeners for pre, post event processing
 * Granular context such as thread id, process id, server, application name
 
-See TNT4J tutorial (http://www.slideshare.net/AlbertMavashev/open-source-application-behavior-tnt4j-tutorial)
 See Getting Started (https://github.com/Nastel/TNT4J/wiki/Getting-Started) for quick reference on TNT4J.
 Wiki is available at https://github.com/Nastel/TNT4J/wiki
 
