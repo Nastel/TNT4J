@@ -94,7 +94,13 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	public void setConfiguration(Map<String, Object> props) throws ConfigException {
 		super.setConfiguration(props);
 		sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory", "EventSinkFactory.", props);		
-		pooledFactory = (PooledLoggerFactory) Utils.createConfigurableObject("PooledLoggerFactory", "PooledLoggerFactory.", props);		
+		pooledFactory = (PooledLoggerFactory) Utils.createConfigurableObject("PooledLoggerFactory", "PooledLoggerFactory.", props);	
 		blockWrites = Utils.getBoolean("BlockWrites", props, blockWrites);
+		if (sinkFactory == null) {
+			throw new ConfigException("Missing EventSinkFactory implementation", props);
+		}
+		if (pooledFactory == null) {
+			throw new ConfigException("Missing PooledLoggerFactory implementation", props);
+		}
 	}	
 }
