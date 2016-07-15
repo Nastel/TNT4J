@@ -39,7 +39,7 @@
         <dependencySet>
             <useProjectArtifact>true</useProjectArtifact>
             <useTransitiveDependencies>true</useTransitiveDependencies>
-            <outputDirectory>libs</outputDirectory>
+            <outputDirectory>lib</outputDirectory>
             <unpack>false</unpack>
         </dependencySet>
     </dependencySets>
