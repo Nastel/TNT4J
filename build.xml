@@ -9,7 +9,7 @@
     <condition property="isUnix">
         <os family="unix"/>
     </condition>
- 
+
     <target name="clean" depends="mvn_windows_clean, mvn_unix_clean"/>
 
     <target name="rebuild" depends="mvn_windows_build, mvn_unix_build"/>
@@ -30,16 +30,16 @@
 
     <target name="mvn_windows_build" if="isWindows">
         <exec dir="." executable="cmd">
-            <arg line="/c mvn clean install -DskipTests -Dgpg.skip"/>
+            <arg line="/c mvn clean install -DskipTests"/>
         </exec>
     </target>
 
     <target name="mvn_unix_build" if="isUnix">
         <exec dir="." executable="sh">
-            <arg line="-c 'mvn clean install -DskipTests -Dgpg.skip'"/>
+            <arg line="-c 'mvn clean install -DskipTests'"/>
         </exec>
     </target>
-	
+
     <target name="mvn_windows_deploy" if="isWindows">
         <exec dir="." executable="cmd">
             <arg line="/c mvn deploy -DskipTests"/>

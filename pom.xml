@@ -33,7 +33,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <product.vendor>jKool, LLC</product.vendor>
         <release.deploy.dir>../build/${project.name}</release.deploy.dir>
-        <gpg.skip.sign>true</gpg.skip.sign>
     </properties>
 
     <distributionManagement>
@@ -103,6 +102,46 @@
         </dependency>
     </dependencies>
 
+    <profiles>
+        <profile>
+            <id>doclint-java8-disable</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <javadoc.opts>-Xdoclint:none</javadoc.opts>
+                <javadoc.failOnError>false</javadoc.failOnError>
+            </properties>
+        </profile>
+        <profile>
+            <id>release-sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.5</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <defaultGoal>clean install</defaultGoal>
         <plugins>
@@ -142,23 +181,6 @@
                         <goals>
                             <goal>jar</goal>
                         </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-gpg-plugin</artifactId>
-                <version>1.5</version>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>verify</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                        <configuration>
-                            <skip>${gpg.skip.sign}</skip>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
