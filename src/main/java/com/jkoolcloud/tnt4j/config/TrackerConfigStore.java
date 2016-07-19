@@ -82,7 +82,7 @@ import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
  * source: com.jkoolcloud
  * tracker.factory: com.jkoolcloud.tnt4j.tracker.DefaultTrackerFactory
  * dump.sink.factory: com.jkoolcloud.tnt4j.dump.DefaultDumpSinkFactory
- * event.sink.factory: com.jkoolcloud.tnt4j.sink.SocketEventSinkFactory
+ * event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.SocketEventSinkFactory
  * event.sink.factory.Host: localhost
  * event.sink.factory.Port: 6408
  * event.formatter: com.jkoolcloud.tnt4j.format.JSONFormatter
