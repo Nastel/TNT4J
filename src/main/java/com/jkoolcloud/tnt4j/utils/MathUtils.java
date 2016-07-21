@@ -218,7 +218,6 @@ public class MathUtils {
 	 * @return N-period exponentially moving average
 	 */
 	public static double getKoEMA(double cVal, float k, double pEMA) {
-		double nEMA = (k * (cVal - pEMA)) + pEMA;
-		return nEMA;
+		return (k * (cVal - pEMA)) + pEMA;
 	}
 }

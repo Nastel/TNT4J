@@ -500,9 +500,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 */
 	public long getSecUsecPart() {
 		int msec = (int)(msecs - (msecs/1000)*1000);
-		long usec = (msec * 1000) + usecs;
-
-		return usec;
+		return (msec * 1000) + usecs;
 	}
 
 	/**
