@@ -34,8 +34,8 @@ import com.jkoolcloud.tnt4j.core.Snapshot;
 public interface DumpCollection extends Snapshot {
 
 	/**
-	 * Obtain <code>DumpProvider</code> instance associated with the dump.
-	 * Dump provider generates instances of the <code>DumpCollection</code> 
+	 * Obtain {@link DumpProvider} instance associated with the dump.
+	 * Dump provider generates instances of the {@link DumpCollection} 
 	 * 
 	 * @return a dump provider associated with this dump.
 	 */
