@@ -21,72 +21,72 @@ package com.jkoolcloud.tnt4j.core;
  * @version $Revision: 1 $
  */
 public interface ValueTypes {
-	public static final String VALUE_TYPE_NONE = "none";
+	String VALUE_TYPE_NONE = "none";
 	
 	// temperature types
-	public static final String VALUE_TYPE_TEMP_F = "temp.f";
-	public static final String VALUE_TYPE_TEMP_C = "temp.c";
+	String VALUE_TYPE_TEMP_F = "temp.f";
+	String VALUE_TYPE_TEMP_C = "temp.c";
 	
 	// Rates of change
-	public static final String VALUE_TYPE_RATE_SEC = "rate.sec";
+	String VALUE_TYPE_RATE_SEC = "rate.sec";
 	
 	// currency types
-	public static final String VALUE_TYPE_CURRENCY = "currency";
-	public static final String VALUE_TYPE_CURRENCY_USD = "currency.usd";
-	public static final String VALUE_TYPE_CURRENCY_EUR = "currency.eur";
-	public static final String VALUE_TYPE_CURRENCY_UK = "currency.uk";
+	String VALUE_TYPE_CURRENCY = "currency";
+	String VALUE_TYPE_CURRENCY_USD = "currency.usd";
+	String VALUE_TYPE_CURRENCY_EUR = "currency.eur";
+	String VALUE_TYPE_CURRENCY_UK = "currency.uk";
 
 	// size/length value types
-	public static final String VALUE_TYPE_SIZE = "size";
-	public static final String VALUE_TYPE_SIZE_BYTE = "size.byte";
-	public static final String VALUE_TYPE_SIZE_KBYTE = "size.kb";
-	public static final String VALUE_TYPE_SIZE_MBYTE = "size.mb";
-	public static final String VALUE_TYPE_SIZE_GBYTE = "size.gb";
-	public static final String VALUE_TYPE_SIZE_TBYTE = "size.tb";
-	public static final String VALUE_TYPE_SIZE_METER = "size.meter";
-	public static final String VALUE_TYPE_SIZE_KM = "size.km";
-	public static final String VALUE_TYPE_SIZE_FOOT = "size.foot";
-	public static final String VALUE_TYPE_SIZE_MILE = "size.mile";
+	String VALUE_TYPE_SIZE = "size";
+	String VALUE_TYPE_SIZE_BYTE = "size.byte";
+	String VALUE_TYPE_SIZE_KBYTE = "size.kb";
+	String VALUE_TYPE_SIZE_MBYTE = "size.mb";
+	String VALUE_TYPE_SIZE_GBYTE = "size.gb";
+	String VALUE_TYPE_SIZE_TBYTE = "size.tb";
+	String VALUE_TYPE_SIZE_METER = "size.meter";
+	String VALUE_TYPE_SIZE_KM = "size.km";
+	String VALUE_TYPE_SIZE_FOOT = "size.foot";
+	String VALUE_TYPE_SIZE_MILE = "size.mile";
 	
 	// time/age related value types
-	public static final String VALUE_TYPE_AGE = "age";
-	public static final String VALUE_TYPE_AGE_NSEC = "age.nsec";
-	public static final String VALUE_TYPE_AGE_USEC = "age.usec";
-	public static final String VALUE_TYPE_AGE_MSEC = "age.msec";
-	public static final String VALUE_TYPE_AGE_SEC = "age.sec";
-	public static final String VALUE_TYPE_AGE_MIN = "age.min";
-	public static final String VALUE_TYPE_AGE_HOUR = "age.hour";
-	public static final String VALUE_TYPE_AGE_DAY  = "age.day";
-	public static final String VALUE_TYPE_AGE_WEEK = "age.week";
-	public static final String VALUE_TYPE_AGE_MONTH = "age.month";
-	public static final String VALUE_TYPE_AGE_YEAR  = "age.year";
+	String VALUE_TYPE_AGE = "age";
+	String VALUE_TYPE_AGE_NSEC = "age.nsec";
+	String VALUE_TYPE_AGE_USEC = "age.usec";
+	String VALUE_TYPE_AGE_MSEC = "age.msec";
+	String VALUE_TYPE_AGE_SEC = "age.sec";
+	String VALUE_TYPE_AGE_MIN = "age.min";
+	String VALUE_TYPE_AGE_HOUR = "age.hour";
+	String VALUE_TYPE_AGE_DAY  = "age.day";
+	String VALUE_TYPE_AGE_WEEK = "age.week";
+	String VALUE_TYPE_AGE_MONTH = "age.month";
+	String VALUE_TYPE_AGE_YEAR  = "age.year";
 
 	// time related value types
-	public static final String VALUE_TYPE_TIMESTAMP = "timestamp";
+	String VALUE_TYPE_TIMESTAMP = "timestamp";
 
 	// speed/velocity
-	public static final String VALUE_TYPE_SPEED_KMH = "speed.kmh";
-	public static final String VALUE_TYPE_SPEED_MPH = "speed.mph";
+	String VALUE_TYPE_SPEED_KMH = "speed.kmh";
+	String VALUE_TYPE_SPEED_MPH = "speed.mph";
 	
 	// mass value types
-	public static final String VALUE_TYPE_MASS_LB = "mass.lb";
-	public static final String VALUE_TYPE_MASS_OZ = "mass.oz";
-	public static final String VALUE_TYPE_MASS_GRAM = "mass.g";
-	public static final String VALUE_TYPE_MASS_KG = "mass.kg";
+	String VALUE_TYPE_MASS_LB = "mass.lb";
+	String VALUE_TYPE_MASS_OZ = "mass.oz";
+	String VALUE_TYPE_MASS_GRAM = "mass.g";
+	String VALUE_TYPE_MASS_KG = "mass.kg";
 	
 	// address value types
-	public static final String VALUE_TYPE_ADDR = "addr";
-	public static final String VALUE_TYPE_IPADDR = "addr.ip";
-	public static final String VALUE_TYPE_IPADDR_V4 = "addr.ip.v4";
-	public static final String VALUE_TYPE_IPADDR_V6 = "addr.ip.v6";
+	String VALUE_TYPE_ADDR = "addr";
+	String VALUE_TYPE_IPADDR = "addr.ip";
+	String VALUE_TYPE_IPADDR_V4 = "addr.ip.v4";
+	String VALUE_TYPE_IPADDR_V6 = "addr.ip.v6";
 	
 	// generic number based value types
-	public static final String VALUE_TYPE_COUNTER = "counter";
-	public static final String VALUE_TYPE_COUNTER_TIMETICKS = "counter.msec";
-	public static final String VALUE_TYPE_GAUGE = "gauge";
+	String VALUE_TYPE_COUNTER = "counter";
+	String VALUE_TYPE_COUNTER_TIMETICKS = "counter.msec";
+	String VALUE_TYPE_GAUGE = "gauge";
 	
-	public static final String VALUE_TYPE_FLAG = "flag";
-	public static final String VALUE_TYPE_PERCENT = "percent";
-	public static final String VALUE_TYPE_ID = "id";
-	public static final String VALUE_TYPE_GUID = "guid";
+	String VALUE_TYPE_FLAG = "flag";
+	String VALUE_TYPE_PERCENT = "percent";
+	String VALUE_TYPE_ID = "id";
+	String VALUE_TYPE_GUID = "guid";
 }

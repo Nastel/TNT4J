@@ -25,17 +25,17 @@ public interface TTL {
 	/**
 	 * Time to live CONTEXT, taken from underlying TTL object
 	 */
-	static final long TTL_CONTEXT = -100;
+	long TTL_CONTEXT = -100;
 
 	/**
 	 * Time to live NONE, disable persistence
 	 */
-	static final long TTL_NONE = -1;
+	long TTL_NONE = -1;
 
 	/**
 	 * Time to live is default -- as per underlying sink implementation
 	 */
-	static final long TTL_DEFAULT = 0;
+	long TTL_DEFAULT = 0;
 
 	/**
 	 * Gets time to live in seconds

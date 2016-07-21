@@ -35,7 +35,7 @@ public interface DumpSinkFactory {
 	 * 
 	 * @return dump destination instance
 	 */
-	public DumpSink getInstance();
+	DumpSink getInstance();
 
 	/**
 	 * Obtain a dump destination based on given URI.
@@ -46,7 +46,7 @@ public interface DumpSinkFactory {
 	 * @see DumpSink
 	 * @return dump destination instance
 	 */
-	public DumpSink getInstance(String url);
+	DumpSink getInstance(String url);
 	
 	/**
 	 * Obtain a dump destination based on given URI and append flag.
@@ -58,7 +58,7 @@ public interface DumpSinkFactory {
 	 * @see DumpSink
 	 * @return dump destination instance
 	 */
-	public DumpSink getInstance(String url, boolean append);
+	DumpSink getInstance(String url, boolean append);
 
 	/**
 	 * Obtain a dump destination based on given URI, append flag.
@@ -71,5 +71,5 @@ public interface DumpSinkFactory {
 	 * @see DumpFormatter
 	 * @return dump destination instance
 	 */
-	public DumpSink getInstance(String url, boolean append, DumpFormatter frm);
+	DumpSink getInstance(String url, boolean append, DumpFormatter frm);
 }

@@ -22,8 +22,8 @@ package com.jkoolcloud.tnt4j.core;
  * @version $Revision: 1 $
  */
 public interface Relate2<T> {
-	public static final int OBJ_ONE = 0;
-	public static final int OBJ_TWO = 1;
+	int OBJ_ONE = 0;
+	int OBJ_TWO = 1;
 	
 	/**
 	 * Relate object A to given object B
