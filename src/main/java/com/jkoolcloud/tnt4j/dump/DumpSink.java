@@ -22,7 +22,7 @@ import com.jkoolcloud.tnt4j.sink.Sink;
 /**
  * <p>
  * This interface defines a dump destination end point. Dump destination
- * allows writing of <code>DumpCollection</code> instances. Classes that implement
+ * allows writing of {@link DumpCollection} instances. Classes that implement
  * this interface should handle formatting and forwarding to the actual destination that
  * can handle dump collections such as cloud services, analyzer service, central logging
  * services, files, etc.
@@ -35,12 +35,12 @@ import com.jkoolcloud.tnt4j.sink.Sink;
 
 public interface DumpSink extends Sink {
 	/**
-	 * This method allows writing of <code>DumpCollection</code> objects
+	 * This method allows writing of {@link DumpCollection} objects
 	 * to the underlying destination.
 	 *
 	 * @param dump dump collection
 	 * @see DumpCollection
 	 * @throws IOException if error writing to sink
 	 */
-	public void write(DumpCollection dump) throws IOException;
+	void write(DumpCollection dump) throws IOException;
 }

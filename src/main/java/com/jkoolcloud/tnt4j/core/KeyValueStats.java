@@ -19,8 +19,7 @@ import java.util.Map;
 
 /**
  * <p>
- * This interface defines a way to obtain and reset statistics represented by
- * key/value pair.
+ * This interface defines a way to obtain and reset statistics represented by key/value pair.
  * </p>
  *
  * @version $Revision: 7 $
@@ -37,14 +36,14 @@ public interface KeyValueStats {
 	/**
 	 * Obtain all available statistics into a given map
 	 * 
-	 * @param stats map where key/values pairs are added (existing replaced)
+	 * @param stats
+	 *            map where key/values pairs are added (existing replaced)
 	 * @return current <code>KeyValueStats</code> handle
 	 */
 	KeyValueStats getStats(Map<String, Object> stats);
 
 	/**
-	 * Reset all statistics to their initial values.
-	 * All counters are set to 0.
+	 * Reset all statistics to their initial values. All counters are set to 0.
 	 * 
 	 */
 	void resetStats();

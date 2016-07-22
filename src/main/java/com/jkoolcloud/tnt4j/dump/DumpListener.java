@@ -40,5 +40,5 @@ public interface DumpListener {
 	 * @see DumpEvent
 	 * @see DumpProvider
 	 */
-	public void onDumpEvent(DumpEvent event);
+	void onDumpEvent(DumpEvent event);
 }

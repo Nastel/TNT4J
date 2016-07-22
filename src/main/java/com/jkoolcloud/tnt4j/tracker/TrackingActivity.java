@@ -131,8 +131,7 @@ public class TrackingActivity extends Activity {
 	}
 	
 	private long getLastElapsedUsec() {
-		long elapsedUsec = lastEventNanos > 0? (System.nanoTime() - lastEventNanos)/1000: 0;
-		return elapsedUsec;
+		return lastEventNanos > 0? (System.nanoTime() - lastEventNanos)/1000: 0;
 	}
 	
 	/**

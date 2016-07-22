@@ -36,8 +36,7 @@ public enum Useconds {
 	 */
 	public long get() {
 		long microSeconds = (System.nanoTime() - this.startNanos) / 1000;
-		long computeUsec = this.startUsecs + microSeconds;
-		return computeUsec;
+		return this.startUsecs + microSeconds;
 	}
 
 	/**

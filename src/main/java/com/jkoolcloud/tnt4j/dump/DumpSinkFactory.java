@@ -19,7 +19,7 @@ package com.jkoolcloud.tnt4j.dump;
 
 /**
  * <p>
- * This interface defines a factory that creates instances of <code>DumpSink</code>
+ * This interface defines a factory that creates instances of {@link DumpSink}
  * </p>
  * 
  * 
@@ -31,26 +31,26 @@ package com.jkoolcloud.tnt4j.dump;
 public interface DumpSinkFactory {
 	/**
 	 * Obtain a dump destination based on default settings.
-	 * Dumps are formatted using <code>DefautDumpFormatter</code>
+	 * Dumps are formatted using {@link DefaultDumpFormatter}
 	 * 
 	 * @return dump destination instance
 	 */
-	public DumpSink getInstance();
+	DumpSink getInstance();
 
 	/**
 	 * Obtain a dump destination based on given URI.
-	 * Dumps are formatted using <code>DefautDumpFormatter</code>
+	 * Dumps are formatted using {@link DefaultDumpFormatter}
 	 * Same as <code>getInstance(url, true, new DefaultDumpFormatter())</code>
 	 * 
 	 * @param url for generating a dump destination instance
 	 * @see DumpSink
 	 * @return dump destination instance
 	 */
-	public DumpSink getInstance(String url);
+	DumpSink getInstance(String url);
 	
 	/**
 	 * Obtain a dump destination based on given URI and append flag.
-	 * Dumps are formatted using <code>DefautDumpFormatter</code>.
+	 * Dumps are formatted using {@link DefaultDumpFormatter}.
 	 * Same as <code>getInstance(url, append, new DefaultDumpFormatter())</code>
 	 *
 	 * @param url for generating a dump destination instance
@@ -58,11 +58,11 @@ public interface DumpSinkFactory {
 	 * @see DumpSink
 	 * @return dump destination instance
 	 */
-	public DumpSink getInstance(String url, boolean append);
+	DumpSink getInstance(String url, boolean append);
 
 	/**
 	 * Obtain a dump destination based on given URI, append flag.
-	 * and a given <code>DumpFormatter</code>.
+	 * and a given {@link DumpFormatter}.
 	 * 
 	 * @param url for generating a dump destination instance
 	 * @param append append to the underlying destination
@@ -71,5 +71,5 @@ public interface DumpSinkFactory {
 	 * @see DumpFormatter
 	 * @return dump destination instance
 	 */
-	public DumpSink getInstance(String url, boolean append, DumpFormatter frm);
+	DumpSink getInstance(String url, boolean append, DumpFormatter frm);
 }

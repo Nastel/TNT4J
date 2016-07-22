@@ -22,7 +22,7 @@ import com.jkoolcloud.tnt4j.sink.impl.FileSink;
 
 /**
  * <p>
- * This class implements <code>DumpSink</code> with file as the underlying storage for
+ * This class implements {@link DumpSink} with file as the underlying storage for
  * dump collections.
  * </p>
  * 
@@ -39,7 +39,7 @@ public class FileDumpSink extends FileSink implements DumpSink {
 	
 	/**
 	 * Create a dump destination based on given filename, append flag.
-	 * and a <code>DefaultDumpFormatter</code>.
+	 * and a {@link DefaultDumpFormatter}.
 	 * 
 	 * @param filename for generating a dump destination instance
 	 */
@@ -49,7 +49,7 @@ public class FileDumpSink extends FileSink implements DumpSink {
 
 	/**
 	 * Create a dump destination based on given filename, append flag.
-	 * and a <code>DefaultDumpFormatter</code>.
+	 * and a {@link DefaultDumpFormatter}.
 	 * 
 	 * @param filename for generating a dump destination instance
 	 * @param appnd append to the underlying destination
@@ -60,7 +60,7 @@ public class FileDumpSink extends FileSink implements DumpSink {
 
 	/**
 	 * Create a dump destination based on given filename, append flag.
-	 * and a given <code>DumpFormatter</code>.
+	 * and a given {@link DumpFormatter}.
 	 * 
 	 * @param filename for generating a dump destination instance
 	 * @param appnd append to the underlying destination

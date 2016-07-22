@@ -23,7 +23,7 @@ import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 
 /**
  * <p>
- * Classes that implement this interface provide implementation for the <code>EventFormatter</code> interface.
+ * Classes that implement this interface provide implementation for the {@link EventFormatter} interface.
  * This interface allows formatting of any object, tracking objects as well as log messages
  * to a string format.
  * </p>
@@ -35,7 +35,7 @@ import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
  */
 public interface EventFormatter extends Formatter {
 	/**
-	 * Format a given <code>TrackingEvent</code> and return a string
+	 * Format a given {@link TrackingEvent} and return a string
 	 *
 	 * @param event tracking event instance to be formatted
 	 * @return formatted tracking event
@@ -44,7 +44,7 @@ public interface EventFormatter extends Formatter {
 	String format(TrackingEvent event);
 
 	/**
-	 * Format a given <code>TrackingActivity</code> and return a string
+	 * Format a given {@link TrackingActivity} and return a string
 	 *
 	 * @param activity tracking activity instance to be formatted
 	 * @return formatted tracking event
@@ -53,7 +53,7 @@ public interface EventFormatter extends Formatter {
 	String format(TrackingActivity activity);
 
 	/**
-	 * Format a given <code>PropertySnapshot</code> and return a string
+	 * Format a given {@link Snapshot} and return a string
 	 *
 	 * @param snapshot snapshot object to be formatted
 	 * @return formatted snapshot

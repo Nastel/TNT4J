@@ -116,8 +116,7 @@ public class Utils {
 		try {
 			int index = vm_name.indexOf(_vm_pid_del);
 			if (index > 0) {
-				long pid = Long.parseLong(vm_name.substring(0, index));
-				return pid;
+				return Long.parseLong(vm_name.substring(0, index));
 			}
 		} catch (Throwable e) {
 		}
@@ -198,8 +197,7 @@ public class Utils {
 	 * @return string representation
 	 */
 	public static String qualify(Object obj, String key) {
-		String newKey = obj.getClass().getSimpleName() + "/" + key;
-		return newKey;
+		return obj.getClass().getSimpleName() + "/" + key;
 	}
 
 	/**
@@ -211,8 +209,7 @@ public class Utils {
 	 * @return string representation
 	 */
 	public static String qualify(Object obj, String pfix, String key) {
-		String newKey = obj.getClass().getSimpleName() + "/" + pfix + "/" + key;
-		return newKey;
+		return obj.getClass().getSimpleName() + "/" + pfix + "/" + key;
 	}
 
 	/**
@@ -559,8 +556,7 @@ public class Utils {
 	 * @return true if the string is null or empty
 	 */
 	public static boolean isEmpty(String str) {
-		boolean empty = (str == null || str.trim().isEmpty());
-		return empty;
+		return (str == null || str.trim().isEmpty());
 	}
 
 	/**

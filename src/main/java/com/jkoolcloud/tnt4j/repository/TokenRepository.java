@@ -33,32 +33,32 @@ public interface TokenRepository extends Handle {
 	/**
 	 * EVENT_EXCEPTION indicates that an exception has occurred in the underlying repository
 	 */
-	public static final int EVENT_EXCEPTION = 0;
+	int EVENT_EXCEPTION = 0;
 
 	/**
 	 * EVENT_ADD_KEY indicates that a new key/value pair has been added
 	 */
-	public static final int EVENT_ADD_KEY = 1;
+	int EVENT_ADD_KEY = 1;
 
 	/**
 	 * EVENT_SET_KEY indicates that an existing key/value pair has been set
 	 */
-	public static final int EVENT_SET_KEY = 2;
+	int EVENT_SET_KEY = 2;
 
 	/**
 	 * EVENT_CLEAR_KEY indicates that an existing key/value pair has been removed
 	 */
-	public static final int EVENT_CLEAR_KEY = 3;
+	int EVENT_CLEAR_KEY = 3;
 
 	/**
 	 * EVENT_CLEAR indicates that repository has been cleared
 	 */
-	public static final int EVENT_CLEAR = 4;
+	int EVENT_CLEAR = 4;
 
 	/**
 	 * EVENT_CLEAR indicates that repository has been reloaded/refreshed
 	 */
-	public static final int EVENT_RELOAD = 5;
+	int EVENT_RELOAD = 5;
 
 	/**
 	 * Determine of the token repository is defined.

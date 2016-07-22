@@ -19,7 +19,7 @@ import com.jkoolcloud.tnt4j.core.PropertySnapshot;
 
 /**
  * <p>
- * This class provides a concrete implementation of <code>DumpCollection</code> interface.
+ * This class provides a concrete implementation of {@link DumpCollection} interface.
  * </p>
  *
  *
@@ -34,7 +34,7 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	Throwable reason = null;
 
 	/**
-	 * Create a new instance of <code>Dump</code>
+	 * Create a new instance of {@link Dump}
 	 * instance.
 	 *
 	 * @param name
@@ -49,7 +49,7 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	}
 
 	/**
-	 * Create a new instance of <code>Dump</code>
+	 * Create a new instance of {@link Dump}
 	 * instance.
 	 *
 	 * @param cat
@@ -66,7 +66,7 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	}
 
 	/**
-	 * Create a new instance of <code>Dump</code>
+	 * Create a new instance of {@link Dump}
 	 * instance.
 	 *
 	 * @param cat
@@ -86,7 +86,7 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	}
 
 	/**
-	 * Create a new instance of <code>Dump</code>
+	 * Create a new instance of {@link Dump}
 	 * instance.
 	 *
 	 * @param name
