@@ -185,7 +185,7 @@ public class TrackerConfigStore extends TrackerConfig {
 		super(source, type);
 		loadConfigProps(configMap);
 	}
-	
+
 	/**
 	 * Create an default configuration with a specific source name. Configuration is loaded from a
 	 * key/Properties map.
@@ -199,7 +199,7 @@ public class TrackerConfigStore extends TrackerConfig {
 		super(source, SourceType.APPL);
 		loadConfigProps(configMap);
 	}
-	
+
 	/**
 	 * Create an default configuration with a specific source name and a given file name;
 	 *
@@ -370,10 +370,10 @@ public class TrackerConfigStore extends TrackerConfig {
 			exc = err;
 		}
 
-		String tnt4JResource = "/" + TNT4J_PROPERTIES;
-		InputStream ins = getClass().getResourceAsStream(tnt4JResource);
+		String tnt4jResource = "/" + TNT4J_PROPERTIES;
+		InputStream ins = getClass().getResourceAsStream(tnt4jResource);
 		if (ins == null) {
-			FileNotFoundException ioe = new FileNotFoundException("Resource '" + tnt4JResource + "' not found");
+			FileNotFoundException ioe = new FileNotFoundException("Resource '" + tnt4jResource + "' not found");
 			ioe.initCause(exc);
 			throw ioe;
 		}
