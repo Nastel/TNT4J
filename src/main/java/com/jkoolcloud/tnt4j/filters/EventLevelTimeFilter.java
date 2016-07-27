@@ -53,14 +53,16 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	public static final String WALL_USEC = "WallUsec";
 	public static final String TTL_SEC = "TTL";
 	public static final String MSG_PATTERN = "MsgRegex";
+	public static final String OFF_LEVEL_LABEL = "OFF";
+	public static final int OFF_LEVEL_INT = 100;
 	
-	OpLevel minLevel;
 	Pattern msgPattern;
 	String msgRegx = null;
 	long elapsedUsec = -1;
 	long waitUsec = -1;
 	long wallUsec = -1;
-	private long ttl = TTL.TTL_CONTEXT;
+	long ttl = TTL.TTL_CONTEXT;
+	int minLevel = OpLevel.INFO.ordinal();
 	Map<String, Object> config = null;
 
 	/**
@@ -68,7 +70,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	 * 
 	 */
 	public EventLevelTimeFilter() {
-		minLevel = OpLevel.INFO;
+		minLevel = OpLevel.INFO.ordinal();
 	}
 
 	/**
@@ -102,7 +104,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	 *            message regex (null means all)
 	 */
 	public EventLevelTimeFilter(OpLevel mLevel, long elapsedUsc, long waitUsc, long wallUsc, String msgRegex) {
-		minLevel = mLevel;
+		minLevel = mLevel.ordinal();
 		elapsedUsec = elapsedUsc;
 		waitUsec = waitUsc;
 		wallUsec = wallUsc;
@@ -165,7 +167,9 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	public void setConfiguration(Map<String, Object> settings) {
 		config = settings;
 		
-		minLevel = OpLevel.valueOf(Utils.getString(LEVEL, settings, minLevel.toString()));		
+		String levelStr = Utils.getString(LEVEL, settings, OpLevel.INFO.toString());
+		minLevel = levelStr.equalsIgnoreCase(OFF_LEVEL_LABEL)? OFF_LEVEL_INT: OpLevel.valueOf(levelStr).ordinal();	
+		
 		elapsedUsec = Utils.getLong(ELAPSED_USEC, settings, elapsedUsec);
 		waitUsec = Utils.getLong(WAIT_USEC, settings, waitUsec);
 		wallUsec = Utils.getLong(WALL_USEC, settings, wallUsec);
@@ -189,6 +193,6 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	 * @see EventSink
 	 */
 	private boolean passLevel(OpLevel level, EventSink sink) {
-		return (minLevel != OpLevel.NONE? (level.ordinal() >= minLevel.ordinal()): false) && sink.isSet(level);		
+		return (level.ordinal() >= minLevel) && sink.isSet(level);		
 	}
 }
