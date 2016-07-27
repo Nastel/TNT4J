@@ -54,7 +54,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	public static final String TTL_SEC = "TTL";
 	public static final String MSG_PATTERN = "MsgRegex";
 	
-	OpLevel sevLimit;
+	OpLevel minLevel;
 	Pattern msgPattern;
 	String msgRegx = null;
 	long elapsedUsec = -1;
@@ -68,14 +68,14 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	 * 
 	 */
 	public EventLevelTimeFilter() {
-		sevLimit = OpLevel.INFO;
+		minLevel = OpLevel.INFO;
 	}
 
 	/**
-	 * Create a default filter with a given level threshold.
+	 * Create a default filter with a given minimum level threshold.
 	 * 
-	 * @param threshold
-	 *            severity level threshold
+	 * @param mLevel
+	 *            minimum severity level threshold
 	 * @param elapsedUsc
 	 *            elapsed time threshold (-1 disable)
 	 * @param waitUsc
@@ -83,15 +83,15 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	 * @param wallUsc
 	 *            wall time threshold (-1 disable)
 	 */
-	public EventLevelTimeFilter(OpLevel threshold, long elapsedUsc, long waitUsc, long wallUsc) {
-		this(threshold, elapsedUsc, waitUsc, wallUsc, null);
+	public EventLevelTimeFilter(OpLevel mLevel, long elapsedUsc, long waitUsc, long wallUsc) {
+		this(mLevel, elapsedUsc, waitUsc, wallUsc, null);
 	}
 
 	/**
-	 * Create a default filter with a given level threshold.
+	 * Create a default filter with a given minimum level threshold.
 	 * 
-	 * @param threshold
-	 *            severity level threshold
+	 * @param mLevel
+	 *            minimum severity level threshold
 	 * @param elapsedUsc
 	 *            elapsed time threshold (-1 disable)
 	 * @param waitUsc
@@ -101,8 +101,8 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	 * @param msgRegex
 	 *            message regex (null means all)
 	 */
-	public EventLevelTimeFilter(OpLevel threshold, long elapsedUsc, long waitUsc, long wallUsc, String msgRegex) {
-		sevLimit = threshold;
+	public EventLevelTimeFilter(OpLevel mLevel, long elapsedUsc, long waitUsc, long wallUsc, String msgRegex) {
+		minLevel = mLevel;
 		elapsedUsec = elapsedUsc;
 		waitUsec = waitUsc;
 		wallUsec = wallUsc;
@@ -124,7 +124,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 			return false;
 		}
 		if (ttl != TTL.TTL_CONTEXT) event.setTTL(ttl);
-		return (event.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(event.getSeverity());
+		return passLevel(event.getSeverity(), sink);
 	}
 
 	@Override
@@ -139,13 +139,13 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 			return false;
 		}
 		if (ttl != TTL.TTL_CONTEXT) activity.setTTL(ttl);
-		return (activity.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(activity.getSeverity());
+		return passLevel(activity.getSeverity(), sink);
 	}
 
 	@Override
 	public boolean filter(EventSink sink, Snapshot snapshot) {
 		if (ttl != TTL.TTL_CONTEXT) snapshot.setTTL(ttl);
-		return (snapshot.getSeverity().ordinal() >= sevLimit.ordinal()) && sink.isSet(snapshot.getSeverity());
+		return passLevel(snapshot.getSeverity(), sink);
 	}
 
 	@Override
@@ -153,7 +153,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 		if (msgPattern != null && !msgPattern.matcher(msg).matches()) {
 			return false;
 		}
-		return (level.ordinal() >= sevLimit.ordinal()) && sink.isSet(level);
+		return passLevel(level, sink);
 	}
 
 	@Override
@@ -164,15 +164,31 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	@Override
 	public void setConfiguration(Map<String, Object> settings) {
 		config = settings;
-		sevLimit = OpLevel.valueOf(Utils.getString(LEVEL, settings, sevLimit.toString()));
+		
+		minLevel = OpLevel.valueOf(Utils.getString(LEVEL, settings, minLevel.toString()));		
 		elapsedUsec = Utils.getLong(ELAPSED_USEC, settings, elapsedUsec);
 		waitUsec = Utils.getLong(WAIT_USEC, settings, waitUsec);
 		wallUsec = Utils.getLong(WALL_USEC, settings, wallUsec);
-		ttl = Utils.getLong(TTL_SEC, settings, ttl);;
+		ttl = Utils.getLong(TTL_SEC, settings, ttl);
 
 		msgRegx = Utils.getString(MSG_PATTERN, settings, null);
 		if (msgRegx != null) {
 			msgPattern = Pattern.compile(msgRegx);
 		}
+	}
+	
+	/**
+	 * Returns true if a given level passes the filter, false otherwise
+	 * 
+	 * @param level
+	 *            event severity level
+	 * @param sink
+	 *            event sink where filter request is coming from
+	 * @return true if level passed all filters, false otherwise
+	 * @see OpLevel
+	 * @see EventSink
+	 */
+	private boolean passLevel(OpLevel level, EventSink sink) {
+		return (minLevel != OpLevel.NONE? (level.ordinal() >= minLevel.ordinal()): false) && sink.isSet(level);		
 	}
 }
