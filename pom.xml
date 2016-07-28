@@ -176,6 +176,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.9.1</version>
+                <configuration>
+                    <failOnError>${javadoc.failOnError}</failOnError>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
@@ -229,30 +232,30 @@
                 </configuration>
             </plugin>
             <plugin>
-         		<groupId>org.apache.maven.plugins</groupId>
-         		<artifactId>maven-jar-plugin</artifactId>
-         		<version>2.4</version>
-         		<configuration>
-             	<archive>
-                 <manifest>
-                     <addClasspath>true</addClasspath>
-                 </manifest>
-                 <manifestEntries>
-                     <Implementation-Vendor>${product.vendor}</Implementation-Vendor>
-                     <Implementation-Title>${project.name}</Implementation-Title>
-                     <Implementation-Version>${project.version}</Implementation-Version>
-                     <Premain-Class>com.jkoolcloud.tnt4j.utils.SizeOf</Premain-Class>
-                 </manifestEntries>
-             	 </archive>
-         		 </configuration>
-         		 <executions>
-             		<execution>
-                 		<goals>
-                    	  <goal>jar</goal>
-                		  </goals>
-             		</execution>
-         		 </executions>
-     	  </plugin>  
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                        </manifest>
+                        <manifestEntries>
+                            <Implementation-Vendor>${product.vendor}</Implementation-Vendor>
+                            <Implementation-Title>${project.name}</Implementation-Title>
+                            <Implementation-Version>${project.version}</Implementation-Version>
+                            <Premain-Class>com.jkoolcloud.tnt4j.utils.SizeOf</Premain-Class>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
