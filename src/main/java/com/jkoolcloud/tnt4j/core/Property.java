@@ -21,11 +21,9 @@ import java.util.Date;
 /**
  * <p>Implements a Property entity.</p>
  *
- * <p>A <code>Property</code> object is associated with a <code>PropertySnapshot</code> and
- * represents a name=value pair.
+ * <p>A <code>Property</code> object represents a name=value pair.
  * </p>
  *
- * @see Snapshot
  * @see ValueTypes
  *
  * @version $Revision: 7 $

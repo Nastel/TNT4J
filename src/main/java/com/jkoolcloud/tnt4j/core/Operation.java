@@ -36,8 +36,8 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *
  * <p>An <code>Operation</code> object is used to represent an intercepted operation
  * whose execution it to be recorded.  An <code>Operation</code> is associated
- * with either a <code>Message</code>, if the operation acts upon a message
- * (typically send/receive operations), or a <code>Activity</code> if the
+ * with either a {@link Message}, if the operation acts upon a message
+ * (typically send/receive operations), or a {@link Activity} if the
  * operation does not act upon a message.</p>
  *
  * <p>An <code>Operation</code> is required to have its start time and end time set.</p>

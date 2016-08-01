@@ -38,7 +38,7 @@ public interface KeyValueStats {
 	 * 
 	 * @param stats
 	 *            map where key/values pairs are added (existing replaced)
-	 * @return current <code>KeyValueStats</code> handle
+	 * @return current {@link KeyValueStats} handle
 	 */
 	KeyValueStats getStats(Map<String, Object> stats);
 

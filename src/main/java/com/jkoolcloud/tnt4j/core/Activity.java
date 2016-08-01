@@ -24,12 +24,12 @@ import com.jkoolcloud.tnt4j.source.Source;
 /**
  * <p>Implements a collection of related event and sub-activities.</p>
  *
- * <p>Represents a collection of linked items <code>LinkedItem</code>
+ * <p>Represents a collection of trackable items {@link Trackable}
  * that should be considered to be a single related unit. These are generally
  * delimited by BEGIN/END (or BEGIN/EXCEPTION)calls.
  * </p>
  *
- * <p>A <code>Activity</code> is required to have its start time set,
+ * <p>A {@link Activity} is required to have its start time set,
  * and to have it's end time set if its status is not <code>ActivityStatus.BEGIN</code>.</p>
  *
  * @see ActivityStatus

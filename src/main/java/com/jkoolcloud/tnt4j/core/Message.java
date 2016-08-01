@@ -28,7 +28,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 /**
  * <p>Implements a Message entity.</p>
  *
- * <p>A <code>Message</code> represents a logical message represented by: mime type, encoding (e.g. base64) and character set see{@code Charset}.
+ * <p>A {@code Message} represents a logical entity represented by: payload, mime type, encoding (e.g. base64) and character set see{@code Charset}.
  * Messages are exchanged between a set of software entities (applications). Message has tracking id, size, tag and content with a set of arguments
  * and age. Content is always represented as text and binary data encoded with base64.
  * </p>

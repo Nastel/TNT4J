@@ -32,7 +32,7 @@ import com.jkoolcloud.tnt4j.source.Source;
  */
 public interface Trackable extends TTL {
 	/**
-	 * Set current/active <code>Source</code> with the trackable entity
+	 * Set current/active {@link Source} with the trackable entity
 	 *
 	 * @param src application source handle
 	 * @see Source
@@ -40,7 +40,7 @@ public interface Trackable extends TTL {
 	void setSource(Source src);
 
 	/**
-	 * Obtains current/active <code>Source</code> handle associated
+	 * Obtains current/active {@link Source} handle associated
 	 * with the current trackable objects
 	 *
 	 * @return current active application handle
