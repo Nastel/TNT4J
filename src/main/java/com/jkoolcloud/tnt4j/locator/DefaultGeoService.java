@@ -33,12 +33,12 @@ public class DefaultGeoService {
 		String geoLocatorClass = System.getProperty("tnt4j.default.geo.locator");
 		try {
 			if (geoLocatorClass != null) {
-				geoLocator = (GeoLocator) Utils.createInstance(geoLocatorClass);
+				setDefaultGeoLocator((GeoLocator) Utils.createInstance(geoLocatorClass));
 			} else {
-				geoLocator = new PropertyGeoLocator("tnt4j.geo.location");
+				setDefaultGeoLocator(new PropertyGeoLocator("tnt4j.geo.location"));
 			}
 		} catch (Throwable e) {
-			geoLocator = new PropertyGeoLocator("tnt4j.geo.location");
+			setDefaultGeoLocator(new PropertyGeoLocator("tnt4j.geo.location"));
 			e.printStackTrace();
 		}
 	}
