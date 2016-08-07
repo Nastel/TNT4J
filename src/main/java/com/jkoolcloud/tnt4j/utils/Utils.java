@@ -74,7 +74,6 @@ public class Utils {
 	 * 16-bit USC character set.
 	 */
 	public static final String UTF16 = "UTF-16BE";
-	
 
 	/**
 	 * Line feed.
@@ -126,7 +125,8 @@ public class Utils {
 	/**
 	 * Constructs a {@code Locale} object parsed from provided locale string.
 	 *
-	 * @param localeStr locale string representation
+	 * @param localeStr
+	 *            locale string representation
 	 * 
 	 * @see org.apache.commons.lang3.LocaleUtils#toLocale(String)
 	 * @return parsed locale object, or {@code null} if can't parse localeStr.
@@ -142,10 +142,12 @@ public class Utils {
 	}
 
 	/**
-	 * Random number generator within a specified range (max, min inclusive) 
+	 * Random number generator within a specified range (max, min inclusive)
 	 *
-	 * @param min bottom of the range
-	 * @param max top of the range
+	 * @param min
+	 *            bottom of the range
+	 * @param max
+	 *            top of the range
 	 * @return random number between the specified range
 	 */
 	public static int randomRange(int min, int max) {
@@ -153,47 +155,54 @@ public class Utils {
 			throw new IllegalArgumentException("max < min");
 		}
 		int range = max - min + 1;
-		return rand.nextInt(range) + min;		
+		return rand.nextInt(range) + min;
 	}
-	
+
 	/**
-	 * Resolve variable given name to a global variable.
-	 * Global variables are referenced using: $var convention.
+	 * Resolve variable given name to a global variable. Global variables are
+	 * referenced using: $var convention.
 	 *
-	 * @param name object to use
-	 * @param defValue default value if name undefined
+	 * @param name
+	 *            object to use
+	 * @param defValue
+	 *            default value if name undefined
 	 * @return resolved variable or itself if not a variable
 	 */
 	public static String resolve(String name, String defValue) {
-	    if (name.startsWith("$")) {
-	    	return System.getProperty(name.substring(1), defValue);
-	    } else {
-	    	return name;
-	    }
-    }
+		if (name.startsWith("$")) {
+			return System.getProperty(name.substring(1), defValue);
+		} else {
+			return name;
+		}
+	}
 
 	/**
-	 * Resolve variable given name to a global variable.
-	 * Global variables are referenced using: $var convention.
+	 * Resolve variable given name to a global variable. Global variables are
+	 * referenced using: $var convention.
 	 *
-	 * @param props a set of properties
-	 * @param name object to use
-	 * @param defValue default value if name undefined
+	 * @param props
+	 *            a set of properties
+	 * @param name
+	 *            object to use
+	 * @param defValue
+	 *            default value if name undefined
 	 * @return resolved variable or itself if not a variable
 	 */
 	public static String resolve(Properties props, String name, String defValue) {
-	    if (name.startsWith("$")) {
-	    	return props.getProperty(name.substring(1), defValue);
-	    } else {
-	    	return name;
-	    }
-    }
+		if (name.startsWith("$")) {
+			return props.getProperty(name.substring(1), defValue);
+		} else {
+			return name;
+		}
+	}
 
 	/**
 	 * Qualify given key with a given object class
 	 *
-	 * @param obj object to use
-	 * @param key key to qualify
+	 * @param obj
+	 *            object to use
+	 * @param key
+	 *            key to qualify
 	 * @return string representation
 	 */
 	public static String qualify(Object obj, String key) {
@@ -203,9 +212,12 @@ public class Utils {
 	/**
 	 * Qualify given key with a given object class
 	 *
-	 * @param obj object to use
-	 * @param pfix key prefix
-	 * @param key key to qualify
+	 * @param obj
+	 *            object to use
+	 * @param pfix
+	 *            key prefix
+	 * @param key
+	 *            key to qualify
 	 * @return string representation
 	 */
 	public static String qualify(Object obj, String pfix, String key) {
@@ -213,25 +225,26 @@ public class Utils {
 	}
 
 	/**
-	 * Return current client stack index that identifies the
-	 * calling stack frame return by <code>Thread.currentThread().getStackTrace()</code>
+	 * Return current client stack index that identifies the calling stack frame
+	 * return by <code>Thread.currentThread().getStackTrace()</code>
 	 *
 	 * @return return current stack frame
 	 */
-    public int getClientCodeStackIndex() {
-    	return CLIENT_CODE_STACK_INDEX;
-    }
-
+	public int getClientCodeStackIndex() {
+		return CLIENT_CODE_STACK_INDEX;
+	}
 
 	/**
 	 * Obtain string representation of a throwable object
 	 *
-	 * @param ex exception
+	 * @param ex
+	 *            exception
 	 * @return string representation including stack trace
 	 */
 	public static String printThrowable(Throwable ex) {
 		try {
-			if (ex == null) return null;
+			if (ex == null)
+				return null;
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			PrintStream ps = new PrintStream(os);
 			ex.printStackTrace(ps);
@@ -241,31 +254,37 @@ public class Utils {
 		}
 	}
 
-    /**
+	/**
 	 * Print given message, stack trace to the underlying print stream
 	 *
-	 * @param msg user defined message
-	 * @param trace stack trace
-	 * @param out print stream where output is written
+	 * @param msg
+	 *            user defined message
+	 * @param trace
+	 *            stack trace
+	 * @param out
+	 *            print stream where output is written
 	 */
-   public static void printStackTrace(String msg, StackTraceElement[] trace, PrintStream out) {
-    	Exception ex = new Exception(msg);
-    	ex.setStackTrace(trace);
-    	ex.printStackTrace(out);
-    }
+	public static void printStackTrace(String msg, StackTraceElement[] trace, PrintStream out) {
+		Exception ex = new Exception(msg);
+		ex.setStackTrace(trace);
+		ex.printStackTrace(out);
+	}
 
 	/**
 	 * Print given message, stack trace to the underlying print writer
 	 *
-	 * @param msg user defined message
-	 * @param trace stack trace
-	 * @param out print writer where output is written
+	 * @param msg
+	 *            user defined message
+	 * @param trace
+	 *            stack trace
+	 * @param out
+	 *            print writer where output is written
 	 */
-    public static void printStackTrace(String msg, StackTraceElement[] trace, PrintWriter out) {
-    	Exception ex = new Exception(msg);
-    	ex.setStackTrace(trace);
-    	ex.printStackTrace(out);
-    }
+	public static void printStackTrace(String msg, StackTraceElement[] trace, PrintWriter out) {
+		Exception ex = new Exception(msg);
+		ex.setStackTrace(trace);
+		ex.printStackTrace(out);
+	}
 
 	/**
 	 * Return current stack frame which is executing this call
@@ -275,64 +294,70 @@ public class Utils {
 	public static StackTraceElement getCurrentStackFrame() {
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 		int index = CLIENT_CODE_STACK_INDEX;
-		return stack.length > index? stack[index]: stack[stack.length-1];
+		return stack.length > index ? stack[index] : stack[stack.length - 1];
 	}
 
 	/**
-	 * Return calling stack frame, which is right
-	 * above in the current stack frame.
+	 * Return calling stack frame, which is right above in the current stack
+	 * frame.
 	 *
 	 * @return return calling stack frame, right above the current call.
 	 */
 	public static StackTraceElement getCallingStackFrame() {
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 		int index = CLIENT_CODE_STACK_INDEX + 1;
-		return stack.length > index? stack[index]: stack[stack.length-1];
+		return stack.length > index ? stack[index] : stack[stack.length - 1];
 	}
 
 	/**
-	 * Return a specific stack frame with a given stack offset.
-	 * offset 0 -- current, 1 -- calling, and so on.
+	 * Return a specific stack frame with a given stack offset. offset 0 --
+	 * current, 1 -- calling, and so on.
 	 *
-	 * @param offset offset index within the calling stack
+	 * @param offset
+	 *            offset index within the calling stack
 	 * @return return current stack frame
 	 */
 	public static StackTraceElement getStackFrame(int offset) {
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 		int index = CLIENT_CODE_STACK_INDEX + offset;
-		return stack.length > index? stack[index]: stack[stack.length-1];
+		return stack.length > index ? stack[index] : stack[stack.length - 1];
 	}
 
 	/**
-	 * Return a specific stack frame with a given stack offset.
-	 * offset 0 -- current, 1 -- calling, and so on.
+	 * Return a specific stack frame with a given stack offset. offset 0 --
+	 * current, 1 -- calling, and so on.
 	 *
-	 * @param stack frame list
-	 * @param offset offset index within the calling stack
+	 * @param stack
+	 *            frame list
+	 * @param offset
+	 *            offset index within the calling stack
 	 * @return return current stack frame
 	 */
 	public static StackTraceElement getStackFrame(StackTraceElement[] stack, int offset) {
 		int index = CLIENT_CODE_STACK_INDEX + offset;
-		return stack.length > index? stack[index]: stack[stack.length-1];
+		return stack.length > index ? stack[index] : stack[stack.length - 1];
 	}
 
 	/**
 	 * Return calling stack frame which is right above a given class marker plus
 	 * the offset.
 	 *
-	 * @param classMarker class marker on the stack
-	 * @param offset offset on the stack from the marker
-	 * @return Return calling stack frame which is right above a given class marker
+	 * @param classMarker
+	 *            class marker on the stack
+	 * @param offset
+	 *            offset on the stack from the marker
+	 * @return Return calling stack frame which is right above a given class
+	 *         marker
 	 */
 	public static StackTraceElement getStackFrame(String classMarker, int offset) {
 		int index = 0;
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
-		StackTraceElement first = null, found = stack[stack.length-1];
-		for (StackTraceElement item: stack) {
+		StackTraceElement first = null, found = stack[stack.length - 1];
+		for (StackTraceElement item : stack) {
 			if (first == null && item.getClassName().startsWith(classMarker)) {
 				first = item;
 			} else if (first != null && !item.getClassName().startsWith(classMarker)) {
-				found = stack[index+offset];
+				found = stack[index + offset];
 				break;
 			}
 			index++;
@@ -341,33 +366,35 @@ public class Utils {
 	}
 
 	/**
-	 * Format a given string pattern and a list of arguments
-	 * as defined by <code>MessageFormat</code>
+	 * Format a given string pattern and a list of arguments as defined by
+	 * <code>MessageFormat</code>
 	 *
-	 * @param pattern format string
-	 * @param args arguments for format
+	 * @param pattern
+	 *            format string
+	 * @param args
+	 *            arguments for format
 	 * @return formatted string
 	 */
-	public static String format(String pattern, Object...args) {
+	public static String format(String pattern, Object... args) {
 		if (args != null && args.length > 0) {
 			return MessageFormat.format(pattern, args);
-		} else return String.valueOf(pattern);
+		} else
+			return String.valueOf(pattern);
 	}
 
 	/**
-	 * Return a <code>Throwable</code> object if it is the last element
-	 * in the object array
+	 * Return a <code>Throwable</code> object if it is the last element in the
+	 * object array
 	 *
-	 * @param args list of objects
+	 * @param args
+	 *            list of objects
 	 * @return Throwable exception
 	 */
 	public static Throwable getThrowable(Object args[]) {
-    	if ((args != null)
-    			&& (args.length > 0)
-    			&& (args[args.length-1] instanceof Throwable)) {
-    		return (Throwable) args[args.length-1];
-    	}
-    	return null;
+		if ((args != null) && (args.length > 0) && (args[args.length - 1] instanceof Throwable)) {
+			return (Throwable) args[args.length - 1];
+		}
+		return null;
 	}
 
 	/**
@@ -398,7 +425,8 @@ public class Utils {
 	}
 
 	/**
-	 * Encodes the specified URL string. This is a wrapper around {@link URLEncoder#encode(String, String)}
+	 * Encodes the specified URL string. This is a wrapper around
+	 * {@link URLEncoder#encode(String, String)}
 	 *
 	 * @param url
 	 *            URL string
@@ -416,7 +444,8 @@ public class Utils {
 	}
 
 	/**
-	 * Decodes the specified URL string. This is a wrapper around {@link URLDecoder#decode(String, String)}
+	 * Decodes the specified URL string. This is a wrapper around
+	 * {@link URLDecoder#decode(String, String)}
 	 *
 	 * @param url
 	 *            URL string
@@ -451,9 +480,9 @@ public class Utils {
 	}
 
 	/**
-	 * Hide some parts of the string and leave only certain
-	 * number of characters at the end of the string.
-	 * Example: XXXXX47478 {@code hide("1234-47478", "X", 5)}
+	 * Hide some parts of the string and leave only certain number of characters
+	 * at the end of the string. Example: XXXXX47478
+	 * {@code hide("1234-47478", "X", 5)}
 	 *
 	 * @param str
 	 *            string to be replaced
@@ -461,7 +490,8 @@ public class Utils {
 	 *            hide chars to use during replacement
 	 * @param lastNo
 	 *            number of chars to leave at the end
-	 * @return String with characters at start of string replaced with specified {@code hideChars}
+	 * @return String with characters at start of string replaced with specified
+	 *         {@code hideChars}
 	 */
 	public static String hide(String str, String hideChars, int lastNo) {
 		int length = str.length() - lastNo;
@@ -476,9 +506,9 @@ public class Utils {
 	}
 
 	/**
-	 * Hide some parts of the string and leave only certain
-	 * number of characters at the start of the string.
-	 * Example: 1234-XXXXX {@code hideEnd("1234-47478", "X", 5)}
+	 * Hide some parts of the string and leave only certain number of characters
+	 * at the start of the string. Example: 1234-XXXXX
+	 * {@code hideEnd("1234-47478", "X", 5)}
 	 *
 	 * @param str
 	 *            string to be replaced
@@ -486,7 +516,8 @@ public class Utils {
 	 *            hide chars to use during replacement
 	 * @param startNo
 	 *            number of chars to leave at the start
-	 * @return String with characters at end of string replaced with specified {@code hideChars}
+	 * @return String with characters at end of string replaced with specified
+	 *         {@code hideChars}
 	 */
 	public static String hideEnd(String str, String hideChars, int startNo) {
 		int length = str.length() - startNo;
@@ -567,7 +598,8 @@ public class Utils {
 	 * @return true if the collection is null or empty
 	 */
 	public static boolean isEmpty(Collection<?> col) {
-		if (col == null) return true;
+		if (col == null)
+			return true;
 		return col.isEmpty();
 	}
 
@@ -579,7 +611,8 @@ public class Utils {
 	 * @return true if the collection is null or empty
 	 */
 	public static boolean isEmpty(Map<?, ?> map) {
-		if (map == null) return true;
+		if (map == null)
+			return true;
 		return map.isEmpty();
 	}
 
@@ -587,7 +620,8 @@ public class Utils {
 	 * Gets resolved name of the method that triggered the operation using
 	 * current stack frame.
 	 *
-	 * @param opName operation name
+	 * @param opName
+	 *            operation name
 	 * @return name triggering operation
 	 */
 	public static String getMethodNameFromStack(String opName) {
@@ -596,7 +630,7 @@ public class Utils {
 		} else {
 			String marker = opName.substring(1);
 			String[] pair = marker.split(":");
-			int offset = pair.length == 2? Integer.parseInt(pair[1]): 0;
+			int offset = pair.length == 2 ? Integer.parseInt(pair[1]) : 0;
 			StackTraceElement item = Utils.getStackFrame(pair[0], offset);
 			return item.toString();
 		}
@@ -606,8 +640,10 @@ public class Utils {
 	 * Gets resolved name of the method that triggered the operation using
 	 * current stack frame.
 	 *
-	 * @param marker class marker to be used to locate the stack frame
-	 * @param offset offset from the located stack frame (must be >= 0)
+	 * @param marker
+	 *            class marker to be used to locate the stack frame
+	 * @param offset
+	 *            offset from the located stack frame (must be >= 0)
 	 * @return name triggering operation
 	 */
 	public static String getMethodNameFromStack(String marker, int offset) {
@@ -619,7 +655,8 @@ public class Utils {
 	 * Gets resolved name of the method that triggered the operation using
 	 * current stack frame.
 	 *
-	 * @param classMarker class marker to be used to locate the stack frame
+	 * @param classMarker
+	 *            class marker to be used to locate the stack frame
 	 * @return name triggering operation
 	 */
 	public static String getMethodNameFromStack(Class<?> classMarker) {
@@ -631,8 +668,10 @@ public class Utils {
 	 * Gets resolved name of the method that triggered the operation using
 	 * current stack frame.
 	 *
-	 * @param classMarker class marker to be used to locate the stack frame
-	 * @param offset offset from the located stack frame (must be >= 0)
+	 * @param classMarker
+	 *            class marker to be used to locate the stack frame
+	 * @param offset
+	 *            offset from the located stack frame (must be >= 0)
 	 * @return name triggering operation
 	 */
 	public static String getMethodNameFromStack(Class<?> classMarker, int offset) {
@@ -641,8 +680,8 @@ public class Utils {
 	}
 
 	/**
-	 * Resolves the specified host name to its IP Address. If no host name is given, then resolves local host IP
-	 * Address.
+	 * Resolves the specified host name to its IP Address. If no host name is
+	 * given, then resolves local host IP Address.
 	 *
 	 * @param hostName
 	 *            host name to resolve
@@ -664,7 +703,8 @@ public class Utils {
 	}
 
 	/**
-	 * Resolves the specified IP Address to a host name. If no IP Address is given, then resolves local host name.
+	 * Resolves the specified IP Address to a host name. If no IP Address is
+	 * given, then resolves local host name.
 	 *
 	 * @param hostIp
 	 *            string representation of host IP Address to resolve
@@ -684,7 +724,8 @@ public class Utils {
 	}
 
 	/**
-	 * Resolves the specified IP Address to a host name. If no IP Address is given, then resolves local host name.
+	 * Resolves the specified IP Address to a host name. If no IP Address is
+	 * given, then resolves local host name.
 	 *
 	 * @param hostIp
 	 *            host IP Address to resolve
@@ -741,8 +782,9 @@ public class Utils {
 	}
 
 	/**
-	 * Generates a detailed description of an exception, including stack trace of both the exception and the underlying
-	 * root cause of the exception, if any.
+	 * Generates a detailed description of an exception, including stack trace
+	 * of both the exception and the underlying root cause of the exception, if
+	 * any.
 	 *
 	 * @param ex
 	 *            exception to process
@@ -803,7 +845,8 @@ public class Utils {
 	}
 
 	/**
-	 * Formats the specified time interval as an interval string with format: "d days hh:mm:ss.SSS"
+	 * Formats the specified time interval as an interval string with format:
+	 * "d days hh:mm:ss.SSS"
 	 *
 	 * @param intervalMsec
 	 *            time interval, in milliseconds
@@ -830,11 +873,13 @@ public class Utils {
 	 * Returns the current time in microseconds.
 	 * </p>
 	 * <p>
-	 * This is a wrapper around {@link com.jkoolcloud.tnt4j.utils.Useconds#get()}, returning the value in microsecond
-	 * resolution.
+	 * This is a wrapper around
+	 * {@link com.jkoolcloud.tnt4j.utils.Useconds#get()}, returning the value in
+	 * microsecond resolution.
 	 * </p>
 	 *
-	 * @return the difference, measured in microseconds, between the current time and midnight, January 1, 1970 UTC
+	 * @return the difference, measured in microseconds, between the current
+	 *         time and midnight, January 1, 1970 UTC
 	 * @see com.jkoolcloud.tnt4j.utils.Useconds#get()
 	 */
 	public static long currentTimeUsec() {
@@ -956,26 +1001,28 @@ public class Utils {
 		Object value = props.get(key);
 		String sVal = value == null ? defValue : value.toString();
 		return sVal;
-	}	
-	
+	}
+
 	/**
 	 * Create and apply a configurable object
 	 *
-	 *@param classProp
-	 *            name of the property that contains class name (must exist in config)
-	 *@param prefix
+	 * @param classProp
+	 *            name of the property that contains class name (must exist in
+	 *            config)
+	 * @param prefix
 	 *            property prefix to be used for configuring a new object
-	 *@param config
+	 * @param config
 	 *            a map containing all configuration including class name
-	 *@return configuration object
-	 *@throws ConfigException
-	 *			  if error creating or applying configuration
+	 * @return configuration object
+	 * @throws ConfigException
+	 *             if error creating or applying configuration
 	 *
 	 */
 	public static Object createConfigurableObject(String classProp, String prefix, Map<String, Object> config)
-	        throws ConfigException {
+			throws ConfigException {
 		Object className = config.get(classProp);
-		if (className == null) return null;
+		if (className == null)
+			return null;
 		try {
 			Object obj = Utils.createInstance(className.toString());
 			return Utils.applyConfiguration(prefix, config, obj);
@@ -991,20 +1038,22 @@ public class Utils {
 	/**
 	 * Create and apply a configurable object
 	 *
-	 *@param classProp
-	 *            name of the property that contains class name (must exist in config)
-	 *@param prefix
+	 * @param classProp
+	 *            name of the property that contains class name (must exist in
+	 *            config)
+	 * @param prefix
 	 *            property prefix to be used for configuring a new object
-	 *@param config
+	 * @param config
 	 *            a map containing all configuration including class name
-	 *@return configuration object
-	 *@throws ConfigException
-	 *			  if error instantiating configurable object
+	 * @return configuration object
+	 * @throws ConfigException
+	 *             if error instantiating configurable object
 	 */
 	public static Object createConfigurableObject(String classProp, String prefix, Properties config)
-	        throws  ConfigException {
+			throws ConfigException {
 		Object className = config.get(classProp);
-		if (className == null) return null;
+		if (className == null)
+			return null;
 		try {
 			Object obj = Utils.createInstance(className.toString());
 			return Utils.applyConfiguration(prefix, config, obj);
@@ -1020,17 +1069,18 @@ public class Utils {
 	/**
 	 * Apply settings to a configurable object
 	 *
-	 *@param prefix
+	 * @param prefix
 	 *            prefix to be used for pattern matching
-	 *@param prop
+	 * @param prop
 	 *            list of properties used for patter matching
-	 *@param obj
+	 * @param obj
 	 *            configurable object to apply settings to
-	 *@return configuration object
-	 *@throws ConfigException
-	 *			  if error applying configuration
+	 * @return configuration object
+	 * @throws ConfigException
+	 *             if error applying configuration
 	 */
-	public static Object applyConfiguration(String prefix, Map<String, Object> prop, Object obj)  throws ConfigException {
+	public static Object applyConfiguration(String prefix, Map<String, Object> prop, Object obj)
+			throws ConfigException {
 		if (obj instanceof Configurable) {
 			return applyConfiguration(prefix, prop, (Configurable) obj);
 		}
@@ -1040,17 +1090,17 @@ public class Utils {
 	/**
 	 * Apply settings to a configurable object
 	 *
-	 *@param prefix
+	 * @param prefix
 	 *            prefix to be used for pattern matching
-	 *@param prop
+	 * @param prop
 	 *            list of properties used for patter matching
-	 *@param obj
+	 * @param obj
 	 *            configurable object to apply settings to
-	 *@return configuration object
-	 *@throws ConfigException
-	 *			  if error applying configuration
+	 * @return configuration object
+	 * @throws ConfigException
+	 *             if error applying configuration
 	 */
-	public static Object applyConfiguration(String prefix, Properties prop, Object obj)  throws ConfigException {
+	public static Object applyConfiguration(String prefix, Properties prop, Object obj) throws ConfigException {
 		if (obj instanceof Configurable) {
 			return applyConfiguration(prefix, prop, (Configurable) obj);
 		}
@@ -1060,17 +1110,18 @@ public class Utils {
 	/**
 	 * Apply settings to a configurable object
 	 *
-	 *@param prefix
+	 * @param prefix
 	 *            prefix to be used for pattern matching
-	 *@param prop
+	 * @param prop
 	 *            list of properties used for patter matching
-	 *@param cfg
+	 * @param cfg
 	 *            configurable object to apply settings to
-	 *@return configuration object
-	 *@throws ConfigException
-	 *			  if error applying configuration
+	 * @return configuration object
+	 * @throws ConfigException
+	 *             if error applying configuration
 	 */
-	public static Configurable applyConfiguration(String prefix, Map<String, Object> prop, Configurable cfg) throws ConfigException {
+	public static Configurable applyConfiguration(String prefix, Map<String, Object> prop, Configurable cfg)
+			throws ConfigException {
 		cfg.setConfiguration(getAttributes(prefix, prop));
 		return cfg;
 	}
@@ -1078,30 +1129,32 @@ public class Utils {
 	/**
 	 * Apply settings to a configurable object
 	 *
-	 *@param prefix
+	 * @param prefix
 	 *            prefix to be used for pattern matching
-	 *@param prop
+	 * @param prop
 	 *            list of properties used for patter matching
-	 *@param cfg
+	 * @param cfg
 	 *            configurable object to apply settings to
-	 *@return configuration object
-	 *@throws ConfigException
-	 *			  if error applying configuration
+	 * @return configuration object
+	 * @throws ConfigException
+	 *             if error applying configuration
 	 */
-	public static Configurable applyConfiguration(String prefix, Properties prop, Configurable cfg) throws ConfigException {
+	public static Configurable applyConfiguration(String prefix, Properties prop, Configurable cfg)
+			throws ConfigException {
 		cfg.setConfiguration(getAttributes(prefix, prop));
 		return cfg;
 	}
 
 	/**
-	 * Get object properties that match a certain prefix. New set of keys in the resulting map will exclude the prefix.
+	 * Get object properties that match a certain prefix. New set of keys in the
+	 * resulting map will exclude the prefix.
 	 *
-	 *@param prefix
+	 * @param prefix
 	 *            prefix to be used for pattern matching
-	 *@param p
+	 * @param p
 	 *            list of properties used for patter matching
 	 *
-	 *@return a map containing only those attributes that match a prefix.
+	 * @return a map containing only those attributes that match a prefix.
 	 */
 	public static Map<String, Object> getAttributes(String prefix, Map<String, Object> p) {
 		HashMap<String, Object> settings = new HashMap<String, Object>(11);
@@ -1115,14 +1168,15 @@ public class Utils {
 	}
 
 	/**
-	 * Get object properties that match a certain prefix. New set of keys in the resulting map will exclude the prefix.
+	 * Get object properties that match a certain prefix. New set of keys in the
+	 * resulting map will exclude the prefix.
 	 *
-	 *@param prefix
+	 * @param prefix
 	 *            prefix to be used for pattern matching
-	 *@param p
+	 * @param p
 	 *            list of properties used for patter matching
 	 *
-	 *@return a map containing only those attributes that match a prefix.
+	 * @return a map containing only those attributes that match a prefix.
 	 */
 	public static Map<String, Object> getAttributes(String prefix, Properties p) {
 		HashMap<String, Object> settings = new HashMap<String, Object>(11);
@@ -1138,13 +1192,16 @@ public class Utils {
 	/**
 	 * Create object instance based on specific class name
 	 *
-	 *@param className
+	 * @param className
 	 *            name of the class
 	 *
-	 *@return instance of the objects specified by the class name
-	 *@throws Exception if error instantiating class
+	 * @return instance of the objects specified by the class name
+	 * @throws IllegalAccessException
+	 * @throws InstantiationException
+	 * @throws ClassNotFoundException
 	 */
-	public static Object createInstance(String className) throws Exception {
+	public static Object createInstance(String className)
+			throws InstantiationException, IllegalAccessException, ClassNotFoundException {
 		if (className == null)
 			return null;
 		Class<?> classObj = Class.forName(className);
@@ -1154,15 +1211,16 @@ public class Utils {
 	/**
 	 * Create object instance based on specific class name and given parameters
 	 *
-	 *@param className
+	 * @param className
 	 *            name of the class
-	 *@param args
+	 * @param args
 	 *            arguments to be passed to the constructor
-	 *@param types
+	 * @param types
 	 *            list of parameter types
 	 *
-	 *@return instance of the objects specified by the class name
-	 *@throws Exception if error creating instance
+	 * @return instance of the objects specified by the class name
+	 * @throws Exception
+	 *             if error creating instance
 	 */
 	public static Object createInstance(String className, Object[] args, Class<?>... types) throws Exception {
 		if (className == null)
@@ -1172,28 +1230,27 @@ public class Utils {
 		return ct.newInstance(args);
 	}
 
-
 	/**
 	 * Serialize a given object into a byte array
 	 *
-	 *@param obj
+	 * @param obj
 	 *            serializable object
 	 *
-	 *@return byte array containing flat object
+	 * @return byte array containing flat object
 	 */
 	public static byte[] serialize(Serializable obj) {
-	    return SerializationUtils.serialize(obj);
-    }
+		return SerializationUtils.serialize(obj);
+	}
 
 	/**
 	 * Serialize a given object into a byte array
 	 *
-	 *@param bytes
+	 * @param bytes
 	 *            containing serializable object
 	 *
-	 *@return object
+	 * @return object
 	 */
 	public static Object deserialize(byte[] bytes) {
-	    return SerializationUtils.deserialize(bytes);
-    }
+		return SerializationUtils.deserialize(bytes);
+	}
 }

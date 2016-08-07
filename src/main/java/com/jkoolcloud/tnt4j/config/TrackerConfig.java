@@ -19,7 +19,7 @@ import java.util.Properties;
 
 import com.jkoolcloud.tnt4j.dump.DumpSinkFactory;
 import com.jkoolcloud.tnt4j.format.Formatter;
-import com.jkoolcloud.tnt4j.locator.DefaultGeoLocator;
+import com.jkoolcloud.tnt4j.locator.DefaultGeoService;
 import com.jkoolcloud.tnt4j.locator.GeoLocator;
 import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.source.SourceFactory;
@@ -630,7 +630,7 @@ public class TrackerConfig {
 		if (signFactory == null)
 			signFactory = DefaultSignFactory.getInstance();
 		if (geoLocator == null)
-			geoLocator = DefaultGeoLocator.getInstance();
+			geoLocator = DefaultGeoService.getInstance();
 		if (sourceFactory == null)
 			sourceFactory = DefaultSourceFactory.getInstance();
 		if (sourceHandle == null)

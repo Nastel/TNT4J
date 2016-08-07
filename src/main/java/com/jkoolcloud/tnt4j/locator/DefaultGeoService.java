@@ -15,34 +15,51 @@
  */
 package com.jkoolcloud.tnt4j.locator;
 
+import com.jkoolcloud.tnt4j.utils.Utils;
+
 /**
  * <p>
- * Default geo locator class used for obtaining default/global GEO locator
- * instance.
+ * Default geo locator helper class used for obtaining default/global GEO
+ * locator implementation instance.
  * </p>
  * 
  * 
  * @version $Revision: 1 $
  */
-public class DefaultGeoLocator {
-	private static GeoLocator geoLocator = new PropertyGeoLocator("tnt4j.geo.location");
-	
-	private DefaultGeoLocator() {
+public class DefaultGeoService {
+	private static GeoLocator geoLocator;
+
+	static {
+		String geoLocatorClass = System.getProperty("tnt4j.default.geo.locator");
+		try {
+			if (geoLocatorClass != null) {
+				geoLocator = (GeoLocator) Utils.createInstance(geoLocatorClass);
+			} else {
+				geoLocator = new PropertyGeoLocator("tnt4j.geo.location");
+			}
+		} catch (Throwable e) {
+			geoLocator = new PropertyGeoLocator("tnt4j.geo.location");
+			e.printStackTrace();
+		}
+	}
+
+	private DefaultGeoService() {
 	}
 
 	/**
 	 * Set a global GEO location implementation
 	 * 
-	 * @param locator GEO locator implementation instance
+	 * @param locator
+	 *            GEO locator implementation instance
 	 * @return {@link GeoLocator} instance
 	 */
 	public static GeoLocator setDefaultGeoLocator(GeoLocator locator) {
 		geoLocator = locator;
 		return geoLocator;
 	}
-	
+
 	/**
-	 * Obtain a default GEO locator
+	 * Obtain a default GEO locator implementation
 	 * 
 	 * @return {@link GeoLocator} instance
 	 */

@@ -19,6 +19,7 @@ package com.jkoolcloud.tnt4j.locator;
  * <p>
  * This interface defines GEO location service, which is used to determine
  * current geographical address and convert regular address to GPS location.
+ * Developers should create specific geo location implementations.
  * </p>
  * 
  * 

@@ -33,7 +33,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class PropertyGeoLocator implements GeoLocator, Configurable {
 	public  static final String UNKNOWN_LOCATION = "0,0";
 	
-	private String GEO_LOCATION;
+	private String geo_coords;
 	private Map<String, Object> settings;
 	
 	/**
@@ -52,12 +52,12 @@ public class PropertyGeoLocator implements GeoLocator, Configurable {
 	 * @param prop property name for geo lookup
 	 */
 	public PropertyGeoLocator(String prop) {
-		GEO_LOCATION = System.getProperty(prop, UNKNOWN_LOCATION);		
+		this.geo_coords = System.getProperty(prop, UNKNOWN_LOCATION);		
 	}
 	
 	@Override
 	public String getCurrentCoords() {
-		return GEO_LOCATION;
+		return geo_coords;
 	}
 
 	@Override
@@ -83,6 +83,6 @@ public class PropertyGeoLocator implements GeoLocator, Configurable {
 	@Override
 	public void setConfiguration(Map<String, Object> vars) throws ConfigException {
 		this.settings = vars;
-		GEO_LOCATION = Utils.getString("geo-addr", settings, UNKNOWN_LOCATION);
+		this.geo_coords = Utils.getString("geoaddr", settings, UNKNOWN_LOCATION);
 	}
 }

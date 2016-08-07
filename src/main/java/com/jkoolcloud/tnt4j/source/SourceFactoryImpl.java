@@ -20,7 +20,7 @@ import java.util.StringTokenizer;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
-import com.jkoolcloud.tnt4j.locator.DefaultGeoLocator;
+import com.jkoolcloud.tnt4j.locator.DefaultGeoService;
 import com.jkoolcloud.tnt4j.locator.GeoLocator;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
@@ -55,7 +55,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	static {
 		int i = 0;
 		DEFAULT_SOURCES = new String[SourceType.length()];
-		String location = DefaultGeoLocator.getInstance().getCurrentCoords();
+		String location = DefaultGeoService.getInstance().getCurrentCoords();
 		if (location != null) {
 			DEFAULT_SOURCES[SourceType.GEOADDR.ordinal()] = location;			
 		}
@@ -91,11 +91,11 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 
 	private Map<String, Object> config;
 	private Source rootSource;
-	private GeoLocator geoLocator = DefaultGeoLocator.getInstance();
+	private GeoLocator geoLocator = DefaultGeoService.getInstance();
 	
 	public SourceFactoryImpl() {
 		rootSource = newFromFQN(rootFqn);	
-		geoLocator = DefaultGeoLocator.getInstance();
+		geoLocator = DefaultGeoService.getInstance();
 	}
 	
 	@Override
