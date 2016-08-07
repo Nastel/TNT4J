@@ -19,6 +19,8 @@ import java.util.Properties;
 
 import com.jkoolcloud.tnt4j.dump.DumpSinkFactory;
 import com.jkoolcloud.tnt4j.format.Formatter;
+import com.jkoolcloud.tnt4j.locator.DefaultGeoLocator;
+import com.jkoolcloud.tnt4j.locator.GeoLocator;
 import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.source.SourceFactory;
 import com.jkoolcloud.tnt4j.core.ActivityListener;
@@ -75,6 +77,8 @@ public class TrackerConfig {
 	SourceFactory sourceFactory;
 	UUIDFactory uuidFactory;
 	SignFactory signFactory;
+	GeoLocator geoLocator;
+	
 	EventSinkFactory defEvFactory;
 	EventSinkFactory evFactory;
 	DumpSinkFactory dpFactory;
@@ -167,7 +171,7 @@ public class TrackerConfig {
 	 *            UUID factory instance
 	 * @see UUIDFactory
 	 *
-	 * @return current UUID factory
+	 * @return current configuration instance
 	 */
 	public TrackerConfig setUUIDFactory(UUIDFactory uuidf) {
 		uuidFactory = uuidf;
@@ -191,7 +195,7 @@ public class TrackerConfig {
 	 *            signature factory instance
 	 * @see SignFactory
 	 *
-	 * @return current signature factory
+	 * @return current configuration instance
 	 */
 	public TrackerConfig setSignFactory(SignFactory sf) {
 		signFactory = sf;
@@ -199,7 +203,7 @@ public class TrackerConfig {
 	}
 
 	/**
-	 * Set default signature factory instance
+	 * Get default signature factory instance
 	 *
 	 * @see SignFactory
 	 * @return current signature factory
@@ -209,13 +213,37 @@ public class TrackerConfig {
 	}
 
 	/**
+	 * Set default GEO locator
+	 *
+	 * @param gl
+	 *            geo locator instance
+	 * @see GeoLocator
+	 *
+	 * @return current configuration instance
+	 */
+	public TrackerConfig setGeoLocator(GeoLocator gl) {
+		geoLocator = gl;
+		return this;
+	}
+
+	/**
+	 * Set default signature factory instance
+	 *
+	 * @see GeoLocator
+	 * @return current geo locator instance
+	 */
+	public GeoLocator getGeoLocator() {
+		return geoLocator;
+	}
+
+	/**
 	 * Set default source factory to generate {@link Source} instances
 	 *
 	 * @param sfac
 	 *            source factory instance
 	 * @see SourceFactory
 	 *
-	 * @return current source factory
+	 * @return current configuration instance
 	 */
 	public TrackerConfig setSourceFactory(SourceFactory sfac) {
 		sourceFactory = sfac;
@@ -239,7 +267,7 @@ public class TrackerConfig {
 	 *            tracker factory instance
 	 * @see TrackerFactory
 	 *
-	 * @return current tracker factory
+	 * @return current configuration instance
 	 */
 	public TrackerConfig setTrackerFactory(TrackerFactory tFactory) {
 		trFactory = tFactory;
@@ -575,6 +603,7 @@ public class TrackerConfig {
 		config.setProperties(this.props);
 		config.uuidFactory = this.uuidFactory;
 		config.signFactory = this.signFactory;
+		config.geoLocator = this.geoLocator;
 		config.sourceFactory = this.sourceFactory;
 		config.trFactory = this.trFactory;
 		config.evFactory = this.evFactory;
@@ -600,6 +629,8 @@ public class TrackerConfig {
 			uuidFactory = DefaultUUIDFactory.getInstance();
 		if (signFactory == null)
 			signFactory = DefaultSignFactory.getInstance();
+		if (geoLocator == null)
+			geoLocator = DefaultGeoLocator.getInstance();
 		if (sourceFactory == null)
 			sourceFactory = DefaultSourceFactory.getInstance();
 		if (sourceHandle == null)
@@ -630,6 +661,7 @@ public class TrackerConfig {
 			+ ", source.factory: " + sourceFactory
 			+ ", uuid.factory: " + uuidFactory
 			+ ", sign.factory: " + signFactory
+			+ ", geo.locator: " + geoLocator
 			+ ", default.event.factory: " + defEvFactory
 			+ ", event.formatter: " + evFormatter
 			+ ", tracker.factory: " + trFactory

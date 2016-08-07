@@ -18,7 +18,11 @@ package com.jkoolcloud.tnt4j.source;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
+import com.jkoolcloud.tnt4j.locator.DefaultGeoLocator;
+import com.jkoolcloud.tnt4j.locator.GeoLocator;
+import com.jkoolcloud.tnt4j.repository.TokenRepository;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
@@ -52,6 +56,10 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	static {
 		int i = 0;
 		DEFAULT_SOURCES = new String[SourceType.length()];
+		String location = DefaultGeoLocator.getInstance().getCurrentLocation();
+		if (location != null) {
+			DEFAULT_SOURCES[SourceType.GEOADDR.ordinal()] = location;			
+		}
 		for (SourceType type: SourceType.values()) {
 			String typeValue = UNKNOWN_SOURCE;
 			String typeString = type.toString().toUpperCase();
@@ -84,9 +92,11 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 
 	private Map<String, Object> config;
 	private Source rootSource;
-
+	private GeoLocator geoLocator = DefaultGeoLocator.getInstance();
+	
 	public SourceFactoryImpl() {
-		rootSource = newFromFQN(rootFqn);			
+		rootSource = newFromFQN(rootFqn);	
+		geoLocator = DefaultGeoLocator.getInstance();
 	}
 	
 	@Override
@@ -137,14 +147,28 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	}
 
 	@Override
+	public GeoLocator getGeoLocator() {
+		return geoLocator;
+	}
+
+	@Override
     public Map<String, Object> getConfiguration() {
 	    return config;
     }
 
 	@Override
-    public void setConfiguration(Map<String, Object> settings) {
+    public void setConfiguration(Map<String, Object> settings) throws ConfigException {
 		config = settings;
 		
+		GeoLocator locator = (GeoLocator) Utils.createConfigurableObject("GeoLocator", "GeoLocator.", config);
+		geoLocator = locator != null? locator: geoLocator;
+		
+		// initialize default geo location to the current location
+		String location = geoLocator.getCurrentLocation();
+		if (location != null) {
+			defaultSources[SourceType.GEOADDR.ordinal()] = geoLocator.getCurrentLocation();
+		}
+
 		// initialize source types for this factory
 		for (SourceType type: SourceType.values()) {
 			String typeString = type.toString().toUpperCase();
@@ -207,7 +231,13 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	 * @return source name based on given name and type
 	 */
 	protected String getNameFromType(String name, SourceType type) {
-		if (name == null || name.equals("?")) return defaultSources[type.ordinal()];
+		if (name == null || name.equals("?")) {
+			if (type == SourceType.GEOADDR) {
+				String location = geoLocator.getCurrentLocation();
+				if (location != null) return location;
+			}
+			return defaultSources[type.ordinal()];
+		}
 		return Utils.resolve(name, UNKNOWN_SOURCE);
 	}
  

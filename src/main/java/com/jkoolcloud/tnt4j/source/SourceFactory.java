@@ -15,6 +15,8 @@
  */
 package com.jkoolcloud.tnt4j.source;
 
+import com.jkoolcloud.tnt4j.locator.GeoLocator;
+
 /**
  * This interface defines a source factory which creates instances of sources.
  * Source may contain other sources.
@@ -25,6 +27,13 @@ package com.jkoolcloud.tnt4j.source;
  */
 
 public interface SourceFactory {
+	/**
+	 * Obtain geo locator instance
+	 * 
+	 * @return geo locator instance
+	 */
+	GeoLocator getGeoLocator();
+
 	/**
 	 * Gets root source.
 	 * 

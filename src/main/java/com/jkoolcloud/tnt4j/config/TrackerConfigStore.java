@@ -32,6 +32,7 @@ import com.jkoolcloud.tnt4j.source.SourceFactory;
 import com.jkoolcloud.tnt4j.core.ActivityListener;
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
+import com.jkoolcloud.tnt4j.locator.GeoLocator;
 import com.jkoolcloud.tnt4j.repository.TokenRepository;
 import com.jkoolcloud.tnt4j.selector.TrackingSelector;
 import com.jkoolcloud.tnt4j.sink.DefaultEventSinkFactory;
@@ -269,6 +270,7 @@ public class TrackerConfigStore extends TrackerConfig {
 			}
 			setUUIDFactory((UUIDFactory) createConfigurableObject("uuid.factory", "uuid.factory."));
 			setSignFactory((SignFactory) createConfigurableObject("sign.factory", "sign.factory."));
+			setGeoLocator((GeoLocator) createConfigurableObject("geo.locator", "geo.locator."));
 			setDefaultEventSinkFactory((EventSinkFactory) createConfigurableObject("default.event.sink.factory", "default.event.sink.factory."));
 			setSourceFactory((SourceFactory) createConfigurableObject("source.factory", "source.factory."));
 			setTrackerFactory((TrackerFactory) createConfigurableObject("tracker.factory", "tracker.factory."));
