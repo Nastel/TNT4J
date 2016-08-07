@@ -27,17 +27,35 @@ package com.jkoolcloud.tnt4j.locator;
 
 public interface GeoLocator {
 	/**
-	 * Obtain current GEO location of the current runtime 
+	 * Convert "Latitude,Longitude" coordinates
+	 * to readable location.
 	 * 
-	 * @return address, or geo location (GPS coordinates)
+	 * @return readable location e.g "Brooklyn, New York"
 	 */
-	String getCurrentLocation();
+	String coordsToLabel(String coord);
+
+	/**
+	 * Obtain current GEO coordinates of the current runtime 
+	 * as string "Latitude,Longitude"
+	 * 
+	 * @return coordinates as string "Latitude,Longitude"
+	 */
+	String getCurrentCoords();
+
+	/**
+	 * Obtain GEO based on a given IP address 
+	 * as string "Latitude,Longitude"
+	 * 
+	 * @param ipaddr IP address
+	 * @return location based on IP address as string "Latitude,Longitude"
+	 */
+	String getCoordsForIp(String ipaddr);
 
 	/**
 	 * Convert a given address to GEO coordinates 
 	 * 
 	 * @param address geo address
-	 * @return geo coordinates
+	 * @return geo coordinates as string "Latitude,Longitude"
 	 */
-	String toCoordinates(String address);
+	String toCoords(String address);
 }

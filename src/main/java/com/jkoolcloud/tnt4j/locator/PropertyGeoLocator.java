@@ -31,12 +31,15 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @version $Revision: 1 $
  */
 public class PropertyGeoLocator implements GeoLocator, Configurable {
+	public  static final String UNKNOWN_LOCATION = "0,0";
 	
 	private String GEO_LOCATION;
 	private Map<String, Object> settings;
 	
 	/**
-	 * Create default geo locator
+	 * Create default property geo locator
+	 * This locator uses simple property lookup to determine
+	 * GEO location.
 	 * 
 	 */
 	public PropertyGeoLocator() {
@@ -49,16 +52,26 @@ public class PropertyGeoLocator implements GeoLocator, Configurable {
 	 * @param prop property name for geo lookup
 	 */
 	public PropertyGeoLocator(String prop) {
-		GEO_LOCATION = System.getProperty(prop);		
+		GEO_LOCATION = System.getProperty(prop, UNKNOWN_LOCATION);		
 	}
 	
 	@Override
-	public String getCurrentLocation() {
+	public String getCurrentCoords() {
 		return GEO_LOCATION;
 	}
 
 	@Override
-	public String toCoordinates(String address) {
+	public String coordsToLabel(String coord) {
+		return coord;
+	}
+
+	@Override
+	public String getCoordsForIp(String ipaddr) {
+		return ipaddr;
+	}
+
+	@Override
+	public String toCoords(String address) {
 		return address;
 	}
 
@@ -70,6 +83,6 @@ public class PropertyGeoLocator implements GeoLocator, Configurable {
 	@Override
 	public void setConfiguration(Map<String, Object> vars) throws ConfigException {
 		this.settings = vars;
-		GEO_LOCATION = System.getProperty(Utils.getString("key", settings, null));
+		GEO_LOCATION = Utils.getString("geo-addr", settings, UNKNOWN_LOCATION);
 	}
 }

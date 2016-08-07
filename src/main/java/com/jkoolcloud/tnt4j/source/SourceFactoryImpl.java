@@ -22,7 +22,6 @@ import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
 import com.jkoolcloud.tnt4j.locator.DefaultGeoLocator;
 import com.jkoolcloud.tnt4j.locator.GeoLocator;
-import com.jkoolcloud.tnt4j.repository.TokenRepository;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
@@ -56,7 +55,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	static {
 		int i = 0;
 		DEFAULT_SOURCES = new String[SourceType.length()];
-		String location = DefaultGeoLocator.getInstance().getCurrentLocation();
+		String location = DefaultGeoLocator.getInstance().getCurrentCoords();
 		if (location != null) {
 			DEFAULT_SOURCES[SourceType.GEOADDR.ordinal()] = location;			
 		}
@@ -164,9 +163,9 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 		geoLocator = locator != null? locator: geoLocator;
 		
 		// initialize default geo location to the current location
-		String location = geoLocator.getCurrentLocation();
+		String location = geoLocator.getCurrentCoords();
 		if (location != null) {
-			defaultSources[SourceType.GEOADDR.ordinal()] = geoLocator.getCurrentLocation();
+			defaultSources[SourceType.GEOADDR.ordinal()] = geoLocator.getCurrentCoords();
 		}
 
 		// initialize source types for this factory
@@ -233,7 +232,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	protected String getNameFromType(String name, SourceType type) {
 		if (name == null || name.equals("?")) {
 			if (type == SourceType.GEOADDR) {
-				String location = geoLocator.getCurrentLocation();
+				String location = geoLocator.getCurrentCoords();
 				if (location != null) return location;
 			}
 			return defaultSources[type.ordinal()];
