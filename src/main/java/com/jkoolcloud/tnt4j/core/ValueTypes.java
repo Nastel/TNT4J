@@ -84,6 +84,8 @@ public interface ValueTypes {
 	String VALUE_TYPE_COUNTER = "counter";
 	String VALUE_TYPE_COUNTER_TIMETICKS = "counter.msec";
 	String VALUE_TYPE_GAUGE = "gauge";
+	String VALUE_TYPE_DERIVE = "derive";
+	String VALUE_TYPE_ABSOLUTE = "absolute";
 	
 	String VALUE_TYPE_FLAG = "flag";
 	String VALUE_TYPE_PERCENT = "percent";
