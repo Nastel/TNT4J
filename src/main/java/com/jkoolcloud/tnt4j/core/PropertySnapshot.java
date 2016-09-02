@@ -219,6 +219,16 @@ public class PropertySnapshot implements Snapshot {
 		return timeStamp;
 	}
 
+	/**
+	 * Sets snapshot timestamp value.
+	 * 
+	 * @param timeStamp
+	 *            new timestamp value
+	 */
+	public void setTimeStamp(UsecTimestamp timeStamp) {
+		this.timeStamp = timeStamp;
+	}
+
 	@Override
 	public long getTime() {
 		return timeStamp.getTimeMillis();
@@ -243,18 +253,18 @@ public class PropertySnapshot implements Snapshot {
 	}
 
 	@Override
-    public String getCategory() {
-	    return category;
-    }
+	public String getCategory() {
+		return category;
+	}
 
 	@Override
-    public Set<String> getCorrelator() {
-	    return correlators;
-    }
+	public Set<String> getCorrelator() {
+		return correlators;
+	}
 
 	@Override
-    public void setCorrelator(String...clist) {
-		for (int i=0; (clist != null) && (i < clist.length); i++) {
+	public void setCorrelator(String... clist) {
+		for (int i = 0; (clist != null) && (i < clist.length); i++) {
 			if (clist[i] != null) {
 				this.correlators.add(clist[i]);
 			}
@@ -262,33 +272,33 @@ public class PropertySnapshot implements Snapshot {
 	}
 
 	@Override
-    public void setCorrelator(Collection<String> clist) {
+	public void setCorrelator(Collection<String> clist) {
 		this.correlators.addAll(clist);
 	}
 
 	@Override
-    public String getParentId() {
-	    return parent_id;
-    }
+	public String getParentId() {
+		return parent_id;
+	}
 
 	@Override
-    public Source getSource() {
-	    return source;
-    }
+	public Source getSource() {
+		return source;
+	}
 
 	@Override
-    public String getTrackingId() {
-	    return tracking_id;
-    }
+	public String getTrackingId() {
+		return tracking_id;
+	}
 
 	@Override
-    public OpType getType() {
-	    return opType;
-    }
+	public OpType getType() {
+		return opType;
+	}
 
 	@Override
-    public void setParentId(Trackable parentObject) {
-		parent_id = parentObject != null? parentObject.getTrackingId(): parent_id;
+	public void setParentId(Trackable parentObject) {
+		parent_id = parentObject != null ? parentObject.getTrackingId() : parent_id;
 	}
 
 	@Override
@@ -297,38 +307,38 @@ public class PropertySnapshot implements Snapshot {
 	}
 
 	@Override
-    public void setTrackingId(String signature) {
+	public void setTrackingId(String signature) {
 		tracking_id = signature;
 	}
 
 	@Override
-    public Snapshot add(Property property) {
+	public Snapshot add(Property property) {
 		propSet.put(property.getKey(), property);
 		return this;
 	}
 
 	@Override
-    public int size() {
+	public int size() {
 		return propSet.size();
-    }
+	}
 
 	@Override
-    public Property get(Object key) {
-	    return propSet.get(key);
-    }
+	public Property get(Object key) {
+		return propSet.get(key);
+	}
 
 	@Override
-    public Property remove(Object key) {
+	public Property remove(Object key) {
 		return propSet.remove(key);
 	}
 
 	@Override
-    public Snapshot addAll(Map<? extends Object, ? extends Object> m) {
-	    for (Entry<? extends Object, ? extends Object> entry: m.entrySet()) {
-	    	this.add(entry.getKey(), entry.getValue());
-	    }
-	    return this;
-    }
+	public Snapshot addAll(Map<? extends Object, ? extends Object> m) {
+		for (Entry<? extends Object, ? extends Object> entry : m.entrySet()) {
+			this.add(entry.getKey(), entry.getValue());
+		}
+		return this;
+	}
 
 	@Override
 	public int hashCode() {
@@ -338,28 +348,28 @@ public class PropertySnapshot implements Snapshot {
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Snapshot) {
-			return ((Snapshot)obj).getId().equals(id);
+			return ((Snapshot) obj).getId().equals(id);
 		}
 		return false;
 	}
 
 	@Override
-    public long getTTL() {
-	    return ttl;
-    }
+	public long getTTL() {
+		return ttl;
+	}
 
 	@Override
-    public void setTTL(long ttl) {
+	public void setTTL(long ttl) {
 		this.ttl = ttl;
 	}
 
 	@Override
-    public String getSignature() {
-	    return sign;
-    }
+	public String getSignature() {
+		return sign;
+	}
 
 	@Override
-    public void setSignature(String sign) {
+	public void setSignature(String sign) {
 		this.sign = sign;
 	}
 }
