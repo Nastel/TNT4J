@@ -36,15 +36,20 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurable {
 
-	public static String DEFAULT_POOL_NAME = "default";
-	private static int MAX_POOL_SIZE = Integer.getInteger("tnt4j.pooled.logger.pool", 5);
-	private static int MAX_CAPACITY = Integer.getInteger("tnt4j.pooled.logger.capacity", 10000);
+	public static final String DEFAULT_POOL_NAME = "default";
+	private static final int MAX_POOL_SIZE = Integer.getInteger("tnt4j.pooled.logger.pool", 5);
+	private static final int MAX_CAPACITY = Integer.getInteger("tnt4j.pooled.logger.capacity", 10000);
+	private static final int RETRY_INTERVAL = Integer.getInteger("tnt4j.pooled.logger.retry.interval", 5000);
+	private static final boolean DROP_ON_EXCEPTION = Boolean.getBoolean("tnt4j.pooled.logger.drop.on.error");
 
 	private static final ConcurrentMap<String, PooledLogger> POOLED_LOGGERS = new ConcurrentHashMap<String, PooledLogger>();
 
-	int poolSize, capacity;
+	int poolSize  = MAX_POOL_SIZE;
+	int capacity = MAX_CAPACITY;
+	int retryInterval = RETRY_INTERVAL;
+	boolean dropOnError = DROP_ON_EXCEPTION;
 	String poolName = DEFAULT_POOL_NAME;
-	protected Map<String, Object> props = null;
+	protected Map<String, Object> props;
 
 	/**
 	 * Create a default pooled logger factory
@@ -86,10 +91,14 @@ public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurabl
     public void setConfiguration(Map<String, Object> settings) throws ConfigException {
 		// obtain all optional attributes
 		poolName = Utils.getString("Name", settings, DEFAULT_POOL_NAME);	
-		int poolSize = Utils.getInt("Size", settings, MAX_POOL_SIZE);
-		int capacity = Utils.getInt("Capacity", settings, MAX_CAPACITY);				
+		poolSize = Utils.getInt("Size", settings, MAX_POOL_SIZE);
+		capacity = Utils.getInt("Capacity", settings, MAX_CAPACITY);				
+		retryInterval = Utils.getInt("RetryInterval", settings, RETRY_INTERVAL);				
+		dropOnError = Utils.getBoolean("DropOnError", settings, DROP_ON_EXCEPTION);				
 		// create and register pooled logger instance if not yet available
 		PooledLogger pooledLogger = new PooledLogger(poolName, poolSize, capacity);
+		pooledLogger.dropOnError(dropOnError);
+		pooledLogger.setRetryInterval(retryInterval);
 		if (POOLED_LOGGERS.putIfAbsent(poolName, pooledLogger) == null) {
 			pooledLogger.start();
 		}		

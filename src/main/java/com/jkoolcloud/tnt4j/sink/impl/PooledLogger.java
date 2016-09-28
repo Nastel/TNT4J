@@ -19,17 +19,16 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
-import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.DelayQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
 
-import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.core.KeyValueStats;
 import com.jkoolcloud.tnt4j.core.OpLevel;
+import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.limiter.DefaultLimiterFactory;
 import com.jkoolcloud.tnt4j.limiter.Limiter;
 import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
@@ -38,6 +37,7 @@ import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.sink.SinkLogEvent;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
+import com.jkoolcloud.tnt4j.utils.NamedThreadFactory;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
@@ -60,13 +60,15 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class PooledLogger implements KeyValueStats {
 	protected static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(PooledLogger.class);
 	protected static final double ERROR_RATE = Double.valueOf(System.getProperty("tnt4j.pooled.logger.error.rate", "0.1"));
-	protected static final int REOPEN_FREQ = Integer.getInteger("tnt4j.pooled.logger.reopen.freq.ms", 30000);
+	protected static final int REOPEN_FREQ = Integer.getInteger("tnt4j.pooled.logger.reopen.freq.ms", 10000);
 			
 	static final String KEY_Q_SIZE = "pooled-queue-size";
 	static final String KEY_Q_TASKS = "pooled-queue-tasks";
 	static final String KEY_Q_CAPACITY = "pooled-queue-capacity";
+	static final String KEY_DQ_SIZE = "pooled-delay-size";
 	static final String KEY_OBJECTS_DROPPED = "pooled-objects-dropped";
 	static final String KEY_OBJECTS_SKIPPED = "pooled-objects-skipped";
+	static final String KEY_OBJECTS_REQUEUED = "pooled-objects-requeued";
 	static final String KEY_OBJECTS_LOGGED = "pooled-objects-logged";
 	static final String KEY_EXCEPTION_COUNT = "pooled-exceptions";
 	static final String KEY_SIGNAL_COUNT = "pooled-signals";
@@ -76,13 +78,18 @@ public class PooledLogger implements KeyValueStats {
 
 	String poolName;
 	int poolSize, capacity;
+	int retryInterval = REOPEN_FREQ; // time in milliseconds
+	boolean dropOnError = false;
 	ExecutorService threadPool;
+	Limiter errorLimiter;
 	ArrayBlockingQueue<SinkLogEvent> eventQ;
+	DelayQueue<DelayedElement<SinkLogEvent>> delayQ;
 
 	volatile boolean started = false;
 
 	AtomicLong dropCount = new AtomicLong(0);
 	AtomicLong skipCount = new AtomicLong(0);
+	AtomicLong reQCount = new AtomicLong(0);
 	AtomicLong signalCount = new AtomicLong(0);
 	AtomicLong loggedCount = new AtomicLong(0);
 	AtomicLong exceptionCount = new AtomicLong(0);
@@ -101,6 +108,8 @@ public class PooledLogger implements KeyValueStats {
 		poolSize = threadPoolSize;
 		capacity = maxCapacity;
 		eventQ = new ArrayBlockingQueue<SinkLogEvent>(capacity);
+		delayQ = new DelayQueue<DelayedElement<SinkLogEvent>>();
+		errorLimiter = DefaultLimiterFactory.getInstance().newLimiter(PooledLogger.ERROR_RATE, Limiter.MAX_RATE);
 	}
 	
     /**
@@ -122,10 +131,12 @@ public class PooledLogger implements KeyValueStats {
 	@Override
     public KeyValueStats getStats(Map<String, Object> stats) {
 	    stats.put(Utils.qualify(this, poolName, KEY_Q_SIZE), eventQ.size());
+	    stats.put(Utils.qualify(this, poolName, KEY_DQ_SIZE), delayQ.size());
 	    stats.put(Utils.qualify(this, poolName, KEY_Q_CAPACITY), capacity);
 	    stats.put(Utils.qualify(this, poolName, KEY_Q_TASKS), poolSize);
 	    stats.put(Utils.qualify(this, poolName, KEY_OBJECTS_DROPPED), dropCount.get());
 	    stats.put(Utils.qualify(this, poolName, KEY_OBJECTS_SKIPPED), skipCount.get());
+	    stats.put(Utils.qualify(this, poolName, KEY_OBJECTS_REQUEUED), reQCount.get());
 	    stats.put(Utils.qualify(this, poolName, KEY_OBJECTS_LOGGED), loggedCount.get());
 	    stats.put(Utils.qualify(this, poolName, KEY_EXCEPTION_COUNT), exceptionCount.get());
 	    stats.put(Utils.qualify(this, poolName, KEY_RECOVERY_COUNT), recoveryCount.get());
@@ -139,6 +150,7 @@ public class PooledLogger implements KeyValueStats {
     public void resetStats() {
 		dropCount.set(0);
 		skipCount.set(0);
+		reQCount.set(0);
 		signalCount.set(0);
 		loggedCount.set(0);
 		totalNanos.set(0);
@@ -215,6 +227,16 @@ public class PooledLogger implements KeyValueStats {
 	}
 
 	/**
+	 * Obtain total number of events buffered in a delay queue waiting 
+	 * to be re-delivered due to error during processing
+	 *
+	 * @return total number of messages waiting to be re-delivered
+	 */
+	public int getDQSize() {
+		return delayQ.size();
+	}
+
+	/**
 	 * Obtain maximum capacity of this sink instance. Events are dropped if
 	 * capacity is reached 100%.
 	 *
@@ -256,84 +278,99 @@ public class PooledLogger implements KeyValueStats {
 	}
 	
     /**
-     * Start the the thread pool and all threads in this pooled logger.
+     * Allow the pool to drop queued events when
+     * exception occur. default behavior is to re-queue
+     * messages back on the queue for retry.
+     * 
+     * @param dropOnError true to allow drops, false otherwise 
      */
-	protected synchronized void start() {
-		if (started) return;
-		threadPool = Executors.newFixedThreadPool(poolSize, new LoggingThreadFactory("PooledLogger(" + poolName + "," + poolSize + "," + capacity + ")/task-"));
-		for (int i = 0; i < poolSize; i++) {
-			threadPool.execute(new LoggingTask(this, eventQ));
-		}
-		started = true;
+	public void dropOnError(boolean dropOnError) {
+		this.dropOnError = dropOnError;
 	}
 
     /**
-     * Stop the the thread pool and all threads in this pooled logger.
+     * Obtain how failed messages are handled.
+     * 
+     * @return true means messaged can be dropped, false re-queued
      */
-	protected synchronized void stop() {
-		if (threadPool == null) return;
-		threadPool.shutdown();
-		try {
-	        threadPool.awaitTermination(20, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-        	Thread.currentThread().interrupt();
-        } finally {
-        	threadPool.shutdownNow();
-        }
+	public boolean isDropOnError() {
+		return this.dropOnError;
 	}
-}
-
-class LoggingThreadFactory implements ThreadFactory {
-	int count = 0;
-	String prefix;
-
-	LoggingThreadFactory(String pfix) {
-		prefix = pfix;
+	
+    /**
+     * Interval wait time before retrying send of failed messages.
+     * 
+     * @param retryInterval time interval in milliseconds
+     */
+	public void setRetryInterval(int retryInterval) {
+		this.retryInterval = retryInterval;
 	}
-
-	@Override
-    public Thread newThread(Runnable r) {
-		Thread task = new Thread(r, prefix + count++);
-		task.setDaemon(true);
-		return task;
+	
+    /**
+     * Obtain event message from the queue
+     * 
+     * @return sink event instance
+     * @throws InterruptedException
+     */
+	protected SinkLogEvent takeEvent() throws InterruptedException {
+		DelayedElement<SinkLogEvent> elm = reQCount.get() > 0? delayQ.poll(): null;		
+	    return elm != null? elm.getElement(): eventQ.take();
     }
-}
 
-class LoggingTask implements Runnable {
-	PooledLogger pooledLogger;
-	BlockingQueue<SinkLogEvent> eventQ;
-	Limiter errorLimiter;
-
-	public LoggingTask(PooledLogger logger, ArrayBlockingQueue<SinkLogEvent> eq) {
-		eventQ = eq;
-		pooledLogger = logger;
-		errorLimiter = DefaultLimiterFactory.getInstance().newLimiter(PooledLogger.ERROR_RATE, Limiter.MAX_RATE);
-	}
-
-	protected void openSink(EventSink sink) throws IOException {
-		// check for open again
-		if (!sink.isOpen()) {
-			try {
-				boolean lastErrorState = sink.errorState();
-				sink.open();
-				if (lastErrorState) {
-					sink.setErrorState(null);
-					pooledLogger.recoveryCount.incrementAndGet();
-				}
-			} catch (IOException e) {
-				sink.setErrorState(e);
-				throw e;
-			}
+    /**
+     * Handle event that could not be processed
+     * 
+     * @return event event instance
+     * @throws InterruptedException
+     */
+	private void skipEvent(SinkLogEvent event, Throwable ex) {
+		// add logic to handle skipped event
+		if ((!dropOnError) && (delayQ.size() < capacity)) {
+			reQCount.incrementAndGet();
+			delayQ.put(new DelayedElement<SinkLogEvent>(event, retryInterval));
+		} else {
+			skipCount.incrementAndGet();	
 		}
 	}
 
-	protected boolean isLoggable(EventSink sink) throws IOException {
+    /**
+     * Handle event error during event processing
+     * 
+     * @param event event instance
+     * @param err exception
+     */
+	private void eventError(SinkLogEvent event, Throwable err) {
+		try {
+			skipEvent(event, err);			
+			exceptionCount.incrementAndGet();
+			boolean errorPermit = errorLimiter.tryObtain(1, 0);
+			if (errorPermit) {
+				PooledLogger.logger.log(OpLevel.ERROR,
+						"Error during processing: total.error.count={0}, sink.error.count={1}, queue.size={2}, delay.size={3}, skip.count={4}, req.count={5}, event.source={6}, event.sink={7}",
+				        exceptionCount.get(), event.getEventSink().getErrorCount(), getQSize(), getDQSize(), 
+				        skipCount.get(), reQCount.get(), event.getEventSource(), event.getEventSink(), err);
+			}
+		} catch (Throwable ex) {
+			PooledLogger.logger.log(OpLevel.FAILURE, 
+					"Oops, error during error handling? total.error.count={0}, sink.error.count={1}, queue.size={2}, skip.count={3}, requeue.count={4}, event={5}",
+				        exceptionCount.get(), event.getEventSink().getErrorCount(), getQSize(),
+				        skipCount.get(), reQCount.get(), event, ex);
+		} 
+	}
+		
+    /**
+     * Determine if event sink is ready to accept events
+     * 
+     * @param sink event sink
+     * @throws IOException
+     */
+	private boolean isLoggable(EventSink sink) throws IOException {
 		if (!sink.isOpen()) {
 			synchronized (sink) {
 				if (sink.errorState()) {
 					long lastErrorTime = sink.getLastErrorTime();
 					long errorElapsed = System.currentTimeMillis() - lastErrorTime;
-					if (errorElapsed < PooledLogger.REOPEN_FREQ) {
+					if (errorElapsed < retryInterval) {
 						return false;
 					}
 				}
@@ -345,7 +382,35 @@ class LoggingTask implements Runnable {
 		return true;
 	}
 	
-	protected void sendEvent(SinkLogEvent event) {
+    /**
+     * Handle event processing
+     * 
+     * @param event event instance
+     * @throws IOException
+     */
+	private void onEvent(SinkLogEvent event) throws IOException {
+		if (event.getSignal() != null) {
+			signalCount.incrementAndGet();
+			Thread signal = event.getSignal();
+			if (event.getSignalType() == SinkLogEvent.SIGNAL_CLOSE) {
+				event.getEventSink().close();
+			}
+			LockSupport.unpark(signal);
+		} else if (isLoggable(event.getEventSink())) {
+			sendEvent(event);
+		} else {
+			skipEvent(event, null);	
+		}
+	}
+	
+	
+    /**
+     * Write event to the underlying event sink
+     * 
+     * @param event event instance
+     * @throws IOException
+     */
+	private void sendEvent(SinkLogEvent event) {
 		Object sinkObject = event.getSinkObject();
 		EventSink outSink = event.getEventSink();
 
@@ -368,61 +433,86 @@ class LoggingTask implements Runnable {
 					String.valueOf(sinkObject),
 			        event.getArguments());
 		}
-		pooledLogger.loggedCount.incrementAndGet();		
+		loggedCount.incrementAndGet();		
 	}
 	
-	protected void processEvent(SinkLogEvent event) throws IOException {
-		if (event.getSignal() != null) {
-			pooledLogger.signalCount.incrementAndGet();
-			Thread signal = event.getSignal();
-			if (event.getSignalType() == SinkLogEvent.SIGNAL_CLOSE) {
-				event.getEventSink().close();
+    /**
+     * Open event sink
+     * 
+     * @param sink event sink
+     * @throws IOException
+     */
+	private void openSink(EventSink sink) throws IOException {
+		// check for open again
+		if (!sink.isOpen()) {
+			try {
+				boolean lastErrorState = sink.errorState();
+				sink.open();
+				if (lastErrorState) {
+					sink.setErrorState(null);
+					recoveryCount.incrementAndGet();
+				}
+			} catch (IOException e) {
+				sink.setErrorState(e);
+				throw e;
 			}
-			LockSupport.unpark(signal);
-		} else if (isLoggable(event.getEventSink())) {
-			sendEvent(event);
-		} else {
-			pooledLogger.skipCount.incrementAndGet();
 		}
 	}
 
-	protected void handleError(SinkLogEvent event, Throwable err) {
-		try {
-			pooledLogger.skipCount.incrementAndGet();
-			pooledLogger.exceptionCount.incrementAndGet();
-			if (errorLimiter.tryObtain(1, 0)) {
-				PooledLogger.logger.log(OpLevel.ERROR,
-						"Error during processing: total.error.count={0}, sink.error.count={1}, event.source={2}, event.sink={3}",
-				        pooledLogger.exceptionCount.get(), event.getEventSink().getErrorCount(),
-				        event.getEventSource(), event.getEventSink(), err);
-			}
-		} catch (Throwable ex) {
-			PooledLogger.logger.log(OpLevel.FAILURE, 
-					"Oops, error during error handling? error.count={0}, event={1}",
-			        pooledLogger.exceptionCount.get(), event, ex);
-		}
+	/**
+     * Event processing completed
+     * 
+     * @param event event instance
+     * @param start timer in nanoseconds
+     */
+	private long eventComplete(long start, SinkLogEvent event) {
+		totalServiceNanos.addAndGet(event.complete());
+		long elaspedNanos = System.nanoTime() - start;
+		totalNanos.addAndGet(elaspedNanos);	
+		return elaspedNanos;
 	}
 	
-    @Override
-    public void run() {
-    	try {
-			while (true) {
-				SinkLogEvent event = eventQ.take();
-				long start = System.nanoTime();
-				try {
-					processEvent(event);
-				} catch (Throwable err) {
-					handleError(event, err);
-				} finally {
-					pooledLogger.totalServiceNanos.addAndGet(event.complete());
-					long elaspedNanos = System.nanoTime() - start;
-					pooledLogger.totalNanos.addAndGet(elaspedNanos);					
-				}
-			}
-		} catch (Throwable e) {
-			PooledLogger.logger.log(OpLevel.WARNING,
-					"Interrupted during processing: shutting down: error.count={0}",
-					pooledLogger.exceptionCount.get(), e);
+	/**
+     * Fully process a single event
+     * 
+     * @param event event instance
+     */
+	protected void processEvent(SinkLogEvent event) {
+		long start = System.nanoTime();
+		try {
+			onEvent(event);
+		} catch (Throwable err) {
+			eventError(event, err);
+		} finally {
+			eventComplete(start, event);
+		}		
+	}
+	
+	/**
+     * Start the the thread pool and all threads in this pooled logger.
+     */
+	protected synchronized void start() {
+		if (started) return;
+		NamedThreadFactory tFactory = new NamedThreadFactory("PooledLoggingTask(" + poolName + "," + poolSize + "," + capacity + ")/task-");
+		threadPool = Executors.newFixedThreadPool(poolSize, tFactory);
+		for (int i = 0; i < poolSize; i++) {
+			threadPool.execute(new PooledLoggingTask(this));
 		}
-    }
+		started = true;
+	}
+
+    /**
+     * Stop the the thread pool and all threads in this pooled logger.
+     */
+	protected synchronized void stop() {
+		if (threadPool == null) return;
+		threadPool.shutdown();
+		try {
+	        threadPool.awaitTermination(20, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+        	Thread.currentThread().interrupt();
+        } finally {
+        	threadPool.shutdownNow();
+        }
+	}
 }
