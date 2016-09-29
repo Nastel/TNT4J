@@ -29,9 +29,26 @@ public class DelayedElement<T> implements Delayed {
 	private T elm;
 	private long expiryTime;
 
+    /**
+     * Create a delayed element wrapper
+     * 
+     * @param element object instance
+     * @param delay time in milliseconds
+     */
 	public DelayedElement(T element, long delay) {
+		this(element, delay, TimeUnit.MILLISECONDS);
+	}
+
+    /**
+     * Create a delayed element wrapper
+     * 
+     * @param element object instance
+     * @param delay time in milliseconds
+     * @param unit time unit for delay
+     */
+	public DelayedElement(T element, long delay, TimeUnit unit) {
 		this.elm = element;
-		this.expiryTime = System.currentTimeMillis() + delay;
+		this.expiryTime = System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(delay, unit);
 	}
 
     /**
