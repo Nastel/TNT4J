@@ -25,7 +25,7 @@ package com.jkoolcloud.tnt4j.source;
 public enum SourceType {
 	GENERIC, USER, APPL, PROCESS, APPSERVER, SERVER, RUNTIME, VIRTUAL,
 	NETWORK, DEVICE, NETADDR, GEOADDR, DATACENTER, DATASTORE, CACHE,
-	SERVICE, QUEUE;
+	SERVICE, QUEUE, FILE;
 
 	private static SourceType[] enumList = SourceType.values();
 
