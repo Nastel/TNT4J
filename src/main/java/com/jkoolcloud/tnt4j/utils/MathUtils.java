@@ -34,7 +34,7 @@ public class MathUtils {
 	 * Compute low Bollinger band value. Same as {@code getBBLow(List, 2, 20)}
 	 *
 	 * @param harray of numbers (measurements) sorted by time
-	 * @return low Bolligner band value
+	 * @return low Bollinger band value
 	 */
 	public static double getBBLow(List<Number> harray) {
 		return getBBLow(harray, 2, 20);
@@ -44,7 +44,7 @@ public class MathUtils {
 	 * Compute high Bollinger band value. Same as {@code getBoHigh(List, 2, 20)}
 	 *
 	 * @param harray of numbers (measurements) sorted by time
-	 * @return high Bolligner band value
+	 * @return high Bollinger band value
 	 */
 	public static double getBBHigh(List<Number> harray) {
 		return getBBHigh(harray, 2, 20);
@@ -56,7 +56,7 @@ public class MathUtils {
 	 * @param harray of numbers (measurements) sorted by time
 	 * @param kTimes K times an N-period standard deviation above the EMA(nPeriod)
 	 * @param nPeriod an N-period moving average (EMA)
-	 * @return low Bolligner band value
+	 * @return low Bollinger band value
 	 */
 	public static double getBBLow(List<Number> harray, int kTimes, int nPeriod) {
 		double low = 0;
@@ -74,7 +74,7 @@ public class MathUtils {
 	 * @param harray of numbers (measurements) sorted by time
 	 * @param kTimes K times an N-period standard deviation above the EMA(nPeriod)
 	 * @param nPeriod an N-period exponentially moving average (EMA)
-	 * @return high Bolligner band value
+	 * @return high Bollinger band value
 	 */
 	public static double getBBHigh(List<Number> harray, int kTimes, int nPeriod) {
 		double high = 0;
@@ -135,10 +135,10 @@ public class MathUtils {
 			vsum += val;
 			count++;
 		}
-		mean = count > 0 ? vsum / count: mean;
+		mean = count > 0 ? vsum / count : mean;
 		return mean;
 	}
-	
+
 	/**
 	 * Compute mean for a given set of numbers and number of elements
 	 *
@@ -156,7 +156,7 @@ public class MathUtils {
 			vsum += val;
 			count++;
 		}
-		mean = count > 0 ? vsum / count: mean;
+		mean = count > 0 ? vsum / count : mean;
 		return mean;
 	}
 
