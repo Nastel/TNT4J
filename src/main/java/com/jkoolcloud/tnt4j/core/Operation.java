@@ -78,7 +78,7 @@ public class Operation implements TTL {
 	private long				startTimeUs;
 	private long				endTimeUs;
 	private Throwable			exHandle;
-	
+
 	private HashSet<String> 	correlators = new HashSet<String>(89);
 	private HashMap<String, Snapshot>	snapshots =  new HashMap<String, Snapshot>(89);
 	private HashMap<String, Property> 	properties = new HashMap<String, Property>(89);
@@ -96,7 +96,7 @@ public class Operation implements TTL {
 	private boolean cpuTimingSupported = ManagementFactory.getThreadMXBean().isThreadCpuTimeEnabled();
 	private boolean contTimingSupported = ManagementFactory.getThreadMXBean().isThreadContentionMonitoringEnabled();
 
-	
+
 	/**
 	 * Creates a Operation with the specified properties.
 	 * Operation name can be any name or a relative name based
@@ -316,7 +316,7 @@ public class Operation implements TTL {
 	/**
 	 * Gets the resource associated with this operation as {@link Source}
 	 * implementation using default {@link DefaultSourceFactory} source factory.
-	 * 
+	 *
 	 * @return resource as a {@link Source}
 	 */
 	public Source getResourceAsSource() {
@@ -326,7 +326,7 @@ public class Operation implements TTL {
 	/**
 	 * Gets the resource associated with this operation as {@link Source}
 	 * implementation.
-	 * 
+	 *
 	 * @param factory source factory implementation
 	 * @return resource as a {@link Source}
 	 */
@@ -393,7 +393,7 @@ public class Operation implements TTL {
 
 	/**
 	 * Gets the wait time for the operation.
-	 * This value is only valid after stop and 
+	 * This value is only valid after stop and
 	 * represents the time the operation spent waiting/blocked
 	 *
 	 * @return wait time for operation, in microseconds
@@ -548,7 +548,8 @@ public class Operation implements TTL {
 	 * @param clist user-defined correlators
 	 */
 	public void setCorrelator(Collection<String> clist) {
-		this.correlators.addAll(clist);
+		if (clist != null)
+			this.correlators.addAll(clist);
 	}
 
 	/**
@@ -650,7 +651,7 @@ public class Operation implements TTL {
 						+ " is less than start.time=" + startTimeUs
 						+ ", delta.usec=" + (endTimeUs - startTimeUs));
 			}
-		} 
+		}
 		elapsedTimeUsec = endTimeUs - startTimeUs;
 		_stop(start);
 	}
@@ -694,13 +695,13 @@ public class Operation implements TTL {
 	 * are computed based on the owner thread.
 	 * It is possible, but not recommended to use the same <code>TrackingActivity</code>
 	 * instance across multiple threads, where start/stop are run across thread boundaries.
-	 * 
+	 *
 	 * @return thread owner info
-	 */	
+	 */
 	public ThreadInfo getThreadInfo() {
 		return ownerThread;
 	}
-	
+
 	private void _start(long start) {
 		if (startStopCount == 0) {
 			startStopCount++;
@@ -716,7 +717,7 @@ public class Operation implements TTL {
 			onStart(start);
 		}
 	}
-	
+
 	private void _stop(long start) {
 		if (startStopCount == 1) {
 			startStopCount++;
@@ -731,26 +732,26 @@ public class Operation implements TTL {
 			onStop(start);
 		}
 	}
-	
+
 	/**
 	 * Override this method to implement logic once operation started.
-	 * 
+	 *
 	 */
-	protected void onStart(long timer) {		
+	protected void onStart(long timer) {
 	}
-	
+
 	/**
 	 * Override this method to implement logic once operation stopped.
-	 * 
+	 *
 	 */
-	protected void onStop(long timer) {		
+	protected void onStop(long timer) {
 	}
-	
+
 	/**
 	 * This method returns total CPU time in nanoseconds currently used by the thread
 	 * that owns this operation. Owner thread is the one that started this operation.
 	 * Owner thread can be obtained by calling {@link #getThreadInfo()}
-	 * 
+	 *
 	 * @return total currently used CPU time in nanoseconds
 	 */
 	public long getCurrentCpuTimeNano() {
@@ -759,9 +760,9 @@ public class Operation implements TTL {
 
 	/**
 	 * This method returns total CPU time in nanoseconds used since the start. If the operation has
-	 * stopped the value returned is an elapsed CPU time since between start/stop calls. 
+	 * stopped the value returned is an elapsed CPU time since between start/stop calls.
 	 * If the operation has not stopped yet, the value is the current used CPU time since the start until now.
-	 * 
+	 *
 	 * @return total used CPU time in nanoseconds
 	 */
 	public long getUsedCpuTimeNano() {
@@ -777,18 +778,18 @@ public class Operation implements TTL {
 	/**
 	 * This method returns total wall time computed between start/stop/current-time.
 	 * wall-time is computed as total used cpu + blocked time + wait time.
-	 * 
+	 *
 	 * @return total wall time in microseconds
 	 */
 	public long getWallTimeUsec() {
 		long wallTime;
 		if (stopCPUTime > 0) {
 			long cpuUsed = getUsedCpuTimeNano();
-			double cpuUsec = ((double) cpuUsed / 1000.0d);
+			double cpuUsec = (cpuUsed / 1000.0d);
 			wallTime = (long) (cpuUsec + getWaitTimeUsec());
 		} else {
 			long cpuUsed = getUsedCpuTimeNano();
-			double cpuUsec = ((double) cpuUsed / 1000.0d);			
+			double cpuUsec = (cpuUsed / 1000.0d);
 			long blockTime = ownerThread.getBlockedTime();
 			long waitTime = ownerThread.getWaitedTime();
 			wallTime = (long) (cpuUsec + ((waitTime - startWaitTime) * 1000) + ((blockTime - startBlockTime) * 1000));
@@ -944,7 +945,7 @@ public class Operation implements TTL {
 	public int getPropertyCount() {
 		return properties != null ? properties.size() : 0;
 	}
-	
+
 	/**
 	 * Gets all available snapshot keys associated with this operation
 	 *

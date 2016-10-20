@@ -221,7 +221,7 @@ public class PropertySnapshot implements Snapshot {
 
 	/**
 	 * Sets snapshot timestamp value.
-	 * 
+	 *
 	 * @param timeStamp
 	 *            new timestamp value
 	 */
@@ -273,7 +273,8 @@ public class PropertySnapshot implements Snapshot {
 
 	@Override
 	public void setCorrelator(Collection<String> clist) {
-		this.correlators.addAll(clist);
+		if (clist != null)
+			this.correlators.addAll(clist);
 	}
 
 	@Override

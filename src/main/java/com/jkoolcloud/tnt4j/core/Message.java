@@ -47,7 +47,7 @@ public class Message {
 
 	public static final String MIME_TYPE_BINARY = "application/octet-stream";
 	public static final String MIME_TYPE_TEXT_PLAIN = "text/plain";
-	
+
 	private String		signature;
 	private int			size;
 	private String		strData;
@@ -107,7 +107,7 @@ public class Message {
 	}
 
 	/**
-	 * Gets message encoding 
+	 * Gets message encoding
 	 *
 	 * @return message encoding
 	 */
@@ -117,7 +117,7 @@ public class Message {
 
 	/**
 	 * Sets message encoding e.g. "base64"
-	 * 
+	 *
 	 * @param encoding message content encoding type such as "base64" see {@code Message.ENCODING_BASE64}
 	 */
 	public void setEncoding(String encoding) {
@@ -153,7 +153,7 @@ public class Message {
 
 	/**
 	 * Sets message mime type
-	 * 
+	 *
 	 * @param mimeType mime type of the message (default <code>text/plain</code>)
 	 *
 	 */
@@ -181,7 +181,7 @@ public class Message {
 	}
 
 	/**
-	 * Gets the age of the message that the operation applies to. 
+	 * Gets the age of the message that the operation applies to.
 	 * This value represents the time between when the message was sent/created
 	 * and time is was consumed.
 	 *
@@ -234,7 +234,8 @@ public class Message {
 	 * @param tlist user-defined list of message tags
 	 */
 	public void setTag(Collection<String> tlist) {
-		this.tags.addAll(tlist);
+		if (tlist != null)
+			this.tags.addAll(tlist);
 	}
 
 	/**
@@ -244,7 +245,7 @@ public class Message {
 	public void clearTags() {
 		this.tags.clear();
 	}
-	
+
 	/**
 	 * Get the size of the message.
 	 *
