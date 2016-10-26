@@ -63,6 +63,7 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 	String KEY_ACTIVITIES_STARTED = "tracker-started";
 	String KEY_ACTIVITIES_STOPPED = "tracker-stopped";
 	String KEY_NOOP_COUNT = "tracker-noops";
+	String KEY_DROP_COUNT = "tracker-dropped";
 	String KEY_ERROR_COUNT = "tracker-errors";
 	String KEY_STACK_DEPTH = "tracker-stack-depth";
 	String KEY_OVERHEAD_USEC = "tracker-overhead-usec";

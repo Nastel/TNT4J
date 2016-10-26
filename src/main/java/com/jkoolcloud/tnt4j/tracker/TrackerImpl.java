@@ -84,6 +84,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	private AtomicLong msgCount = new AtomicLong(0);
 	private AtomicLong snapCount = new AtomicLong(0);
 	private AtomicLong errorCount = new AtomicLong(0);
+	private AtomicLong dropCount = new AtomicLong(0);
 	private AtomicLong pushCount = new AtomicLong(0);
 	private AtomicLong popCount = new AtomicLong(0);
 	private AtomicLong noopCount = new AtomicLong(0);
@@ -288,6 +289,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		stats.put(Utils.qualify(this, KEY_SNAPSHOT_COUNT), snapCount.get());
 		stats.put(Utils.qualify(this, KEY_ERROR_COUNT), errorCount.get());
 		stats.put(Utils.qualify(this, KEY_NOOP_COUNT), noopCount.get());
+		stats.put(Utils.qualify(this, KEY_DROP_COUNT), dropCount.get());
 		stats.put(Utils.qualify(this, KEY_ACTIVITIES_STARTED), pushCount.get());
 		stats.put(Utils.qualify(this, KEY_ACTIVITIES_STOPPED), popCount.get());
 		stats.put(Utils.qualify(this, KEY_STACK_DEPTH), getStackSize());
@@ -303,6 +305,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		msgCount.set(0);
 		snapCount.set(0);
 		errorCount.set(0);
+		dropCount.set(0);
 		pushCount.set(0);
 		popCount.set(0);
 		noopCount.set(0);
@@ -431,8 +434,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			} else {
 				noopCount.incrementAndGet();
 			}
-		}
-		catch (Throwable ex) {
+		} catch (Throwable ex) {
+			dropCount.incrementAndGet();
 			if (logger.isSet(OpLevel.DEBUG)) {
 				logger.log(OpLevel.ERROR,
 					"Failed to track activity: signature={0}, tid={1}, event.sink={2}, source={3}",
@@ -453,6 +456,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 				noopCount.incrementAndGet();
 			}
 		} catch (Throwable ex) {
+			dropCount.incrementAndGet();
 			if (logger.isSet(OpLevel.DEBUG)) {
 				logger.log(OpLevel.ERROR,
 						"Failed to track event: signature={0}, tid={1}, event.sink={2}, source={3}",
@@ -471,6 +475,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			eventSink.log(snapshot);
 			snapCount.incrementAndGet();
 		} catch (Throwable ex) {
+			dropCount.incrementAndGet();
 			if (logger.isSet(OpLevel.DEBUG)) {
 				logger.log(OpLevel.ERROR,
 					"Failed to track snapshot: signature={0}, tid={1}, event.sink={2}, snapshot={3}",
@@ -488,6 +493,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			eventSink.log(eventSink.getTTL(), getSource(), sev, msg, args);
 			msgCount.incrementAndGet();
 		} catch (Throwable ex) {
+			dropCount.incrementAndGet();
 			if (logger.isSet(OpLevel.DEBUG)) {
 				logger.log(OpLevel.ERROR,
 					"Failed to log message: severity={0}, msg={1}", sev, msg, ex);
