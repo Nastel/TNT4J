@@ -70,6 +70,7 @@ public class PooledLogger implements KeyValueStats {
 	static final String KEY_OBJECTS_SKIPPED = "pooled-objects-skipped";
 	static final String KEY_OBJECTS_REQUEUED = "pooled-objects-requeued";
 	static final String KEY_OBJECTS_LOGGED = "pooled-objects-logged";
+	static final String KEY_OBJECTS_COUNT = "pooled-objects-total";
 	static final String KEY_EXCEPTION_COUNT = "pooled-exceptions";
 	static final String KEY_SIGNAL_COUNT = "pooled-signals";
 	static final String KEY_RECOVERY_COUNT = "pooled-recovery-count";
@@ -92,6 +93,7 @@ public class PooledLogger implements KeyValueStats {
 	AtomicLong reQCount = new AtomicLong(0);
 	AtomicLong signalCount = new AtomicLong(0);
 	AtomicLong loggedCount = new AtomicLong(0);
+	AtomicLong eventCount = new AtomicLong(0);
 	AtomicLong exceptionCount = new AtomicLong(0);
 	AtomicLong recoveryCount = new AtomicLong(0);
 	AtomicLong totalNanos = new AtomicLong(0);
@@ -137,6 +139,7 @@ public class PooledLogger implements KeyValueStats {
 	    stats.put(Utils.qualify(this, poolName, KEY_OBJECTS_DROPPED), dropCount.get());
 	    stats.put(Utils.qualify(this, poolName, KEY_OBJECTS_SKIPPED), skipCount.get());
 	    stats.put(Utils.qualify(this, poolName, KEY_OBJECTS_REQUEUED), reQCount.get());
+	    stats.put(Utils.qualify(this, poolName, KEY_OBJECTS_COUNT), eventCount.get());
 	    stats.put(Utils.qualify(this, poolName, KEY_OBJECTS_LOGGED), loggedCount.get());
 	    stats.put(Utils.qualify(this, poolName, KEY_EXCEPTION_COUNT), exceptionCount.get());
 	    stats.put(Utils.qualify(this, poolName, KEY_RECOVERY_COUNT), recoveryCount.get());
@@ -152,6 +155,7 @@ public class PooledLogger implements KeyValueStats {
 		skipCount.set(0);
 		reQCount.set(0);
 		signalCount.set(0);
+		eventCount.set(0);
 		loggedCount.set(0);
 		totalNanos.set(0);
 		recoveryCount.set(0);
@@ -206,6 +210,15 @@ public class PooledLogger implements KeyValueStats {
 	 */
 	public long getLoggedCount() {
 		return loggedCount.get();
+	}
+
+	/**
+	 * Obtain total number of processed messages since last reset.
+	 *
+	 * @return total number of processed messages since last reset
+	 */
+	public long getEventCount() {
+		return eventCount.get();
 	}
 
 	/**
@@ -399,6 +412,7 @@ public class PooledLogger implements KeyValueStats {
      * @throws IOException
      */
 	private void onEvent(SinkLogEvent event) throws IOException {
+		eventCount.incrementAndGet();
 		if (event.getSignal() != null) {
 			signalCount.incrementAndGet();
 			Thread signal = event.getSignal();
