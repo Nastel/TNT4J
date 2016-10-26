@@ -215,6 +215,15 @@ public class SinkLogEvent extends EventObject implements TTL {
 	}
 
 	/**
+	 * Set log exception
+	 * 
+	 * @param ex exception instance
+	 */
+	public void setException(Throwable ex) {
+		error = ex;
+	}
+
+	/**
 	 * Return log object
 	 * 
 	 * @return log object

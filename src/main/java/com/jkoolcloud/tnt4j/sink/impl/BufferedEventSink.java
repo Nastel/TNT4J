@@ -55,16 +55,19 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @see SinkLogEvent
  * @see SinkLogEventListener
  */
-public class BufferedEventSink implements EventSink {
+public class BufferedEventSink implements EventSink, SinkErrorListener {
 	static final String KEY_OBJECTS_DROPPED = "buffered-objects-dropped";
 	static final String KEY_OBJECTS_SKIPPED = "buffered-objects-skipped";
+	static final String KEY_TOTAL_ERRORS = "buffered-total-errors";
 
 	private long ttl = TTL.TTL_CONTEXT;
 	private boolean block = false;
 	private Source source;
 	private EventSink outSink = null;
 	private BufferedEventSinkFactory factory;
-	private AtomicLong dropCount = new AtomicLong(0), skipCount = new AtomicLong(0);
+	private AtomicLong dropCount = new AtomicLong(0);
+	private AtomicLong skipCount = new AtomicLong(0);
+	private AtomicLong errorCount = new AtomicLong(0);
 
 	/**
 	 * Create a buffered sink instance with a specified out sink
@@ -80,6 +83,7 @@ public class BufferedEventSink implements EventSink {
 		factory = f;
 		outSink = sink;
 		block = blocking;
+		outSink.addSinkErrorListener(this);
 		sink.filterOnLog(false); // disable filtering on the underlying sink (prevent double filters)
 	}
 
@@ -266,6 +270,7 @@ public class BufferedEventSink implements EventSink {
     public KeyValueStats getStats(Map<String, Object> stats) {
 	    stats.put(Utils.qualify(this, KEY_OBJECTS_DROPPED), dropCount.get());
 	    stats.put(Utils.qualify(this, KEY_OBJECTS_SKIPPED), skipCount.get());
+	    stats.put(Utils.qualify(this, KEY_TOTAL_ERRORS), errorCount.get());
 	    factory.getPooledLogger().getStats(stats);
 	    return outSink.getStats(stats);
     }
@@ -273,6 +278,7 @@ public class BufferedEventSink implements EventSink {
 	@Override
     public void resetStats() {
 		dropCount.set(0);
+		errorCount.set(0);
 		skipCount.set(0);
 		outSink.resetStats();
 	}
@@ -398,5 +404,16 @@ public class BufferedEventSink implements EventSink {
     protected void flush(int signalType) throws IOException {	
 		_writeEvent(new SinkLogEvent(outSink, Thread.currentThread(), signalType), true);
 		LockSupport.parkNanos(this, TimeUnit.SECONDS.toNanos(5));	
+	}
+
+	@Override
+	public void sinkError(SinkError ev) {
+		errorCount.incrementAndGet();
+		if (ev.getCause() instanceof IOException) {
+			SinkLogEvent event = ev.getSinkObject();
+			factory.getPooledLogger().putDelayed(event);
+		} else {
+			dropCount.incrementAndGet();
+		}
 	}
 }

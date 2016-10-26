@@ -33,7 +33,7 @@ public class SinkError extends EventObject {
 	private static final long serialVersionUID = 1L;
 
 	private final Throwable error;
-	private final Object sinkObj;
+	private final SinkLogEvent sinkObj;
 
 	/**
 	 * Create a new event instance
@@ -45,7 +45,7 @@ public class SinkError extends EventObject {
 	 * @param ex
 	 *            exception associated with the event
 	 */
-	public SinkError(Sink source, Object msg, Throwable ex) {
+	public SinkError(Sink source, SinkLogEvent msg, Throwable ex) {
 		super(source);
 		error = ex;
 		sinkObj = msg;
@@ -57,7 +57,7 @@ public class SinkError extends EventObject {
 	 * @return sink message
 	 * 
 	 */
-	public Object getSinkObject() {
+	public SinkLogEvent getSinkObject() {
 		return sinkObj;
 	}
 

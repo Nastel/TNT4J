@@ -281,7 +281,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 * @param ex
 	 *            exception to be reported to all registered event listeners
 	 */
-	protected void notifyListeners(Object msg, Throwable ex) {
+	protected void notifyListeners(SinkLogEvent msg, Throwable ex) {
 		setErrorState(ex);
 		if (!errorListeners.isEmpty()) {
 			SinkError event = new SinkError(this, msg, ex);
@@ -396,7 +396,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 					notifyListeners(new SinkLogEvent(this, activity));
 				}
 			} catch (Throwable ex) {
-				notifyListeners(activity, ex);
+				notifyListeners(new SinkLogEvent(this, activity), ex);
 			}
 		}
 	}
@@ -420,7 +420,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 					notifyListeners(new SinkLogEvent(this, event));
 				}
 			} catch (Throwable ex) {
-				notifyListeners(event, ex);
+				notifyListeners(new SinkLogEvent(this, event), ex);
 			}
 		}
 	}
@@ -443,7 +443,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 					notifyListeners(new SinkLogEvent(this, snapshot));
 				}
 			} catch (Throwable ex) {
-				notifyListeners(snapshot, ex);
+				notifyListeners(new SinkLogEvent(this, snapshot), ex);
 			}
 		}
 	}
@@ -463,8 +463,8 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		_checkState();
 		boolean doLog = filterCheck? isLoggable(ttl_sec, source, sev, msg): true;
 		if (doLog) {
+			long nttl = ((ttl_sec != TTL.TTL_CONTEXT)? ttl_sec: TTL.TTL_DEFAULT);
 			try {
-				long nttl = ((ttl_sec != TTL.TTL_CONTEXT)? ttl_sec: TTL.TTL_DEFAULT);
 				if (!_limiter(1, msg.length())) return;
 				_log(nttl, src, sev, msg, args);
 				loggedMsgs.incrementAndGet();
@@ -474,7 +474,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 					notifyListeners(new SinkLogEvent(this, src, sev, nttl, msg, args));
 				}
 			} catch (Throwable ex) {
-				notifyListeners(msg, ex);
+				notifyListeners(new SinkLogEvent(this, src, sev, nttl, msg, args), ex);
 			}
 		}
 	}
@@ -491,7 +491,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 				notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, (ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, msg, args));
 			}
 		} catch (Throwable ex) {
-			notifyListeners(msg, ex);
+			notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, (ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, msg, args), ex);
 		}
 	}
 

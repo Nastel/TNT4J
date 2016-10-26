@@ -350,6 +350,31 @@ public class PooledLogger implements KeyValueStats {
     }
 
     /**
+     * Inserts the specified log event at the tail of this pooled logger and block
+     * until insert is completed.
+     *
+     * @param event logging event
+     * @throws InterruptedException if interrupted waiting for space in logger
+     */
+	public void putDelayed(SinkLogEvent event) {
+		putDelayed(event, retryInterval, TimeUnit.MILLISECONDS);
+	}
+	
+    /**
+     * Inserts the specified log event at the tail of this pooled logger and block
+     * until insert is completed.
+     *
+     * @param event logging event
+     * @param delay time duration
+     * @param unit time unit for duration
+     * @throws InterruptedException if interrupted waiting for space in logger
+     */
+	public void putDelayed(SinkLogEvent event, long delay, TimeUnit unit) {
+		reQCount.incrementAndGet();
+		delayQ.put(new DelayedElement<SinkLogEvent>(event, unit.toMillis(delay)));		
+	}
+	
+    /**
      * Handle event that could not be processed
      * 
      * @return event event instance
@@ -357,9 +382,9 @@ public class PooledLogger implements KeyValueStats {
      */
 	private void skipEvent(SinkLogEvent event, Throwable ex) {
 		// add logic to handle skipped event
+		event.setException(ex);
 		if ((!dropOnError) && (delayQ.size() < capacity)) {
-			reQCount.incrementAndGet();
-			delayQ.put(new DelayedElement<SinkLogEvent>(event, retryInterval));
+			putDelayed(event);
 		} else {
 			skipCount.incrementAndGet();	
 		}
