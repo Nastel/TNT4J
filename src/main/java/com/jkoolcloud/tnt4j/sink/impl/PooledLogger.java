@@ -313,8 +313,18 @@ public class PooledLogger implements KeyValueStats {
      * @throws InterruptedException
      */
 	protected SinkLogEvent takeEvent() throws InterruptedException {
-		DelayedElement<SinkLogEvent> elm = reQCount.get() > 0? delayQ.poll(): null;		
-	    return elm != null? elm.getElement(): eventQ.take();
+	    return eventQ.take();
+    }
+
+    /**
+     * Obtain a delayed event message from a delay queue
+     * 
+     * @return sink event instance
+     * @throws InterruptedException
+     */
+	protected SinkLogEvent takeDelayedEvent() throws InterruptedException {
+		DelayedElement<SinkLogEvent> elm = delayQ.take();	
+	    return elm.getElement();
     }
 
     /**
@@ -341,8 +351,8 @@ public class PooledLogger implements KeyValueStats {
      */
 	private void eventError(SinkLogEvent event, Throwable err) {
 		try {
-			skipEvent(event, err);			
 			exceptionCount.incrementAndGet();
+			skipEvent(event, err);			
 			boolean errorPermit = errorLimiter.tryObtain(1, 0);
 			if (errorPermit) {
 				PooledLogger.logger.log(OpLevel.ERROR,
@@ -494,10 +504,11 @@ public class PooledLogger implements KeyValueStats {
 	protected synchronized void start() {
 		if (started) return;
 		NamedThreadFactory tFactory = new NamedThreadFactory("PooledLoggingTask(" + poolName + "," + poolSize + "," + capacity + ")/task-");
-		threadPool = Executors.newFixedThreadPool(poolSize, tFactory);
+		threadPool = Executors.newFixedThreadPool((poolSize+1), tFactory);
 		for (int i = 0; i < poolSize; i++) {
 			threadPool.execute(new PooledLoggingTask(this));
 		}
+		threadPool.execute(new DelayedLoggingTask(this));
 		started = true;
 	}
 

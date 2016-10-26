@@ -37,7 +37,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurable {
 
 	public static final String DEFAULT_POOL_NAME = "default";
-	private static final int MAX_POOL_SIZE = Integer.getInteger("tnt4j.pooled.logger.pool", 5);
+	private static final int MAX_POOL_SIZE = Integer.getInteger("tnt4j.pooled.logger.pool", 4);
 	private static final int MAX_CAPACITY = Integer.getInteger("tnt4j.pooled.logger.capacity", 10000);
 	private static final int RETRY_INTERVAL = Integer.getInteger("tnt4j.pooled.logger.retry.interval", 5000);
 	private static final boolean DROP_ON_EXCEPTION = Boolean.getBoolean("tnt4j.pooled.logger.drop.on.error");
