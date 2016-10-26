@@ -163,6 +163,15 @@ public class PooledLogger implements KeyValueStats {
 	}
 
 	/**
+	 * Obtain total number of re-queued events.
+	 *
+	 * @return total number of re-queued events.
+	 */
+	public long getReQCount() {
+		return reQCount.get();
+	}
+
+	/**
 	 * Obtain total number of times sink recovered from
 	 * exception(s).
 	 *
