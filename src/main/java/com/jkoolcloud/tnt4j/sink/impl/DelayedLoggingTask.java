@@ -19,8 +19,9 @@ import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.sink.SinkLogEvent;
 
 /**
- * This class implements a task for handling asynchronous handling and delivery 
- * of delayed logging events to various event sinks.
+ * This class implements a task for asynchronous handling and delivery 
+ * of delayed logging events to various event sinks. Delayed events are those that
+ * could not be handled due to error or some other non-deliverable condition.
  *
  *
  * @version $Revision: 1 $
