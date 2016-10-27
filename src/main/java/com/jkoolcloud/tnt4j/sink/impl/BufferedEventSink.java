@@ -56,17 +56,25 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @see SinkLogEventListener
  */
 public class BufferedEventSink implements EventSink, SinkErrorListener {
+	static final String KEY_OBJECTS_TOTAL = "buffered-objects-total";
 	static final String KEY_OBJECTS_DROPPED = "buffered-objects-dropped";
 	static final String KEY_OBJECTS_SKIPPED = "buffered-objects-skipped";
-	static final String KEY_TOTAL_ERRORS = "buffered-total-errors";
+	static final String KEY_OBJECTS_REQUEUED = "buffered-objects-requeued";
+	static final String KEY_FLUSH_COUNT = "buffered-flush-count";
+	static final String KEY_TOTAL_ERRORS = "buffered-errors-total";
 
 	private long ttl = TTL.TTL_CONTEXT;
 	private boolean block = false;
 	private Source source;
 	private EventSink outSink = null;
 	private BufferedEventSinkFactory factory;
+	
+	// sink stat counters
 	private AtomicLong dropCount = new AtomicLong(0);
+	private AtomicLong totalCount = new AtomicLong(0);
+	private AtomicLong signalCount = new AtomicLong(0);
 	private AtomicLong skipCount = new AtomicLong(0);
+	private AtomicLong rqCount = new AtomicLong(0);
 	private AtomicLong errorCount = new AtomicLong(0);
 
 	/**
@@ -94,6 +102,15 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
 	 */
 	public long getDropCount() {
 		return dropCount.get();
+	}
+
+	/**
+	 * Obtain total number of events/log messages re-queued since last reset.
+	 *
+	 * @return total number of re-queued messages since last reset
+	 */
+	public long getRqCount() {
+		return rqCount.get();
 	}
 
 	/**
@@ -211,6 +228,7 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
     }
 
 	private void _writeEvent(SinkLogEvent sinkEvent, boolean sync) {
+		totalCount.incrementAndGet();
 		if (sync) {
 			try {
 				factory.getPooledLogger().put(sinkEvent);
@@ -219,7 +237,9 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
 			}
 		} else {
 			boolean flag = factory.getPooledLogger().offer(sinkEvent);
-			if (!flag) dropCount.incrementAndGet();
+			if (!flag) {
+				dropCount.incrementAndGet();
+			}
 		}		
 	}
 	
@@ -268,8 +288,11 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
 
 	@Override
     public KeyValueStats getStats(Map<String, Object> stats) {
+	    stats.put(Utils.qualify(this, KEY_OBJECTS_TOTAL), totalCount.get());
 	    stats.put(Utils.qualify(this, KEY_OBJECTS_DROPPED), dropCount.get());
 	    stats.put(Utils.qualify(this, KEY_OBJECTS_SKIPPED), skipCount.get());
+	    stats.put(Utils.qualify(this, KEY_OBJECTS_REQUEUED), rqCount.get());
+	    stats.put(Utils.qualify(this, KEY_FLUSH_COUNT), signalCount.get());
 	    stats.put(Utils.qualify(this, KEY_TOTAL_ERRORS), errorCount.get());
 	    factory.getPooledLogger().getStats(stats);
 	    return outSink.getStats(stats);
@@ -277,7 +300,10 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
 
 	@Override
     public void resetStats() {
+		totalCount.set(0);
+		signalCount.set(0);
 		dropCount.set(0);
+		rqCount.set(0);
 		errorCount.set(0);
 		skipCount.set(0);
 		outSink.resetStats();
@@ -402,6 +428,7 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
 	}
 	
     protected void flush(int signalType) throws IOException {	
+    	signalCount.incrementAndGet();
 		_writeEvent(new SinkLogEvent(outSink, Thread.currentThread(), signalType), true);
 		LockSupport.parkNanos(this, TimeUnit.SECONDS.toNanos(5));	
 	}
@@ -412,6 +439,7 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
 		if (ev.getCause() instanceof IOException) {
 			SinkLogEvent event = ev.getSinkEvent();
 			factory.getPooledLogger().putDelayed(event);
+			rqCount.incrementAndGet();
 		} else {
 			dropCount.incrementAndGet();
 		}
