@@ -42,7 +42,8 @@ public class SinkLogEvent extends EventObject implements TTL {
 	private static final long serialVersionUID = 1L;
 
 	public static final int SIGNAL_PROCESS = 0;
-	public static final int SIGNAL_CLOSE = 1;
+	public static final int SIGNAL_FLUSH = 1;
+	public static final int SIGNAL_CLOSE = 5;
 	
 	private Object logObj = null;
 	private Snapshot snapshot = null;

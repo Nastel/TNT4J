@@ -383,10 +383,12 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		boolean doLog = filterCheck? isLoggable(activity): true;
 		if (doLog) {
 			try {
+				if (!_limiter(1, 0)) {
+					return;
+				}
 				if (ttl != TTL.TTL_CONTEXT) {
 					activity.setTTL(ttl);
 				}
-				if (!_limiter(1, 0)) return;
 				_log(activity);
 				loggedActivities.incrementAndGet();
 				loggedSnaps.addAndGet(activity.getSnapshotCount());
@@ -407,10 +409,12 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		boolean doLog = filterCheck? isLoggable(event): true;
 		if (doLog) {
 			try {
+				if (!_limiter(1, event.getSize())) {
+					return;
+				}
 				if (ttl != TTL.TTL_CONTEXT) {
 					event.setTTL(ttl);
 				}
-				if (!_limiter(1, event.getSize())) return;
 				_log(event.sign());
 				loggedEvents.incrementAndGet();
 				loggedSnaps.addAndGet(event.getOperation().getSnapshotCount());
@@ -431,10 +435,12 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		boolean doLog = filterCheck? isLoggable(snapshot): true;
 		if (doLog) {
 			try {
+				if (!_limiter(1, 0)) {
+					return;
+				}
 				if (ttl != TTL.TTL_CONTEXT) {
 					snapshot.setTTL(ttl);
 				}
-				if (!_limiter(1, 0)) return;
 				_log(snapshot);
 				loggedSnaps.incrementAndGet();
 				lastTime.set(System.currentTimeMillis());
@@ -465,7 +471,9 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		if (doLog) {
 			long nttl = ((ttl_sec != TTL.TTL_CONTEXT)? ttl_sec: TTL.TTL_DEFAULT);
 			try {
-				if (!_limiter(1, msg.length())) return;
+				if (!_limiter(1, msg.length())) {
+					return;
+				}
 				_log(nttl, src, sev, msg, args);
 				loggedMsgs.incrementAndGet();
 				lastTime.set(System.currentTimeMillis());
@@ -482,7 +490,9 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public void write(Object msg, Object...args) throws IOException, InterruptedException {
 		try {
-			if (!_limiter(msg)) return;
+			if (!_limiter(msg)) {
+				return;
+			}
 			_write(msg, args);
 			sinkWrites.incrementAndGet();
 			lastTime.set(System.currentTimeMillis());

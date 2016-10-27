@@ -276,7 +276,7 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
 
 	@Override
     public void close() throws IOException {
-		flush(SinkLogEvent.SIGNAL_CLOSE);
+		signal(SinkLogEvent.SIGNAL_CLOSE, 5, TimeUnit.SECONDS);
     }
 
 	@Override
@@ -424,13 +424,13 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
 
 	@Override
     public void flush() throws IOException {	
-		flush(SinkLogEvent.SIGNAL_PROCESS);
+		signal(SinkLogEvent.SIGNAL_FLUSH, 5, TimeUnit.SECONDS);
 	}
 	
-    protected void flush(int signalType) throws IOException {	
+    protected void signal(int signalType, long wait, TimeUnit tunit) throws IOException {	
     	signalCount.incrementAndGet();
 		_writeEvent(new SinkLogEvent(outSink, Thread.currentThread(), signalType), true);
-		LockSupport.parkNanos(this, TimeUnit.SECONDS.toNanos(5));	
+		LockSupport.parkNanos(this, tunit.toNanos(wait));	
 	}
 
 	@Override

@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -83,7 +84,7 @@ public class PooledLogger implements KeyValueStats {
 	boolean dropOnError = false;
 	ExecutorService threadPool;
 	Limiter errorLimiter;
-	ArrayBlockingQueue<SinkLogEvent> eventQ;
+	BlockingQueue<SinkLogEvent> eventQ;
 	DelayQueue<DelayedElement<SinkLogEvent>> delayQ;
 
 	volatile boolean started = false;
@@ -440,6 +441,30 @@ public class PooledLogger implements KeyValueStats {
 	}
 	
     /**
+     * Handle event signal processing
+     * 
+     * @param event event instance
+     * @throws IOException
+     */
+	private void handleSignal(SinkLogEvent event) throws IOException {
+		Thread signal = event.getSignal();
+		try {
+			signalCount.incrementAndGet();
+			if (event.getSignalType() == SinkLogEvent.SIGNAL_CLOSE) {
+				try {
+					event.getEventSink().flush();
+				} finally {
+					event.getEventSink().close();
+				}
+			} else if (event.getSignalType() == SinkLogEvent.SIGNAL_FLUSH) {
+				event.getEventSink().flush();
+			}
+		} finally {
+			LockSupport.unpark(signal);
+		}
+	}
+	
+    /**
      * Handle event processing
      * 
      * @param event event instance
@@ -448,12 +473,7 @@ public class PooledLogger implements KeyValueStats {
 	private void onEvent(SinkLogEvent event) throws IOException {
 		totalCount.incrementAndGet();
 		if (event.getSignal() != null) {
-			signalCount.incrementAndGet();
-			Thread signal = event.getSignal();
-			if (event.getSignalType() == SinkLogEvent.SIGNAL_CLOSE) {
-				event.getEventSink().close();
-			}
-			LockSupport.unpark(signal);
+			handleSignal(event);
 		} else if (isLoggable(event.getEventSink())) {
 			sendEvent(event);
 		} else {
