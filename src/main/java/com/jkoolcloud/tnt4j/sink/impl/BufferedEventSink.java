@@ -84,7 +84,7 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
 		outSink = sink;
 		block = blocking;
 		outSink.addSinkErrorListener(this);
-		sink.filterOnLog(false); // disable filtering on the underlying sink (prevent double filters)
+		outSink.filterOnLog(false); // disable filtering on the underlying sink (prevent double filters)
 	}
 
 	/**
@@ -410,7 +410,7 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
 	public void sinkError(SinkError ev) {
 		errorCount.incrementAndGet();
 		if (ev.getCause() instanceof IOException) {
-			SinkLogEvent event = ev.getSinkObject();
+			SinkLogEvent event = ev.getSinkEvent();
 			factory.getPooledLogger().putDelayed(event);
 		} else {
 			dropCount.incrementAndGet();
