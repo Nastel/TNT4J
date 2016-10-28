@@ -33,6 +33,7 @@ import com.jkoolcloud.tnt4j.selector.TrackingSelector;
 import com.jkoolcloud.tnt4j.sink.DefaultEventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
+import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
 import com.jkoolcloud.tnt4j.sink.SinkEventFilter;
 import com.jkoolcloud.tnt4j.sink.SinkLogEventListener;
 import com.jkoolcloud.tnt4j.source.DefaultSourceFactory;
@@ -86,6 +87,7 @@ public class TrackerConfig {
 	ActivityListener activityListener;
 	SinkLogEventListener sinkLogEventListener;
 	SinkEventFilter sinkFilter;
+	SinkErrorListener sinkErrListener;
 
 	TrackingSelector tSelector = null;
 
@@ -330,6 +332,30 @@ public class TrackerConfig {
 	 */
 	public SinkLogEventListener getSinkLogEventListener() {
 		return sinkLogEventListener;
+	}
+
+	/**
+	 * Set default sink error listener triggered on sink exceptions
+	 *
+	 * @param lst
+	 *            sink error listener instance
+	 * @see SinkErrorListener
+	 *
+	 * @return current configuration instance
+	 */
+	public TrackerConfig setSinkErrorListener(SinkErrorListener lst) {
+		sinkErrListener = lst;
+		return this;
+	}
+
+	/**
+	 * Get default sink error listener triggered on sink exceptions
+	 *
+	 * @see SinkErrorListener
+	 * @return current error listener
+	 */
+	public SinkErrorListener getSinkErrorListener() {
+		return sinkErrListener;
 	}
 
 	/**
@@ -613,6 +639,7 @@ public class TrackerConfig {
 		config.tSelector = this.tSelector;
 		config.activityListener = this.activityListener;
 		config.sinkLogEventListener = this.sinkLogEventListener;
+		config.sinkErrListener = this.sinkErrListener;
 		config.sinkFilter= this.sinkFilter;
 		config.built = this.built;
 		return config;

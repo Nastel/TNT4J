@@ -16,6 +16,7 @@
 package com.jkoolcloud.tnt4j.sink;
 
 import java.util.EventObject;
+import java.util.concurrent.atomic.AtomicLong;
 
 import com.jkoolcloud.tnt4j.utils.Utils;
 
@@ -34,6 +35,7 @@ public class SinkError extends EventObject {
 
 	private final Throwable error;
 	private final SinkLogEvent logEvent;
+	private final AtomicLong count = new AtomicLong(0);
 
 	/**
 	 * Create a new event instance
@@ -72,10 +74,32 @@ public class SinkError extends EventObject {
 		return error;
 	}
 
+	/**
+	 * Get error occurrence count
+	 * 
+	 * @return occurrence count
+	 * 
+	 */
+	public long occurence() {
+		return count.get();
+	}
+	
+	/**
+	 * Increment error occurrence count by a given delta
+	 * 
+	 * @param delta amount
+	 * @return occurrence count
+	 * 
+	 */
+	public long occurence(long delta) {
+		return count.addAndGet(delta);
+	}
+	
 	@Override
 	public String toString() {
 		return super.toString() 
 			+ "{sink.msg: " + Utils.quote(logEvent)
+			+ ", occurrence: " + count.get()
 			+ ", cause: " + Utils.quote(error)
 			+ "}";
 	}

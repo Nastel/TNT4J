@@ -38,6 +38,7 @@ import com.jkoolcloud.tnt4j.selector.TrackingSelector;
 import com.jkoolcloud.tnt4j.sink.DefaultEventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
+import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
 import com.jkoolcloud.tnt4j.sink.SinkEventFilter;
 import com.jkoolcloud.tnt4j.sink.SinkLogEventListener;
 import com.jkoolcloud.tnt4j.source.SourceType;
@@ -280,6 +281,7 @@ public class TrackerConfigStore extends TrackerConfig {
 			setDumpSinkFactory((DumpSinkFactory) createConfigurableObject("dump.sink.factory", "dump.sink.factory."));
 			setActivityListener((ActivityListener) createConfigurableObject("activity.listener", "activity.listener."));
 			setSinkLogEventListener((SinkLogEventListener) createConfigurableObject("sink.log.listener", "sink.log.listener."));
+			setSinkErrorListener((SinkErrorListener) createConfigurableObject("sink.error.listener", "sink.error.listener."));
 			setSinkEventFilter((SinkEventFilter) createConfigurableObject("sink.event.filter", "sink.event.filter."));
 		}
 	}

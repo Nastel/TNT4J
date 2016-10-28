@@ -436,7 +436,7 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
 	@Override
 	public void sinkError(SinkError ev) {
 		errorCount.incrementAndGet();
-		if (ev.getCause() instanceof IOException) {
+		if (factory.getPooledLogger().getDQSize() < factory.getPooledLogger().getCapacity()) {
 			SinkLogEvent event = ev.getSinkEvent();
 			factory.getPooledLogger().putDelayed(event);
 			rqCount.incrementAndGet();

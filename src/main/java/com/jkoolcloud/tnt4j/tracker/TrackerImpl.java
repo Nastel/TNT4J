@@ -99,9 +99,9 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		if (!config.isBuilt()) {
 			throw new IllegalArgumentException("Uninitialized tracker configuration: use config.build()");
 		}
+		this.id = newUUID();
 		this.keepContext = keepContext;
 		this.tConfig = config;
-		this.id = newUUID();
 		this.selector = tConfig.getTrackingSelector();
 		this.eventSink = tConfig.getEventSink();
 		open();
@@ -120,6 +120,9 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	private synchronized void openEventSink() {
 		try {
+			if (tConfig.getSinkErrorListener() != null) {
+				eventSink.addSinkErrorListener(tConfig.getSinkErrorListener());
+			}
 			if (tConfig.getSinkLogEventListener() != null) {
 				eventSink.addSinkLogEventListener(tConfig.getSinkLogEventListener());
 			}
@@ -144,6 +147,9 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 				}
 				if (tConfig.getSinkEventFilter() != null) {
 					eventSink.removeSinkEventFilter(tConfig.getSinkEventFilter());
+				}
+				if (tConfig.getSinkErrorListener() != null) {
+					eventSink.removeSinkErrorListener(tConfig.getSinkErrorListener());
 				}
 				eventSink.removeSinkErrorListener(this);
 				eventSink.flush();
