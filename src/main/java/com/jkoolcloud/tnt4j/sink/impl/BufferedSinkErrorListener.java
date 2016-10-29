@@ -1,0 +1,48 @@
+/*
+ * Copyright 2014-2015 JKOOL, LLC.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.jkoolcloud.tnt4j.sink.impl;
+
+import com.jkoolcloud.tnt4j.sink.SinkError;
+import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
+import com.jkoolcloud.tnt4j.sink.SinkLogEvent;
+
+/**
+ * This class implements a default error handler for {@link BufferedEventSink}.
+ * The handler attempts to re-queue events on which exceptions occurred to 
+ * avoid event loss.
+ *
+ *
+ * @see PooledLogger
+ * @see SinkErrorListener
+ * 
+ * @version $Revision: 1 $
+ *
+ */
+public class BufferedSinkErrorListener implements SinkErrorListener {
+	@Override
+	public void sinkError(SinkError ev) {
+		BufferedEventSink sink = (BufferedEventSink) ev.getSink();
+		BufferedEventSinkFactory factory = (BufferedEventSinkFactory) sink.getFactory();
+		sink.errorCount.incrementAndGet();
+		if (factory.getPooledLogger().getDQSize() < factory.getPooledLogger().getCapacity()) {
+			SinkLogEvent event = ev.getSinkEvent();
+			factory.getPooledLogger().putDelayed(event);
+			sink.rqCount.incrementAndGet();
+		} else {
+			sink.dropCount.incrementAndGet();
+		}
+	}
+}

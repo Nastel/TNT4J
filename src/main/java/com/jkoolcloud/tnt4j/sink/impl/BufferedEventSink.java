@@ -56,7 +56,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @see SinkLogEvent
  * @see SinkLogEventListener
  */
-public class BufferedEventSink implements EventSink, SinkErrorListener {
+public class BufferedEventSink implements EventSink {
 	static final String KEY_OBJECTS_TOTAL = "buffered-objects-total";
 	static final String KEY_OBJECTS_DROPPED = "buffered-objects-dropped";
 	static final String KEY_OBJECTS_SKIPPED = "buffered-objects-skipped";
@@ -71,12 +71,12 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
 	private BufferedEventSinkFactory factory;
 	
 	// sink stat counters
-	private AtomicLong dropCount = new AtomicLong(0);
 	private AtomicLong totalCount = new AtomicLong(0);
 	private AtomicLong signalCount = new AtomicLong(0);
 	private AtomicLong skipCount = new AtomicLong(0);
-	private AtomicLong rqCount = new AtomicLong(0);
-	private AtomicLong errorCount = new AtomicLong(0);
+	protected AtomicLong dropCount = new AtomicLong(0);
+	protected AtomicLong rqCount = new AtomicLong(0);
+	protected AtomicLong errorCount = new AtomicLong(0);
 
 	/**
 	 * Create a buffered sink instance with a specified out sink
@@ -92,7 +92,7 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
 		factory = f;
 		outSink = sink;
 		block = blocking;
-		outSink.addSinkErrorListener(this);
+		outSink.addSinkErrorListener(new BufferedSinkErrorListener());
 		outSink.filterOnLog(false); // disable filtering on the underlying sink (prevent double filters)
 	}
 
@@ -442,17 +442,5 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
     	signalCount.incrementAndGet();
 		_writeEvent(new SinkLogEvent(outSink, Thread.currentThread(), signalType), true);
 		LockSupport.parkNanos(this, tunit.toNanos(wait));	
-	}
-
-	@Override
-	public void sinkError(SinkError ev) {
-		errorCount.incrementAndGet();
-		if (factory.getPooledLogger().getDQSize() < factory.getPooledLogger().getCapacity()) {
-			SinkLogEvent event = ev.getSinkEvent();
-			factory.getPooledLogger().putDelayed(event);
-			rqCount.incrementAndGet();
-		} else {
-			dropCount.incrementAndGet();
-		}
 	}
 }

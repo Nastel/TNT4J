@@ -65,6 +65,16 @@ public class SinkError extends EventObject {
 	}
 
 	/**
+	 * Get sink instance associated with the error
+	 * 
+	 * @return sink instance
+	 * 
+	 */
+	public Sink getSink() {
+		return (Sink) this.getSource();
+	}
+
+	/**
 	 * Get error associated with the event
 	 * 
 	 * @return error
