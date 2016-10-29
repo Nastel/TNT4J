@@ -26,6 +26,7 @@ import com.jkoolcloud.tnt4j.core.TTL;
 import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
 import com.jkoolcloud.tnt4j.sink.EventLimiter;
 import com.jkoolcloud.tnt4j.sink.EventSink;
+import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.SinkError;
 import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
 import com.jkoolcloud.tnt4j.sink.SinkEventFilter;
@@ -343,6 +344,16 @@ public class BufferedEventSink implements EventSink, SinkErrorListener {
 		return args;
 	}
 
+	/**
+	 * Obtain {@link EventSinkFactory} associated with
+	 * this sink.
+	 *
+	 * @return sink factory instance
+	 */
+	public EventSinkFactory getFactory() {
+		return this.factory;
+	}
+	
 	/**
 	 * Override this method to check state of the sink before logging occurs.
 	 *
