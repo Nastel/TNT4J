@@ -17,7 +17,6 @@ package com.jkoolcloud.tnt4j.sink.impl;
 
 import com.jkoolcloud.tnt4j.sink.SinkError;
 import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
-import com.jkoolcloud.tnt4j.sink.SinkLogEvent;
 
 /**
  * This class implements a default error handler for {@link BufferedEventSink}.
@@ -35,14 +34,6 @@ public class BufferedSinkErrorListener implements SinkErrorListener {
 	@Override
 	public void sinkError(SinkError ev) {
 		BufferedEventSink sink = (BufferedEventSink) ev.getSink();
-		BufferedEventSinkFactory factory = (BufferedEventSinkFactory) sink.getFactory();
-		sink.errorCount.incrementAndGet();
-		if (factory.getPooledLogger().getDQSize() < factory.getPooledLogger().getCapacity()) {
-			SinkLogEvent event = ev.getSinkEvent();
-			factory.getPooledLogger().putDelayed(event);
-			sink.rqCount.incrementAndGet();
-		} else {
-			sink.dropCount.incrementAndGet();
-		}
+		sink.handleError(ev);
 	}
 }

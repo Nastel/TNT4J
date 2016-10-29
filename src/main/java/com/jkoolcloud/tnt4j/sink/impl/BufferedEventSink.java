@@ -74,9 +74,9 @@ public class BufferedEventSink implements EventSink {
 	private AtomicLong totalCount = new AtomicLong(0);
 	private AtomicLong signalCount = new AtomicLong(0);
 	private AtomicLong skipCount = new AtomicLong(0);
-	protected AtomicLong dropCount = new AtomicLong(0);
-	protected AtomicLong rqCount = new AtomicLong(0);
-	protected AtomicLong errorCount = new AtomicLong(0);
+	private AtomicLong dropCount = new AtomicLong(0);
+	private AtomicLong rqCount = new AtomicLong(0);
+	private AtomicLong errorCount = new AtomicLong(0);
 
 	/**
 	 * Create a buffered sink instance with a specified out sink
@@ -438,9 +438,39 @@ public class BufferedEventSink implements EventSink {
 		signal(SinkLogEvent.SIGNAL_FLUSH, 5, TimeUnit.SECONDS);
 	}
 	
-    protected void signal(int signalType, long wait, TimeUnit tunit) throws IOException {	
+	/**
+	 * Send a signal to the underlying sink and wait for
+	 * signal to be processed up to a max time.
+	 *
+	 * @param signalType type of signal to send
+	 * @param wait max time to wait
+	 * @param tunit time unit for wait
+	 * @return sink factory instance
+	 */
+   protected BufferedEventSink signal(int signalType, long wait, TimeUnit tunit) throws IOException {	
     	signalCount.incrementAndGet();
 		_writeEvent(new SinkLogEvent(outSink, Thread.currentThread(), signalType), true);
 		LockSupport.parkNanos(this, tunit.toNanos(wait));	
+		return this;
 	}
+    
+	/**
+	 * Handle failed event by retrying to process it or
+	 * dropping it depending on if it is possible to retry
+	 * processing.
+	 *
+	 * @param ev sink error event
+	 * @return sink factory instance
+	 */
+   protected BufferedEventSink handleError(SinkError ev) {
+		errorCount.incrementAndGet();
+		if (factory.getPooledLogger().getDQSize() < factory.getPooledLogger().getCapacity()) {
+			SinkLogEvent event = ev.getSinkEvent();
+			factory.getPooledLogger().putDelayed(event);
+			rqCount.incrementAndGet();
+		} else {
+			dropCount.incrementAndGet();
+		}
+		return this;
+    }
 }
