@@ -99,9 +99,9 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		if (!config.isBuilt()) {
 			throw new IllegalArgumentException("Uninitialized tracker configuration: use config.build()");
 		}
-		this.id = newUUID();
 		this.keepContext = keepContext;
 		this.tConfig = config;
+		this.id = newUUID();
 		this.selector = tConfig.getTrackingSelector();
 		this.eventSink = tConfig.getEventSink();
 		open();
