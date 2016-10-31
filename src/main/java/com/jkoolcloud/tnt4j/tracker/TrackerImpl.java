@@ -765,11 +765,19 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
     public String newUUID() {
-	    return tConfig.getUUIDFactory().newUUID();
+	    return newUUID(tConfig);
     }
 
 	@Override
     public String newUUID(Object obj) {
-	    return tConfig.getUUIDFactory().newUUID(obj);
+	    return newUUID(tConfig, obj);
+    }
+	
+    public String newUUID(TrackerConfig tConfig) {
+	    return tConfig.getUUIDFactory().newUUID();
+    }
+
+    public String newUUID(TrackerConfig tConfig, Object obj) {
+	    return tConfig.getUUIDFactory().newUUID();
     }
 }
