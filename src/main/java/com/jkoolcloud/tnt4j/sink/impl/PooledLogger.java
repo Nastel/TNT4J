@@ -260,6 +260,24 @@ public class PooledLogger implements KeyValueStats {
 	}
 
 	/**
+	 * Determine if the delay queue is full.
+	 *
+	 * @return true if delay queue is full, false otherwise
+	 */
+	public boolean isDQfull() {
+		return delayQ.size() >= getCapacity();
+	}
+	
+	/**
+	 * Determine if event queue is full.
+	 *
+	 * @return true if event queue is full, false otherwise
+	 */
+	public boolean isQFull() {
+		return eventQ.size() >= getCapacity();
+	}
+	
+	/**
 	 * Obtain maximum capacity of this sink instance. Events are dropped if
 	 * capacity is reached 100%.
 	 *

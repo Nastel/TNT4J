@@ -464,7 +464,7 @@ public class BufferedEventSink implements EventSink {
 	 */
    protected BufferedEventSink handleError(SinkError ev) {
 		errorCount.incrementAndGet();
-		if (factory.getPooledLogger().getDQSize() < factory.getPooledLogger().getCapacity()) {
+		if (!factory.getPooledLogger().isDQfull()) {
 			SinkLogEvent event = ev.getSinkEvent();
 			factory.getPooledLogger().putDelayed(event);
 			rqCount.incrementAndGet();
