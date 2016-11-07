@@ -409,7 +409,7 @@ TNT4J is fully plug-in and play tracking, tracing and logging framework that con
 * <b>Tracker</b> -- high level object that allows developer to track, trace and log application activities
 * <b>Activity</b> -- a collection of related tracking events (TrackingEvent) and other sub-activities, relation is established via a grouping specified by a developer or set of correlators (across thread, application boundaries). Activities may have a set of uder defined properties which are grouped into property snapshots (PropertySnapshot).
 * <b>Tracking Event</b> -- a message with associated start/stop time stamps, severity, user defined message, correlator, tag, location (such as GPS, server etc) and other event properties.
-* <b>Property</b> -- key, value pair
+* <b>Property</b> -- a single user defined key, value, type pair for reporting custom metric or attribute. Properties can be packed into event, activity or snapshot.
 * <b>Property snapshot</b> -- a collection of properties with category, name and a time stamp associated with when snapshot is taken. Activities may have one or more property snapshots.
 * <b>Formatter</b> -- an object responsible for formatting underlying TNT4J objects such as Activity, Tracking Event and convert into a formatted string.
 * <b>Tracking Selector</b> -- an object associated with a Tracker that allows developers to perform conditional logging based on a given set of severity, key, value combination. Such combinations are stored in token repository.
