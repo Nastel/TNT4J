@@ -81,11 +81,42 @@ Embed TNT4J into your application and realize the benefits in a matter if minute
 TNT4J can take advantage of other lower level logging frameworks such as slf4j, log4j.
 Default TNT4J binding is based on slf4j.
 
+### Stream over Kafka
+Stream your events over Apache Kafka using `com.jkoolcloud.tnt4j.sink.impl.kafka.KafkaEventSinkFactory` event sink factory.
+Configure event sink in `tnt4j.properties` as follows:
+
+```
+...
+; Use buffered event sink around Kafka event sink factory
+event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.BufferedEventSinkFactory
+event.sink.factory.PooledLoggerFactory: com.jkoolcloud.tnt4j.sink.impl.PooledLoggerFactoryImpl
+
+event.sink.factory.EventSinkFactory: com.jkoolcloud.tnt4j.sink.impl.kafka.KafkaEventSinkFactory
+event.sink.factory.EventSinkFactory.propFile: <your path>/tnt4j-kafka.properties
+event.sink.factory.EventSinkFactory.topic: tnt4j-topic
+event.formatter: com.jkoolcloud.tnt4j.format.JSONFormatter
+...
+```
+`tnt4j-topic` refers to a Kafka topic which must be created and available. Below is a sample `tnt4j-kafka.properties` configuration:
+```
+bootstrap.servers=localhost:9092
+acks=all
+retries=0
+linger.ms=1
+buffer.memory=33554432
+key.serializer=org.apache.kafka.common.serialization.StringSerializer
+value.serializer=org.apache.kafka.common.serialization.StringSerializer
+```
+
 ### Stream over MQTT
 Stream your events over MQTT using `com.jkoolcloud.tnt4j.sink.impl.mqtt.MqttEventSinkFactory` event sink factory.
 Configure event sink in `tnt4j.properties` as follows:
 ```
 ...
+; Use buffered event sink around MQTT event sink factory
+event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.BufferedEventSinkFactory
+event.sink.factory.PooledLoggerFactory: com.jkoolcloud.tnt4j.sink.impl.PooledLoggerFactoryImpl
+
 event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.mqtt.MqttEventSinkFactory
 event.sink.factory.mqtt-server-url: tcp://localhost:1883
 event.sink.factory.mqtt-topic: tnt4jStream
