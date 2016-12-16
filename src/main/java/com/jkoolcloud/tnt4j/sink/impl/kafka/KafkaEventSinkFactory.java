@@ -55,12 +55,12 @@ public class KafkaEventSinkFactory  extends AbstractEventSinkFactory {
 
 	@Override
     public EventSink getEventSink(String name, Properties props) {
-	    return configureSink(new KafkaEventSink(kafkaTopic, props, new JSONFormatter(false)));
+	    return configureSink(new KafkaEventSink(kafkaTopic, kafkaProps, new JSONFormatter(false)));
     }
 
 	@Override
     public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-	    return configureSink(new KafkaEventSink(kafkaTopic, props, frmt));
+	    return configureSink(new KafkaEventSink(kafkaTopic, kafkaProps, frmt));
     }
 
 	@Override
