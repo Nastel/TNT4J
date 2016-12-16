@@ -60,7 +60,7 @@ public class KafkaEventSink extends AbstractEventSink {
 	 * 
 	 * @param nm event sink name (kafka topic)
 	 * @param props properties for kafka sink
-	 * @param evf evenr formatter associated with this sink
+	 * @param evf event formatter associated with this sink
 	 */
 	public KafkaEventSink(String nm, Properties props, EventFormatter evf) {
 	    super(nm, evf);
@@ -84,15 +84,15 @@ public class KafkaEventSink extends AbstractEventSink {
 
 	@Override
     public synchronized void open() throws IOException {
-		if (producer == null) {
-			producer = new KafkaProducer<String, String>(props);
+		if (producer != null) {
+			producer.close();
 		}
+		producer = new KafkaProducer<String, String>(props);
 	}
 
 	@Override
     public synchronized void close() throws IOException {
 		producer.close();
-		producer = null;
 	}
 
 	@Override
