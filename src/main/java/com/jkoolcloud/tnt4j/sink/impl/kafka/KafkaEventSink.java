@@ -92,6 +92,7 @@ public class KafkaEventSink extends AbstractEventSink {
 	@Override
     public synchronized void close() throws IOException {
 		producer.close();
+		producer = null;
 	}
 
 	@Override
@@ -107,17 +108,20 @@ public class KafkaEventSink extends AbstractEventSink {
 	
 	@Override
     protected void _log(TrackingEvent event) throws Exception {
-		producer.send(new ProducerRecord<String, String>(getName(), getEventFormatter().format(event)));
+		producer.send(new ProducerRecord<String, String>(getName(), 
+				event.getOperation().getName(), getEventFormatter().format(event)));
 	}
 
 	@Override
     protected void _log(TrackingActivity activity) throws Exception {
-		producer.send(new ProducerRecord<String, String>(getName(), getEventFormatter().format(activity)));
+		producer.send(new ProducerRecord<String, String>(getName(), 
+				activity.getName(), getEventFormatter().format(activity)));
     }
 
 	@Override
     protected void _log(Snapshot snapshot) throws Exception {
-		producer.send(new ProducerRecord<String, String>(getName(), getEventFormatter().format(snapshot)));
+		producer.send(new ProducerRecord<String, String>(getName(), 
+				snapshot.getCategory(), getEventFormatter().format(snapshot)));
     }
 
 	@Override
