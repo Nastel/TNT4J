@@ -52,8 +52,8 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class KafkaEventSink extends AbstractEventSink {
 
+	Properties kprops;
 	Producer<String, String> producer;
-	Properties props;
 	
 	/**
 	 * Create a Kafka event sink
@@ -64,7 +64,7 @@ public class KafkaEventSink extends AbstractEventSink {
 	 */
 	public KafkaEventSink(String nm, Properties props, EventFormatter evf) {
 	    super(nm, evf);
-	    this.props = props;
+	    this.kprops = props;
     }
 
 	@Override
@@ -84,15 +84,15 @@ public class KafkaEventSink extends AbstractEventSink {
 
 	@Override
     public synchronized void open() throws IOException {
-		if (producer != null) {
-			producer.close();
-		}
-		producer = new KafkaProducer<String, String>(props);
+		close();
+		producer = new KafkaProducer<String, String>(kprops);
 	}
 
 	@Override
     public synchronized void close() throws IOException {
-		producer.close();
+		if (producer != null) {
+			producer.close();
+		}
 	}
 
 	@Override
@@ -128,7 +128,7 @@ public class KafkaEventSink extends AbstractEventSink {
 
 	@Override
     protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception {
-		producer.send(new ProducerRecord<String, String>(getName(), getEventFormatter().format(ttl, src, sev, msg, args)));
+		producer.send(new ProducerRecord<String, String>(getName(), src.getFQName(), getEventFormatter().format(ttl, src, sev, msg, args)));
     }
 
 	@Override
