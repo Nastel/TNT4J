@@ -27,6 +27,7 @@ import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
 import com.jkoolcloud.tnt4j.sink.EventLimiter;
 import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
+import com.jkoolcloud.tnt4j.sink.IOShutdown;
 import com.jkoolcloud.tnt4j.sink.SinkError;
 import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
 import com.jkoolcloud.tnt4j.sink.SinkEventFilter;
@@ -56,7 +57,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @see SinkLogEvent
  * @see SinkLogEventListener
  */
-public class BufferedEventSink implements EventSink {
+public class BufferedEventSink implements EventSink, IOShutdown {
 	static final String KEY_OBJECTS_TOTAL = "buffered-objects-total";
 	static final String KEY_OBJECTS_DROPPED = "buffered-objects-dropped";
 	static final String KEY_OBJECTS_SKIPPED = "buffered-objects-skipped";
@@ -65,6 +66,7 @@ public class BufferedEventSink implements EventSink {
 	static final String KEY_TOTAL_ERRORS = "buffered-errors-total";
 
 	private long ttl = TTL.TTL_CONTEXT;
+	private long signalTimeout = 5000;
 	private boolean block = false;
 	private Source source;
 	private EventSink outSink = null;
@@ -95,7 +97,35 @@ public class BufferedEventSink implements EventSink {
 		outSink.addSinkErrorListener(new BufferedSinkErrorListener());
 		outSink.filterOnLog(false); // disable filtering on the underlying sink (prevent double filters)
 	}
+	
+	/**
+	 * Set maximum signal timeout. 
+	 * 
+	 * @param duration time
+	 * @param units time unit
+	 */
+	public void setSignalTimeout(long duration, TimeUnit units) {
+		signalTimeout = units.toMillis(duration);
+	}
 
+	/**
+	 * Set maximum signal timeout in milliseconds 
+	 * 
+	 * @param duration time
+	 */
+	public void setSignalTimeout(long duration) {
+		setSignalTimeout(duration, TimeUnit.MILLISECONDS);
+	}
+
+	/**
+	 * Get maximum signal timeout in milliseconds 
+	 * 
+	 * @return maximum flush timeout in milliseconds
+	 */
+	public long getSignalTimeout() {
+		return signalTimeout;
+	}
+	
 	/**
 	 * Obtain total number of events/log messages dropped since last reset.
 	 *
@@ -277,7 +307,7 @@ public class BufferedEventSink implements EventSink {
 
 	@Override
     public void close() throws IOException {
-		signal(SinkLogEvent.SIGNAL_CLOSE, 5, TimeUnit.SECONDS);
+		signal(SinkLogEvent.SIGNAL_CLOSE, signalTimeout, TimeUnit.MILLISECONDS);
     }
 
 	@Override
@@ -435,9 +465,15 @@ public class BufferedEventSink implements EventSink {
 
 	@Override
     public void flush() throws IOException {	
-		signal(SinkLogEvent.SIGNAL_FLUSH, 5, TimeUnit.SECONDS);
+		signal(SinkLogEvent.SIGNAL_FLUSH, signalTimeout, TimeUnit.MILLISECONDS);
 	}
 	
+	@Override
+    public void shutdown(Throwable ex) throws IOException {
+		factory.getPooledLogger().shutdown(ex);
+		signal(SinkLogEvent.SIGNAL_SHUTDOWN, signalTimeout, TimeUnit.MILLISECONDS);
+    }
+
 	/**
 	 * Send a signal to the underlying sink and wait for
 	 * signal to be processed up to a max time.

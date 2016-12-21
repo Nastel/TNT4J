@@ -53,6 +53,7 @@ import com.jkoolcloud.tnt4j.dump.ThreadDumpProvider;
 import com.jkoolcloud.tnt4j.selector.TrackingSelector;
 import com.jkoolcloud.tnt4j.sink.DefaultEventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.EventSink;
+import com.jkoolcloud.tnt4j.sink.IOShutdown;
 import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
 import com.jkoolcloud.tnt4j.sink.SinkEventFilter;
 import com.jkoolcloud.tnt4j.sink.SinkLogEventListener;
@@ -205,7 +206,7 @@ public class TrackingLogger implements Tracker {
 	private static Vector<DumpListener> DUMP_LISTENERS = new Vector<DumpListener>(10, 10);
 
 	private static final DumpHook dumpHook = new DumpHook();
-	private static final FlushHook flushHook = new FlushHook();
+	private static final FlushShutdown flushShutdown = new FlushShutdown();
 	private static DumpSinkFactory dumpFactory = null;
 	private static DumpSink defaultDumpSink = null;
 	private static TrackerFactory factory = null;
@@ -313,7 +314,26 @@ public class TrackingLogger implements Tracker {
 		List<TrackingLogger> trackers = getAllTrackers();
 		for (TrackingLogger logger: trackers) {
 			try {
-				logger.getEventSink().flush();
+				EventSink sink = logger.getEventSink();
+				sink.flush();					
+			} catch (IOException e) {
+			}
+		}
+	}
+
+	/**
+	 * Shutdown all available trackers and sinks
+	 *
+	 */
+	public static void shutdownAll() {
+		List<TrackingLogger> trackers = getAllTrackers();
+		for (TrackingLogger logger: trackers) {
+			try {
+				EventSink sink = logger.getEventSink();
+				if (sink instanceof IOShutdown) {
+					IOShutdown shut = (IOShutdown) sink;
+					shut.shutdown(null);
+				} 
 			} catch (IOException e) {
 			}
 		}
@@ -1419,8 +1439,8 @@ public class TrackingLogger implements Tracker {
 	 */
 	public static void flushOnShutdown(boolean flag) {
 		if (flag)
-			Runtime.getRuntime().addShutdownHook(flushHook);
-		else Runtime.getRuntime().removeShutdownHook(flushHook);
+			Runtime.getRuntime().addShutdownHook(flushShutdown);
+		else Runtime.getRuntime().removeShutdownHook(flushShutdown);
 	}
 
 	/**

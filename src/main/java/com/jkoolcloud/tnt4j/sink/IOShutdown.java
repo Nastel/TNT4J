@@ -13,22 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.jkoolcloud.tnt4j;
+package com.jkoolcloud.tnt4j.sink;
 
-/**
- * <p> 
- * This class implements a shutdown hook that automatically
- * flushes all registered trackers/sinks.
- * </p>
- * 
- * 
- * @version $Revision: 1 $
- * 
- */
-public class FlushHook extends Thread {
-	@Override
-	public void run() {
-		setName("TrackingLogger/FlushHook");
-		TrackingLogger.flushAll();
-	}
+import java.io.IOException;
+
+public interface IOShutdown {
+	void shutdown(Throwable ex) throws IOException;
 }

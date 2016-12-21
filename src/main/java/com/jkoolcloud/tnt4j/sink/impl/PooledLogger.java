@@ -35,6 +35,7 @@ import com.jkoolcloud.tnt4j.limiter.Limiter;
 import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
 import com.jkoolcloud.tnt4j.sink.DefaultEventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.EventSink;
+import com.jkoolcloud.tnt4j.sink.IOShutdown;
 import com.jkoolcloud.tnt4j.sink.SinkLogEvent;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
@@ -58,7 +59,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @see KeyValueStats
  * @see SinkLogEvent
  */
-public class PooledLogger implements KeyValueStats {
+public class PooledLogger implements KeyValueStats, IOShutdown {
 	protected static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(PooledLogger.class);
 	protected static final double ERROR_RATE = Double.valueOf(System.getProperty("tnt4j.pooled.logger.error.rate", "0.1"));
 	protected static final int REOPEN_FREQ = Integer.getInteger("tnt4j.pooled.logger.reopen.freq.ms", 10000);
@@ -87,7 +88,7 @@ public class PooledLogger implements KeyValueStats {
 	BlockingQueue<SinkLogEvent> eventQ;
 	DelayQueue<DelayedElement<SinkLogEvent>> delayQ;
 
-	volatile boolean started = false;
+	volatile boolean started = false, shutdown = false;
 
 	AtomicLong dropCount = new AtomicLong(0);
 	AtomicLong skipCount = new AtomicLong(0);
@@ -113,6 +114,11 @@ public class PooledLogger implements KeyValueStats {
 		eventQ = new ArrayBlockingQueue<SinkLogEvent>(capacity);
 		delayQ = new DelayQueue<DelayedElement<SinkLogEvent>>();
 		errorLimiter = DefaultLimiterFactory.getInstance().newLimiter(PooledLogger.ERROR_RATE, Limiter.MAX_RATE);
+	}
+	
+	@Override
+	public void shutdown(Throwable ex)  {
+		shutdown = true;
 	}
 	
     /**
@@ -278,6 +284,15 @@ public class PooledLogger implements KeyValueStats {
 	}
 	
 	/**
+	 * Determine if event queue is empty
+	 *
+	 * @return true if event queue is empty, false otherwise
+	 */
+	public boolean isEmpty() {
+		return eventQ.size() <= 0;
+	}
+	
+	/**
 	 * Obtain maximum capacity of this sink instance. Events are dropped if
 	 * capacity is reached 100%.
 	 *
@@ -294,7 +309,10 @@ public class PooledLogger implements KeyValueStats {
      * @return true if event is inserted/accepted false otherwise
      */
 	public boolean offer(SinkLogEvent event) {
-		boolean flag = eventQ.offer(event);
+		boolean flag = false;
+		if (!shutdown || (event.getSignal() != null)) {
+			flag = eventQ.offer(event);
+		}
 		if (!flag) dropCount.incrementAndGet();
 		return flag;
 	}
@@ -307,7 +325,12 @@ public class PooledLogger implements KeyValueStats {
      * @throws InterruptedException if interrupted waiting for space in logger
      */
 	public void put(SinkLogEvent event) throws InterruptedException {
-		eventQ.put(event);
+		if (!shutdown || (event.getSignal() != null)) {
+			eventQ.put(event);
+		} else {
+			dropCount.incrementAndGet();
+			throw new InterruptedException("Unable to accept events: " + this.getName() + " is shutdown");
+		}
 	}
 
 	
@@ -316,6 +339,13 @@ public class PooledLogger implements KeyValueStats {
      */
 	public boolean isStarted() {
 		return started;
+	}
+	
+    /**
+     * @return true if logger has been shutdown
+     */
+	public boolean isShut() {
+		return shutdown;
 	}
 	
     /**
@@ -475,6 +505,9 @@ public class PooledLogger implements KeyValueStats {
 					event.getEventSink().close();
 				}
 			} else if (event.getSignalType() == SinkLogEvent.SIGNAL_FLUSH) {
+				event.getEventSink().flush();
+			} else if (event.getSignalType() == SinkLogEvent.SIGNAL_SHUTDOWN) {
+				shutdown = true;				
 				event.getEventSink().flush();
 			}
 		} finally {

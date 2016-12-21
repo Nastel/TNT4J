@@ -43,6 +43,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	String poolFactoryClass;
 	boolean blockWrites = false;
+	long signalTimeout = 10000;
 	EventSinkFactory sinkFactory;
 	PooledLoggerFactory pooledFactory;
 
@@ -76,6 +77,13 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	}
 
 	@Override
+	protected EventSink configureSink(EventSink sink) {
+		BufferedEventSink bsink = (BufferedEventSink) sink;
+		bsink.setSignalTimeout(signalTimeout);
+		return super.configureSink(bsink);	
+	}
+	
+	@Override
 	public EventSink getEventSink(String name) {
 		return configureSink(new BufferedEventSink(this, sinkFactory.getEventSink(name), blockWrites));
 	}
@@ -96,6 +104,7 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 		sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory", "EventSinkFactory.", props);		
 		pooledFactory = (PooledLoggerFactory) Utils.createConfigurableObject("PooledLoggerFactory", "PooledLoggerFactory.", props);	
 		blockWrites = Utils.getBoolean("BlockWrites", props, blockWrites);
+		signalTimeout = Utils.getLong("SignalTimeout", props, signalTimeout);
 		if (sinkFactory == null) {
 			throw new ConfigException("Missing EventSinkFactory implementation", props);
 		}
