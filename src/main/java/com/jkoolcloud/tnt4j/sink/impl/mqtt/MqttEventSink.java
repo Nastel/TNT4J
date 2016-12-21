@@ -97,7 +97,7 @@ public class MqttEventSink extends AbstractEventSink {
 
 	@Override
 	public boolean isOpen() {
-		return mqttClient.isConnected();
+		return mqttClient != null && mqttClient.isConnected();
 	}
 
 	@Override
@@ -152,6 +152,6 @@ public class MqttEventSink extends AbstractEventSink {
 			factory.publish(this, mqttClient, message);
 		} catch (MqttException e) {
 			throw new IOException(e);
-		} 
+		}
 	}
 }

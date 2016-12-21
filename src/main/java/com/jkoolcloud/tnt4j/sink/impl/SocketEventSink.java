@@ -91,7 +91,7 @@ public class SocketEventSink extends AbstractEventSink {
 		}
 		writeLine(getEventFormatter().format(snapshot));		
 	}
-	
+
 	@Override
 	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object...args)  throws IOException {
 		if (logSink != null) {
@@ -114,7 +114,7 @@ public class SocketEventSink extends AbstractEventSink {
 
 	@Override
 	public boolean isOpen() {
-		return socketSink == null ? false : socketSink.isConnected();
+		return socketSink != null && socketSink.isConnected();
 	}
 
 	@Override

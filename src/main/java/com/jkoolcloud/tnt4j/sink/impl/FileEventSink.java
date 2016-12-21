@@ -69,7 +69,7 @@ public class FileEventSink extends AbstractEventSink {
 
 	@Override
     public boolean isOpen() {
-	    return fileSink.isOpen();
+	    return fileSink != null && fileSink.isOpen();
     }
 
 	@Override

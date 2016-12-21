@@ -71,7 +71,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 
 	@Override
 	public boolean isOpen() {
-		return tokenRepository.isOpen();
+		return tokenRepository != null && tokenRepository.isOpen();
 	}
 
 	@Override
