@@ -29,9 +29,9 @@ import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
- * <p>Concrete implementation of {@link EventSinkFactory} interface over Kafka, which
+ * Concrete implementation of {@link EventSinkFactory} interface over Kafka, which
  * creates instances of {@link EventSink}. This factory uses {@link KafkaEventSink}
- * as the underlying provider.</p>
+ * as the underlying provider.
  *
  *
  * @see EventSink
@@ -41,10 +41,10 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *
  */
 public class KafkaEventSinkFactory  extends AbstractEventSinkFactory {
-	public static String DEFAULT_KAFKA_PROP_FILE = "tnt4j-kafka.properties";
 	public static String DEFAULT_KAFKA_TOPIC = "tnt4j-topic";
+	public static String DEFAULT_KAFKA_PROP_FILE = "tnt4j-kafka.properties";
 	
-	private Properties kafkaProps;
+	private Properties kafkaProps = new Properties();
 	private String kafkaTopic = DEFAULT_KAFKA_TOPIC;
 	private String kafkaPropFile = DEFAULT_KAFKA_PROP_FILE;
 			
@@ -68,13 +68,16 @@ public class KafkaEventSinkFactory  extends AbstractEventSinkFactory {
 		super.setConfiguration(settings);
 		kafkaTopic = Utils.getString("topic", settings, DEFAULT_KAFKA_TOPIC);
 		kafkaPropFile = Utils.getString("propFile", settings, DEFAULT_KAFKA_PROP_FILE);
-		kafkaProps = new Properties();
+		loadKafkaProps(kafkaPropFile, settings);
+	}
+	
+	protected void loadKafkaProps(String fname, Map<String, Object> settings) throws ConfigException {
 		try {
-	        kafkaProps.load(new FileInputStream(new File(kafkaPropFile)));
+	        kafkaProps.load(new FileInputStream(new File(fname)));
         } catch (Throwable e) {
         	ConfigException error = new ConfigException(e.toString(), settings);
         	error.initCause(e);
         	throw error;
-        }
+        }		
 	}
 }
