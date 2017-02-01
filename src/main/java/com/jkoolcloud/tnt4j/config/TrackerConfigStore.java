@@ -21,6 +21,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Reader;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -194,6 +195,22 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
+	 * @param type
+	 *            type of the source instance
+	 * @param configReader
+	 *            configuration reader to read source/properties configuration
+	 */
+	protected TrackerConfigStore(String source, SourceType type, Reader configReader) {
+		super(source, type);
+		initConfig(configReader);
+	}
+
+	/**
+	 * Create an default configuration with a specific source name. Configuration is loaded from a
+	 * key/Properties map.
+	 *
+	 * @param source
+	 *            name of the source instance associated with the configuration
 	 * @param configMap
 	 *            configuration map containing source/properties configuration
 	 */
@@ -243,6 +260,17 @@ public class TrackerConfigStore extends TrackerConfig {
 		configFile = fileName == null ? System.getProperty(TNT4J_PROPERTIES_KEY, TNT4J_PROPERTIES) : fileName;
 		setProperty(TNT4J_PROPERTIES_KEY, configFile);
 		Map<String, Properties> configMap = loadConfiguration(configFile);
+		loadConfigProps(configMap);
+	}
+
+	/**
+	 * Reads configuration data from provided reader into and applies new configuration values.
+	 * 
+	 * @param configReader
+	 *            configuration data reader
+	 */
+	public void initConfig(Reader configReader) {
+		Map<String, Properties> configMap = loadConfiguration(configReader);
 		loadConfigProps(configMap);
 	}
 
@@ -318,11 +346,27 @@ public class TrackerConfigStore extends TrackerConfig {
 		return map;
 	}
 
-	private Map<String, Properties> loadConfigResource(String fileName) throws IOException {
-		LinkedHashMap<String, Properties> map = new LinkedHashMap<String, Properties>(111);
-		BufferedReader reader = null;
+	private Map<String, Properties> loadConfiguration(Reader reader) {
+		Map<String, Properties> map = null;
 		try {
-			reader = getConfigReader(fileName);
+			map = loadConfigResource(
+					reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader));
+			logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, reader={1}, config.size={2}, tid={3}", srcName,
+					reader.getClass().getSimpleName(), map.size(), Thread.currentThread().getId());
+		} catch (Throwable e) {
+			logger.log(OpLevel.ERROR, "Unable to load configuration: source={0}, reader={1}", srcName,
+					reader.getClass().getSimpleName(), e);
+		}
+		return map;
+	}
+
+	private Map<String, Properties> loadConfigResource(String fileName) throws IOException {
+		return loadConfigResource(getConfigReader(fileName));
+	}
+
+	private Map<String, Properties> loadConfigResource(BufferedReader reader) throws IOException {
+		Map<String, Properties> map = new LinkedHashMap<String, Properties>(111);
+		try {
 			Properties config = null;
 			do {
 				config = readStanza(reader);

@@ -15,6 +15,7 @@
  */
 package com.jkoolcloud.tnt4j.config;
 
+import java.io.Reader;
 import java.util.Map;
 import java.util.Properties;
 
@@ -71,6 +72,11 @@ public class ConfigFactoryStoreImpl implements ConfigFactory {
 	}
 
 	@Override
+	public TrackerConfig getConfig(String source, SourceType type, Reader configReader) {
+		return new TrackerConfigStore(source, type, configReader);
+	}
+
+	@Override
 	public TrackerConfig getConfig(Source source, String configName) {
 		return new TrackerConfigStore(source, configName);
 	}
@@ -86,17 +92,17 @@ public class ConfigFactoryStoreImpl implements ConfigFactory {
 	}
 
 	@Override
-    public TrackerConfig getConfig(String source, SourceType type, Map<String, Properties> configMap) {
+	public TrackerConfig getConfig(String source, SourceType type, Map<String, Properties> configMap) {
 		return new TrackerConfigStore(source, type, configMap);
 	}
 
 	@Override
-    public TrackerConfig getConfig(Class<?> clazz, SourceType type, Map<String, Properties> configMap) {
+	public TrackerConfig getConfig(Class<?> clazz, SourceType type, Map<String, Properties> configMap) {
 		return getConfig(clazz.getName(), type, configMap);
-    }
+	}
 
 	@Override
-    public TrackerConfig getConfig(Source source, Map<String, Properties> configMap) {
+	public TrackerConfig getConfig(Source source, Map<String, Properties> configMap) {
 		return new TrackerConfigStore(source, configMap);
-    }
+	}
 }

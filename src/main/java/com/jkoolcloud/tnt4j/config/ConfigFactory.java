@@ -15,6 +15,7 @@
  */
 package com.jkoolcloud.tnt4j.config;
 
+import java.io.Reader;
 import java.util.Map;
 import java.util.Properties;
 
@@ -111,6 +112,20 @@ public interface ConfigFactory {
 	 * @return new {@link TrackerConfig} instance with default values and factories
 	 */
 	TrackerConfig getConfig(String source, SourceType type, String configName);
+
+	/**
+	 * Create a default tracking configuration
+	 *
+	 * @param source
+	 *            user defined source name
+	 * @param type
+	 *            source type
+	 * @param configReader
+	 *            configuration reader configuration elements to read from (e.g. String, byte[])
+	 * @see TrackerConfig
+	 * @return new {@link TrackerConfig} instance with default values and factories
+	 */
+	TrackerConfig getConfig(String source, SourceType type, Reader configReader);
 
 	/**
 	 * Create a default tracking configuration
