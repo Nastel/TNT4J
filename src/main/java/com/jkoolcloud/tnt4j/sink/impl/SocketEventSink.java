@@ -31,8 +31,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
- * This class implements {@link EventSink} with socket as  the underlying
- * sink implementation.
+ * This class implements {@link EventSink} with socket as the underlying sink implementation.
  * </p>
  * 
  * 
@@ -70,38 +69,38 @@ public class SocketEventSink extends AbstractEventSink {
 
 	@Override
 	protected void _log(TrackingActivity activity) throws IOException {
+		writeLine(getEventFormatter().format(activity));
 		if (logSink != null) {
 			logSink.log(activity);
 		}
-		writeLine(getEventFormatter().format(activity));
 	}
 
 	@Override
 	protected void _log(TrackingEvent event) throws IOException {
+		writeLine(getEventFormatter().format(event));
 		if (logSink != null) {
 			logSink.log(event);
 		}
-		writeLine(getEventFormatter().format(event));
 	}
 
 	@Override
-    protected void _log(Snapshot snapshot) throws IOException {
+	protected void _log(Snapshot snapshot) throws IOException {
+		writeLine(getEventFormatter().format(snapshot));
 		if (logSink != null) {
 			logSink.log(snapshot);
 		}
-		writeLine(getEventFormatter().format(snapshot));		
 	}
 
 	@Override
-	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object...args)  throws IOException {
+	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws IOException {
+		writeLine(getEventFormatter().format(ttl, src, sev, msg, args));
 		if (logSink != null) {
 			logSink.log(ttl, src, sev, msg, args);
 		}
-		writeLine(getEventFormatter().format(ttl, src, sev, msg, args));
 	}
 
 	@Override
-	protected void _write(Object msg, Object...args) throws IOException {
+	protected void _write(Object msg, Object... args) throws IOException {
 		if (isOpen()) {
 			writeLine(getEventFormatter().format(msg, args));
 		}
@@ -125,7 +124,7 @@ public class SocketEventSink extends AbstractEventSink {
 			logSink.open();
 		}
 	}
-	
+
 	@Override
 	public void flush() throws IOException {
 		if (isOpen()) {
@@ -145,8 +144,8 @@ public class SocketEventSink extends AbstractEventSink {
 			outStream = null;
 			socketSink = null;
 		}
-	}	
-	
+	}
+
 	@Override
 	public String toString() {
 		return super.toString() 
@@ -157,22 +156,22 @@ public class SocketEventSink extends AbstractEventSink {
 			+ ", piped.sink: " + logSink 
 			+ "}";
 	}
-	
+
 	private synchronized void writeLine(String msg) throws IOException {
-		String lineMsg = msg.endsWith("\n")? msg: msg + "\n";
-		byte [] bytes = lineMsg.getBytes();
+		String lineMsg = msg.endsWith("\n") ? msg : msg + "\n";
+		byte[] bytes = lineMsg.getBytes();
 		outStream.write(bytes, 0, bytes.length);
 		outStream.flush();
 	}
 
 	@Override
-    public boolean isSet(OpLevel sev) {
-	    return logSink != null? logSink.isSet(sev): true;
-    }
+	public boolean isSet(OpLevel sev) {
+		return logSink != null ? logSink.isSet(sev) : true;
+	}
 
 	@Override
-    protected void _checkState() throws IllegalStateException {
+	protected void _checkState() throws IllegalStateException {
 		if (!isOpen())
 			throw new IllegalStateException("Sink closed: " + hostName + ":" + this.portNo + ", socket=" + socketSink);
-    }
+	}
 }

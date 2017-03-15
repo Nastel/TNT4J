@@ -41,11 +41,12 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @version $Revision: 5 $
  *
  */
-public class SocketEventSinkFactory  extends AbstractEventSinkFactory  {
+public class SocketEventSinkFactory extends AbstractEventSinkFactory {
 	private String hostName = System.getProperty("tnt4j.sink.factory.socket.host", "localhost");
 	private int port = Integer.getInteger("tnt4j.sink.factory.socket.port", 6400);
-	
+
 	private EventSinkFactory eventSinkFactory = DefaultEventSinkFactory.getInstance();
+
 	/**
 	 * Create a socket event sink factory.
 	 * Same as <code>SocketEventSinkFactory("localhost", 6400)</code>.
@@ -53,7 +54,7 @@ public class SocketEventSinkFactory  extends AbstractEventSinkFactory  {
 	 */
 	public SocketEventSinkFactory() {
 	}
-	
+
 	/**
 	 * Create a socket event sink factory with
 	 * host name set to localhost.
@@ -64,7 +65,7 @@ public class SocketEventSinkFactory  extends AbstractEventSinkFactory  {
 	public SocketEventSinkFactory(int portNo) {
 		port = portNo;
 	}
-	
+
 	/**
 	 * Create a socket event sink factory with
 	 * 
@@ -76,24 +77,24 @@ public class SocketEventSinkFactory  extends AbstractEventSinkFactory  {
 		hostName = host;
 		port = portNo;
 	}
-	
-	@Override
-    public EventSink getEventSink(String name) {
-	    return configureSink(new SocketEventSink(name, hostName, port, new JSONFormatter(false), 
-	    		eventSinkFactory.getEventSink(name, System.getProperties(), new JSONFormatter())));
-    }
 
 	@Override
-    public EventSink getEventSink(String name, Properties props) {
-	    return configureSink(new SocketEventSink(name, hostName, port, new JSONFormatter(false),
-	    		eventSinkFactory.getEventSink(name, props, new JSONFormatter())));
-    }
+	public EventSink getEventSink(String name) {
+		return configureSink(new SocketEventSink(name, hostName, port, new JSONFormatter(false),
+				eventSinkFactory.getEventSink(name, System.getProperties(), new JSONFormatter())));
+	}
 
 	@Override
-    public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-	    return configureSink(new SocketEventSink(name, hostName, port, frmt, 
-	    		eventSinkFactory.getEventSink(name, props, new JSONFormatter())));
-    }
+	public EventSink getEventSink(String name, Properties props) {
+		return configureSink(new SocketEventSink(name, hostName, port, new JSONFormatter(false),
+				eventSinkFactory.getEventSink(name, props, new JSONFormatter())));
+	}
+
+	@Override
+	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
+		return configureSink(new SocketEventSink(name, hostName, port, frmt, 
+				eventSinkFactory.getEventSink(name, props, frmt)));
+	}
 
 	/**
 	 * Obtain an instance of {@link EventSink} by name and 
@@ -108,16 +109,16 @@ public class SocketEventSinkFactory  extends AbstractEventSinkFactory  {
 	 * @see EventSink
 	 * @see EventFormatter
 	 */
-    public EventSink getEventSink(String name, Properties props, EventFormatter frmt, EventSink pipedSink) {
-	    return configureSink(new SocketEventSink(name, hostName, port, frmt, pipedSink));
-    }
+	public EventSink getEventSink(String name, Properties props, EventFormatter frmt, EventSink pipedSink) {
+		return configureSink(new SocketEventSink(name, hostName, port, frmt, pipedSink));
+	}
 
 	@Override
-    public void setConfiguration(Map<String, Object> settings) throws ConfigException {
+	public void setConfiguration(Map<String, Object> settings) throws ConfigException {
 		super.setConfiguration(settings);
 		hostName = Utils.getString("Host", settings, hostName);
 		port = Utils.getInt("Port", settings, port);
 		eventSinkFactory = (EventSinkFactory) Utils.createConfigurableObject("eventSinkFactory", "eventSinkFactory.", settings);
-		eventSinkFactory = eventSinkFactory == null? DefaultEventSinkFactory.getInstance(): eventSinkFactory;
-    }
+		eventSinkFactory = eventSinkFactory == null ? DefaultEventSinkFactory.getInstance() : eventSinkFactory;
+	}
 }
