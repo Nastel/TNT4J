@@ -30,8 +30,7 @@ import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 
 /**
  * <p>
- * This class allows scheduled execution of tracking activities
- * based on user defined interval.
+ * This class allows scheduled execution of tracking activities based on user defined interval.
  * </p>
  *
  *
@@ -162,7 +161,7 @@ public class ActivityScheduler {
 	 * @param tunit time unit for period
 	 */
 	public void schedule(String name, long initialDelay, long period, TimeUnit tunit) {
-		schedule(name, period, period, tunit, opLevel);
+		schedule(name, initialDelay, period, tunit, opLevel);
 	}
 
 	/**
@@ -174,7 +173,7 @@ public class ActivityScheduler {
 	 * @param tunit time unit for period
 	 * @param severity associated with all timing activities, events
 	 */
-	public void schedule(String name, long initialDelay, long period, TimeUnit tunit,  OpLevel severity) {
+	public void schedule(String name, long initialDelay, long period, TimeUnit tunit, OpLevel severity) {
 		if (future == null || future.isCancelled()) {
 			activityTask = newActivityTask(logger, name, severity);
 			future = scheduler.scheduleAtFixedRate(activityTask, initialDelay, period, tunit);
@@ -196,15 +195,14 @@ public class ActivityScheduler {
 	 *
 	 * @param interrupt may interrupt currently running activity
 	 */
-	public void cancel (boolean interrupt) {
+	public void cancel(boolean interrupt) {
 		future.cancel(interrupt);
 	}
 
-
 	/**
 	 * Open current scheduled activity instance.
-	 * @throws IOException if error opening instance
 	 *
+	 * @throws IOException if error opening instance
 	 */
 	public void open() throws IOException {
 		logger.open();
@@ -220,9 +218,8 @@ public class ActivityScheduler {
 			if (future != null) {
 				future.get();
 			}
-		}
-		catch (Throwable ex) {}
-		finally {
+		} catch (Throwable ex) {
+		} finally {
 			logger.close();
 		}
 	}
@@ -245,7 +242,7 @@ public class ActivityScheduler {
 	 * @return {@code Runnable} instance
 	 */
 	protected Runnable newActivityTask(TrackingLogger lg, String name, OpLevel level) {
-		return new ActivityTask(logger, name, (level == null? opLevel: level));
+		return new ActivityTask(logger, name, (level == null ? opLevel : level));
 	}
 }
 
@@ -258,9 +255,9 @@ class TaskThreadFactory implements ThreadFactory {
 	}
 
 	@Override
-    public Thread newThread(Runnable r) {
+	public Thread newThread(Runnable r) {
 		Thread task = new Thread(r, prefix + "-" + count++);
 		task.setDaemon(true);
 		return task;
-    }
+	}
 }
