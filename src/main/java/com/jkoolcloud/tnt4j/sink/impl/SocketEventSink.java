@@ -19,12 +19,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
+import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
 import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.source.Source;
-import com.jkoolcloud.tnt4j.core.OpLevel;
-import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 import com.jkoolcloud.tnt4j.utils.Utils;
@@ -33,10 +33,10 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * <p>
  * This class implements {@link EventSink} with socket as the underlying sink implementation.
  * </p>
- * 
- * 
- * @version $Revision: 14 $
- * 
+ *
+ *
+ * @version $Revision: 15 $
+ *
  * @see TrackingActivity
  * @see TrackingEvent
  * @see OpLevel
@@ -51,9 +51,9 @@ public class SocketEventSink extends AbstractEventSink {
 	private int portNo = 6400;
 
 	/**
-	 * Create a socket event sink based on a given host, port and formatter.
-	 * Another sink can be associated with this sink where all events are routed.
-	 * 
+	 * Create a socket event sink based on a given host, port and formatter. Another sink can be associated with this
+	 * sink where all events are routed.
+	 *
 	 * @param name logical name assigned to this sink
 	 * @param host name where all messages are sent
 	 * @param port number where all messages are sent
@@ -157,11 +157,24 @@ public class SocketEventSink extends AbstractEventSink {
 			+ "}";
 	}
 
-	private synchronized void writeLine(String msg) throws IOException {
-		String lineMsg = msg.endsWith("\n") ? msg : msg + "\n";
-		byte[] bytes = lineMsg.getBytes();
-		outStream.write(bytes, 0, bytes.length);
-		outStream.flush();
+	private void writeLine(String msg) throws IOException {
+		writeLine(msg, false);
+	}
+
+	private synchronized void writeLine(String msg, boolean retrying) throws IOException {
+		try {
+			String lineMsg = msg.endsWith("\n") ? msg : msg + "\n";
+			byte[] bytes = lineMsg.getBytes();
+			outStream.write(bytes, 0, bytes.length);
+			outStream.flush();
+		} catch (IOException e) {
+			if (retrying) {
+				throw e;
+			}
+			Utils.close(this);
+			this.open();
+			writeLine(msg, true);
+		}
 	}
 
 	@Override
