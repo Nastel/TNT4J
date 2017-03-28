@@ -19,6 +19,8 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
@@ -70,7 +72,7 @@ public class SocketEventSink extends AbstractEventSink {
 	@Override
 	protected void _log(TrackingActivity activity) throws IOException {
 		writeLine(getEventFormatter().format(activity));
-		if (logSink != null) {
+		if (canForward(activity.getSeverity())) {
 			logSink.log(activity);
 		}
 	}
@@ -78,7 +80,7 @@ public class SocketEventSink extends AbstractEventSink {
 	@Override
 	protected void _log(TrackingEvent event) throws IOException {
 		writeLine(getEventFormatter().format(event));
-		if (logSink != null) {
+		if (canForward(event.getSeverity())) {
 			logSink.log(event);
 		}
 	}
@@ -86,7 +88,7 @@ public class SocketEventSink extends AbstractEventSink {
 	@Override
 	protected void _log(Snapshot snapshot) throws IOException {
 		writeLine(getEventFormatter().format(snapshot));
-		if (logSink != null) {
+		if (canForward(snapshot.getSeverity())) {
 			logSink.log(snapshot);
 		}
 	}
@@ -94,7 +96,7 @@ public class SocketEventSink extends AbstractEventSink {
 	@Override
 	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws IOException {
 		writeLine(getEventFormatter().format(ttl, src, sev, msg, args));
-		if (logSink != null) {
+		if (canForward(sev)) {
 			logSink.log(ttl, src, sev, msg, args);
 		}
 	}
@@ -162,6 +164,12 @@ public class SocketEventSink extends AbstractEventSink {
 	}
 
 	private synchronized void writeLine(String msg, boolean retrying) throws IOException {
+		if (StringUtils.isEmpty(msg)) {
+			return;
+		}
+
+		_checkState();
+
 		try {
 			String lineMsg = msg.endsWith("\n") ? msg : msg + "\n";
 			byte[] bytes = lineMsg.getBytes();
@@ -171,8 +179,8 @@ public class SocketEventSink extends AbstractEventSink {
 			if (retrying) {
 				throw e;
 			}
-			Utils.close(this);
-			this.open();
+			reconnect();
+
 			writeLine(msg, true);
 		}
 	}
@@ -184,7 +192,17 @@ public class SocketEventSink extends AbstractEventSink {
 
 	@Override
 	protected void _checkState() throws IllegalStateException {
-		if (!isOpen())
+		if (!isOpen()) {
 			throw new IllegalStateException("Sink closed: " + hostName + ":" + this.portNo + ", socket=" + socketSink);
+		}
+	}
+
+	private void reconnect() throws IOException {
+		this.close();
+		this.open();
+	}
+
+	private boolean canForward(OpLevel sev) {
+		return logSink != null && logSink.isSet(sev);
 	}
 }
