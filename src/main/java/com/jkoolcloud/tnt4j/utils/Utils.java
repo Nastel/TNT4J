@@ -47,6 +47,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
+import com.jkoolcloud.tnt4j.core.Handle;
 
 /**
  * General utility methods.
@@ -899,6 +900,17 @@ public class Utils {
 			}
 		} catch (Throwable e) {
 		}
+	}
+
+	/**
+	 * Check if a handle is open
+	 *
+	 * @param handle
+	 *            IO handle
+	 * @return true if handle is open, false otherwise
+	 */
+	public static boolean isOpen(Handle handle) {
+		return handle != null && handle.isOpen();
 	}
 
 	/**
