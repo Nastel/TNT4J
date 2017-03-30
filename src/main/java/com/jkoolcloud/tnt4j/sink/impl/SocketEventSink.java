@@ -19,8 +19,6 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.net.Socket;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
@@ -164,7 +162,7 @@ public class SocketEventSink extends AbstractEventSink {
 	}
 
 	private synchronized void writeLine(String msg, boolean retrying) throws IOException {
-		if (StringUtils.isEmpty(msg)) {
+		if (Utils.isEmpty(msg)) {
 			return;
 		}
 
@@ -178,13 +176,22 @@ public class SocketEventSink extends AbstractEventSink {
 		} catch (IOException e) {
 			if (retrying) {
 				throw e;
+			} else {
+				retryWrite(msg, e);
 			}
-			reconnect();
-
-			writeLine(msg, true);
 		}
 	}
 
+	private void retryWrite(String msg, Throwable e) throws IOException {
+		try {
+			reconnect();
+			writeLine(msg, true);
+		} catch (IOException ioe) {
+			if (e != null) ioe.initCause(e);
+			throw ioe;
+		}
+	}
+	
 	@Override
 	public boolean isSet(OpLevel sev) {
 		return logSink != null ? logSink.isSet(sev) : true;

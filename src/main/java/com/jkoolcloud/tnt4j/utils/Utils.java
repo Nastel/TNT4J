@@ -133,7 +133,7 @@ public class Utils {
 	 * @return parsed locale object, or {@code null} if can't parse localeStr.
 	 */
 	public static Locale getLocale(String localeStr) {
-		if (StringUtils.isEmpty(localeStr)) {
+		if (isEmpty(localeStr)) {
 			return null;
 		}
 
@@ -588,7 +588,7 @@ public class Utils {
 	 * @return true if the string is null or empty
 	 */
 	public static boolean isEmpty(String str) {
-		return (str == null || str.trim().isEmpty());
+		return (StringUtils.isEmpty(str));
 	}
 
 	/**
