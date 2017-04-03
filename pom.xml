@@ -43,7 +43,7 @@
         <java.compiler.verbose>false</java.compiler.verbose>
         <java.compiler.fork>false</java.compiler.fork>
         <gpg.skip.sign>true</gpg.skip.sign>
-        <build.assemblies.phase>install</build.assemblies.phase>
+        <build.assemblies.phase>package</build.assemblies.phase>
     </properties>
 
     <distributionManagement>
