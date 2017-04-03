@@ -7,7 +7,7 @@
 # Eclipse project files
 .project
 .classpath
-/.settings/
+/**/.settings/
 
 # Package Files #
 *.jar
@@ -17,8 +17,6 @@
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 /.svn
-/lib/
-/**/bin
 /**/target
 /**/classes
 /**/logs
@@ -26,3 +24,6 @@ hs_err_pid*
 
 /**/*.iml
 /target/
+
+/**/!stuff
+/**/*_dev.*
