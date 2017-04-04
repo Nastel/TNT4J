@@ -40,8 +40,6 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <product.vendor>jKool, LLC</product.vendor>
-        <release.deploy.dir>../build/${project.name}</release.deploy.dir>
-        <skipTests>true</skipTests>
 
         <project.java.version>1.6</project.java.version>
         <java.source.version>${project.java.version}</java.source.version>
@@ -50,6 +48,10 @@
         <java.compiler.debuglevel>source,lines,vars</java.compiler.debuglevel>
         <java.compiler.verbose>false</java.compiler.verbose>
         <java.compiler.fork>false</java.compiler.fork>
+
+        <release.deploy.dir>../build/${project.name}</release.deploy.dir>
+
+        <skipTests>true</skipTests>
         <gpg.skip.sign>true</gpg.skip.sign>
         <build.assemblies.phase>package</build.assemblies.phase>
     </properties>
