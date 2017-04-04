@@ -19,11 +19,13 @@
             </includes>
             <outputDirectory>config</outputDirectory>
         </fileSet>
+        <!-- static content -->
         <fileSet>
             <directory></directory>
             <includes>
-                <include>LICENSE</include>
-                <include>README.md</include>
+                <include>LICENSE*</include>
+                <include>README*</include>
+                <include>NOTICE*</include>
                 <include>overview.html</include>
             </includes>
             <outputDirectory></outputDirectory>
