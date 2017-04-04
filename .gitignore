@@ -23,7 +23,6 @@ hs_err_pid*
 /**/temp
 
 /**/*.iml
-/target/
 
 /**/!stuff
 /**/*_dev.*
