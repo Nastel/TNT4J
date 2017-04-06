@@ -25,7 +25,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Vector;
 import java.util.WeakHashMap;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -66,7 +65,6 @@ import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 import com.jkoolcloud.tnt4j.tracker.TrackingFilter;
 import com.jkoolcloud.tnt4j.utils.Useconds;
 import com.jkoolcloud.tnt4j.utils.Utils;
-
 
 /**
  * <p>
@@ -198,12 +196,12 @@ public class TrackingLogger implements Tracker {
 	private static final String TRACKER_CONFIG = System.getProperty("tnt4j.tracking.logger.config");
 	private static final String TRACKER_SOURCE = System.getProperty("tnt4j.tracking.logger.source", TrackingLogger.class.getName());
 
-	private static ConcurrentHashMap<DumpProvider, List<DumpSink>> DUMP_DEST_TABLE = new ConcurrentHashMap<DumpProvider, List<DumpSink>>(49);
-	private static Map<TrackingLogger, StackTraceElement[]> TRACKERS = Collections.synchronizedMap(new WeakHashMap<TrackingLogger, StackTraceElement[]>(89));
+	private static final ConcurrentHashMap<DumpProvider, List<DumpSink>> DUMP_DEST_TABLE = new ConcurrentHashMap<DumpProvider, List<DumpSink>>(49);
+	private static final Map<TrackingLogger, StackTraceElement[]> TRACKERS = Collections.synchronizedMap(new WeakHashMap<TrackingLogger, StackTraceElement[]>(89));
 
-	private static Vector<DumpProvider> DUMP_PROVIDERS = new Vector<DumpProvider>(10, 10);
-	private static Vector<DumpSink> DUMP_DESTINATIONS = new Vector<DumpSink>(10, 10);
-	private static Vector<DumpListener> DUMP_LISTENERS = new Vector<DumpListener>(10, 10);
+	private static final List<DumpProvider> DUMP_PROVIDERS = new ArrayList<DumpProvider>(10);
+	private static final List<DumpSink> DUMP_DESTINATIONS = new ArrayList<DumpSink>(10);
+	private static final List<DumpListener> DUMP_LISTENERS = new ArrayList<DumpListener>(10);
 
 	private static final DumpHook dumpHook = new DumpHook();
 	private static final FlushShutdown flushShutdown = new FlushShutdown();
@@ -241,10 +239,10 @@ public class TrackingLogger implements Tracker {
 	}
 	
 	/** Cannot instantiate. */
-    private TrackingLogger(Tracker trg) {
-    	logger = trg;
-    	selector = logger.getTrackingSelector();
-    }
+	private TrackingLogger(Tracker trg) {
+		logger = trg;
+		selector = logger.getTrackingSelector();
+	}
 
 	/**
 	 * Check and enable java timing for use by activities
@@ -285,26 +283,26 @@ public class TrackingLogger implements Tracker {
 	 *
 	 * @return an allocation stack trace for the logger instance
 	 */
-    public static StackTraceElement[] getTrackerStackTrace(TrackingLogger logger) {
-    	return TRACKERS.get(logger);
-    }
+	public static StackTraceElement[] getTrackerStackTrace(TrackingLogger logger) {
+		return TRACKERS.get(logger);
+	}
 
 	/**
 	 * Obtain an a list of all registered/active logger instances.
 	 *
 	 * @return a list of all active tracking logger instances
 	 */
-    public static List<TrackingLogger> getAllTrackers() {
-    	synchronized(TRACKERS) {
-    		ArrayList<TrackingLogger> copy = new ArrayList<TrackingLogger>(TRACKERS.size());
-    		for (TrackingLogger logger: TRACKERS.keySet()) {
-    			if (logger != null)	{
-    				copy.add(logger);
-    			}
-    		}
-    		return copy;
-    	}
-    }
+	public static List<TrackingLogger> getAllTrackers() {
+		synchronized (TRACKERS) {
+			ArrayList<TrackingLogger> copy = new ArrayList<TrackingLogger>(TRACKERS.size());
+			for (TrackingLogger logger : TRACKERS.keySet()) {
+				if (logger != null) {
+					copy.add(logger);
+				}
+			}
+			return copy;
+		}
+	}
 
 	/**
 	 * Flush all available trackers
@@ -312,10 +310,10 @@ public class TrackingLogger implements Tracker {
 	 */
 	public static void flushAll() {
 		List<TrackingLogger> trackers = getAllTrackers();
-		for (TrackingLogger logger: trackers) {
+		for (TrackingLogger logger : trackers) {
 			try {
 				EventSink sink = logger.getEventSink();
-				sink.flush();					
+				sink.flush();
 			} catch (IOException e) {
 			}
 		}
@@ -327,13 +325,13 @@ public class TrackingLogger implements Tracker {
 	 */
 	public static void shutdownAll() {
 		List<TrackingLogger> trackers = getAllTrackers();
-		for (TrackingLogger logger: trackers) {
+		for (TrackingLogger logger : trackers) {
 			try {
 				EventSink sink = logger.getEventSink();
 				if (sink instanceof IOShutdown) {
 					IOShutdown shut = (IOShutdown) sink;
 					shut.shutdown(null);
-				} 
+				}
 			} catch (IOException e) {
 			}
 		}
@@ -345,17 +343,17 @@ public class TrackingLogger implements Tracker {
 	 *
 	 * @return a list of stack traces for each allocated tracker
 	 */
-    public static List<StackTraceElement[]> getAllTrackerStackTrace() {
-    	synchronized(TRACKERS) {
-    		ArrayList<StackTraceElement[]> copy = new ArrayList<StackTraceElement[]>(TRACKERS.size());
-    		for (StackTraceElement[] trace: TRACKERS.values()) {
-    			if (trace != null) {
-    				copy.add(trace);
-    			}
-    		}
-    		return copy;
-    	}
-    }
+	public static List<StackTraceElement[]> getAllTrackerStackTrace() {
+		synchronized (TRACKERS) {
+			ArrayList<StackTraceElement[]> copy = new ArrayList<StackTraceElement[]>(TRACKERS.size());
+			for (StackTraceElement[] trace : TRACKERS.values()) {
+				if (trace != null) {
+					copy.add(trace);
+				}
+			}
+			return copy;
+		}
+	}
 
 	/**
 	 * Obtain an instance of {@code TrackingLogger} logger.
@@ -370,7 +368,6 @@ public class TrackingLogger implements Tracker {
 		registerTracker(tracker);
 		return tracker;
 	}
-
 
 	/**
 	 * Obtain an instance of {@code TrackingLogger} logger.
@@ -456,7 +453,6 @@ public class TrackingLogger implements Tracker {
 		return tracker;
 	}
 
-
 	/**
 	 * Obtain an instance of {@code TrackingLogger} logger based on
 	 * a given class.
@@ -474,7 +470,6 @@ public class TrackingLogger implements Tracker {
 		registerTracker(tracker);
 		return tracker;
 	}
-
 
 	/**
 	 * Register a user defined tracker factory. Default is {@code DefaultTrackerFactory}.
@@ -588,7 +583,7 @@ public class TrackingLogger implements Tracker {
 	 *
 	 * @see OpLevel
 	 */
-	public void set(OpLevel sev, Object key, Object value){
+	public void set(OpLevel sev, Object key, Object value) {
 		if (logger != null) {
 			selector.set(sev, key, value);
 		}
@@ -648,7 +643,6 @@ public class TrackingLogger implements Tracker {
 		}
 	}
 
-
 	/**
 	 * Log a single message with a given severity level and a number of
 	 * user supplied arguments. Message pattern is based on the format defined
@@ -659,6 +653,7 @@ public class TrackingLogger implements Tracker {
 	 * logger.log(OpLevel.DEBUG, "My message arg={0}, arg={1}", parm1, parm2);
 	 * }
 	 * </pre>
+	 * 
 	 * @param level
 	 *            severity level
 	 * @param msg
@@ -670,7 +665,7 @@ public class TrackingLogger implements Tracker {
 	 * @throws IllegalStateException when tracker is not initialized
 	 */
 	@Override
-	public void log(OpLevel level, String msg, Object...args) {
+	public void log(OpLevel level, String msg, Object... args) {
 		checkState();
 		logger.log(level, msg, args);
 	}
@@ -685,6 +680,7 @@ public class TrackingLogger implements Tracker {
 	 * logger.debug("My message arg={0}, arg={1}", parm1, parm2);
 	 * }
 	 * </pre>
+	 * 
 	 * @param msg
 	 *            message or message pattern
 	 * @param args
@@ -692,7 +688,7 @@ public class TrackingLogger implements Tracker {
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
 	 */
-	public void debug(String msg, Object...args) {
+	public void debug(String msg, Object... args) {
 		log(OpLevel.DEBUG, msg, args);
 	}
 
@@ -706,6 +702,7 @@ public class TrackingLogger implements Tracker {
 	 * logger.trace("My message arg={0}, arg={1}", parm1, parm2);
 	 * }
 	 * </pre>
+	 * 
 	 * @param msg
 	 *            message or message pattern
 	 * @param args
@@ -713,7 +710,7 @@ public class TrackingLogger implements Tracker {
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
 	 */
-	public void trace(String msg, Object...args) {
+	public void trace(String msg, Object... args) {
 		log(OpLevel.TRACE, msg, args);
 	}
 
@@ -727,6 +724,7 @@ public class TrackingLogger implements Tracker {
 	 * logger.error("My error message arg={0}, arg={1}", parm1, parm2);
 	 * }
 	 * </pre>
+	 * 
 	 * @param msg
 	 *            message or message pattern
 	 * @param args
@@ -734,7 +732,7 @@ public class TrackingLogger implements Tracker {
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
 	 */
-	public void error(String msg, Object...args) {
+	public void error(String msg, Object... args) {
 		log(OpLevel.ERROR, msg, args);
 	}
 
@@ -748,6 +746,7 @@ public class TrackingLogger implements Tracker {
 	 * logger.fatal("My error message arg={0}, arg={1}", parm1, parm2);
 	 * }
 	 * </pre>
+	 * 
 	 * @param msg
 	 *            message or message pattern
 	 * @param args
@@ -755,7 +754,7 @@ public class TrackingLogger implements Tracker {
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
 	 */
-	public void fatal(String msg, Object...args) {
+	public void fatal(String msg, Object... args) {
 		log(OpLevel.FATAL, msg, args);
 	}
 
@@ -769,6 +768,7 @@ public class TrackingLogger implements Tracker {
 	 * logger.halt("My error message arg={0}, arg={1}", parm1, parm2);
 	 * }
 	 * </pre>
+	 * 
 	 * @param msg
 	 *            message or message pattern
 	 * @param args
@@ -776,7 +776,7 @@ public class TrackingLogger implements Tracker {
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
 	 */
-	public void halt(String msg, Object...args) {
+	public void halt(String msg, Object... args) {
 		log(OpLevel.HALT, msg, args);
 	}
 
@@ -790,6 +790,7 @@ public class TrackingLogger implements Tracker {
 	 * logger.warn("My message arg={0}, arg={1}", parm1, parm2);
 	 * }
 	 * </pre>
+	 * 
 	 * @param msg
 	 *            message or message pattern
 	 * @param args
@@ -797,7 +798,7 @@ public class TrackingLogger implements Tracker {
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
 	 */
-	public void warn(String msg, Object...args) {
+	public void warn(String msg, Object... args) {
 		log(OpLevel.WARNING, msg, args);
 	}
 
@@ -811,6 +812,7 @@ public class TrackingLogger implements Tracker {
 	 * logger.info("My message arg={0}, arg={1}", parm1, parm2);
 	 * }
 	 * </pre>
+	 * 
 	 * @param msg
 	 *            message or message pattern
 	 * @param args
@@ -818,7 +820,7 @@ public class TrackingLogger implements Tracker {
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
 	 */
-	public void info(String msg, Object...args) {
+	public void info(String msg, Object... args) {
 		log(OpLevel.INFO, msg, args);
 	}
 
@@ -827,11 +829,12 @@ public class TrackingLogger implements Tracker {
 	 * Message pattern is based on the format defined
 	 * by {@code MessageFormat}. This logging type is more efficient than
 	 * string concatenation.
-	 *  <pre>
+	 * <pre>
 	 * {@code 
 	 * logger.notice("My message arg={0}, arg={1}", parm1, parm2);
 	 * }
 	 * </pre>
+	 * 
 	 * @param msg
 	 *            message or message pattern
 	 * @param args
@@ -839,7 +842,7 @@ public class TrackingLogger implements Tracker {
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
 	 */
-	public void notice(String msg, Object...args) {
+	public void notice(String msg, Object... args) {
 		log(OpLevel.NOTICE, msg, args);
 	}
 
@@ -875,7 +878,6 @@ public class TrackingLogger implements Tracker {
 		logger.tnt(event);
 	}
 
-
 	/**
 	 * Report a single snapshot.
 	 *
@@ -892,7 +894,6 @@ public class TrackingLogger implements Tracker {
 		logger.tnt(snapshot);
 	}
 
-
 	/**
 	 * Report a single tracking event
 	 *
@@ -910,10 +911,9 @@ public class TrackingLogger implements Tracker {
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
-	public void tnt(OpLevel severity, String opName, String correlator, String msg, Object...args) {
-		tnt(severity, OpType.CALL, opName, correlator,  0, msg, args);
+	public void tnt(OpLevel severity, String opName, String correlator, String msg, Object... args) {
+		tnt(severity, OpType.CALL, opName, correlator, 0, msg, args);
 	}
-
 
 	/**
 	 * Report a single tracking event
@@ -936,8 +936,8 @@ public class TrackingLogger implements Tracker {
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
-	public void tnt(OpLevel severity, OpType opType, String opName, String correlator, long elapsed,
-			 String msg, Object...args) {
+	public void tnt(OpLevel severity, OpType opType, String opName, String correlator, long elapsed, String msg,
+			Object... args) {
 		tnt(severity, opType, opName, correlator, null, elapsed, msg, args);
 	}
 
@@ -965,7 +965,7 @@ public class TrackingLogger implements Tracker {
 	 * @see OpLevel
 	 */
 	public void tnt(OpLevel severity, OpType opType, String opName, String correlator, String tag, long elapsed,
-			 String msg, Object...args) {
+			String msg, Object... args) {
 		checkState();
 		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 		Throwable ex = Utils.getThrowable(args);
@@ -991,10 +991,9 @@ public class TrackingLogger implements Tracker {
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
-	public void tnt(OpLevel severity, String opName, String correlator, byte[] msg, Object...args) {
-		tnt(severity, OpType.CALL, opName, correlator,  0, msg, args);
+	public void tnt(OpLevel severity, String opName, String correlator, byte[] msg, Object... args) {
+		tnt(severity, OpType.CALL, opName, correlator, 0, msg, args);
 	}
-
 
 	/**
 	 * Report a single tracking event using a binary message body
@@ -1017,8 +1016,8 @@ public class TrackingLogger implements Tracker {
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
-	public void tnt(OpLevel severity, OpType opType, String opName, String correlator, long elapsed,
-			 byte[] msg, Object...args) {
+	public void tnt(OpLevel severity, OpType opType, String opName, String correlator, long elapsed, byte[] msg,
+			Object... args) {
 		tnt(severity, opType, opName, correlator, null, elapsed, msg, args);
 	}
 
@@ -1046,7 +1045,7 @@ public class TrackingLogger implements Tracker {
 	 * @see OpLevel
 	 */
 	public void tnt(OpLevel severity, OpType opType, String opName, String correlator, String tag, long elapsed,
-			 byte[] msg, Object...args) {
+			byte[] msg, Object... args) {
 		checkState();
 		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 		Throwable ex = Utils.getThrowable(args);
@@ -1056,35 +1055,34 @@ public class TrackingLogger implements Tracker {
 	}
 
 	@Override
-    public Snapshot newSnapshot(String name) {
+	public Snapshot newSnapshot(String name) {
 		checkState();
 		return logger.newSnapshot(name);
-    }
+	}
 
 	@Override
-    public Snapshot newSnapshot(String cat, String name) {
+	public Snapshot newSnapshot(String cat, String name) {
 		checkState();
 		return logger.newSnapshot(cat, name);
-    }
+	}
 
 	@Override
-    public Snapshot newSnapshot(String cat, String name, OpLevel level) {
+	public Snapshot newSnapshot(String cat, String name, OpLevel level) {
 		checkState();
 		return logger.newSnapshot(cat, name, level);
-    }
-
+	}
 
 	@Override
-    public Property newProperty(String key, Object val) {
+	public Property newProperty(String key, Object val) {
 		checkState();
 		return logger.newProperty(key, val);
-    }
+	}
 
 	@Override
-    public Property newProperty(String key, Object val, String valType) {
+	public Property newProperty(String key, Object val, String valType) {
 		checkState();
 		return logger.newProperty(key, val, valType);
-    }
+	}
 
 	@Override
 	public TrackingActivity newActivity() {
@@ -1111,67 +1109,65 @@ public class TrackingLogger implements Tracker {
 	}
 
 	@Override
-    public TrackingEvent newEvent(String opName, String msg, Object... args) {
+	public TrackingEvent newEvent(String opName, String msg, Object... args) {
 		checkState();
 		return logger.newEvent(opName, msg, args);
-    }
+	}
 
 	@Override
-	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object...args) {
+	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, String msg, Object... args) {
 		checkState();
 		return logger.newEvent(severity, opName, correlator, msg, args);
 	}
 
-
 	@Override
-	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator,
-	        String tag, String msg, Object...args) {
+	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag,
+			String msg, Object... args) {
 		checkState();
 		return logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 	}
 
 	@Override
-	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, byte[] msg, Object...args) {
+	public TrackingEvent newEvent(OpLevel severity, String opName, String correlator, byte[] msg, Object... args) {
 		checkState();
 		return logger.newEvent(severity, opName, correlator, msg, args);
 	}
 
-
 	@Override
-	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator,
-	        String tag, byte[] msg, Object...args) {
+	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, String correlator, String tag,
+			byte[] msg, Object... args) {
 		checkState();
 		return logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 	}
 
 	@Override
-    public TrackingEvent newEvent(OpLevel severity, String opName, Collection<String> correlators, String msg,
-            Object... args) {
+	public TrackingEvent newEvent(OpLevel severity, String opName, Collection<String> correlators, String msg,
+			Object... args) {
 		checkState();
 		return logger.newEvent(severity, opName, correlators, msg, args);
-    }
+	}
 
 	@Override
-    public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, Collection<String> correlators,
-            Collection<String> tags, String msg, Object... args) {
+	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, Collection<String> correlators,
+			Collection<String> tags, String msg, Object... args) {
 		checkState();
 		return logger.newEvent(severity, opType, opName, correlators, tags, msg, args);
-    }
+	}
 
 	@Override
-    public TrackingEvent newEvent(OpLevel severity, String opName, Collection<String> correlators, byte[] msg,
-            Object... args) {
+	public TrackingEvent newEvent(OpLevel severity, String opName, Collection<String> correlators, byte[] msg,
+			Object... args) {
 		checkState();
 		return logger.newEvent(severity, opName, correlators, msg, args);
-    }
+	}
 
 	@Override
-    public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, Collection<String> correlators,
-            Collection<String> tags, byte[] msg, Object... args) {
+	public TrackingEvent newEvent(OpLevel severity, OpType opType, String opName, Collection<String> correlators,
+			Collection<String> tags, byte[] msg, Object... args) {
 		checkState();
 		return logger.newEvent(severity, opType, opName, correlators, tags, msg, args);
-    }
-	
+	}
+
 	/**
 	 * Returns currently registered {@link Tracker} logger associated with the current thread. {@link Tracker}
 	 * logger is associated with the current thread after the register() call. {@link Tracker} logger instance is
@@ -1428,7 +1424,8 @@ public class TrackingLogger implements Tracker {
 	public static void dumpOnShutdown(boolean flag) {
 		if (flag)
 			Runtime.getRuntime().addShutdownHook(dumpHook);
-		else Runtime.getRuntime().removeShutdownHook(dumpHook);
+		else
+			Runtime.getRuntime().removeShutdownHook(dumpHook);
 	}
 
 	/**
@@ -1440,7 +1437,8 @@ public class TrackingLogger implements Tracker {
 	public static void flushOnShutdown(boolean flag) {
 		if (flag)
 			Runtime.getRuntime().addShutdownHook(flushShutdown);
-		else Runtime.getRuntime().removeShutdownHook(flushShutdown);
+		else
+			Runtime.getRuntime().removeShutdownHook(flushShutdown);
 	}
 
 	/**
@@ -1482,7 +1480,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	private static void notifyDumpListeners(int type, Object source, DumpCollection dump, List<DumpSink> dlist,
-	        Throwable ex) {
+			Throwable ex) {
 		synchronized (DUMP_LISTENERS) {
 			for (DumpListener dls : DUMP_LISTENERS) {
 				dls.onDumpEvent(new DumpEvent(source, type, dump, dlist, ex));
@@ -1491,116 +1489,116 @@ public class TrackingLogger implements Tracker {
 	}
 
 	@Override
-    public TrackingActivity[] getActivityStack() {
+	public TrackingActivity[] getActivityStack() {
 		checkState();
 		return logger.getActivityStack();
-    }
+	}
 
 	@Override
-    public TrackerConfig getConfiguration() {
+	public TrackerConfig getConfiguration() {
 		checkState();
 		return logger.getConfiguration();
-    }
+	}
 
 	@Override
-    public TrackingActivity getCurrentActivity() {
+	public TrackingActivity getCurrentActivity() {
 		checkState();
 		return logger.getCurrentActivity();
-    }
+	}
 
 	@Override
-    public TrackingActivity getRootActivity() {
+	public TrackingActivity getRootActivity() {
 		checkState();
 		return logger.getRootActivity();
-    }
+	}
 
 	@Override
-    public EventSink getEventSink() {
+	public EventSink getEventSink() {
 		checkState();
 		return logger.getEventSink();
-    }
+	}
 
 	@Override
-    public Source getSource() {
+	public Source getSource() {
 		checkState();
 		return logger.getSource();
-    }
+	}
 
 	@Override
-    public int getStackSize() {
+	public int getStackSize() {
 		checkState();
 		return logger.getStackSize();
-    }
+	}
 
 	@Override
-    public StackTraceElement[] getStackTrace() {
+	public StackTraceElement[] getStackTrace() {
 		checkState();
 		return logger.getStackTrace();
-    }
+	}
 
 	@Override
-    public TrackingSelector getTrackingSelector() {
+	public TrackingSelector getTrackingSelector() {
 		checkState();
 		return logger.getTrackingSelector();
-    }
+	}
 
 	@Override
-    public boolean isOpen() {
+	public boolean isOpen() {
 		checkState();
 		return logger.isOpen();
-    }
+	}
 
 	@Override
-    public void open() throws IOException {
+	public void open() throws IOException {
 		checkState();
 		logger.open();
-    }
+	}
 
 	@Override
-    public Map<String, Object> getStats() {
+	public Map<String, Object> getStats() {
 		checkState();
 		return logger.getStats();
-    }
+	}
 
 	@Override
-    public KeyValueStats getStats(Map<String, Object> stats) {
+	public KeyValueStats getStats(Map<String, Object> stats) {
 		checkState();
 		return logger.getStats(stats);
-    }
+	}
 
 	@Override
-    public void resetStats() {
+	public void resetStats() {
 		checkState();
 		logger.resetStats();
-    }
+	}
 
 	@Override
-    public Tracker setKeepThreadContext(boolean flag) {
+	public Tracker setKeepThreadContext(boolean flag) {
 		checkState();
 		return logger.setKeepThreadContext(flag);
-    }
+	}
 
 	@Override
-    public boolean getKeepThreadContext() {
+	public boolean getKeepThreadContext() {
 		checkState();
 		return logger.getKeepThreadContext();
-     }
+	}
 
 	@Override
-    public String getId() {
+	public String getId() {
 		checkState();
 		return logger.getId();
-    }
+	}
 
 	@Override
-    public String newUUID() {
+	public String newUUID() {
 		checkState();
 		return logger.newUUID();
-    }
+	}
 
 	@Override
-    public String newUUID(Object obj) {
+	public String newUUID(Object obj) {
 		checkState();
 		return logger.newUUID(obj);
-    }
+	}
 }

@@ -27,9 +27,9 @@ import java.util.EmptyStackException;
  */
 
 public class LightStack<T> extends ArrayList<T> {
-    private static final long serialVersionUID = 4249091055001865102L;
+	private static final long serialVersionUID = 4249091055001865102L;
 
-    int cursor = 0;
+	int cursor = 0;
 
 	/**
 	 * Create a new stack with a default initial capacity of 10
@@ -103,7 +103,7 @@ public class LightStack<T> extends ArrayList<T> {
 	/**
 	 * Looks at the object at the top of this stack without removing it from the stack.
 	 *
-	 * @return the object at the top of this stack (the last item of the <tt>Vector</tt> object).
+	 * @return the object at the top of this stack (the last item of the <tt>ArrayList</tt> object).
 	 * @exception EmptyStackException
 	 *                if this stack is empty.
 	 */
