@@ -20,9 +20,8 @@ import com.jkoolcloud.tnt4j.sink.SinkError;
 import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
 
 /**
- * This class implements a default error handler for {@link BufferedEventSink}.
- * The handler attempts to re-queue events on which exceptions occurred to 
- * avoid event loss.
+ * This class implements a default error handler for {@link BufferedEventSink}. The handler attempts to re-queue events
+ * on which exceptions occurred to avoid event loss.
  *
  *
  * @see PooledLogger
@@ -37,7 +36,7 @@ public class BufferedSinkErrorListener implements SinkErrorListener {
 		Sink evSink = ev.getSink();
 
 		if (evSink instanceof BufferedEventSink) {
-			BufferedEventSink sink = (BufferedEventSink) ev.getSink();
+			BufferedEventSink sink = (BufferedEventSink) evSink;
 			sink.handleError(ev);
 		}
 	}

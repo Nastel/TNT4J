@@ -54,8 +54,7 @@ public class SinkError extends EventObject {
 	}
 
 	/**
-	 * Get message associated with the sink. 
-	 * Message that was being written to the sink.
+	 * Get message associated with the sink. Message that was being written to the sink.
 	 * 
 	 * @return sink message
 	 * 
@@ -90,21 +89,22 @@ public class SinkError extends EventObject {
 	 * @return occurrence count
 	 * 
 	 */
-	public long occurence() {
+	public long occurrence() {
 		return count.get();
 	}
-	
+
 	/**
 	 * Increment error occurrence count by a given delta
 	 * 
-	 * @param delta amount
+	 * @param delta
+	 *            amount
 	 * @return occurrence count
 	 * 
 	 */
 	public long occurence(long delta) {
 		return count.addAndGet(delta);
 	}
-	
+
 	@Override
 	public String toString() {
 		return super.toString() 
