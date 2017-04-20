@@ -43,9 +43,9 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
- * This class implements a buffered event sink, which buffers events into a memory queue and then
- * flushes it to a specified out sink using a separate thread. {@code BufferedEvenSink} decouples
- * writer from the actual sink write and can improve performance during bursts.
+ * This class implements a buffered event sink, which buffers events into a memory queue and then flushes it to a
+ * specified out sink using a separate thread. {@code BufferedEvenSink} decouples writer from the actual sink write and
+ * can improve performance during bursts.
  * </p>
  *
  *
@@ -71,7 +71,7 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	private Source source;
 	private EventSink outSink = null;
 	private BufferedEventSinkFactory factory;
-	
+
 	// sink stat counters
 	private AtomicLong totalCount = new AtomicLong(0);
 	private AtomicLong signalCount = new AtomicLong(0);
@@ -94,10 +94,10 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 		factory = f;
 		outSink = sink;
 		block = blocking;
-		outSink.addSinkErrorListener(new BufferedSinkErrorListener());
+		outSink.addSinkErrorListener(new BufferedSinkErrorListener(this));
 		outSink.filterOnLog(false); // disable filtering on the underlying sink (prevent double filters)
 	}
-	
+
 	/**
 	 * Set maximum signal timeout. 
 	 * 
@@ -109,7 +109,7 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	}
 
 	/**
-	 * Set maximum signal timeout in milliseconds 
+	 * Set maximum signal timeout in milliseconds
 	 * 
 	 * @param duration time
 	 */
@@ -118,14 +118,14 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	}
 
 	/**
-	 * Get maximum signal timeout in milliseconds 
+	 * Get maximum signal timeout in milliseconds
 	 * 
 	 * @return maximum flush timeout in milliseconds
 	 */
 	public long getSignalTimeout() {
 		return signalTimeout;
 	}
-	
+
 	/**
 	 * Obtain total number of events/log messages dropped since last reset.
 	 *
@@ -158,43 +158,44 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	public void setLimiter(EventLimiter limiter) {
 		outSink.setLimiter(limiter);
 	}
-	
+
 	@Override
 	public EventLimiter getLimiter() {
 		return outSink.getLimiter();
 	}
-	
-	@Override
-    public String getName() {
-	    return outSink.getName();
-    }
 
 	@Override
-    public void addSinkErrorListener(SinkErrorListener listener) {
+	public String getName() {
+		return outSink.getName();
+	}
+
+	@Override
+	public void addSinkErrorListener(SinkErrorListener listener) {
 		outSink.addSinkErrorListener(listener);
 	}
 
 	@Override
-    public void addSinkEventFilter(SinkEventFilter listener) {
+	public void addSinkEventFilter(SinkEventFilter listener) {
 		outSink.addSinkEventFilter(listener);
 	}
 
 	@Override
-    public void addSinkLogEventListener(SinkLogEventListener listener) {
+	public void addSinkLogEventListener(SinkLogEventListener listener) {
 		outSink.addSinkLogEventListener(listener);
-    }
+	}
 
 	@Override
-    public boolean isSet(OpLevel sev) {
-	    return outSink.isSet(sev);
-    }
+	public boolean isSet(OpLevel sev) {
+		return outSink.isSet(sev);
+	}
 
 	@Override
-    public void write(Object msg, Object... args) throws IOException, InterruptedException {
+	public void write(Object msg, Object... args) throws IOException, InterruptedException {
 		_checkState();
 		String txtMsg = String.valueOf(msg);
 		if (isLoggable(OpLevel.NONE, txtMsg, args)) {
-			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, getSource(), OpLevel.NONE, (ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, txtMsg, resolveArguments(args));
+			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, getSource(), OpLevel.NONE,
+					(ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT, txtMsg, resolveArguments(args));
 			_writeEvent(sinkEvent, block);
 		} else {
 			skipCount.incrementAndGet();
@@ -202,7 +203,7 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	}
 
 	@Override
-    public void log(TrackingActivity activity) {
+	public void log(TrackingActivity activity) {
 		_checkState();
 		if (isLoggable(activity)) {
 			if (ttl != TTL.TTL_CONTEXT) activity.setTTL(ttl);
@@ -214,7 +215,7 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	}
 
 	@Override
-    public void log(TrackingEvent event) {
+	public void log(TrackingEvent event) {
 		_checkState();
 		if (isLoggable(event)) {
 			if (ttl != TTL.TTL_CONTEXT) event.setTTL(ttl);
@@ -223,10 +224,10 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 		} else {
 			skipCount.incrementAndGet();
 		}
-    }
+	}
 
 	@Override
-    public void log(Snapshot snapshot) {
+	public void log(Snapshot snapshot) {
 		_checkState();
 		if (isLoggable(snapshot)) {
 			if (ttl != TTL.TTL_CONTEXT) snapshot.setTTL(ttl);
@@ -235,20 +236,20 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 		} else {
 			skipCount.incrementAndGet();
 		}
-    }
+	}
 
 	@Override
-    public void log(OpLevel sev, String msg, Object... args) {
+	public void log(OpLevel sev, String msg, Object... args) {
 		log(source, sev, msg, args);
-    }
+	}
 
 	@Override
-    public void log(Source src, OpLevel sev, String msg, Object... args) {
-		log((ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, src, sev, msg, args);
-    }
+	public void log(Source src, OpLevel sev, String msg, Object... args) {
+		log((ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT, src, sev, msg, args);
+	}
 
 	@Override
-    public void log(long ttl_sec, Source src, OpLevel sev, String msg, Object... args) {
+	public void log(long ttl_sec, Source src, OpLevel sev, String msg, Object... args) {
 		_checkState();
 		if (isLoggable(sev, msg, args)) {
 			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, src, sev, ttl_sec, msg, resolveArguments(args));
@@ -256,7 +257,7 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 		} else {
 			skipCount.incrementAndGet();
 		}
-    }
+	}
 
 	private void _writeEvent(SinkLogEvent sinkEvent, boolean sync) {
 		totalCount.incrementAndGet();
@@ -271,66 +272,66 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 			if (!flag) {
 				dropCount.incrementAndGet();
 			}
-		}		
+		}
 	}
-	
+
 	@Override
-    public void removeSinkErrorListener(SinkErrorListener listener) {
+	public void removeSinkErrorListener(SinkErrorListener listener) {
 		outSink.removeSinkErrorListener(listener);
-    }
+	}
 
 	@Override
-    public void removeSinkEventFilter(SinkEventFilter listener) {
+	public void removeSinkEventFilter(SinkEventFilter listener) {
 		outSink.removeSinkEventFilter(listener);
-    }
+	}
 
 	@Override
-    public void removeSinkLogEventListener(SinkLogEventListener listener) {
+	public void removeSinkLogEventListener(SinkLogEventListener listener) {
 		outSink.removeSinkLogEventListener(listener);
-    }
+	}
 
 	@Override
-    public Object getSinkHandle() {
-	    return outSink;
-    }
+	public Object getSinkHandle() {
+		return outSink;
+	}
 
 	@Override
-    public boolean isOpen() {
-	    return true;
-    }
+	public boolean isOpen() {
+		return true;
+	}
 
 	@Override
-    public void open() {
+	public void open() {
 		// open asynchronously PooledLogger should handle it
 		// outSink.open();
 	}
 
 	@Override
-    public void close() throws IOException {
+	public void close() throws IOException {
 		signal(SinkLogEvent.SIGNAL_CLOSE, signalTimeout, TimeUnit.MILLISECONDS);
-    }
+	}
 
 	@Override
-    public Map<String, Object> getStats() {
-	    Map<String, Object> stats = outSink.getStats();
-	    getStats(stats);
-	    return stats;
-    }
+	public Map<String, Object> getStats() {
+		Map<String, Object> stats = outSink.getStats();
+		getStats(stats);
+		return stats;
+	}
 
 	@Override
-    public KeyValueStats getStats(Map<String, Object> stats) {
-	    stats.put(Utils.qualify(this, KEY_OBJECTS_TOTAL), totalCount.get());
-	    stats.put(Utils.qualify(this, KEY_OBJECTS_DROPPED), dropCount.get());
-	    stats.put(Utils.qualify(this, KEY_OBJECTS_SKIPPED), skipCount.get());
-	    stats.put(Utils.qualify(this, KEY_OBJECTS_REQUEUED), rqCount.get());
-	    stats.put(Utils.qualify(this, KEY_FLUSH_COUNT), signalCount.get());
-	    stats.put(Utils.qualify(this, KEY_TOTAL_ERRORS), errorCount.get());
-	    factory.getPooledLogger().getStats(stats);
-	    return outSink.getStats(stats);
-    }
+	public KeyValueStats getStats(Map<String, Object> stats) {
+		stats.put(Utils.qualify(this, KEY_OBJECTS_TOTAL), totalCount.get());
+		stats.put(Utils.qualify(this, KEY_OBJECTS_DROPPED), dropCount.get());
+		stats.put(Utils.qualify(this, KEY_OBJECTS_SKIPPED), skipCount.get());
+		stats.put(Utils.qualify(this, KEY_OBJECTS_REQUEUED), rqCount.get());
+		stats.put(Utils.qualify(this, KEY_FLUSH_COUNT), signalCount.get());
+		stats.put(Utils.qualify(this, KEY_TOTAL_ERRORS), errorCount.get());
+		factory.getPooledLogger().getStats(stats);
+		return outSink.getStats(stats);
+	}
 
 	@Override
-    public void resetStats() {
+	public void resetStats() {
 		totalCount.set(0);
 		signalCount.set(0);
 		dropCount.set(0);
@@ -341,12 +342,12 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	}
 
 	@Override
-    public EventFormatter getEventFormatter() {
-	    return outSink.getEventFormatter();
-    }
+	public EventFormatter getEventFormatter() {
+		return outSink.getEventFormatter();
+	}
 
 	@Override
-    public void setSource(Source src) {
+	public void setSource(Source src) {
 		source = src;
 		if (outSink != null) {
 			outSink.setSource(source);
@@ -354,9 +355,9 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	}
 
 	@Override
-    public Source getSource() {
-	    return source;
-    }
+	public Source getSource() {
+		return source;
+	}
 
 	/**
 	 * Convert object array into an array of strings
@@ -375,130 +376,126 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	}
 
 	/**
-	 * Obtain {@link EventSinkFactory} associated with
-	 * this sink.
+	 * Obtain {@link EventSinkFactory} associated with this sink.
 	 *
 	 * @return sink factory instance
 	 */
 	public EventSinkFactory getFactory() {
 		return this.factory;
 	}
-	
+
 	/**
 	 * Override this method to check state of the sink before logging occurs.
 	 *
 	 * @throws IllegalStateException if sink is in wrong state
 	 */
-    protected void _checkState() throws IllegalStateException {
-    	AbstractEventSink.checkState(this);
-    }
+	protected void _checkState() throws IllegalStateException {
+		AbstractEventSink.checkState(this);
+	}
 
 	@Override
-    public boolean isLoggable(OpLevel level, String msg, Object... args) {
-	    return outSink.isLoggable(level, msg, args);
-    }
+	public boolean isLoggable(OpLevel level, String msg, Object... args) {
+		return outSink.isLoggable(level, msg, args);
+	}
 
 	@Override
-    public boolean isLoggable(Source source, OpLevel level, String msg, Object... args) {
-	    return outSink.isLoggable(getTTL(), source, level, msg, args);
-    }
+	public boolean isLoggable(Source source, OpLevel level, String msg, Object... args) {
+		return outSink.isLoggable(getTTL(), source, level, msg, args);
+	}
 
 	@Override
-    public boolean isLoggable(long ttl_sec, Source source, OpLevel level, String msg, Object... args) {
-	    return outSink.isLoggable(ttl_sec, source, level, msg, args);
-    }
+	public boolean isLoggable(long ttl_sec, Source source, OpLevel level, String msg, Object... args) {
+		return outSink.isLoggable(ttl_sec, source, level, msg, args);
+	}
 
 	@Override
-    public boolean isLoggable(Snapshot snapshot) {
-	    return outSink.isLoggable(snapshot);
-    }
+	public boolean isLoggable(Snapshot snapshot) {
+		return outSink.isLoggable(snapshot);
+	}
 
 	@Override
-    public boolean isLoggable(TrackingActivity activity) {
-	    return outSink.isLoggable(activity);
-    }
+	public boolean isLoggable(TrackingActivity activity) {
+		return outSink.isLoggable(activity);
+	}
 
 	@Override
-    public boolean isLoggable(TrackingEvent event) {
-	    return outSink.isLoggable(event);
-    }
+	public boolean isLoggable(TrackingEvent event) {
+		return outSink.isLoggable(event);
+	}
 
 	@Override
-    public EventSink filterOnLog(boolean flag) {
-	    return outSink.filterOnLog(false);
-    }
+	public EventSink filterOnLog(boolean flag) {
+		return outSink.filterOnLog(false);
+	}
 
 	@Override
-    public long getTTL() {
-	    return ttl;
-    }
+	public long getTTL() {
+		return ttl;
+	}
 
 	@Override
-    public void setTTL(long ttl) {
+	public void setTTL(long ttl) {
 		this.ttl = ttl;
 	}
 
 	@Override
-    public boolean errorState() {
-	    return outSink.errorState();
-    }
+	public boolean errorState() {
+		return outSink.errorState();
+	}
 
 	@Override
-    public Throwable getLastError() {
-	    return outSink.getLastError();
-    }
+	public Throwable getLastError() {
+		return outSink.getLastError();
+	}
 
 	@Override
-    public long getLastErrorTime() {
-	    return outSink.getLastErrorTime();
-    }
+	public long getLastErrorTime() {
+		return outSink.getLastErrorTime();
+	}
 
 	@Override
-    public long getErrorCount() {
-	    return outSink.getErrorCount();
-    }
+	public long getErrorCount() {
+		return outSink.getErrorCount();
+	}
 
 	@Override
-    public Throwable setErrorState(Throwable e) {
-	    return outSink.setErrorState(e);
-    }
+	public Throwable setErrorState(Throwable e) {
+		return outSink.setErrorState(e);
+	}
 
 	@Override
-    public void flush() throws IOException {	
+	public void flush() throws IOException {
 		signal(SinkLogEvent.SIGNAL_FLUSH, signalTimeout, TimeUnit.MILLISECONDS);
 	}
-	
+
 	@Override
-    public void shutdown(Throwable ex) throws IOException {
+	public void shutdown(Throwable ex) throws IOException {
 		factory.getPooledLogger().shutdown(ex);
 		signal(SinkLogEvent.SIGNAL_SHUTDOWN, signalTimeout, TimeUnit.MILLISECONDS);
-    }
+	}
 
 	/**
-	 * Send a signal to the underlying sink and wait for
-	 * signal to be processed up to a max time.
+	 * Send a signal to the underlying sink and wait for signal to be processed up to a max time.
 	 *
 	 * @param signalType type of signal to send
 	 * @param wait max time to wait
 	 * @param tunit time unit for wait
 	 * @return sink factory instance
 	 */
-   protected BufferedEventSink signal(int signalType, long wait, TimeUnit tunit) throws IOException {	
-    	signalCount.incrementAndGet();
+	protected BufferedEventSink signal(int signalType, long wait, TimeUnit tunit) throws IOException {
+		signalCount.incrementAndGet();
 		_writeEvent(new SinkLogEvent(outSink, Thread.currentThread(), signalType), true);
-		LockSupport.parkNanos(this, tunit.toNanos(wait));	
+		LockSupport.parkNanos(this, tunit.toNanos(wait));
 		return this;
 	}
-    
+
 	/**
-	 * Handle failed event by retrying to process it or
-	 * dropping it depending on if it is possible to retry
-	 * processing.
+	 * Handle failed event by retrying to process it or dropping it depending on if it is possible to retry processing.
 	 *
 	 * @param ev sink error event
 	 * @return sink factory instance
 	 */
-   protected BufferedEventSink handleError(SinkError ev) {
+	protected BufferedEventSink handleError(SinkError ev) {
 		errorCount.incrementAndGet();
 		if (!factory.getPooledLogger().isDQfull()) {
 			SinkLogEvent event = ev.getSinkEvent();
@@ -508,5 +505,5 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 			dropCount.incrementAndGet();
 		}
 		return this;
-    }
+	}
 }

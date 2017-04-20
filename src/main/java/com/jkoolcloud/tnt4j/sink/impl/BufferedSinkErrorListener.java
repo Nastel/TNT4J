@@ -31,6 +31,12 @@ import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
  *
  */
 public class BufferedSinkErrorListener implements SinkErrorListener {
+	private BufferedEventSink bSink;
+
+	public BufferedSinkErrorListener(BufferedEventSink bSink) {
+		this.bSink = bSink;
+	}
+
 	@Override
 	public void sinkError(SinkError ev) {
 		Sink evSink = ev.getSink();
@@ -38,6 +44,8 @@ public class BufferedSinkErrorListener implements SinkErrorListener {
 		if (evSink instanceof BufferedEventSink) {
 			BufferedEventSink sink = (BufferedEventSink) evSink;
 			sink.handleError(ev);
+		} else {
+			bSink.handleError(ev);
 		}
 	}
 }
