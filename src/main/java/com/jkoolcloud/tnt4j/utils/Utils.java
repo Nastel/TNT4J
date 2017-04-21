@@ -128,7 +128,7 @@ public class Utils {
 	 *
 	 * @param localeStr
 	 *            locale string representation
-	 * 
+	 *
 	 * @see org.apache.commons.lang3.LocaleUtils#toLocale(String)
 	 * @return parsed locale object, or {@code null} if can't parse localeStr.
 	 */
@@ -249,7 +249,7 @@ public class Utils {
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			PrintStream ps = new PrintStream(os);
 			ex.printStackTrace(ps);
-			return os.toString("UTF8");
+			return os.toString(UTF8);
 		} catch (UnsupportedEncodingException e) {
 			return ex.toString();
 		}
