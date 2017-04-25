@@ -91,17 +91,23 @@ public class FileEventSink extends AbstractEventSink {
 
 	@Override
     protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
-		fileSink.write(msg, args);
+		PrintStream printer = fileSink.getPrintStream();
+		printer.println(getEventFormatter().format(msg, args));		
+		printer.flush();
 	}
 
 	@Override
     protected void _log(TrackingEvent event) throws IOException {
-        fileSink.write(event);
+		PrintStream printer = fileSink.getPrintStream();
+		printer.println(getEventFormatter().format(event));		
+		printer.flush();
     }
 
 	@Override
     protected void _log(TrackingActivity activity) throws IOException {
-        fileSink.write(activity);
+		PrintStream printer = fileSink.getPrintStream();
+		printer.println(getEventFormatter().format(activity));		
+		printer.flush();
     }
 
 	@Override
