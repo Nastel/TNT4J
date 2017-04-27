@@ -76,6 +76,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	static final String KEY_EXCEPTION_COUNT = "pooled-exceptions";
 	static final String KEY_SIGNAL_COUNT = "pooled-signals";
 	static final String KEY_RECOVERY_COUNT = "pooled-recovery-count";
+	static final String KEY_LAST_SERVICE_TIME_USEC = "pooled-last-service-time-usec";
 	static final String KEY_TOTAL_TIME_USEC = "pooled-total-time-usec";
 	static final String KEY_TOTAL_SERVICE_TIME_USEC = "pooled-total-service-time-usec";
 
@@ -98,8 +99,9 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	AtomicLong totalCount = new AtomicLong(0);
 	AtomicLong exceptionCount = new AtomicLong(0);
 	AtomicLong recoveryCount = new AtomicLong(0);
-	AtomicLong totalNanos = new AtomicLong(0);
-	AtomicLong totalServiceNanos = new AtomicLong(0);
+	AtomicLong totalUsec = new AtomicLong(0);
+	AtomicLong lastServiceUsec = new AtomicLong(0);
+	AtomicLong totalServiceUsec = new AtomicLong(0);
 
     /**
      * Create a pooled logger instance.
@@ -151,8 +153,9 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	    stats.put(Utils.qualify(this, poolName, KEY_EXCEPTION_COUNT), exceptionCount.get());
 	    stats.put(Utils.qualify(this, poolName, KEY_RECOVERY_COUNT), recoveryCount.get());
 	    stats.put(Utils.qualify(this, poolName, KEY_SIGNAL_COUNT), signalCount.get());
-	    stats.put(Utils.qualify(this, poolName, KEY_TOTAL_TIME_USEC), totalNanos.get()/1000);
-	    stats.put(Utils.qualify(this, poolName, KEY_TOTAL_SERVICE_TIME_USEC), totalServiceNanos.get()/1000);
+	    stats.put(Utils.qualify(this, poolName, KEY_LAST_SERVICE_TIME_USEC), lastServiceUsec.get());
+	    stats.put(Utils.qualify(this, poolName, KEY_TOTAL_TIME_USEC), totalUsec.get());
+	    stats.put(Utils.qualify(this, poolName, KEY_TOTAL_SERVICE_TIME_USEC), totalServiceUsec.get());
 	    return this;
     }
 
@@ -163,8 +166,10 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 		reQCount.set(0);
 		signalCount.set(0);
 		totalCount.set(0);
+		totalServiceUsec.set(0);
+		lastServiceUsec.set(0);
 		loggedCount.set(0);
-		totalNanos.set(0);
+		totalUsec.set(0);
 		recoveryCount.set(0);
 		exceptionCount.set(0);
 	}
@@ -238,12 +243,12 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	}
 
 	/**
-	 * Obtain total number nanoseconds spent in logging activities to the actual sink.
+	 * Obtain total number microseconds spent in logging activities to undelying sinks.
 	 *
-	 * @return total number of nanoseconds spent logging to the underlying sink
+	 * @return total number of microseconds spent logging to the underlying sink
 	 */
-	public long getTimeNanos() {
-		return totalNanos.get();
+	public long getTotalUsec() {
+		return totalUsec.get();
 	}
 
 	/**
@@ -595,10 +600,11 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
      * @param start timer in nanoseconds
      */
 	private long eventComplete(long start, SinkLogEvent event) {
-		totalServiceNanos.addAndGet(event.complete());
-		long elaspedNanos = System.nanoTime() - start;
-		totalNanos.addAndGet(elaspedNanos);	
-		return elaspedNanos;
+		long elaspedUsec = (System.nanoTime() - start)/1000;
+		totalServiceUsec.addAndGet(event.complete()/1000);
+		lastServiceUsec.set(elaspedUsec);
+		totalUsec.addAndGet(elaspedUsec);	
+		return elaspedUsec;
 	}
 	
 	/**
