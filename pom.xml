@@ -185,7 +185,7 @@
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
-                        <descriptor>src/assemblies/deployAssembly.xml</descriptor>
+                        <descriptor>src/assembly/deployAssembly.xml</descriptor>
                     </descriptors>
                     <outputDirectory>${release.deploy.dir}</outputDirectory>
                 </configuration>
