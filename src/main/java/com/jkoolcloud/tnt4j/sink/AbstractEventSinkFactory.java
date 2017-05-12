@@ -137,10 +137,15 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 		boolean enabled = Utils.getBoolean("RateLimit", props, false);
 		long timeout = Utils.getLong("RateTimeout", props, EventLimiter.BLOCK_UNTIL_GRANTED);
 		if (enabled) {
-			limiter = new EventLimiter(DefaultLimiterFactory.getInstance().newLimiter(maxmps, maxbps, enabled), timeout, TimeUnit.MILLISECONDS);
+			limiter = newEventLimiterImpl(maxmps, maxbps, enabled, timeout);
 		}
 		eventFilter = (SinkEventFilter) Utils.createConfigurableObject("Filter", "Filter.", config);
 		errorListener = (SinkErrorListener) Utils.createConfigurableObject("ErrorListener", "ErrorListener.", config);
 		eventListener = (SinkLogEventListener) Utils.createConfigurableObject("EventListener", "EventListener.", config);
+	}
+	
+	protected EventLimiter newEventLimiterImpl(double maxmps, double maxbps, boolean enabled, long timeout) {
+		EventLimiter eLimit = new EventLimiter(DefaultLimiterFactory.getInstance().newLimiter(maxmps, maxbps, enabled), timeout, TimeUnit.MILLISECONDS);
+		return eLimit;
 	}
 }

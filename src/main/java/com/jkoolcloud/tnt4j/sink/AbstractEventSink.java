@@ -383,7 +383,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		boolean doLog = filterCheck? isLoggable(activity): true;
 		if (doLog) {
 			try {
-				if (!_limiter(1, 0)) {
+				if (!_limiter(1, 512)) {
 					return;
 				}
 				if (ttl != TTL.TTL_CONTEXT) {
@@ -435,7 +435,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		boolean doLog = filterCheck? isLoggable(snapshot): true;
 		if (doLog) {
 			try {
-				if (!_limiter(1, 0)) {
+				if (!_limiter(1, 128)) {
 					return;
 				}
 				if (ttl != TTL.TTL_CONTEXT) {

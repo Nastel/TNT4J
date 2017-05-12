@@ -140,10 +140,10 @@ public class LimiterImpl implements Limiter {
 		double elapsedSecByMps;
 		int delayCounter = 0;
 
-		elapsedSecByBps = bpsLimiter.acquire(bytes);
+		elapsedSecByBps = bytes > 0? bpsLimiter.acquire(bytes): 0;
 		if (elapsedSecByBps > 0) delayCounter++;
 
-		elapsedSecByMps = mpsLimiter.acquire(msgs);
+		elapsedSecByMps = msgs > 0? mpsLimiter.acquire(msgs): 0;
 		if (elapsedSecByMps > 0) delayCounter++;
 
 		double sleepTime = elapsedSecByBps + elapsedSecByMps;
