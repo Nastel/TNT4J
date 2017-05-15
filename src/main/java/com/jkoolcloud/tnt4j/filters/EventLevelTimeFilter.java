@@ -16,8 +16,13 @@
 package com.jkoolcloud.tnt4j.filters;
 
 import java.util.Map;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.regex.Pattern;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.core.TTL;
 import com.jkoolcloud.tnt4j.source.Source;
@@ -52,18 +57,27 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	public static final String WAIT_USEC = "WaitUsec";
 	public static final String WALL_USEC = "WallUsec";
 	public static final String TTL_SEC = "TTL";
+	public static final String DUPS_SUPPRESS = "SuppressDups";
+	public static final String DUPS_TIMEOUT = "SuppressTimeSec";
+	public static final String DUPS_CACHE_SIZE = "SuppressCacheSize";
 	public static final String MSG_PATTERN = "MsgRegex";
 	public static final String OFF_LEVEL_LABEL = "OFF";
 	public static final int OFF_LEVEL_INT = 100;
 	
-	Pattern msgPattern;
-	String msgRegx = null;
 	long elapsedUsec = -1;
 	long waitUsec = -1;
 	long wallUsec = -1;
+
+	boolean suppressDups = false;
+	long dupTimeoutSec = 30, dupCacheSize = 100;
+
+	Pattern msgPattern;
+	String msgRegx = null;
 	long ttl = TTL.TTL_CONTEXT;
 	int minLevel = OpLevel.INFO.ordinal();
-	Map<String, Object> config = null;
+	
+	ConcurrentMap <String, AtomicLong> pastMsgs;
+	Map<String, Object> config;
 
 	/**
 	 * Create a default filter with <code>OpLevel.INFO</code> as default threshold.
@@ -125,6 +139,9 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 		if (msgPattern != null && !msgPattern.matcher(event.getMessagePattern()).matches()) {
 			return false;
 		}
+		if (checkForDups(event.getMessagePattern()) > 1) {
+			return false;
+		} 		
 		if (ttl != TTL.TTL_CONTEXT) event.setTTL(ttl);
 		return passLevel(event.getSeverity(), sink);
 	}
@@ -139,7 +156,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 		}
 		if (wallUsec >= 0 && activity.getWallTimeUsec() < wallUsec) {
 			return false;
-		}
+		} 
 		if (ttl != TTL.TTL_CONTEXT) activity.setTTL(ttl);
 		return passLevel(activity.getSeverity(), sink);
 	}
@@ -152,7 +169,9 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 
 	@Override
 	public boolean filter(EventSink sink, long ttl, Source source, OpLevel level, String msg, Object... args) {
-		if (msgPattern != null && !msgPattern.matcher(msg).matches()) {
+		if (checkForDups(msg) > 1) {
+			return false;
+		} else if (msgPattern != null && !msgPattern.matcher(msg).matches()) {
 			return false;
 		}
 		return passLevel(level, sink);
@@ -174,6 +193,18 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 		waitUsec = Utils.getLong(WAIT_USEC, settings, waitUsec);
 		wallUsec = Utils.getLong(WALL_USEC, settings, wallUsec);
 		ttl = Utils.getLong(TTL_SEC, settings, ttl);
+		
+		// configure duplicate detection
+		dupTimeoutSec = Utils.getLong(DUPS_TIMEOUT, settings, dupTimeoutSec);
+		dupCacheSize = Utils.getLong(DUPS_CACHE_SIZE, settings, dupCacheSize);
+		suppressDups = Utils.getBoolean(DUPS_SUPPRESS, settings, suppressDups);
+		if (suppressDups) {
+			Cache<String, AtomicLong> cacheImpl = CacheBuilder.newBuilder()
+					.recordStats()
+					.expireAfterWrite(dupTimeoutSec, TimeUnit.SECONDS)
+					.maximumSize(dupCacheSize).build();
+			pastMsgs = cacheImpl.asMap();			
+		}
 
 		msgRegx = Utils.getString(MSG_PATTERN, settings, null);
 		if (msgRegx != null) {
@@ -194,5 +225,18 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	 */
 	private boolean passLevel(OpLevel level, EventSink sink) {
 		return (level.ordinal() >= minLevel) && sink.isSet(level);		
+	}
+	
+	private long checkForDups(String msg) {
+		if (pastMsgs != null) {			
+			AtomicLong ocCounter = pastMsgs.get(msg);
+			if (ocCounter == null) {
+				AtomicLong newCounter = new AtomicLong(0);
+				pastMsgs.putIfAbsent(msg, newCounter);
+				ocCounter = pastMsgs.get(msg);
+			}
+			return ocCounter.incrementAndGet();
+		}
+		return 1;
 	}
 }
