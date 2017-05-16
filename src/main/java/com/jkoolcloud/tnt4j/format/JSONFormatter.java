@@ -146,7 +146,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			        Utils.quote(event.getParentId())).append(ATTR_JSON);
 		}
 		jsonString.append(JSON_SOURCE_LABEL).append(ATTR_SEP).append(Utils.quote(StringEscapeUtils.escapeJson(event.getSource().getName()))).append(ATTR_JSON);
-		String ssn = Utils.isEmpty(event.getSource().getSSN()) ? event.getSource().getSourceFactory().getSSN() : event.getSource().getSSN();
+		String ssn = getSSN(event.getSource());
 		if (!Utils.isEmpty(ssn)) {
 			String escaped = StringEscapeUtils.escapeJson(ssn); // escape double quote chars
 			jsonString.append(JSON_SOURCE_SSN_LABEL).append(ATTR_SEP).append(Utils.quote(escaped)).append(ATTR_JSON);
@@ -289,7 +289,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			        Utils.quote(activity.getParentId())).append(ATTR_JSON);
 		}
 		jsonString.append(JSON_SOURCE_LABEL).append(ATTR_SEP).append(Utils.quote(StringEscapeUtils.escapeJson(activity.getSource().getName()))).append(ATTR_JSON);
-		String ssn = Utils.isEmpty(activity.getSource().getSSN()) ? activity.getSource().getSourceFactory().getSSN() : activity.getSource().getSSN();
+		String ssn = getSSN(activity.getSource());
 		if (!Utils.isEmpty(ssn)) {
 			String escaped = StringEscapeUtils.escapeJson(ssn); // escape double quote chars
 			jsonString.append(JSON_SOURCE_SSN_LABEL).append(ATTR_SEP).append(Utils.quote(escaped)).append(ATTR_JSON);
@@ -427,7 +427,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		Source source = snap.getSource();
 		if (source != null) {
 			jsonString.append(JSON_SOURCE_LABEL).append(ATTR_SEP).append(Utils.quote(StringEscapeUtils.escapeJson(source.getName()))).append(ATTR_JSON);
-			String ssn = Utils.isEmpty(source.getSSN()) ? source.getSourceFactory().getSSN() : source.getSSN();
+			String ssn = getSSN(source);
 			if (!Utils.isEmpty(ssn)) {
 				String escaped = StringEscapeUtils.escapeJson(ssn); // escape double quote chars
 				jsonString.append(JSON_SOURCE_SSN_LABEL).append(ATTR_SEP).append(Utils.quote(escaped)).append(ATTR_JSON);
@@ -497,7 +497,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 
 		if (source != null) {
 			jsonString.append(JSON_SOURCE_LABEL).append(ATTR_SEP).append(Utils.quote(StringEscapeUtils.escapeJson(source.getName()))).append(ATTR_JSON);
-			String ssn = Utils.isEmpty(source.getSSN()) ? source.getSourceFactory().getSSN() : source.getSSN();
+			String ssn = getSSN(source);
 			if (!Utils.isEmpty(ssn)) {
 				String escaped = StringEscapeUtils.escapeJson(ssn); // escape double quote chars
 				jsonString.append(JSON_SOURCE_SSN_LABEL).append(ATTR_SEP).append(Utils.quote(escaped)).append(ATTR_JSON);
@@ -564,5 +564,10 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		newLineFormat = Utils.getBoolean("Newline", settings, newLineFormat);
 		defOpName = Utils.getString("OpName", settings, defOpName);
 		initTags();
+	}
+
+	private static String getSSN(Source source) {
+		String ssn = source.getSSN();
+		return Utils.isEmpty(ssn) ? source.getSourceFactory().getSSN() : ssn;
 	}
 }
