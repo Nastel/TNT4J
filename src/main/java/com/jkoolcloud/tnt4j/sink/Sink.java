@@ -31,27 +31,35 @@ import com.jkoolcloud.tnt4j.core.Handle;
  */
 public interface Sink extends Handle {
 	/**
-	 * This method returns a connection handle associated with
-	 * the message destination.
+	 * This method returns a connection handle associated with the message destination.
 	 *
 	 * @return underlying sink handle.
 	 */
 	Object getSinkHandle();
 
-
 	/**
-	 * This method allows writing to the underlying message destination
+	 * This method allows writing to the underlying message destination.
 	 *
 	 * @param msg message to be written to the sink
 	 * @param args arguments associated with the message
 	 * @throws IOException if error writing to sink
 	 * @throws InterruptedException if interrupted during write operation
 	 */
-	void write(Object msg, Object...args) throws IOException, InterruptedException;
-	
+	void write(Object msg, Object... args) throws IOException, InterruptedException;
+
 	/**
-	 * Flush all buffered write requests (if any) out to sink
-	 *
+	 * Flush all buffered write requests (if any) out to sink.
 	 */
 	void flush() throws IOException;
+
+	/**
+	 * This method reopens this sink by closing and opening it again.
+	 *
+	 * @throws IOException
+	 *             if an I/O error occurs closing or opening handle
+	 * 
+	 * @see #close()
+	 * @see #open()
+	 */
+	void reopen() throws IOException;
 }

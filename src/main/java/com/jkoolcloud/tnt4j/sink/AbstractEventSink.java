@@ -116,18 +116,18 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		Throwable prevError = lastError;
 		errorState = ex != null;
 		if (ex != null) {
-			lastError  = ex;
+			lastError = ex;
 			lastErrorTime = System.currentTimeMillis();
 			errorCount.incrementAndGet();
 		}
 		return prevError;
 	}
-	
+
 	@Override
 	public boolean errorState() {
 		return errorState;
 	}
-	
+
 	@Override
 	public Throwable getLastError() {
 		return lastError;
@@ -142,7 +142,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	public long getErrorCount() {
 		return errorCount.get();
 	}
-	
+
 	@Override
 	public void setSource(Source src) {
 		source = src;
@@ -286,7 +286,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		if (!errorListeners.isEmpty()) {
 			SinkError event = new SinkError(this, msg, ex);
 			notifyListeners(event);
-		} else if (ex != null){
+		} else if (ex != null) {
 			ex.printStackTrace(System.err);
 		}
 	}
@@ -380,7 +380,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public void log(TrackingActivity activity) {
 		_checkState();
-		boolean doLog = filterCheck? isLoggable(activity): true;
+		boolean doLog = filterCheck ? isLoggable(activity) : true;
 		if (doLog) {
 			try {
 				if (!_limiter(1, 512)) {
@@ -406,7 +406,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public void log(TrackingEvent event) {
 		_checkState();
-		boolean doLog = filterCheck? isLoggable(event): true;
+		boolean doLog = filterCheck ? isLoggable(event) : true;
 		if (doLog) {
 			try {
 				if (!_limiter(1, event.getSize())) {
@@ -432,7 +432,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public void log(Snapshot snapshot) {
 		_checkState();
-		boolean doLog = filterCheck? isLoggable(snapshot): true;
+		boolean doLog = filterCheck ? isLoggable(snapshot) : true;
 		if (doLog) {
 			try {
 				if (!_limiter(1, 128)) {
@@ -467,9 +467,9 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public void log(long ttl_sec, Source src, OpLevel sev, String msg, Object... args) {
 		_checkState();
-		boolean doLog = filterCheck? isLoggable(ttl_sec, source, sev, msg): true;
+		boolean doLog = filterCheck ? isLoggable(ttl_sec, source, sev, msg) : true;
 		if (doLog) {
-			long nttl = ((ttl_sec != TTL.TTL_CONTEXT)? ttl_sec: TTL.TTL_DEFAULT);
+			long nttl = ((ttl_sec != TTL.TTL_CONTEXT) ? ttl_sec : TTL.TTL_DEFAULT);
 			try {
 				if (!_limiter(1, msg.length())) {
 					return;
@@ -488,7 +488,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	}
 
 	@Override
-	public void write(Object msg, Object...args) throws IOException, InterruptedException {
+	public void write(Object msg, Object... args) throws IOException, InterruptedException {
 		try {
 			if (!_limiter(msg)) {
 				return;
@@ -514,17 +514,17 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	public void setTTL(long ttl) {
 		this.ttl = ttl;
 	}
-	
+
 	@Override
 	public void setLimiter(EventLimiter limit) {
 		this.limiter = limit;
 	}
-	
+
 	@Override
 	public EventLimiter getLimiter() {
 		return limiter;
 	}
-	
+
 	@Override
 	public void flush() throws IOException {
 	}
@@ -535,19 +535,19 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 * @param sink event sink
 	 * @throws IllegalStateException if sink is in wrong state
 	 */
-    public static void checkState(EventSink sink) throws IllegalStateException {
+	public static void checkState(EventSink sink) throws IllegalStateException {
 		if (sink == null || !sink.isOpen())
 			throw new IllegalStateException("Sink closed or unavailable: sink=" + sink);
-    }
+	}
 
 	/**
 	 * Override this method to check state of the sink before logging occurs.
 	 *
 	 * @throws IllegalStateException if sink is in wrong state
 	 */
-    protected void _checkState() throws IllegalStateException {
-    	checkState(this);
-    }
+	protected void _checkState() throws IllegalStateException {
+		checkState(this);
+	}
 
 	/**
 	 * Applies rate limiting on mps/bps
@@ -556,12 +556,12 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 * @param byteCount bytes sent
 	 * @return true if permit obtained, false otherwise
 	 */
-    protected boolean _limiter(int msgCount, int byteCount) {
-    	if (limiter != null) {
-    		return limiter.obtain(msgCount, byteCount);
-    	}
-    	return true;
-    }
+	protected boolean _limiter(int msgCount, int byteCount) {
+		if (limiter != null) {
+			return limiter.obtain(msgCount, byteCount);
+		}
+		return true;
+	}
 
 	/**
 	 * Applies rate limiting on mps/bps
@@ -569,12 +569,12 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 * @param obj object to be sent
 	 * @return true if permit obtained, false otherwise
 	 */
-    protected boolean _limiter(Object obj) {
-    	if (limiter != null) {
-    		return limiter.obtain(1, String.valueOf(obj).length());
-    	} 
-    	return true;
-    }
+	protected boolean _limiter(Object obj) {
+		if (limiter != null) {
+			return limiter.obtain(1, String.valueOf(obj).length());
+		}
+		return true;
+	}
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.
@@ -592,7 +592,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 * @throws Exception if error logging tracking activity
 	 * @see TrackingActivity
 	 */
-	protected abstract void _log(TrackingActivity activity) throws Exception;;
+	protected abstract void _log(TrackingActivity activity) throws Exception;
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.
@@ -631,5 +631,11 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 * @throws IOException if error writing to sink
 	 * @throws InterruptedException if interrupted during write operation
 	 */
-	protected abstract void _write(Object msg, Object...args) throws IOException, InterruptedException;
+	protected abstract void _write(Object msg, Object... args) throws IOException, InterruptedException;
+
+	@Override
+	public void reopen() throws IOException {
+		this.close();
+		this.open();
+	}
 }

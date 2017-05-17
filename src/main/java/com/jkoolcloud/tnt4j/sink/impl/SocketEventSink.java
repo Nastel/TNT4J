@@ -184,14 +184,14 @@ public class SocketEventSink extends AbstractEventSink {
 
 	private void retryWrite(String msg, Throwable e) throws IOException {
 		try {
-			reconnect();
+			reopen();
 			writeLine(msg, true);
 		} catch (IOException ioe) {
 			if (e != null) ioe.initCause(e);
 			throw ioe;
 		}
 	}
-	
+
 	@Override
 	public boolean isSet(OpLevel sev) {
 		return logSink != null ? logSink.isSet(sev) : true;
@@ -202,11 +202,6 @@ public class SocketEventSink extends AbstractEventSink {
 		if (!isOpen()) {
 			throw new IllegalStateException("Sink closed: " + hostName + ":" + this.portNo + ", socket=" + socketSink);
 		}
-	}
-
-	private void reconnect() throws IOException {
-		this.close();
-		this.open();
 	}
 
 	private boolean canForward(OpLevel sev) {

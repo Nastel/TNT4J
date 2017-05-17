@@ -99,7 +99,7 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	}
 
 	/**
-	 * Set maximum signal timeout. 
+	 * Set maximum signal timeout.
 	 * 
 	 * @param duration time
 	 * @param units time unit
@@ -505,5 +505,11 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 			dropCount.incrementAndGet();
 		}
 		return this;
+	}
+
+	@Override
+	public void reopen() throws IOException {
+		this.close();
+		this.open();
 	}
 }

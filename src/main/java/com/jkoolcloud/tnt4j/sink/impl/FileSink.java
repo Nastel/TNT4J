@@ -20,10 +20,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
-import com.jkoolcloud.tnt4j.format.Formatter;
 import com.jkoolcloud.tnt4j.format.DefaultFormatter;
+import com.jkoolcloud.tnt4j.format.Formatter;
 import com.jkoolcloud.tnt4j.sink.Sink;
-
 
 /**
  * <p>
@@ -44,7 +43,7 @@ public class FileSink implements Sink {
 	protected PrintStream printer = null;
 	protected Formatter formatter = null;
 	protected boolean append = true;
-	
+
 	/**
 	 * Create a file based sink based on given filename, append flag.
 	 * 
@@ -85,10 +84,10 @@ public class FileSink implements Sink {
 	 * 
 	 * @return print stream
 	 */
-    public PrintStream getPrintStream() {
-	    return printer;
-    }
-	
+	public PrintStream getPrintStream() {
+		return printer;
+	}
+
 	/**
 	 * Return the file name associated with this sink
 	 * 
@@ -97,49 +96,57 @@ public class FileSink implements Sink {
 	public String getFileName() {
 		return file.getName();
 	}
-	
-	@Override
-    public Object getSinkHandle() {
-	    return printer;
-    }
 
 	@Override
-    public synchronized void close() {
-		if (printer != null) printer.close();
+	public Object getSinkHandle() {
+		return printer;
+	}
+
+	@Override
+	public synchronized void close() {
+		if (printer != null) {
+			printer.close();
+		}
 		printer = null;
 	}
 
 	@Override
-    public synchronized void open() throws IOException {
+	public synchronized void open() throws IOException {
 		if (printer == null) {
 			printer = new PrintStream(new FileOutputStream(file, append));
 		}
-    }
+	}
 
 	@Override
-    public boolean isOpen() {
-	    return printer != null;
-    }	
+	public boolean isOpen() {
+		return printer != null;
+	}
 
 	@Override
-    public void write(Object msg, Object...args) throws IOException {
+	public void write(Object msg, Object... args) throws IOException {
 		if (isOpen()) {
-			printer.println(formatter.format(msg, args));		
+			printer.println(formatter.format(msg, args));
 			printer.flush();
 		} else {
 			throw new IOException("Sink is closed, sink.file=" + file);
 		}
-    }
-	
+	}
+
 	@Override
 	public String toString() {
 		return super.toString() + "{file: " + file + ", append: " + append + ", is.open: " + isOpen() + "}";
 	}
 
 	@Override
-    public void flush() {
+	public void flush() {
 		if (isOpen()) {
 			printer.flush();
 		}
+	}
+
+	@Override
+	public void reopen() throws IOException {
+		this.close();
+		this.open();
 	}
 }
