@@ -437,11 +437,11 @@ public class TrackerConfigStore extends TrackerConfig {
 			if (line != null) {
 				line = line.trim();
 				if ((line.isEmpty())
-						|| line.startsWith("{")
 						|| line.startsWith(";")
 						|| line.startsWith("#")
 						|| line.startsWith("//")
-						|| line.endsWith("}")) {
+						|| line.startsWith("{")
+						|| line.startsWith("}")) {
 					continue;
 				}
 				int sepIndex = line.indexOf(":");
