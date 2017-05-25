@@ -53,7 +53,7 @@
 
         <skipTests>true</skipTests>
         <gpg.skip.sign>true</gpg.skip.sign>
-        <build.assemblies.phase>package</build.assemblies.phase>
+        <build.assemblies.attach>false</build.assemblies.attach>
 
         <commons.lang.version>3.5</commons.lang.version>
         <commons.codec.version>1.10</commons.codec.version>
@@ -199,12 +199,13 @@
                     <descriptors>
                         <descriptor>src/assembly/deployAssembly.xml</descriptor>
                     </descriptors>
+                    <attach>${build.assemblies.attach}</attach>
                     <outputDirectory>${release.deploy.dir}</outputDirectory>
                 </configuration>
                 <executions>
                     <execution>
                         <id>deploy-assembly</id>
-                        <phase>${build.assemblies.phase}</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>single</goal>
                         </goals>
