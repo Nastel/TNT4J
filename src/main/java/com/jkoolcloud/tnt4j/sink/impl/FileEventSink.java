@@ -18,18 +18,18 @@ package com.jkoolcloud.tnt4j.sink.impl;
 import java.io.IOException;
 import java.io.PrintStream;
 
+import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
+import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
 import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.source.Source;
-import com.jkoolcloud.tnt4j.core.OpLevel;
-import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 
 /**
  * <p>
- * This class implements {@link EventSink} with file  {@link FileSink} as the underlying storage.
+ * This class implements {@link EventSink} with file {@link FileSink} as the underlying storage.
  * </p>
  * 
  * 
@@ -43,7 +43,7 @@ import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 public class FileEventSink extends AbstractEventSink {
 
 	FileSink fileSink;
-	
+
 	/**
 	 * Create a file based event sink instance.
 	 * 
@@ -53,77 +53,73 @@ public class FileEventSink extends AbstractEventSink {
 	 * @param frm event formatter to be used for formatting event entries
 	 */
 	public FileEventSink(String nm, String fileName, boolean append, EventFormatter frm) {
-	    super(nm, frm);
-	    fileSink = new FileSink(fileName, append, frm);
-    }
+		super(nm, frm);
+		fileSink = new FileSink(fileName, append, frm);
+	}
 
 	@Override
-    public boolean isSet(OpLevel sev) {
-	    return true;
-    }
+	public boolean isSet(OpLevel sev) {
+		return true;
+	}
 
 	@Override
-    public Object getSinkHandle() {
-	    return fileSink;
-    }
+	public Object getSinkHandle() {
+		return fileSink;
+	}
 
 	@Override
-    public boolean isOpen() {
-	    return fileSink != null && fileSink.isOpen();
-    }
+	public boolean isOpen() {
+		return fileSink != null && fileSink.isOpen();
+	}
 
 	@Override
-    public void open() throws IOException {
+	public void open() throws IOException {
 		fileSink.open();
 	}
 
 	@Override
-    public void close() throws IOException {
+	public void close() throws IOException {
 		fileSink.close();
 	}
 
 	@Override
-    protected void _checkState() throws IllegalStateException {
+	protected void _checkState() throws IllegalStateException {
 		if (fileSink == null || !fileSink.isOpen()) {
 			throw new IllegalStateException("Sink is not defined or closed");
 		}
 	}
 
 	@Override
-    protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
-		PrintStream printer = fileSink.getPrintStream();
-		printer.println(getEventFormatter().format(msg, args));		
-		printer.flush();
+	protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
+		_writeLog(getEventFormatter().format(msg, args));
 	}
 
 	@Override
-    protected void _log(TrackingEvent event) throws IOException {
-		PrintStream printer = fileSink.getPrintStream();
-		printer.println(getEventFormatter().format(event));		
-		printer.flush();
-    }
+	protected void _log(TrackingEvent event) throws IOException {
+		_writeLog(getEventFormatter().format(event));
+	}
 
 	@Override
-    protected void _log(TrackingActivity activity) throws IOException {
-		PrintStream printer = fileSink.getPrintStream();
-		printer.println(getEventFormatter().format(activity));		
-		printer.flush();
-    }
+	protected void _log(TrackingActivity activity) throws IOException {
+		_writeLog(getEventFormatter().format(activity));
+	}
 
 	@Override
-    protected void _log(Snapshot snapshot) {
-		PrintStream printer = fileSink.getPrintStream();
-		printer.println(getEventFormatter().format(snapshot));		
-		printer.flush();
-	}	
+	protected void _log(Snapshot snapshot) {
+		_writeLog(getEventFormatter().format(snapshot));
+	}
 
 	@Override
-    protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) {
+	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) {
+		_writeLog(getEventFormatter().format(ttl, src, sev, msg, args));
+	}
+
+	protected void _writeLog(String msg) {
 		PrintStream printer = fileSink.getPrintStream();
-		printer.println(getEventFormatter().format(ttl, src, sev, msg, args));		
+		printer.println(msg);
 		printer.flush();
-	}	
-	
+	}
+
 	@Override
 	public void flush() {
 		if (isOpen()) {
