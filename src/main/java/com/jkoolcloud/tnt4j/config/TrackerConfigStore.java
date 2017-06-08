@@ -15,33 +15,24 @@
  */
 package com.jkoolcloud.tnt4j.config;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
-import com.jkoolcloud.tnt4j.dump.DumpSinkFactory;
-import com.jkoolcloud.tnt4j.source.Source;
-import com.jkoolcloud.tnt4j.source.SourceFactory;
+import org.apache.commons.lang3.StringUtils;
+
 import com.jkoolcloud.tnt4j.core.ActivityListener;
 import com.jkoolcloud.tnt4j.core.OpLevel;
+import com.jkoolcloud.tnt4j.dump.DumpSinkFactory;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.locator.GeoLocator;
 import com.jkoolcloud.tnt4j.repository.TokenRepository;
 import com.jkoolcloud.tnt4j.selector.TrackingSelector;
-import com.jkoolcloud.tnt4j.sink.DefaultEventSinkFactory;
-import com.jkoolcloud.tnt4j.sink.EventSink;
-import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
-import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
-import com.jkoolcloud.tnt4j.sink.SinkEventFilter;
-import com.jkoolcloud.tnt4j.sink.SinkLogEventListener;
+import com.jkoolcloud.tnt4j.sink.*;
+import com.jkoolcloud.tnt4j.source.Source;
+import com.jkoolcloud.tnt4j.source.SourceFactory;
 import com.jkoolcloud.tnt4j.source.SourceType;
 import com.jkoolcloud.tnt4j.tracker.TrackerFactory;
 import com.jkoolcloud.tnt4j.utils.Utils;
@@ -50,11 +41,11 @@ import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
 
 /**
  * <p>
- * This class consolidates all configuration for {@link TrackerFactory} using a configuration file.
- * Developers should use this class and override default configuration with user defined elements. Configuration is
- * loaded from a file specified by {@code tnt4j.config} property which set to {@code tnt4j.properties} by
- * default. Configuration specifies factories, formatters, token repositories and other elements required by the
- * framework using JSON like convention.
+ * This class consolidates all configuration for {@link TrackerFactory} using a configuration file. Developers should
+ * use this class and override default configuration with user defined elements. Configuration is loaded from a file or
+ * string specified by {@code tnt4j.config} property which set to {@code tnt4j.properties} by default. Configuration
+ * specifies factories, formatters, token repositories and other elements required by the framework using JSON like
+ * convention.
  * </p>
  * <p>
  * Below is a example of the sample configuration file (tnt4j.properties):
@@ -134,8 +125,8 @@ public class TrackerConfigStore extends TrackerConfig {
 	private String configFile = null;
 
 	/**
-	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
-	 * {@code tnt4j.config} property.
+	 * Create an default configuration with a specific source name. Configuration is loaded from a file or string
+	 * specified by {@code tnt4j.config} property.
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
@@ -145,8 +136,8 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
-	 * {@code tnt4j.config} property.
+	 * Create an default configuration with a specific source name. Configuration is loaded from a file or string
+	 * specified by {@code tnt4j.config} property.
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
@@ -158,8 +149,8 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
-	 * {@code tnt4j.config} property if fileName is null.
+	 * Create an default configuration with a specific source name. Configuration is loaded from a file or string
+	 * specified by {@code tnt4j.config} property if fileName is null.
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
@@ -170,12 +161,11 @@ public class TrackerConfigStore extends TrackerConfig {
 	 */
 	protected TrackerConfigStore(String source, SourceType type, String fileName) {
 		super(source, type);
-		initConfig(fileName);
+		initConfigExt(fileName);
 	}
 
 	/**
-	 * Create an default configuration with a specific source name. Configuration is loaded from a
-	 * key/Properties map.
+	 * Create an default configuration with a specific source name. Configuration is loaded from a key/Properties map.
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
@@ -190,8 +180,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Create an default configuration with a specific source name. Configuration is loaded from a
-	 * key/Properties map.
+	 * Create an default configuration with a specific source name. Configuration is loaded from a key/Properties map.
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
@@ -206,8 +195,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Create an default configuration with a specific source name. Configuration is loaded from a
-	 * key/Properties map.
+	 * Create an default configuration with a specific source name. Configuration is loaded from a key/Properties map.
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
@@ -233,8 +221,8 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Create an default configuration with a specific source name. Configuration is loaded from a file specified by
-	 * {@code tnt4j.config} property.
+	 * Create an default configuration with a specific source name. Configuration is loaded from a file or string
+	 * specified by {@code tnt4j.config} property.
 	 *
 	 * @param source
 	 *            source instance associated with the configuration
@@ -253,7 +241,21 @@ public class TrackerConfigStore extends TrackerConfig {
 	 */
 	protected TrackerConfigStore(Source source, String fileName) {
 		super(source);
-		initConfig(fileName);
+		initConfigExt(fileName);
+	}
+
+	private void initConfigExt(String fileName) {
+		if (StringUtils.isEmpty(fileName)) {
+			String cfgData = System.getProperty(TNT4J_PROPERTIES_KEY, TNT4J_PROPERTIES);
+			if (StringUtils.containsAny(cfgData, ";#{}:=")) {
+				// must be not a file path but configuration string itself
+				initConfig(new StringReader(cfgData));
+			} else {
+				initConfig(cfgData);
+			}
+		} else {
+			initConfig(fileName);
+		}
 	}
 
 	private void initConfig(String fileName) {
@@ -265,7 +267,7 @@ public class TrackerConfigStore extends TrackerConfig {
 
 	/**
 	 * Reads configuration data from provided reader into and applies new configuration values.
-	 * 
+	 *
 	 * @param configReader
 	 *            configuration data reader
 	 */
@@ -325,7 +327,7 @@ public class TrackerConfigStore extends TrackerConfig {
 			}
 			// find the best match (longest string match)
 			String configKey = entry.getKey();
-			boolean match = this.srcName.indexOf(configKey) >= 0;
+			boolean match = this.srcName.contains(configKey);
 			if (match && configKey.length() > maxKeyLen) {
 				maxKeyLen = configKey.length();
 				selectedSet = entry.getValue();
