@@ -18,18 +18,16 @@ package com.jkoolcloud.tnt4j.utils;
 import java.util.Iterator;
 import java.util.List;
 
-
-
 /**
  * Math utility methods.
  *
  * @version $Revision: 1 $
  */
 public class MathUtils {
-	
-    private MathUtils() {
-    }
-    
+
+	private MathUtils() {
+	}
+
 	/**
 	 * Compute low Bollinger band value. Same as {@code getBBLow(List, 2, 20)}
 	 *
@@ -106,9 +104,7 @@ public class MathUtils {
 	public static double getHVariance(List<Number> harray, double mean) {
 		double vsum = 0, variance = 0;
 		if (harray != null && harray.size() > 1) {
-			Iterator<Number> it = harray.iterator();
-			while (it.hasNext()) {
-				Number vl = it.next();
+			for (Number vl : harray) {
 				double val = vl.doubleValue() - mean;
 				vsum += (val * val);
 			}

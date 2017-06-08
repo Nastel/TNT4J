@@ -50,9 +50,9 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @see SinkLogEventListener
  */
 public abstract class AbstractEventSink implements EventSink, EventSinkStats {
-	protected ArrayList<SinkErrorListener> errorListeners = new ArrayList<SinkErrorListener>(10);
-	protected ArrayList<SinkLogEventListener> logListeners = new ArrayList<SinkLogEventListener>(10);
-	protected ArrayList<SinkEventFilter> filters = new ArrayList<SinkEventFilter>(10);
+	protected final ArrayList<SinkErrorListener> errorListeners = new ArrayList<SinkErrorListener>(10);
+	protected final ArrayList<SinkLogEventListener> logListeners = new ArrayList<SinkLogEventListener>(10);
+	protected final ArrayList<SinkEventFilter> filters = new ArrayList<SinkEventFilter>(10);
 
 	private String name;
 	private Source source;
@@ -498,10 +498,10 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 			lastTime.set(System.currentTimeMillis());
 			errorState = false;
 			if (!logListeners.isEmpty()) {
-				notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, (ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, msg, args));
+				notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, (ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT, msg, args));
 			}
 		} catch (Throwable ex) {
-			notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, (ttl != TTL.TTL_CONTEXT)? ttl: TTL.TTL_DEFAULT, msg, args), ex);
+			notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, (ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT, msg, args), ex);
 		}
 	}
 

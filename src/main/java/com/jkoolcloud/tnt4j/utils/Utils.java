@@ -839,8 +839,9 @@ public class Utils {
 		String result = ex + LINE_FEED;
 
 		StackTraceElement[] trace = ex.getStackTrace();
-		for (int i = 0; i < trace.length; i++)
-			result += "\tat " + trace[i] + LINE_FEED;
+		for (StackTraceElement aTrace : trace) {
+			result += "\tat " + aTrace + LINE_FEED;
+		}
 
 		return result;
 	}
