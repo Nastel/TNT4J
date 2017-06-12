@@ -247,7 +247,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	private void initConfigExt(String fileName) {
 		if (StringUtils.isEmpty(fileName)) {
 			String cfgData = System.getProperty(TNT4J_PROPERTIES_KEY, TNT4J_PROPERTIES);
-			if (StringUtils.containsAny(cfgData, ";#{}:=")) {
+			if (StringUtils.containsAny(cfgData, ";#{}")) {
 				// must be not a file path but configuration string itself
 				initConfig(new StringReader(cfgData));
 			} else {
