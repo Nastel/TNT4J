@@ -114,7 +114,7 @@ import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
 public class TrackerConfigStore extends TrackerConfig {
 	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerConfigStore.class);
 
-	private static final String CFG_LINE_PREFIX = "inline:";
+	public static final String CFG_LINE_PREFIX = "inline:";
 
 	public static final String TNT4J_PROPERTIES_KEY = "tnt4j.config";
 	public static final String TNT4J_PROPERTIES = "tnt4j.properties";
