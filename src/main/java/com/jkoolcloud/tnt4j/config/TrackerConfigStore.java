@@ -114,6 +114,8 @@ import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
 public class TrackerConfigStore extends TrackerConfig {
 	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerConfigStore.class);
 
+	private static final String CFG_LINE_PREFIX = "inline:";
+
 	public static final String TNT4J_PROPERTIES_KEY = "tnt4j.config";
 	public static final String TNT4J_PROPERTIES = "tnt4j.properties";
 
@@ -247,9 +249,9 @@ public class TrackerConfigStore extends TrackerConfig {
 	private void initConfigExt(String fileName) {
 		if (StringUtils.isEmpty(fileName)) {
 			String cfgData = System.getProperty(TNT4J_PROPERTIES_KEY, TNT4J_PROPERTIES);
-			if (StringUtils.containsAny(cfgData, ";#{}")) {
+			if (cfgData.startsWith(CFG_LINE_PREFIX)) {
 				// must be not a file path but configuration string itself
-				initConfig(new StringReader(cfgData));
+				initConfig(new StringReader(cfgData.substring(CFG_LINE_PREFIX.length())));
 			} else {
 				initConfig(cfgData);
 			}
