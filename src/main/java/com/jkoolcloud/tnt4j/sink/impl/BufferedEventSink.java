@@ -21,22 +21,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
 
-import com.jkoolcloud.tnt4j.core.Snapshot;
-import com.jkoolcloud.tnt4j.core.TTL;
-import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
-import com.jkoolcloud.tnt4j.sink.EventLimiter;
-import com.jkoolcloud.tnt4j.sink.EventSink;
-import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
-import com.jkoolcloud.tnt4j.sink.IOShutdown;
-import com.jkoolcloud.tnt4j.sink.SinkError;
-import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
-import com.jkoolcloud.tnt4j.sink.SinkEventFilter;
-import com.jkoolcloud.tnt4j.sink.SinkLogEvent;
-import com.jkoolcloud.tnt4j.sink.SinkLogEventListener;
-import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.core.KeyValueStats;
 import com.jkoolcloud.tnt4j.core.OpLevel;
+import com.jkoolcloud.tnt4j.core.Snapshot;
+import com.jkoolcloud.tnt4j.core.TTL;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
+import com.jkoolcloud.tnt4j.sink.*;
+import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 import com.jkoolcloud.tnt4j.utils.Utils;
@@ -44,7 +35,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 /**
  * <p>
  * This class implements a buffered event sink, which buffers events into a memory queue and then flushes it to a
- * specified out sink using a separate thread. {@code BufferedEvenSink} decouples writer from the actual sink write and
+ * specified out sink using a separate thread. {@code BufferedEventSink} decouples writer from the actual sink write and
  * can improve performance during bursts.
  * </p>
  *
@@ -81,9 +72,8 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	private AtomicLong errorCount = new AtomicLong(0);
 
 	/**
-	 * Create a buffered sink instance with a specified out sink
-	 * maximum capacity. Event will be dropped if capacity is exceeded.
-	 * Obtain drop counts and queue sizes using <code>getDropCount()</code> method.
+	 * Create a buffered sink instance with a specified out sink maximum capacity. Event will be dropped if capacity is
+	 * exceeded. Obtain drop counts and queue sizes using {@link #getDropCount()} method.
 	 * 
 	 * @param f buffered event sink factory
 	 * @param sink out sink where events/log message are written out
@@ -145,8 +135,8 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	}
 
 	/**
-	 * Obtain total number of events/log messages skipped since last reset.
-	 * Events are skipped when don't pass sink filters.
+	 * Obtain total number of events/log messages skipped since last reset. Events are skipped when don't pass sink
+	 * filters.
 	 *
 	 * @return total number of skipped messages since last reset
 	 */
@@ -339,6 +329,11 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 		errorCount.set(0);
 		skipCount.set(0);
 		outSink.resetStats();
+	}
+
+	@Override
+	public void setEventFormatter(EventFormatter formatter) {
+		outSink.setEventFormatter(formatter);
 	}
 
 	@Override

@@ -34,8 +34,8 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
- * This class implements a default abstract class for {@link EventSink}. Developers should subclass from this class
- * for all event sink implementations.
+ * This class implements a default abstract class for {@link EventSink}. Developers should subclass from this class for
+ * all event sink implementations.
  * </p>
  *
  *
@@ -84,8 +84,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	}
 
 	/**
-	 * Create an event sink with a given name
-	 * and event formatter and default {@link TTL}
+	 * Create an event sink with a given name and event formatter and default {@link TTL}
 	 * 
 	 * @param nm event sink name
 	 * @param fmt event formatter instance
@@ -96,8 +95,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	}
 
 	/**
-	 * Create an event sink with a given name
-	 * and event formatter
+	 * Create an event sink with a given name and event formatter
 	 * 
 	 * @param nm event sink name
 	 * @param ttl time to live for events written to this sink
@@ -161,6 +159,11 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public EventFormatter getEventFormatter() {
 		return formatter;
+	}
+
+	@Override
+	public void setEventFormatter(EventFormatter formatter) {
+		this.formatter = formatter;
 	}
 
 	@Override
@@ -246,8 +249,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Subclasses should use this helper class to trigger log event notifications during logging process.
 	 *
-	 * @param event
-	 *            sink logging event to be sent to all listeners
+	 * @param event sink logging event to be sent to all listeners
 	 * @see SinkLogEvent
 	 */
 	protected void notifyListeners(SinkLogEvent event) {
@@ -261,8 +263,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Subclasses should use this helper class to trigger error notifications during logging process.
 	 *
-	 * @param event
-	 *            sink error event to be sent to all listeners
+	 * @param event sink error event to be sent to all listeners
 	 * @see SinkError
 	 */
 	protected void notifyListeners(SinkError event) {
@@ -276,10 +277,8 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Subclasses should use this helper class to trigger error notifications during logging process.
 	 *
-	 * @param msg
-	 *            sink message associated with the sink operation
-	 * @param ex
-	 *            exception to be reported to all registered event listeners
+	 * @param msg sink message associated with the sink operation
+	 * @param ex exception to be reported to all registered event listeners
 	 */
 	protected void notifyListeners(SinkLogEvent msg, Throwable ex) {
 		setErrorState(ex);
@@ -606,16 +605,11 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 *
-	 * @param ttl
-	 *            time to live in seconds {@link TTL}
-	 * @param src
-	 *            event source handle
-	 * @param sev
-	 *            message severity to log
-	 * @param msg
-	 *            string message to be logged
-	 * @param args
-	 *            arguments passed along the message
+	 * @param ttl time to live in seconds {@link TTL}
+	 * @param src event source handle
+	 * @param sev message severity to log
+	 * @param msg string message to be logged
+	 * @param args arguments passed along the message
 	 * @throws Exception if logging message
 	 * @see OpLevel
 	 */
@@ -624,10 +618,8 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 *
-	 * @param msg
-	 *            string message to be logged
-	 * @param args
-	 *            arguments passed along the message
+	 * @param msg string message to be logged
+	 * @param args arguments passed along the message
 	 * @throws IOException if error writing to sink
 	 * @throws InterruptedException if interrupted during write operation
 	 */

@@ -15,19 +15,20 @@
  */
 package com.jkoolcloud.tnt4j.sink;
 
-import com.jkoolcloud.tnt4j.core.Snapshot;
-import com.jkoolcloud.tnt4j.core.TTL;
-import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.core.KeyValueStats;
 import com.jkoolcloud.tnt4j.core.OpLevel;
+import com.jkoolcloud.tnt4j.core.Snapshot;
+import com.jkoolcloud.tnt4j.core.TTL;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
+import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 
 /**
- * <p>Classes that implement this interface provide implementation for
- * the <code>EventSink</code>, which provides an interface for underlying logging framework
- * storage destination. All event sink implementations should be wrapped with this interface.
+ * <p>
+ * Classes that implement this interface provide implementation for the {@link EventSink}, which provides an interface
+ * for underlying logging framework storage destination. All event sink implementations should be wrapped with this
+ * interface.
  * </p>
  *
  * @see TTL
@@ -40,18 +41,17 @@ import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
  *
  */
 public interface EventSink extends Sink, TTL, KeyValueStats {
-	
+
 	/**
-	 * Determine of sink is in error state -- meaning no successful write/log
-	 * since last error;
+	 * Determine of sink is in error state -- meaning no successful write/log since last error;
 	 *
 	 * @return last error occurred when writing to sink, null if none
 	 */
 	boolean errorState();
 
 	/**
-	 * Set the sink into the error state due to some external condition.
-	 * Error state to set to true if exception is not null, false otherwise.
+	 * Set the sink into the error state due to some external condition. Error state to set to true if exception is not
+	 * null, false otherwise.
 	 *
 	 * @param ex current error
 	 * @return last error occurred when writing to sink, null if none
@@ -78,7 +78,7 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	 * @return total number of errors occurred on the sink
 	 */
 	long getErrorCount();
-	
+
 	/**
 	 * Get rate limiter (throttle control)
 	 *
@@ -86,7 +86,7 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	 * @see EventLimiter
 	 */
 	EventLimiter getLimiter();
-	
+
 	/**
 	 * Set rate limiter (throttle control)
 	 *
@@ -94,9 +94,9 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	 * @see EventLimiter
 	 */
 	void setLimiter(EventLimiter limiter);
-	
+
 	/**
-	 * Set current/active limiter with the sink
+	 * Set current/active source handle for the current sink.
 	 *
 	 * @param src event source handle
 	 * @see Source
@@ -104,8 +104,7 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	void setSource(Source src);
 
 	/**
-	 * Obtains current/active limiter handle associated
-	 * with the current sink.
+	 * Obtains current/active source handle associated with the current sink.
 	 *
 	 * @return current source handle
 	 * @see Source
@@ -120,12 +119,19 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	String getName();
 
 	/**
+	 * Set event formatter instance associated with this sink
+	 *
+	 * @param formatter event formatter instance
+	 * @see EventFormatter
+	 */
+	void setEventFormatter(EventFormatter formatter);
+
+	/**
 	 * Obtain event formatter instance associated with this sink
 	 *
 	 * @return event formatter instance
 	 */
 	EventFormatter getEventFormatter();
-
 
 	/**
 	 * Enable/disable filter checks on log() calls.
@@ -201,7 +207,7 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	 * @return true if tracking activity passed all filters, false otherwise
 	 * @see TrackingActivity
 	 */
-	 boolean isLoggable(TrackingActivity activity);
+	boolean isLoggable(TrackingActivity activity);
 
 	/**
 	 * Check if a given event is loggable by the underlying sink -- passes all filters
@@ -231,8 +237,7 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	void log(TrackingEvent event);
 
 	/**
-	 * This method allows writing of <code>TrackingActivity</code> objects
-	 * to the underlying destination.
+	 * This method allows writing of {@link TrackingActivity} objects to the underlying destination.
 	 *
 	 * @param activity to be sent to the sink
 	 * @see TrackingActivity
@@ -240,8 +245,7 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	void log(TrackingActivity activity);
 
 	/**
-	 * This method allows writing of <code>Snapshot<Property></code> objects
-	 * to the underlying destination.
+	 * This method allows writing of {@link Snapshot} objects to the underlying destination.
 	 *
 	 * @param snapshot a set of properties
 	 * @see Snapshot
@@ -256,7 +260,7 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	 * @param args arguments passed along the message
 	 * @see OpLevel
 	 */
-	void log(OpLevel sev, String msg, Object...args);
+	void log(OpLevel sev, String msg, Object... args);
 
 	/**
 	 * Log a given string message with a specified severity
@@ -267,7 +271,7 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	 * @param args arguments passed along the message
 	 * @see OpLevel
 	 */
-	void log(Source src, OpLevel sev, String msg, Object...args);
+	void log(Source src, OpLevel sev, String msg, Object... args);
 
 	/**
 	 * Log a given string message with a specified severity
@@ -279,11 +283,10 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	 * @param args arguments passed along the message
 	 * @see OpLevel
 	 */
-	void log(long ttl, Source src, OpLevel sev, String msg, Object...args);
+	void log(long ttl, Source src, OpLevel sev, String msg, Object... args);
 
 	/**
-	 * Register an event sink listener for notifications when errors
-	 * occur when writing to event sink.
+	 * Register an event sink listener for notifications when errors occur when writing to event sink.
 	 *
 	 * @param listener event sink listener to register
 	 * @see SinkErrorListener
@@ -291,8 +294,7 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	void addSinkErrorListener(SinkErrorListener listener);
 
 	/**
-	 * Remove an event sink listener for notifications when errors
-	 * occur when writing to event sink.
+	 * Remove an event sink listener for notifications when errors occur when writing to event sink.
 	 *
 	 * @param listener event sink listener to remove
 	 * @see SinkErrorListener
@@ -300,8 +302,7 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	void removeSinkErrorListener(SinkErrorListener listener);
 
 	/**
-	 * Register an event sink listener for notifications when logging events
-	 * occur when writing to event sink.
+	 * Register an event sink listener for notifications when logging events occur when writing to event sink.
 	 *
 	 * @param listener event sink listener to register
 	 * @see SinkLogEventListener
@@ -309,8 +310,7 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	void addSinkLogEventListener(SinkLogEventListener listener);
 
 	/**
-	 * Remove an event sink listener for notifications when logging events
-	 * occur when writing to event sink.
+	 * Remove an event sink listener for notifications when logging events occur when writing to event sink.
 	 *
 	 * @param listener event sink listener to remove
 	 * @see SinkLogEventListener
