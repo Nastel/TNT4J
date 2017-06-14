@@ -16,11 +16,7 @@
 package com.jkoolcloud.tnt4j;
 
 import java.io.IOException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 import com.jkoolcloud.tnt4j.config.DefaultConfigFactory;
 import com.jkoolcloud.tnt4j.config.TrackerConfig;
@@ -49,16 +45,16 @@ public class ActivityScheduler {
 	private OpLevel opLevel = OpLevel.INFO;
 
 	/**
-	 * Creates a scheduler with specified name
+	 * Creates a scheduler with specified name.
 	 *
 	 * @param name scheduler name
 	 */
 	public ActivityScheduler(String name) {
-		this(name, null);
+		this(name, (ActivityListener) null);
 	}
 
 	/**
-	 * Creates a scheduler with specified name
+	 * Creates a scheduler with specified name.
 	 *
 	 * @param name scheduler name
 	 * @param listener activity listener invoked when scheduled activity starts and stops
@@ -74,7 +70,21 @@ public class ActivityScheduler {
 	}
 
 	/**
-	 * Assign a default severity level to all scheduled activity events
+	 * Creates a scheduler with specified name.
+	 *
+	 * @param name scheduler name
+	 * @param config tracker configuration
+	 *
+	 * @see TrackerConfig
+	 */
+	public ActivityScheduler(String name, TrackerConfig config) {
+		this.name = name;
+		this.logger = TrackingLogger.getInstance(config.build());
+		this.logger.setKeepThreadContext(false);
+	}
+
+	/**
+	 * Assign a default severity level to all scheduled activity events.
 	 *
 	 * @param severity associated with all timing activities, events
 	 */
@@ -83,7 +93,7 @@ public class ActivityScheduler {
 	}
 
 	/**
-	 * Default severity level for all scheduled activity events
+	 * Default severity level for all scheduled activity events.
 	 *
 	 * @return severity associated with all timing activities, events
 	 */
@@ -92,7 +102,7 @@ public class ActivityScheduler {
 	}
 
 	/**
-	 * Name associated with this object
+	 * Name associated with this object.
 	 *
 	 * @return object name
 	 */
@@ -101,7 +111,7 @@ public class ActivityScheduler {
 	}
 
 	/**
-	 * Assign an activity listener to be used when scheduled activity starts/stops
+	 * Assign an activity listener to be used when scheduled activity starts/stops.
 	 *
 	 * @param listener activity listener invoked when scheduled activity starts and stops
 	 * @return instance of the same scheduler
@@ -113,7 +123,7 @@ public class ActivityScheduler {
 	}
 
 	/**
-	 * Get an activity listener used when scheduled activity starts/stops
+	 * Get an activity listener used when scheduled activity starts/stops.
 	 *
 	 * @return return currently associated activity listener
 	 * @see ActivityListener
@@ -123,7 +133,7 @@ public class ActivityScheduler {
 	}
 
 	/**
-	 * Schedule activity with a specified period in milliseconds
+	 * Schedule activity with a specified period in milliseconds.
 	 *
 	 * @param period in milliseconds
 	 */
@@ -132,7 +142,7 @@ public class ActivityScheduler {
 	}
 
 	/**
-	 * Schedule activity with a specified period in milliseconds
+	 * Schedule activity with a specified period in milliseconds.
 	 *
 	 * @param name activity name
 	 * @param period in milliseconds
@@ -142,7 +152,7 @@ public class ActivityScheduler {
 	}
 
 	/**
-	 * Schedule activity with a given name and timing details
+	 * Schedule activity with a given name and timing details.
 	 *
 	 * @param name activity name
 	 * @param period in specified time units
@@ -153,7 +163,7 @@ public class ActivityScheduler {
 	}
 
 	/**
-	 * Schedule activity with a given name and timing details
+	 * Schedule activity with a given name and timing details.
 	 *
 	 * @param name activity name
 	 * @param initialDelay in specified time units
@@ -165,7 +175,7 @@ public class ActivityScheduler {
 	}
 
 	/**
-	 * Schedule activity with a given name and timing details
+	 * Schedule activity with a given name and timing details.
 	 *
 	 * @param name activity name
 	 * @param initialDelay in specified time units
@@ -183,7 +193,7 @@ public class ActivityScheduler {
 	}
 
 	/**
-	 * Cancel currently scheduled activity
+	 * Cancel currently scheduled activity.
 	 *
 	 */
 	public void cancel() {
@@ -191,7 +201,7 @@ public class ActivityScheduler {
 	}
 
 	/**
-	 * Cancel currently scheduled activity
+	 * Cancel currently scheduled activity.
 	 *
 	 * @param interrupt may interrupt currently running activity
 	 */
@@ -225,7 +235,7 @@ public class ActivityScheduler {
 	}
 
 	/**
-	 * Obtain {@link TrackingLogger} instance for logging
+	 * Obtain {@link TrackingLogger} instance for logging.
 	 *
 	 * @return tracking logger instance
 	 */
@@ -234,12 +244,12 @@ public class ActivityScheduler {
 	}
 
 	/**
-	 * Override this calls to return custom instances of
-	 * {@code Runnable} which will be invoked per specified schedule.
+	 * Override this calls to return custom instances of {@link Runnable} which will be invoked per specified schedule.
+	 * 
 	 * @param lg tracking logger instance
 	 * @param name of the new activity task
 	 * @param level associated with the task
-	 * @return {@code Runnable} instance
+	 * @return {@link Runnable} instance
 	 */
 	protected Runnable newActivityTask(TrackingLogger lg, String name, OpLevel level) {
 		return new ActivityTask(logger, name, (level == null ? opLevel : level));
