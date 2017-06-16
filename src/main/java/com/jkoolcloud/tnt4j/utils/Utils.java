@@ -15,12 +15,7 @@
  */
 package com.jkoolcloud.tnt4j.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -33,13 +28,8 @@ import java.nio.charset.CharsetEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Random;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.SerializationUtils;
@@ -160,8 +150,7 @@ public class Utils {
 	}
 
 	/**
-	 * Resolve variable given name to a global variable. Global variables are
-	 * referenced using: $var convention.
+	 * Resolve variable given name to a global variable. Global variables are referenced using: $var convention.
 	 *
 	 * @param name
 	 *            object to use
@@ -178,8 +167,7 @@ public class Utils {
 	}
 
 	/**
-	 * Resolve variable given name to a global variable. Global variables are
-	 * referenced using: $var convention.
+	 * Resolve variable given name to a global variable. Global variables are referenced using: $var convention.
 	 *
 	 * @param props
 	 *            a set of properties
@@ -226,8 +214,8 @@ public class Utils {
 	}
 
 	/**
-	 * Return current client stack index that identifies the calling stack frame
-	 * return by <code>Thread.currentThread().getStackTrace()</code>
+	 * Return current client stack index that identifies the calling stack frame return by
+	 * <code>Thread.currentThread().getStackTrace()</code>
 	 *
 	 * @return return current stack frame
 	 */
@@ -299,8 +287,7 @@ public class Utils {
 	}
 
 	/**
-	 * Return calling stack frame, which is right above in the current stack
-	 * frame.
+	 * Return calling stack frame, which is right above in the current stack frame.
 	 *
 	 * @return return calling stack frame, right above the current call.
 	 */
@@ -311,8 +298,7 @@ public class Utils {
 	}
 
 	/**
-	 * Return a specific stack frame with a given stack offset. offset 0 --
-	 * current, 1 -- calling, and so on.
+	 * Return a specific stack frame with a given stack offset. offset 0 -- current, 1 -- calling, and so on.
 	 *
 	 * @param offset
 	 *            offset index within the calling stack
@@ -325,8 +311,7 @@ public class Utils {
 	}
 
 	/**
-	 * Return a specific stack frame with a given stack offset. offset 0 --
-	 * current, 1 -- calling, and so on.
+	 * Return a specific stack frame with a given stack offset. offset 0 -- current, 1 -- calling, and so on.
 	 *
 	 * @param stack
 	 *            frame list
@@ -340,15 +325,13 @@ public class Utils {
 	}
 
 	/**
-	 * Return calling stack frame which is right above a given class marker plus
-	 * the offset.
+	 * Return calling stack frame which is right above a given class marker plus the offset.
 	 *
 	 * @param classMarker
 	 *            class marker on the stack
 	 * @param offset
 	 *            offset on the stack from the marker
-	 * @return Return calling stack frame which is right above a given class
-	 *         marker
+	 * @return Return calling stack frame which is right above a given class marker
 	 */
 	public static StackTraceElement getStackFrame(String classMarker, int offset) {
 		int index = 0;
@@ -367,8 +350,7 @@ public class Utils {
 	}
 
 	/**
-	 * Format a given string pattern and a list of arguments as defined by
-	 * <code>MessageFormat</code>
+	 * Format a given string pattern and a list of arguments as defined by <code>MessageFormat</code>
 	 *
 	 * @param pattern
 	 *            format string
@@ -384,8 +366,7 @@ public class Utils {
 	}
 
 	/**
-	 * Return a <code>Throwable</code> object if it is the last element in the
-	 * object array
+	 * Return a <code>Throwable</code> object if it is the last element in the object array
 	 *
 	 * @param args
 	 *            list of objects
@@ -426,8 +407,7 @@ public class Utils {
 	}
 
 	/**
-	 * Encodes the specified URL string. This is a wrapper around
-	 * {@link URLEncoder#encode(String, String)}
+	 * Encodes the specified URL string. This is a wrapper around {@link URLEncoder#encode(String, String)}
 	 *
 	 * @param url
 	 *            URL string
@@ -445,8 +425,7 @@ public class Utils {
 	}
 
 	/**
-	 * Decodes the specified URL string. This is a wrapper around
-	 * {@link URLDecoder#decode(String, String)}
+	 * Decodes the specified URL string. This is a wrapper around {@link URLDecoder#decode(String, String)}
 	 *
 	 * @param url
 	 *            URL string
@@ -481,9 +460,8 @@ public class Utils {
 	}
 
 	/**
-	 * Hide some parts of the string and leave only certain number of characters
-	 * at the end of the string. Example: XXXXX47478
-	 * {@code hide("1234-47478", "X", 5)}
+	 * Hide some parts of the string and leave only certain number of characters at the end of the string. Example:
+	 * XXXXX47478 {@code hide("1234-47478", "X", 5)}
 	 *
 	 * @param str
 	 *            string to be replaced
@@ -491,8 +469,7 @@ public class Utils {
 	 *            hide chars to use during replacement
 	 * @param lastNo
 	 *            number of chars to leave at the end
-	 * @return String with characters at start of string replaced with specified
-	 *         {@code hideChars}
+	 * @return String with characters at start of string replaced with specified {@code hideChars}
 	 */
 	public static String hide(String str, String hideChars, int lastNo) {
 		int length = str.length() - lastNo;
@@ -507,9 +484,8 @@ public class Utils {
 	}
 
 	/**
-	 * Hide some parts of the string and leave only certain number of characters
-	 * at the start of the string. Example: 1234-XXXXX
-	 * {@code hideEnd("1234-47478", "X", 5)}
+	 * Hide some parts of the string and leave only certain number of characters at the start of the string. Example:
+	 * 1234-XXXXX {@code hideEnd("1234-47478", "X", 5)}
 	 *
 	 * @param str
 	 *            string to be replaced
@@ -517,8 +493,7 @@ public class Utils {
 	 *            hide chars to use during replacement
 	 * @param startNo
 	 *            number of chars to leave at the start
-	 * @return String with characters at end of string replaced with specified
-	 *         {@code hideChars}
+	 * @return String with characters at end of string replaced with specified {@code hideChars}
 	 */
 	public static String hideEnd(String str, String hideChars, int startNo) {
 		int length = str.length() - startNo;
@@ -565,6 +540,48 @@ public class Utils {
 	 */
 	public static String surround(String str, String sur) {
 		return sur + str + sur;
+	}
+
+	/**
+	 * Appends a quoted string, surrounded with double quote, into provided string builder.
+	 *
+	 * @param str
+	 *            string handle
+	 * @param sb
+	 *            string buffer to append
+	 * @return appended string builder instance
+	 */
+	public static StringBuilder quote(String str, StringBuilder sb) {
+		return surround(str, "\"", sb);
+	}
+
+	/**
+	 * Appends a quoted string, surrounded with double quote, into provided string builder.
+	 *
+	 * @param obj
+	 *            object handle
+	 * @param sb
+	 *            string buffer to append
+	 * @return appended string builder instance
+	 */
+	public static StringBuilder quote(Object obj, StringBuilder sb) {
+		return quote(String.valueOf(obj), sb);
+	}
+
+	/**
+	 * Appends surrounded string with a given surround token into provided string builder.
+	 *
+	 * @param str
+	 *            string handle
+	 * @param sur
+	 *            surround string
+	 * @param sb
+	 *            string buffer to append
+	 * @return appended string builder instance
+	 */
+	public static StringBuilder surround(String str, String sur, StringBuilder sb) {
+		sb.append(sur).append(str).append(sur);
+		return sb;
 	}
 
 	/**
@@ -618,8 +635,7 @@ public class Utils {
 	}
 
 	/**
-	 * Gets resolved name of the method that triggered the operation using
-	 * current stack frame.
+	 * Gets resolved name of the method that triggered the operation using current stack frame.
 	 *
 	 * @param opName
 	 *            operation name
@@ -638,8 +654,7 @@ public class Utils {
 	}
 
 	/**
-	 * Gets resolved name of the method that triggered the operation using
-	 * current stack frame.
+	 * Gets resolved name of the method that triggered the operation using current stack frame.
 	 *
 	 * @param marker
 	 *            class marker to be used to locate the stack frame
@@ -653,8 +668,7 @@ public class Utils {
 	}
 
 	/**
-	 * Gets resolved name of the method that triggered the operation using
-	 * current stack frame.
+	 * Gets resolved name of the method that triggered the operation using current stack frame.
 	 *
 	 * @param classMarker
 	 *            class marker to be used to locate the stack frame
@@ -666,8 +680,7 @@ public class Utils {
 	}
 
 	/**
-	 * Gets resolved name of the method that triggered the operation using
-	 * current stack frame.
+	 * Gets resolved name of the method that triggered the operation using current stack frame.
 	 *
 	 * @param classMarker
 	 *            class marker to be used to locate the stack frame
@@ -681,8 +694,8 @@ public class Utils {
 	}
 
 	/**
-	 * Resolves the specified host name to its IP Address. If no host name is
-	 * given, then resolves local host IP Address.
+	 * Resolves the specified host name to its IP Address. If no host name is given, then resolves local host IP
+	 * Address.
 	 *
 	 * @param hostName
 	 *            host name to resolve
@@ -704,8 +717,7 @@ public class Utils {
 	}
 
 	/**
-	 * Resolves the specified IP Address to a host name. If no IP Address is
-	 * given, then resolves local host name.
+	 * Resolves the specified IP Address to a host name. If no IP Address is given, then resolves local host name.
 	 *
 	 * @param hostIp
 	 *            string representation of host IP Address to resolve
@@ -725,8 +737,7 @@ public class Utils {
 	}
 
 	/**
-	 * Resolves the specified IP Address to a host name. If no IP Address is
-	 * given, then resolves local host name.
+	 * Resolves the specified IP Address to a host name. If no IP Address is given, then resolves local host name.
 	 *
 	 * @param hostIp
 	 *            host IP Address to resolve
@@ -783,9 +794,8 @@ public class Utils {
 	}
 
 	/**
-	 * Generates a detailed description of an exception, including stack trace
-	 * of both the exception and the underlying root cause of the exception, if
-	 * any.
+	 * Generates a detailed description of an exception, including stack trace of both the exception and the underlying
+	 * root cause of the exception, if any.
 	 *
 	 * @param ex
 	 *            exception to process
@@ -847,8 +857,7 @@ public class Utils {
 	}
 
 	/**
-	 * Formats the specified time interval as an interval string with format:
-	 * "d days hh:mm:ss.SSS"
+	 * Formats the specified time interval as an interval string with format: "d days hh:mm:ss.SSS"
 	 *
 	 * @param intervalMsec
 	 *            time interval, in milliseconds
@@ -875,13 +884,11 @@ public class Utils {
 	 * Returns the current time in microseconds.
 	 * </p>
 	 * <p>
-	 * This is a wrapper around
-	 * {@link com.jkoolcloud.tnt4j.utils.Useconds#get()}, returning the value in
-	 * microsecond resolution.
+	 * This is a wrapper around {@link com.jkoolcloud.tnt4j.utils.Useconds#get()}, returning the value in microsecond
+	 * resolution.
 	 * </p>
 	 *
-	 * @return the difference, measured in microseconds, between the current
-	 *         time and midnight, January 1, 1970 UTC
+	 * @return the difference, measured in microseconds, between the current time and midnight, January 1, 1970 UTC
 	 * @see com.jkoolcloud.tnt4j.utils.Useconds#get()
 	 */
 	public static long currentTimeUsec() {
@@ -1020,8 +1027,7 @@ public class Utils {
 	 * Create and apply a configurable object
 	 *
 	 * @param classProp
-	 *            name of the property that contains class name (must exist in
-	 *            config)
+	 *            name of the property that contains class name (must exist in config)
 	 * @param prefix
 	 *            property prefix to be used for configuring a new object
 	 * @param config
@@ -1052,8 +1058,7 @@ public class Utils {
 	 * Create and apply a configurable object
 	 *
 	 * @param classProp
-	 *            name of the property that contains class name (must exist in
-	 *            config)
+	 *            name of the property that contains class name (must exist in config)
 	 * @param prefix
 	 *            property prefix to be used for configuring a new object
 	 * @param config
@@ -1159,8 +1164,7 @@ public class Utils {
 	}
 
 	/**
-	 * Get object properties that match a certain prefix. New set of keys in the
-	 * resulting map will exclude the prefix.
+	 * Get object properties that match a certain prefix. New set of keys in the resulting map will exclude the prefix.
 	 *
 	 * @param prefix
 	 *            prefix to be used for pattern matching
@@ -1181,8 +1185,7 @@ public class Utils {
 	}
 
 	/**
-	 * Get object properties that match a certain prefix. New set of keys in the
-	 * resulting map will exclude the prefix.
+	 * Get object properties that match a certain prefix. New set of keys in the resulting map will exclude the prefix.
 	 *
 	 * @param prefix
 	 *            prefix to be used for pattern matching

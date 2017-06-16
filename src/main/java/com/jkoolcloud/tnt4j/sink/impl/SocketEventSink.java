@@ -169,9 +169,11 @@ public class SocketEventSink extends AbstractEventSink {
 		_checkState();
 
 		try {
-			String lineMsg = msg.endsWith("\n") ? msg : msg + "\n";
-			byte[] bytes = lineMsg.getBytes();
+			byte[] bytes = msg.getBytes();
 			outStream.write(bytes, 0, bytes.length);
+			if (!msg.endsWith("\n")) {
+				outStream.write('\n');
+			}
 			outStream.flush();
 		} catch (IOException e) {
 			if (retrying) {

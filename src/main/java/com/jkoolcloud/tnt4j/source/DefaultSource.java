@@ -67,7 +67,7 @@ public class DefaultSource implements Source {
 	}
 
 	@Override
-    public StringBuilder getFQName(StringBuilder buff) {
+	public StringBuilder getFQName(StringBuilder buff) {
 		buff.append(sourceType).append("=").append(sname);
 		if (parentSource != null) {
 			buff.append("#");
@@ -133,7 +133,7 @@ public class DefaultSource implements Source {
 
 	@Override
 	public String getSSN() {
-		return !Utils.isEmpty(ssname)? ssname: (parentSource != null? parentSource.getSSN(): ssname);
+		return !Utils.isEmpty(ssname) ? ssname : (parentSource != null ? parentSource.getSSN() : ssname);
 	}
 
 	@Override
@@ -213,12 +213,13 @@ public class DefaultSource implements Source {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder str = new StringBuilder();
+		StringBuilder str = new StringBuilder(256);
 
 		str.append(super.toString()).append("{").append("FQName: ").append(getFQName()).append(",").append("Name: ")
-		        .append(getName()).append(",").append("User: ").append(getUser()).append(",").append("Type: ")
-		        .append(getType()).append(",").append("URL: ").append(Utils.quote(getUrl())).append(",").append("SSN: ")
-		        .append(Utils.quote(getSSN())).append("}");
+				.append(getName()).append(",").append("User: ").append(getUser()).append(",").append("Type: ")
+				.append(getType()).append(",").append("URL: ");
+		Utils.quote(getUrl(), str).append(",").append("SSN: ");
+		Utils.quote(getSSN(), str).append("}");
 
 		return str.toString();
 	}
