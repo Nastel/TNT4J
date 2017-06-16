@@ -19,22 +19,21 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TimeZone;
 
+import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Property;
 import com.jkoolcloud.tnt4j.core.Snapshot;
-import com.jkoolcloud.tnt4j.source.Source;
-import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.UsecTimestamp;
+import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
- * Simple implementation of {@link Formatter} interface provides simple/minimal formatting of
- * {@link TrackingActivity} and {@code TrackingEvent} as well as any object passed to {@code format()}
- * method call. Event entries are formatted as follows:
- * {@code event-text-msg {event-tracking-info}}
- * where {@code event-tracking-info} consists of {@code "name: value"} pairs.
+ * Simple implementation of {@link Formatter} interface provides simple/minimal formatting of {@link TrackingActivity}
+ * and {@code TrackingEvent} as well as any object passed to {@code format()} method call. Event entries are formatted
+ * as follows: {@code event-text-msg {event-tracking-info}} where {@code event-tracking-info} consists of
+ * {@code "name: value"} pairs.
  * </p>
  * 
  * 
@@ -46,15 +45,14 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 
 public class SimpleFormatter extends DefaultFormatter {
-		
+
 	/**
-	 * Create a simple event formatter with default setting.
-	 * Format: "{2} | {1} | {0}", TimeZone: UTC.
+	 * Create a simple event formatter with default setting. Format: "{2} | {1} | {0}", TimeZone: UTC.
 	 *
 	 */
 	public SimpleFormatter() {
 	}
-	
+
 	/**
 	 * Create a simple event formatter instance with a given format
 	 *
@@ -63,7 +61,7 @@ public class SimpleFormatter extends DefaultFormatter {
 	public SimpleFormatter(String format) {
 		super(format);
 	}
-	
+
 	/**
 	 * Create a simple event formatter instance with a given format, timezone
 	 *
@@ -73,7 +71,7 @@ public class SimpleFormatter extends DefaultFormatter {
 	public SimpleFormatter(String format, TimeZone tz) {
 		super(format, tz);
 	}
-	
+
 	@Override
 	public String format(TrackingEvent event) {
 		StringBuilder msg = new StringBuilder(1024);
@@ -127,7 +125,7 @@ public class SimpleFormatter extends DefaultFormatter {
 			msg.append(separator);
 			msg.append("parent-id: '").append(event.getParentId()).append("'");
 		}
-		if (event.getTrackingId() != null) { 
+		if (event.getTrackingId() != null) {
 			msg.append(separator);
 			msg.append("track-id: '").append(event.getTrackingId()).append("'");
 		}
@@ -137,7 +135,7 @@ public class SimpleFormatter extends DefaultFormatter {
 			for (Property prop : list) {
 				msg.append("\n\t\t").append(prop.getKey()).append(": '").append(prop.getValue()).append(":").append(prop.getDataType()).append(":").append(prop.getValueType()).append("'");
 			}
-			msg.append("\n\t}");	
+			msg.append("\n\t}");
 		}
 		if (event.getOperation().getSnapshotCount() > 0) {
 			Collection<Snapshot> snapshots = event.getOperation().getSnapshots();
@@ -160,7 +158,7 @@ public class SimpleFormatter extends DefaultFormatter {
 		msg.append("time: '").append(UsecTimestamp.getTimeStamp(timeZone)).append("'").append(separator);
 		msg.append("sev: '").append(activity.getSeverity()).append("'").append(separator);
 		msg.append("type: '").append(activity.getType()).append("'").append(separator);
-		
+
 		if (!Utils.isEmpty(activity.getResolvedName())) {
 			msg.append("name: '").append(activity.getResolvedName()).append("'");
 		}
@@ -223,23 +221,23 @@ public class SimpleFormatter extends DefaultFormatter {
 		msg.append("}");
 		return msg.toString();
 	}
-	
+
 	@Override
 	public String format(Snapshot snap) {
 		StringBuilder msg = new StringBuilder(1024);
 		return format(msg, snap).toString();
 	}
-	
+
 	@Override
-    public String format(long ttl, Source src, OpLevel level, String msg, Object...args) {
+	public String format(long ttl, Source src, OpLevel level, String msg, Object... args) {
 		String formatted = super.format(ttl, src, level, msg, args);
 		Throwable error = Utils.getThrowable(args);
 		if (error != null) {
 			formatted += "\nThrowable {\n" + Utils.printThrowable(error) + "}";
 		}
 		return formatted;
-    }
-	
+	}
+
 	protected StringBuilder format(StringBuilder msg, Snapshot snap) {
 		msg.append("Snapshot(fqn: '").append(snap.getId()).append("'");
 		String pid = snap.getParentId();
@@ -261,7 +259,7 @@ public class SimpleFormatter extends DefaultFormatter {
 		for (Property prop : snap.getSnapshot()) {
 			msg.append("\n\t\t").append(prop.getKey()).append(": '").append(prop.getValue()).append(":").append(prop.getDataType()).append(":").append(prop.getValueType()).append("'");
 		}
-		msg.append("\n\t}");	
+		msg.append("\n\t}");
 		return msg;
 	}
 }

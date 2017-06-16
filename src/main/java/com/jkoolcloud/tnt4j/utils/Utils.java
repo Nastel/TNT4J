@@ -114,7 +114,7 @@ public class Utils {
 	}
 
 	/**
-	 * Constructs a {@code Locale} object parsed from provided locale string.
+	 * Constructs a {@link Locale} object parsed from provided locale string.
 	 *
 	 * @param localeStr
 	 *            locale string representation
@@ -214,8 +214,25 @@ public class Utils {
 	}
 
 	/**
+	 * Gets string from string builder and resets it to {@code 0} position;
+	 *
+	 * @param sb
+	 *            string builder to get string from
+	 * @return string retrieved from string builder
+	 *
+	 * @see StringBuilder#toString()
+	 * @see StringBuilder#setLength(int)
+	 */
+	public static String getString(StringBuilder sb) {
+		String str = sb.toString();
+		sb.setLength(0);
+
+		return str;
+	}
+
+	/**
 	 * Return current client stack index that identifies the calling stack frame return by
-	 * <code>Thread.currentThread().getStackTrace()</code>
+	 * {@code Thread.currentThread().getStackTrace()}
 	 *
 	 * @return return current stack frame
 	 */
@@ -350,7 +367,7 @@ public class Utils {
 	}
 
 	/**
-	 * Format a given string pattern and a list of arguments as defined by <code>MessageFormat</code>
+	 * Format a given string pattern and a list of arguments as defined by {@link MessageFormat}
 	 *
 	 * @param pattern
 	 *            format string
@@ -366,7 +383,7 @@ public class Utils {
 	}
 
 	/**
-	 * Return a <code>Throwable</code> object if it is the last element in the object array
+	 * Return a {@link Throwable} object if it is the last element in the object array
 	 *
 	 * @param args
 	 *            list of objects

@@ -114,7 +114,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			jsonString.append(JSON_MSG_TEXT_LABEL).append(ATTR_SEP);
 			Utils.quote(msgText, jsonString);
 			jsonString.append(END_JSON);
-			return getString(jsonString);
+			return jsonString.toString();
 		}
 	}
 
@@ -267,7 +267,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			        itemsToJSON(event.getOperation().getSnapshots())).append(ARRAY_END);
 		}
 		jsonString.append(END_JSON);
-		return getString(jsonString);
+		return jsonString.toString();
 	}
 
 	/**
@@ -396,7 +396,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			        itemsToJSON(activity.getSnapshots())).append(ARRAY_END);
 		}
 		jsonString.append(END_JSON);
-		return getString(jsonString);
+		return jsonString.toString();
 	}
 
 	/**
@@ -471,7 +471,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			        itemsToJSON(snap.getSnapshot())).append(ARRAY_END);
 		}
 		jsonString.append(END_JSON);
-		return getString(jsonString);
+		return jsonString.toString();
 	}
 
 	/**
@@ -501,7 +501,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			Utils.quote(valueText, jsonString);
 		}
 		jsonString.append(END_JSON);
-		return getString(jsonString);
+		return jsonString.toString();
 	}
 
 	@Override
@@ -565,7 +565,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			Utils.quote(excText, jsonString);
 		}
 		jsonString.append(END_JSON);
-		return getString(jsonString);
+		return jsonString.toString();
 	}
 
 	private String itemsToJSON(Collection<?> items) {
@@ -588,7 +588,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 				Utils.quote(vText, json);
 			}
 		}
-		return getString(json);
+		return json.toString();
 	}
 
 	@Override
@@ -609,10 +609,4 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		return Utils.isEmpty(ssn) ? source.getSourceFactory().getSSN() : ssn;
 	}
 
-	private static String getString(StringBuilder sb) {
-		String str = sb.toString();
-		sb.setLength(0);
-
-		return str;
-	}
 }
