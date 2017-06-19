@@ -86,6 +86,15 @@ public class Utils {
 	 */
 	private static Random rand = new Random();
 
+	/**
+	 * Class method search empty parameters array.
+	 */
+	public static final Class<?>[] NO_PARAMS_C = {};
+	/**
+	 * Method invocation empty parameters array.
+	 */
+	public static final Object[] NO_PARAMS_O = {};
+
 	public static final int CLIENT_CODE_STACK_INDEX;
 
 	static {
@@ -831,8 +840,8 @@ public class Utils {
 			Throwable cause = ex.getCause();
 			if (cause == null) {
 				try {
-					Method method = ex.getClass().getMethod("getTargetException", (Class[]) null);
-					Object target = method.invoke(ex, (Object[]) null);
+					Method method = ex.getClass().getMethod("getTargetException", NO_PARAMS_C);
+					Object target = method.invoke(ex, NO_PARAMS_O);
 					if (target instanceof Throwable)
 						cause = (Throwable) target;
 				} catch (Exception exx) {
