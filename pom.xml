@@ -143,6 +143,15 @@
                 <javadoc.failOnError>false</javadoc.failOnError>
             </properties>
         </profile>
+        <profile>
+            <id>legacy-dependencies</id>
+            <activation>
+                <jdk>(,1.7]</jdk>
+            </activation>
+            <properties>
+                <kafka.version>0.8.2.2</kafka.version>
+            </properties>
+        </profile>
     </profiles>
 
     <build>
