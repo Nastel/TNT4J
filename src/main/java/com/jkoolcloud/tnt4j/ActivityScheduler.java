@@ -232,6 +232,22 @@ public class ActivityScheduler {
 		} finally {
 			logger.close();
 		}
+		shutdownScheduler();
+	}
+
+	private void shutdownScheduler() {
+		if (scheduler == null || scheduler.isShutdown()) {
+			return;
+		}
+
+		scheduler.shutdown();
+		try {
+			scheduler.awaitTermination(5, TimeUnit.SECONDS);
+		} catch (InterruptedException exc) {
+			Thread.currentThread().interrupt();
+		} finally {
+			scheduler.shutdownNow();
+		}
 	}
 
 	/**
