@@ -18,51 +18,18 @@ package com.jkoolcloud.tnt4j;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadMXBean;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.WeakHashMap;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.jkoolcloud.tnt4j.core.Snapshot;
-import com.jkoolcloud.tnt4j.dump.DumpSinkFactory;
-import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.config.DefaultConfigFactory;
 import com.jkoolcloud.tnt4j.config.TrackerConfig;
-import com.jkoolcloud.tnt4j.core.KeyValueStats;
-import com.jkoolcloud.tnt4j.core.OpCompCode;
-import com.jkoolcloud.tnt4j.core.OpLevel;
-import com.jkoolcloud.tnt4j.core.OpType;
-import com.jkoolcloud.tnt4j.core.Property;
-import com.jkoolcloud.tnt4j.dump.DefaultDumpSinkFactory;
-import com.jkoolcloud.tnt4j.dump.DumpCollection;
-import com.jkoolcloud.tnt4j.dump.DumpEvent;
-import com.jkoolcloud.tnt4j.dump.DumpListener;
-import com.jkoolcloud.tnt4j.dump.DumpProvider;
-import com.jkoolcloud.tnt4j.dump.DumpSink;
-import com.jkoolcloud.tnt4j.dump.LoggerDumpProvider;
-import com.jkoolcloud.tnt4j.dump.MXBeanDumpProvider;
-import com.jkoolcloud.tnt4j.dump.PropertiesDumpProvider;
-import com.jkoolcloud.tnt4j.dump.ThreadDeadlockDumpProvider;
-import com.jkoolcloud.tnt4j.dump.ThreadDumpProvider;
+import com.jkoolcloud.tnt4j.core.*;
+import com.jkoolcloud.tnt4j.dump.*;
 import com.jkoolcloud.tnt4j.selector.TrackingSelector;
-import com.jkoolcloud.tnt4j.sink.DefaultEventSinkFactory;
-import com.jkoolcloud.tnt4j.sink.EventSink;
-import com.jkoolcloud.tnt4j.sink.IOShutdown;
-import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
-import com.jkoolcloud.tnt4j.sink.SinkEventFilter;
-import com.jkoolcloud.tnt4j.sink.SinkLogEventListener;
+import com.jkoolcloud.tnt4j.sink.*;
+import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.source.SourceType;
-import com.jkoolcloud.tnt4j.tracker.DefaultTrackerFactory;
-import com.jkoolcloud.tnt4j.tracker.Tracker;
-import com.jkoolcloud.tnt4j.tracker.TrackerFactory;
-import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
-import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
-import com.jkoolcloud.tnt4j.tracker.TrackingFilter;
+import com.jkoolcloud.tnt4j.tracker.*;
 import com.jkoolcloud.tnt4j.utils.Useconds;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
@@ -71,19 +38,19 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * {@code TrackingLogger} is a helper class with calls to {@link Tracker} logging interface.
  * </p>
  * Application should use this helper class instead of obtaining a {@link Tracker} logger instance per thread using
- * {@link TrackerFactory}. {@code TrackingLogger} obtains the {@link Tracker} logger instance and stores
- * it in thread local associated for each thread.
+ * {@link TrackerFactory}. {@code TrackingLogger} obtains the {@link Tracker} logger instance and stores it in thread
+ * local associated for each thread.
  *
  * <p>
- * A {@link TrackingEvent} represents a specific tracking event that application creates for every discrete
- * activity such as JDBC, JMS, SOAP or any other relevant application activity. Application developers must obtain a
- * {@link Tracker} instance via {@link TrackerFactory}, create instances of {@link TrackingEvent} and use
- * {@code log()} calls to report tracking activities, events and log messages.
+ * A {@link TrackingEvent} represents a specific tracking event that application creates for every discrete activity
+ * such as JDBC, JMS, SOAP or any other relevant application activity. Application developers must obtain a
+ * {@link Tracker} instance via {@link TrackerFactory}, create instances of {@link TrackingEvent} and use {@code log()}
+ * calls to report tracking activities, events and log messages.
  *
  * <p>
  * {@link TrackingActivity} {@code start()/stop()} method calls used to mark application activity boundaries.
- * Applications must create instances of {@link TrackingEvent} using {@code TrackingLogger.newEvent()} method to
- * time individual sub-activities and report them using {@code TrackerLogger.tnt()} method call.
+ * Applications must create instances of {@link TrackingEvent} using {@code TrackingLogger.newEvent()} method to time
+ * individual sub-activities and report them using {@code TrackerLogger.tnt()} method call.
  * </p>
  *
  * <p>
@@ -120,8 +87,8 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * }
  * </pre>
  *
- * Source may take advantage of {@code TrackingLogger} conditional logging using {@code TrackingLogger.isSet()}
- * based on applications specific tokens. Below is an example of conditional logging:
+ * Source may take advantage of {@code TrackingLogger} conditional logging using {@code TrackingLogger.isSet()} based on
+ * applications specific tokens. Below is an example of conditional logging:
  *
  * <pre>
  * {@code 
@@ -156,12 +123,13 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * }
  * </pre>
  *
- * {@code TrackingLogger} provides a capability to simplify and automate application specific dump handling. An application
- * dump is a collection of application's internal metrics that can be used for problem diagnostics. Source must create
- * an instance of {@code DumpProvider} and register it with {@code TrackingLogger} optionally associate it with a given
- * dump destination {@code DumpSink}(where dump is written to). Dumps can be generated using {@code TrackingLogger.dump()}
- * or can be triggered on JVM shutdown using {@code TrackingLogger.dumpOnShutdown(true)}. By default, {@code TrackingLogger}
- * uses file based {@code DefaultDumpSinkFactory} to generate instances of {@code DumpSink}.
+ * {@code TrackingLogger} provides a capability to simplify and automate application specific dump handling. An
+ * application dump is a collection of application's internal metrics that can be used for problem diagnostics. Source
+ * must create an instance of {@code DumpProvider} and register it with {@code TrackingLogger} optionally associate it
+ * with a given dump destination {@code DumpSink}(where dump is written to). Dumps can be generated using
+ * {@code TrackingLogger.dump()} or can be triggered on JVM shutdown using {@code TrackingLogger.dumpOnShutdown(true)}.
+ * By default, {@code TrackingLogger} uses file based {@code DefaultDumpSinkFactory} to generate instances of
+ * {@code DumpSink}.
  *
  * <pre>
  * {@code
@@ -237,7 +205,7 @@ public class TrackingLogger implements Tracker {
 		if (dumpOnException) dumpOnUncaughtException();
 		if (flushOnVmHook) flushOnShutdown(flushOnVmHook);
 	}
-	
+
 	/** Cannot instantiate. */
 	private TrackingLogger(Tracker trg) {
 		logger = trg;
@@ -326,20 +294,29 @@ public class TrackingLogger implements Tracker {
 	public static void shutdownAll() {
 		List<TrackingLogger> trackers = getAllTrackers();
 		for (TrackingLogger logger : trackers) {
-			try {
-				EventSink sink = logger.getEventSink();
-				if (sink instanceof IOShutdown) {
-					IOShutdown shut = (IOShutdown) sink;
-					shut.shutdown(null);
-				}
-			} catch (IOException e) {
-			}
+			shutdown(logger);
 		}
 	}
 
 	/**
-	 * Obtain a stack trace list for all tracker allocations to
-	 * determine where the tracker instances have been instantiated
+	 * Shutdown defined tracking logger.
+	 *
+	 * @param logger tracking logger to shut down
+	 */
+	public static void shutdown(TrackingLogger logger) {
+		try {
+			EventSink sink = logger.getEventSink();
+			if (sink instanceof IOShutdown) {
+				IOShutdown shut = (IOShutdown) sink;
+				shut.shutdown(null);
+			}
+		} catch (IOException e) {
+		}
+	}
+
+	/**
+	 * Obtain a stack trace list for all tracker allocations to determine where the tracker instances have been
+	 * instantiated
 	 *
 	 * @return a list of stack traces for each allocated tracker
 	 */
@@ -438,8 +415,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Obtain an instance of {@code TrackingLogger} logger based on
-	 * a given class.
+	 * Obtain an instance of {@code TrackingLogger} logger based on a given class.
 	 *
 	 * @param clazz
 	 *            application class used as source name
@@ -454,8 +430,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Obtain an instance of {@code TrackingLogger} logger based on
-	 * a given class.
+	 * Obtain an instance of {@code TrackingLogger} logger based on a given class.
 	 *
 	 * @param clazz
 	 *            application class used as source name
@@ -484,8 +459,8 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Register a user defined dump destination factory used to generate instances of
-	 * {@code DumpSink}. Default is {@code DefaultDumpSinkFactory}.
+	 * Register a user defined dump destination factory used to generate instances of {@code DumpSink}. Default is
+	 * {@code DefaultDumpSinkFactory}.
 	 *
 	 * @param defFac
 	 *            User default dump destination factory
@@ -501,8 +476,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Return currently registered dump sink factory.
-	 * Default is {@code DefaultDumpSinkFactory}.
+	 * Return currently registered dump sink factory. Default is {@code DefaultDumpSinkFactory}.
 	 *
 	 * @return currently registered dump sink factory
 	 * @see DumpSinkFactory
@@ -535,8 +509,8 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Determine of a particular sev/key is trackable. Use this method to determine if tracking is enabled/disabled for a
-	 * specific severity. This call is equivalent to {@code logger.isSet(sev, key, null);}
+	 * Determine of a particular sev/key is trackable. Use this method to determine if tracking is enabled/disabled for
+	 * a specific severity. This call is equivalent to {@code logger.isSet(sev, key, null);}
 	 *
 	 * @param sev
 	 *            severity of to be checked
@@ -555,11 +529,9 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Determine if a particular sev for the registered application name 
-	 * used in {@code TrackingLogger.getInstance()} call.
-	 * Use this method to determine if tracking is enabled/disabled for a
-	 * specific severity. This call is equivalent to
-	 * {@code logger.getTracker().getEventSink().isSet(sev)}
+	 * Determine if a particular sev for the registered application name used in {@code TrackingLogger.getInstance()}
+	 * call. Use this method to determine if tracking is enabled/disabled for a specific severity. This call is
+	 * equivalent to {@code logger.getTracker().getEventSink().isSet(sev)}
 	 *
 	 * @param sev
 	 *            severity of to be checked
@@ -590,8 +562,8 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Set sev/key combination for tracking. This is the same as calling
-	 * {@code set(sev, key, null)}, where value is null.
+	 * Set sev/key combination for tracking. This is the same as calling {@code set(sev, key, null)}, where value is
+	 * null.
 	 *
 	 * @param sev severity of to be checked
 	 * @param key key associated with tracking activity
@@ -630,8 +602,8 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Close this instance of {@code TrackingLogger}. Existing {@link Tracker} logger
-	 * (if already opened) is closed and released.
+	 * Close this instance of {@code TrackingLogger}. Existing {@link Tracker} logger (if already opened) is closed and
+	 * released.
 	 *
 	 * @see TrackerConfig
 	 */
@@ -644,10 +616,10 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Log a single message with a given severity level and a number of
-	 * user supplied arguments. Message pattern is based on the format defined
-	 * by {@code MessageFormat}. This logging type is more efficient than
-	 * string concatenation.
+	 * Log a single message with a given severity level and a number of user supplied arguments. Message pattern is
+	 * based on the format defined by {@code MessageFormat}. This logging type is more efficient than string
+	 * concatenation.
+	 * 
 	 * <pre>
 	 * {@code 
 	 * logger.log(OpLevel.DEBUG, "My message arg={0}, arg={1}", parm1, parm2);
@@ -671,10 +643,9 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Log a single DEBUG message and a number of user supplied arguments.
-	 * Message pattern is based on the format defined
-	 * by {@code MessageFormat}. This logging type is more efficient than
-	 * string concatenation.
+	 * Log a single DEBUG message and a number of user supplied arguments. Message pattern is based on the format
+	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
+	 * 
 	 * <pre>
 	 * {@code 
 	 * logger.debug("My message arg={0}, arg={1}", parm1, parm2);
@@ -693,10 +664,9 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Log a single TRACE message and a number of user supplied arguments.
-	 * Message pattern is based on the format defined
-	 * by {@code MessageFormat}. This logging type is more efficient than
-	 * string concatenation.
+	 * Log a single TRACE message and a number of user supplied arguments. Message pattern is based on the format
+	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
+	 * 
 	 * <pre>
 	 * {@code 
 	 * logger.trace("My message arg={0}, arg={1}", parm1, parm2);
@@ -715,10 +685,9 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Log a single ERROR message and a number of user supplied arguments.
-	 * Message pattern is based on the format defined
-	 * by {@code MessageFormat}. This logging type is more efficient than
-	 * string concatenation.
+	 * Log a single ERROR message and a number of user supplied arguments. Message pattern is based on the format
+	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
+	 * 
 	 * <pre>
 	 * {@code 
 	 * logger.error("My error message arg={0}, arg={1}", parm1, parm2);
@@ -737,10 +706,9 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Log a single FATAL message and a number of user supplied arguments.
-	 * Message pattern is based on the format defined
-	 * by {@code MessageFormat}. This logging type is more efficient than
-	 * string concatenation.
+	 * Log a single FATAL message and a number of user supplied arguments. Message pattern is based on the format
+	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
+	 * 
 	 * <pre>
 	 * {@code 
 	 * logger.fatal("My error message arg={0}, arg={1}", parm1, parm2);
@@ -759,10 +727,9 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Log a single HALT message and a number of user supplied arguments.
-	 * Message pattern is based on the format defined
-	 * by {@code MessageFormat}. This logging type is more efficient than
-	 * string concatenation.
+	 * Log a single HALT message and a number of user supplied arguments. Message pattern is based on the format defined
+	 * by {@code MessageFormat}. This logging type is more efficient than string concatenation.
+	 * 
 	 * <pre>
 	 * {@code 
 	 * logger.halt("My error message arg={0}, arg={1}", parm1, parm2);
@@ -781,11 +748,10 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Log a single WARNING message and a number of user supplied arguments.
-	 * Message pattern is based on the format defined
-	 * by {@code MessageFormat}. This logging type is more efficient than
-	 * string concatenation.
-	 *  <pre>
+	 * Log a single WARNING message and a number of user supplied arguments. Message pattern is based on the format
+	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
+	 * 
+	 * <pre>
 	 * {@code 
 	 * logger.warn("My message arg={0}, arg={1}", parm1, parm2);
 	 * }
@@ -803,10 +769,9 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Log a single INFO message and a number of user supplied arguments.
-	 * Message pattern is based on the format defined
-	 * by {@code MessageFormat}. This logging type is more efficient than
-	 * string concatenation.
+	 * Log a single INFO message and a number of user supplied arguments. Message pattern is based on the format defined
+	 * by {@code MessageFormat}. This logging type is more efficient than string concatenation.
+	 * 
 	 * <pre>
 	 * {@code 
 	 * logger.info("My message arg={0}, arg={1}", parm1, parm2);
@@ -825,10 +790,9 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Log a single NOTICE message and a number of user supplied arguments.
-	 * Message pattern is based on the format defined
-	 * by {@code MessageFormat}. This logging type is more efficient than
-	 * string concatenation.
+	 * Log a single NOTICE message and a number of user supplied arguments. Message pattern is based on the format
+	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
+	 * 
 	 * <pre>
 	 * {@code 
 	 * logger.notice("My message arg={0}, arg={1}", parm1, parm2);
@@ -847,9 +811,8 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Report a single tracking activity. Call after instance of {@link TrackingActivity}
-	 * has been completed using {@code TrackingActivity.stop()} and {@code TrackingActivity.tnt()}
-	 * calls.
+	 * Report a single tracking activity. Call after instance of {@link TrackingActivity} has been completed using
+	 * {@code TrackingActivity.stop()} and {@code TrackingActivity.tnt()} calls.
 	 *
 	 * @param activity
 	 *            tracking activity to be reported
@@ -864,8 +827,9 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Report a single tracking event as a single activity. Call after instance of {@link TrackingEvent}
-	 * has been completed using {@code TrackingEvent.stop()} call.
+	 * Report a single tracking event as a single activity. Call after instance of {@link TrackingEvent} has been
+	 * completed using {@code TrackingEvent.stop()} call.
+	 * 
 	 * @param event
 	 *            tracking event to be reported as a single activity
 	 * @throws IllegalStateException when tracker is not initialized
@@ -969,8 +933,7 @@ public class TrackingLogger implements Tracker {
 		checkState();
 		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 		Throwable ex = Utils.getThrowable(args);
-		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex,
-				Useconds.CURRENT.get(), elapsed);
+		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, Useconds.CURRENT.get(), elapsed);
 		logger.tnt(event);
 	}
 
@@ -1049,8 +1012,7 @@ public class TrackingLogger implements Tracker {
 		checkState();
 		TrackingEvent event = logger.newEvent(severity, opType, opName, correlator, tag, msg, args);
 		Throwable ex = Utils.getThrowable(args);
-		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex,
-				Useconds.CURRENT.get(), elapsed);
+		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, Useconds.CURRENT.get(), elapsed);
 		logger.tnt(event);
 	}
 
@@ -1169,9 +1131,8 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Returns currently registered {@link Tracker} logger associated with the current thread. {@link Tracker}
-	 * logger is associated with the current thread after the register() call. {@link Tracker} logger instance is
-	 * not thread safe.
+	 * Returns currently registered {@link Tracker} logger associated with the current thread. {@link Tracker} logger is
+	 * associated with the current thread after the register() call. {@link Tracker} logger instance is not thread safe.
 	 *
 	 * @return {@link Tracker} logger associated with the current thread or null of non available.
 	 * @see Tracker
@@ -1181,9 +1142,8 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Register a tracking filter associated with the tracker.
-	 * Tracking filter allows consolidation of all conditional tracking
-	 * logic into a single class.
+	 * Register a tracking filter associated with the tracker. Tracking filter allows consolidation of all conditional
+	 * tracking logic into a single class.
 	 *
 	 * @see TrackingFilter
 	 * @throws IllegalStateException when tracker is not initialized
@@ -1195,8 +1155,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Add a sink log listener, which is triggered log activities
-	 * occurs when writing to the event sink.
+	 * Add a sink log listener, which is triggered log activities occurs when writing to the event sink.
 	 *
 	 * @param listener user supplied sink log listener
 	 * @see SinkErrorListener
@@ -1208,8 +1167,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Remove a sink log listener, which is triggered log activities
-	 * occurs when writing to the event sink.
+	 * Remove a sink log listener, which is triggered log activities occurs when writing to the event sink.
 	 *
 	 * @param listener user supplied sink log listener
 	 * @throws IllegalStateException when tracker is not initialized
@@ -1221,8 +1179,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Add and register a sink error listener, which is triggered error
-	 * occurs when writing to the event sink.
+	 * Add and register a sink error listener, which is triggered error occurs when writing to the event sink.
 	 *
 	 * @param listener user supplied sink error listener
 	 * @see SinkErrorListener
@@ -1234,8 +1191,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Remove a sink error listener, which is triggered error
-	 * occurs when writing to the event sink.
+	 * Remove a sink error listener, which is triggered error occurs when writing to the event sink.
 	 *
 	 * @param listener user supplied sink error listener
 	 * @see SinkErrorListener
@@ -1246,10 +1202,8 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Add and register a sink filter, which is used to filter
-	 * out events written to the underlying sink. Sink event listeners
-	 * get called every time an event/activity or message is written to the
-	 * underlying event sink.
+	 * Add and register a sink filter, which is used to filter out events written to the underlying sink. Sink event
+	 * listeners get called every time an event/activity or message is written to the underlying event sink.
 	 *
 	 * @param filter user supplied sink filter
 	 * @see SinkEventFilter
@@ -1261,8 +1215,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Remove sink filter, which is used to filter
-	 * out events written to the underlying sink.
+	 * Remove sink filter, which is used to filter out events written to the underlying sink.
 	 *
 	 * @param filter user supplied sink filter
 	 * @throws IllegalStateException when tracker is not initialized
@@ -1274,8 +1227,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Add and register a dump listener, which is triggered when dump is generated by
-	 * {@code dump()} call.
+	 * Add and register a dump listener, which is triggered when dump is generated by {@code dump()} call.
 	 *
 	 * @param lst user supplied dump listener
 	 * @see DumpListener
@@ -1285,8 +1237,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Remove a dump listener, which is triggered when dump is generated by
-	 * {@code dump()} call.
+	 * Remove a dump listener, which is triggered when dump is generated by {@code dump()} call.
 	 *
 	 * @param lst user supplied dump listener
 	 * @see DumpListener
@@ -1296,10 +1247,9 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Add and register a dump provider. Instances of {@code DumpProvider}
-	 * provide implementation for underlying classes that generate application
-	 * specific dumps. By default supplied dump provider is associated with a
-	 * default {@code DumpSink}.
+	 * Add and register a dump provider. Instances of {@code DumpProvider} provide implementation for underlying classes
+	 * that generate application specific dumps. By default supplied dump provider is associated with a default
+	 * {@code DumpSink}.
 	 *
 	 * @param dp user supplied dump provider
 	 *
@@ -1311,17 +1261,12 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Add and register a dump provider with a user specified {@code DumpSink}.
-	 * Instances of {@code DumpProvider} interface
-	 * provide implementation for underlying classes that generate application
-	 * specific dumps. This dump provider will be triggered for the specified
-	 * {@code DumpSink} only. Instance of {@code DumpSink} can be
-	 * created by {@code DumpDestinatonFactory}.
-	 * By default {@code PropertiesDumpProvider},
-	 * {@code MXBeanDumpProvider}, {@code ThreadDumpProvider},
-	 * {@code ThreadDeadlockDumpProvider} are auto registered with
-	 * {@code FileDumpSink} during initialization of
-	 * {@code TrackingLogger} class.
+	 * Add and register a dump provider with a user specified {@code DumpSink}. Instances of {@code DumpProvider}
+	 * interface provide implementation for underlying classes that generate application specific dumps. This dump
+	 * provider will be triggered for the specified {@code DumpSink} only. Instance of {@code DumpSink} can be created
+	 * by {@code DumpDestinatonFactory}. By default {@code PropertiesDumpProvider}, {@code MXBeanDumpProvider},
+	 * {@code ThreadDumpProvider}, {@code ThreadDeadlockDumpProvider} are auto registered with {@code FileDumpSink}
+	 * during initialization of {@code TrackingLogger} class.
 	 *
 	 * @param df user supplied dump destination associated with dump provider
 	 * @param dp user supplied dump provider
@@ -1353,11 +1298,9 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Generate dumps backed by registered {@code DumpProvider} instances
-	 * written to registered {@code DumpSink} instances. The method
-	 * first opens all registered dump destinations and then iterates over all
-	 * dump providers to obtain dumps of instance {@code DumpCollection}.
-	 * Registered instances of {@code DumpListener} are triggered for
+	 * Generate dumps backed by registered {@code DumpProvider} instances written to registered {@code DumpSink}
+	 * instances. The method first opens all registered dump destinations and then iterates over all dump providers to
+	 * obtain dumps of instance {@code DumpCollection}. Registered instances of {@code DumpListener} are triggered for
 	 * before, after, error, complete conditions during this call.
 	 *
 	 * @see DumpListener
@@ -1371,11 +1314,9 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Generate dumps backed by registered {@code DumpProvider} instances
-	 * written to registered {@code DumpSink} instances. The method
-	 * first opens all registered dump destinations and then iterates over all
-	 * dump providers to obtain dumps of instance {@code DumpCollection}.
-	 * Registered instances of {@code DumpListener} are triggered for
+	 * Generate dumps backed by registered {@code DumpProvider} instances written to registered {@code DumpSink}
+	 * instances. The method first opens all registered dump destinations and then iterates over all dump providers to
+	 * obtain dumps of instance {@code DumpCollection}. Registered instances of {@code DumpListener} are triggered for
 	 * before, after, error, complete conditions during this call.
 	 *
 	 * @param reason reason why dump is generated
@@ -1429,8 +1370,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Enable/disable VM shutdown hook that will automatically flush
-	 * all registered trackers.
+	 * Enable/disable VM shutdown hook that will automatically flush all registered trackers.
 	 *
 	 * @param flag enable/disable VM shutdown hook that triggers a flush
 	 */
@@ -1442,8 +1382,8 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Enable/disable {@code UncaughtExceptionHandler} hook that will automatically trigger a dump
-	 * on uncaught thread exceptions for all threads.
+	 * Enable/disable {@code UncaughtExceptionHandler} hook that will automatically trigger a dump on uncaught thread
+	 * exceptions for all threads.
 	 *
 	 */
 	public static void dumpOnUncaughtException() {
@@ -1465,8 +1405,9 @@ public class TrackingLogger implements Tracker {
 			notifyDumpListeners(DumpProvider.DUMP_COMPLETE, Thread.currentThread(), null, DUMP_DESTINATIONS);
 		} finally {
 			for (DumpSink dest : DUMP_DESTINATIONS) {
-				try { dest.close(); }
-				catch (Throwable ex) {
+				try {
+					dest.close();
+				} catch (Throwable ex) {
 					ArrayList<DumpSink> list = new ArrayList<DumpSink>(1);
 					list.add(dest);
 					notifyDumpListeners(DumpProvider.DUMP_ERROR, Thread.currentThread(), null, list, ex);
