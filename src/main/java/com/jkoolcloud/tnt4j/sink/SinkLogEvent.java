@@ -17,10 +17,10 @@ package com.jkoolcloud.tnt4j.sink;
 
 import java.util.EventObject;
 
+import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.core.TTL;
 import com.jkoolcloud.tnt4j.source.Source;
-import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 import com.jkoolcloud.tnt4j.utils.Utils;
@@ -45,7 +45,7 @@ public class SinkLogEvent extends EventObject implements TTL {
 	public static final int SIGNAL_FLUSH = 1;
 	public static final int SIGNAL_CLOSE = 5;
 	public static final int SIGNAL_SHUTDOWN = 10;
-	
+
 	private Object logObj = null;
 	private Snapshot snapshot = null;
 	private Throwable error = null;
@@ -54,7 +54,7 @@ public class SinkLogEvent extends EventObject implements TTL {
 	private Object[] argList = null;
 	private int signalType = SIGNAL_PROCESS;
 	private long ttl;
-	private long startTimeNanos =  System.nanoTime();
+	private long startTimeNanos = System.nanoTime();
 	private long stopTimeNanos = 0;
 
 	/**
@@ -69,7 +69,8 @@ public class SinkLogEvent extends EventObject implements TTL {
 	 */
 	public SinkLogEvent(EventSink sink, Thread th, int signalType) {
 		super(sink);
-		logObj = th;
+		this.logObj = th;
+		this.signalType = signalType;
 	}
 
 	/**
@@ -103,7 +104,7 @@ public class SinkLogEvent extends EventObject implements TTL {
 		logObj = msg;
 		error = msg.getThrowable();
 		evSrc = msg.getSource();
-		ttl = msg.getTTL();	
+		ttl = msg.getTTL();
 	}
 
 	/**
@@ -120,7 +121,7 @@ public class SinkLogEvent extends EventObject implements TTL {
 		logObj = snap;
 		snapshot = snap;
 		evSrc = snap.getSource();
-		ttl = snap.getTTL();	
+		ttl = snap.getTTL();
 	}
 
 	/**
@@ -157,9 +158,8 @@ public class SinkLogEvent extends EventObject implements TTL {
 	 * @return Thread associated with event producer, null if not available
 	 */
 	public Thread getSignal() {
-		return logObj instanceof Thread? (Thread)logObj: null;
+		return logObj instanceof Thread ? (Thread) logObj : null;
 	}
-
 
 	/**
 	 * Return signal type associated with this event
@@ -169,7 +169,6 @@ public class SinkLogEvent extends EventObject implements TTL {
 	public int getSignalType() {
 		return signalType;
 	}
-
 
 	/**
 	 * Return associated event sink with this event
@@ -244,8 +243,7 @@ public class SinkLogEvent extends EventObject implements TTL {
 	}
 
 	/**
-	 * This method is called when event processing is complete and
-	 * service time is calculated.
+	 * This method is called when event processing is complete and service time is calculated.
 	 * 
 	 * @return service time in nanoseconds
 	 */
@@ -253,16 +251,16 @@ public class SinkLogEvent extends EventObject implements TTL {
 		stopTimeNanos = System.nanoTime();
 		return stopTimeNanos - startTimeNanos;
 	}
-	
+
 	/**
 	 * Compute event service time
 	 * 
 	 * @return service time in nanoseconds
 	 */
 	public long getServiceTimeNanos() {
-		return stopTimeNanos > 0? stopTimeNanos - startTimeNanos: System.nanoTime() - startTimeNanos;
+		return stopTimeNanos > 0 ? stopTimeNanos - startTimeNanos : System.nanoTime() - startTimeNanos;
 	}
-	
+
 	@Override
 	public String toString() {
 		return super.toString() 
@@ -271,17 +269,17 @@ public class SinkLogEvent extends EventObject implements TTL {
 			+ ", ttl: " + ttl
 			+ ", log.obj: " + Utils.quote(logObj)
 			+ ", ev.source: " + Utils.quote(evSrc)
-		    + ", exception: " + Utils.quote(error)
-		    + "}";
+			+ ", exception: " + Utils.quote(error)
+			+ "}";
 	}
 
 	@Override
-    public long getTTL() {
-	    return ttl;
-    }
+	public long getTTL() {
+		return ttl;
+	}
 
 	@Override
-    public void setTTL(long ttl) {
+	public void setTTL(long ttl) {
 		this.ttl = ttl;
 	}
 }
