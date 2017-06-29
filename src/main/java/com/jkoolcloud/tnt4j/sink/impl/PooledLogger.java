@@ -109,16 +109,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 
 	@Override
 	public void shutdown(Throwable ex) {
-		shutdown();
-	}
-
-	private void shutdown() {
 		shutdown = true;
-
-		stop();
-
-		eventQ.clear();
-		delayQ.clear();
 	}
 
 	/**
@@ -500,8 +491,8 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 			} else if (event.getSignalType() == SinkLogEvent.SIGNAL_FLUSH) {
 				event.getEventSink().flush();
 			} else if (event.getSignalType() == SinkLogEvent.SIGNAL_SHUTDOWN) {
+				shutdown(event.getException());
 				close(event.getEventSink());
-				shutdown();
 			}
 		} finally {
 			LockSupport.unpark(signal);
