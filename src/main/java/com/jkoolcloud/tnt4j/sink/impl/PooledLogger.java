@@ -92,12 +92,12 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	AtomicLong lastServiceUsec = new AtomicLong(0);
 	AtomicLong totalServiceUsec = new AtomicLong(0);
 
-    /**
-     * Create a pooled logger instance.
-     *
-     * @param threadPoolSize number of threads that will be used to log all enqueued events.
-     * @param maxCapacity maximum queue capacity to hold incoming events, exceeding capacity will drop incoming events.
-     */
+	/**
+	 * Create a pooled logger instance.
+	 *
+	 * @param threadPoolSize number of threads that will be used to log all enqueued events.
+	 * @param maxCapacity maximum queue capacity to hold incoming events, exceeding capacity will drop incoming events.
+	 */
 	public PooledLogger(String name, int threadPoolSize, int maxCapacity) {
 		poolName = name;
 		poolSize = threadPoolSize;
@@ -114,7 +114,11 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 
 	private void shutdown() {
 		shutdown = true;
+
 		stop();
+
+		eventQ.clear();
+		delayQ.clear();
 	}
 
 	/**
