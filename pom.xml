@@ -4,7 +4,7 @@
 
     <groupId>com.jkoolcloud</groupId>
     <artifactId>tnt4j</artifactId>
-    <version>2.5-SNAPSHOT</version>
+    <version>2.5</version>
     <packaging>jar</packaging>
 
     <name>tnt4j</name>
@@ -146,6 +146,7 @@
         <profile>
             <id>legacy-dependencies</id>
             <activation>
+                <!--<activeByDefault>true</activeByDefault>-->
                 <jdk>(,1.7)</jdk>
             </activation>
             <properties>
