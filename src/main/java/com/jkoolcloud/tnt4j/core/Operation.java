@@ -30,7 +30,6 @@ import com.jkoolcloud.tnt4j.source.SourceType;
 import com.jkoolcloud.tnt4j.utils.Useconds;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
-
 /**
  * <p>Implements a Operation entity.</p>
  *
@@ -96,7 +95,6 @@ public class Operation implements TTL {
 	private boolean cpuTimingSupported = ManagementFactory.getThreadMXBean().isThreadCpuTimeEnabled();
 	private boolean contTimingSupported = ManagementFactory.getThreadMXBean().isThreadContentionMonitoringEnabled();
 
-
 	/**
 	 * Creates a Operation with the specified properties.
 	 * Operation name can be any name or a relative name based
@@ -154,7 +152,7 @@ public class Operation implements TTL {
 	 * @return name triggering operation
 	 */
 	public String getResolvedName() {
-		return opName != null? Utils.getMethodNameFromStack(opName): opName;
+		return opName != null ? Utils.getMethodNameFromStack(opName) : opName;
 	}
 
 	/**
@@ -415,7 +413,6 @@ public class Operation implements TTL {
 		this.waitTimeUsec = wTime;
 	}
 
-
 	/**
 	 * Gets the exception string message currently associated with the operation.
 	 *
@@ -476,7 +473,7 @@ public class Operation implements TTL {
 	/**
 	 * Gets the current severity level to associate with the operation.
 	 *
-	 *@return current severity level
+	 * @return current severity level
 	 */
 	public OpLevel getSeverity() {
 		return opLevel;
@@ -533,8 +530,8 @@ public class Operation implements TTL {
 	 *
 	 * @param clist user-defined operation correlator
 	 */
-	public void setCorrelator(String...clist) {
-		for (int i=0; (clist != null) && (i < clist.length); i++) {
+	public void setCorrelator(String... clist) {
+		for (int i = 0; (clist != null) && (i < clist.length); i++) {
 			if (clist[i] != null) {
 				this.correlators.add(clist[i]);
 			}
@@ -590,7 +587,6 @@ public class Operation implements TTL {
 		_start(start);
 	}
 
-
 	/**
 	 * Indicates that the operation has started at the specified start time.
 	 *
@@ -633,7 +629,7 @@ public class Operation implements TTL {
 		long start = System.nanoTime();
 		endTimeUs = stopTimeUsec;
 
-		if (startTimeUs <= 0) {
+		if (startTimeUs <= 0 || startTimeUs > (stopTimeUsec - elaspedUsec)) {
 			long startUsec = stopTimeUsec - elaspedUsec;
 			startTimeUs = startUsec;
 		}
@@ -645,14 +641,15 @@ public class Operation implements TTL {
 
 		if (endTimeUs < startTimeUs) {
 			if (startTimeNano > 0) {
-				startTimeUs = endTimeUs - (elapsedTimeNano/1000);
+				startTimeUs = endTimeUs - (elapsedTimeNano / 1000);
 			} else {
 				throw new IllegalArgumentException("end.time=" + endTimeUs
 						+ " is less than start.time=" + startTimeUs
 						+ ", delta.usec=" + (endTimeUs - startTimeUs));
 			}
 		}
-		elapsedTimeUsec = endTimeUs - startTimeUs;
+
+		elapsedTimeUsec = elaspedUsec > 0 ? elaspedUsec : endTimeUs - startTimeUs;
 		_stop(start);
 	}
 
@@ -802,7 +799,7 @@ public class Operation implements TTL {
 	 * @return total blocked time in microseconds, -1 if not stopped yet
 	 */
 	public long getOnlyBlockedTimeUsec() {
-		return stopBlockTime > 0? ((stopBlockTime - startBlockTime) * 1000): -1;
+		return stopBlockTime > 0 ? ((stopBlockTime - startBlockTime) * 1000) : -1;
 	}
 
 	/**
@@ -810,7 +807,7 @@ public class Operation implements TTL {
 	 * @return total waited time in microseconds, -1 if not stopped yet
 	 */
 	public long getOnlyWaitTimeUsec() {
-		return stopWaitTime > 0? ((stopWaitTime - startWaitTime) * 1000): -1;
+		return stopWaitTime > 0 ? ((stopWaitTime - startWaitTime) * 1000) : -1;
 	}
 
 	/**
@@ -848,8 +845,7 @@ public class Operation implements TTL {
 		if (opName == null) {
 			if (other.opName != null)
 				return false;
-		}
-		else if (!opName.equals(other.opName)) {
+		} else if (!opName.equals(other.opName)) {
 			return false;
 		}
 
