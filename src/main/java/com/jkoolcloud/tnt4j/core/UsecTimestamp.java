@@ -42,6 +42,9 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, Cloneable, Serializable {
 	private static final long serialVersionUID = 3658590467907047916L;
 
+	private static final String DFLT_JAVA_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+	public  static final String DEFAULT_FORMAT   = DFLT_JAVA_FORMAT + "SSS z";
+
 	protected static AtomicLong LamportCounter = new AtomicLong(System.currentTimeMillis());
 
 	private long msecs;
@@ -133,6 +136,24 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @throws NullPointerException if timeStampStr is {@code null}
 	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
 	 * @throws ParseException if failed to parse string based on specified format
+	 */
+	public UsecTimestamp(String timeStampStr) throws ParseException {
+		this(timeStampStr, DEFAULT_FORMAT, TimeZone.getDefault());
+	}
+
+	/**
+	 * <p>Creates UsecTimestamp from string representation of timestamp in the
+	 * default format.</p>
+	 * <p>This is based on {@link SimpleDateFormat}, but extends its support to
+	 * recognize microsecond fractional seconds.  If number of fractional second
+	 * characters is greater than 3, then it's assumed to be microseconds.
+	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of
+	 * {@link SimpleDateFormat}.
+	 *
+	 * @param timeStampStr timestamp string
+	 * @throws NullPointerException if timeStampStr is {@code null}
+	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
+	 * @throws ParseException if failed to parse string based on default format
 	 */
 	public UsecTimestamp(String timeStampStr, String formatStr) throws ParseException {
 		this(timeStampStr, formatStr, TimeZone.getDefault());
@@ -299,7 +320,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		setTimestampValues(date.getTime(), 0, 0);
 		add(0, usecs);
 	}
-	
+
 	/**
 	 * Creates UsecTimestamp based on specified UsecTimestamp.
 	 *
@@ -319,7 +340,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	public UsecTimestamp(Date date) {
 		setTimestampValues(date.getTime(), 0, 0);
 	}
-	
+
 	/**
 	 * Returns Lamport clock value of this time stamp
 	 * (based on Lamport Clock algorithm)
@@ -701,7 +722,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		String tsStr = null;
 
 		if (pattern == null) {
-			SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS" + String.format("%03d",usecs) + " z");
+			SimpleDateFormat df = new SimpleDateFormat(DFLT_JAVA_FORMAT + String.format("%03d",usecs) + " z");
 			df.setTimeZone(tz);
 			tsStr = df.format(new Date(msecs));
 		}
