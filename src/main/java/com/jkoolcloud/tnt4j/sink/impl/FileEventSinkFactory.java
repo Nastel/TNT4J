@@ -15,6 +15,7 @@
  */
 package com.jkoolcloud.tnt4j.sink.impl;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 
@@ -77,6 +78,17 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 		return configureSink(new FileEventSink(name, fileName, append, frmt));
 	}
 
+	@Override
+	protected EventSink configureSink(EventSink sink) {
+		super.configureSink(sink);
+		try {
+			sink.open();
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		return sink;
+	}	
+	
 	@Override
 	public void setConfiguration(Map<String, Object> props) throws ConfigException {
 		fileName = Utils.getString("FileName", props, fileName);		
