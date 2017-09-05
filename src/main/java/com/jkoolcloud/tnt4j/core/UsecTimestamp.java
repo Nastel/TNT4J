@@ -132,7 +132,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * {@link SimpleDateFormat}.
 	 *
 	 * @param timeStampStr timestamp string
-	 * @param formatStr format specification for timestamp string
 	 * @throws NullPointerException if timeStampStr is {@code null}
 	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
 	 * @throws ParseException if failed to parse string based on specified format
@@ -151,6 +150,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * {@link SimpleDateFormat}.
 	 *
 	 * @param timeStampStr timestamp string
+	 * @param formatStr format specification for timestamp string
 	 * @throws NullPointerException if timeStampStr is {@code null}
 	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
 	 * @throws ParseException if failed to parse string based on default format
