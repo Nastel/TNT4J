@@ -89,7 +89,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	private AtomicLong popCount = new AtomicLong(0);
 	private AtomicLong noopCount = new AtomicLong(0);
 	private AtomicLong overheadNanos = new AtomicLong(0);
-	private volatile boolean openFlag = false, keepContext = false;
+	private volatile boolean keepContext = false;
 
 	protected TrackerImpl(TrackerConfig config) {
 		this(config, false);
@@ -673,7 +673,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
     public boolean isOpen() {
-	    return openFlag;
+	    return eventSink != null && eventSink.isOpen();
     }
 
 	@Override
@@ -681,7 +681,6 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		if (!isOpen()) {
 			openIOHandle(selector);
 			openEventSink();
-			openFlag = true;
 			logger.log(OpLevel.DEBUG,
 				"Tracker opened vm.name={0}, tid={1}, event.sink={2}, source={3}",
 				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource());
@@ -702,8 +701,6 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			logger.log(OpLevel.ERROR,
 				"Failed to close tracker vm.name={0}, tid={1}, event.sink={2}, source={3}",
 				Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
-		} finally {
-			openFlag = false;
 		}
 	}
 
