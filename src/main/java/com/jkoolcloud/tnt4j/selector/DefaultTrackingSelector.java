@@ -98,6 +98,12 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 		}
 	}
 
+	@Override
+    public synchronized void reopen() throws IOException {
+		close();
+		open();
+	}
+
 	protected void reloadConfig() {
 		clear();
 		Iterator<? extends Object> keys = tokenRepository.getKeys();

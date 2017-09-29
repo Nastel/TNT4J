@@ -188,6 +188,12 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	}
 
 	@Override
+    public void reopen() throws IOException {
+		close();
+		open();
+	}
+
+	@Override
 	public Map<String, Object> getConfiguration() {
 		return settings;
 	}

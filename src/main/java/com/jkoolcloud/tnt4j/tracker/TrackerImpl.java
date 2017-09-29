@@ -705,6 +705,12 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 
 	@Override
+    public void reopen() throws IOException {
+		close();
+		open();
+	}
+
+	@Override
     public void sinkError(SinkError ev) {
 		errorCount.incrementAndGet();
 		if (logger.isSet(OpLevel.DEBUG)) {
@@ -777,4 +783,5 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
     public String newUUID(TrackerConfig tConfig, Object obj) {
 	    return tConfig.getUUIDFactory().newUUID();
     }
+
 }

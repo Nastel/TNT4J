@@ -42,4 +42,15 @@ public interface Handle extends java.io.Closeable {
 	 * @throws IOException if error opening handle
 	 */
 	void open() throws IOException;
+	
+	/**
+	 * This method reopens the handle by closing and opening it again.
+	 *
+	 * @throws IOException
+	 *             if an I/O error occurs closing or opening handle
+	 * 
+	 * @see #close()
+	 * @see #open()
+	 */
+	void reopen() throws IOException;	
 }

@@ -51,15 +51,4 @@ public interface Sink extends Handle {
 	 * Flush all buffered write requests (if any) out to sink.
 	 */
 	void flush() throws IOException;
-
-	/**
-	 * This method reopens this sink by closing and opening it again.
-	 *
-	 * @throws IOException
-	 *             if an I/O error occurs closing or opening handle
-	 * 
-	 * @see #close()
-	 * @see #open()
-	 */
-	void reopen() throws IOException;
 }
