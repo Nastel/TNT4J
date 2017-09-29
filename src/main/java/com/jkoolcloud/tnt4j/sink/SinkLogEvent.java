@@ -16,6 +16,7 @@
 package com.jkoolcloud.tnt4j.sink;
 
 import java.util.EventObject;
+import java.util.ResourceBundle;
 
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
@@ -49,6 +50,7 @@ public class SinkLogEvent extends EventObject implements TTL {
 	private Object logObj = null;
 	private Snapshot snapshot = null;
 	private Throwable error = null;
+	private ResourceBundle bundle;
 	private Source evSrc = null;
 	private OpLevel level = OpLevel.NONE;
 	private Object[] argList = null;
@@ -153,6 +155,37 @@ public class SinkLogEvent extends EventObject implements TTL {
 	}
 
 	/**
+	 * Create a new log event instance.
+	 * 
+	 * @param sink
+	 *            sink associated with the event
+	 * @param evSource
+	 *            source associated with the event
+	 * @param sev
+	 *            log severity
+	 * @param ttl
+	 *            time to live in seconds
+	 * @param bundle
+	 *            resource bundle
+	 * @param key
+	 *            log message object
+	 * @param args
+	 *            argument list associated with the message
+	 */
+	public SinkLogEvent(EventSink sink, Source evSource, OpLevel sev, long ttl, ResourceBundle bundle, Object key, Object... args) {
+		super(sink);
+		logObj = key;
+		if (args != null && args.length > 0) {
+			argList = args;
+			error = Utils.getThrowable(args);
+		}
+		this.level = sev;
+		this.evSrc = evSource;
+		this.bundle = bundle;
+		this.ttl = ttl;
+	}
+
+	/**
 	 * Return Thread associated with event producer, null if not available
 	 * 
 	 * @return Thread associated with event producer, null if not available
@@ -177,6 +210,14 @@ public class SinkLogEvent extends EventObject implements TTL {
 	 */
 	public EventSink getEventSink() {
 		return (EventSink) getSource();
+	}
+
+	/**
+	 * Return resource bundle associated with this event
+	 * @return resource bundle or null of none
+	 */
+	public ResourceBundle getResourceBundle() {
+		return bundle != null? bundle: ((EventSink) getSource()).getResourceBundle();
 	}
 
 	/**

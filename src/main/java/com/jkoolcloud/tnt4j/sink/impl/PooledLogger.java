@@ -544,14 +544,16 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 			outSink.log(event.getTTL(), 
 				event.getEventSource(),
 				event.getSeverity(), 
+				event.getResourceBundle(),
 				String.valueOf(sinkObject),
-			        event.getArguments());
+			    event.getArguments());
 		} else {
 			outSink.log(event.getTTL(),
 				outSink.getSource(),
 				event.getSeverity(),
+				event.getResourceBundle(),
 				String.valueOf(sinkObject),
-			        event.getArguments());
+			    event.getArguments());
 		}
 		loggedCount.incrementAndGet();
 	}

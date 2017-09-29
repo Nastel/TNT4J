@@ -17,6 +17,7 @@ package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
@@ -144,6 +145,10 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 		return skipCount.get();
 	}
 
+	public long defaultTTL() {
+		return (ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT;		
+	}
+	
 	@Override
 	public void setLimiter(EventLimiter limiter) {
 		outSink.setLimiter(limiter);
@@ -177,19 +182,6 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	@Override
 	public boolean isSet(OpLevel sev) {
 		return outSink.isSet(sev);
-	}
-
-	@Override
-	public void write(Object msg, Object... args) throws IOException, InterruptedException {
-		_checkState();
-		String txtMsg = String.valueOf(msg);
-		if (isLoggable(OpLevel.NONE, txtMsg, args)) {
-			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, getSource(), OpLevel.NONE,
-					(ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT, txtMsg, resolveArguments(args));
-			_writeEvent(sinkEvent, block);
-		} else {
-			skipCount.incrementAndGet();
-		}
 	}
 
 	@Override
@@ -234,15 +226,43 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	}
 
 	@Override
+    public void log(OpLevel sev, ResourceBundle bundle, String key, Object... args) {
+		log(source, sev, bundle, key, args);
+    }
+
+	@Override
 	public void log(Source src, OpLevel sev, String msg, Object... args) {
-		log((ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT, src, sev, msg, args);
+		log(defaultTTL(), src, sev, msg, args);
 	}
 
 	@Override
+    public void log(Source src, OpLevel sev, ResourceBundle bundle, String key, Object... args) {
+		log(defaultTTL(), src, sev, bundle, key, args);
+    }
+
+	@Override
 	public void log(long ttl_sec, Source src, OpLevel sev, String msg, Object... args) {
+		log(ttl_sec, src, sev, outSink.getResourceBundle(), msg, args);
+	}
+	
+	@Override
+	public void log(long ttl_sec, Source src, OpLevel sev, ResourceBundle bundle, String key, Object... args) {
 		_checkState();
-		if (isLoggable(sev, msg, args)) {
-			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, src, sev, ttl_sec, msg, resolveArguments(args));
+		if (isLoggable(sev, key, args)) {
+			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, src, sev, ttl_sec, bundle, key, resolveArguments(args));
+			_writeEvent(sinkEvent, block);
+		} else {
+			skipCount.incrementAndGet();
+		}
+	}
+
+	@Override
+	public void write(Object msg, Object... args) throws IOException, InterruptedException {
+		_checkState();
+		String txtMsg = String.valueOf(msg);
+		if (isLoggable(OpLevel.NONE, txtMsg, args)) {
+			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, getSource(), OpLevel.NONE,
+					defaultTTL(), txtMsg, resolveArguments(args));
 			_writeEvent(sinkEvent, block);
 		} else {
 			skipCount.incrementAndGet();
@@ -264,6 +284,7 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 			}
 		}
 	}
+
 
 	@Override
 	public void removeSinkErrorListener(SinkErrorListener listener) {
@@ -507,4 +528,19 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 		this.close();
 		this.open();
 	}
+
+	@Override
+    public String getString(Object key) {
+	    return outSink.getString(key);
+    }
+
+	@Override
+    public void setResourceBundle(ResourceBundle bundle) {
+		outSink.setResourceBundle(bundle);
+	}
+
+	@Override
+    public ResourceBundle getResourceBundle() {
+	    return outSink.getResourceBundle();
+    }
 }

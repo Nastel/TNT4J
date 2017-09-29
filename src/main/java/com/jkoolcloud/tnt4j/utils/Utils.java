@@ -123,6 +123,33 @@ public class Utils {
 	}
 
 	/**
+	 * Obtain a message from a resource bundle
+	 *
+	 * @param bundle
+	 *            resource bundle
+	 * @param key
+	 *            message key
+	 * @return message associated with a given key
+	 */
+	public static String getString(ResourceBundle bundle, Object key) {
+		return getString(bundle, String.valueOf(key));
+	}
+
+	/**
+	 * Obtain a message from a resource bundle
+	 *
+	 * @param bundle
+	 *            resource bundle
+	 * @param key
+	 *            message key
+	 * @return message associated with a given key
+	 */
+	public static String getString(ResourceBundle bundle, String key) {
+		String resolved = (bundle != null? bundle.getString(key): key);
+		return resolved != null? resolved: key;
+	}
+
+	/**
 	 * Constructs a {@link Locale} object parsed from provided locale string.
 	 *
 	 * @param localeStr

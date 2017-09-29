@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.jkoolcloud.tnt4j.core.KeyValueStats;
@@ -56,6 +57,8 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 
 	private String name;
 	private Source source;
+	private ResourceBundle resBundle;
+	
 	private boolean filterCheck = true;
 	private long ttl = TTL.TTL_CONTEXT;
 	private EventLimiter limiter;
@@ -109,6 +112,21 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		this.formatter = fmt;
 	}
 
+	@Override
+    public	void setResourceBundle(ResourceBundle bundle) {
+		resBundle = bundle;
+	}
+
+	@Override
+    public	ResourceBundle getResourceBundle() {
+		return resBundle;
+	}
+
+	@Override
+	public String getString(Object key) {
+		return Utils.getString(resBundle, key);
+	}
+		
 	@Override
 	public Throwable setErrorState(Throwable ex) {
 		Throwable prevError = lastError;
@@ -459,29 +477,44 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	}
 
 	@Override
+	public void log(OpLevel sev, ResourceBundle bundle, String key, Object... args) {
+		log(source, sev, bundle, key, args);
+	}
+
+	@Override
 	public void log(Source src, OpLevel sev, String msg, Object... args) {
 		log(ttl, src, sev, msg, args);
 	}
 
 	@Override
+	public void log(Source src, OpLevel sev, ResourceBundle bundle, String key, Object... args) {
+		log(ttl, src, sev, bundle, key, args);
+	}
+
+	@Override
 	public void log(long ttl_sec, Source src, OpLevel sev, String msg, Object... args) {
+		log(ttl, src, sev, resBundle, msg, args);		
+	}
+
+	@Override
+	public void log(long ttl_sec, Source src, OpLevel sev, ResourceBundle bundle, String key, Object... args) {
 		_checkState();
-		boolean doLog = filterCheck ? isLoggable(ttl_sec, source, sev, msg) : true;
+		boolean doLog = filterCheck ? isLoggable(ttl_sec, source, sev, key) : true;
 		if (doLog) {
-			long nttl = ((ttl_sec != TTL.TTL_CONTEXT) ? ttl_sec : TTL.TTL_DEFAULT);
+			long nttl = defaultTTL(ttl_sec);
 			try {
-				if (!_limiter(1, msg.length())) {
+				if (!_limiter(1, key.length())) {
 					return;
 				}
-				_log(nttl, src, sev, msg, args);
+				_log(nttl, src, sev, Utils.getString(bundle, key), args);
 				loggedMsgs.incrementAndGet();
 				lastTime.set(System.currentTimeMillis());
 				errorState = false;
 				if (!logListeners.isEmpty()) {
-					notifyListeners(new SinkLogEvent(this, src, sev, nttl, msg, args));
+					notifyListeners(new SinkLogEvent(this, src, sev, nttl, key, args));
 				}
 			} catch (Throwable ex) {
-				notifyListeners(new SinkLogEvent(this, src, sev, nttl, msg, args), ex);
+				notifyListeners(new SinkLogEvent(this, src, sev, nttl, key, args), ex);
 			}
 		}
 	}
@@ -492,15 +525,15 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 			if (!_limiter(msg)) {
 				return;
 			}
-			_write(msg, args);
+			_write(getString(msg), args);
 			sinkWrites.incrementAndGet();
 			lastTime.set(System.currentTimeMillis());
 			errorState = false;
 			if (!logListeners.isEmpty()) {
-				notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, (ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT, msg, args));
+				notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, defaultTTL(), msg, args));
 			}
 		} catch (Throwable ex) {
-			notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, (ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT, msg, args), ex);
+			notifyListeners(new SinkLogEvent(this, getSource(), OpLevel.NONE, defaultTTL(), msg, args), ex);
 		}
 	}
 
@@ -526,6 +559,20 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 
 	@Override
 	public void flush() throws IOException {
+	}
+
+	@Override
+	public void reopen() throws IOException {
+		this.close();
+		this.open();
+	}
+
+	public long defaultTTL() {
+		return (ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT;		
+	}
+
+	public static long defaultTTL(long ttl) {
+		return (ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT;		
 	}
 
 	/**
@@ -624,10 +671,4 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 * @throws InterruptedException if interrupted during write operation
 	 */
 	protected abstract void _write(Object msg, Object... args) throws IOException, InterruptedException;
-
-	@Override
-	public void reopen() throws IOException {
-		this.close();
-		this.open();
-	}
 }

@@ -16,6 +16,7 @@
 package com.jkoolcloud.tnt4j.sink;
 
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 import com.jkoolcloud.tnt4j.core.TTL;
@@ -52,6 +53,7 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	private SinkLogEventListener eventListener = null;
 	private EventLimiter limiter = null;
 	private long ttl = TTL.TTL_CONTEXT;
+	private ResourceBundle defBundle;
 
 	protected Map<String, Object> config = null;
 
@@ -107,11 +109,37 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 		if (eventListener != null) {
 			sink.addSinkLogEventListener(eventListener);
 		}
+		if (defBundle != null) {
+			sink.setResourceBundle(defBundle);	
+		}
+		if (limiter != null) {
+			sink.setLimiter(limiter);			
+		}
 		sink.setTTL(ttl);
-		sink.setLimiter(limiter);
 		return sink;
 	}
 
+	@Override
+	public void setConfiguration(Map<String, Object> props) throws ConfigException {
+		config = props;
+		setTTL(Utils.getLong("TTL", props, getTTL()));
+		double maxmps = Utils.getDouble("RateMaxMPS", props, Limiter.MAX_RATE);
+		double maxbps = Utils.getDouble("RateMaxBPS", props, Limiter.MAX_RATE);
+		boolean enabled = Utils.getBoolean("RateLimit", props, false);
+		long timeout = Utils.getLong("RateTimeout", props, EventLimiter.BLOCK_UNTIL_GRANTED);
+		if (enabled) {
+			limiter = newEventLimiterImpl(maxmps, maxbps, enabled, timeout);
+		}
+		
+		String bundleName = Utils.getString("ResourceBundle", props, null);
+		if (bundleName != null) {
+			defBundle = ResourceBundle.getBundle(bundleName);
+		}
+		
+		eventFilter = (SinkEventFilter) Utils.createConfigurableObject("Filter", "Filter.", config);
+		errorListener = (SinkErrorListener) Utils.createConfigurableObject("ErrorListener", "ErrorListener.", config);
+		eventListener = (SinkLogEventListener) Utils.createConfigurableObject("EventListener", "EventListener.", config);
+	}
 
 	@Override
 	public long getTTL() {
@@ -126,22 +154,6 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	@Override
 	public Map<String, Object> getConfiguration() {
 		return config;
-	}
-
-	@Override
-	public void setConfiguration(Map<String, Object> props) throws ConfigException {
-		config = props;
-		setTTL(Utils.getLong("TTL", props, getTTL()));
-		double maxmps = Utils.getDouble("RateMaxMPS", props, Limiter.MAX_RATE);
-		double maxbps = Utils.getDouble("RateMaxBPS", props, Limiter.MAX_RATE);
-		boolean enabled = Utils.getBoolean("RateLimit", props, false);
-		long timeout = Utils.getLong("RateTimeout", props, EventLimiter.BLOCK_UNTIL_GRANTED);
-		if (enabled) {
-			limiter = newEventLimiterImpl(maxmps, maxbps, enabled, timeout);
-		}
-		eventFilter = (SinkEventFilter) Utils.createConfigurableObject("Filter", "Filter.", config);
-		errorListener = (SinkErrorListener) Utils.createConfigurableObject("ErrorListener", "ErrorListener.", config);
-		eventListener = (SinkLogEventListener) Utils.createConfigurableObject("EventListener", "EventListener.", config);
 	}
 	
 	protected EventLimiter newEventLimiterImpl(double maxmps, double maxbps, boolean enabled, long timeout) {

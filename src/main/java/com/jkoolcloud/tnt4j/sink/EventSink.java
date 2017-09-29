@@ -15,6 +15,8 @@
  */
 package com.jkoolcloud.tnt4j.sink;
 
+import java.util.ResourceBundle;
+
 import com.jkoolcloud.tnt4j.core.KeyValueStats;
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
@@ -49,6 +51,29 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	 */
 	boolean errorState();
 
+	/**
+	 * Resolve message key using a resource bundle
+	 *
+	 * @param key key to resolve to message
+	 */
+	String getString(Object key);
+
+	/**
+	 * Set resources bundle for resolving messages (message catalog)
+	 * Setting the resource bundle will enforce all messages to be resolved via
+	 * given message catalog.
+	 *
+	 * @param bundle message resource bundle
+	 */
+	void setResourceBundle(ResourceBundle bundle);
+
+	/**
+	 * Obtain resources associated with this event sink
+	 *
+	 * @return message resource bundle
+	 */
+	ResourceBundle getResourceBundle();
+	
 	/**
 	 * Set the sink into the error state due to some external condition. Error state to set to true if exception is not
 	 * null, false otherwise.
@@ -229,63 +254,6 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	boolean isSet(OpLevel sev);
 
 	/**
-	 * Log a given tracking event
-	 *
-	 * @param event tracking event to log
-	 * @see TrackingEvent
-	 */
-	void log(TrackingEvent event);
-
-	/**
-	 * This method allows writing of {@link TrackingActivity} objects to the underlying destination.
-	 *
-	 * @param activity to be sent to the sink
-	 * @see TrackingActivity
-	 */
-	void log(TrackingActivity activity);
-
-	/**
-	 * This method allows writing of {@link Snapshot} objects to the underlying destination.
-	 *
-	 * @param snapshot a set of properties
-	 * @see Snapshot
-	 */
-	void log(Snapshot snapshot);
-
-	/**
-	 * Log a given string message with a specified severity
-	 *
-	 * @param sev message severity to log
-	 * @param msg string message to be logged
-	 * @param args arguments passed along the message
-	 * @see OpLevel
-	 */
-	void log(OpLevel sev, String msg, Object... args);
-
-	/**
-	 * Log a given string message with a specified severity
-	 *
-	 * @param src log message source info
-	 * @param sev message severity to log
-	 * @param msg string message to be logged
-	 * @param args arguments passed along the message
-	 * @see OpLevel
-	 */
-	void log(Source src, OpLevel sev, String msg, Object... args);
-
-	/**
-	 * Log a given string message with a specified severity
-	 *
-	 * @param ttl time to live in seconds {@link TTL}
-	 * @param src log message source info
-	 * @param sev message severity to log
-	 * @param msg string message to be logged
-	 * @param args arguments passed along the message
-	 * @see OpLevel
-	 */
-	void log(long ttl, Source src, OpLevel sev, String msg, Object... args);
-
-	/**
 	 * Register an event sink listener for notifications when errors occur when writing to event sink.
 	 *
 	 * @param listener event sink listener to register
@@ -332,4 +300,97 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	 * @see SinkEventFilter
 	 */
 	void removeSinkEventFilter(SinkEventFilter listener);
+
+	/**
+	 * Log a given tracking event
+	 *
+	 * @param event tracking event to log
+	 * @see TrackingEvent
+	 */
+	void log(TrackingEvent event);
+
+	/**
+	 * This method allows writing of {@link TrackingActivity} objects to the underlying destination.
+	 *
+	 * @param activity to be sent to the sink
+	 * @see TrackingActivity
+	 */
+	void log(TrackingActivity activity);
+
+	/**
+	 * This method allows writing of {@link Snapshot} objects to the underlying destination.
+	 *
+	 * @param snapshot a set of properties
+	 * @see Snapshot
+	 */
+	void log(Snapshot snapshot);
+
+	/**
+	 * Log a given string message with a specified severity
+	 *
+	 * @param sev message severity to log
+	 * @param msg string message to be logged
+	 * @param args arguments passed along the message
+	 * @see OpLevel
+	 */
+	void log(OpLevel sev, String msg, Object... args);
+
+	/**
+	 * Log a given string message with a specified severity
+	 *
+	 * @param sev message severity to log
+	 * @param bundle resource bundle for messages
+	 * @param key into resource bundle
+	 * @param args arguments passed along the message
+	 * @see OpLevel
+	 */
+	void log(OpLevel sev, ResourceBundle bundle, String key, Object... args);
+
+	/**
+	 * Log a given string message with a specified severity
+	 *
+	 * @param src log message source info
+	 * @param sev message severity to log
+	 * @param msg string message to be logged
+	 * @param args arguments passed along the message
+	 * @see OpLevel
+	 */
+	void log(Source src, OpLevel sev, String msg, Object... args);
+
+	/**
+	 * Log a given string message with a specified severity
+	 *
+	 * @param src log message source info
+	 * @param sev message severity to log
+	 * @param bundle resource bundle for messages
+	 * @param key into resource bundle
+	 * @param args arguments passed along the message
+	 * @see OpLevel
+	 */
+	void log(Source src, OpLevel sev, ResourceBundle bundle, String key, Object... args);
+
+	/**
+	 * Log a given string message with a specified severity
+	 *
+	 * @param ttl time to live in seconds {@link TTL}
+	 * @param src log message source info
+	 * @param sev message severity to log
+	 * @param msg string message to be logged
+	 * @param args arguments passed along the message
+	 * @see OpLevel
+	 */
+	void log(long ttl, Source src, OpLevel sev, String msg, Object... args);
+
+	/**
+	 * Log a given string message with a specified severity
+	 *
+	 * @param ttl time to live in seconds {@link TTL}
+	 * @param src log message source info
+	 * @param sev message severity to log
+	 * @param bundle resource bundle for messages
+	 * @param key into resource bundle
+	 * @param args arguments passed along the message
+	 * @see OpLevel
+	 */
+	void log(long ttl, Source src, OpLevel sev, ResourceBundle bundle, String key, Object... args);
 }
