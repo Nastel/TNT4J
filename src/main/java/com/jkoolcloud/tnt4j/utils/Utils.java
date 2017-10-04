@@ -136,17 +136,22 @@ public class Utils {
 	}
 
 	/**
-	 * Obtain a message from a resource bundle
+	 * Obtain a message from a resource bundle.
 	 *
 	 * @param bundle
 	 *            resource bundle
 	 * @param key
 	 *            message key
-	 * @return message associated with a given key
+	 * @return message associated with a given <tt>key</tt>, or <tt>key</tt> if message is not resolved
 	 */
 	public static String getString(ResourceBundle bundle, String key) {
-		String resolved = (bundle != null? bundle.getString(key): key);
-		return resolved != null? resolved: key;
+		String resolved = null;
+		try {
+			resolved = bundle != null ? bundle.getString(key) : key;
+		} catch (RuntimeException exc) {
+		}
+
+		return resolved != null ? resolved : key;
 	}
 
 	/**
@@ -285,8 +290,9 @@ public class Utils {
 	 */
 	public static String printThrowable(Throwable ex) {
 		try {
-			if (ex == null)
+			if (ex == null) {
 				return null;
+			}
 			ByteArrayOutputStream os = new ByteArrayOutputStream();
 			PrintStream ps = new PrintStream(os);
 			ex.printStackTrace(ps);
@@ -414,8 +420,9 @@ public class Utils {
 	public static String format(String pattern, Object... args) {
 		if (args != null && args.length > 0) {
 			return MessageFormat.format(pattern, args);
-		} else
+		} else {
 			return String.valueOf(pattern);
+		}
 	}
 
 	/**
@@ -468,8 +475,9 @@ public class Utils {
 	 * @see URLEncoder#encode(String, String)
 	 */
 	public static String encodeURL(String url) {
-		if (url == null)
+		if (url == null) {
 			return null;
+		}
 		try {
 			return URLEncoder.encode(url, UTF8);
 		} catch (UnsupportedEncodingException ex) {
@@ -486,8 +494,9 @@ public class Utils {
 	 * @see URLDecoder#decode(String, String)
 	 */
 	public static String decodeURL(String url) {
-		if (url == null)
+		if (url == null) {
 			return null;
+		}
 		try {
 			return URLDecoder.decode(url, UTF8);
 		} catch (UnsupportedEncodingException ex) {
@@ -646,7 +655,7 @@ public class Utils {
 	 *            second object
 	 * @return true if two specified objects are equal
 	 */
-	public static boolean equal(final Object obj1, final Object obj2) {
+	public static boolean equal(Object obj1, Object obj2) {
 		return obj1 == obj2 || (obj1 != null && obj1.equals(obj2));
 	}
 
@@ -669,8 +678,9 @@ public class Utils {
 	 * @return true if the collection is null or empty
 	 */
 	public static boolean isEmpty(Collection<?> col) {
-		if (col == null)
+		if (col == null) {
 			return true;
+		}
 		return col.isEmpty();
 	}
 
@@ -682,8 +692,9 @@ public class Utils {
 	 * @return true if the collection is null or empty
 	 */
 	public static boolean isEmpty(Map<?, ?> map) {
-		if (map == null)
+		if (map == null) {
 			return true;
+		}
 		return map.isEmpty();
 	}
 
@@ -758,10 +769,11 @@ public class Utils {
 		String hostIp = null;
 		InetAddress host;
 		try {
-			if (isEmpty(hostName))
+			if (isEmpty(hostName)) {
 				host = InetAddress.getLocalHost();
-			else
+			} else {
 				host = InetAddress.getByName(hostName);
+			}
 
 			hostIp = host.getHostAddress();
 		} catch (UnknownHostException e) {
@@ -800,10 +812,11 @@ public class Utils {
 		String hostName = null;
 		InetAddress host;
 		try {
-			if (hostIp == null || hostIp.length == 0)
+			if (hostIp == null || hostIp.length == 0) {
 				host = InetAddress.getLocalHost();
-			else
+			} else {
 				host = InetAddress.getByAddress(hostIp);
+			}
 
 			hostName = host.getHostName();
 		} catch (UnknownHostException e) {
@@ -856,8 +869,9 @@ public class Utils {
 	 * @see #getStackTrace(Throwable)
 	 */
 	public static String getExceptionDetail(Throwable ex) {
-		if (ex == null)
+		if (ex == null) {
 			return "";
+		}
 
 		String detail = getStackTrace(ex);
 
@@ -869,21 +883,24 @@ public class Utils {
 				try {
 					Method method = ex.getClass().getMethod("getTargetException", NO_PARAMS_C);
 					Object target = method.invoke(ex, NO_PARAMS_O);
-					if (target instanceof Throwable)
+					if (target instanceof Throwable) {
 						cause = (Throwable) target;
+					}
 				} catch (Exception exx) {
 				}
 			}
 
-			if (cause == null)
+			if (cause == null) {
 				break;
+			}
 
 			ex = cause;
 			rootCause = cause;
 		}
 
-		if (rootCause != null)
+		if (rootCause != null) {
 			detail += LINE_FEED + "Root cause:" + LINE_FEED + getStackTrace(rootCause);
+		}
 
 		return detail;
 	}
@@ -896,8 +913,9 @@ public class Utils {
 	 * @return stack trace as a string
 	 */
 	public static String getStackTrace(Throwable ex) {
-		if (ex == null)
+		if (ex == null) {
 			return "";
+		}
 
 		String result = ex + LINE_FEED;
 
@@ -1093,8 +1111,9 @@ public class Utils {
 	public static Object createConfigurableObject(String classProp, String prefix, Map<String, Object> config)
 			throws ConfigException {
 		Object className = config.get(classProp);
-		if (className == null)
+		if (className == null) {
 			return null;
+		}
 		try {
 			Object obj = Utils.createInstance(className.toString());
 			return Utils.applyConfiguration(prefix, config, obj);
@@ -1123,8 +1142,9 @@ public class Utils {
 	public static Object createConfigurableObject(String classProp, String prefix, Properties config)
 			throws ConfigException {
 		Object className = config.get(classProp);
-		if (className == null)
+		if (className == null) {
 			return null;
+		}
 		try {
 			Object obj = Utils.createInstance(className.toString());
 			return Utils.applyConfiguration(prefix, config, obj);
@@ -1271,8 +1291,9 @@ public class Utils {
 	 */
 	public static Object createInstance(String className)
 			throws InstantiationException, IllegalAccessException, ClassNotFoundException {
-		if (className == null)
+		if (className == null) {
 			return null;
+		}
 		Class<?> classObj = Class.forName(className);
 		return classObj.newInstance();
 	}
@@ -1292,8 +1313,9 @@ public class Utils {
 	 *             if error creating instance
 	 */
 	public static Object createInstance(String className, Object[] args, Class<?>... types) throws Exception {
-		if (className == null)
+		if (className == null) {
 			return null;
+		}
 		Class<?> classObj = Class.forName(className);
 		Constructor<?> ct = classObj.getConstructor(types);
 		return ct.newInstance(args);
