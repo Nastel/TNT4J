@@ -268,7 +268,7 @@ public class ActivityScheduler {
 	 * @return {@link Runnable} instance
 	 */
 	protected Runnable newActivityTask(TrackingLogger lg, String name, OpLevel level) {
-		return new ActivityTask(logger, name, (level == null ? opLevel : level));
+		return new ActivityTask(lg, name, (level == null ? opLevel : level));
 	}
 }
 
