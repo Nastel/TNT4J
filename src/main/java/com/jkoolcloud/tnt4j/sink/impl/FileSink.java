@@ -45,7 +45,7 @@ public class FileSink implements Sink {
 	protected boolean append = true;
 
 	/**
-	 * Create a file based sink based on given filename, append flag.
+	 * Create a file based sink based on given filename.
 	 * 
 	 * @param filename for generating a sink instance
 	 */
@@ -55,7 +55,6 @@ public class FileSink implements Sink {
 
 	/**
 	 * Create a file based sink based on given filename, append flag.
-	 * and a {@link DefaultFormatter}.
 	 * 
 	 * @param filename for generating a sink instance
 	 * @param appnd append to the underlying destination
@@ -65,8 +64,7 @@ public class FileSink implements Sink {
 	}
 
 	/**
-	 * Create a file based sink based on given filename, append flag.
-	 * and a given {@link Formatter}.
+	 * Create a file based sink based on given filename, append flag, and a given {@link Formatter}.
 	 * 
 	 * @param filename for writing to the sink
 	 * @param appnd append to the underlying destination
@@ -112,6 +110,13 @@ public class FileSink implements Sink {
 
 	@Override
 	public synchronized void open() throws IOException {
+		if (file != null) {
+			File parent = file.getParentFile();
+			if (parent != null && !parent.exists()) {
+				parent.mkdirs();
+			}
+		}
+
 		if (printer == null) {
 			printer = new PrintStream(new FileOutputStream(file, append));
 		}
