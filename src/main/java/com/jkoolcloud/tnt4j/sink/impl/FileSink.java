@@ -112,8 +112,12 @@ public class FileSink implements Sink {
 	public synchronized void open() throws IOException {
 		if (file != null) {
 			File parent = file.getParentFile();
-			if (parent != null && !parent.exists()) {
-				parent.mkdirs();
+			if (parent != null) {
+				try {
+					parent.mkdirs();
+				} catch (SecurityException exc) {
+					throw new IOException("Could not verify/create parent path for sink.file=" + file, exc);
+				}
 			}
 		}
 
