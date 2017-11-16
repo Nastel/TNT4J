@@ -18,10 +18,8 @@ package com.jkoolcloud.tnt4j.core;
 import java.util.Collection;
 import java.util.Map;
 
-
 /**
- * This interface defines a snapshot construct, which
- * has a name and a time stamp and collection of elements.
+ * This interface defines a snapshot construct, which has a name and a time stamp and collection of elements.
  *
  * @see UsecTimestamp
  *
@@ -36,13 +34,6 @@ public interface Snapshot extends Trackable {
 	 * @return snapshot id
 	 */
 	String getId();
-
-	/**
-	 * Obtain a name of the snapshot
-	 *
-	 * @return name of the snapshot.
-	 */
-	String getName();
 
 	/**
 	 * Gets the current severity level to associated with the snapshot
@@ -119,7 +110,7 @@ public interface Snapshot extends Trackable {
 	 * @param map of key/value pairs to be added
 	 * @return snapshot instance
 	 */
-	Snapshot addAll(Map<? extends Object,? extends Object> map);
+	Snapshot addAll(Map<? extends Object, ? extends Object> map);
 
 	/**
 	 * Removed a property specified by the given key.

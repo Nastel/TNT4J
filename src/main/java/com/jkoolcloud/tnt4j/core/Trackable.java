@@ -61,7 +61,7 @@ public interface Trackable extends TTL {
 	 *
 	 * @param cid tracking correlator list
 	 */
-	void setCorrelator(String...cid);
+	void setCorrelator(String... cid);
 
 	/**
 	 * Sets tracking correlators
@@ -101,7 +101,7 @@ public interface Trackable extends TTL {
 	 * @param sign tracking identifier
 	 */
 	void setSignature(String sign);
-	
+
 	/**
 	 * Gets tracking identifier associated with this trackable instance.
 	 *
@@ -130,4 +130,11 @@ public interface Trackable extends TTL {
 	 * @param parentId parent ID
 	 */
 	void setParentId(String parentId);
+
+	/**
+	 * Obtain a name of this trackable instance.
+	 *
+	 * @return name of this trackable instance
+	 */
+	String getName();
 }

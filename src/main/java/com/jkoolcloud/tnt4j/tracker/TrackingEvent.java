@@ -268,7 +268,7 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	 */
 	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, Collection<String> correlators, Collection<String> tags, byte[] msg, Object...args) {
 		super(null, msg, args);
-		tracker = tr;		
+		tracker = tr;
 		operation = new Operation(opName, opType);
 		operation.setSeverity(severity);
 		operation.setCorrelator(correlators);
@@ -304,7 +304,7 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 		setLocation(src);
 		setTag(tag);
 	}
-	
+
 	/**
 	 * Return string representation of this tracking event
 	 *
@@ -358,8 +358,9 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	@Override
 	public void setParentId(Trackable parentObject) {
 		parent = parentObject.getTrackingId();
-		if (source == null)
+		if (source == null) {
 			source = parentObject.getSource();
+		}
 	}
 
 	@Override
@@ -373,20 +374,19 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	}
 
 	@Override
-    public Source getSource() {
-	    return source;
-    }
-
+	public Source getSource() {
+		return source;
+	}
 
 	@Override
-	public void setCorrelator(String...cids) {
+	public void setCorrelator(String... cids) {
 		operation.setCorrelator(cids);
 	}
 
 	@Override
-    public void setCorrelator(Collection<String> cids) {
+	public void setCorrelator(Collection<String> cids) {
 		operation.setCorrelator(cids);
-    }
+	}
 
 	@Override
 	public Set<String> getCorrelator() {
@@ -493,7 +493,7 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	public void stop(Throwable opEx) {
 		operation.setException(opEx);
 		operation.stop();
-		operation.setCompCode(opEx != null? OpCompCode.WARNING: OpCompCode.SUCCESS);
+		operation.setCompCode(opEx != null ? OpCompCode.WARNING : OpCompCode.SUCCESS);
 	}
 
 	/**
@@ -505,7 +505,7 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	 */
 	public void stop(Throwable opEx, long elapsedUsec) {
 		operation.setException(opEx);
-		operation.setCompCode(opEx != null? OpCompCode.WARNING: OpCompCode.SUCCESS);
+		operation.setCompCode(opEx != null ? OpCompCode.WARNING : OpCompCode.SUCCESS);
 		operation.stop(Useconds.CURRENT.get(), elapsedUsec);
 	}
 
@@ -603,7 +603,7 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Obtain a handle to the {@link Operation} associated with this tracking event
 	 *
-	 *@return operation handle associated with this event
+	 * @return operation handle associated with this event
 	 */
 	public Operation getOperation() {
 		return operation;
@@ -614,7 +614,7 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	 * configured signature factory.
 	 * 
 	 * @return signed self
-	 * @throws NoSuchAlgorithmException 
+	 * @throws NoSuchAlgorithmException
 	 *
 	 */
 	public TrackingEvent sign() throws NoSuchAlgorithmException {
@@ -623,65 +623,70 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 		}
 		return this;
 	}
-	
-	@Override
-    public OpType getType() {
-	    return operation.getType();
-    }
 
 	@Override
-    public void setSource(Source src) {
+	public OpType getType() {
+		return operation.getType();
+	}
+
+	@Override
+	public void setSource(Source src) {
 		source = src;
 	}
 
 	@Override
-    public long getTTL() {
-	    return operation.getTTL();
-    }
+	public long getTTL() {
+		return operation.getTTL();
+	}
 
 	@Override
-    public void setTTL(long ttl) {
+	public void setTTL(long ttl) {
 		operation.setTTL(ttl);
 	}
 
 	@Override
-    public Relate2<Source> relate2(Source srcA, Source srcB, OpType type) {
+	public Relate2<Source> relate2(Source srcA, Source srcB, OpType type) {
 		relation[OBJ_ONE] = srcA;
 		relation[OBJ_TWO] = srcB;
 		relationType = type;
-	    return this;
-    }
+		return this;
+	}
 
 	@Override
-    public Relate2<Source> relate2(Source srcB, OpType type) {
-	    return relate2(getSource(), srcB, type);
-    }
+	public Relate2<Source> relate2(Source srcB, OpType type) {
+		return relate2(getSource(), srcB, type);
+	}
 
 	@Override
-    public OpType get2Type() {
-	    return relationType;
-    }
+	public OpType get2Type() {
+		return relationType;
+	}
 
 	@Override
-    public Source get2(int index) {
-	    return relation[index];
-    }
+	public Source get2(int index) {
+		return relation[index];
+	}
 
 	@Override
-    public Relate2<Source> clear2() {
+	public Relate2<Source> clear2() {
 		relation[OBJ_ONE] = null;
 		relation[OBJ_TWO] = null;
 		relationType = OpType.NOOP;
-	    return this;
-    }
+		return this;
+	}
 
 	@Override
-    public String getSignature() {
-	    return sign;
-    }
+	public String getSignature() {
+		return sign;
+	}
 
 	@Override
-    public void setSignature(String sign) {
+	public void setSignature(String sign) {
 		this.sign = sign;
+	}
+
+	@Override
+	public String getName() {
+		return operation.getName();
 	}
 }
