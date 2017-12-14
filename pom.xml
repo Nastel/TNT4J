@@ -58,7 +58,6 @@
         <commons.lang.version>3.5</commons.lang.version>
         <commons.codec.version>1.10</commons.codec.version>
         <commons.configuration.version>1.10</commons.configuration.version>
-        <commons.logging.version>1.2</commons.logging.version>
         <commons.net.version>3.6</commons.net.version>
 
         <guava.version>20.0</guava.version>
@@ -83,11 +82,6 @@
             <groupId>commons-configuration</groupId>
             <artifactId>commons-configuration</artifactId>
             <version>${commons.configuration.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-logging</groupId>
-            <artifactId>commons-logging</artifactId>
-            <version>${commons.logging.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-net</groupId>
@@ -129,6 +123,12 @@
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
             <version>${kafka.clients.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.slf4j</groupId>
+                    <artifactId>slf4j-api</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
 
@@ -146,7 +146,8 @@
         <profile>
             <id>legacy-dependencies</id>
             <activation>
-                <jdk>(,1.7)</jdk>
+                <activeByDefault>true</activeByDefault>
+                <!--<jdk>(,1.7)</jdk>-->
             </activation>
             <properties>
                 <kafka.clients.version>0.8.2.2</kafka.clients.version>

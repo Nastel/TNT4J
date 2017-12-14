@@ -467,15 +467,13 @@ Requirements
 
 TNT4J depends on the following external packages:
 * Apache commons configuration 1.10 (http://commons.apache.org/proper/commons-configuration/)
-* Apache commons lang 2.6 (http://commons.apache.org/proper/commons-lang/)
-* Apache commons lang3 3.3.2 (http://commons.apache.org/proper/commons-lang/)
-* Apache commons logging 1.2.17 (http://commons.apache.org/proper/commons-logging/)
-* Apache commons net 3.3 (http://commons.apache.org/proper/commons-net/)
-* Apache commons codec 1.9 (http://commons.apache.org/proper/commons-codec/)
+* Apache commons lang3 3.5 (http://commons.apache.org/proper/commons-lang/)
+* Apache commons net 3.6 (http://commons.apache.org/proper/commons-net/)
+* Apache commons codec 1.10 (http://commons.apache.org/proper/commons-codec/)
 * Google Guava Libraries (https://code.google.com/p/guava-libraries/)
-* SLF4J 1.7.12 (http://www.slf4j.org/)
-* Eclipse Paho MQTTv3 1.0.2 (http://www.eclipse.org/paho/)
-* Java UUID Generator (JUG) 3.1.3 (http://wiki.fasterxml.com/JugHome/)
+* SLF4J 1.7.25 (http://www.slf4j.org/)
+* Eclipse Paho MQTTv3 1.1.1 (http://www.eclipse.org/paho/)
+* Java UUID Generator (JUG) 3.1.4 (http://wiki.fasterxml.com/JugHome/)
 
 To build TNT4J:
 *  Please use JCenter or Maven and these dependencies will be downloaded automatically. 
