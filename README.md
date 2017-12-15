@@ -469,7 +469,7 @@ TNT4J depends on the following external packages:
 * Apache commons configuration 1.10 (http://commons.apache.org/proper/commons-configuration/)
 * Apache commons lang3 3.5 (http://commons.apache.org/proper/commons-lang/)
 * Apache commons net 3.6 (http://commons.apache.org/proper/commons-net/)
-* Apache commons codec 1.10 (http://commons.apache.org/proper/commons-codec/)
+* Apache commons codec 1.11 (http://commons.apache.org/proper/commons-codec/)
 * Google Guava Libraries (https://code.google.com/p/guava-libraries/)
 * SLF4J 1.7.25 (http://www.slf4j.org/)
 * Eclipse Paho MQTTv3 1.1.1 (http://www.eclipse.org/paho/)
