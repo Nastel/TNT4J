@@ -130,11 +130,8 @@ public class SimpleFormatter extends DefaultFormatter {
 			msg.append("track-id: '").append(event.getTrackingId()).append("'");
 		}
 		if (event.getOperation().getPropertyCount() > 0) {
-			Collection<Property> list = event.getOperation().getProperties();
 			msg.append("\n\t").append("Properties {");
-			for (Property prop : list) {
-				msg.append("\n\t\t").append(prop.getKey()).append(": '").append(prop.getValue()).append(":").append(prop.getDataType()).append(":").append(prop.getValueType()).append("'");
-			}
+			formatProperties(msg, event.getOperation().getProperties());
 			msg.append("\n\t}");
 		}
 		if (event.getOperation().getSnapshotCount() > 0) {
@@ -256,10 +253,18 @@ public class SimpleFormatter extends DefaultFormatter {
 			msg.append("corr-id: '").append(cid).append("'");
 		}
 		msg.append(") {");
-		for (Property prop : snap.getSnapshot()) {
-			msg.append("\n\t\t").append(prop.getKey()).append(": '").append(prop.getValue()).append(":").append(prop.getDataType()).append(":").append(prop.getValueType()).append("'");
-		}
+		formatProperties(msg, snap.getSnapshot());
 		msg.append("\n\t}");
 		return msg;
+	}
+
+	protected void formatProperties(StringBuilder msg, Collection<Property> properties) {
+		for (Property prop : properties) {
+			if (prop.isTransient()) {
+				continue;
+			}
+			msg.append("\n\t\t").append(prop.getKey()).append(": '").append(prop.getValue()).append(":")
+					.append(prop.getDataType()).append(":").append(prop.getValueType()).append("'");
+		}
 	}
 }

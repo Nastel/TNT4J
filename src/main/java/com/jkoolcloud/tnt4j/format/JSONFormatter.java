@@ -475,13 +475,17 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	}
 
 	/**
-	 * Format a given {@link Property} into JSON format
+	 * Format a given {@link Property} into JSON format. If property is transient, empty string is returned.
 	 *
 	 * @param prop property object to be formatted into JSON
-	 * @return formatted property as a JSON string
+	 * @return formatted property as a JSON string, or empty string if proeprty is {@code null} or transient
 	 * @see Property
 	 */
 	public String format(Property prop) {
+		if (prop == null || prop.isTransient()) {
+			return "";
+		}
+
 		StringBuilder jsonString = new StringBuilder(1024);
 		jsonString.append(START_JSON);
 		Object value = prop.getValue();
@@ -569,12 +573,14 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	}
 
 	private String itemsToJSON(Collection<?> items) {
-		if (items == null)
+		if (items == null) {
 			return "";
+		}
 		StringBuilder json = new StringBuilder(2048);
 		for (Object item : items) {
-			if (json.length() > 0)
+			if (json.length() > 0) {
 				json.append(ATTR_JSON);
+			}
 			if (item instanceof TrackingEvent) {
 				json.append(format((TrackingEvent) item));
 			} else if (item instanceof TrackingActivity) {

@@ -17,12 +17,11 @@ package com.jkoolcloud.tnt4j.core;
 
 import java.util.Date;
 
-
 /**
- * <p>Implements a Property entity.</p>
- *
- * <p>A <code>Property</code> object represents a name=value pair.
- * </p>
+ * <p>
+ * Implements a Property entity.
+ * <p>
+ * A {@code Property} object represents a name=value pair.
  *
  * @see ValueTypes
  *
@@ -32,7 +31,7 @@ public class Property {
 	private String	key;
 	private Object	value;
 	private String	valueType = ValueTypes.VALUE_TYPE_NONE;
-
+	private boolean	transient_;
 
 	/**
 	 * Constructs a Property objects with the specified properties.
@@ -41,21 +40,44 @@ public class Property {
 	 * @param value value for property
 	 */
 	public Property(String key, Object value) {
-		set(key, value);
+		this(key, value, false);
 	}
-
 
 	/**
 	 * Constructs a Property objects with the specified properties.
 	 *
 	 * @param key key of property
 	 * @param value value for property
-	 * @param valType value type such as (currency, percent).
+	 * @param transient_ flag indicating whether property is transient
 	 */
-	public Property(String key, Object value, String valType) {
-		set(key, value, valType);
+	public Property(String key, Object value, boolean transient_) {
+		set(key, value);
+		this.transient_ = transient_;
 	}
 
+	/**
+	 * Constructs a Property objects with the specified properties.
+	 *
+	 * @param key key of property
+	 * @param value value for property
+	 * @param valType value type such as (currency, percent)
+	 */
+	public Property(String key, Object value, String valType) {
+		this(key, value, valType, false);
+	}
+
+	/**
+	 * Constructs a Property objects with the specified properties.
+	 *
+	 * @param key key of property
+	 * @param value value for property
+	 * @param valType value type such as (currency, percent)
+	 * @param transient_ flag indicating whether property is transient
+	 */
+	public Property(String key, Object value, String valType, boolean transient_) {
+		set(key, value, valType);
+		this.transient_ = transient_;
+	}
 
 	/**
 	 * Sets the type of property.
@@ -67,7 +89,6 @@ public class Property {
 		set(key, val, ValueTypes.VALUE_TYPE_NONE);
 	}
 
-
 	/**
 	 * Sets the type of property.
 	 *
@@ -78,9 +99,9 @@ public class Property {
 	public void set(String key, Object val, String valType) {
 		this.key = key;
 		this.value = val;
-		this.valueType = (((valType == null || valType.equalsIgnoreCase(ValueTypes.VALUE_TYPE_NONE)) && (val instanceof Boolean))? ValueTypes.VALUE_TYPE_FLAG: valType);
+		this.valueType = (((valType == null || valType.equalsIgnoreCase(ValueTypes.VALUE_TYPE_NONE))
+				&& (val instanceof Boolean)) ? ValueTypes.VALUE_TYPE_FLAG : valType);
 	}
-
 
 	/**
 	 * Gets current value for property.
@@ -101,32 +122,48 @@ public class Property {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Gets flag value of this property indicating if it is transient. Transient properties are not processed by
+	 * {@link com.jkoolcloud.tnt4j.format.Formatter}.
+	 *
+	 * @return {@code true} if this property is transient, {@code false} - otherwise
 	 */
+	public boolean isTransient() {
+		return transient_;
+	}
+
+	/**
+	 * Sets flag value of this property indicating if it is transient. Transient properties are not processed by
+	 * {@link com.jkoolcloud.tnt4j.format.Formatter}.
+	 * 
+	 * @param transient_ flag indicating whether property is transient
+	 */
+	public void setTransient(boolean transient_) {
+		this.transient_ = transient_;
+	}
+
 	@Override
 	public int hashCode() {
 		return key.hashCode();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (!(obj instanceof Property))
+		}
+		if (!(obj instanceof Property)) {
 			return false;
+		}
 
-		final Property other = (Property) obj;
+		Property other = (Property) obj;
 		return key.equals(other.key);
 	}
 
 	/**
-	 * Obtain the language independent value data type
-	 * of the property
+	 * Obtain the language independent value data type of the property.
 	 * 
 	 * @return string representation of the value data type
 	 */
@@ -152,35 +189,32 @@ public class Property {
 		} else if (value instanceof Date) {
 			return "date";
 		} else if (value != null) {
-			return value.getClass().getSimpleName();			
+			return value.getClass().getSimpleName();
 		} else {
 			return "none";
 		}
 	}
 
 	/**
-	 * Obtain value type such as currency, percent, number, timestamp, etc.
-	 * See {@link ValueTypes}
+	 * Obtain value type such as currency, percent, number, timestamp, etc. See {@link ValueTypes}.
 	 * 
 	 * @return string representation of the value type. See {@link ValueTypes}
 	 */
 	public String getValueType() {
 		return valueType;
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
+
 	@Override
 	public String toString() {
-		final String key = getKey();
+		String key = getKey();
 		StringBuilder str = new StringBuilder();
 
 		str.append(getClass().getSimpleName()).append("{")
 		   .append("Name:").append(key).append(",")
 		   .append("Value:").append(getValue()).append(",")
 		   .append("Type:").append(getDataType()).append(",")
-		   .append("Value-Type:").append(getValueType()).append("}");
+		   .append("Value-Type:").append(getValueType()).append(",")
+		   .append("Transient:").append(isTransient()).append("}");
 
 		return str.toString();
 	}

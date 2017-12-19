@@ -15,17 +15,13 @@
  */
 package com.jkoolcloud.tnt4j.core;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import com.jkoolcloud.tnt4j.source.Source;
 
 /**
- * This class defines a snapshot/collection of <code>Property</code> instances. A collection of name, value pairs with
+ * This class defines a snapshot/collection of {@code Property} instances. A collection of name, value pairs with
  * associated user defined name and a time stamp when the snapshot was generated.
  *
  * @see Property
@@ -78,7 +74,8 @@ public class PropertySnapshot implements Snapshot {
 	 *            snapshot category name
 	 * @param name
 	 *            snapshot name
-	 * @param lvl severity level
+	 * @param lvl
+	 *            severity level
 	 * @see OpLevel
 	 */
 	public PropertySnapshot(String cat, String name, OpLevel lvl) {
@@ -104,7 +101,7 @@ public class PropertySnapshot implements Snapshot {
 	}
 
 	/**
-	 * Constructs a Property snapshot with the specified name, type, given time stamp .
+	 * Constructs a Property snapshot with the specified name, type, given time stamp.
 	 *
 	 * @param cat
 	 *            snapshot category name
@@ -140,16 +137,17 @@ public class PropertySnapshot implements Snapshot {
 	}
 
 	/**
-	 * Sets the current severity level to associated with snapshot
+	 * Sets the current severity level to associated with snapshot.
 	 *
-	 * @param lvl operation severity level
+	 * @param lvl
+	 *            operation severity level
 	 */
 	public void setSeverity(OpLevel lvl) {
 		level = lvl;
 	}
 
 	/**
-	 * Add a property with a given key and value
+	 * Add a property with a given key and value.
 	 *
 	 * @param key
 	 *            property key name
@@ -158,12 +156,28 @@ public class PropertySnapshot implements Snapshot {
 	 * @return reference to this snapshot
 	 */
 	public PropertySnapshot add(String key, Object value) {
-		this.add(new Property(key, value));
+		this.add(key, value, false);
 		return this;
 	}
 
 	/**
-	 * Add a property with a given key and value
+	 * Add a property with a given key and value.
+	 *
+	 * @param key
+	 *            property key name
+	 * @param value
+	 *            value associated with the key
+	 * @param transient_
+	 *            flag indicating whether property is transient
+	 * @return reference to this snapshot
+	 */
+	public PropertySnapshot add(String key, Object value, boolean transient_) {
+		this.add(new Property(key, value, transient_));
+		return this;
+	}
+
+	/**
+	 * Add a property with a given key and value.
 	 *
 	 * @param key
 	 *            property key name
@@ -173,12 +187,28 @@ public class PropertySnapshot implements Snapshot {
 	 */
 	@Override
 	public PropertySnapshot add(Object key, Object value) {
-		this.add(new Property(key.toString(), value));
+		this.add(key.toString(), value, false);
 		return this;
 	}
 
 	/**
-	 * Add a property with a given key and value
+	 * Add a property with a given key and value.
+	 *
+	 * @param key
+	 *            property key name
+	 * @param value
+	 *            value associated with the key
+	 * @param transient_
+	 *            flag indicating whether property is transient
+	 * @return reference to this snapshot
+	 */
+	public PropertySnapshot add(Object key, Object value, boolean transient_) {
+		this.add(new Property(key.toString(), value, transient_));
+		return this;
+	}
+
+	/**
+	 * Add a property with a given key and value.
 	 *
 	 * @param key
 	 *            property key name
@@ -195,7 +225,7 @@ public class PropertySnapshot implements Snapshot {
 	}
 
 	/**
-	 * Set current/active <code>Source</code> with the current activity
+	 * Set current/active {@code Source} with the current activity.
 	 *
 	 * @see Source
 	 */
@@ -237,9 +267,8 @@ public class PropertySnapshot implements Snapshot {
 	@Override
 	public String toString() {
 		StringBuilder str = new StringBuilder(512);
-		str.append(this.getClass().getSimpleName()).append("{Category: " + category
-				+ ", Name: " + snapName).append(", TimeStamp: ").append(timeStamp).append(
-		        ", Count: " + this.size()).append(", List: [");
+		str.append(this.getClass().getSimpleName()).append("{Category: " + category + ", Name: " + snapName)
+				.append(", TimeStamp: ").append(timeStamp).append(", Count: " + this.size()).append(", List: [");
 		for (Property item : propSet.values()) {
 			str.append(item);
 		}
@@ -273,8 +302,9 @@ public class PropertySnapshot implements Snapshot {
 
 	@Override
 	public void setCorrelator(Collection<String> clist) {
-		if (clist != null)
+		if (clist != null) {
 			this.correlators.addAll(clist);
+		}
 	}
 
 	@Override

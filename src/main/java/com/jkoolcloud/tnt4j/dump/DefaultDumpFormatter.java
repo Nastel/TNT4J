@@ -104,6 +104,10 @@ public class DefaultDumpFormatter implements DumpFormatter {
 
 		String subPadding = padding + INDENT;
 		for (Property entry : dump.getSnapshot()) {
+			if (entry.isTransient()) {
+				continue;
+			}
+
 			if (buffer.length() > startLen) {
 				buffer.append(END_ATTR);
 			}
