@@ -1344,4 +1344,32 @@ public class Utils {
 	public static Object deserialize(byte[] bytes) {
 		return SerializationUtils.deserialize(bytes);
 	}
+
+	/**
+	 * Checks whether provided number value is special: (@code 'Infinity'} or {@code 'NaN'}.
+	 *
+	 * @param value
+	 *            number to check
+	 * @return {@code true} if number value is (@code 'Infinity'} or {@code 'NaN'}, {@code false} - otherwise
+	 *
+	 * @see Float#isInfinite()
+	 * @see Float#isNaN()
+	 * @see Double#isInfinite(double)
+	 * @see Double#isNaN(double)
+	 */
+	public static boolean isSpecialNumberValue(Number value) {
+		if (value instanceof Double) {
+			Double dValue = (Double) value;
+
+			return dValue.isInfinite() || dValue.isNaN();
+		} else if (value instanceof Float) {
+			Float fValue = (Float) value;
+
+			return fValue.isInfinite() || fValue.isNaN();
+		} else {
+			double dValue = value.doubleValue();
+
+			return Double.isInfinite(dValue) || Double.isNaN(dValue);
+		}
+	}
 }

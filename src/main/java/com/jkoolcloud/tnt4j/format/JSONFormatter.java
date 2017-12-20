@@ -48,6 +48,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	private static final boolean NEWLINE_FORMAT = Boolean.getBoolean("tnt4j.formatter.json.newline");
+	protected static final String EMPTY_STR = "";
 	private static final String DEF_OP_NAME = "log";
 
 	protected static final String START = "{";
@@ -64,6 +65,8 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	private Map<String, Object> config = null;
 	private boolean newLineFormat = true;
 	private String defOpName = DEF_OP_NAME;
+	private SpecNumbersHandling specialNumbersHandling = SpecNumbersHandling.SUPPRESS;
+
 	private String START_JSON = START_LINE;
 	private String END_JSON = END_LINE;
 	private String ATTR_JSON = ATTR_END_LINE;
@@ -475,20 +478,32 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	}
 
 	/**
-	 * Format a given {@link Property} into JSON format. If property is transient, empty string is returned.
+	 * Format a given {@link Property} into JSON format.
+	 * <p>
+	 * If property is transient (@link {@link com.jkoolcloud.tnt4j.core.Property#isTransient()}, empty string is
+	 * returned.
+	 * <p>
+	 * Empty string is returned when {@code specialNumbersHandling} is set to {@link SpecNumbersHandling#SUPPRESS} and
+	 * property value is {@link Double} or {@link Float} containing {@code 'Infinity'} or {@code 'NaN'} value
 	 *
 	 * @param prop property object to be formatted into JSON
-	 * @return formatted property as a JSON string, or empty string if proeprty is {@code null} or transient
+	 * @return formatted property as a JSON string, or empty string if property is {@code null}, transient or having
+	 *         special numeric value
 	 * @see Property
 	 */
 	public String format(Property prop) {
 		if (prop == null || prop.isTransient()) {
-			return "";
+			return EMPTY_STR;
+		}
+
+		Object value = prop.getValue();
+
+		if (doSuppressSpecials(value)) {
+			return EMPTY_STR;
 		}
 
 		StringBuilder jsonString = new StringBuilder(1024);
 		jsonString.append(START_JSON);
-		Object value = prop.getValue();
 		jsonString.append(JSON_NAME_LABEL).append(ATTR_SEP);
 		Utils.quote(StringEscapeUtils.escapeJson(prop.getKey()), jsonString).append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP);
@@ -497,7 +512,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			jsonString.append(JSON_VALUE_TYPE_LABEL).append(ATTR_SEP);
 			Utils.quote(prop.getValueType(), jsonString).append(ATTR_JSON);
 		}
-		if (value instanceof Number) {
+		if (value instanceof Number && doMaintainSpecials(value)) {
 			jsonString.append(JSON_VALUE_LABEL).append(ATTR_SEP).append(value);
 		} else {
 			String valueText = StringEscapeUtils.escapeJson(String.valueOf(value));
@@ -506,6 +521,22 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		}
 		jsonString.append(END_JSON);
 		return jsonString.toString();
+	}
+
+	private boolean doSuppressSpecials(Object value) {
+		return specialNumbersHandling == SpecNumbersHandling.SUPPRESS && isSpecial(value);
+	}
+
+	private boolean doMaintainSpecials(Object value) {
+		return specialNumbersHandling == SpecNumbersHandling.MAINTAIN && isSpecial(value);
+	}
+
+	private static boolean isSpecial(Object value) {
+		if (value instanceof Number) {
+			return Utils.isSpecialNumberValue((Number) value);
+		}
+
+		return false;
 	}
 
 	@Override
@@ -574,7 +605,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 
 	private String itemsToJSON(Collection<?> items) {
 		if (items == null) {
-			return "";
+			return EMPTY_STR;
 		}
 		StringBuilder json = new StringBuilder(2048);
 		for (Object item : items) {
@@ -607,12 +638,36 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		config = settings;
 		newLineFormat = Utils.getBoolean("Newline", settings, newLineFormat);
 		defOpName = Utils.getString("OpName", settings, defOpName);
+		String specNumbers = Utils.getString("SpecNumbersHandling", settings, SpecNumbersHandling.SUPPRESS.name());
+		try {
+			specialNumbersHandling = SpecNumbersHandling.valueOf(specNumbers.toUpperCase());
+		} catch (IllegalArgumentException exc) {
+			specialNumbersHandling = SpecNumbersHandling.SUPPRESS;
+		}
 		initTags();
 	}
 
 	private static String getSSN(Source source) {
 		String ssn = source.getSSN();
 		return Utils.isEmpty(ssn) ? source.getSourceFactory().getSSN() : ssn;
+	}
+
+	/**
+	 * Enumeration of special numbers values handling techniques used by this formatter.
+	 */
+	public enum SpecNumbersHandling {
+		/**
+		 * Suppress properties having special numeric value.
+		 */
+		SUPPRESS,
+		/**
+		 * Enquote special numeric value.
+		 */
+		ENQUOTE,
+		/**
+		 * Maintain value as is.
+		 */
+		MAINTAIN,
 	}
 
 }
