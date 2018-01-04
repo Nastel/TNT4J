@@ -13,7 +13,7 @@ Why track and trace your applications?
 * Events may have TTL (time-to-live) for sinks that support event expiration
 * Event rate limiter (throttle control) based on mps, bps (message/sec, bytes/sec)
 
-<b>Several key features make TNT4J a prime choice for your java application:</b>
+**Several key features make TNT4J a prime choice for your java application:**
 
 ## Quick Examples
 Here is a simple example of using TNT4J:
@@ -357,9 +357,9 @@ logger.tnt(OpLevel.INFO, OpType.RECEIVE, "ReceiveOrder", order_id,
 	elasped_time, "Received order from={0}", source);
 ```
 
-<b>NOTE:</b> TNT4J uses NTP natively to synchronize times across servers to enable cross server event correlation in time. To enable NTP time synchronization define java property `-Dtnt4j.time.server=ntp-server:123`. 
+**NOTE:** TNT4J uses NTP natively to synchronize times across servers to enable cross server event correlation in time. To enable NTP time synchronization define java property `-Dtnt4j.time.server=ntp-server:123`. 
 
-<b>TIP:</b> Developers should use `TimeServer.currentTimeMillis()` instead of `System.currentTimeMillis()` to obtain time adjusted to NTP time. TNT4J also maintains a microsecond resolution clock using `Useconds.CURRENT.get()` which returns the number of microseconds between the current time and midnight, January 1, 1970 UTC (NTP adjusted). TNT4J automatically measures and adjusts clock drift between NTP, `System.currentTimeMillis()` and `System.nanoTime()` clocks to ensure accurate microsecond precision/accuracy timing spanning VMs, devices, servers, geo locations.
+**TIP:** Developers should use `TimeServer.currentTimeMillis()` instead of `System.currentTimeMillis()` to obtain time adjusted to NTP time. TNT4J also maintains a microsecond resolution clock using `Useconds.CURRENT.get()` which returns the number of microseconds between the current time and midnight, January 1, 1970 UTC (NTP adjusted). TNT4J automatically measures and adjusts clock drift between NTP, `System.currentTimeMillis()` and `System.nanoTime()` clocks to ensure accurate microsecond precision/accuracy timing spanning VMs, devices, servers, geo locations.
 
 ### Tracking Associations
 TNT4J allows developers to track associations between sources. Source is a logical definition of an entity such as application, server, network, geo location. 
@@ -410,7 +410,7 @@ for (TrackingLogger lg: loggers) {
 
 About TNT4J
 ======================================
-Track and Trace 4 Java API, Application logging framework for correlation, diagnostics and tracking of application activities within and across <b>multiple applications, runtime, servers, geo locations. This API is specifically designed to troubleshoot distributed, concurrent, multi-threaded, composite applications</b> and includes activity correlation, application state dumps, performance and user defined metrics.
+Track and Trace 4 Java API, Application logging framework for correlation, diagnostics and tracking of application activities within and across **multiple applications, runtime, servers, geo locations. This API is specifically designed to troubleshoot distributed, concurrent, multi-threaded, composite applications** and includes activity correlation, application state dumps, performance and user defined metrics.
 
 Here is short list of TNT4J features:
 
@@ -445,19 +445,19 @@ TNT4J Concepts
 ========================================
 TNT4J is fully plug-in and play tracking, tracing and logging framework that consists of the following basic constructs:
 
-* <b>Tracker</b> -- high level object that allows developer to track, trace and log application activities
-* <b>Activity</b> -- a collection of related tracking events (TrackingEvent) and other sub-activities, relation is established via a grouping specified by a developer or set of correlators (across thread, application boundaries). Activities may have a set of uder defined properties which are grouped into property snapshots (PropertySnapshot).
-* <b>Tracking Event</b> -- a message with associated start/stop time stamps, severity, user defined message, correlator, tag, location (such as GPS, server etc) and other event properties.
-* <b>Property</b> -- a single user defined key, value, type pair for reporting custom metric or attribute. Properties can be packed into event, activity or snapshot.
-* <b>Property snapshot</b> -- a collection of properties with category, name and a time stamp associated with when snapshot is taken. Activities may have one or more property snapshots.
-* <b>Formatter</b> -- an object responsible for formatting underlying TNT4J objects such as Activity, Tracking Event and convert into a formatted string.
-* <b>Tracking Selector</b> -- an object associated with a Tracker that allows developers to perform conditional logging based on a given set of severity, key, value combination. Such combinations are stored in token repository.
-* <b>Token Repository</b> -- an underlying storage used by tracking selector that actually stores and maintains severity, key, value combinations. Such repository can be backed by a file, cache, memory or any other desired medium. Token repositories can be shared accross application boundaries and therefore conditional logging can span multiple applications, runtimes, geo locations.
-* <b>Sink</b> -- sink is a basic destination where objects can be written (e.g file, socket, http, etc.)
-* <b>Event Sink</b> -- destination where events, activities and messages are recorded. Such destination can be file, socket. Sinks are associated with formatters which are called to format objects before writing to the sink.
-* <b>Dump Sink</b> -- sink where application dumps are recorded.
-* <b>Dump</b> -- a property snapshot that deals with application state (name, value pairs). Application can generate user defined dumps to report application specific metrics during diagnostics, on demand or VM shutdown.
-* <b>Dump Provider</b> -- user defined implementation that actually generates application Dumps.
+* **Tracker** -- high level object that allows developer to track, trace and log application activities
+* **Activity** -- a collection of related tracking events (TrackingEvent) and other sub-activities, relation is established via a grouping specified by a developer or set of correlators (across thread, application boundaries). Activities may have a set of uder defined properties which are grouped into property snapshots (PropertySnapshot).
+* **Tracking Event** -- a message with associated start/stop time stamps, severity, user defined message, correlator, tag, location (such as GPS, server etc) and other event properties.
+* **Property** -- a single user defined key, value, type pair for reporting custom metric or attribute. Properties can be packed into event, activity or snapshot.
+* **Property snapshot** -- a collection of properties with category, name and a time stamp associated with when snapshot is taken. Activities may have one or more property snapshots.
+* **Formatter** -- an object responsible for formatting underlying TNT4J objects such as Activity, Tracking Event and convert into a formatted string.
+* **Tracking Selector** -- an object associated with a Tracker that allows developers to perform conditional logging based on a given set of severity, key, value combination. Such combinations are stored in token repository.
+* **Token Repository** -- an underlying storage used by tracking selector that actually stores and maintains severity, key, value combinations. Such repository can be backed by a file, cache, memory or any other desired medium. Token repositories can be shared accross application boundaries and therefore conditional logging can span multiple applications, runtimes, geo locations.
+* **Sink** -- sink is a basic destination where objects can be written (e.g file, socket, http, etc.)
+* **Event Sink** -- destination where events, activities and messages are recorded. Such destination can be file, socket. Sinks are associated with formatters which are called to format objects before writing to the sink.
+* **Dump Sink** -- sink where application dumps are recorded.
+* **Dump** -- a property snapshot that deals with application state (name, value pairs). Application can generate user defined dumps to report application specific metrics during diagnostics, on demand or VM shutdown.
+* **Dump Provider** -- user defined implementation that actually generates application Dumps.
 
 How to Build TNT4J
 =========================================

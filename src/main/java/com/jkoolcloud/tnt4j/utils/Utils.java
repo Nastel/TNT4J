@@ -1003,7 +1003,7 @@ public class Utils {
 	 *            default value if key not found
 	 * @return value associated with the given key in the map
 	 */
-	public static int getInt(String key, Map<String, Object> props, int defValue) {
+	public static int getInt(String key, Map<?, ?> props, int defValue) {
 		Object value = props.get(key);
 		int iVal = value == null ? defValue : Integer.parseInt(value.toString());
 		return iVal;
@@ -1020,7 +1020,7 @@ public class Utils {
 	 *            default value if key not found
 	 * @return value associated with the given key in the map
 	 */
-	public static long getLong(String key, Map<String, Object> props, long defValue) {
+	public static long getLong(String key, Map<?, ?> props, long defValue) {
 		Object value = props.get(key);
 		long iVal = value == null ? defValue : Long.parseLong(value.toString());
 		return iVal;
@@ -1037,7 +1037,7 @@ public class Utils {
 	 *            default value if key not found
 	 * @return value associated with the given key in the map
 	 */
-	public static boolean getBoolean(String key, Map<String, Object> props, boolean defValue) {
+	public static boolean getBoolean(String key, Map<?, ?> props, boolean defValue) {
 		Object value = props.get(key);
 		boolean bVal = value == null ? defValue : Boolean.parseBoolean(value.toString());
 		return bVal;
@@ -1054,7 +1054,7 @@ public class Utils {
 	 *            default value if key not found
 	 * @return value associated with the given key in the map
 	 */
-	public static double getDouble(String key, Map<String, Object> props, double defValue) {
+	public static double getDouble(String key, Map<?, ?> props, double defValue) {
 		Object value = props.get(key);
 		double dVal = value == null ? defValue : Double.parseDouble(value.toString());
 		return dVal;
@@ -1071,7 +1071,7 @@ public class Utils {
 	 *            default value if key not found
 	 * @return value associated with the given key in the map
 	 */
-	public static float getFloat(String key, Map<String, Object> props, float defValue) {
+	public static float getFloat(String key, Map<?, ?> props, float defValue) {
 		Object value = props.get(key);
 		float fVal = value == null ? defValue : Float.parseFloat(value.toString());
 		return fVal;
@@ -1088,7 +1088,7 @@ public class Utils {
 	 *            default value if key not found
 	 * @return value associated with the given key in the map
 	 */
-	public static String getString(String key, Map<String, Object> props, String defValue) {
+	public static String getString(String key, Map<?, ?> props, String defValue) {
 		Object value = props.get(key);
 		String sVal = value == null ? defValue : value.toString();
 		return sVal;
