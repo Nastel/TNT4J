@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.jkoolcloud.tnt4j.config.Configurable;
 import com.jkoolcloud.tnt4j.core.*;
@@ -49,6 +50,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	private static final boolean NEWLINE_FORMAT = Boolean.getBoolean("tnt4j.formatter.json.newline");
 	protected static final String EMPTY_STR = "";
+	protected static final String EMPTY_PROP = "{}";
 	private static final String DEF_OP_NAME = "log";
 
 	protected static final String START = "{";
@@ -480,15 +482,16 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	/**
 	 * Format a given {@link Property} into JSON format.
 	 * <p>
-	 * If property is transient (@link {@link com.jkoolcloud.tnt4j.core.Property#isTransient()}, empty string is
-	 * returned.
+	 * If property is transient (@link {@link com.jkoolcloud.tnt4j.core.Property#isTransient()}, empty string
+	 * {@value #EMPTY_STR} is returned.
 	 * <p>
-	 * Empty string is returned when {@code specialNumbersHandling} is set to {@link SpecNumbersHandling#SUPPRESS} and
-	 * property value is {@link Double} or {@link Float} containing {@code 'Infinity'} or {@code 'NaN'} value
+	 * Empty string {@value #EMPTY_STR} is returned when {@code specialNumbersHandling} is set to
+	 * {@link SpecNumbersHandling#SUPPRESS} and property value is {@link Double} or {@link Float} containing
+	 * {@code 'Infinity'} or {@code 'NaN'} value
 	 *
 	 * @param prop property object to be formatted into JSON
-	 * @return formatted property as a JSON string, or empty string if property is {@code null}, transient or having
-	 *         special numeric value
+	 * @return formatted property as a JSON string, or empty string {@value #EMPTY_STR} if property is {@code null},
+	 *         transient or having special numeric value
 	 * @see Property
 	 */
 	public String format(Property prop) {
@@ -609,23 +612,35 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		}
 		StringBuilder json = new StringBuilder(2048);
 		for (Object item : items) {
-			if (json.length() > 0) {
-				json.append(ATTR_JSON);
-			}
+			String itemJSON;
 			if (item instanceof TrackingEvent) {
-				json.append(format((TrackingEvent) item));
+				itemJSON = format((TrackingEvent) item);
 			} else if (item instanceof TrackingActivity) {
-				json.append(format((TrackingActivity) item));
+				itemJSON = format((TrackingActivity) item);
 			} else if (item instanceof Snapshot) {
-				json.append(format((Snapshot) item));
+				itemJSON = format((Snapshot) item);
 			} else if (item instanceof Property) {
-				json.append(format((Property) item));
+				itemJSON = format((Property) item);
 			} else {
-				String vText = StringEscapeUtils.escapeJson(String.valueOf(item)); // escape double quote chars
-				Utils.quote(vText, json);
+				itemJSON = Utils.quote(StringEscapeUtils.escapeJson(String.valueOf(item))); // escape double quote chars
+			}
+
+			if (StringUtils.isNotEmpty(itemJSON)) {
+				addDelimiterOnDemand(json, ATTR_JSON);
+				json.append(itemJSON);
 			}
 		}
 		return json.toString();
+	}
+
+	private static void addDelimiterOnDemand(StringBuilder json, String delimiter) {
+		if (StringUtils.isEmpty(json) || StringUtils.isEmpty(delimiter)) {
+			return;
+		}
+
+		if (!StringUtils.endsWith(json, delimiter)) {
+			json.append(delimiter);
+		}
 	}
 
 	@Override
