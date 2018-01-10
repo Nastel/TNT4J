@@ -1005,7 +1005,8 @@ public class Utils {
 	 */
 	public static int getInt(String key, Map<?, ?> props, int defValue) {
 		Object value = props.get(key);
-		int iVal = value == null ? defValue : Integer.parseInt(value.toString());
+		int iVal = value == null ? defValue
+				: value instanceof Number ? ((Number) value).intValue() : Integer.parseInt(value.toString());
 		return iVal;
 	}
 
@@ -1022,7 +1023,8 @@ public class Utils {
 	 */
 	public static long getLong(String key, Map<?, ?> props, long defValue) {
 		Object value = props.get(key);
-		long iVal = value == null ? defValue : Long.parseLong(value.toString());
+		long iVal = value == null ? defValue
+				: value instanceof Number ? ((Number) value).longValue() : Long.parseLong(value.toString());
 		return iVal;
 	}
 
@@ -1039,7 +1041,8 @@ public class Utils {
 	 */
 	public static boolean getBoolean(String key, Map<?, ?> props, boolean defValue) {
 		Object value = props.get(key);
-		boolean bVal = value == null ? defValue : Boolean.parseBoolean(value.toString());
+		boolean bVal = value == null ? defValue
+				: value instanceof Boolean ? ((Boolean) value) : Boolean.parseBoolean(value.toString());
 		return bVal;
 	}
 
@@ -1056,7 +1059,8 @@ public class Utils {
 	 */
 	public static double getDouble(String key, Map<?, ?> props, double defValue) {
 		Object value = props.get(key);
-		double dVal = value == null ? defValue : Double.parseDouble(value.toString());
+		double dVal = value == null ? defValue
+				: value instanceof Number ? ((Number) value).doubleValue() : Double.parseDouble(value.toString());
 		return dVal;
 	}
 
@@ -1073,7 +1077,8 @@ public class Utils {
 	 */
 	public static float getFloat(String key, Map<?, ?> props, float defValue) {
 		Object value = props.get(key);
-		float fVal = value == null ? defValue : Float.parseFloat(value.toString());
+		float fVal = value == null ? defValue
+				: value instanceof Number ? ((Number) value).floatValue() : Float.parseFloat(value.toString());
 		return fVal;
 	}
 
