@@ -49,7 +49,10 @@
         <java.compiler.verbose>false</java.compiler.verbose>
         <java.compiler.fork>false</java.compiler.fork>
 
-        <release.deploy.dir>../build/${project.name}</release.deploy.dir>
+        <release.deploy.name>${project.artifactId}</release.deploy.name>
+        <release.deploy.dir>../build/${release.deploy.name}</release.deploy.dir>
+        <release.deploy.finalName>${release.deploy.name}-${project.version}</release.deploy.finalName>
+        <release.deploy.assembly>src/assembly/deployAssembly.xml</release.deploy.assembly>
 
         <skipTests>true</skipTests>
         <gpg.skip.sign>true</gpg.skip.sign>
@@ -202,10 +205,11 @@
                 <configuration>
                     <appendAssemblyId>false</appendAssemblyId>
                     <descriptors>
-                        <descriptor>src/assembly/deployAssembly.xml</descriptor>
+                        <descriptor>${release.deploy.assembly}</descriptor>
                     </descriptors>
                     <attach>${build.assemblies.attach}</attach>
                     <outputDirectory>${release.deploy.dir}</outputDirectory>
+                    <finalName>${release.deploy.finalName}</finalName>
                 </configuration>
                 <executions>
                     <execution>
