@@ -379,8 +379,10 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * Creates UsecTimestamp based on specified UsecTimestamp.
 	 *
-	 * @param other timestamp to copy
-	 * @throws NullPointerException if timestamp is {@code null}
+	 * @param other
+	 *            timestamp to copy
+	 * @throws NullPointerException
+	 *             if timestamp is {@code null}
 	 */
 	public UsecTimestamp(UsecTimestamp other) {
 		this(other.msecs, other.usecs, other.getLamportClock());
@@ -389,16 +391,17 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * Creates UsecTimestamp based on specified Date.
 	 *
-	 * @param date timestamp to copy
-	 * @throws NullPointerException if date is {@code null}
+	 * @param date
+	 *            timestamp to copy
+	 * @throws NullPointerException
+	 *             if date is {@code null}
 	 */
 	public UsecTimestamp(Date date) {
 		setTimestampValues(date.getTime(), 0, 0);
 	}
 
 	/**
-	 * Returns Lamport clock value of this time stamp
-	 * (based on Lamport Clock algorithm)
+	 * Returns Lamport clock value of this time stamp (based on Lamport Clock algorithm)
 	 *
 	 * @return Lamport clock value
 	 */
@@ -419,14 +422,16 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * Sets UsecTimestamp based on specified microsecond timestamp.
 	 *
-	 * @param usecTime timestamp, in microsecond
+	 * @param usecTime
+	 *            timestamp, in microsecond
 	 * @return current UsecTimestamp instance
-	 * @throws IllegalArgumentException if usecTime is negative
+	 * @throws IllegalArgumentException
+	 *             if usecTime is negative
 	 */
 	public UsecTimestamp setTimeUsec(long usecTime) {
 		if (usecTime < 0) {
 			throw new IllegalArgumentException("usecTime must be non-negative");
-                }
+		}
 
 		this.msecs = usecTime / 1000L;
 		this.usecs = (int) (usecTime - (this.msecs * 1000));
@@ -455,19 +460,21 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Creates UsecTimestamp based on specified millisecond timestamp
-	 * and fractional microsecond.
+	 * Creates UsecTimestamp based on specified millisecond timestamp and fractional microsecond.
 	 *
-	 * @param msecs timestamp, in milliseconds
-	 * @param usecs fraction microseconds
-	 * @param recvdLamportClock received Lamport clock
-	 * @throws IllegalArgumentException if any arguments are negative,
-	 *  or if usecs is greater than 999
+	 * @param msecs
+	 *            timestamp, in milliseconds
+	 * @param usecs
+	 *            fraction microseconds
+	 * @param recvdLamportClock
+	 *            received Lamport clock
+	 * @throws IllegalArgumentException
+	 *             if any arguments are negative, or if usecs is greater than 999
 	 */
 	protected void setTimestampValues(long msecs, long usecs, long recvdLamportClock) {
 		if (msecs < 0) {
 			throw new IllegalArgumentException("msecs must be non-negative");
-                }
+		}
 		if (usecs < 0 || usecs > 999) {
 			throw new IllegalArgumentException("usecs must be in the range [0,999], inclusive");
 		}
@@ -478,10 +485,10 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Assign local Lamport clock based on the value of the received
-	 * Lamport clock.
+	 * Assign local Lamport clock based on the value of the received Lamport clock.
 	 *
-	 * @param recvdLamportClock received Lamport clock
+	 * @param recvdLamportClock
+	 *            received Lamport clock
 	 */
 	public void assignLamportClock(long recvdLamportClock) {
 		while (recvdLamportClock > currentLamportClock) {
@@ -524,7 +531,9 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>Returns {@link #getTimeUsec()} as an int, possibly truncated.</p>
+	 * <p>
+	 * Returns {@link #getTimeUsec()} as an int, possibly truncated.
+	 * </p>
 	 */
 	@Override
 	public int intValue() {
@@ -534,7 +543,9 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>Returns {@link #getTimeUsec()}.</p>
+	 * <p>
+	 * Returns {@link #getTimeUsec()}.
+	 * </p>
 	 */
 	@Override
 	public long longValue() {
@@ -544,7 +555,9 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>Returns {@link #getTimeUsec()} as a float, possibly truncated.</p>
+	 * <p>
+	 * Returns {@link #getTimeUsec()} as a float, possibly truncated.
+	 * </p>
 	 */
 	@Override
 	public float floatValue() {
@@ -554,7 +567,9 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * {@inheritDoc}
 	 *
-	 * <p>Returns {@link #getTimeUsec()} as a double.</p>
+	 * <p>
+	 * Returns {@link #getTimeUsec()} as a double.
+	 * </p>
 	 */
 	@Override
 	public double doubleValue() {
@@ -571,11 +586,10 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Gets fractional microseconds portion of time stamp after previous second.
-	 * Converts mmm.uuu representation of timestamp (where mmm is millisecond
-	 * timestamp and uuu is fractional microseconds) to sss.uuuuuu representation
-	 * (where sss is seconds timestamp and uuuuuu is fractional milliseconds and
-	 * microseconds added together as microseconds) and returns uuuuuu portion.
+	 * Gets fractional microseconds portion of time stamp after previous second. Converts mmm.uuu representation of
+	 * timestamp (where mmm is millisecond timestamp and uuu is fractional microseconds) to sss.uuuuuu representation
+	 * (where sss is seconds timestamp and uuuuuu is fractional milliseconds and microseconds added together as
+	 * microseconds) and returns uuuuuu portion.
 	 *
 	 * @return fractional microseconds
 	 */
@@ -587,7 +601,8 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * Adds the specified UsecTimestamp to this one.
 	 *
-	 * @param other timestamp to add to current one
+	 * @param other
+	 *            timestamp to add to current one
 	 */
 	public void add(UsecTimestamp other) {
 		add(other.msecs, other.usecs);
@@ -596,17 +611,20 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * Adds the specified time values to this UsecTimestamp.
 	 *
-	 * @param msecs milliseconds value to add
-	 * @param usecs microseconds value to add
-	 * @throws IllegalArgumentException if any arguments are negative
+	 * @param msecs
+	 *            milliseconds value to add
+	 * @param usecs
+	 *            microseconds value to add
+	 * @throws IllegalArgumentException
+	 *             if any arguments are negative
 	 */
 	public void add(long msecs, long usecs) {
 		if (msecs < 0) {
 			throw new IllegalArgumentException("msecs must be non-negative");
-                }
+		}
 		if (usecs < 0) {
 			throw new IllegalArgumentException("usecs must be non-negative");
-                }
+		}
 
 		if (usecs > 999) {
 			long ms = usecs / 1000;
@@ -628,7 +646,8 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * Subtracts the specified UsecTimestamp from this one (e.g. {@code x.subtract(y)} means {@code x - y}).
 	 *
-	 * @param other timestamp to subtract from current one
+	 * @param other
+	 *            timestamp to subtract from current one
 	 */
 	public void subtract(UsecTimestamp other) {
 		subtract(other.msecs, other.usecs);
@@ -637,17 +656,20 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * Subtracts the specified time values from this UsecTimestamp.
 	 *
-	 * @param msecs milliseconds value to subtract
-	 * @param usecs microseconds value to subtract
-	 * @throws IllegalArgumentException if any arguments are negative
+	 * @param msecs
+	 *            milliseconds value to subtract
+	 * @param usecs
+	 *            microseconds value to subtract
+	 * @throws IllegalArgumentException
+	 *             if any arguments are negative
 	 */
 	public void subtract(long msecs, long usecs) {
 		if (msecs < 0) {
 			throw new IllegalArgumentException("msecs must be non-negative");
-                }
+		}
 		if (usecs < 0) {
 			throw new IllegalArgumentException("usecs must be non-negative");
-                }
+		}
 
 		if (usecs > 999) {
 			long ms = usecs / 1000;
@@ -668,13 +690,13 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Computes the difference between this timestamp and the specified one
-	 * (as this - other).  It relates to {@link Comparable#compareTo(Object)}
-	 * such that if {@code x.compareTo(y)} returns a negative number implying that
-	 * {@code x} comes before {@code y} (that is, {@code x < y}),
-	 * then {@code x.difference(y)} returns a negative number.
+	 * Computes the difference between this timestamp and the specified one (as this - other). It relates to
+	 * {@link Comparable#compareTo(Object)} such that if {@code x.compareTo(y)} returns a negative number implying that
+	 * {@code x} comes before {@code y} (that is, {@code x < y}), then {@code x.difference(y)} returns a negative
+	 * number.
 	 *
-	 * @param other other UsecTimestamp instance
+	 * @param other
+	 *            other UsecTimestamp instance
 	 * @return difference, in microseconds, between two timestamps
 	 */
 	public long difference(UsecTimestamp other) {
@@ -695,7 +717,8 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * Returns the string representation of the current timestamp, with a given time zone.
 	 *
-	 * @param tz format current time based on a given timezone.
+	 * @param tz
+	 *            format current time based on a given timezone.
 	 * @return formatted date/time string based on default pattern and given timezone
 	 */
 	public static String getTimeStamp(TimeZone tz) {
@@ -712,10 +735,10 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Returns the string representation of the current timestamp based on the given
-	 * format pattern.
+	 * Returns the string representation of the current timestamp based on the given format pattern.
 	 *
-	 * @param pattern format pattern
+	 * @param pattern
+	 *            format pattern
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(String pattern) {
@@ -723,11 +746,12 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Returns the string representation of the timestamp based on the given
-	 * format pattern, milliseconds.
+	 * Returns the string representation of the timestamp based on the given format pattern, milliseconds.
 	 *
-	 * @param pattern format pattern
-	 * @param usecs milliseconds
+	 * @param pattern
+	 *            format pattern
+	 * @param usecs
+	 *            milliseconds
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(String pattern, long usecs) {
@@ -736,10 +760,10 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Returns the string representation of the timestamp based on the default
-	 * format pattern, microseconds.
+	 * Returns the string representation of the timestamp based on the default format pattern, microseconds.
 	 *
-	 * @param usecs microseconds
+	 * @param usecs
+	 *            microseconds
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(long usecs) {
@@ -748,11 +772,13 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Returns the string representation of the timestamp based on the default
-	 * format pattern, milliseconds and microseconds.
+	 * Returns the string representation of the timestamp based on the default format pattern, milliseconds and
+	 * microseconds.
 	 *
-	 * @param msecs milliseconds
-	 * @param usecs microseconds
+	 * @param msecs
+	 *            milliseconds
+	 * @param usecs
+	 *            microseconds
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(long msecs, long usecs) {
@@ -760,12 +786,15 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Returns the string representation of the timestamp based on the specified
-	 * format pattern, milliseconds and microseconds, default timezone.
+	 * Returns the string representation of the timestamp based on the specified format pattern, milliseconds and
+	 * microseconds, default timezone.
 	 *
-	 * @param pattern format pattern
-	 * @param msecs milliseconds
-	 * @param usecs microseconds
+	 * @param pattern
+	 *            format pattern
+	 * @param msecs
+	 *            milliseconds
+	 * @param usecs
+	 *            microseconds
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(String pattern, long msecs, long usecs) {
@@ -773,13 +802,17 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Returns the string representation of the timestamp based on the specified
-	 * format pattern, milliseconds and microseconds.
+	 * Returns the string representation of the timestamp based on the specified format pattern, milliseconds and
+	 * microseconds.
 	 *
-	 * @param pattern format pattern
-	 * @param tz time zone
-	 * @param msecs milliseconds
-	 * @param usecs microseconds
+	 * @param pattern
+	 *            format pattern
+	 * @param tz
+	 *            time zone
+	 * @param msecs
+	 *            milliseconds
+	 * @param usecs
+	 *            microseconds
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(String pattern, TimeZone tz, long msecs, long usecs) {
@@ -872,7 +905,9 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 
 	/**
 	 * {@inheritDoc}
-	 * <p>Returns the string representation of this timestamp in the default timezone.</p>
+	 * <p>
+	 * Returns the string representation of this timestamp in the default timezone.
+	 * </p>
 	 */
 	@Override
 	public String toString() {
@@ -882,7 +917,8 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * Returns the string representation of this timestamp in the specified timezone.
 	 *
-	 * @param tz timezone
+	 * @param tz
+	 *            timezone
 	 * @return formatted date/time string in specified timezone
 	 */
 	public String toString(TimeZone tz) {
@@ -890,10 +926,11 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Returns the string representation of this timestamp based on the specified
-	 * format pattern in the default timezone.
+	 * Returns the string representation of this timestamp based on the specified format pattern in the default
+	 * timezone.
 	 *
-	 * @param pattern format pattern
+	 * @param pattern
+	 *            format pattern
 	 * @return formatted date/time string based on pattern
 	 */
 	public String toString(String pattern) {
@@ -901,11 +938,13 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Returns the string representation of this timestamp based on the specified
-	 * format pattern in the specified timezone.
+	 * Returns the string representation of this timestamp based on the specified format pattern in the specified
+	 * timezone.
 	 *
-	 * @param pattern format pattern
-	 * @param tz timezone
+	 * @param pattern
+	 *            format pattern
+	 * @param tz
+	 *            timezone
 	 * @return formatted date/time string based on pattern
 	 */
 	public String toString(String pattern, TimeZone tz) {
