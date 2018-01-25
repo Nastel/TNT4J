@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ package com.jkoolcloud.tnt4j.format;
 
 /**
  * <p>
- * Classes that implement this interface provide implementation for the <code>Formatter</code> interface.
- * This interface allows formatting of any object to a string.
+ * Classes that implement this interface provide implementation for the {@code Formatter} interface. This interface
+ * allows formatting of any object to a string.
  * </p>
  *
  *
@@ -31,9 +31,11 @@ public interface Formatter {
 	/**
 	 * Format a given object and return a string
 	 *
-	 * @param obj object to be formatted as string
-	 * @param args arguments associated with the object
+	 * @param obj
+	 *            object to be formatted as string
+	 * @param args
+	 *            arguments associated with the object
 	 * @return formatted object
 	 */
-	String format(Object obj, Object...args);
+	String format(Object obj, Object... args);
 }

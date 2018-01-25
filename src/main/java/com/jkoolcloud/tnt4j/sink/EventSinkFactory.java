@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,10 @@ import com.jkoolcloud.tnt4j.core.TTL;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
 
 /**
- * <p>Classes that implement this interface provide implementation for
- * the <code>EventSinkFactory</code>, which provides an interface to
- * create instances of event sinks bound to specific logging frameworks.</p>
+ * <p>
+ * Classes that implement this interface provide implementation for the {@code EventSinkFactory}, which provides an
+ * interface to create instances of event sinks bound to specific logging frameworks.
+ * </p>
  *
  *
  * @see EventSink
@@ -34,32 +35,36 @@ import com.jkoolcloud.tnt4j.format.EventFormatter;
  */
 public interface EventSinkFactory extends TTL {
 	/**
-	 * Obtain an instance of <code>EventSink</code> by name
+	 * Obtain an instance of {@link com.jkoolcloud.tnt4j.sink.EventSink} by name
 	 *
-	 * @param name name of the category associated with the event log
+	 * @param name
+	 *            name of the category associated with the event log
 	 * @return event sink instance
 	 * @see EventSink
 	 */
 	EventSink getEventSink(String name);
 
 	/**
-	 * Obtain an instance of <code>EventSink</code> by name and
-	 * custom properties
+	 * Obtain an instance of{@link com.jkoolcloud.tnt4j.sink.EventSink} by name and custom properties
 	 *
-	 * @param name name of the category associated with the event log
-	 * @param props properties associated with the event logger (implementation specific).
+	 * @param name
+	 *            name of the category associated with the event log
+	 * @param props
+	 *            properties associated with the event logger (implementation specific).
 	 * @return event sink instance
 	 * @see EventSink
 	 */
 	EventSink getEventSink(String name, Properties props);
 
 	/**
-	 * Obtain an instance of <code>EventSink</code> by name and
-	 * custom properties
+	 * Obtain an instance of {@link com.jkoolcloud.tnt4j.sink.EventSink} by name and custom properties
 	 *
-	 * @param name name of the category associated with the event log
-	 * @param props properties associated with the event logger (implementation specific).
-	 * @param frmt event formatter object to format events before writing to log
+	 * @param name
+	 *            name of the category associated with the event log
+	 * @param props
+	 *            properties associated with the event logger (implementation specific).
+	 * @param frmt
+	 *            event formatter object to format events before writing to log
 	 * @return event sink instance
 	 * @see EventSink
 	 * @see EventFormatter

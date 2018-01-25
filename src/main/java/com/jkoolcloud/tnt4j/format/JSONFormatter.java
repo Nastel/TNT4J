@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -173,16 +173,20 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		}
 		jsonString.append(JSON_SEVERITY_LABEL).append(ATTR_SEP);
 		Utils.quote(event.getSeverity(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(event.getSeverity().ordinal()).append(ATTR_JSON);
+		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(event.getSeverity().ordinal())
+				.append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP);
 		Utils.quote(event.getOperation().getType(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_TYPE_NO_LABEL).append(ATTR_SEP).append(event.getOperation().getType().ordinal()).append(ATTR_JSON);
+		jsonString.append(JSON_TYPE_NO_LABEL).append(ATTR_SEP).append(event.getOperation().getType().ordinal())
+				.append(ATTR_JSON);
 		jsonString.append(JSON_PID_LABEL).append(ATTR_SEP).append(event.getOperation().getPID()).append(ATTR_JSON);
 		jsonString.append(JSON_TID_LABEL).append(ATTR_SEP).append(event.getOperation().getTID()).append(ATTR_JSON);
 		jsonString.append(JSON_COMP_CODE_LABEL).append(ATTR_SEP);
 		Utils.quote(event.getOperation().getCompCode(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_COMP_CODE_NO_LABEL).append(ATTR_SEP).append(event.getOperation().getCompCode().ordinal()).append(ATTR_JSON);
-		jsonString.append(JSON_REASON_CODE_LABEL).append(ATTR_SEP).append(event.getOperation().getReasonCode()).append(ATTR_JSON);
+		jsonString.append(JSON_COMP_CODE_NO_LABEL).append(ATTR_SEP).append(event.getOperation().getCompCode().ordinal())
+				.append(ATTR_JSON);
+		jsonString.append(JSON_REASON_CODE_LABEL).append(ATTR_SEP).append(event.getOperation().getReasonCode())
+				.append(ATTR_JSON);
 		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(event.getTTL()).append(ATTR_JSON);
 
 		if (!Utils.isEmpty(event.getLocation())) {
@@ -191,12 +195,14 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			Utils.quote(escaped, jsonString).append(ATTR_JSON);
 		}
 		if (!Utils.isEmpty(event.getOperation().getResolvedName())) {
-			String escaped = StringEscapeUtils.escapeJson(event.getOperation().getResolvedName()); // escape double quote chars
+			String escaped = StringEscapeUtils.escapeJson(event.getOperation().getResolvedName()); // escape double
+																									// quote chars
 			jsonString.append(JSON_OPERATION_LABEL).append(ATTR_SEP);
 			Utils.quote(escaped, jsonString).append(ATTR_JSON);
 		}
 		if (!Utils.isEmpty(event.getOperation().getResource())) {
-			String escaped = StringEscapeUtils.escapeJson(event.getOperation().getResource()); // escape double quote chars
+			String escaped = StringEscapeUtils.escapeJson(event.getOperation().getResource()); // escape double quote
+																								// chars
 			jsonString.append(JSON_RESOURCE_LABEL).append(ATTR_SEP);
 			Utils.quote(escaped, jsonString).append(ATTR_JSON);
 		}
@@ -207,21 +213,21 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		}
 		jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
 		if (event.getOperation().getStartTime() != null) {
-			jsonString.append(JSON_START_TIME_USEC_LABEL).append(ATTR_SEP).append(
-			        event.getOperation().getStartTime().getTimeUsec()).append(ATTR_JSON);
+			jsonString.append(JSON_START_TIME_USEC_LABEL).append(ATTR_SEP)
+					.append(event.getOperation().getStartTime().getTimeUsec()).append(ATTR_JSON);
 		}
 		if (event.getOperation().getEndTime() != null) {
-			jsonString.append(JSON_END_TIME_USEC_LABEL).append(ATTR_SEP).append(
-			        event.getOperation().getEndTime().getTimeUsec()).append(ATTR_JSON);
-			jsonString.append(JSON_ELAPSED_TIME_USEC_LABEL).append(ATTR_SEP).append(
-			        event.getOperation().getElapsedTimeUsec()).append(ATTR_JSON);
+			jsonString.append(JSON_END_TIME_USEC_LABEL).append(ATTR_SEP)
+					.append(event.getOperation().getEndTime().getTimeUsec()).append(ATTR_JSON);
+			jsonString.append(JSON_ELAPSED_TIME_USEC_LABEL).append(ATTR_SEP)
+					.append(event.getOperation().getElapsedTimeUsec()).append(ATTR_JSON);
 			if (event.getOperation().getWaitTimeUsec() > 0) {
-				jsonString.append(JSON_WAIT_TIME_USEC_LABEL).append(ATTR_SEP).append(
-				        event.getOperation().getWaitTimeUsec()).append(ATTR_JSON);
+				jsonString.append(JSON_WAIT_TIME_USEC_LABEL).append(ATTR_SEP)
+						.append(event.getOperation().getWaitTimeUsec()).append(ATTR_JSON);
 			}
 			if (event.getMessageAge() > 0) {
 				jsonString.append(JSON_MSG_AGE_USEC_LABEL).append(ATTR_SEP).append(event.getMessageAge())
-				        .append(ATTR_JSON);
+						.append(ATTR_JSON);
 			}
 		}
 		int snapCount = event.getOperation().getSnapshotCount();
@@ -253,23 +259,23 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		}
 		if (!Utils.isEmpty(event.getCorrelator())) {
 			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_CORR_ID_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON).append(itemsToJSON(event.getCorrelator()))
-	        	.append(ARRAY_END);
+			jsonString.append(JSON_CORR_ID_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
+					.append(itemsToJSON(event.getCorrelator())).append(ARRAY_END);
 		}
 		if (!Utils.isEmpty(event.getTag())) {
 			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_MSG_TAG_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON).append(itemsToJSON(event.getTag()))
-			        .append(ARRAY_END);
+			jsonString.append(JSON_MSG_TAG_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
+					.append(itemsToJSON(event.getTag())).append(ARRAY_END);
 		}
 		if (propCount > 0) {
 			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_PROPERTIES_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON).append(
-			        itemsToJSON(event.getOperation().getProperties())).append(ARRAY_END);
+			jsonString.append(JSON_PROPERTIES_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
+					.append(itemsToJSON(event.getOperation().getProperties())).append(ARRAY_END);
 		}
 		if (snapCount > 0) {
 			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_SNAPSHOTS_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON).append(
-			        itemsToJSON(event.getOperation().getSnapshots())).append(ARRAY_END);
+			jsonString.append(JSON_SNAPSHOTS_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
+					.append(itemsToJSON(event.getOperation().getSnapshots())).append(ARRAY_END);
 		}
 		jsonString.append(END_JSON);
 		return jsonString.toString();
@@ -322,7 +328,8 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		Utils.quote(activity.getStatus(), jsonString).append(ATTR_JSON);
 		jsonString.append(JSON_SEVERITY_LABEL).append(ATTR_SEP);
 		Utils.quote(activity.getSeverity(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(activity.getSeverity().ordinal()).append(ATTR_JSON);
+		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(activity.getSeverity().ordinal())
+				.append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP);
 		Utils.quote(activity.getType(), jsonString).append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_NO_LABEL).append(ATTR_SEP).append(activity.getType().ordinal()).append(ATTR_JSON);
@@ -330,7 +337,8 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		jsonString.append(JSON_TID_LABEL).append(ATTR_SEP).append(activity.getTID()).append(ATTR_JSON);
 		jsonString.append(JSON_COMP_CODE_LABEL).append(ATTR_SEP);
 		Utils.quote(activity.getCompCode(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_COMP_CODE_NO_LABEL).append(ATTR_SEP).append(activity.getCompCode().ordinal()).append(ATTR_JSON);
+		jsonString.append(JSON_COMP_CODE_NO_LABEL).append(ATTR_SEP).append(activity.getCompCode().ordinal())
+				.append(ATTR_JSON);
 		jsonString.append(JSON_REASON_CODE_LABEL).append(ATTR_SEP).append(activity.getReasonCode()).append(ATTR_JSON);
 		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(activity.getTTL()).append(ATTR_JSON);
 		if (!Utils.isEmpty(activity.getLocation())) {
@@ -356,21 +364,22 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 
 		jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
 		if (activity.getStartTime() != null) {
-			jsonString.append(JSON_START_TIME_USEC_LABEL).append(ATTR_SEP).append(
-			        activity.getStartTime().getTimeUsec()).append(ATTR_JSON);
+			jsonString.append(JSON_START_TIME_USEC_LABEL).append(ATTR_SEP).append(activity.getStartTime().getTimeUsec())
+					.append(ATTR_JSON);
 		}
 		if (activity.getEndTime() != null) {
-			jsonString.append(JSON_END_TIME_USEC_LABEL).append(ATTR_SEP).append(
-			        activity.getEndTime().getTimeUsec()).append(ATTR_JSON);
-			jsonString.append(JSON_ELAPSED_TIME_USEC_LABEL).append(ATTR_SEP).append(
-			        activity.getElapsedTimeUsec()).append(ATTR_JSON);
+			jsonString.append(JSON_END_TIME_USEC_LABEL).append(ATTR_SEP).append(activity.getEndTime().getTimeUsec())
+					.append(ATTR_JSON);
+			jsonString.append(JSON_ELAPSED_TIME_USEC_LABEL).append(ATTR_SEP).append(activity.getElapsedTimeUsec())
+					.append(ATTR_JSON);
 			if (activity.getWaitTimeUsec() > 0) {
-				jsonString.append(JSON_WAIT_TIME_USEC_LABEL).append(ATTR_SEP).append(
-				        activity.getWaitTimeUsec()).append(ATTR_JSON);
+				jsonString.append(JSON_WAIT_TIME_USEC_LABEL).append(ATTR_SEP).append(activity.getWaitTimeUsec())
+						.append(ATTR_JSON);
 			}
 		}
 		jsonString.append(JSON_ID_COUNT_LABEL).append(ATTR_SEP).append(activity.getIdCount()).append(ATTR_JSON);
-		jsonString.append(JSON_SNAPSHOT_COUNT_LABEL).append(ATTR_SEP).append(activity.getSnapshotCount()).append(ATTR_JSON);
+		jsonString.append(JSON_SNAPSHOT_COUNT_LABEL).append(ATTR_SEP).append(activity.getSnapshotCount())
+				.append(ATTR_JSON);
 		jsonString.append(JSON_PROPERTY_COUNT_LABEL).append(ATTR_SEP).append(activity.getPropertyCount());
 
 		String exStr = activity.getExceptionString();
@@ -382,23 +391,23 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		}
 		if (!Utils.isEmpty(activity.getCorrelator())) {
 			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_CORR_ID_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON).append(
-					itemsToJSON(activity.getCorrelator())).append(ARRAY_END);
+			jsonString.append(JSON_CORR_ID_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
+					.append(itemsToJSON(activity.getCorrelator())).append(ARRAY_END);
 		}
 		if (activity.getIdCount() > 0) {
 			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_ID_SET_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON).append(
-			        itemsToJSON(activity.getIds())).append(ARRAY_END);
+			jsonString.append(JSON_ID_SET_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
+					.append(itemsToJSON(activity.getIds())).append(ARRAY_END);
 		}
 		if (activity.getPropertyCount() > 0) {
 			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_PROPERTIES_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON).append(
-			        itemsToJSON(activity.getProperties())).append(ARRAY_END);
+			jsonString.append(JSON_PROPERTIES_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
+					.append(itemsToJSON(activity.getProperties())).append(ARRAY_END);
 		}
 		if (activity.getSnapshotCount() > 0) {
 			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_SNAPSHOTS_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON).append(
-			        itemsToJSON(activity.getSnapshots())).append(ARRAY_END);
+			jsonString.append(JSON_SNAPSHOTS_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
+					.append(itemsToJSON(activity.getSnapshots())).append(ARRAY_END);
 		}
 		jsonString.append(END_JSON);
 		return jsonString.toString();
@@ -443,7 +452,8 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			Utils.quote(escaped, jsonString).append(ATTR_JSON);
 		}
 		jsonString.append(JSON_COUNT_LABEL).append(ATTR_SEP).append(snap.size()).append(ATTR_JSON);
-		jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(snap.getTimeStamp().getTimeUsec()).append(ATTR_JSON);
+		jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(snap.getTimeStamp().getTimeUsec())
+				.append(ATTR_JSON);
 		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(snap.getTTL()).append(ATTR_JSON);
 
 		Source source = snap.getSource();
@@ -466,14 +476,15 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		}
 		jsonString.append(JSON_SEVERITY_LABEL).append(ATTR_SEP);
 		Utils.quote(snap.getSeverity(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(snap.getSeverity().ordinal()).append(ATTR_JSON);
+		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(snap.getSeverity().ordinal())
+				.append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP);
 		Utils.quote(snap.getType(), jsonString).append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_NO_LABEL).append(ATTR_SEP).append(snap.getType().ordinal());
 		if (snap.size() > 0) {
 			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_PROPERTIES_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON).append(
-			        itemsToJSON(snap.getSnapshot())).append(ARRAY_END);
+			jsonString.append(JSON_PROPERTIES_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
+					.append(itemsToJSON(snap.getSnapshot())).append(ARRAY_END);
 		}
 		jsonString.append(END_JSON);
 		return jsonString.toString();
@@ -489,7 +500,8 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	 * {@link SpecNumbersHandling#SUPPRESS} and property value is {@link Double} or {@link Float} containing
 	 * {@code 'Infinity'} or {@code 'NaN'} value
 	 *
-	 * @param prop property object to be formatted into JSON
+	 * @param prop
+	 *            property object to be formatted into JSON
 	 * @return formatted property as a JSON string, or empty string {@value #EMPTY_STR} if property is {@code null},
 	 *         transient or having special numeric value
 	 * @see Property
@@ -556,7 +568,8 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		jsonString.append(JSON_PID_LABEL).append(ATTR_SEP).append(Utils.getVMPID()).append(ATTR_JSON);
 		jsonString.append(JSON_TID_LABEL).append(ATTR_SEP).append(Thread.currentThread().getId()).append(ATTR_JSON);
 
-		String usrName = StringEscapeUtils.escapeJson(source == null ? DefaultSourceFactory.getInstance().getRootSource().getUser() : source.getUser());
+		String usrName = StringEscapeUtils.escapeJson(
+				source == null ? DefaultSourceFactory.getInstance().getRootSource().getUser() : source.getUser());
 		jsonString.append(JSON_USER_LABEL).append(ATTR_SEP);
 		Utils.quote(usrName, jsonString).append(ATTR_JSON);
 		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(ttl).append(ATTR_JSON);

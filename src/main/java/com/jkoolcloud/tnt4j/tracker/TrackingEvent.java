@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,43 +19,44 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.Set;
 
-import com.jkoolcloud.tnt4j.core.OpCompCode;
-import com.jkoolcloud.tnt4j.core.OpType;
+import com.jkoolcloud.tnt4j.core.*;
 import com.jkoolcloud.tnt4j.source.Source;
-import com.jkoolcloud.tnt4j.core.Message;
-import com.jkoolcloud.tnt4j.core.OpLevel;
-import com.jkoolcloud.tnt4j.core.Operation;
-import com.jkoolcloud.tnt4j.core.Relate2;
-import com.jkoolcloud.tnt4j.core.Trackable;
-import com.jkoolcloud.tnt4j.core.UsecTimestamp;
 import com.jkoolcloud.tnt4j.utils.Useconds;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
- * <p><code>TrackingEvent</code> implements tracking for a specific application sub-activity. Applications create
- * instances of <code>TrackingEvent</code> after initiating an application activity using <code>Tracker</code>
- * logger instance or <code>TrackingLogger</code>. Each <code>TrackingEvent</code> can be timed independently using
- * start()/stop() method calls and reported and logged using <code>Tracker.reportEvent()</code> method call.</p>
+ * <p>
+ * {@code TrackingEvent} implements tracking for a specific application sub-activity. Applications create instances of
+ * {@code TrackingEvent} after initiating an application activity using {@link com.jkoolcloud.tnt4j.tracker.Tracker}
+ * logger instance or {@link com.jkoolcloud.tnt4j.TrackingLogger}. Each {@code TrackingEvent} can be timed independently
+ * using start()/stop() method calls and reported and logged using {@code Tracker.reportEvent()} method call.
+ * </p>
  *
- * <p>A <code>TrackingEvent</code> can represent a specific tracking event that application creates for
- * every discrete activity such as JDBC, JMS, SOAP or any other relevant application activity.
- * Source developers must obtain a <code>Tracker</code> instance via <code>DefaultTrackerFactory</code>, create
- * instances of <code>TrackingEvent</code> and use <code>TrackingActivity.tnt()</code> to associate and report
- * tracking events.
+ * <p>
+ * A {@code TrackingEvent} can represent a specific tracking event that application creates for every discrete activity
+ * such as JDBC, JMS, SOAP or any other relevant application activity. Source developers must obtain a
+ * {@link com.jkoolcloud.tnt4j.tracker.Tracker} instance via {@link com.jkoolcloud.tnt4j.tracker.DefaultTrackerFactory},
+ * create instances of {@code TrackingEvent} and use {@code TrackingActivity.tnt()} to associate and report tracking
+ * events.
  *
- * <p>A <code>Tracker</code> start()/end() used to mark application activity boundaries.</p>
+ * <p>
+ * A {@link com.jkoolcloud.tnt4j.tracker.Tracker} start()/end() used to mark application activity boundaries.
+ * </p>
  *
- * <p>Any pair of <code>TrackingEvent</code> instances are related when event correlators match.
- * <code>TrackingEvent</code> A is related to <code>TrackingEvent</code> B when {@code A.getCorrelator() == B.getCorrelator()}.
- * Developers may use signatures and or correlators to correlate tracking events across application/server boundaries.
- * <code>TrackingEvent</code> A is the same as <code>TrackingEvent</code> B if the corresponding event signature are identical: meaning
- * {@code A.getSignature() == B.getSignature()}. Currently each <code>TrackingEvent</code> gets assigned a unique event signature using
- * <code>TrackingEvent.newUUID()</code> call. Signatures can be changed using {@code TrackingEvent.setSiganture()} method call.
- * Signatures and correlators must be set before making {@code TrackingActivity.tnt()} call.
+ * <p>
+ * Any pair of {@code TrackingEvent} instances are related when event correlators match. {@code TrackingEvent} A is
+ * related to {@code TrackingEvent} B when {@code A.getCorrelator() == B.getCorrelator()}. Developers may use signatures
+ * and or correlators to correlate tracking events across application/server boundaries. {@code TrackingEvent} A is the
+ * same as {@code TrackingEvent} B if the corresponding event signature are identical: meaning
+ * {@code A.getSignature() == B.getSignature()}. Currently each {@code TrackingEvent} gets assigned a unique event
+ * signature using {@link TrackerImpl#newUUID()} call. Signatures can be changed using
+ * {@link TrackingEvent#setSignature(String)} method call. Signatures and correlators must be set before making
+ * {@code TrackingActivity.tnt()} call.
  *
- * <p>Below is example of how to set <code>TrackingEvent</code> correlator and operation type for a sender application:
+ * <p>
+ * Below is example of how to set {@code TrackingEvent} correlator and operation type for a sender application:
+ * 
  * <pre>
- * <code>
  * TrackingLogger logger = TrackingLogger.getInstance("com.jkoolcloud.appl.name"); // register and obtain Tracker logger instance
  * TrackingActivity activity = logger.newActivity(); // create a new application activity timing
  * TrackingEvent event = logger.newEvent(OpLevel.INFO, OpType.SEND, "SendOrder", "Sending order"); // create a sender tracking event
@@ -76,11 +77,11 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *	activity.tnt(event); // report a tracking event
  *	logger.tnt(activity); // end activity timing
  * }
- * </code>
  * </pre>
- * <p>Below is example of corresponding receiver application:
+ * <p>
+ * Below is example of corresponding receiver application:
+ * 
  * <pre>
- * <code>
  * TrackingLogger tracker = TrackingLogger.getInstance("com.jkoolcloud.appl.name"); // register and obtain Tracker logger instance
  * TrackingActivity activity = tracker.newActivity(); // create a new application activity timing
  * TrackingEvent event = tracker.newEvent(OpLevel.INFO, OpType.RECEIVE, "RecvOrder", "Received order"); // create a receiver tracking event
@@ -101,8 +102,8 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *	activity.tnt(event); // report a tracking event
  *	tracker.tnt(activity); // end activity timing
  * }
- * </code>
  * </pre>
+ * 
  * @see Message
  * @see OpLevel
  * @see DefaultTrackerFactory
@@ -114,105 +115,147 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class TrackingEvent extends Message implements Trackable, Relate2<Source> {
 
-	private Source	source;
-	private String	parent;
-	private String  sign;
+	private Source source;
+	private String parent;
+	private String sign;
 	Operation operation;
 	private TrackerImpl tracker;
 
-	private final Source [] relation = new Source[2];
+	private final Source[] relation = new Source[2];
 	private OpType relationType = OpType.NOOP;
 
 	/**
-	 * Create a new NOOP tracking event
-	 * This constructor will assign a unique event signature using newUUID() call
+	 * Create a new NOOP tracking event This constructor will assign a unique event signature using newUUID() call
 	 *
-	 * @param tr tracker instance
+	 * @param tr
+	 *            tracker instance
 	 */
 	protected TrackingEvent(TrackerImpl tr) {
-		this(tr, null, OpLevel.NONE, OpType.NOOP, Operation.NOOP, (String)null, (String)null, (String)null);
+		this(tr, null, OpLevel.NONE, OpType.NOOP, Operation.NOOP, (String) null, (String) null, (String) null);
 	}
 
 	/**
-	 * Create a new instance of tracking event that can be timed and reported.
-	 * This constructor will assign a unique event signature using newUUID() call
+	 * Create a new instance of tracking event that can be timed and reported. This constructor will assign a unique
+	 * event signature using newUUID() call
 	 *
-	 * @param tr tracker instance
-	 * @param src event source
-	 * @param severity severity level
-	 * @param opName operation name associated with this event (tracking event name)
-	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
-	 * @param msg text message associated with this event
-	 * @param args argument list passed along side the message
+	 * @param tr
+	 *            tracker instance
+	 * @param src
+	 *            event source
+	 * @param severity
+	 *            severity level
+	 * @param opName
+	 *            operation name associated with this event (tracking event name)
+	 * @param correlator
+	 *            associated with this event (could be unique or passed from a correlated activity)
+	 * @param msg
+	 *            text message associated with this event
+	 * @param args
+	 *            argument list passed along side the message
 	 */
-	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, String opName, String correlator, String msg, Object...args) {
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, String opName, String correlator, String msg,
+			Object... args) {
 		this(tr, src, severity, OpType.EVENT, opName, correlator, null, msg, args);
 	}
 
 	/**
-	 * Create a new instance of tracking event that can be timed and reported.
-	 * This constructor will assign a unique event signature using newUUID() call
+	 * Create a new instance of tracking event that can be timed and reported. This constructor will assign a unique
+	 * event signature using newUUID() call
 	 *
-	 * @param tr tracker instance
-	 * @param src event source
-	 * @param severity severity level
-	 * @param opName operation name associated with this event (tracking event name)
-	 * @param correlators associated with this event (could be unique or passed from a correlated activity)
-	 * @param msg text message associated with this event
-	 * @param args argument list passed along side the message
+	 * @param tr
+	 *            tracker instance
+	 * @param src
+	 *            event source
+	 * @param severity
+	 *            severity level
+	 * @param opName
+	 *            operation name associated with this event (tracking event name)
+	 * @param correlators
+	 *            associated with this event (could be unique or passed from a correlated activity)
+	 * @param msg
+	 *            text message associated with this event
+	 * @param args
+	 *            argument list passed along side the message
 	 */
-	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, String opName, Collection<String> correlators, String msg, Object...args) {
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, String opName, Collection<String> correlators,
+			String msg, Object... args) {
+		this(tr, src, severity, OpType.EVENT, opName, correlators, null, msg, args);
+	}
+
+	/**
+	 * Create a new instance of tracking event that can be timed and reported. This constructor will assign a unique
+	 * event signature using newUUID() call
+	 *
+	 * @param tr
+	 *            tracker instance
+	 * @param src
+	 *            event source
+	 * @param severity
+	 *            severity level
+	 * @param opName
+	 *            operation name associated with this event (tracking event name)
+	 * @param correlator
+	 *            associated with this event (could be unique or passed from a correlated activity)
+	 * @param msg
+	 *            binary message associated with this event
+	 * @param args
+	 *            argument list passed along side the message
+	 */
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, String opName, String correlator, byte[] msg,
+			Object... args) {
+		this(tr, src, severity, OpType.EVENT, opName, correlator, null, msg, args);
+	}
+
+	/**
+	 * Create a new instance of tracking event that can be timed and reported. This constructor will assign a unique
+	 * event signature using newUUID() call
+	 *
+	 * @param tr
+	 *            tracker instance
+	 * @param src
+	 *            event source
+	 * @param severity
+	 *            severity level
+	 * @param opName
+	 *            operation name associated with this event (tracking event name)
+	 * @param correlators
+	 *            associated with this event (could be unique or passed from a correlated activity)
+	 * @param msg
+	 *            binary message associated with this event
+	 * @param args
+	 *            argument list passed along side the message
+	 */
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, String opName, Collection<String> correlators,
+			byte[] msg, Object... args) {
 		this(tr, src, severity, OpType.EVENT, opName, correlators, null, msg, args);
 	}
 
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
-	 * This constructor will assign a unique event signature using newUUID() call
 	 *
-	 * @param tr tracker instance
-	 * @param src event source
-	 * @param severity severity level
-	 * @param opName operation name associated with this event (tracking event name)
-	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
-	 * @param msg binary message associated with this event
-	 * @param args argument list passed along side the message
-	 */
-	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, String opName, String correlator, byte[] msg, Object...args) {
-		this(tr, src, severity, OpType.EVENT, opName, correlator, null, msg, args);
-	}
-
-	/**
-	 * Create a new instance of tracking event that can be timed and reported.
-	 * This constructor will assign a unique event signature using newUUID() call
-	 *
-	 * @param tr tracker instance
-	 * @param src event source
-	 * @param severity severity level
-	 * @param opName operation name associated with this event (tracking event name)
-	 * @param correlators associated with this event (could be unique or passed from a correlated activity)
-	 * @param msg binary message associated with this event
-	 * @param args argument list passed along side the message
-	 */
-	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, String opName, Collection<String> correlators, byte[] msg, Object...args) {
-		this(tr, src, severity, OpType.EVENT, opName, correlators, null, msg, args);
-	}
-
-	/**
-	 * Create a new instance of tracking event that can be timed and reported.
-	 *
-	 * @param tr tracker instance
-	 * @param src event source
-	 * @param severity severity level
-	 * @param opType operation type
-	 * @param opName operation name associated with this event (tracking event name)
-	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
-	 * @param tag associated with this event
-	 * @param msg text message associated with this event
-	 * @param args argument list passed along side the message
+	 * @param tr
+	 *            tracker instance
+	 * @param src
+	 *            event source
+	 * @param severity
+	 *            severity level
+	 * @param opType
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with this event (tracking event name)
+	 * @param correlator
+	 *            associated with this event (could be unique or passed from a correlated activity)
+	 * @param tag
+	 *            associated with this event
+	 * @param msg
+	 *            text message associated with this event
+	 * @param args
+	 *            argument list passed along side the message
 	 * @see OpLevel
 	 * @see OpType
 	 */
-	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, String correlator, String tag, String msg, Object...args) {
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName,
+			String correlator, String tag, String msg, Object... args) {
 		super(null, msg, args);
 		tracker = tr;
 		operation = new Operation(opName, opType);
@@ -227,19 +270,29 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 *
-	 * @param tr tracker instance
-	 * @param src event source
-	 * @param severity severity level
-	 * @param opType operation type
-	 * @param opName operation name associated with this event (tracking event name)
-	 * @param correlators associated with this event (could be unique or passed from a correlated activity)
-	 * @param tags associated with this event
-	 * @param msg text message associated with this event
-	 * @param args argument list passed along side the message
+	 * @param tr
+	 *            tracker instance
+	 * @param src
+	 *            event source
+	 * @param severity
+	 *            severity level
+	 * @param opType
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with this event (tracking event name)
+	 * @param correlators
+	 *            associated with this event (could be unique or passed from a correlated activity)
+	 * @param tags
+	 *            associated with this event
+	 * @param msg
+	 *            text message associated with this event
+	 * @param args
+	 *            argument list passed along side the message
 	 * @see OpLevel
 	 * @see OpType
 	 */
-	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, Collection<String> correlators, Collection<String> tags, String msg, Object...args) {
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName,
+			Collection<String> correlators, Collection<String> tags, String msg, Object... args) {
 		super(null, msg, args);
 		tracker = tr;
 		operation = new Operation(opName, opType);
@@ -254,19 +307,29 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 *
-	 * @param tr tracker instance
-	 * @param src event source
-	 * @param severity severity level
-	 * @param opType operation type
-	 * @param opName operation name associated with this event (tracking event name)
-	 * @param correlators associated with this event (could be unique or passed from a correlated activity)
-	 * @param tags associated with this event
-	 * @param msg binary message associated with this event
-	 * @param args argument list passed along side the message
+	 * @param tr
+	 *            tracker instance
+	 * @param src
+	 *            event source
+	 * @param severity
+	 *            severity level
+	 * @param opType
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with this event (tracking event name)
+	 * @param correlators
+	 *            associated with this event (could be unique or passed from a correlated activity)
+	 * @param tags
+	 *            associated with this event
+	 * @param msg
+	 *            binary message associated with this event
+	 * @param args
+	 *            argument list passed along side the message
 	 * @see OpLevel
 	 * @see OpType
 	 */
-	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, Collection<String> correlators, Collection<String> tags, byte[] msg, Object...args) {
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName,
+			Collection<String> correlators, Collection<String> tags, byte[] msg, Object... args) {
 		super(null, msg, args);
 		tracker = tr;
 		operation = new Operation(opName, opType);
@@ -281,19 +344,29 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Create a new instance of tracking event that can be timed and reported.
 	 *
-	 * @param tr tracker instance
-	 * @param src event source
-	 * @param severity severity level
-	 * @param opType operation type
-	 * @param opName operation name associated with this event (tracking event name)
-	 * @param correlator associated with this event (could be unique or passed from a correlated activity)
-	 * @param tag associated with this event
-	 * @param msg binary message associated with this event
-	 * @param args argument list passed along side the message
+	 * @param tr
+	 *            tracker instance
+	 * @param src
+	 *            event source
+	 * @param severity
+	 *            severity level
+	 * @param opType
+	 *            operation type
+	 * @param opName
+	 *            operation name associated with this event (tracking event name)
+	 * @param correlator
+	 *            associated with this event (could be unique or passed from a correlated activity)
+	 * @param tag
+	 *            associated with this event
+	 * @param msg
+	 *            binary message associated with this event
+	 * @param args
+	 *            argument list passed along side the message
 	 * @see OpLevel
 	 * @see OpType
 	 */
-	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, String correlator, String tag, byte[] msg, Object...args) {
+	protected TrackingEvent(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName,
+			String correlator, String tag, byte[] msg, Object... args) {
 		super(null, msg, args);
 		tracker = tr;
 		operation = new Operation(opName, opType);
@@ -405,7 +478,8 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Sets the location associated with the tracking event such as GPS locator.
 	 *
-	 * @param location location string for tracking event
+	 * @param location
+	 *            location string for tracking event
 	 */
 	public void setLocation(String location) {
 		operation.setLocation(location);
@@ -414,7 +488,8 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Sets the location associated with the tracking event such as GPS locator.
 	 *
-	 * @param location location string for tracking event
+	 * @param location
+	 *            location string for tracking event
 	 */
 	public void setLocation(Source location) {
 		operation.setLocation(location);
@@ -423,7 +498,8 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Indicates that application tracking event has started at the specified startTime
 	 *
-	 * @param startTimeUsc start time of the tracking event (usec)
+	 * @param startTimeUsc
+	 *            start time of the tracking event (usec)
 	 */
 	public void start(long startTimeUsc) {
 		operation.start(startTimeUsc);
@@ -438,10 +514,10 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	}
 
 	/**
-	 * Indicates that application tracking event has started given a
-	 * specific time stamp.
+	 * Indicates that application tracking event has started given a specific time stamp.
 	 *
-	 * @param time when operation started
+	 * @param time
+	 *            when operation started
 	 */
 	public void start(UsecTimestamp time) {
 		operation.start(time);
@@ -458,8 +534,10 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Indicates that application tracking event has ended.
 	 *
-	 * @param time when operation stopped
-	 * @param elapsedUsec elapsed time of the event in microseconds
+	 * @param time
+	 *            when operation stopped
+	 * @param elapsedUsec
+	 *            elapsed time of the event in microseconds
 	 */
 	public void stop(UsecTimestamp time, long elapsedUsec) {
 		operation.stop(time, elapsedUsec);
@@ -468,7 +546,8 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Indicates that application tracking event has ended.
 	 *
-	 * @param elaspedTime elapsed time of this event in (usec)
+	 * @param elaspedTime
+	 *            elapsed time of this event in (usec)
 	 */
 	public void stop(long elaspedTime) {
 		operation.stop(Useconds.CURRENT.get(), elaspedTime);
@@ -477,18 +556,20 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Indicates that application tracking event has ended.
 	 *
-	 * @param endTimeUsec ending time associated with the event (usec)
-	 * @param elapsedUsec elapsed time in (usec)
+	 * @param endTimeUsec
+	 *            ending time associated with the event (usec)
+	 * @param elapsedUsec
+	 *            elapsed time in (usec)
 	 */
 	public void stop(long endTimeUsec, long elapsedUsec) {
 		operation.stop(endTimeUsec, elapsedUsec);
 	}
 
 	/**
-	 * Indicates that application tracking event has ended.
-	 * Event completion code is set to <code>OpCompCode.WARNING</code>
+	 * Indicates that application tracking event has ended. Event completion code is set to {@link OpCompCode#WARNING}
 	 *
-	 * @param opEx exception associated with this tracking event
+	 * @param opEx
+	 *            exception associated with this tracking event
 	 */
 	public void stop(Throwable opEx) {
 		operation.setException(opEx);
@@ -497,11 +578,13 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	}
 
 	/**
-	 * Indicates that application tracking event has ended.
-	 * Event completion code is set to <code>OpCompCode.WARNING</code>
+	 * Indicates that application tracking event has ended. Event completion code is set to
+	 * {@link com.jkoolcloud.tnt4j.core.OpCompCode#WARNING}
 	 *
-	 * @param opEx exception associated with this tracking event
-	 * @param elapsedUsec elapsed time in (usec)
+	 * @param opEx
+	 *            exception associated with this tracking event
+	 * @param elapsedUsec
+	 *            elapsed time in (usec)
 	 */
 	public void stop(Throwable opEx, long elapsedUsec) {
 		operation.setException(opEx);
@@ -512,8 +595,10 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Indicates that application tracking event has ended.
 	 *
-	 * @param ccode completion code of the tracking event
-	 * @param rcode reason code associated with this tracking event
+	 * @param ccode
+	 *            completion code of the tracking event
+	 * @param rcode
+	 *            reason code associated with this tracking event
 	 * @see OpCompCode
 	 */
 	public void stop(OpCompCode ccode, int rcode) {
@@ -525,8 +610,10 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Indicates that application tracking event has ended.
 	 *
-	 * @param ccode completion code of the tracking event
-	 * @param opEx exception associated with this tracking event
+	 * @param ccode
+	 *            completion code of the tracking event
+	 * @param opEx
+	 *            exception associated with this tracking event
 	 * @see OpCompCode
 	 */
 	public void stop(OpCompCode ccode, Throwable opEx) {
@@ -538,9 +625,12 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Indicates that application tracking event has ended.
 	 *
-	 * @param ccode completion code of the tracking event
-	 * @param rcode reason code associated with this tracking event
-	 * @param opEx exception associated with this tracking event
+	 * @param ccode
+	 *            completion code of the tracking event
+	 * @param rcode
+	 *            reason code associated with this tracking event
+	 * @param opEx
+	 *            exception associated with this tracking event
 	 * @see OpCompCode
 	 */
 	public void stop(OpCompCode ccode, int rcode, Throwable opEx) {
@@ -553,10 +643,14 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Indicates that application tracking event has ended.
 	 *
-	 * @param ccode completion code of the tracking event
-	 * @param rcode reason code associated with this tracking event
-	 * @param opEx exception associated with this tracking event
-	 * @param endTimeUsec time when the tracking event has ended (usec)
+	 * @param ccode
+	 *            completion code of the tracking event
+	 * @param rcode
+	 *            reason code associated with this tracking event
+	 * @param opEx
+	 *            exception associated with this tracking event
+	 * @param endTimeUsec
+	 *            time when the tracking event has ended (usec)
 	 * @see OpCompCode
 	 */
 	public void stop(OpCompCode ccode, int rcode, Throwable opEx, long endTimeUsec) {
@@ -569,11 +663,16 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Indicates that application tracking event has ended.
 	 *
-	 * @param ccode completion code of the tracking event
-	 * @param rcode reason code associated with this tracking event
-	 * @param opEx exception associated with this tracking event
-	 * @param endTimeUsec time when the tracking event has ended (usec)
-	 * @param elpasedUsec elapsed time in (usec)
+	 * @param ccode
+	 *            completion code of the tracking event
+	 * @param rcode
+	 *            reason code associated with this tracking event
+	 * @param opEx
+	 *            exception associated with this tracking event
+	 * @param endTimeUsec
+	 *            time when the tracking event has ended (usec)
+	 * @param elpasedUsec
+	 *            elapsed time in (usec)
 	 * @see OpCompCode
 	 */
 	public void stop(OpCompCode ccode, int rcode, Throwable opEx, long endTimeUsec, long elpasedUsec) {
@@ -586,11 +685,16 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Indicates that application tracking event has ended.
 	 *
-	 * @param ccode completion code of the tracking event
-	 * @param rcode reason code associated with this tracking event
-	 * @param opEx exception associated with this tracking event
-	 * @param endTime time when the tracking event has ended (usec)
-	 * @param elpasedUsec elapsed time in (usec)
+	 * @param ccode
+	 *            completion code of the tracking event
+	 * @param rcode
+	 *            reason code associated with this tracking event
+	 * @param opEx
+	 *            exception associated with this tracking event
+	 * @param endTime
+	 *            time when the tracking event has ended (usec)
+	 * @param elpasedUsec
+	 *            elapsed time in (usec)
 	 * @see OpCompCode
 	 */
 	public void stop(OpCompCode ccode, int rcode, Throwable opEx, UsecTimestamp endTime, long elpasedUsec) {
@@ -610,8 +714,7 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	}
 
 	/**
-	 * Sign current event with hash/signature based on trackers
-	 * configured signature factory.
+	 * Sign current event with hash/signature based on trackers configured signature factory.
 	 * 
 	 * @return signed self
 	 * @throws NoSuchAlgorithmException

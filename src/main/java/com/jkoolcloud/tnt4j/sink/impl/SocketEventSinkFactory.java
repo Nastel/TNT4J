@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,10 +28,11 @@ import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
- * <p>Concrete implementation of {@link EventSinkFactory} interface, which
- * creates instances of {@link EventSink}. This factory uses {@link SocketEventSink}
- * as the underlying sink provider provider and by default uses {@link JSONFormatter} to 
- * format log messages.</p>
+ * <p>
+ * Concrete implementation of {@link EventSinkFactory} interface, which creates instances of {@link EventSink}. This
+ * factory uses {@link SocketEventSink} as the underlying sink provider provider and by default uses
+ * {@link JSONFormatter} to format log messages.
+ * </p>
  *
  *
  * @see EventSink
@@ -48,18 +49,17 @@ public class SocketEventSinkFactory extends AbstractEventSinkFactory {
 	private EventSinkFactory eventSinkFactory = DefaultEventSinkFactory.getInstance();
 
 	/**
-	 * Create a socket event sink factory.
-	 * Same as <code>SocketEventSinkFactory("localhost", 6400)</code>.
+	 * Create a socket event sink factory. Same as {@code SocketEventSinkFactory("localhost", 6400)}.
 	 * 
 	 */
 	public SocketEventSinkFactory() {
 	}
 
 	/**
-	 * Create a socket event sink factory with
-	 * host name set to localhost.
+	 * Create a socket event sink factory with host name set to localhost.
 	 * 
-	 * @param portNo port number 
+	 * @param portNo
+	 *            port number
 	 * 
 	 */
 	public SocketEventSinkFactory(int portNo) {
@@ -69,8 +69,10 @@ public class SocketEventSinkFactory extends AbstractEventSinkFactory {
 	/**
 	 * Create a socket event sink factory with
 	 * 
-	 * @param host host name used to connect to
-	 * @param portNo port number 
+	 * @param host
+	 *            host name used to connect to
+	 * @param portNo
+	 *            port number
 	 * 
 	 */
 	public SocketEventSinkFactory(String host, int portNo) {
@@ -92,18 +94,21 @@ public class SocketEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-		return configureSink(new SocketEventSink(name, hostName, port, frmt, 
-				eventSinkFactory.getEventSink(name, props, frmt)));
+		return configureSink(
+				new SocketEventSink(name, hostName, port, frmt, eventSinkFactory.getEventSink(name, props, frmt)));
 	}
 
 	/**
-	 * Obtain an instance of {@link EventSink} by name and 
-	 * custom properties
+	 * Obtain an instance of {@link EventSink} by name and custom properties
 	 *
-	 * @param name name of the category associated with the event log
-	 * @param props properties associated with the event logger (implementation specific).
-	 * @param frmt event formatter object to format events before writing to log
-	 * @param pipedSink piped sink used to route events
+	 * @param name
+	 *            name of the category associated with the event log
+	 * @param props
+	 *            properties associated with the event logger (implementation specific).
+	 * @param frmt
+	 *            event formatter object to format events before writing to log
+	 * @param pipedSink
+	 *            piped sink used to route events
 	 * 
 	 * @return event sink instance with specified arguments
 	 * @see EventSink
@@ -118,7 +123,8 @@ public class SocketEventSinkFactory extends AbstractEventSinkFactory {
 		super.setConfiguration(settings);
 		hostName = Utils.getString("Host", settings, hostName);
 		port = Utils.getInt("Port", settings, port);
-		eventSinkFactory = (EventSinkFactory) Utils.createConfigurableObject("eventSinkFactory", "eventSinkFactory.", settings);
+		eventSinkFactory = (EventSinkFactory) Utils.createConfigurableObject("eventSinkFactory", "eventSinkFactory.",
+				settings);
 		eventSinkFactory = eventSinkFactory == null ? DefaultEventSinkFactory.getInstance() : eventSinkFactory;
 	}
 }

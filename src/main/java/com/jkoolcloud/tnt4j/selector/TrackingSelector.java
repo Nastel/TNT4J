@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,10 @@ import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.repository.TokenRepository;
 
 /**
- * <p>Classes that implement this interface provide implementation for
- * the {@link TrackingSelector} which allows conditional logging based on given sev/key/value combination.</p>
+ * <p>
+ * Classes that implement this interface provide implementation for the {@link TrackingSelector} which allows
+ * conditional logging based on given sev/key/value combination.
+ * </p>
  *
  * @see OpLevel
  *
@@ -32,30 +34,32 @@ import com.jkoolcloud.tnt4j.repository.TokenRepository;
  */
 public interface TrackingSelector extends Handle {
 	/**
-	 * Determine if a particular sev/key combination is trackable
-	 * Use this method to determine if tracking is enabled/disabled
-	 * for a specific sev/key pair.
+	 * Determine if a particular sev/key combination is trackable Use this method to determine if tracking is
+	 * enabled/disabled for a specific sev/key pair.
 	 *
 	 * {@code TrackingLogger.isSet(OpLevel.INFO, "orderapp.order.id");}
 	 *
-	 * @param sev severity of to be checked
-	 * @param key key associated with tracking activity
+	 * @param sev
+	 *            severity of to be checked
+	 * @param key
+	 *            key associated with tracking activity
 	 * @return true if severity level set for given key
 	 * @see OpLevel
 	 */
 	boolean isSet(OpLevel sev, Object key);
 
 	/**
-	 * Determine if a particular sev/key/value combination is trackable
-	 * Use this method to determine if tracking is enabled/disabled
-	 * for a specific key/value pair. Example, checking if order id
-	 * "723772" is trackable:
+	 * Determine if a particular sev/key/value combination is trackable Use this method to determine if tracking is
+	 * enabled/disabled for a specific key/value pair. Example, checking if order id "723772" is trackable:
 	 *
 	 * {@code TrackingLogger.isSet(OpLevel.INFO, "orderapp.order.id", "723772");}
 	 *
-	 * @param sev severity of to be checked
-	 * @param key key associated with tracking activity
-	 * @param value associated value with a given key
+	 * @param sev
+	 *            severity of to be checked
+	 * @param key
+	 *            key associated with tracking activity
+	 * @param value
+	 *            associated value with a given key
 	 * @return true if severity level set for given key with specified value
 	 * @see OpLevel
 	 */
@@ -64,20 +68,25 @@ public interface TrackingSelector extends Handle {
 	/**
 	 * Set sev/key/value combination for tracking
 	 *
-	 * @param sev severity of to be checked
-	 * @param key key associated with tracking activity
-	 * @param value associated value with a given key
+	 * @param sev
+	 *            severity of to be checked
+	 * @param key
+	 *            key associated with tracking activity
+	 * @param value
+	 *            associated value with a given key
 	 *
 	 * @see OpLevel
 	 */
 	void set(OpLevel sev, Object key, Object value);
 
 	/**
-	 * Set sev/key combination for tracking. This is the same as calling
-	 * {@code set(sev, key, null)}, where value is null.
+	 * Set sev/key combination for tracking. This is the same as calling {@code set(sev, key, null)}, where value is
+	 * null.
 	 *
-	 * @param sev severity of to be checked
-	 * @param key key associated with tracking activity
+	 * @param sev
+	 *            severity of to be checked
+	 * @param key
+	 *            key associated with tracking activity
 	 *
 	 * @see OpLevel
 	 */
@@ -86,19 +95,17 @@ public interface TrackingSelector extends Handle {
 	/**
 	 * Get value of the specific key
 	 *
-	 * @param key key associated with tracking activity
+	 * @param key
+	 *            key associated with tracking activity
 	 * @return value associated with a given key
 	 *
 	 */
 	Object get(Object key);
 
 	/**
-	 * Determine of tracking selector is valid and defined
-	 * Undefined {@link TrackingSelector} does not have
-	 * defined token repository and isSet() calls will either
-	 * return all true or false depending on the value of
-	 * <code>tnt4j.selector.undefined.isset=true</code>
-	 * property. Default is true.
+	 * Determine of tracking selector is valid and defined Undefined {@code TrackingSelector} does not have defined
+	 * token repository and isSet() calls will either return all true or false depending on the value of
+	 * {@code tnt4j.selector.undefined.isset=true} property. Default is true.
 	 *
 	 * @return true if repository is defined, false otherwise
 	 */
@@ -107,7 +114,8 @@ public interface TrackingSelector extends Handle {
 	/**
 	 * Determine if a specific key exists
 	 *
-	 * @param key key associated with tracking activity
+	 * @param key
+	 *            key associated with tracking activity
 	 * @return true if exists, false otherwise
 	 *
 	 */
@@ -116,7 +124,8 @@ public interface TrackingSelector extends Handle {
 	/**
 	 * Clear value for the specific key
 	 *
-	 * @param key key associated with tracking activity
+	 * @param key
+	 *            key associated with tracking activity
 	 *
 	 */
 	void remove(Object key);
@@ -139,7 +148,8 @@ public interface TrackingSelector extends Handle {
 	/**
 	 * Set an instance of the token repository associated with this selector
 	 *
-	 * @param repo token repository implementation
+	 * @param repo
+	 *            token repository implementation
 	 * @see TokenRepository
 	 */
 	void setRepository(TokenRepository repo);

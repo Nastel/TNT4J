@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,10 @@
 package com.jkoolcloud.tnt4j.sink;
 
 /**
- * <p>A simple event listener interface for event sink observers.
- * This interface can be implemented by classes that are interested in sink logging events
- * caused sink is called to log activities, messages, events.</p>
+ * <p>
+ * A simple event listener interface for event sink observers. This interface can be implemented by classes that are
+ * interested in sink logging events caused sink is called to log activities, messages, events.
+ * </p>
  *
  * @see SinkLogEvent
  * @see EventSink
@@ -30,7 +31,8 @@ public interface SinkLogEventListener {
 	/**
 	 * Notifies this listener about a logging activity
 	 * 
-	 * @param ev sink activity event
+	 * @param ev
+	 *            sink activity event
 	 * 
 	 * @see SinkLogEvent
 	 */

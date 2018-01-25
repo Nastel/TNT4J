@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,11 @@ import java.util.Iterator;
 
 import com.jkoolcloud.tnt4j.core.Handle;
 
-
 /**
- * <p>Classes that implement this interface provide implementation for
- * the <code>TokenRepository</code> which provides
- * interface to the underlying tokens(key/value pairs).</p>
+ * <p>
+ * Classes that implement this interface provide implementation for the {@code TokenRepository} which provides interface
+ * to the underlying tokens(key/value pairs).
+ * </p>
  *
  *
  * @version $Revision: 2 $
@@ -61,8 +61,7 @@ public interface TokenRepository extends Handle {
 	int EVENT_RELOAD = 5;
 
 	/**
-	 * Determine of the token repository is defined.
-	 * Undefined <code>TokenRepository<code> will always fail to open.
+	 * Determine of the token repository is defined. Undefined {@code TokenRepository} will always fail to open.
 	 *
 	 * @return true if repository is defined, false otherwise
 	 */
@@ -78,14 +77,16 @@ public interface TokenRepository extends Handle {
 	/**
 	 * Removes the mapping for the specified key from this repository if present.
 	 *
-	 * @param key key whose mapping is to be removed from the repository
+	 * @param key
+	 *            key whose mapping is to be removed from the repository
 	 */
 	void remove(String key);
 
 	/**
 	 * Obtain the value associated with the given key
 	 *
-	 * @param key key whose mapping is to be obtained
+	 * @param key
+	 *            key whose mapping is to be obtained
 	 * @return get the value associated with the specified key
 	 */
 	Object get(String key);
@@ -93,8 +94,10 @@ public interface TokenRepository extends Handle {
 	/**
 	 * Set the key/value pair within the repository
 	 *
-	 * @param key key whose mapping is to be obtained
-	 * @param value value associated with the key
+	 * @param key
+	 *            key whose mapping is to be obtained
+	 * @param value
+	 *            value associated with the key
 	 */
 	void set(String key, Object value);
 
@@ -106,19 +109,19 @@ public interface TokenRepository extends Handle {
 	Iterator<? extends Object> getKeys();
 
 	/**
-	 * Register a repository listener for notifications in change of state of
-	 * the underlying repository.
+	 * Register a repository listener for notifications in change of state of the underlying repository.
 	 *
-	 * @param listener token repository listener to register
+	 * @param listener
+	 *            token repository listener to register
 	 * @see TokenRepositoryListener
 	 */
 	void addRepositoryListener(TokenRepositoryListener listener);
 
 	/**
-	 * Remove a repository listener for notifications in change of state of
-	 * the underlying repository.
+	 * Remove a repository listener for notifications in change of state of the underlying repository.
 	 *
-	 * @param listener token repository listener to remove
+	 * @param listener
+	 *            token repository listener to remove
 	 * @see TokenRepositoryListener
 	 */
 	void removeRepositoryListener(TokenRepositoryListener listener);

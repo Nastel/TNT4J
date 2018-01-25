@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,10 @@
 package com.jkoolcloud.tnt4j.core;
 
 /**
- * <p>A simple event listener interface for tracking activity timing events.
- * This interface can be implemented by classes which need to be notified when
- * activities are started and stopped.</p>
+ * <p>
+ * A simple event listener interface for tracking activity timing events. This interface can be implemented by classes
+ * which need to be notified when activities are started and stopped.
+ * </p>
  *
  * @see Activity
  *
@@ -29,15 +30,17 @@ public interface ActivityListener {
 	/**
 	 * Notifies this listener when activity is started.
 	 * 
-	 * @param activity activity which is just started
+	 * @param activity
+	 *            activity which is just started
 	 * 
 	 */
 	void started(Activity activity);
-	
+
 	/**
 	 * Notifies this listener when activity is stopped.
 	 * 
-	 * @param activity activity which is just stopped
+	 * @param activity
+	 *            activity which is just stopped
 	 * 
 	 */
 	void stopped(Activity activity);

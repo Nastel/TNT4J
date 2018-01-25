@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,13 @@
  */
 package com.jkoolcloud.tnt4j.tracker;
 
-import com.jkoolcloud.tnt4j.core.ActivityStatus;
-import com.jkoolcloud.tnt4j.core.OpCompCode;
-import com.jkoolcloud.tnt4j.core.OpType;
-import com.jkoolcloud.tnt4j.core.Snapshot;
-import com.jkoolcloud.tnt4j.core.OpLevel;
-import com.jkoolcloud.tnt4j.core.Operation;
-import com.jkoolcloud.tnt4j.core.Trackable;
+import com.jkoolcloud.tnt4j.core.*;
 
 /**
- * This class represents an empty Null/NOOP activity returned by tracker
- * when <code>TrackingFilter.isTrackingEnabled()</code> returns false.
- * This is done to stub out  activity timing and reduce tracking overhead
- * when tracking is disabled. NOOP activities are never logged by a tracker.
+ * This class represents an empty Null/NOOP activity returned by tracker when
+ * {@link TrackingFilter#isTrackingEnabled(Tracker, com.jkoolcloud.tnt4j.core.OpLevel, Object...)} returns
+ * {@code false}. This is done to stub out activity timing and reduce tracking overhead when tracking is disabled. NOOP
+ * activities are never logged by a tracker.
  *
  * @see NullEvent
  * @see ActivityStatus
@@ -40,7 +34,7 @@ public class NullActivity extends TrackingActivity {
 		super(OpLevel.NONE, Operation.NOOP);
 		super.setType(OpType.NOOP);
 	}
-	
+
 	@Override
 	public void setType(OpType type) {
 		super.setType(OpType.NOOP);
@@ -93,19 +87,21 @@ public class NullActivity extends TrackingActivity {
 	@Override
 	public void tnt(TrackingEvent event) {
 	}
-	
+
 	@Override
 	public void tnt(Snapshot event) {
 	}
-	
+
 	@Override
-	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, byte[] msg, Object...args) {
+	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, byte[] msg,
+			Object... args) {
 	}
-	
+
 	@Override
-	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, String msg, Object...args) {
+	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, String msg,
+			Object... args) {
 	}
-	
+
 	@Override
 	public void add(Trackable item) {
 	}

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,7 +35,7 @@ public class ThreadDeadlockDumpProvider extends ThreadDumpProvider {
 	/**
 	 * Create a new dump provider with a given name to dump out deadlocked threads if any found.
 	 * 
-	 *@param name
+	 * @param name
 	 *            provider name
 	 */
 	public ThreadDeadlockDumpProvider(String name) {

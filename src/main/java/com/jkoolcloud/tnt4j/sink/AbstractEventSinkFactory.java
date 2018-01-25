@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,25 +19,25 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
-import com.jkoolcloud.tnt4j.core.TTL;
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
+import com.jkoolcloud.tnt4j.core.TTL;
 import com.jkoolcloud.tnt4j.limiter.DefaultLimiterFactory;
 import com.jkoolcloud.tnt4j.limiter.Limiter;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
- * <p>Abstract event sink factory class that all sink factories should subclass from.
- * Derived classes should call {@code configure()} before returning {@link EventSink}
- * instances back using {@code getEventSink()} method calls. See example below:
+ * <p>
+ * Abstract event sink factory class that all sink factories should subclass from. Derived classes should call
+ * {@code configure()} before returning {@link EventSink} instances back using {@code getEventSink()} method calls. See
+ * example below:
  * </p>
- *<pre>
- *<code>
- *	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
- *		return configureSink(new MyEventSinkImpl(name, props, frmt));
- *	}
- *</code>
- *</pre>
+ * 
+ * <pre>
+ * public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
+ * 	return configureSink(new MyEventSinkImpl(name, props, frmt));
+ * }
+ * </pre>
  *
  * @see TTL
  * @see EventSink
@@ -96,7 +96,8 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	/**
 	 * Configure a given event sink based on default settings
 	 *
-	 * @param sink event sink
+	 * @param sink
+	 *            event sink
 	 * @return configured event sink
 	 */
 	protected EventSink configureSink(EventSink sink) {
@@ -110,10 +111,10 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 			sink.addSinkLogEventListener(eventListener);
 		}
 		if (defBundle != null) {
-			sink.setResourceBundle(defBundle);	
+			sink.setResourceBundle(defBundle);
 		}
 		if (limiter != null) {
-			sink.setLimiter(limiter);			
+			sink.setLimiter(limiter);
 		}
 		sink.setTTL(ttl);
 		return sink;
@@ -130,34 +131,36 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 		if (enabled) {
 			limiter = newEventLimiterImpl(maxmps, maxbps, enabled, timeout);
 		}
-		
+
 		String bundleName = Utils.getString("ResourceBundle", props, null);
 		if (bundleName != null) {
 			defBundle = ResourceBundle.getBundle(bundleName);
 		}
-		
+
 		eventFilter = (SinkEventFilter) Utils.createConfigurableObject("Filter", "Filter.", config);
 		errorListener = (SinkErrorListener) Utils.createConfigurableObject("ErrorListener", "ErrorListener.", config);
-		eventListener = (SinkLogEventListener) Utils.createConfigurableObject("EventListener", "EventListener.", config);
+		eventListener = (SinkLogEventListener) Utils.createConfigurableObject("EventListener", "EventListener.",
+				config);
 	}
 
 	@Override
 	public long getTTL() {
 		return ttl;
 	}
-	
+
 	@Override
 	public void setTTL(long ttl) {
 		this.ttl = ttl;
 	}
-	
+
 	@Override
 	public Map<String, Object> getConfiguration() {
 		return config;
 	}
-	
+
 	protected EventLimiter newEventLimiterImpl(double maxmps, double maxbps, boolean enabled, long timeout) {
-		EventLimiter eLimit = new EventLimiter(DefaultLimiterFactory.getInstance().newLimiter(maxmps, maxbps, enabled), timeout, TimeUnit.MILLISECONDS);
+		EventLimiter eLimit = new EventLimiter(DefaultLimiterFactory.getInstance().newLimiter(maxmps, maxbps, enabled),
+				timeout, TimeUnit.MILLISECONDS);
 		return eLimit;
 	}
 }

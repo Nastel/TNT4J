@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import java.util.Map.Entry;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.exception.ExceptionUtils;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
@@ -925,6 +926,23 @@ public class Utils {
 		}
 
 		return result;
+	}
+
+	/**
+	 * Generates a string representing exception and exception root cause messages.
+	 *
+	 * @param ex
+	 *            exception to process
+	 * @return exception messages string
+	 */
+	public static String getExceptionMessages(Throwable ex) {
+		Throwable root = ExceptionUtils.getRootCause(ex);
+		String msgsStr = ExceptionUtils.getMessage(ex);
+		if (root != null) {
+			msgsStr += ", root cause: " + ExceptionUtils.getMessage(root);
+		}
+
+		return msgsStr;
 	}
 
 	/**

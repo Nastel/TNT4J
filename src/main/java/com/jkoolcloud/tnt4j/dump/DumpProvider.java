@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,16 +15,13 @@
  */
 package com.jkoolcloud.tnt4j.dump;
 
-
 /**
  * <p>
- * This interface defines a provider interface for generating dump collections.
- * Each application should creates implementations of this interface to generate
- * application specific dumps. 
- * Providers instances are registered with <code>TrackingLogger</code> class and 
- * triggered on <code>TrackingLogger.dump()</code> method call. 
- * <code>DumpProvider.getDump()</code> is called when application specific dump 
- * need to be obtained by the underlying framework.
+ * This interface defines a provider interface for generating dump collections. Each application should creates
+ * implementations of this interface to generate application specific dumps. Providers instances are registered with
+ * {@link com.jkoolcloud.tnt4j.TrackingLogger} class and triggered on {@code TrackingLogger.dump()} method call.
+ * {@link com.jkoolcloud.tnt4j.dump.DumpProvider#getDump()} is called when application specific dump need to be obtained
+ * by the underlying framework.
  * </p>
  *
  * @see DumpCollection
@@ -35,22 +32,22 @@ package com.jkoolcloud.tnt4j.dump;
 
 public interface DumpProvider {
 	/**
-	 * DUMP_BEFORE generated before dump is written to one or more destination(s) 
+	 * DUMP_BEFORE generated before dump is written to one or more destination(s)
 	 */
 	int DUMP_BEFORE = 0;
-	
+
 	/**
-	 * DUMP_AFTER generated after dump is written to one or more destination(s) 
+	 * DUMP_AFTER generated after dump is written to one or more destination(s)
 	 */
 	int DUMP_AFTER = 1;
 
 	/**
-	 * DUMP_COMPLETE generated after all dumps are written to one or more destination(s) 
+	 * DUMP_COMPLETE generated after all dumps are written to one or more destination(s)
 	 */
 	int DUMP_COMPLETE = 2;
-	
+
 	/**
-	 * DUMP_ERROR generated when and error is encountered during dump generation 
+	 * DUMP_ERROR generated when and error is encountered during dump generation
 	 */
 	int DUMP_ERROR = 3;
 

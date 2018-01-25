@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,9 +23,11 @@ import com.jkoolcloud.tnt4j.sink.AbstractEventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.EventSink;
 
 /**
- * <p>Concrete implementation of <code>EventSinkFactory</code> interface over SLF4J, which
- * creates instances of <code>EventSink</code>. This factory uses <code>SLF4JEventSink</code>
- * as the underlying logger provider.</p>
+ * <p>
+ * Concrete implementation of {@link com.jkoolcloud.tnt4j.sink.EventSinkFactory} interface over SLF4J, which creates
+ * instances of {@link com.jkoolcloud.tnt4j.sink.EventSink}. This factory uses
+ * {@link com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSink} as the underlying logger provider.
+ * </p>
  *
  *
  * @see EventSink
@@ -47,14 +49,15 @@ public class SLF4JEventSinkFactory extends AbstractEventSinkFactory {
 	}
 
 	@Override
-    public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
+	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
 		return configureSink(new SLF4JEventSink(name, props, frmt));
-   }
+	}
 
 	/**
 	 * Static method to obtain default event sink
 	 *
-	 * @param name name of the application/event sink to get
+	 * @param name
+	 *            name of the application/event sink to get
 	 * @return event sink
 	 */
 	public static EventSink defaultEventSink(String name) {
@@ -64,10 +67,11 @@ public class SLF4JEventSinkFactory extends AbstractEventSinkFactory {
 	/**
 	 * Static method to obtain default event sink
 	 *
-	 * @param clazz class for which to get the event sink
+	 * @param clazz
+	 *            class for which to get the event sink
 	 * @return event sink
 	 */
 	public static EventSink defaultEventSink(Class<?> clazz) {
-	    return defaultEventSink(clazz.getName());
-    }
+		return defaultEventSink(clazz.getName());
+	}
 }

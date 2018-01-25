@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,9 @@ import com.jkoolcloud.tnt4j.sink.AbstractEventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.EventSink;
 
 /**
- * <p>Concrete implementation of <code>EventSinkFactory</code> interface, which
- * creates instances of <code>EventSink</code>. This factory uses <code>NullEventSink</code>.
+ * <p>
+ * Concrete implementation of {@link com.jkoolcloud.tnt4j.sink.EventSinkFactory} interface, which creates instances of
+ * {@link com.jkoolcloud.tnt4j.sink.EventSink}. This factory uses {@link com.jkoolcloud.tnt4j.sink.impl.NullEventSink}.
  * </p>
  *
  *
@@ -36,17 +37,17 @@ import com.jkoolcloud.tnt4j.sink.EventSink;
 public class NullEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
-    public EventSink getEventSink(String name) {
-	    return configureSink(new NullEventSink(name));
-    }
+	public EventSink getEventSink(String name) {
+		return configureSink(new NullEventSink(name));
+	}
 
 	@Override
-    public EventSink getEventSink(String name, Properties props) {
-	    return configureSink(new NullEventSink(name));
-    }
+	public EventSink getEventSink(String name, Properties props) {
+		return configureSink(new NullEventSink(name));
+	}
 
 	@Override
-    public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-	    return configureSink(new NullEventSink(name, frmt));
-    }
+	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
+		return configureSink(new NullEventSink(name, frmt));
+	}
 }

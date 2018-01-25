@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,15 +22,19 @@ import java.util.Set;
 import com.jkoolcloud.tnt4j.source.Source;
 
 /**
- * <p>Implements a collection of related event and sub-activities.</p>
- *
- * <p>Represents a collection of trackable items {@link Trackable}
- * that should be considered to be a single related unit. These are generally
- * delimited by BEGIN/END (or BEGIN/EXCEPTION)calls.
+ * <p>
+ * Implements a collection of related event and sub-activities.
  * </p>
  *
- * <p>A {@link Activity} is required to have its start time set,
- * and to have it's end time set if its status is not <code>ActivityStatus.BEGIN</code>.</p>
+ * <p>
+ * Represents a collection of trackable items {@link Trackable} that should be considered to be a single related unit.
+ * These are generally delimited by BEGIN/END (or BEGIN/EXCEPTION)calls.
+ * </p>
+ *
+ * <p>
+ * A {@link Activity} is required to have its start time set, and to have it's end time set if its status is not
+ * {@link ActivityStatus#BEGIN}.
+ * </p>
  *
  * @see ActivityStatus
  * @see ActivityListener
@@ -54,9 +58,12 @@ public class Activity extends Operation implements Trackable {
 	/**
 	 * Creates a Activity object with the specified tracking id.
 	 *
-	 * @param id Activity tracking id
-	 * @throws NullPointerException if the tracking id is <code>null</code>
-	 * @throws IllegalArgumentException if the tracking id is empty or is too long
+	 * @param id
+	 *            Activity tracking id
+	 * @throws NullPointerException
+	 *             if the tracking id is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if the tracking id is empty or is too long
 	 * @see #setTrackingId(String)
 	 */
 	public Activity(String id) {
@@ -68,10 +75,14 @@ public class Activity extends Operation implements Trackable {
 	/**
 	 * Creates a Activity object with the specified tracking id and name.
 	 *
-	 * @param id Activity tracking id
-	 * @param name activity name
-	 * @throws NullPointerException if the tracking id is <code>null</code>
-	 * @throws IllegalArgumentException if the tracking id is empty or is too long
+	 * @param id
+	 *            Activity tracking id
+	 * @param name
+	 *            activity name
+	 * @throws NullPointerException
+	 *             if the tracking id is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if the tracking id is empty or is too long
 	 * @see #setTrackingId(String)
 	 */
 	public Activity(String id, String name) {
@@ -83,10 +94,14 @@ public class Activity extends Operation implements Trackable {
 	/**
 	 * Creates a Activity object with the specified tracking id.
 	 *
-	 * @param appl application handle associated with this activity
-	 * @param id Activity tracking id
-	 * @throws NullPointerException if the tracking id is <code>null</code>
-	 * @throws IllegalArgumentException if the tracking id is empty or is too long
+	 * @param appl
+	 *            application handle associated with this activity
+	 * @param id
+	 *            Activity tracking id
+	 * @throws NullPointerException
+	 *             if the tracking id is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if the tracking id is empty or is too long
 	 * @see #setTrackingId(String)
 	 * @see #setSource(Source)
 	 */
@@ -100,11 +115,16 @@ public class Activity extends Operation implements Trackable {
 	/**
 	 * Creates a Activity object with the specified tracking id.
 	 *
-	 * @param id Activity tracking id
-	 * @param name assign activity name
-	 * @param appl application handle associated with this activity
-	 * @throws NullPointerException if the tracking id is <code>null</code>
-	 * @throws IllegalArgumentException if the tracking id is empty or is too long
+	 * @param id
+	 *            Activity tracking id
+	 * @param name
+	 *            assign activity name
+	 * @param appl
+	 *            application handle associated with this activity
+	 * @throws NullPointerException
+	 *             if the tracking id is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if the tracking id is empty or is too long
 	 * @see #setTrackingId(String)
 	 * @see #setSource(Source)
 	 */
@@ -116,10 +136,10 @@ public class Activity extends Operation implements Trackable {
 	}
 
 	/**
-	 * Register an activity listener for notifications when activity timing
-	 * events occur.
+	 * Register an activity listener for notifications when activity timing events occur.
 	 *
-	 * @param listener activity listener to register
+	 * @param listener
+	 *            activity listener to register
 	 * @see ActivityListener
 	 */
 	public void addActivityListener(ActivityListener listener) {
@@ -130,10 +150,10 @@ public class Activity extends Operation implements Trackable {
 	}
 
 	/**
-	 * Remove an activity listener for notifications when activity timing
-	 * events occur.
+	 * Remove an activity listener for notifications when activity timing events occur.
 	 *
-	 * @param listener activity listener to remove
+	 * @param listener
+	 *            activity listener to remove
 	 * @see ActivityListener
 	 */
 	public void removeActivityListener(ActivityListener listener) {
@@ -148,8 +168,10 @@ public class Activity extends Operation implements Trackable {
 	 * @see ActivityListener
 	 */
 	protected void notifyStarted() {
-		if (activityListeners == null) return;
-		for (ActivityListener listener: activityListeners) {
+		if (activityListeners == null) {
+			return;
+		}
+		for (ActivityListener listener : activityListeners) {
 			listener.started(this);
 		}
 	}
@@ -160,8 +182,10 @@ public class Activity extends Operation implements Trackable {
 	 * @see ActivityListener
 	 */
 	protected void notifyStopped() {
-		if (activityListeners == null) return;
-		for (ActivityListener listener: activityListeners) {
+		if (activityListeners == null) {
+			return;
+		}
+		for (ActivityListener listener : activityListeners) {
 			listener.stopped(this);
 		}
 	}
@@ -199,16 +223,16 @@ public class Activity extends Operation implements Trackable {
 	}
 
 	/**
-	 * Sets the Activity tracking id, which is the unique identifier for the Activity.
-	 * Could be any string that will uniquely identify this Activity.
+	 * Sets the Activity tracking id, which is the unique identifier for the Activity. Could be any string that will
+	 * uniquely identify this Activity.
 	 *
-	 * @param id Activity tracking id
+	 * @param id
+	 *            Activity tracking id
 	 */
 	@Override
 	public void setTrackingId(String id) {
 		this.tracking_id = id;
 	}
-
 
 	/**
 	 * Gets the Activity status.
@@ -222,12 +246,15 @@ public class Activity extends Operation implements Trackable {
 	/**
 	 * Sets the Activity status.
 	 *
-	 * @param status Activity status
-	 * @throws NullPointerException if status is <code>null</code>y
+	 * @param status
+	 *            Activity status
+	 * @throws NullPointerException
+	 *             if status is {@code null}y
 	 */
 	public void setStatus(ActivityStatus status) {
-		if (status == null)
+		if (status == null) {
 			throw new NullPointerException("status must be a non-null");
+		}
 		this.status = status;
 	}
 
@@ -236,7 +263,7 @@ public class Activity extends Operation implements Trackable {
 	 */
 	@Override
 	public void setParentId(Trackable parentObject) {
-		this.parentId = parentObject != null? parentObject.getTrackingId(): parentId;
+		this.parentId = parentObject != null ? parentObject.getTrackingId() : parentId;
 	}
 
 	/**
@@ -256,16 +283,19 @@ public class Activity extends Operation implements Trackable {
 	}
 
 	/**
-	 * Adds the specified linked item to the list of items referenced in this Activity.
-	 * This method does NOT check for duplicates.
+	 * Adds the specified linked item to the list of items referenced in this Activity. This method does NOT check for
+	 * duplicates.
 	 *
-	 * @param item linked item referenced in Activity
-	 * @throws NullPointerException if item is <code>null</code>
+	 * @param item
+	 *            linked item referenced in Activity
+	 * @throws NullPointerException
+	 *             if item is {@code null}
 	 * @see #containsId(String)
 	 */
 	public void add(Trackable item) {
-		if (item == null)
+		if (item == null) {
 			throw new NullPointerException("trackable item must be non-null");
+		}
 
 		String tid = item.getTrackingId();
 		if (tid != null) {
@@ -276,25 +306,25 @@ public class Activity extends Operation implements Trackable {
 			idset.addAll(cid);
 		}
 		if (item instanceof Snapshot) {
-			addSnapshot((Snapshot)item);
+			addSnapshot((Snapshot) item);
 		}
 		item.setTTL(getTTL());
 		item.setParentId(this);
 	}
 
 	/**
-	 * Checks whether the specified tracking id has been added to the list of
-	 * items referenced in this Activity.
+	 * Checks whether the specified tracking id has been added to the list of items referenced in this Activity.
 	 *
-	 * @param id linked item to test for
-	 * @return <code>true</code> if the Activity contains specified item,
-	 *         <code>false</code> otherwise
+	 * @param id
+	 *            linked item to test for
+	 * @return {@code true} if the Activity contains specified item, {@code false} otherwise
 	 */
 	public boolean containsId(String id) {
-		if (id == null) return false;
+		if (id == null) {
+			return false;
+		}
 		return idset.contains(id);
 	}
-
 
 	/**
 	 * Gets the list of tracking ids referenced in this Activity.
@@ -327,18 +357,22 @@ public class Activity extends Operation implements Trackable {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (!(obj instanceof Activity))
+		}
+		if (!(obj instanceof Activity)) {
 			return false;
+		}
 
-		final Activity other = (Activity) obj;
+		Activity other = (Activity) obj;
 
 		if (tracking_id == null) {
-			if (other.tracking_id != null)
+			if (other.tracking_id != null) {
 				return false;
+			}
 		} else if (!tracking_id.equals(other.tracking_id)) {
 			return false;
 		}
@@ -350,10 +384,10 @@ public class Activity extends Operation implements Trackable {
 	 */
 	@Override
 	public String toString() {
-		final OpType sType = getType();
-		final ActivityStatus Status = getStatus();
-		final UsecTimestamp sTime = getStartTime();
-		final UsecTimestamp eTime = getEndTime();
+		OpType sType = getType();
+		ActivityStatus Status = getStatus();
+		UsecTimestamp sTime = getStartTime();
+		UsecTimestamp eTime = getEndTime();
 		StringBuilder str = new StringBuilder();
 
 		str.append(getClass().getSimpleName()).append("{")
@@ -364,9 +398,9 @@ public class Activity extends Operation implements Trackable {
 			.append("Type:").append(sType == null ? "null" : sType.toString()).append(",")
 			.append("PID:").append(getPID()).append(",")
 			.append("TID:").append(getTID()).append(",")
-		    .append("ElapsedUsec:").append(getElapsedTimeUsec()).append(",")
-		    .append("WallUsec:").append(getWallTimeUsec()).append(",")
-		    .append("FQName:").append(getSource().getFQName()).append(",")
+			.append("ElapsedUsec:").append(getElapsedTimeUsec()).append(",")
+			.append("WallUsec:").append(getWallTimeUsec()).append(",")
+			.append("FQName:").append(getSource().getFQName()).append(",")
 			.append("IdCount=").append(getIdCount()).append(",")
 			.append("SnapCount=").append(getSnapshotCount()).append(",")
 			.append("StartTime:[").append(sTime.toString()).append("],")
@@ -376,12 +410,12 @@ public class Activity extends Operation implements Trackable {
 	}
 
 	@Override
-    public String getSignature() {
-	    return sign;
-    }
+	public String getSignature() {
+		return sign;
+	}
 
 	@Override
-    public void setSignature(String sign) {
+	public void setSignature(String sign) {
 		this.sign = sign;
 	}
 }

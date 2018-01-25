@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,7 +58,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	private String name;
 	private Source source;
 	private ResourceBundle resBundle;
-	
+
 	private boolean filterCheck = true;
 	private long ttl = TTL.TTL_CONTEXT;
 	private EventLimiter limiter;
@@ -80,7 +80,8 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Create an event sink with a given name
 	 * 
-	 * @param nm event sink name
+	 * @param nm
+	 *            event sink name
 	 */
 	public AbstractEventSink(String nm) {
 		this.name = nm;
@@ -89,8 +90,10 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Create an event sink with a given name and event formatter and default {@link TTL}
 	 * 
-	 * @param nm event sink name
-	 * @param fmt event formatter instance
+	 * @param nm
+	 *            event sink name
+	 * @param fmt
+	 *            event formatter instance
 	 */
 	public AbstractEventSink(String nm, EventFormatter fmt) {
 		this.name = nm;
@@ -100,9 +103,12 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Create an event sink with a given name and event formatter
 	 * 
-	 * @param nm event sink name
-	 * @param ttl time to live for events written to this sink
-	 * @param fmt event formatter instance
+	 * @param nm
+	 *            event sink name
+	 * @param ttl
+	 *            time to live for events written to this sink
+	 * @param fmt
+	 *            event formatter instance
 	 * 
 	 * @see TTL
 	 */
@@ -113,12 +119,12 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	}
 
 	@Override
-    public	void setResourceBundle(ResourceBundle bundle) {
+	public void setResourceBundle(ResourceBundle bundle) {
 		resBundle = bundle;
 	}
 
 	@Override
-    public	ResourceBundle getResourceBundle() {
+	public ResourceBundle getResourceBundle() {
 		return resBundle;
 	}
 
@@ -126,7 +132,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	public String getString(Object key) {
 		return Utils.getString(resBundle, key);
 	}
-		
+
 	@Override
 	public Throwable setErrorState(Throwable ex) {
 		Throwable prevError = lastError;
@@ -267,7 +273,8 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Subclasses should use this helper class to trigger log event notifications during logging process.
 	 *
-	 * @param event sink logging event to be sent to all listeners
+	 * @param event
+	 *            sink logging event to be sent to all listeners
 	 * @see SinkLogEvent
 	 */
 	protected void notifyListeners(SinkLogEvent event) {
@@ -281,7 +288,8 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Subclasses should use this helper class to trigger error notifications during logging process.
 	 *
-	 * @param event sink error event to be sent to all listeners
+	 * @param event
+	 *            sink error event to be sent to all listeners
 	 * @see SinkError
 	 */
 	protected void notifyListeners(SinkError event) {
@@ -295,8 +303,10 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Subclasses should use this helper class to trigger error notifications during logging process.
 	 *
-	 * @param msg sink message associated with the sink operation
-	 * @param ex exception to be reported to all registered event listeners
+	 * @param msg
+	 *            sink message associated with the sink operation
+	 * @param ex
+	 *            exception to be reported to all registered event listeners
 	 */
 	protected void notifyListeners(SinkLogEvent msg, Throwable ex) {
 		setErrorState(ex);
@@ -327,7 +337,8 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public boolean isLoggable(long ttl, Source source, OpLevel level, String msg, Object... args) {
 		boolean pass = isSet(level);
-		if (filters.isEmpty()) return pass;
+		if (filters.isEmpty())
+			return pass;
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, ttl, source, level, msg, args));
 			if (!pass) {
@@ -341,7 +352,8 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public boolean isLoggable(Snapshot snapshot) {
 		boolean pass = isSet(snapshot.getSeverity());
-		if (filters.isEmpty()) return pass;
+		if (filters.isEmpty())
+			return pass;
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, snapshot));
 			if (!pass) {
@@ -355,7 +367,8 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public boolean isLoggable(TrackingActivity activity) {
 		boolean pass = isSet(activity.getSeverity());
-		if (filters.isEmpty()) return pass;
+		if (filters.isEmpty())
+			return pass;
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, activity));
 			if (!pass) {
@@ -369,7 +382,8 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public boolean isLoggable(TrackingEvent event) {
 		boolean pass = isSet(event.getSeverity());
-		if (filters.isEmpty()) return pass;
+		if (filters.isEmpty())
+			return pass;
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, event));
 			if (!pass) {
@@ -493,7 +507,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 
 	@Override
 	public void log(long ttl_sec, Source src, OpLevel sev, String msg, Object... args) {
-		log(ttl, src, sev, resBundle, msg, args);		
+		log(ttl, src, sev, resBundle, msg, args);
 	}
 
 	@Override
@@ -568,18 +582,20 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	}
 
 	public long defaultTTL() {
-		return (ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT;		
+		return (ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT;
 	}
 
 	public static long defaultTTL(long ttl) {
-		return (ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT;		
+		return (ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT;
 	}
 
 	/**
 	 * Check state of the sink before logging occurs.
 	 *
-	 * @param sink event sink
-	 * @throws IllegalStateException if sink is in wrong state
+	 * @param sink
+	 *            event sink
+	 * @throws IllegalStateException
+	 *             if sink is in wrong state
 	 */
 	public static void checkState(EventSink sink) throws IllegalStateException {
 		if (sink == null || !sink.isOpen())
@@ -589,7 +605,8 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Override this method to check state of the sink before logging occurs.
 	 *
-	 * @throws IllegalStateException if sink is in wrong state
+	 * @throws IllegalStateException
+	 *             if sink is in wrong state
 	 */
 	protected void _checkState() throws IllegalStateException {
 		checkState(this);
@@ -598,8 +615,10 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Applies rate limiting on mps/bps
 	 * 
-	 * @param msgCount messages sent
-	 * @param byteCount bytes sent
+	 * @param msgCount
+	 *            messages sent
+	 * @param byteCount
+	 *            bytes sent
 	 * @return true if permit obtained, false otherwise
 	 */
 	protected boolean _limiter(int msgCount, int byteCount) {
@@ -612,7 +631,8 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Applies rate limiting on mps/bps
 	 * 
-	 * @param obj object to be sent
+	 * @param obj
+	 *            object to be sent
 	 * @return true if permit obtained, false otherwise
 	 */
 	protected boolean _limiter(Object obj) {
@@ -625,8 +645,10 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 *
-	 * @param event to be sent to the sink
-	 * @throws Exception if error logging tracking event
+	 * @param event
+	 *            to be sent to the sink
+	 * @throws Exception
+	 *             if error logging tracking event
 	 * @see TrackingEvent
 	 */
 	protected abstract void _log(TrackingEvent event) throws Exception;
@@ -634,8 +656,10 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 *
-	 * @param activity to be sent to the sink
-	 * @throws Exception if error logging tracking activity
+	 * @param activity
+	 *            to be sent to the sink
+	 * @throws Exception
+	 *             if error logging tracking activity
 	 * @see TrackingActivity
 	 */
 	protected abstract void _log(TrackingActivity activity) throws Exception;
@@ -643,8 +667,10 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 *
-	 * @param snapshot string message to be logged
-	 * @throws Exception if error logging snapshot
+	 * @param snapshot
+	 *            string message to be logged
+	 * @throws Exception
+	 *             if error logging snapshot
 	 * @see OpLevel
 	 */
 	protected abstract void _log(Snapshot snapshot) throws Exception;
@@ -652,12 +678,18 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 *
-	 * @param ttl time to live in seconds {@link TTL}
-	 * @param src event source handle
-	 * @param sev message severity to log
-	 * @param msg string message to be logged
-	 * @param args arguments passed along the message
-	 * @throws Exception if logging message
+	 * @param ttl
+	 *            time to live in seconds {@link TTL}
+	 * @param src
+	 *            event source handle
+	 * @param sev
+	 *            message severity to log
+	 * @param msg
+	 *            string message to be logged
+	 * @param args
+	 *            arguments passed along the message
+	 * @throws Exception
+	 *             if logging message
 	 * @see OpLevel
 	 */
 	protected abstract void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception;
@@ -665,10 +697,14 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 *
-	 * @param msg string message to be logged
-	 * @param args arguments passed along the message
-	 * @throws IOException if error writing to sink
-	 * @throws InterruptedException if interrupted during write operation
+	 * @param msg
+	 *            string message to be logged
+	 * @param args
+	 *            arguments passed along the message
+	 * @throws IOException
+	 *             if error writing to sink
+	 * @throws InterruptedException
+	 *             if interrupted during write operation
 	 */
 	protected abstract void _write(Object msg, Object... args) throws IOException, InterruptedException;
 }

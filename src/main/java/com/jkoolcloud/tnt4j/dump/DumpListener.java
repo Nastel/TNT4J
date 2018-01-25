@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,11 @@
  */
 package com.jkoolcloud.tnt4j.dump;
 
-
 /**
  * <p>
- * A simple event listener interface for observers of dump generation.
- * This interface can be implemented by classes that are interested in "raw" events caused by <code>TrackerLogger.dump()</code> method. 
- * Each dump generation will generate such an event before, after, complete and error invocations into the listener instance.
+ * A simple event listener interface for observers of dump generation. This interface can be implemented by classes that
+ * are interested in "raw" events caused by {@code TrackerLogger.dump()} method. Each dump generation will generate such
+ * an event before, after, complete and error invocations into the listener instance.
  * </p>
  *
  * @see DumpEvent
@@ -32,10 +31,11 @@ package com.jkoolcloud.tnt4j.dump;
 
 public interface DumpListener {
 	/**
-	 * Notifies when a dump event is generated. Dump events are generated
-	 * on before, after, complete and error defined in <code>DumpProvider</code>
+	 * Notifies when a dump event is generated. Dump events are generated on before, after, complete and error defined
+	 * in {@link com.jkoolcloud.tnt4j.dump.DumpProvider}
 	 * 
-	 * @param event dump event instance
+	 * @param event
+	 *            dump event instance
 	 * 
 	 * @see DumpEvent
 	 * @see DumpProvider

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,13 +23,13 @@ import java.util.regex.Pattern;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.jkoolcloud.tnt4j.core.Snapshot;
-import com.jkoolcloud.tnt4j.core.TTL;
-import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.config.Configurable;
 import com.jkoolcloud.tnt4j.core.OpLevel;
+import com.jkoolcloud.tnt4j.core.Snapshot;
+import com.jkoolcloud.tnt4j.core.TTL;
 import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.sink.SinkEventFilter;
+import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 import com.jkoolcloud.tnt4j.utils.Utils;
@@ -37,10 +37,10 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 /**
  * <p>
  * This class implements a simple event filter based on severity level threshold & time performance such as elapsed,
- * wait/wall times and message pattern (regex). Use this class to filter out events/messages based time/level combination.
- * A given severity must be greater than or equal to the given level threshold to pass this filter. 
- * A given activity must be greater or equal to the given elapsed/wait/wall time. 
- * Set time objectives to -1 to disable time based filtering.
+ * wait/wall times and message pattern (regex). Use this class to filter out events/messages based time/level
+ * combination. A given severity must be greater than or equal to the given level threshold to pass this filter. A given
+ * activity must be greater or equal to the given elapsed/wait/wall time. Set time objectives to -1 to disable time
+ * based filtering.
  * </p>
  * 
  * @see OpLevel
@@ -63,7 +63,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	public static final String MSG_PATTERN = "MsgRegex";
 	public static final String OFF_LEVEL_LABEL = "OFF";
 	public static final int OFF_LEVEL_INT = 100;
-	
+
 	long elapsedUsec = -1;
 	long waitUsec = -1;
 	long wallUsec = -1;
@@ -75,12 +75,12 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	String msgRegx = null;
 	long ttl = TTL.TTL_CONTEXT;
 	int minLevel = OpLevel.INFO.ordinal();
-	
-	ConcurrentMap <String, AtomicLong> pastMsgs;
+
+	ConcurrentMap<String, AtomicLong> pastMsgs;
 	Map<String, Object> config;
 
 	/**
-	 * Create a default filter with <code>OpLevel.INFO</code> as default threshold.
+	 * Create a default filter with {@link OpLevel#INFO} as default threshold.
 	 * 
 	 */
 	public EventLevelTimeFilter() {
@@ -141,8 +141,10 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 		}
 		if (checkForDups(event.getMessagePattern()) > 1) {
 			return false;
-		} 		
-		if (ttl != TTL.TTL_CONTEXT) event.setTTL(ttl);
+		}
+		if (ttl != TTL.TTL_CONTEXT) {
+			event.setTTL(ttl);
+		}
 		return passLevel(event.getSeverity(), sink);
 	}
 
@@ -156,14 +158,18 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 		}
 		if (wallUsec >= 0 && activity.getWallTimeUsec() < wallUsec) {
 			return false;
-		} 
-		if (ttl != TTL.TTL_CONTEXT) activity.setTTL(ttl);
+		}
+		if (ttl != TTL.TTL_CONTEXT) {
+			activity.setTTL(ttl);
+		}
 		return passLevel(activity.getSeverity(), sink);
 	}
 
 	@Override
 	public boolean filter(EventSink sink, Snapshot snapshot) {
-		if (ttl != TTL.TTL_CONTEXT) snapshot.setTTL(ttl);
+		if (ttl != TTL.TTL_CONTEXT) {
+			snapshot.setTTL(ttl);
+		}
 		return passLevel(snapshot.getSeverity(), sink);
 	}
 
@@ -185,25 +191,23 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	@Override
 	public void setConfiguration(Map<String, Object> settings) {
 		config = settings;
-		
+
 		String levelStr = Utils.getString(LEVEL, settings, OpLevel.INFO.toString());
-		minLevel = levelStr.equalsIgnoreCase(OFF_LEVEL_LABEL)? OFF_LEVEL_INT: OpLevel.valueOf(levelStr).ordinal();	
-		
+		minLevel = levelStr.equalsIgnoreCase(OFF_LEVEL_LABEL) ? OFF_LEVEL_INT : OpLevel.valueOf(levelStr).ordinal();
+
 		elapsedUsec = Utils.getLong(ELAPSED_USEC, settings, elapsedUsec);
 		waitUsec = Utils.getLong(WAIT_USEC, settings, waitUsec);
 		wallUsec = Utils.getLong(WALL_USEC, settings, wallUsec);
 		ttl = Utils.getLong(TTL_SEC, settings, ttl);
-		
+
 		// configure duplicate detection
 		dupTimeoutSec = Utils.getLong(DUPS_TIMEOUT, settings, dupTimeoutSec);
 		dupCacheSize = Utils.getLong(DUPS_CACHE_SIZE, settings, dupCacheSize);
 		suppressDups = Utils.getBoolean(DUPS_SUPPRESS, settings, suppressDups);
 		if (suppressDups) {
-			Cache<String, AtomicLong> cacheImpl = CacheBuilder.newBuilder()
-					.recordStats()
-					.expireAfterWrite(dupTimeoutSec, TimeUnit.SECONDS)
-					.maximumSize(dupCacheSize).build();
-			pastMsgs = cacheImpl.asMap();			
+			Cache<String, AtomicLong> cacheImpl = CacheBuilder.newBuilder().recordStats()
+					.expireAfterWrite(dupTimeoutSec, TimeUnit.SECONDS).maximumSize(dupCacheSize).build();
+			pastMsgs = cacheImpl.asMap();
 		}
 
 		msgRegx = Utils.getString(MSG_PATTERN, settings, null);
@@ -211,7 +215,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 			msgPattern = Pattern.compile(msgRegx);
 		}
 	}
-	
+
 	/**
 	 * Returns true if a given level passes the filter, false otherwise
 	 * 
@@ -224,11 +228,11 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	 * @see EventSink
 	 */
 	private boolean passLevel(OpLevel level, EventSink sink) {
-		return (level.ordinal() >= minLevel) && sink.isSet(level);		
+		return (level.ordinal() >= minLevel) && sink.isSet(level);
 	}
-	
+
 	private long checkForDups(String msg) {
-		if (pastMsgs != null) {			
+		if (pastMsgs != null) {
 			AtomicLong ocCounter = pastMsgs.get(msg);
 			if (ocCounter == null) {
 				AtomicLong newCounter = new AtomicLong(0);

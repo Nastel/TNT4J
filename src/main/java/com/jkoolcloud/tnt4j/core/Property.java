@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,16 +28,18 @@ import java.util.Date;
  * @version $Revision: 7 $
  */
 public class Property {
-	private String	key;
-	private Object	value;
-	private String	valueType = ValueTypes.VALUE_TYPE_NONE;
-	private boolean	transient_;
+	private String key;
+	private Object value;
+	private String valueType = ValueTypes.VALUE_TYPE_NONE;
+	private boolean transient_;
 
 	/**
 	 * Constructs a Property objects with the specified properties.
 	 *
-	 * @param key key of property
-	 * @param value value for property
+	 * @param key
+	 *            key of property
+	 * @param value
+	 *            value for property
 	 */
 	public Property(String key, Object value) {
 		this(key, value, false);
@@ -46,9 +48,12 @@ public class Property {
 	/**
 	 * Constructs a Property objects with the specified properties.
 	 *
-	 * @param key key of property
-	 * @param value value for property
-	 * @param transient_ flag indicating whether property is transient
+	 * @param key
+	 *            key of property
+	 * @param value
+	 *            value for property
+	 * @param transient_
+	 *            flag indicating whether property is transient
 	 */
 	public Property(String key, Object value, boolean transient_) {
 		set(key, value);
@@ -58,9 +63,12 @@ public class Property {
 	/**
 	 * Constructs a Property objects with the specified properties.
 	 *
-	 * @param key key of property
-	 * @param value value for property
-	 * @param valType value type such as (currency, percent)
+	 * @param key
+	 *            key of property
+	 * @param value
+	 *            value for property
+	 * @param valType
+	 *            value type such as (currency, percent)
 	 */
 	public Property(String key, Object value, String valType) {
 		this(key, value, valType, false);
@@ -69,10 +77,14 @@ public class Property {
 	/**
 	 * Constructs a Property objects with the specified properties.
 	 *
-	 * @param key key of property
-	 * @param value value for property
-	 * @param valType value type such as (currency, percent)
-	 * @param transient_ flag indicating whether property is transient
+	 * @param key
+	 *            key of property
+	 * @param value
+	 *            value for property
+	 * @param valType
+	 *            value type such as (currency, percent)
+	 * @param transient_
+	 *            flag indicating whether property is transient
 	 */
 	public Property(String key, Object value, String valType, boolean transient_) {
 		set(key, value, valType);
@@ -82,8 +94,10 @@ public class Property {
 	/**
 	 * Sets the type of property.
 	 *
-	 * @param key of property
-	 * @param val property value
+	 * @param key
+	 *            of property
+	 * @param val
+	 *            property value
 	 */
 	public void set(String key, Object val) {
 		set(key, val, ValueTypes.VALUE_TYPE_NONE);
@@ -92,9 +106,12 @@ public class Property {
 	/**
 	 * Sets the type of property.
 	 *
-	 * @param key of property
-	 * @param val property value
-	 * @param valType value type such as (currency, percent). See {@link ValueTypes}.
+	 * @param key
+	 *            of property
+	 * @param val
+	 *            property value
+	 * @param valType
+	 *            value type such as (currency, percent). See {@link ValueTypes}.
 	 */
 	public void set(String key, Object val, String valType) {
 		this.key = key;
@@ -135,7 +152,8 @@ public class Property {
 	 * Sets flag value of this property indicating if it is transient. Transient properties are not processed by
 	 * {@link com.jkoolcloud.tnt4j.format.Formatter}.
 	 * 
-	 * @param transient_ flag indicating whether property is transient
+	 * @param transient_
+	 *            flag indicating whether property is transient
 	 */
 	public void setTransient(boolean transient_) {
 		this.transient_ = transient_;

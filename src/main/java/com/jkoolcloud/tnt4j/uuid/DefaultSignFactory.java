@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,30 +17,30 @@
 package com.jkoolcloud.tnt4j.uuid;
 
 /**
- * This class allows developer to set and obtain actual {@link SignFactory} implementation
- * instance. Developers may create their own factory implementation
- * and set it globally using {@link #setDefaultSignFactory(SignFactory)}}
+ * This class allows developer to set and obtain actual {@link SignFactory} implementation instance. Developers may
+ * create their own factory implementation and set it globally using {@link #setDefaultSignFactory(SignFactory)}}
  * 
  * @see SignFactory
  * @version $Revision: 1 $
  */
 public class DefaultSignFactory {
 	private static SignFactory factory = new NullSignFactoryImpl();
-	
+
 	private DefaultSignFactory() {
 	}
-	
+
 	/**
 	 * Set a global default signature factory implementation
 	 * 
-	 * @param sf signature factory instance
+	 * @param sf
+	 *            signature factory instance
 	 * @return {@link SignFactory} instance
 	 */
 	public static SignFactory setDefaultSignFactory(SignFactory sf) {
 		factory = sf;
 		return factory;
 	}
-	
+
 	/**
 	 * Obtain a default signature factory
 	 * 
@@ -48,5 +48,5 @@ public class DefaultSignFactory {
 	 */
 	public static SignFactory getInstance() {
 		return factory;
-	}	
+	}
 }

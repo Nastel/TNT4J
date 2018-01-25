@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -54,16 +54,17 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Resolve message key using a resource bundle
 	 *
-	 * @param key key to resolve to message
+	 * @param key
+	 *            key to resolve to message
 	 */
 	String getString(Object key);
 
 	/**
-	 * Set resources bundle for resolving messages (message catalog)
-	 * Setting the resource bundle will enforce all messages to be resolved via
-	 * given message catalog.
+	 * Set resources bundle for resolving messages (message catalog) Setting the resource bundle will enforce all
+	 * messages to be resolved via given message catalog.
 	 *
-	 * @param bundle message resource bundle
+	 * @param bundle
+	 *            message resource bundle
 	 */
 	void setResourceBundle(ResourceBundle bundle);
 
@@ -73,12 +74,13 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	 * @return message resource bundle
 	 */
 	ResourceBundle getResourceBundle();
-	
+
 	/**
 	 * Set the sink into the error state due to some external condition. Error state to set to true if exception is not
 	 * null, false otherwise.
 	 *
-	 * @param ex current error
+	 * @param ex
+	 *            current error
 	 * @return last error occurred when writing to sink, null if none
 	 */
 	Throwable setErrorState(Throwable ex);
@@ -115,7 +117,8 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Set rate limiter (throttle control)
 	 *
-	 * @param limiter bps/mps rate limiter
+	 * @param limiter
+	 *            bps/mps rate limiter
 	 * @see EventLimiter
 	 */
 	void setLimiter(EventLimiter limiter);
@@ -123,7 +126,8 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Set current/active source handle for the current sink.
 	 *
-	 * @param src event source handle
+	 * @param src
+	 *            event source handle
 	 * @see Source
 	 */
 	void setSource(Source src);
@@ -146,7 +150,8 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Set event formatter instance associated with this sink
 	 *
-	 * @param formatter event formatter instance
+	 * @param formatter
+	 *            event formatter instance
 	 * @see EventFormatter
 	 */
 	void setEventFormatter(EventFormatter formatter);
@@ -161,7 +166,8 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Enable/disable filter checks on log() calls.
 	 *
-	 * @param flag {@code true} to enable filter checks, {@code false} to disable
+	 * @param flag
+	 *            {@code true} to enable filter checks, {@code false} to disable
 	 * @return event sink instance
 	 */
 	EventSink filterOnLog(boolean flag);
@@ -247,7 +253,8 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Check of a certain log level is set/enabled
 	 *
-	 * @param sev severity level
+	 * @param sev
+	 *            severity level
 	 * @return {@code true} if severity level set, {@code false} if not
 	 * @see OpLevel
 	 */
@@ -256,7 +263,8 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Register an event sink listener for notifications when errors occur when writing to event sink.
 	 *
-	 * @param listener event sink listener to register
+	 * @param listener
+	 *            event sink listener to register
 	 * @see SinkErrorListener
 	 */
 	void addSinkErrorListener(SinkErrorListener listener);
@@ -264,7 +272,8 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Remove an event sink listener for notifications when errors occur when writing to event sink.
 	 *
-	 * @param listener event sink listener to remove
+	 * @param listener
+	 *            event sink listener to remove
 	 * @see SinkErrorListener
 	 */
 	void removeSinkErrorListener(SinkErrorListener listener);
@@ -272,7 +281,8 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Register an event sink listener for notifications when logging events occur when writing to event sink.
 	 *
-	 * @param listener event sink listener to register
+	 * @param listener
+	 *            event sink listener to register
 	 * @see SinkLogEventListener
 	 */
 	void addSinkLogEventListener(SinkLogEventListener listener);
@@ -280,7 +290,8 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Remove an event sink listener for notifications when logging events occur when writing to event sink.
 	 *
-	 * @param listener event sink listener to remove
+	 * @param listener
+	 *            event sink listener to remove
 	 * @see SinkLogEventListener
 	 */
 	void removeSinkLogEventListener(SinkLogEventListener listener);
@@ -288,7 +299,8 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Register an event sink filter to selectively filter out certain events.
 	 *
-	 * @param listener event sink listener to register
+	 * @param listener
+	 *            event sink listener to register
 	 * @see SinkEventFilter
 	 */
 	void addSinkEventFilter(SinkEventFilter listener);
@@ -296,7 +308,8 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Remove an event sink filter.
 	 *
-	 * @param listener event sink listener to remove
+	 * @param listener
+	 *            event sink listener to remove
 	 * @see SinkEventFilter
 	 */
 	void removeSinkEventFilter(SinkEventFilter listener);
@@ -304,7 +317,8 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Log a given tracking event
 	 *
-	 * @param event tracking event to log
+	 * @param event
+	 *            tracking event to log
 	 * @see TrackingEvent
 	 */
 	void log(TrackingEvent event);
@@ -312,7 +326,8 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * This method allows writing of {@link TrackingActivity} objects to the underlying destination.
 	 *
-	 * @param activity to be sent to the sink
+	 * @param activity
+	 *            to be sent to the sink
 	 * @see TrackingActivity
 	 */
 	void log(TrackingActivity activity);
@@ -320,7 +335,8 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * This method allows writing of {@link Snapshot} objects to the underlying destination.
 	 *
-	 * @param snapshot a set of properties
+	 * @param snapshot
+	 *            a set of properties
 	 * @see Snapshot
 	 */
 	void log(Snapshot snapshot);
@@ -328,9 +344,12 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Log a given string message with a specified severity
 	 *
-	 * @param sev message severity to log
-	 * @param msg string message to be logged
-	 * @param args arguments passed along the message
+	 * @param sev
+	 *            message severity to log
+	 * @param msg
+	 *            string message to be logged
+	 * @param args
+	 *            arguments passed along the message
 	 * @see OpLevel
 	 */
 	void log(OpLevel sev, String msg, Object... args);
@@ -338,10 +357,14 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Log a given string message with a specified severity
 	 *
-	 * @param sev message severity to log
-	 * @param bundle resource bundle for messages
-	 * @param key into resource bundle
-	 * @param args arguments passed along the message
+	 * @param sev
+	 *            message severity to log
+	 * @param bundle
+	 *            resource bundle for messages
+	 * @param key
+	 *            into resource bundle
+	 * @param args
+	 *            arguments passed along the message
 	 * @see OpLevel
 	 */
 	void log(OpLevel sev, ResourceBundle bundle, String key, Object... args);
@@ -349,10 +372,14 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Log a given string message with a specified severity
 	 *
-	 * @param src log message source info
-	 * @param sev message severity to log
-	 * @param msg string message to be logged
-	 * @param args arguments passed along the message
+	 * @param src
+	 *            log message source info
+	 * @param sev
+	 *            message severity to log
+	 * @param msg
+	 *            string message to be logged
+	 * @param args
+	 *            arguments passed along the message
 	 * @see OpLevel
 	 */
 	void log(Source src, OpLevel sev, String msg, Object... args);
@@ -360,11 +387,16 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Log a given string message with a specified severity
 	 *
-	 * @param src log message source info
-	 * @param sev message severity to log
-	 * @param bundle resource bundle for messages
-	 * @param key into resource bundle
-	 * @param args arguments passed along the message
+	 * @param src
+	 *            log message source info
+	 * @param sev
+	 *            message severity to log
+	 * @param bundle
+	 *            resource bundle for messages
+	 * @param key
+	 *            into resource bundle
+	 * @param args
+	 *            arguments passed along the message
 	 * @see OpLevel
 	 */
 	void log(Source src, OpLevel sev, ResourceBundle bundle, String key, Object... args);
@@ -372,11 +404,16 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Log a given string message with a specified severity
 	 *
-	 * @param ttl time to live in seconds {@link TTL}
-	 * @param src log message source info
-	 * @param sev message severity to log
-	 * @param msg string message to be logged
-	 * @param args arguments passed along the message
+	 * @param ttl
+	 *            time to live in seconds {@link TTL}
+	 * @param src
+	 *            log message source info
+	 * @param sev
+	 *            message severity to log
+	 * @param msg
+	 *            string message to be logged
+	 * @param args
+	 *            arguments passed along the message
 	 * @see OpLevel
 	 */
 	void log(long ttl, Source src, OpLevel sev, String msg, Object... args);
@@ -384,12 +421,18 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	/**
 	 * Log a given string message with a specified severity
 	 *
-	 * @param ttl time to live in seconds {@link TTL}
-	 * @param src log message source info
-	 * @param sev message severity to log
-	 * @param bundle resource bundle for messages
-	 * @param key into resource bundle
-	 * @param args arguments passed along the message
+	 * @param ttl
+	 *            time to live in seconds {@link TTL}
+	 * @param src
+	 *            log message source info
+	 * @param sev
+	 *            message severity to log
+	 * @param bundle
+	 *            resource bundle for messages
+	 * @param key
+	 *            into resource bundle
+	 * @param args
+	 *            arguments passed along the message
 	 * @see OpLevel
 	 */
 	void log(long ttl, Source src, OpLevel sev, ResourceBundle bundle, String key, Object... args);

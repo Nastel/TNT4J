@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,7 +17,6 @@ package com.jkoolcloud.tnt4j.core;
 
 import com.jkoolcloud.tnt4j.utils.Utils;
 
-
 /**
  * Provides list of valid operation message severity levels
  *
@@ -28,16 +27,17 @@ public enum OpLevel {
 	NONE, TRACE, DEBUG, INFO, NOTICE, WARNING, ERROR, FAILURE, CRITICAL, FATAL, HALT;
 
 	public static final String ANY_LEVEL = "ANY";
-	
+
 	private static OpLevel[] enumList = OpLevel.values();
 
 	/**
 	 * Converts the specified value to a member of the enumeration.
 	 *
-	 * @param value enumeration value to convert
+	 * @param value
+	 *            enumeration value to convert
 	 * @return enumeration member
-	 * @throws IllegalArgumentException if there is no
-	 *         member of the enumeration with the specified value
+	 * @throws IllegalArgumentException
+	 *             if there is no member of the enumeration with the specified value
 	 */
 	public static OpLevel valueOf(int value) {
 		int ordnl = value;
@@ -50,44 +50,51 @@ public enum OpLevel {
 	 * Randomly select a level between TRACE and last level
 	 *
 	 * @return randomly selected level within the range
-	 * @throws IllegalArgumentException if maxLevel < minLevel
+	 * @throws IllegalArgumentException
+	 *             if maxLevel < minLevel
 	 */
 	public static OpLevel anyLevel() {
-		return valueOf(Utils.randomRange(TRACE.ordinal(), (enumList.length-1)));
+		return valueOf(Utils.randomRange(TRACE.ordinal(), (enumList.length - 1)));
 	}
-	
+
 	/**
 	 * Randomly select a level based on a given level range
 	 *
-	 * @param minLevel minimum level number
-	 * @param maxLevel maximum level number
+	 * @param minLevel
+	 *            minimum level number
+	 * @param maxLevel
+	 *            maximum level number
 	 * @return randomly selected level within specified range
-	 * @throws IllegalArgumentException if maxLevel < minLevel
+	 * @throws IllegalArgumentException
+	 *             if maxLevel < minLevel
 	 */
 	public static OpLevel anyLevel(int minLevel, int maxLevel) {
 		return valueOf(Utils.randomRange(minLevel, maxLevel));
 	}
-	
+
 	/**
 	 * Converts the specified object to a member of the enumeration.
 	 *
-	 * @param value object to convert
+	 * @param value
+	 *            object to convert
 	 * @return enumeration member
-	 * @throws NullPointerException if value is {@code null}
-	 * @throws IllegalArgumentException if object cannot be matched to a
-	 *  member of the enumeration
+	 * @throws NullPointerException
+	 *             if value is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if object cannot be matched to a member of the enumeration
 	 */
 	public static OpLevel valueOf(Object value) {
 		if (value == null)
 			throw new NullPointerException("object must be non-null");
 		if (value instanceof Number) {
-			return valueOf(((Number)value).intValue());
+			return valueOf(((Number) value).intValue());
 		} else if (value instanceof String) {
 			if (value.toString().equalsIgnoreCase(ANY_LEVEL)) {
 				return anyLevel();
 			}
 			return valueOf(value.toString());
 		}
-		throw new IllegalArgumentException("Cannot convert object of type '" + value.getClass().getName() + "' enum OpLevel");
+		throw new IllegalArgumentException(
+				"Cannot convert object of type '" + value.getClass().getName() + "' enum OpLevel");
 	}
 }

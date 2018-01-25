@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,38 +26,44 @@ public enum ActivityStatus {
 
 	private static ActivityStatus[] enumList = ActivityStatus.values();
 
-
 	/**
 	 * Converts the specified value to a member of the enumeration.
 	 *
-	 * @param value enumeration value to convert
+	 * @param value
+	 *            enumeration value to convert
 	 * @return enumeration member
-	 * @throws IllegalArgumentException if there is no
-	 *         member of the enumeration with the specified value
+	 * @throws IllegalArgumentException
+	 *             if there is no member of the enumeration with the specified value
 	 */
 	public static ActivityStatus valueOf(int value) {
 		int ordnl = value;
-		if (ordnl < 0 || ordnl >= enumList.length)
+		if (ordnl < 0 || ordnl >= enumList.length) {
 			throw new IllegalArgumentException("value '" + value + "' is not valid for enumeration ActivityStatus");
+		}
 		return enumList[ordnl];
 	}
 
 	/**
 	 * Converts the specified object to a member of the enumeration.
 	 *
-	 * @param value object to convert
+	 * @param value
+	 *            object to convert
 	 * @return enumeration member
-	 * @throws NullPointerException if value is <code>null</code>
-	 * @throws IllegalArgumentException if object cannot be matched to a
-	 *  member of the enumeration
+	 * @throws NullPointerException
+	 *             if value is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if object cannot be matched to a member of the enumeration
 	 */
 	public static ActivityStatus valueOf(Object value) {
-		if (value == null)
+		if (value == null) {
 			throw new NullPointerException("object must be non-null");
-		if (value instanceof Number)
-			return valueOf(((Number)value).intValue());
-		else if (value instanceof String)
+		}
+		if (value instanceof Number) {
+			return valueOf(((Number) value).intValue());
+		} else if (value instanceof String) {
 			return valueOf(value.toString());
-		throw new IllegalArgumentException("Cannot convert object of type '" + value.getClass().getName() + "' enum ActivityStatus");
+		}
+		throw new IllegalArgumentException(
+				"Cannot convert object of type '" + value.getClass().getName() + "' enum ActivityStatus");
 	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,29 +16,30 @@
 package com.jkoolcloud.tnt4j.limiter;
 
 /**
- * This class allows developer to set and obtain actual {@link LimiterFactory} implementation
- * instance. Developers may create their own and set it globally using {@code setDefaultLimiterFactory}
+ * This class allows developer to set and obtain actual {@link LimiterFactory} implementation instance. Developers may
+ * create their own and set it globally using {@code setDefaultLimiterFactory}
  * 
  * @see LimiterFactory
  * @version $Revision: 1 $
  */
 public class DefaultLimiterFactory {
 	private static LimiterFactory factory = new LimiterFactoryImpl();
-	
+
 	private DefaultLimiterFactory() {
 	}
-	
+
 	/**
 	 * Set a global default throttle factory implementation
 	 * 
-	 * @param fac limiter factory instance
+	 * @param fac
+	 *            limiter factory instance
 	 * @return {@link LimiterFactory} instance
 	 */
 	public static LimiterFactory setDefaultLimiterFactory(LimiterFactory fac) {
 		factory = fac;
 		return factory;
 	}
-	
+
 	/**
 	 * Obtain a default limiter factory
 	 * 
@@ -46,5 +47,5 @@ public class DefaultLimiterFactory {
 	 */
 	public static LimiterFactory getInstance() {
 		return factory;
-	}	
+	}
 }

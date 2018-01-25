@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,8 +28,7 @@ import java.util.Map;
 public interface Snapshot extends Trackable {
 
 	/**
-	 * Obtain snapshot id (fully qualified name), which is a combination of name and category.
-	 * <code>name@category</code>
+	 * Obtain snapshot id (fully qualified name), which is a combination of name and category. {@code name@category}
 	 *
 	 * @return snapshot id
 	 */
@@ -80,7 +79,8 @@ public interface Snapshot extends Trackable {
 	/**
 	 * Adds a property to the snapshot
 	 *
-	 * @param property instance to be added to the snapshot
+	 * @param property
+	 *            instance to be added to the snapshot
 	 * @return snapshot instance
 	 */
 	Snapshot add(Property property);
@@ -88,8 +88,10 @@ public interface Snapshot extends Trackable {
 	/**
 	 * Adds a property to the snapshot
 	 *
-	 * @param key object to be removed
-	 * @param value property value
+	 * @param key
+	 *            object to be removed
+	 * @param value
+	 *            property value
 	 * @return snapshot instance
 	 */
 	Snapshot add(Object key, Object value);
@@ -97,9 +99,12 @@ public interface Snapshot extends Trackable {
 	/**
 	 * Adds a property to the snapshot
 	 *
-	 * @param key object to be removed
-	 * @param value property value
-	 * @param valType value type such as (currency, percent). {@link ValueTypes}.
+	 * @param key
+	 *            object to be removed
+	 * @param value
+	 *            property value
+	 * @param valType
+	 *            value type such as (currency, percent). {@link ValueTypes}.
 	 * @return snapshot instance
 	 */
 	Snapshot add(Object key, Object value, String valType);
@@ -107,7 +112,8 @@ public interface Snapshot extends Trackable {
 	/**
 	 * Add all properties from a given map
 	 *
-	 * @param map of key/value pairs to be added
+	 * @param map
+	 *            of key/value pairs to be added
 	 * @return snapshot instance
 	 */
 	Snapshot addAll(Map<? extends Object, ? extends Object> map);
@@ -115,7 +121,8 @@ public interface Snapshot extends Trackable {
 	/**
 	 * Removed a property specified by the given key.
 	 *
-	 * @param key object to be removed
+	 * @param key
+	 *            object to be removed
 	 * @return Property associated with the key, null if does not exist
 	 */
 	Property remove(Object key);
@@ -123,7 +130,8 @@ public interface Snapshot extends Trackable {
 	/**
 	 * Obtain a property associated with the given key
 	 *
-	 * @param key identifying a property
+	 * @param key
+	 *            identifying a property
 	 * @return Property associated with the key, null if does not exist
 	 */
 	Property get(Object key);

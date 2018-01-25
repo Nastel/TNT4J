@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,10 +19,10 @@ import com.jkoolcloud.tnt4j.core.OpCompCode;
 import com.jkoolcloud.tnt4j.core.UsecTimestamp;
 
 /**
- * This class represents an empty Null/NOOP event returned by tracker
- * when <code>TrackingFilter.isTrackingEnabled()</code> returns false.
- * This is done to stub out activity timing and reduce tracking overhead
- * when tracking is disabled. NOOP events are never logged by a tracker.
+ * This class represents an empty Null/NOOP event returned by tracker when
+ * {@link TrackingFilter#isTrackingEnabled(Tracker, com.jkoolcloud.tnt4j.core.OpLevel, Object...)} returns false. This
+ * is done to stub out activity timing and reduce tracking overhead when tracking is disabled. NOOP events are never
+ * logged by a tracker.
  *
  * @see OpCompCode
  * @see UsecTimestamp
@@ -33,8 +33,8 @@ import com.jkoolcloud.tnt4j.core.UsecTimestamp;
 public class NullEvent extends TrackingEvent {
 
 	protected NullEvent(TrackerImpl tr) {
-	    super(tr);
-    }
+		super(tr);
+	}
 
 	@Override
 	public void start(long startTime) {

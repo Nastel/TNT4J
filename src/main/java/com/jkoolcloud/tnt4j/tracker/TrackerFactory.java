@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,10 +17,12 @@ package com.jkoolcloud.tnt4j.tracker;
 
 import com.jkoolcloud.tnt4j.config.TrackerConfig;
 
-
 /**
- * <p><code>TrackerFactory</code> interface allows creation of <code>Tracker</code> logger instances.
- * Developers should implement this interface when creating custom <code>Tracker</code> logger factories.</p>
+ * <p>
+ * {@code TrackerFactory} interface allows creation of {@link com.jkoolcloud.tnt4j.tracker.Tracker} logger instances.
+ * Developers should implement this interface when creating custom {@link com.jkoolcloud.tnt4j.tracker.Tracker} logger
+ * factories.
+ * </p>
  *
  * @see DefaultTrackerFactory
  *
@@ -29,18 +31,20 @@ import com.jkoolcloud.tnt4j.config.TrackerConfig;
  */
 public interface TrackerFactory {
 	/**
-	 * Obtain an instance to a <code>Tracker</code> logger. Each thread must obtain a logger instance.
-	 * <code>Tracker</code> logger is not thread safe.
+	 * Obtain an instance to a {@link com.jkoolcloud.tnt4j.tracker.Tracker} logger. Each thread must obtain a logger
+	 * instance. {@link com.jkoolcloud.tnt4j.tracker.Tracker} logger is not thread safe.
 	 * 
-	 * @param tconfig tracking configuration associated with the tracking instance
-	 * @return <code>Tracker</code> logger instance associated with this thread
+	 * @param tconfig
+	 *            tracking configuration associated with the tracking instance
+	 * @return {@link com.jkoolcloud.tnt4j.tracker.Tracker} logger instance associated with this thread
 	 */
-	Tracker getInstance(TrackerConfig tconfig); 
-		
+	Tracker getInstance(TrackerConfig tconfig);
+
 	/**
-	 * Close and release resources associated with <code>Tracker</code> instance
+	 * Close and release resources associated with {@link com.jkoolcloud.tnt4j.tracker.Tracker} instance
 	 * 
-	 * @param tr tracker instance to be closed
+	 * @param tr
+	 *            tracker instance to be closed
 	 */
 	void close(Tracker tr);
 }

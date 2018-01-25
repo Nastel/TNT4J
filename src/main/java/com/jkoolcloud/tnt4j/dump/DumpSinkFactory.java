@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package com.jkoolcloud.tnt4j.dump;
 
-
-
 /**
  * <p>
  * This interface defines a factory that creates instances of {@link DumpSink}
@@ -30,43 +28,45 @@ package com.jkoolcloud.tnt4j.dump;
  */
 public interface DumpSinkFactory {
 	/**
-	 * Obtain a dump destination based on default settings.
-	 * Dumps are formatted using {@link DefaultDumpFormatter}
+	 * Obtain a dump destination based on default settings. Dumps are formatted using {@link DefaultDumpFormatter}
 	 * 
 	 * @return dump destination instance
 	 */
 	DumpSink getInstance();
 
 	/**
-	 * Obtain a dump destination based on given URI.
-	 * Dumps are formatted using {@link DefaultDumpFormatter}
-	 * Same as <code>getInstance(url, true, new DefaultDumpFormatter())</code>
+	 * Obtain a dump destination based on given URI. Dumps are formatted using {@link DefaultDumpFormatter} Same as
+	 * {@code getInstance(url, true, new DefaultDumpFormatter())}
 	 * 
-	 * @param url for generating a dump destination instance
+	 * @param url
+	 *            for generating a dump destination instance
 	 * @see DumpSink
 	 * @return dump destination instance
 	 */
 	DumpSink getInstance(String url);
-	
+
 	/**
-	 * Obtain a dump destination based on given URI and append flag.
-	 * Dumps are formatted using {@link DefaultDumpFormatter}.
-	 * Same as <code>getInstance(url, append, new DefaultDumpFormatter())</code>
+	 * Obtain a dump destination based on given URI and append flag. Dumps are formatted using
+	 * {@link DefaultDumpFormatter}. Same as {@code getInstance(url, append, new DefaultDumpFormatter())}
 	 *
-	 * @param url for generating a dump destination instance
-	 * @param append append to the underlying destination
+	 * @param url
+	 *            for generating a dump destination instance
+	 * @param append
+	 *            append to the underlying destination
 	 * @see DumpSink
 	 * @return dump destination instance
 	 */
 	DumpSink getInstance(String url, boolean append);
 
 	/**
-	 * Obtain a dump destination based on given URI, append flag.
-	 * and a given {@link DumpFormatter}.
+	 * Obtain a dump destination based on given URI, append flag. and a given {@link DumpFormatter}.
 	 * 
-	 * @param url for generating a dump destination instance
-	 * @param append append to the underlying destination
-	 * @param frm user defined dump formatter
+	 * @param url
+	 *            for generating a dump destination instance
+	 * @param append
+	 *            append to the underlying destination
+	 * @param frm
+	 *            user defined dump formatter
 	 * @see DumpSink
 	 * @see DumpFormatter
 	 * @return dump destination instance

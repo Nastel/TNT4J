@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,8 @@
  */
 package com.jkoolcloud.tnt4j.tracker;
 
-import com.jkoolcloud.tnt4j.core.ActivityListener;
-import com.jkoolcloud.tnt4j.core.ActivityStatus;
-import com.jkoolcloud.tnt4j.core.OpCompCode;
-import com.jkoolcloud.tnt4j.core.OpType;
-import com.jkoolcloud.tnt4j.core.Property;
-import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.TrackingLogger;
-import com.jkoolcloud.tnt4j.core.Activity;
-import com.jkoolcloud.tnt4j.core.Message;
-import com.jkoolcloud.tnt4j.core.OpLevel;
-import com.jkoolcloud.tnt4j.core.Operation;
+import com.jkoolcloud.tnt4j.core.*;
 import com.jkoolcloud.tnt4j.utils.Useconds;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
@@ -35,12 +26,12 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * </p>
  * 
  * <p>
- * Represents a collection of related {@link TrackingEvent} instances considered to be an application activity.
- * These are generally delimited by START/STOP (or START/STOP(EXCEPTION)) calls. {@link TrackingEvent} instances
- * can be created using {@link TrackingLogger} or {@link Tracker}. Source activities should be started and
- * stopped before being reported using {@code TrackingLogger.tnt()} or {@code Tracker.tnt()} calls.
- * {@link TrackingEvent} instances should be registered with a given activity using
- * {@code TrackingActivity.tnt()} call which adds and reports a given {@link TrackingEvent} with the activity.
+ * Represents a collection of related {@link TrackingEvent} instances considered to be an application activity. These
+ * are generally delimited by START/STOP (or START/STOP(EXCEPTION)) calls. {@link TrackingEvent} instances can be
+ * created using {@link TrackingLogger} or {@link Tracker}. Source activities should be started and stopped before being
+ * reported using {@code TrackingLogger.tnt()} or {@code Tracker.tnt()} calls. {@link TrackingEvent} instances should be
+ * registered with a given activity using {@code TrackingActivity.tnt()} call which adds and reports a given
+ * {@link TrackingEvent} with the activity.
  * </p>
  * 
  * @see Activity
@@ -63,7 +54,8 @@ public class TrackingActivity extends Activity {
 	/**
 	 * Creates a logical application activity object with the specified signature.
 	 * 
-	 * @param level activity severity level
+	 * @param level
+	 *            activity severity level
 	 * @param name
 	 *            activity name
 	 * @throws NullPointerException
@@ -80,7 +72,8 @@ public class TrackingActivity extends Activity {
 	/**
 	 * Creates a logical application activity object with the specified signature.
 	 * 
-	 * @param level activity severity level
+	 * @param level
+	 *            activity severity level
 	 * @param name
 	 *            activity name
 	 * @param trk
@@ -101,7 +94,8 @@ public class TrackingActivity extends Activity {
 	/**
 	 * Creates a logical application activity object with the specified signature.
 	 * 
-	 * @param level activity severity level
+	 * @param level
+	 *            activity severity level
 	 * @param name
 	 *            activity name
 	 * @param signature
@@ -129,19 +123,21 @@ public class TrackingActivity extends Activity {
 	public Tracker getTracker() {
 		return tracker;
 	}
-	
+
 	private long getLastElapsedUsec() {
-		return lastEventNanos > 0? (System.nanoTime() - lastEventNanos)/1000: 0;
+		return lastEventNanos > 0 ? (System.nanoTime() - lastEventNanos) / 1000 : 0;
 	}
-	
+
 	/**
 	 * Track and Trace given {@link TrackingEvent} instance correlated with current activity
 	 * 
-	 * @param event tracking instance to be tracked
+	 * @param event
+	 *            tracking instance to be tracked
 	 */
 	public void tnt(TrackingEvent event) {
 		if (isStopped()) {
-			throw new IllegalStateException("Activity already stopped: name=" + getName() + ", id=" + this.getTrackingId());
+			throw new IllegalStateException(
+					"Activity already stopped: name=" + getName() + ", id=" + this.getTrackingId());
 		}
 		add(event);
 		lastEventNanos = System.nanoTime();
@@ -149,13 +145,15 @@ public class TrackingActivity extends Activity {
 	}
 
 	/**
-	 * Track and Trace given <code>Snapshot</code> instance correlated with current activity
+	 * Track and Trace given {@link com.jkoolcloud.tnt4j.core.Snapshot} instance correlated with current activity
 	 * 
-	 * @param snapshot snapshot instance to be tracked
+	 * @param snapshot
+	 *            snapshot instance to be tracked
 	 */
 	public void tnt(Snapshot snapshot) {
 		if (isStopped()) {
-			throw new IllegalStateException("Activity already stopped: name=" + getName() + ", id=" + this.getTrackingId());
+			throw new IllegalStateException(
+					"Activity already stopped: name=" + getName() + ", id=" + this.getTrackingId());
 		}
 		add(snapshot);
 		tracker.tnt(snapshot);
@@ -174,7 +172,7 @@ public class TrackingActivity extends Activity {
 	 *            argument list, exception passed along side given message
 	 * @see OpLevel
 	 */
-	public void tnt(OpLevel severity, String opName, byte[] msg, Object...args) {
+	public void tnt(OpLevel severity, String opName, byte[] msg, Object... args) {
 		tnt(severity, OpType.EVENT, opName, null, null, 0, msg, args);
 	}
 
@@ -193,7 +191,7 @@ public class TrackingActivity extends Activity {
 	 *            argument list, exception passed along side given message
 	 * @see OpLevel
 	 */
-	public void tnt(OpLevel severity, OpType type, String opName, byte[] msg, Object...args) {
+	public void tnt(OpLevel severity, OpType type, String opName, byte[] msg, Object... args) {
 		tnt(severity, type, opName, null, null, 0, msg, args);
 	}
 
@@ -216,7 +214,8 @@ public class TrackingActivity extends Activity {
 	 *            argument list, exception passed along side given message
 	 * @see OpLevel
 	 */
-	public void tnt(OpLevel severity, OpType type, String opName, String cid, long elapsed, byte[] msg, Object...args) {
+	public void tnt(OpLevel severity, OpType type, String opName, String cid, long elapsed, byte[] msg,
+			Object... args) {
 		tnt(severity, type, opName, cid, null, elapsed, msg, args);
 	}
 
@@ -241,13 +240,13 @@ public class TrackingActivity extends Activity {
 	 *            argument list, exception passed along side given message
 	 * @see OpLevel
 	 */
-	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, byte[] msg, Object...args) {
+	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, byte[] msg,
+			Object... args) {
 		TrackingEvent event = tracker.newEvent(severity, type, opName, cid, tag, msg, args);
 		Throwable ex = Utils.getThrowable(args);
-		
-		long elapsedUsec = elapsed > 0? elapsed: getLastElapsedUsec();
-		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, 
-					ex, Useconds.CURRENT.get(), elapsedUsec);
+
+		long elapsedUsec = elapsed > 0 ? elapsed : getLastElapsedUsec();
+		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, Useconds.CURRENT.get(), elapsedUsec);
 		tnt(event);
 	}
 
@@ -264,7 +263,7 @@ public class TrackingActivity extends Activity {
 	 *            argument list, exception passed along side given message
 	 * @see OpLevel
 	 */
-	public void tnt(OpLevel severity, String opName, String msg, Object...args) {
+	public void tnt(OpLevel severity, String opName, String msg, Object... args) {
 		tnt(severity, OpType.EVENT, opName, null, null, 0, msg, args);
 	}
 
@@ -283,7 +282,7 @@ public class TrackingActivity extends Activity {
 	 *            argument list, exception passed along side given message
 	 * @see OpLevel
 	 */
-	public void tnt(OpLevel severity, OpType type, String opName, String msg, Object...args) {
+	public void tnt(OpLevel severity, OpType type, String opName, String msg, Object... args) {
 		tnt(severity, type, opName, null, null, 0, msg, args);
 	}
 
@@ -306,7 +305,8 @@ public class TrackingActivity extends Activity {
 	 *            argument list, exception passed along side given message
 	 * @see OpLevel
 	 */
-	public void tnt(OpLevel severity, OpType type, String opName, String cid, long elapsed, String msg, Object...args) {
+	public void tnt(OpLevel severity, OpType type, String opName, String cid, long elapsed, String msg,
+			Object... args) {
 		tnt(severity, type, opName, cid, null, elapsed, msg, args);
 	}
 
@@ -331,19 +331,19 @@ public class TrackingActivity extends Activity {
 	 *            argument list, exception passed along side given message
 	 * @see OpLevel
 	 */
-	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, String msg, Object...args) {
+	public void tnt(OpLevel severity, OpType type, String opName, String cid, String tag, long elapsed, String msg,
+			Object... args) {
 		TrackingEvent event = tracker.newEvent(severity, type, opName, cid, tag, msg, args);
 		Throwable ex = Utils.getThrowable(args);
-		
-		long elapsedUsec = elapsed > 0? elapsed: getLastElapsedUsec();
-		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, 
-					ex, Useconds.CURRENT.get(), elapsedUsec);
+
+		long elapsedUsec = elapsed > 0 ? elapsed : getLastElapsedUsec();
+		event.stop(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS, 0, ex, Useconds.CURRENT.get(), elapsedUsec);
 		tnt(event);
 	}
 
 	/**
 	 * Instruct activity to report start activity events into the underlying tracker associated with this activity. An
-	 * tracking event will be logged when <code>start(..)</code> method call is made.
+	 * tracking event will be logged when {@code start(..)} method call is made.
 	 * 
 	 * @param flag
 	 *            enable reporting on start (default is false).
@@ -364,7 +364,8 @@ public class TrackingActivity extends Activity {
 	/**
 	 * Indicates that application activity has ended normally without exception.
 	 * 
-	 * @param elapsedUsec elapsed time in microseconds
+	 * @param elapsedUsec
+	 *            elapsed time in microseconds
 	 */
 	@Override
 	public void stop(long elapsedUsec) {
@@ -379,8 +380,8 @@ public class TrackingActivity extends Activity {
 	 * @see ActivityStatus
 	 */
 	public void stop(Throwable ex) {
-		stop((ex != null ? ActivityStatus.EXCEPTION : ActivityStatus.END), (ex != null ? OpCompCode.WARNING
-		        : OpCompCode.SUCCESS), ex, 0);
+		stop((ex != null ? ActivityStatus.EXCEPTION : ActivityStatus.END),
+				(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS), ex, 0);
 	}
 
 	/**
@@ -388,12 +389,13 @@ public class TrackingActivity extends Activity {
 	 * 
 	 * @param ex
 	 *            exception associated with the activity or null if none.
-	 * @param elapsedUsec elapsed time in microseconds
+	 * @param elapsedUsec
+	 *            elapsed time in microseconds
 	 * @see ActivityStatus
 	 */
 	public void stop(Throwable ex, long elapsedUsec) {
-		stop((ex != null ? ActivityStatus.EXCEPTION : ActivityStatus.END), (ex != null ? OpCompCode.WARNING
-		        : OpCompCode.SUCCESS), ex, elapsedUsec);
+		stop((ex != null ? ActivityStatus.EXCEPTION : ActivityStatus.END),
+				(ex != null ? OpCompCode.WARNING : OpCompCode.SUCCESS), ex, elapsedUsec);
 	}
 
 	/**
@@ -416,7 +418,8 @@ public class TrackingActivity extends Activity {
 	 *            status with which activity ended.
 	 * @param ex
 	 *            exception associated with the activity or null if none.
-	 * @param elapsedUsec elapsed time in microseconds
+	 * @param elapsedUsec
+	 *            elapsed time in microseconds
 	 * @see ActivityStatus
 	 */
 	public void stop(ActivityStatus status, Throwable ex, long elapsedUsec) {
@@ -448,7 +451,8 @@ public class TrackingActivity extends Activity {
 	 *            completion code of the activity.
 	 * @param ex
 	 *            exception associated with the activity or null if none.
-	 * @param elapsedUsec elapsed time in microseconds
+	 * @param elapsedUsec
+	 *            elapsed time in microseconds
 	 * @see ActivityStatus
 	 * @see OpCompCode
 	 */

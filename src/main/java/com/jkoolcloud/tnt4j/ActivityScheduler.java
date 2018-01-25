@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -36,7 +36,8 @@ import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
  * @see ActivityListener
  */
 public class ActivityScheduler {
-	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2, new TaskThreadFactory("ActivityScheduler/task"));
+	private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2,
+			new TaskThreadFactory("ActivityScheduler/task"));
 
 	private String name;
 	private TrackingLogger logger;
@@ -47,7 +48,8 @@ public class ActivityScheduler {
 	/**
 	 * Creates a scheduler with specified name.
 	 *
-	 * @param name scheduler name
+	 * @param name
+	 *            scheduler name
 	 */
 	public ActivityScheduler(String name) {
 		this(name, (ActivityListener) null);
@@ -56,15 +58,18 @@ public class ActivityScheduler {
 	/**
 	 * Creates a scheduler with specified name.
 	 *
-	 * @param name scheduler name
-	 * @param listener activity listener invoked when scheduled activity starts and stops
+	 * @param name
+	 *            scheduler name
+	 * @param listener
+	 *            activity listener invoked when scheduled activity starts and stops
 	 *
 	 * @see ActivityListener
 	 */
 	public ActivityScheduler(String name, ActivityListener listener) {
 		this.name = name;
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(name);
-		if (listener != null) config.setActivityListener(listener);
+		if (listener != null)
+			config.setActivityListener(listener);
 		this.logger = TrackingLogger.getInstance(config.build());
 		this.logger.setKeepThreadContext(false);
 	}
@@ -72,8 +77,10 @@ public class ActivityScheduler {
 	/**
 	 * Creates a scheduler with specified name.
 	 *
-	 * @param name scheduler name
-	 * @param config tracker configuration
+	 * @param name
+	 *            scheduler name
+	 * @param config
+	 *            tracker configuration
 	 *
 	 * @see TrackerConfig
 	 */
@@ -86,7 +93,8 @@ public class ActivityScheduler {
 	/**
 	 * Assign a default severity level to all scheduled activity events.
 	 *
-	 * @param severity associated with all timing activities, events
+	 * @param severity
+	 *            associated with all timing activities, events
 	 */
 	public void setOpLevel(OpLevel severity) {
 		opLevel = severity;
@@ -113,7 +121,8 @@ public class ActivityScheduler {
 	/**
 	 * Assign an activity listener to be used when scheduled activity starts/stops.
 	 *
-	 * @param listener activity listener invoked when scheduled activity starts and stops
+	 * @param listener
+	 *            activity listener invoked when scheduled activity starts and stops
 	 * @return instance of the same scheduler
 	 * @see ActivityListener
 	 */
@@ -135,7 +144,8 @@ public class ActivityScheduler {
 	/**
 	 * Schedule activity with a specified period in milliseconds.
 	 *
-	 * @param period in milliseconds
+	 * @param period
+	 *            in milliseconds
 	 */
 	public void schedule(long period) {
 		schedule("ActivityTask", period, period, TimeUnit.MILLISECONDS);
@@ -144,8 +154,10 @@ public class ActivityScheduler {
 	/**
 	 * Schedule activity with a specified period in milliseconds.
 	 *
-	 * @param name activity name
-	 * @param period in milliseconds
+	 * @param name
+	 *            activity name
+	 * @param period
+	 *            in milliseconds
 	 */
 	public void schedule(String name, long period) {
 		schedule(name, period, period, TimeUnit.MILLISECONDS);
@@ -154,9 +166,12 @@ public class ActivityScheduler {
 	/**
 	 * Schedule activity with a given name and timing details.
 	 *
-	 * @param name activity name
-	 * @param period in specified time units
-	 * @param tunit time unit for period
+	 * @param name
+	 *            activity name
+	 * @param period
+	 *            in specified time units
+	 * @param tunit
+	 *            time unit for period
 	 */
 	public void schedule(String name, long period, TimeUnit tunit) {
 		schedule(name, period, period, TimeUnit.MILLISECONDS);
@@ -165,10 +180,14 @@ public class ActivityScheduler {
 	/**
 	 * Schedule activity with a given name and timing details.
 	 *
-	 * @param name activity name
-	 * @param initialDelay in specified time units
-	 * @param period in specified time units
-	 * @param tunit time unit for period
+	 * @param name
+	 *            activity name
+	 * @param initialDelay
+	 *            in specified time units
+	 * @param period
+	 *            in specified time units
+	 * @param tunit
+	 *            time unit for period
 	 */
 	public void schedule(String name, long initialDelay, long period, TimeUnit tunit) {
 		schedule(name, initialDelay, period, tunit, opLevel);
@@ -177,11 +196,16 @@ public class ActivityScheduler {
 	/**
 	 * Schedule activity with a given name and timing details.
 	 *
-	 * @param name activity name
-	 * @param initialDelay in specified time units
-	 * @param period in specified time units
-	 * @param tunit time unit for period
-	 * @param severity associated with all timing activities, events
+	 * @param name
+	 *            activity name
+	 * @param initialDelay
+	 *            in specified time units
+	 * @param period
+	 *            in specified time units
+	 * @param tunit
+	 *            time unit for period
+	 * @param severity
+	 *            associated with all timing activities, events
 	 */
 	public void schedule(String name, long initialDelay, long period, TimeUnit tunit, OpLevel severity) {
 		if (future == null || future.isCancelled()) {
@@ -203,7 +227,8 @@ public class ActivityScheduler {
 	/**
 	 * Cancel currently scheduled activity.
 	 *
-	 * @param interrupt may interrupt currently running activity
+	 * @param interrupt
+	 *            may interrupt currently running activity
 	 */
 	public void cancel(boolean interrupt) {
 		future.cancel(interrupt);
@@ -212,7 +237,8 @@ public class ActivityScheduler {
 	/**
 	 * Open current scheduled activity instance.
 	 *
-	 * @throws IOException if error opening instance
+	 * @throws IOException
+	 *             if error opening instance
 	 */
 	public void open() throws IOException {
 		logger.open();
@@ -262,9 +288,12 @@ public class ActivityScheduler {
 	/**
 	 * Override this calls to return custom instances of {@link Runnable} which will be invoked per specified schedule.
 	 * 
-	 * @param lg tracking logger instance
-	 * @param name of the new activity task
-	 * @param level associated with the task
+	 * @param lg
+	 *            tracking logger instance
+	 * @param name
+	 *            of the new activity task
+	 * @param level
+	 *            associated with the task
 	 * @return {@link Runnable} instance
 	 */
 	protected Runnable newActivityTask(TrackingLogger lg, String name, OpLevel level) {

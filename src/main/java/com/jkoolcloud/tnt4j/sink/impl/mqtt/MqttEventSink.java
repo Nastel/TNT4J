@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,8 +52,10 @@ public class MqttEventSink extends AbstractEventSink {
 	/**
 	 * Create MQTT event sink
 	 * 
-	 * @param fc event sink factory
-	 * @param name event sink name
+	 * @param fc
+	 *            event sink factory
+	 * @param name
+	 *            event sink name
 	 */
 	protected MqttEventSink(MqttEventSinkFactory fc, String name) {
 		super(name);
@@ -63,9 +65,12 @@ public class MqttEventSink extends AbstractEventSink {
 	/**
 	 * Create MQTT event sink
 	 * 
-	 * @param fc event sink factory
-	 * @param name event sink name
-	 * @param props event sink properties
+	 * @param fc
+	 *            event sink factory
+	 * @param name
+	 *            event sink name
+	 * @param props
+	 *            event sink properties
 	 */
 	protected MqttEventSink(MqttEventSinkFactory fc, String name, Properties props) {
 		super(name);
@@ -75,10 +80,14 @@ public class MqttEventSink extends AbstractEventSink {
 	/**
 	 * Create MQTT event sink
 	 * 
-	 * @param fc event sink factory
-	 * @param name event sink name
-	 * @param props event sink properties
-	 * @param frmt event sink formatter
+	 * @param fc
+	 *            event sink factory
+	 * @param name
+	 *            event sink name
+	 * @param props
+	 *            event sink properties
+	 * @param frmt
+	 *            event sink formatter
 	 */
 	protected MqttEventSink(MqttEventSinkFactory fc, String name, Properties props, EventFormatter frmt) {
 		super(name, frmt);

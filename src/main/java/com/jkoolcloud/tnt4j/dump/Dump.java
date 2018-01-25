@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,8 +34,7 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	Throwable reason = null;
 
 	/**
-	 * Create a new instance of {@link Dump}
-	 * instance.
+	 * Create a new instance of {@link Dump} instance.
 	 *
 	 * @param name
 	 *            of the generated dump
@@ -49,8 +48,7 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	}
 
 	/**
-	 * Create a new instance of {@link Dump}
-	 * instance.
+	 * Create a new instance of {@link Dump} instance.
 	 *
 	 * @param cat
 	 *            of the generated dump
@@ -66,8 +64,7 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	}
 
 	/**
-	 * Create a new instance of {@link Dump}
-	 * instance.
+	 * Create a new instance of {@link Dump} instance.
 	 *
 	 * @param cat
 	 *            category of the dump
@@ -86,8 +83,7 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	}
 
 	/**
-	 * Create a new instance of {@link Dump}
-	 * instance.
+	 * Create a new instance of {@link Dump} instance.
 	 *
 	 * @param name
 	 *            of the generated dump
@@ -109,7 +105,7 @@ public class Dump extends PropertySnapshot implements DumpCollection {
 	@Override
 	public String toString() {
 		return "{Name: " + getName() + ", Size: " + size() + ", Time: " + getTime() + ", Provider: " + dProv
-		        + ", Reason: " + reason + "}";
+				+ ", Reason: " + reason + "}";
 	}
 
 	@Override

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -52,7 +52,6 @@ import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
  * </p>
  *
  * <pre>
- * <code>
  * ; source: * designates all sources, which is used as default for non matching sources
  * {
  * source: *
@@ -89,7 +88,6 @@ import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
  * like: com.jkoolcloud
  * enabled: true
  * }
- * </code>
  * </pre>
  *
  * Below is an example of how to use {@link TrackerConfigStore} when registering with the framework.
@@ -283,7 +281,8 @@ public class TrackerConfigStore extends TrackerConfig {
 		try {
 			return Utils.createConfigurableObject(classProp, prefix, props);
 		} catch (Throwable e) {
-			logger.log(OpLevel.ERROR, "Failed to create configurable instance class={0}, property={1}, prefix={2}", props.get(classProp), classProp, prefix, e);
+			logger.log(OpLevel.ERROR, "Failed to create configurable instance class={0}, property={1}, prefix={2}",
+					props.get(classProp), classProp, prefix, e);
 		}
 		return null;
 	}
@@ -299,21 +298,26 @@ public class TrackerConfigStore extends TrackerConfig {
 	public void applyProperties() {
 		if (props != null) {
 			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.DEBUG, "Loaded properties source={0}, tid={1}, properties={2}", srcName, Thread.currentThread().getId(), props);
+				logger.log(OpLevel.DEBUG, "Loaded properties source={0}, tid={1}, properties={2}", srcName,
+						Thread.currentThread().getId(), props);
 			}
 			setUUIDFactory((UUIDFactory) createConfigurableObject("uuid.factory", "uuid.factory."));
 			setSignFactory((SignFactory) createConfigurableObject("sign.factory", "sign.factory."));
 			setGeoLocator((GeoLocator) createConfigurableObject("geo.locator", "geo.locator."));
-			setDefaultEventSinkFactory((EventSinkFactory) createConfigurableObject("default.event.sink.factory", "default.event.sink.factory."));
+			setDefaultEventSinkFactory((EventSinkFactory) createConfigurableObject("default.event.sink.factory",
+					"default.event.sink.factory."));
 			setSourceFactory((SourceFactory) createConfigurableObject("source.factory", "source.factory."));
 			setTrackerFactory((TrackerFactory) createConfigurableObject("tracker.factory", "tracker.factory."));
-			setEventSinkFactory((EventSinkFactory) createConfigurableObject("event.sink.factory", "event.sink.factory."));
+			setEventSinkFactory(
+					(EventSinkFactory) createConfigurableObject("event.sink.factory", "event.sink.factory."));
 			setEventFormatter((EventFormatter) createConfigurableObject("event.formatter", "event.formatter."));
 			setTrackingSelector((TrackingSelector) createConfigurableObject("tracking.selector", "tracking.selector."));
 			setDumpSinkFactory((DumpSinkFactory) createConfigurableObject("dump.sink.factory", "dump.sink.factory."));
 			setActivityListener((ActivityListener) createConfigurableObject("activity.listener", "activity.listener."));
-			setSinkLogEventListener((SinkLogEventListener) createConfigurableObject("sink.log.listener", "sink.log.listener."));
-			setSinkErrorListener((SinkErrorListener) createConfigurableObject("sink.error.listener", "sink.error.listener."));
+			setSinkLogEventListener(
+					(SinkLogEventListener) createConfigurableObject("sink.log.listener", "sink.log.listener."));
+			setSinkErrorListener(
+					(SinkErrorListener) createConfigurableObject("sink.error.listener", "sink.error.listener."));
 			setSinkEventFilter((SinkEventFilter) createConfigurableObject("sink.event.filter", "sink.event.filter."));
 		}
 	}
@@ -321,7 +325,9 @@ public class TrackerConfigStore extends TrackerConfig {
 	private Properties loadProperties(Map<String, Properties> map) {
 		int maxKeyLen = 0;
 		Properties selectedSet = null;
-		if (map == null) return selectedSet;
+		if (map == null) {
+			return selectedSet;
+		}
 		for (Entry<String, Properties> entry : map.entrySet()) {
 			if (entry.getKey().equals(DEFAULT_SOURCE)) {
 				selectedSet = entry.getValue();
@@ -342,8 +348,8 @@ public class TrackerConfigStore extends TrackerConfig {
 		Map<String, Properties> map = null;
 		try {
 			map = loadConfigResource(configFile);
-			logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, file={1}, config.size={2}, tid={3}",
-						srcName, configFile, map.size(), Thread.currentThread().getId());
+			logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, file={1}, config.size={2}, tid={3}", srcName,
+					configFile, map.size(), Thread.currentThread().getId());
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, "Unable to load configuration: source={0}, file={1}", srcName, configFile, e);
 		}
@@ -378,8 +384,8 @@ public class TrackerConfigStore extends TrackerConfig {
 				String like = config.getProperty(LIKE_KEY);
 				String enabled = config.getProperty(ENABLED_KEY);
 				if (enabled != null && enabled.equalsIgnoreCase("true")) {
-					logger.log(OpLevel.WARNING,
-							"Disabling properties for source={0}, like={1}, enabled={2}", key, like, enabled);
+					logger.log(OpLevel.WARNING, "Disabling properties for source={0}, like={1}, enabled={2}", key, like,
+							enabled);
 					continue;
 				}
 				if (like != null) {
@@ -399,8 +405,8 @@ public class TrackerConfigStore extends TrackerConfig {
 		Properties copyFrom = map.get(like);
 		if (copyFrom == null) {
 			copyFrom = map.get(DEFAULT_SOURCE);
-			logger.log(OpLevel.WARNING, "Properties for source={0}, like={1} not found, assigning default set={2}",
-					key, like, DEFAULT_SOURCE);
+			logger.log(OpLevel.WARNING, "Properties for source={0}, like={1} not found, assigning default set={2}", key,
+					like, DEFAULT_SOURCE);
 		}
 		// merge properties from "like" model with original
 		Properties merged = new Properties();
@@ -450,7 +456,8 @@ public class TrackerConfigStore extends TrackerConfig {
 				}
 				int sepIndex = line.indexOf(":");
 				if (sepIndex <= 0) {
-					logger.log(OpLevel.WARNING, "Skipping invalid source={0}, file={1}, entry='{2}'", srcName, configFile, line);
+					logger.log(OpLevel.WARNING, "Skipping invalid source={0}, file={1}, entry='{2}'", srcName,
+							configFile, line);
 					continue;
 				}
 				String key = line.substring(0, sepIndex).trim();

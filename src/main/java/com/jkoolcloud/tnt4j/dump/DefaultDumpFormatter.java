@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * This class implements a default dump formatter. Dumps are formatted as follows using JSON.
  *
  * <pre>
- * <code>
  * {
  * "dump.status": "START",
  * "server.name": "XOMEGA",
@@ -60,7 +59,6 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * "dump.time.string": "<time-stamp-string>"
  * "dump.elapsed.ms=": 1334
  * }
- * </code>
  * </pre>
  * </p>
  *
