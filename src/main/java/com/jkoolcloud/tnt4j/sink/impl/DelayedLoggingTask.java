@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,8 @@ import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.sink.SinkLogEvent;
 
 /**
- * This class implements a task for asynchronous handling and delivery 
- * of delayed logging events to various event sinks. Delayed events are those that
- * could not be handled due to error or some other non-deliverable condition.
+ * This class implements a task for asynchronous handling and delivery of delayed logging events to various event sinks.
+ * Delayed events are those that could not be handled due to error or some other non-deliverable condition.
  *
  *
  * @version $Revision: 1 $
@@ -34,10 +33,9 @@ class DelayedLoggingTask implements Runnable {
 		pooledLogger = logger;
 	}
 
-	
-    @Override
-    public void run() {
-    	try {
+	@Override
+	public void run() {
+		try {
 			while (true) {
 				SinkLogEvent event = pooledLogger.takeDelayedEvent();
 				pooledLogger.put(event);
@@ -47,5 +45,5 @@ class DelayedLoggingTask implements Runnable {
 					"Interrupted during delayed processing: shutting down: error.count={0}",
 					pooledLogger.exceptionCount.get(), e);
 		}
-    }
+	}
 }

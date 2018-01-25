@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2015 JKOOL, LLC.
+ * Copyright 2014-2018 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,12 +30,15 @@ import com.jkoolcloud.tnt4j.utils.Useconds;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
- * <p>Represents a timestamp that has microsecond accuracy. This timestamp also
- * implements Lamport clock synchronization algorithm see {@link UsecTimestamp#getLamportClock()}
- * and {@link UsecTimestamp#UsecTimestamp(long, long, long)}.</p>
+ * <p>
+ * Represents a timestamp that has microsecond accuracy. This timestamp also implements Lamport clock synchronization
+ * algorithm see {@link UsecTimestamp#getLamportClock()} and {@link UsecTimestamp#UsecTimestamp(long, long, long)}.
+ * </p>
  *
- * <p>Stores timestamp as <i>mmmmmmmmmm.uuu</i>, where <i>mmmmmmmmmm</i> is the
- * timestamp in milliseconds, and <i>uuu</i> is the fractional microseconds.</p>
+ * <p>
+ * Stores timestamp as <i>mmmmmmmmmm.uuu</i>, where <i>mmmmmmmmmm</i> is the timestamp in milliseconds, and <i>uuu</i>
+ * is the fractional microseconds.
+ * </p>
  *
  * @version $Revision: 6 $
  */
@@ -43,7 +46,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	private static final long serialVersionUID = 3658590467907047916L;
 
 	private static final String DFLT_JAVA_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
-	public  static final String DEFAULT_FORMAT   = DFLT_JAVA_FORMAT + "SSS z";
+	public static final String DEFAULT_FORMAT = DFLT_JAVA_FORMAT + "SSS z";
 
 	protected static AtomicLong LamportCounter = new AtomicLong(System.currentTimeMillis());
 
@@ -63,8 +66,10 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * Creates UsecTimestamp based on specified microsecond timestamp.
 	 *
-	 * @param usecTime timestamp, in microsecond
-	 * @throws IllegalArgumentException if usecTime is negative
+	 * @param usecTime
+	 *            timestamp, in microsecond
+	 * @throws IllegalArgumentException
+	 *             if usecTime is negative
 	 */
 	public UsecTimestamp(long usecTime) {
 		setTimeUsec(usecTime);
@@ -73,108 +78,131 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * Creates UsecTimestamp based on specified microsecond timestamp.
 	 *
-	 * @param usecTime timestamp, in microsecond
-	 * @throws IllegalArgumentException if usecTime is negative
+	 * @param usecTime
+	 *            timestamp, in microsecond
+	 * @throws IllegalArgumentException
+	 *             if usecTime is negative
 	 */
 	public UsecTimestamp(Number usecTime) {
 		setTimeUsec(usecTime.longValue());
 	}
 
 	/**
-	 * Creates UsecTimestamp based on specified millisecond timestamp
-	 * and fractional microsecond.
+	 * Creates UsecTimestamp based on specified millisecond timestamp and fractional microsecond.
 	 *
-	 * @param msecs timestamp, in milliseconds
-	 * @param usecs fraction microseconds
-	 * @throws IllegalArgumentException if any arguments are negative,
-	 *  or if usecs is greater than 999
+	 * @param msecs
+	 *            timestamp, in milliseconds
+	 * @param usecs
+	 *            fraction microseconds
+	 * @throws IllegalArgumentException
+	 *             if any arguments are negative, or if usecs is greater than 999
 	 */
 	public UsecTimestamp(long msecs, long usecs) {
 		setTimestampValues(msecs, usecs, 0);
 	}
 
 	/**
-	 * Creates UsecTimestamp based on specified millisecond timestamp
-	 * and fractional microsecond. This timestamp Lamport clock
-	 * will be computed based on the specified sender's Lamport clock
-	 * value.
+	 * Creates UsecTimestamp based on specified millisecond timestamp and fractional microsecond. This timestamp Lamport
+	 * clock will be computed based on the specified sender's Lamport clock value.
 	 *
-	 * @param msecs timestamp, in milliseconds
-	 * @param usecs fraction microseconds
-	 * @param recvdLamportClock Lamport clock of the received event (0 do not compute Lamport clock)
-	 * @throws IllegalArgumentException if any arguments are negative,
-	 *  or if usecs is greater than 999
+	 * @param msecs
+	 *            timestamp, in milliseconds
+	 * @param usecs
+	 *            fraction microseconds
+	 * @param recvdLamportClock
+	 *            Lamport clock of the received event (0 do not compute Lamport clock)
+	 * @throws IllegalArgumentException
+	 *             if any arguments are negative, or if usecs is greater than 999
 	 */
 	public UsecTimestamp(long msecs, long usecs, long recvdLamportClock) {
 		setTimestampValues(msecs, usecs, recvdLamportClock);
 	}
 
 	/**
-	 * Creates UsecTimestamp based on specified Timestamp, providing time in
-	 * seconds resolution, and fractional microsecond.
+	 * Creates UsecTimestamp based on specified Timestamp, providing time in seconds resolution, and fractional
+	 * microsecond.
 	 *
-	 * @param timestamp database timestamp, seconds resolution
-	 * @param usecs fraction microseconds
-	 * @throws NullPointerException if timestamp is <code>null</code>
-	 * @throws IllegalArgumentException if usecs is greater than 999999
+	 * @param timestamp
+	 *            database timestamp, seconds resolution
+	 * @param usecs
+	 *            fraction microseconds
+	 * @throws NullPointerException
+	 *             if timestamp is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if usecs is greater than 999999
 	 */
 	public UsecTimestamp(Timestamp timestamp, long usecs) {
 		initFromTimestamp(timestamp, usecs);
 	}
 
 	/**
-	 * <p>Creates UsecTimestamp from string representation of timestamp in the
-	 * specified format.</p>
-	 * <p>This is based on {@link SimpleDateFormat}, but extends its support to
-	 * recognize microsecond fractional seconds.  If number of fractional second
-	 * characters is greater than 3, then it's assumed to be microseconds.
-	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of
-	 * {@link SimpleDateFormat}.
+	 * <p>
+	 * Creates UsecTimestamp from string representation of timestamp in the specified format.
+	 * </p>
+	 * <p>
+	 * This is based on {@link SimpleDateFormat}, but extends its support to recognize microsecond fractional seconds.
+	 * If number of fractional second characters is greater than 3, then it's assumed to be microseconds. Otherwise,
+	 * it's assumed to be milliseconds (as this is the behavior of {@link SimpleDateFormat}.
 	 *
-	 * @param timeStampStr timestamp string
-	 * @throws NullPointerException if timeStampStr is {@code null}
-	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
-	 * @throws ParseException if failed to parse string based on specified format
+	 * @param timeStampStr
+	 *            timestamp string
+	 * @throws NullPointerException
+	 *             if timeStampStr is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if timeStampStr is not in the correct format
+	 * @throws ParseException
+	 *             if failed to parse string based on specified format
 	 */
 	public UsecTimestamp(String timeStampStr) throws ParseException {
 		this(timeStampStr, DEFAULT_FORMAT, TimeZone.getDefault());
 	}
 
 	/**
-	 * <p>Creates UsecTimestamp from string representation of timestamp in the
-	 * default format.</p>
-	 * <p>This is based on {@link SimpleDateFormat}, but extends its support to
-	 * recognize microsecond fractional seconds.  If number of fractional second
-	 * characters is greater than 3, then it's assumed to be microseconds.
-	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of
-	 * {@link SimpleDateFormat}.
+	 * <p>
+	 * Creates UsecTimestamp from string representation of timestamp in the default format.
+	 * </p>
+	 * <p>
+	 * This is based on {@link SimpleDateFormat}, but extends its support to recognize microsecond fractional seconds.
+	 * If number of fractional second characters is greater than 3, then it's assumed to be microseconds. Otherwise,
+	 * it's assumed to be milliseconds (as this is the behavior of {@link SimpleDateFormat}.
 	 *
-	 * @param timeStampStr timestamp string
-	 * @param formatStr format specification for timestamp string
-	 * @throws NullPointerException if timeStampStr is {@code null}
-	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
-	 * @throws ParseException if failed to parse string based on default format
+	 * @param timeStampStr
+	 *            timestamp string
+	 * @param formatStr
+	 *            format specification for timestamp string
+	 * @throws NullPointerException
+	 *             if timeStampStr is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if timeStampStr is not in the correct format
+	 * @throws ParseException
+	 *             if failed to parse string based on default format
 	 */
 	public UsecTimestamp(String timeStampStr, String formatStr) throws ParseException {
 		this(timeStampStr, formatStr, TimeZone.getDefault());
 	}
 
 	/**
-	 * <p>Creates UsecTimestamp from string representation of timestamp in the
-	 * specified format.</p>
-	 * <p>This is based on {@link SimpleDateFormat}, but extends its support to
-	 * recognize microsecond fractional seconds.  If number of fractional second
-	 * characters is greater than 3, then it's assumed to be microseconds.
-	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of
-	 * {@link SimpleDateFormat}.
+	 * <p>
+	 * Creates UsecTimestamp from string representation of timestamp in the specified format.
+	 * </p>
+	 * <p>
+	 * This is based on {@link SimpleDateFormat}, but extends its support to recognize microsecond fractional seconds.
+	 * If number of fractional second characters is greater than 3, then it's assumed to be microseconds. Otherwise,
+	 * it's assumed to be milliseconds (as this is the behavior of {@link SimpleDateFormat}.
 	 *
-	 * @param timeStampStr timestamp string
-	 * @param formatStr format specification for timestamp string
-	 * @param timeZoneId time zone that timeStampStr represents. This is only needed when formatStr does not include
-	 *                   time zone specification and timeStampStr does not represent a string in local time zone.
-	 * @throws NullPointerException if timeStampStr is {@code null}
-	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
-	 * @throws ParseException if failed to parse string based on specified format
+	 * @param timeStampStr
+	 *            timestamp string
+	 * @param formatStr
+	 *            format specification for timestamp string
+	 * @param timeZoneId
+	 *            time zone that timeStampStr represents. This is only needed when formatStr does not include time zone
+	 *            specification and timeStampStr does not represent a string in local time zone.
+	 * @throws NullPointerException
+	 *             if timeStampStr is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if timeStampStr is not in the correct format
+	 * @throws ParseException
+	 *             if failed to parse string based on specified format
 	 * @see java.util.TimeZone
 	 */
 	public UsecTimestamp(String timeStampStr, String formatStr, String timeZoneId) throws ParseException {
@@ -182,44 +210,59 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * <p>Creates UsecTimestamp from string representation of timestamp in the
-	 * specified format.</p>
-	 * <p>This is based on {@link SimpleDateFormat}, but extends its support to
-	 * recognize microsecond fractional seconds.  If number of fractional second
-	 * characters is greater than 3, then it's assumed to be microseconds.
-	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of
-	 * {@link SimpleDateFormat}.
+	 * <p>
+	 * Creates UsecTimestamp from string representation of timestamp in the specified format.
+	 * </p>
+	 * <p>
+	 * This is based on {@link SimpleDateFormat}, but extends its support to recognize microsecond fractional seconds.
+	 * If number of fractional second characters is greater than 3, then it's assumed to be microseconds. Otherwise,
+	 * it's assumed to be milliseconds (as this is the behavior of {@link SimpleDateFormat}.
 	 *
-	 * @param timeStampStr timestamp string
-	 * @param formatStr format specification for timestamp string
-	 * @param timeZoneId time zone that timeStampStr represents. This is only needed when formatStr does not include
-	 *                   time zone specification and timeStampStr does not represent a string in local time zone.
-	 * @param locale locale for date format to use.
-	 * @throws NullPointerException if timeStampStr is {@code null}
-	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
-	 * @throws ParseException if failed to parse string based on specified format
+	 * @param timeStampStr
+	 *            timestamp string
+	 * @param formatStr
+	 *            format specification for timestamp string
+	 * @param timeZoneId
+	 *            time zone that timeStampStr represents. This is only needed when formatStr does not include time zone
+	 *            specification and timeStampStr does not represent a string in local time zone.
+	 * @param locale
+	 *            locale for date format to use.
+	 * @throws NullPointerException
+	 *             if timeStampStr is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if timeStampStr is not in the correct format
+	 * @throws ParseException
+	 *             if failed to parse string based on specified format
 	 * @see java.util.TimeZone
 	 */
-	public UsecTimestamp(String timeStampStr, String formatStr, String timeZoneId, String locale) throws ParseException {
-		this(timeStampStr, formatStr, (StringUtils.isEmpty(timeZoneId) ? null : TimeZone.getTimeZone(timeZoneId)), locale);
+	public UsecTimestamp(String timeStampStr, String formatStr, String timeZoneId, String locale)
+			throws ParseException {
+		this(timeStampStr, formatStr, (StringUtils.isEmpty(timeZoneId) ? null : TimeZone.getTimeZone(timeZoneId)),
+				locale);
 	}
 
 	/**
-	 * <p>Creates UsecTimestamp from string representation of timestamp in the
-	 * specified format.</p>
-	 * <p>This is based on {@link SimpleDateFormat}, but extends its support to
-	 * recognize microsecond fractional seconds. If number of fractional second
-	 * characters is greater than 3, then it's assumed to be microseconds.
-	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of
-	 * {@link SimpleDateFormat}.
+	 * <p>
+	 * Creates UsecTimestamp from string representation of timestamp in the specified format.
+	 * </p>
+	 * <p>
+	 * This is based on {@link SimpleDateFormat}, but extends its support to recognize microsecond fractional seconds.
+	 * If number of fractional second characters is greater than 3, then it's assumed to be microseconds. Otherwise,
+	 * it's assumed to be milliseconds (as this is the behavior of {@link SimpleDateFormat}.
 	 *
-	 * @param timeStampStr timestamp string
-	 * @param formatStr format specification for timestamp string
-	 * @param timeZone time zone that timeStampStr represents. This is only needed when formatStr does not include
-	 *                   time zone specification and timeStampStr does not represent a string in local time zone.
-	 * @throws NullPointerException if timeStampStr is {@code null}
-	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
-	 * @throws ParseException if failed to parse string based on specified format
+	 * @param timeStampStr
+	 *            timestamp string
+	 * @param formatStr
+	 *            format specification for timestamp string
+	 * @param timeZone
+	 *            time zone that timeStampStr represents. This is only needed when formatStr does not include time zone
+	 *            specification and timeStampStr does not represent a string in local time zone.
+	 * @throws NullPointerException
+	 *             if timeStampStr is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if timeStampStr is not in the correct format
+	 * @throws ParseException
+	 *             if failed to parse string based on specified format
 	 * @see java.util.TimeZone
 	 */
 	public UsecTimestamp(String timeStampStr, String formatStr, TimeZone timeZone) throws ParseException {
@@ -227,27 +270,36 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * <p>Creates UsecTimestamp from string representation of timestamp in the
-	 * specified format.</p>
-	 * <p>This is based on {@link SimpleDateFormat}, but extends its support to
-	 * recognize microsecond fractional seconds. If number of fractional second
-	 * characters is greater than 3, then it's assumed to be microseconds.
-	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of
-	 * {@link SimpleDateFormat}.
+	 * <p>
+	 * Creates UsecTimestamp from string representation of timestamp in the specified format.
+	 * </p>
+	 * <p>
+	 * This is based on {@link SimpleDateFormat}, but extends its support to recognize microsecond fractional seconds.
+	 * If number of fractional second characters is greater than 3, then it's assumed to be microseconds. Otherwise,
+	 * it's assumed to be milliseconds (as this is the behavior of {@link SimpleDateFormat}.
 	 *
-	 * @param timeStampStr timestamp string
-	 * @param formatStr format specification for timestamp string
-	 * @param timeZone time zone that timeStampStr represents. This is only needed when formatStr does not include
-	 *                   time zone specification and timeStampStr does not represent a string in local time zone.
-	 * @param locale locale for date format to use.
-	 * @throws NullPointerException if timeStampStr is {@code null}
-	 * @throws IllegalArgumentException if timeStampStr is not in the correct format
-	 * @throws ParseException if failed to parse string based on specified format
+	 * @param timeStampStr
+	 *            timestamp string
+	 * @param formatStr
+	 *            format specification for timestamp string
+	 * @param timeZone
+	 *            time zone that timeStampStr represents. This is only needed when formatStr does not include time zone
+	 *            specification and timeStampStr does not represent a string in local time zone.
+	 * @param locale
+	 *            locale for date format to use.
+	 * @throws NullPointerException
+	 *             if timeStampStr is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if timeStampStr is not in the correct format
+	 * @throws ParseException
+	 *             if failed to parse string based on specified format
 	 * @see java.util.TimeZone
 	 */
-	public UsecTimestamp(String timeStampStr, String formatStr, TimeZone timeZone, String locale) throws ParseException {
-		if (timeStampStr == null)
+	public UsecTimestamp(String timeStampStr, String formatStr, TimeZone timeZone, String locale)
+			throws ParseException {
+		if (timeStampStr == null) {
 			throw new NullPointerException("timeStampStr must be non-null");
+		}
 
 		int usecs = 0;
 
@@ -255,46 +307,49 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 
 		if (StringUtils.isEmpty(formatStr)) {
 			dateFormat = new SimpleDateFormat();
-		}
-		else {
+		} else {
 			// Java date formatter cannot deal with usecs, so we need to extract those ourselves
 			int fmtPos = formatStr.indexOf('S');
 			if (fmtPos > 0) {
 				int endFmtPos = formatStr.lastIndexOf('S');
 				int fmtFracSecLen = endFmtPos - fmtPos + 1;
 
-				if (fmtFracSecLen > 6)
-					throw new ParseException("Date format containing more than 6 significant digits for fractional seconds is not supported", 0);
+				if (fmtFracSecLen > 6) {
+					throw new ParseException(
+							"Date format containing more than 6 significant digits for fractional seconds is not supported",
+							0);
+				}
 
 				StringBuilder sb = new StringBuilder();
 				int usecPos = timeStampStr.lastIndexOf('.') + 1;
 				int usecEndPos;
 				if (usecPos > 2) {
 					for (usecEndPos = usecPos; usecEndPos < timeStampStr.length(); usecEndPos++) {
-						if (!StringUtils.containsAny("0123456789", timeStampStr.charAt(usecEndPos)))
+						if (!StringUtils.containsAny("0123456789", timeStampStr.charAt(usecEndPos))) {
 							break;
+						}
 					}
 
 					if (fmtFracSecLen > 3) {
 						// format specification represents more than milliseconds, assume microseconds
 						String usecStr = String.format("%s", timeStampStr.substring(usecPos, usecEndPos));
-						if (usecStr.length() < fmtFracSecLen)
+						if (usecStr.length() < fmtFracSecLen) {
 							usecStr = StringUtils.rightPad(usecStr, fmtFracSecLen, '0');
-						else if (usecStr.length() > fmtFracSecLen)
+						} else if (usecStr.length() > fmtFracSecLen) {
 							usecStr = usecStr.substring(0, fmtFracSecLen);
+						}
 						usecs = Integer.parseInt(usecStr);
 
 						// trim off fractional part < microseconds from both timestamp and format strings
 						sb.append(timeStampStr);
-						sb.delete(usecPos-1, usecEndPos);
+						sb.delete(usecPos - 1, usecEndPos);
 						timeStampStr = sb.toString();
 
 						sb.setLength(0);
 						sb.append(formatStr);
-						sb.delete(fmtPos-1, endFmtPos+1);
+						sb.delete(fmtPos - 1, endFmtPos + 1);
 						formatStr = sb.toString();
-					}
-					else if ((usecEndPos - usecPos) < 3) {
+					} else if ((usecEndPos - usecPos) < 3) {
 						// pad msec value in date string with 0's so that it is 3 digits long
 						sb.append(timeStampStr);
 						while ((usecEndPos - usecPos) < 3) {
@@ -306,14 +361,14 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 				}
 			}
 
-			dateFormat = StringUtils.isEmpty(locale)
-					? new SimpleDateFormat(formatStr)
+			dateFormat = StringUtils.isEmpty(locale) ? new SimpleDateFormat(formatStr)
 					: new SimpleDateFormat(formatStr, Utils.getLocale(locale));
 		}
 
 		dateFormat.setLenient(true);
-		if (timeZone != null)
+		if (timeZone != null) {
 			dateFormat.setTimeZone(timeZone);
+		}
 
 		Date date = dateFormat.parse(timeStampStr);
 
@@ -325,17 +380,17 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * Creates UsecTimestamp based on specified UsecTimestamp.
 	 *
 	 * @param other timestamp to copy
-	 * @throws NullPointerException if timestamp is <code>null</code>
+	 * @throws NullPointerException if timestamp is {@code null}
 	 */
 	public UsecTimestamp(UsecTimestamp other) {
 		this(other.msecs, other.usecs, other.getLamportClock());
 	}
 
 	/**
-	 * Creates UsecTimestamp based on specified UsecTimestamp.
+	 * Creates UsecTimestamp based on specified Date.
 	 *
 	 * @param date timestamp to copy
-	 * @throws NullPointerException if date is <code>null</code>
+	 * @throws NullPointerException if date is {@code null}
 	 */
 	public UsecTimestamp(Date date) {
 		setTimestampValues(date.getTime(), 0, 0);
@@ -369,11 +424,12 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @throws IllegalArgumentException if usecTime is negative
 	 */
 	public UsecTimestamp setTimeUsec(long usecTime) {
-		if (usecTime < 0)
+		if (usecTime < 0) {
 			throw new IllegalArgumentException("usecTime must be non-negative");
+                }
 
 		this.msecs = usecTime / 1000L;
-		this.usecs = (int)(usecTime - (this.msecs * 1000));
+		this.usecs = (int) (usecTime - (this.msecs * 1000));
 		return this;
 	}
 
@@ -381,17 +437,19 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @see #UsecTimestamp(Timestamp, long)
 	 */
 	private void initFromTimestamp(Timestamp timestamp, long usecs) {
-		if (timestamp == null)
+		if (timestamp == null) {
 			throw new NullPointerException("timestamp must be non-null");
-		if (usecs < 0 || usecs > 999999)
+		}
+		if (usecs < 0 || usecs > 999999) {
 			throw new IllegalArgumentException("usecs must be in the range [0,999999], inclusive");
+		}
 
 		this.msecs = timestamp.getTime();
 		if (usecs > 999) {
 			// extract milliseconds portion from usecs and add to msecs
-			long msecs = usecs/1000;
+			long msecs = usecs / 1000;
 			this.msecs += msecs;
-			usecs -= msecs*1000;
+			usecs -= msecs * 1000;
 		}
 		this.usecs = usecs;
 	}
@@ -407,10 +465,12 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 *  or if usecs is greater than 999
 	 */
 	protected void setTimestampValues(long msecs, long usecs, long recvdLamportClock) {
-		if (msecs < 0)
+		if (msecs < 0) {
 			throw new IllegalArgumentException("msecs must be non-negative");
-		if (usecs < 0 || usecs > 999)
+                }
+		if (usecs < 0 || usecs > 999) {
 			throw new IllegalArgumentException("usecs must be in the range [0,999], inclusive");
+		}
 
 		this.msecs = msecs;
 		this.usecs = usecs;
@@ -468,7 +528,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 */
 	@Override
 	public int intValue() {
-		return (int)getTimeUsec();
+		return (int) getTimeUsec();
 	}
 
 	/**
@@ -520,7 +580,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return fractional microseconds
 	 */
 	public long getSecUsecPart() {
-		int msec = (int)(msecs - (msecs/1000)*1000);
+		int msec = (int) (msecs - (msecs / 1000) * 1000);
 		return (msec * 1000) + usecs;
 	}
 
@@ -541,10 +601,12 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @throws IllegalArgumentException if any arguments are negative
 	 */
 	public void add(long msecs, long usecs) {
-		if (msecs < 0)
+		if (msecs < 0) {
 			throw new IllegalArgumentException("msecs must be non-negative");
-		if (usecs < 0)
+                }
+		if (usecs < 0) {
 			throw new IllegalArgumentException("usecs must be non-negative");
+                }
 
 		if (usecs > 999) {
 			long ms = usecs / 1000;
@@ -580,10 +642,12 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @throws IllegalArgumentException if any arguments are negative
 	 */
 	public void subtract(long msecs, long usecs) {
-		if (msecs < 0)
+		if (msecs < 0) {
 			throw new IllegalArgumentException("msecs must be non-negative");
-		if (usecs < 0)
+                }
+		if (usecs < 0) {
 			throw new IllegalArgumentException("usecs must be non-negative");
+                }
 
 		if (usecs > 999) {
 			long ms = usecs / 1000;
@@ -600,7 +664,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		}
 
 		this.msecs = thisMsecs - msecs;
-		this.usecs = thisUsecs - (int)usecs;
+		this.usecs = thisUsecs - (int) usecs;
 	}
 
 	/**
@@ -667,8 +731,8 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(String pattern, long usecs) {
-		long msecs = usecs/1000L;
-		return getTimeStamp(pattern, msecs, (usecs - msecs*1000));
+		long msecs = usecs / 1000L;
+		return getTimeStamp(pattern, msecs, (usecs - msecs * 1000));
 	}
 
 	/**
@@ -679,8 +743,8 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(long usecs) {
-		long msecs = usecs/1000L;
-		return getTimeStamp(null, msecs, (usecs - msecs*1000));
+		long msecs = usecs / 1000L;
+		return getTimeStamp(null, msecs, (usecs - msecs * 1000));
 	}
 
 	/**
@@ -722,7 +786,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		String tsStr = null;
 
 		if (pattern == null) {
-			SimpleDateFormat df = new SimpleDateFormat(DFLT_JAVA_FORMAT + String.format("%03d",usecs) + " z");
+			SimpleDateFormat df = new SimpleDateFormat(DFLT_JAVA_FORMAT + String.format("%03d", usecs) + " z");
 			df.setTimeZone(tz);
 			tsStr = df.format(new Date(msecs));
 		}
@@ -747,37 +811,32 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		return tsStr.replace(" Z", " 00:00");
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int compareTo(UsecTimestamp other) {
-		if (msecs < other.msecs)
+		if (msecs < other.msecs) {
 			return -1;
-		if (msecs > other.msecs)
+		}
+		if (msecs > other.msecs) {
 			return 1;
-		if (usecs < other.usecs)
+		}
+		if (usecs < other.usecs) {
 			return -1;
-		if (usecs > other.usecs)
+		}
+		if (usecs > other.usecs) {
 			return 1;
+		}
 
 		return 0;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
+		int prime = 31;
 		long result = 1;
 
 		result = prime * result + (int) (msecs ^ (msecs >>> 32));
@@ -786,25 +845,27 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		return (int) result;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (!(obj instanceof UsecTimestamp))
+		}
+		if (!(obj instanceof UsecTimestamp)) {
 			return false;
+		}
 
-		final UsecTimestamp other = (UsecTimestamp) obj;
+		UsecTimestamp other = (UsecTimestamp) obj;
 
-		if (msecs != other.msecs)
+		if (msecs != other.msecs) {
 			return false;
+		}
 
-		if (usecs != other.usecs)
+		if (usecs != other.usecs) {
 			return false;
+		}
 
 		return true;
 	}
