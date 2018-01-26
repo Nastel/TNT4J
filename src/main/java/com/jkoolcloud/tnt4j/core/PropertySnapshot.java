@@ -172,7 +172,7 @@ public class PropertySnapshot implements Snapshot {
 	 * @return reference to this snapshot
 	 */
 	public PropertySnapshot add(String key, Object value, boolean transient_) {
-		this.add(new Property(key, value, transient_));
+		this.add((Object) key, value, transient_);
 		return this;
 	}
 
@@ -202,8 +202,9 @@ public class PropertySnapshot implements Snapshot {
 	 *            flag indicating whether property is transient
 	 * @return reference to this snapshot
 	 */
+	@Override
 	public PropertySnapshot add(Object key, Object value, boolean transient_) {
-		this.add(new Property(key.toString(), value, transient_));
+		this.add(new Property(String.valueOf(key), value, transient_));
 		return this;
 	}
 

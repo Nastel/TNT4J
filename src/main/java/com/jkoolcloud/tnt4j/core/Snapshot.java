@@ -103,6 +103,19 @@ public interface Snapshot extends Trackable {
 	 *            object to be removed
 	 * @param value
 	 *            property value
+	 * @param _transient
+	 *            flag indicating whether property is transient
+	 * @return snapshot instance
+	 */
+	Snapshot add(Object key, Object value, boolean _transient);
+
+	/**
+	 * Adds a property to the snapshot
+	 *
+	 * @param key
+	 *            object to be removed
+	 * @param value
+	 *            property value
 	 * @param valType
 	 *            value type such as (currency, percent). {@link ValueTypes}.
 	 * @return snapshot instance
