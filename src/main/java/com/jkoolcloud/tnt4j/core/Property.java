@@ -15,6 +15,8 @@
  */
 package com.jkoolcloud.tnt4j.core;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.Date;
 
 /**
@@ -206,6 +208,10 @@ public class Property {
 			return "char";
 		} else if (value instanceof Date) {
 			return "date";
+		} else if (value instanceof BigInteger) {
+			return "long";
+		} else if (value instanceof BigDecimal) {
+			return "double";
 		} else if (value != null) {
 			return value.getClass().getSimpleName();
 		} else {
