@@ -16,6 +16,8 @@
 package com.jkoolcloud.tnt4j.config;
 
 import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -416,27 +418,30 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	private BufferedReader getConfigReader(String fileName) throws IOException {
-		BufferedReader reader = null;
 		IOException exc = null;
-
-		try {
-			if (fileName != null) {
-				reader = new BufferedReader(new FileReader(fileName));
-				return reader;
+		if (fileName != null) {
+			try {
+				try {
+					URL cfgResource = new URL(fileName);
+					return new BufferedReader(new InputStreamReader(cfgResource.openStream()));
+				} catch (MalformedURLException ioe) {
+					return new BufferedReader(new FileReader(fileName));
+				}
+			} catch (IOException ioe) {
+				exc = ioe;
 			}
-		} catch (IOException err) {
-			exc = err;
 		}
 
 		String tnt4jResource = "/" + TNT4J_PROPERTIES;
 		InputStream ins = getClass().getResourceAsStream(tnt4jResource);
 		if (ins == null) {
 			FileNotFoundException ioe = new FileNotFoundException("Resource '" + tnt4jResource + "' not found");
-			ioe.initCause(exc);
+			if (exc != null) {
+				ioe.initCause(exc);
+			}
 			throw ioe;
 		}
-		reader = new BufferedReader(new InputStreamReader(ins));
-		return reader;
+		return new BufferedReader(new InputStreamReader(ins));
 	}
 
 	private Properties readStanza(BufferedReader reader) throws IOException {
