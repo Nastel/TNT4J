@@ -1395,4 +1395,81 @@ public class Utils {
 			return Double.isInfinite(dValue) || Double.isNaN(dValue);
 		}
 	}
+
+	/**
+	 * Returns the appropriate string representation for the specified object.
+	 *
+	 * @param value
+	 *            object to convert to string representation
+	 *
+	 * @return string representation of object
+	 */
+	public static String toString(Object value) {
+		if (value instanceof int[]) {
+			return Arrays.toString((int[]) value);
+		}
+		if (value instanceof byte[]) {
+			return Arrays.toString((byte[]) value);
+		}
+		if (value instanceof char[]) {
+			return Arrays.toString((char[]) value);
+		}
+		if (value instanceof long[]) {
+			return Arrays.toString((long[]) value);
+		}
+		if (value instanceof float[]) {
+			return Arrays.toString((float[]) value);
+		}
+		if (value instanceof short[]) {
+			return Arrays.toString((short[]) value);
+		}
+		if (value instanceof double[]) {
+			return Arrays.toString((double[]) value);
+		}
+		if (value instanceof boolean[]) {
+			return Arrays.toString((boolean[]) value);
+		}
+		if (value instanceof Object[]) {
+			return toStringDeep((Object[]) value);
+		}
+		if (value instanceof Collection) {
+			Collection<?> c = (Collection<?>) value;
+			return toString(c.toArray());
+		}
+		if (value instanceof Map) {
+			Map<?, ?> m = (Map<?, ?>) value;
+			return toString(m.entrySet());
+		}
+
+		return String.valueOf(value);
+	}
+
+	/**
+	 * Returns the appropriate string representation for the specified array.
+	 *
+	 * @param a
+	 *            array to convert to string representation
+	 *
+	 * @return string representation of array
+	 */
+	public static String toStringDeep(Object[] a) {
+		if (a == null) {
+			return "null"; // NON-NLS
+		}
+
+		int iMax = a.length - 1;
+		if (iMax == -1) {
+			return "[]"; // NON-NLS
+		}
+
+		StringBuilder b = new StringBuilder(128);
+		b.append('[');
+		for (int i = 0;; i++) {
+			b.append(toString(a[i]));
+			if (i == iMax) {
+				return b.append(']').toString();
+			}
+			b.append(", "); // NON-NLS
+		}
+	}
 }

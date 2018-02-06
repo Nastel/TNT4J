@@ -115,7 +115,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			jsonString.append(START_JSON);
 			jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
 
-			String msgText = StringEscapeUtils.escapeJson(Utils.format(obj.toString(), args)); // escape double quote chars
+			String msgText = StringEscapeUtils.escapeJson(Utils.format(Utils.toString(obj), args)); // escape double quote chars
 			jsonString.append(JSON_MSG_TEXT_LABEL).append(ATTR_SEP);
 			Utils.quote(msgText, jsonString);
 			jsonString.append(END_JSON);
@@ -530,7 +530,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		if (value instanceof Number && doMaintainSpecials(value)) {
 			jsonString.append(JSON_VALUE_LABEL).append(ATTR_SEP).append(value);
 		} else {
-			String valueText = StringEscapeUtils.escapeJson(String.valueOf(value));
+			String valueText = StringEscapeUtils.escapeJson(Utils.toString(value));
 			jsonString.append(JSON_VALUE_LABEL).append(ATTR_SEP);
 			Utils.quote(valueText, jsonString);
 		}
@@ -623,7 +623,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		if (items == null) {
 			return EMPTY_STR;
 		}
-		StringBuilder json = new StringBuilder(2048);
+		StringBuilder jsonString = new StringBuilder(2048);
 		for (Object item : items) {
 			String itemJSON;
 			if (item instanceof TrackingEvent) {
@@ -635,15 +635,15 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			} else if (item instanceof Property) {
 				itemJSON = format((Property) item);
 			} else {
-				itemJSON = Utils.quote(StringEscapeUtils.escapeJson(String.valueOf(item))); // escape double quote chars
+				itemJSON = Utils.quote(StringEscapeUtils.escapeJson(Utils.toString(item))); // escape double quote chars
 			}
 
 			if (StringUtils.isNotEmpty(itemJSON)) {
-				addDelimiterOnDemand(json, ATTR_JSON);
-				json.append(itemJSON);
+				addDelimiterOnDemand(jsonString, ATTR_JSON);
+				jsonString.append(itemJSON);
 			}
 		}
-		return json.toString();
+		return jsonString.toString();
 	}
 
 	private static void addDelimiterOnDemand(StringBuilder json, String delimiter) {
