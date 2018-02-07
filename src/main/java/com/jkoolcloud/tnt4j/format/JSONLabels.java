@@ -19,8 +19,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
- * This interface defines all labels used for generating TNT4J JSON
- * messages.
+ * This interface defines all labels used for generating TNT4J JSON messages.
  * </p>
  *
  * @version $Revision: 1 $
@@ -46,7 +45,7 @@ interface JSONLabels {
 	String JSON_SOURCE_FIELD = "source";
 	String JSON_SOURCE_URL_FIELD = "source-url";
 	String JSON_SOURCE_FQN_FIELD = "source-fqn";
-	String JSON_SOURCE_SSN_FIELD = "source-ssn";	
+	String JSON_SOURCE_SSN_FIELD = "source-ssn";
 	String JSON_RELATE_FQN_A_FIELD = "relate-afqn";
 	String JSON_RELATE_FQN_B_FIELD = "relate-bfqn";
 	String JSON_RELATE_TYPE_FIELD = "relate-type";
@@ -101,7 +100,7 @@ interface JSONLabels {
 	String JSON_SOURCE_FQN_LABEL = Utils.quote(JSON_SOURCE_FQN_FIELD);
 	String JSON_RELATE_FQN_A_LABEL = Utils.quote(JSON_RELATE_FQN_A_FIELD);
 	String JSON_RELATE_FQN_B_LABEL = Utils.quote(JSON_RELATE_FQN_B_FIELD);
-	String JSON_RELATE_TYPE_LABEL = Utils.quote(JSON_RELATE_TYPE_FIELD);	
+	String JSON_RELATE_TYPE_LABEL = Utils.quote(JSON_RELATE_TYPE_FIELD);
 	String JSON_SOURCE_SSN_LABEL = Utils.quote(JSON_SOURCE_SSN_FIELD);
 	String JSON_RESOURCE_LABEL = Utils.quote(JSON_RESOURCE_FIELD);
 	String JSON_OPERATION_LABEL = Utils.quote(JSON_OPERATION_FIELD);

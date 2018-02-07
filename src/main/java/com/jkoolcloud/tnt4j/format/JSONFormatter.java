@@ -65,14 +65,14 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	protected static final String ARRAY_START_LINE = "[\n";
 
 	private Map<String, Object> config = null;
-	private boolean newLineFormat = true;
-	private String defOpName = DEF_OP_NAME;
-	private SpecNumbersHandling specialNumbersHandling = SpecNumbersHandling.SUPPRESS;
+	protected boolean newLineFormat = true;
+	protected String defOpName = DEF_OP_NAME;
+	protected SpecNumbersHandling specialNumbersHandling = SpecNumbersHandling.SUPPRESS;
 
-	private String START_JSON = START_LINE;
-	private String END_JSON = END_LINE;
-	private String ATTR_JSON = ATTR_END_LINE;
-	private String ARRAY_START_JSON = ARRAY_START_LINE;
+	protected String START_JSON = START_LINE;
+	protected String END_JSON = END_LINE;
+	protected String ATTR_JSON = ATTR_END_LINE;
+	protected String ARRAY_START_JSON = ARRAY_START_LINE;
 
 	/**
 	 * Create JSON formatter without newlines during formatting
@@ -538,11 +538,27 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		return jsonString.toString();
 	}
 
-	private boolean doSuppressSpecials(Object value) {
+	/**
+	 * Checks whether provided {@code value} is special numeric value and if formatter is configured to suppress these
+	 * values.
+	 *
+	 * @param value
+	 *            value to check
+	 * @return {@code true} if value is special and should be suppressed, {@code false} - otherwise
+	 */
+	protected boolean doSuppressSpecials(Object value) {
 		return specialNumbersHandling == SpecNumbersHandling.SUPPRESS && isSpecial(value);
 	}
 
-	private boolean doMaintainSpecials(Object value) {
+	/**
+	 * Checks whether provided {@code value} is special numeric value and if formatter is configured to maintain these
+	 * values.
+	 *
+	 * @param value
+	 *            value to check
+	 * @return {@code true} if value is special and should be maintained, {@code false} - otherwise
+	 */
+	protected boolean doMaintainSpecials(Object value) {
 		return specialNumbersHandling == SpecNumbersHandling.MAINTAIN && isSpecial(value);
 	}
 
@@ -619,7 +635,14 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		return jsonString.toString();
 	}
 
-	private String itemsToJSON(Collection<?> items) {
+	/**
+	 * Builds string reforestation of provided activity entity {@code items} collection.
+	 *
+	 * @param items
+	 *            collection of activity entity items
+	 * @return string representation of activity enmity items collection
+	 */
+	protected String itemsToJSON(Collection<?> items) {
 		if (items == null) {
 			return EMPTY_STR;
 		}
@@ -675,7 +698,14 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		initTags();
 	}
 
-	private static String getSSN(Source source) {
+	/**
+	 * Builds string representation of provided {@code source}.
+	 *
+	 * @param source
+	 *            source instance
+	 * @return string representation of source
+	 */
+	protected static String getSSN(Source source) {
 		String ssn = source.getSSN();
 		return Utils.isEmpty(ssn) ? source.getSourceFactory().getSSN() : ssn;
 	}
