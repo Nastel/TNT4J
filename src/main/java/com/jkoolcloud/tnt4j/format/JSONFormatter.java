@@ -513,7 +513,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 
 		Object value = prop.getValue();
 
-		if (doSuppressSpecials(value)) {
+		if (isSpecialSuppress(value)) {
 			return EMPTY_STR;
 		}
 
@@ -527,12 +527,25 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			jsonString.append(JSON_VALUE_TYPE_LABEL).append(ATTR_SEP);
 			Utils.quote(prop.getValueType(), jsonString).append(ATTR_JSON);
 		}
-		if (value instanceof Number && doMaintainSpecials(value)) {
-			jsonString.append(JSON_VALUE_LABEL).append(ATTR_SEP).append(value);
-		} else {
-			String valueText = StringEscapeUtils.escapeJson(Utils.toString(value));
-			jsonString.append(JSON_VALUE_LABEL).append(ATTR_SEP);
-			Utils.quote(valueText, jsonString);
+
+		jsonString.append(JSON_VALUE_LABEL).append(ATTR_SEP);
+
+		boolean valueAdded = false;
+		if (value == null) {
+			jsonString.append(value);
+			valueAdded = true;
+		} else if (value instanceof Number) {
+			if (!isSpecialEnquote(value)) {
+				jsonString.append(value);
+				valueAdded = true;
+			}
+		} else if (value instanceof Boolean) {
+			jsonString.append(value);
+			valueAdded = true;
+		}
+
+		if (!valueAdded) {
+			Utils.quote(StringEscapeUtils.escapeJson(Utils.toString(value)), jsonString);
 		}
 		jsonString.append(END_JSON);
 		return jsonString.toString();
@@ -546,20 +559,20 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	 *            value to check
 	 * @return {@code true} if value is special and should be suppressed, {@code false} - otherwise
 	 */
-	protected boolean doSuppressSpecials(Object value) {
+	protected boolean isSpecialSuppress(Object value) {
 		return specialNumbersHandling == SpecNumbersHandling.SUPPRESS && isSpecial(value);
 	}
 
 	/**
-	 * Checks whether provided {@code value} is special numeric value and if formatter is configured to maintain these
+	 * Checks whether provided {@code value} is special numeric value and if formatter is configured to enquote these
 	 * values.
 	 *
 	 * @param value
 	 *            value to check
-	 * @return {@code true} if value is special and should be maintained, {@code false} - otherwise
+	 * @return {@code true} if value is special and should be enquoted, {@code false} - otherwise
 	 */
-	protected boolean doMaintainSpecials(Object value) {
-		return specialNumbersHandling == SpecNumbersHandling.MAINTAIN && isSpecial(value);
+	protected boolean isSpecialEnquote(Object value) {
+		return specialNumbersHandling == SpecNumbersHandling.ENQUOTE && isSpecial(value);
 	}
 
 	private static boolean isSpecial(Object value) {
