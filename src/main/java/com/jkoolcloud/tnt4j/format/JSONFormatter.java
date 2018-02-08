@@ -517,7 +517,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			return EMPTY_STR;
 		}
 
-		StringBuilder jsonString = new StringBuilder(1024);
+		StringBuilder jsonString = new StringBuilder(256);
 		jsonString.append(START_JSON);
 		jsonString.append(JSON_NAME_LABEL).append(ATTR_SEP);
 		Utils.quote(StringEscapeUtils.escapeJson(prop.getKey()), jsonString).append(ATTR_JSON);
@@ -527,28 +527,25 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			jsonString.append(JSON_VALUE_TYPE_LABEL).append(ATTR_SEP);
 			Utils.quote(prop.getValueType(), jsonString).append(ATTR_JSON);
 		}
-
 		jsonString.append(JSON_VALUE_LABEL).append(ATTR_SEP);
-
-		boolean valueAdded = false;
-		if (value == null) {
+		if (isNoNeedToQuote(value)) {
 			jsonString.append(value);
-			valueAdded = true;
-		} else if (value instanceof Number) {
-			if (!isSpecialEnquote(value)) {
-				jsonString.append(value);
-				valueAdded = true;
-			}
-		} else if (value instanceof Boolean) {
-			jsonString.append(value);
-			valueAdded = true;
-		}
-
-		if (!valueAdded) {
+		} else {
 			Utils.quote(StringEscapeUtils.escapeJson(Utils.toString(value)), jsonString);
 		}
 		jsonString.append(END_JSON);
 		return jsonString.toString();
+	}
+
+	/**
+	 * Checks whether provided {@code value} can be un-quoted in produced JSON.
+	 *
+	 * @param value
+	 *            value to check
+	 * @return {@code true} if value is one of: {@code null}, boolean, number, {@code false} - otherwise
+	 */
+	protected boolean isNoNeedToQuote(Object value) {
+		return value == null || value instanceof Boolean || (value instanceof Number && !isSpecialEnquote(value));
 	}
 
 	/**
