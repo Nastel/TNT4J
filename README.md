@@ -1,6 +1,7 @@
 TNT4J -- Track and Trace API for Java
 =======================================
-TNT4J is about tracking and tracing applications, activities, transactions, behavior and performance via an easy to use API that behaves much like a logging framework.
+TNT4J is about tracking and tracing applications, activities, transactions, behavior and performance via an easy to use API that behaves 
+much like a logging framework.
 
 Why track and trace your applications?
 * Track application behavior, performance to improve diagnostics
@@ -26,7 +27,8 @@ try {
    logger.error("Failed to process request={0}", request_id, ex);
 }
 ```
-Below is an example of using correlator and a relative class marker to locate caller's method call on the stack -- `$my.package.myclass:0`. This marker will resolve to the caller's method name above all the calls that start with `$my.package.myclass`.
+Below is an example of using correlator and a relative class marker to locate caller's method call on the stack -- `$my.package.myclass:0`. 
+This marker will resolve to the caller's method name above all the calls that start with `$my.package.myclass`.
 
 ```java
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
@@ -130,7 +132,8 @@ TNT4J provides SLF4J event sink implementation via `com.jkoolcloud.tnt4j.sink.im
 Other logging frameworks can be supported by implementing `EventSinkFactory` & `EventSink` interfaces. 
 TNT4J default integration is with SLF4J/SimpleLogger. 
 
-All TNT4J messages can be routed via a SLF4J event sink and therefore can take advantage of the underlying logging frameworks supported by SLF4J. 
+All TNT4J messages can be routed via a SLF4J event sink and therefore can take advantage of the underlying logging frameworks supported by 
+SLF4J. 
 
 Developers may also enrich event messages and pass context to TNT4J using hash tag enrichment scheme.
 Hash tags are used to decorate event messages with important meta data about each log message. 
@@ -141,9 +144,13 @@ logger.warn("First log message #app=" + Log4JTest.class.getName() + ", #msg='1 T
 logger.error("Second log message #app=" + Log4JTest.class.getName() + ", #msg='2 Test error message'", new Exception("test exception"));
 logger.info("Ending a tnt4j activity #end=Test, #app=" + Log4JTest.class.getName() + " #%i/order-no=" + orderNo  + " #%d:currency/amount=" + amount);
 ```
-Above example groups messages between first and last into a related logical collection called `Activity`. Activity is a collection of logically related events/messages. Hash tags `#beg`, `#end` are used to demarcate activity boundaries. This method also supports nested activities.
+Above example groups messages between first and last into a related logical collection called `Activity`. Activity is a collection of 
+logically related events/messages. Hash tags `#beg`, `#end` are used to demarcate activity boundaries. This method also supports nested 
+activities.
 
-User defined fields can be reported using `#[data-type][:value-type]/your-metric-name=your-value` convention (e.g. `#%i/order-no=62627` or `#%d:currency/amount=50.45`). 
+User defined fields can be reported using `#[data-type][:value-type]/your-metric-name=your-value` convention (e.g. `#%i/order-no=62627` or 
+`#%d:currency/amount=50.45`). 
+
 `TNT4JAppender` supports the following optional `data-type` qualifiers:
 ```
 	%i/ -- integer
@@ -170,11 +177,13 @@ Not specifying a qualifier defaults to auto detection of type by `TNT4JAppender`
 First `number` qualifier is tested and defaults to `string` if the test fails (e.g. `#order-no=62627`). 
 
 ### Performance
-No need to concatenate messages before logging. String concatenation is expensive especially in loops. Simply log using message patterns as follows and TNT4J will resolve the message only if it actually gets logged:
+No need to concatenate messages before logging. String concatenation is expensive especially in loops. Simply log using message patterns as 
+follows and TNT4J will resolve the message only if it actually gets logged:
 ```java
 logger.debug("My message {0}, {1}, {2}", arg0, arg1, arg3);
 ```
-TNT4J enhances logging performance by supporting asynchronous pooled logging, which delegates logging to a dedicated thread pool. Use `BufferedEventSinkFactory` in your `tnt4.properties` configuration to enable this feature. See example below: 
+TNT4J enhances logging performance by supporting asynchronous pooled logging, which delegates logging to a dedicated thread pool. Use 
+`BufferedEventSinkFactory` in your `tnt4.properties` configuration to enable this feature. See example below: 
 ```
 ...
 event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.BufferedEventSinkFactory
@@ -183,7 +192,8 @@ event.sink.factory.EventSinkFactory: com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JE
 ...
 ```
 ### Secure
-TNT4J supports communication using various protocols including HTTPS.  This ensures that data is encrypted. This includes streaming on-premise, in a hybrid cloud or pure cloud based configuration.
+TNT4J supports communication using various protocols including HTTPS.  This ensures that data is encrypted. This includes streaming 
+on-premise, in a hybrid cloud or pure cloud based configuration.
 See example below: 
 ```
 ...
@@ -191,7 +201,8 @@ event.sink.factory.EventSinkFactory.Url: https://data.jkoolcloud.com
 ...
 ```
 ### Simplicity & Clean Code
-No need to check for `isDebugEnabled()` before logging messages. Just register your own `SinkEventFilter` and consolidate all checking into a single listener.
+No need to check for `isDebugEnabled()` before logging messages. Just register your own `SinkEventFilter` and consolidate all checking into 
+a single listener.
 ```java	
 logger.addSinkEventFilter(new MyLogFilter()); 
 ...
@@ -201,8 +212,10 @@ logger.debug("My message {0}, {1}, {2}", arg0, arg1, arg2);
 All conditional logging can be consolidated into a single listener object. 
 
 ### Flexible Filtering
-Filter out not only based on category/severity (as slf4j), but also based on performance objectives. Example: log events only if their elapsed time or wait times are greater than a ceratin value. TNT4J allows users to register filters within `tnt4j.properties` without changing application code. Create your own filters which would allow you to filter events out based on user defined criteria and inject filters using `tnt4j.properties`.
-See  `tnt4j.properties` and `com.jkoolcloud.tnt4j.filters.EventLevelTimeFilter` for details.
+Filter out not only based on category/severity (as slf4j), but also based on performance objectives. Example: log events only if their 
+elapsed time or wait times are greater than a certain value. TNT4J allows users to register filters within `tnt4j.properties` without 
+changing application code. Create your own filters which would allow you to filter events out based on user defined criteria and inject 
+filters using `tnt4j.properties`. See  `tnt4j.properties` and `com.jkoolcloud.tnt4j.filters.EventLevelTimeFilter` for details.
 Register filters via declarations in `tnt4j.properties` or in your application by creating your own event filter.
 ```java
 logger.addSinkEventFilter(new ThresholdEventFilter(OpLevel.WARNING));
@@ -242,7 +255,8 @@ public class ThresholdEventFilter implements SinkEventFilter {
 ```
 
 ### Granular conditional logging
-Log only what matters. Increase performance of your applications by decreasing the amount of logging your application produces while increasing the relevance and quality of the output.
+Log only what matters. Increase performance of your applications by decreasing the amount of logging your application produces while 
+increasing the relevance and quality of the output.
 
 ```java
 if (logger.isSet(OpLevel.DEBUG)) {
@@ -253,8 +267,9 @@ if (logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue)) {
 }
 ```
 
-Checking a global debug flag is not granular enough for most applications. Many java apps require granular tracking to log only what matters based on specific context.
-Consolidate conditional checks (`logger.isSet()`) into `SinkEventFilter` implementation and register with the tracker instance.
+Checking a global debug flag is not granular enough for most applications. Many java apps require granular tracking to log only what 
+matters based on specific context. Consolidate conditional checks (`logger.isSet()`) into `SinkEventFilter` implementation and register 
+with the tracker instance.
 ```java
 logger.addSinkEventFilter(new MyLogFilter());
 ```
@@ -282,7 +297,9 @@ if (logger.isSet(OpLevel.DEBUG, "zip-code", zipCode)) {
 ```
 
 ### State logging
-Log application state to improve diagnostics of performance, resource utilization and other tough problems which are difficult  to trace using standard event logging techniques. Simply register your state dump provider (see `DumpProvider` interface) and export state variables specific to you application. Dump providers can be called on VM shutdown or on demand.
+Log application state to improve diagnostics of performance, resource utilization and other tough problems which are difficult  to trace 
+using standard event logging techniques. Simply register your state dump provider (see `DumpProvider` interface) and export state variables 
+specific to you application. Dump providers can be called on VM shutdown or on demand.
 
 Generate application dump on demand.
 ```java
@@ -293,8 +310,9 @@ TrackingLogger.dumpState();
 ```
 
 ### Measurements & Metrics
-TNT4J is not just about logging messages, it is also about measurements and metrics such as response time, CPU, memory, block/wait times as well as user defined metrics. TNT4J lets you report metrics at the time of the logged event.
-Below is an example of creating a snapshot (collection of metrics) and attaching it to an activity:
+TNT4J is not just about logging messages, it is also about measurements and metrics such as response time, CPU, memory, block/wait times as 
+well as user defined metrics. TNT4J lets you report metrics at the time of the logged event. Below is an example of creating a snapshot 
+(collection of metrics) and attaching it to an activity:
 ```java
 // post processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
@@ -307,7 +325,8 @@ activity.add(snapshot); // add property snapshot associated with this activity
 ...
 logger.tnt(activity); // report activity and associated snapshots as a single entity
 ```
-A `Snapshot` is a collection of name, value pairs called `Property`. Each `Property` can be further qualified with a value type defined in `ValueTypes` class.
+A `Snapshot` is a collection of name, value pairs called `Property`. Each `Property` can be further qualified with a value type defined in 
+`ValueTypes` class.
 
 Below is an example of reporting a snapshot:
 ```java
@@ -331,9 +350,15 @@ snapshot.add("order-amount", orderAmount, ValueTypes.VALUE_TYPE_CURRENCY);
 logger.tnt(snapshot); // report a property snapshot
 ```
 ### Correlation, Topology, Time Synchronization
-Developers can relate events by grouping them into activities (activity is a collection of related events and sub-activities) or passing context -- correlator(s). Activity grouping and correlators create connectivity between events across thread, applications, server, runtime, location boundaries. TNT4J allows attachment of correlators when reporting tracking events: see `TrackingLogger.tnt(..)` calls for details. The API also allows relating tracking events across application and runtime boundaries using the same mechanism.
+Developers can relate events by grouping them into activities (activity is a collection of related events and sub-activities) or passing 
+context -- correlator(s). Activity grouping and correlators create connectivity between events across thread, applications, server, runtime, 
+location boundaries. TNT4J allows attachment of correlators when reporting tracking events: see `TrackingLogger.tnt(..)` calls for details. 
+The API also allows relating tracking events across application and runtime boundaries using the same mechanism.
 
-`TrackingLogger.tnt(..)` also allows developers to specify the flow of messages using `OpType.SEND` and `OpType.RECEIVE` modifiers. These modifiers let developers specify message flow & direction. This is especially useful for applications that pass information via network, middleware, messaging or any other communication mechanism. Tracking events with such modifiers specify graph/topology information required for root cause analysis as well as visualization of message flow.
+`TrackingLogger.tnt(..)` also allows developers to specify the flow of messages using `OpType.SEND` and `OpType.RECEIVE` modifiers. These 
+modifiers let developers specify message flow & direction. This is especially useful for applications that pass information via network, 
+middleware, messaging or any other communication mechanism. Tracking events with such modifiers specify graph/topology information required 
+for root cause analysis as well as visualization of message flow.
 
 Below is an example of a sender application:
 ```java
@@ -357,13 +382,21 @@ logger.tnt(OpLevel.INFO, OpType.RECEIVE, "ReceiveOrder", order_id,
 	elasped_time, "Received order from={0}", source);
 ```
 
-**NOTE:** TNT4J uses NTP natively to synchronize times across servers to enable cross server event correlation in time. To enable NTP time synchronization define java property `-Dtnt4j.time.server=ntp-server:123`. 
+**NOTE:** TNT4J uses NTP natively to synchronize times across servers to enable cross server event correlation in time. To enable NTP time 
+synchronization define java property `-Dtnt4j.time.server=ntp-server:123`. 
 
-**TIP:** Developers should use `TimeServer.currentTimeMillis()` instead of `System.currentTimeMillis()` to obtain time adjusted to NTP time. TNT4J also maintains a microsecond resolution clock using `Useconds.CURRENT.get()` which returns the number of microseconds between the current time and midnight, January 1, 1970 UTC (NTP adjusted). TNT4J automatically measures and adjusts clock drift between NTP, `System.currentTimeMillis()` and `System.nanoTime()` clocks to ensure accurate microsecond precision/accuracy timing spanning VMs, devices, servers, geo locations.
+**TIP:** Developers should use `TimeServer.currentTimeMillis()` instead of `System.currentTimeMillis()` to obtain time adjusted to NTP time. 
+TNT4J also maintains a microsecond resolution clock using `Useconds.CURRENT.get()` which returns the number of microseconds between the 
+current time and midnight, January 1, 1970 UTC (NTP adjusted). TNT4J automatically measures and adjusts clock drift between NTP, 
+`System.currentTimeMillis()` and `System.nanoTime()` clocks to ensure accurate microsecond precision/accuracy timing spanning VMs, devices, 
+servers, geo locations.
 
 ### Tracking Associations
-TNT4J allows developers to track associations between sources. Source is a logical definition of an entity such as application, server, network, geo location. 
-Here is an example of a source: `APP=WebAppl#SERVER=MYSERVER#DATACENTER=DC1#GEOADDR=New York`, which means application `WebAppl` deployed on server `MYSERVER`, located on datacenter `DC1`, located in `New York`. Say you want track an association between 2 applications that exchange data, where one application sends data to another:
+TNT4J allows developers to track associations between sources. Source is a logical definition of an entity such as application, server, 
+network, geo location. 
+Here is an example of a source: `APP=WebAppl#SERVER=MYSERVER#DATACENTER=DC1#GEOADDR=New York`, which means application `WebAppl` deployed on 
+server `MYSERVER`, located on datacenter `DC1`, located in `New York`. Say you want track an association between 2 applications that 
+exchange data, where one application sends data to another:
 ```java
 // post processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
@@ -375,10 +408,12 @@ event.relate2(DefaultSourceFactory.getInstance().newFromFQN("APP=Orders#SERVER=H
 	OpType.SEND);
 logger.tnt(event);
 ```
-The snippet above creates the following asssociation: `Orders->SEND->Billing`, which expresses flow between `Orders` and `Billing` applications, where `Orders` and `Billing` are nodes and `SEND` is an edge.
+The snippet above creates the following association: `Orders->SEND->Billing`, which expresses flow between `Orders` and `Billing` 
+applications, where `Orders` and `Billing` are nodes and `SEND` is an edge.
 
 ### Logging Statistics
-TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors, overhead in usec and more. Do you know the overhead of your logging framework on your application?
+TNT4J keeps detailed statistics about logging activities. Each logger instance maintains counts of logged events, messages, errors, overhead 
+in usec and more. Do you know the overhead of your logging framework on your application?
 
 Obtain a map of all available key/value pairs:
 ```java
@@ -397,7 +432,8 @@ for (TrackingLogger lg: loggers) {
 	...
 }
 ```
-TNT4J keeps track of stack traces for all `TrackingLogger` allocations. Below is an example of how to get stack frames for a set of `TrackingLogger` instances:
+TNT4J keeps track of stack traces for all `TrackingLogger` allocations. Below is an example of how to get stack frames for a set of 
+`TrackingLogger` instances:
 ```java
 // obtain all available tracker instances
 List<TrackingLogger> loggers = TrackingLogger.getAllTrackers();
@@ -410,7 +446,9 @@ for (TrackingLogger lg: loggers) {
 
 About TNT4J
 ======================================
-Track and Trace 4 Java API, Application logging framework for correlation, diagnostics and tracking of application activities within and across **multiple applications, runtime, servers, geo locations. This API is specifically designed to troubleshoot distributed, concurrent, multi-threaded, composite applications** and includes activity correlation, application state dumps, performance and user defined metrics.
+Track and Trace 4 Java API, Application logging framework for correlation, diagnostics and tracking of application activities within and 
+across **multiple applications, runtime, servers, geo locations. This API is specifically designed to troubleshoot distributed, concurrent, 
+multi-threaded, composite applications** and includes activity correlation, application state dumps, performance and user defined metrics.
 
 Here is short list of TNT4J features:
 
@@ -446,17 +484,29 @@ TNT4J Concepts
 TNT4J is fully plug-in and play tracking, tracing and logging framework that consists of the following basic constructs:
 
 * **Tracker** -- high level object that allows developer to track, trace and log application activities
-* **Activity** -- a collection of related tracking events (TrackingEvent) and other sub-activities, relation is established via a grouping specified by a developer or set of correlators (across thread, application boundaries). Activities may have a set of uder defined properties which are grouped into property snapshots (PropertySnapshot).
-* **Tracking Event** -- a message with associated start/stop time stamps, severity, user defined message, correlator, tag, location (such as GPS, server etc) and other event properties.
-* **Property** -- a single user defined key, value, type pair for reporting custom metric or attribute. Properties can be packed into event, activity or snapshot.
-* **Property snapshot** -- a collection of properties with category, name and a time stamp associated with when snapshot is taken. Activities may have one or more property snapshots.
-* **Formatter** -- an object responsible for formatting underlying TNT4J objects such as Activity, Tracking Event and convert into a formatted string.
-* **Tracking Selector** -- an object associated with a Tracker that allows developers to perform conditional logging based on a given set of severity, key, value combination. Such combinations are stored in token repository.
-* **Token Repository** -- an underlying storage used by tracking selector that actually stores and maintains severity, key, value combinations. Such repository can be backed by a file, cache, memory or any other desired medium. Token repositories can be shared accross application boundaries and therefore conditional logging can span multiple applications, runtimes, geo locations.
+* **Activity** -- a collection of related tracking events (TrackingEvent) and other sub-activities, relation is established via a grouping 
+specified by a developer or set of correlators (across thread, application boundaries). Activities may have a set of under defined 
+properties which are grouped into property snapshots (PropertySnapshot).
+* **Tracking Event** -- a message with associated start/stop time stamps, severity, user defined message, correlator, tag, location (such as 
+GPS, server etc) and other event properties.
+* **Property** -- a single user defined key, value, type pair for reporting custom metric or attribute. Properties can be packed into event, 
+activity or snapshot.
+* **Property snapshot** -- a collection of properties with category, name and a time stamp associated with when snapshot is taken. 
+Activities may have one or more property snapshots.
+* **Formatter** -- an object responsible for formatting underlying TNT4J objects such as Activity, Tracking Event and convert into a 
+formatted string. It can be defined globally for a `source` using `event.formatter` property or for particular `sink` using 
+`event.sink.factory.Formatter` property.
+* **Tracking Selector** -- an object associated with a Tracker that allows developers to perform conditional logging based on a given set of 
+severity, key, value combination. Such combinations are stored in token repository.
+* **Token Repository** -- an underlying storage used by tracking selector that actually stores and maintains severity, key, value 
+combinations. Such repository can be backed by a file, cache, memory or any other desired medium. Token repositories can be shared across 
+application boundaries and therefore conditional logging can span multiple applications, runtimes, geo locations.
 * **Sink** -- sink is a basic destination where objects can be written (e.g file, socket, http, etc.)
-* **Event Sink** -- destination where events, activities and messages are recorded. Such destination can be file, socket. Sinks are associated with formatters which are called to format objects before writing to the sink.
+* **Event Sink** -- destination where events, activities and messages are recorded. Such destination can be file, socket. Sinks are 
+associated with formatters which are called to format objects before writing to the sink.
 * **Dump Sink** -- sink where application dumps are recorded.
-* **Dump** -- a property snapshot that deals with application state (name, value pairs). Application can generate user defined dumps to report application specific metrics during diagnostics, on demand or VM shutdown.
+* **Dump** -- a property snapshot that deals with application state (name, value pairs). Application can generate user defined dumps to 
+report application specific metrics during diagnostics, on demand or VM shutdown.
 * **Dump Provider** -- user defined implementation that actually generates application Dumps.
 
 How to Build TNT4J
@@ -477,7 +527,8 @@ TNT4J depends on the following external packages:
 
 To build TNT4J:
 *  Please use JCenter or Maven and these dependencies will be downloaded automatically. 
-*  You will need to point TNT4J to it's property file via the -Dtnt4j.config argument. This property file is located here in GitHub under the /config directory. If using JCenter or Maven, it can be found in the zip assembly along with the source code and javadoc.
+*  You will need to point TNT4J to it's property file via the -Dtnt4j.config argument. This property file is located here in GitHub under 
+the `/config` directory. If using JCenter or Maven, it can be found in the zip assembly along with the source code and javadoc.
 	
 Known Projects Using TNT4J
 ===============================================
