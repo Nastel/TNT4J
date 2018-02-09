@@ -29,10 +29,11 @@ import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
- * <p>Concrete implementation of {@link EventSinkFactory} interface, which
- * creates instances of {@link EventSink}. This factory uses {@link FileEventSink}
- * as the underlying sink provider provider and by default uses {@link SimpleFormatter} to 
- * format log messages.</p>
+ * <p>
+ * Concrete implementation of {@link EventSinkFactory} interface, which creates instances of {@link EventSink}. This
+ * factory uses {@link FileEventSink} as the underlying sink provider provider and by default uses
+ * {@link SimpleFormatter} to format log messages.
+ * </p>
  *
  *
  * @see EventSink
@@ -44,25 +45,25 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class FileEventSinkFactory extends AbstractEventSinkFactory {
 
-	boolean append = true;;
+	boolean append = true;
 	String fileName = UsecTimestamp.getTimeStamp("yyyy-MM-dd") + ".log";
-	
+
 	/**
-	 * Create a default sink factory with default file name based on
-	 * current timestamp: yyyy-MM-dd.log.
+	 * Create a default sink factory with default file name based on current timestamp: yyyy-MM-dd.log.
 	 */
 	public FileEventSinkFactory() {
 	}
-	
+
 	/**
 	 * Create a sink factory with a given file name.
 	 * 
-	 * @param fname file name
+	 * @param fname
+	 *            file name
 	 */
 	public FileEventSinkFactory(String fname) {
 		fileName = fname;
 	}
-	
+
 	@Override
 	public EventSink getEventSink(String name) {
 		return configureSink(new FileEventSink(name, fileName, append, new SimpleFormatter("{0} | {1} | {2}")));
@@ -87,11 +88,11 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 			throw new RuntimeException(e);
 		}
 		return sink;
-	}	
-	
+	}
+
 	@Override
 	public void setConfiguration(Map<String, Object> props) throws ConfigException {
-		fileName = Utils.getString("FileName", props, fileName);		
+		fileName = Utils.getString("FileName", props, fileName);
 		append = Utils.getBoolean("Append", props, append);
 		super.setConfiguration(props);
 	}
