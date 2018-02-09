@@ -22,6 +22,7 @@ import java.util.concurrent.TimeUnit;
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
 import com.jkoolcloud.tnt4j.core.TTL;
+import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.limiter.DefaultLimiterFactory;
 import com.jkoolcloud.tnt4j.limiter.Limiter;
 import com.jkoolcloud.tnt4j.utils.Utils;
@@ -54,6 +55,7 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	private EventLimiter limiter = null;
 	private long ttl = TTL.TTL_CONTEXT;
 	private ResourceBundle defBundle;
+	private EventFormatter evFormatter;
 
 	protected Map<String, Object> config = null;
 
@@ -94,6 +96,15 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	}
 
 	/**
+	 * Obtain the default instance of {@link EventFormatter} configured for this factory.
+	 *
+	 * @return default sink event formatter instance
+	 */
+	public EventFormatter getDefaultEventFormatter() {
+		return evFormatter;
+	}
+
+	/**
 	 * Configure a given event sink based on default settings
 	 *
 	 * @param sink
@@ -115,6 +126,9 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 		}
 		if (limiter != null) {
 			sink.setLimiter(limiter);
+		}
+		if (evFormatter != null) {
+			sink.setEventFormatter(evFormatter);
 		}
 		sink.setTTL(ttl);
 		return sink;
@@ -141,6 +155,7 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 		errorListener = (SinkErrorListener) Utils.createConfigurableObject("ErrorListener", "ErrorListener.", config);
 		eventListener = (SinkLogEventListener) Utils.createConfigurableObject("EventListener", "EventListener.",
 				config);
+		evFormatter = (EventFormatter) Utils.createConfigurableObject("Formatter", "Formatter.", config);
 	}
 
 	@Override

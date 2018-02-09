@@ -17,26 +17,21 @@ package com.jkoolcloud.tnt4j.config;
 
 import java.util.Properties;
 
+import com.jkoolcloud.tnt4j.core.ActivityListener;
+import com.jkoolcloud.tnt4j.dump.DefaultDumpSinkFactory;
 import com.jkoolcloud.tnt4j.dump.DumpSinkFactory;
+import com.jkoolcloud.tnt4j.format.DefaultFormatter;
+import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.format.Formatter;
 import com.jkoolcloud.tnt4j.locator.DefaultGeoService;
 import com.jkoolcloud.tnt4j.locator.GeoLocator;
-import com.jkoolcloud.tnt4j.source.Source;
-import com.jkoolcloud.tnt4j.source.SourceFactory;
-import com.jkoolcloud.tnt4j.core.ActivityListener;
-import com.jkoolcloud.tnt4j.dump.DefaultDumpSinkFactory;
-import com.jkoolcloud.tnt4j.format.DefaultFormatter;
-import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.repository.TokenRepository;
 import com.jkoolcloud.tnt4j.selector.DefaultTrackingSelector;
 import com.jkoolcloud.tnt4j.selector.TrackingSelector;
-import com.jkoolcloud.tnt4j.sink.DefaultEventSinkFactory;
-import com.jkoolcloud.tnt4j.sink.EventSink;
-import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
-import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
-import com.jkoolcloud.tnt4j.sink.SinkEventFilter;
-import com.jkoolcloud.tnt4j.sink.SinkLogEventListener;
+import com.jkoolcloud.tnt4j.sink.*;
 import com.jkoolcloud.tnt4j.source.DefaultSourceFactory;
+import com.jkoolcloud.tnt4j.source.Source;
+import com.jkoolcloud.tnt4j.source.SourceFactory;
 import com.jkoolcloud.tnt4j.source.SourceType;
 import com.jkoolcloud.tnt4j.tracker.DefaultTrackerFactory;
 import com.jkoolcloud.tnt4j.tracker.Tracker;
@@ -48,8 +43,8 @@ import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
 
 /**
  * <p>
- * This class consolidates all configuration for creating {@link Tracker} instances. Developers should use this
- * class and override default configuration with user defined elements.
+ * This class consolidates all configuration for creating {@link Tracker} instances. Developers should use this class
+ * and override default configuration with user defined elements.
  * </p>
  *
  * <pre>
@@ -79,7 +74,7 @@ public class TrackerConfig {
 	UUIDFactory uuidFactory;
 	SignFactory signFactory;
 	GeoLocator geoLocator;
-	
+
 	EventSinkFactory defEvFactory;
 	EventSinkFactory evFactory;
 	DumpSinkFactory dpFactory;
@@ -93,8 +88,7 @@ public class TrackerConfig {
 
 	Properties props = new Properties();
 	boolean built = false;
-	
-	
+
 	/**
 	 * Create an empty configuration with a specific source name
 	 *
@@ -136,7 +130,7 @@ public class TrackerConfig {
 	public boolean isBuilt() {
 		return built;
 	}
-	
+
 	/**
 	 * Get configuration source handle
 	 *
@@ -149,7 +143,8 @@ public class TrackerConfig {
 	/**
 	 * Set configuration source handle
 	 *
-	 * @param app source handle
+	 * @param app
+	 *            source handle
 	 * @return current configuration instance
 	 */
 	public TrackerConfig setSource(Source app) {
@@ -359,8 +354,7 @@ public class TrackerConfig {
 	}
 
 	/**
-	 * Set default sink filter which is triggered when logging activities occur to filter
-	 * out log events.
+	 * Set default sink filter which is triggered when logging activities occur to filter out log events.
 	 *
 	 * @param filter
 	 *            sink filter
@@ -374,8 +368,7 @@ public class TrackerConfig {
 	}
 
 	/**
-	 * Get default sink filter which is triggered when logging activities occur to filter
-	 * out log events.
+	 * Get default sink filter which is triggered when logging activities occur to filter out log events.
 	 *
 	 * @see SinkEventFilter
 	 * @return current sink filter
@@ -409,8 +402,8 @@ public class TrackerConfig {
 	}
 
 	/**
-	 * Set configuration event sink factory. Event sink factory is used to create {@link EventSink} instances,
-	 * where all events, activities and messages are logged.
+	 * Set configuration event sink factory. Event sink factory is used to create {@link EventSink} instances, where all
+	 * events, activities and messages are logged.
 	 *
 	 * @param evSinkFactory
 	 *            event sink factory instance
@@ -424,8 +417,8 @@ public class TrackerConfig {
 	}
 
 	/**
-	 * Set default event sink factory. Default Event sink factory is used to create
-	 * {@link EventSink} instances for all logging activities.
+	 * Set default event sink factory. Default Event sink factory is used to create {@link EventSink} instances for all
+	 * logging activities.
 	 *
 	 * @param evSinkFactory
 	 *            event sink factory instance
@@ -452,7 +445,6 @@ public class TrackerConfig {
 		return this;
 	}
 
-
 	/**
 	 * Set configuration tracking selector. Tracking selectors allow loggers to test weather a specific sev/key/value is
 	 * set. Tracking selectors use token repositories for look up.
@@ -478,8 +470,9 @@ public class TrackerConfig {
 	 * @return current configuration instance
 	 */
 	public TrackerConfig setProperties(Properties pr) {
-		if (pr != null)
+		if (pr != null) {
 			props.putAll(pr);
+		}
 		return this;
 	}
 
@@ -520,7 +513,7 @@ public class TrackerConfig {
 	 */
 	public boolean getBoolean(String key, boolean defValue) {
 		Object value = props.getProperty(key);
-		return value != null? Boolean.getBoolean(value.toString()): defValue;
+		return value != null ? Boolean.getBoolean(value.toString()) : defValue;
 	}
 
 	/**
@@ -622,7 +615,7 @@ public class TrackerConfig {
 	/**
 	 * Clone current tracking configuration instance and return a new one
 	 *
-	 * @return new {@link TrackerConfig} instance with cloned values from the current instance
+	 * @return new {@code TrackerConfig} instance with cloned values from the current instance
 	 */
 	public TrackerConfig cloneConfig() {
 		TrackerConfig config = new TrackerConfig(sourceHandle);
@@ -640,7 +633,7 @@ public class TrackerConfig {
 		config.activityListener = this.activityListener;
 		config.sinkLogEventListener = this.sinkLogEventListener;
 		config.sinkErrListener = this.sinkErrListener;
-		config.sinkFilter= this.sinkFilter;
+		config.sinkFilter = this.sinkFilter;
 		config.built = this.built;
 		return config;
 	}
@@ -649,31 +642,42 @@ public class TrackerConfig {
 	 * Build configuration based on specified configuration elements. This method must be called before passing
 	 * configuration to initialize other objects:
 	 *
-	 * @return {@link TrackerConfig} instance with initialized configuration elements
+	 * @return {@code TrackerConfig} instance with initialized configuration elements
 	 */
 	public synchronized TrackerConfig build() {
-		if (uuidFactory == null)
+		if (uuidFactory == null) {
 			uuidFactory = DefaultUUIDFactory.getInstance();
-		if (signFactory == null)
+		}
+		if (signFactory == null) {
 			signFactory = DefaultSignFactory.getInstance();
-		if (geoLocator == null)
+		}
+		if (geoLocator == null) {
 			geoLocator = DefaultGeoService.getInstance();
-		if (sourceFactory == null)
+		}
+		if (sourceFactory == null) {
 			sourceFactory = DefaultSourceFactory.getInstance();
-		if (sourceHandle == null)
-			sourceHandle = sourceFactory.newSource(srcName, srcType);		
-		if (trFactory == null)
+		}
+		if (sourceHandle == null) {
+			sourceHandle = sourceFactory.newSource(srcName, srcType);
+		}
+		if (trFactory == null) {
 			trFactory = new DefaultTrackerFactory();
-		if (evFactory == null)
+		}
+		if (evFactory == null) {
 			evFactory = DefaultEventSinkFactory.getInstance();
-		if (defEvFactory == null)
+		}
+		if (defEvFactory == null) {
 			defEvFactory = DefaultEventSinkFactory.getInstance();
-		if (dpFactory == null)
+		}
+		if (dpFactory == null) {
 			dpFactory = new DefaultDumpSinkFactory();
-		if (evFormatter == null)
+		}
+		if (evFormatter == null) {
 			evFormatter = new DefaultFormatter();
-		if (tSelector == null)
+		}
+		if (tSelector == null) {
 			tSelector = new DefaultTrackingSelector();
+		}
 		built = true;
 		return this;
 	}
