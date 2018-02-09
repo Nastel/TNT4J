@@ -766,8 +766,8 @@ public class Operation implements TTL {
 			startStopCount++;
 			if (startCPUTime > 0) {
 				if (contTimingSupported) {
-					stopBlockTime = ownerThread.getBlockedTime();
-					stopWaitTime = ownerThread.getWaitedTime();
+					stopBlockTime = ownerThread == null ? 0 : ownerThread.getBlockedTime();
+					stopWaitTime = ownerThread == null ? 0 : ownerThread.getWaitedTime();
 					setWaitTimeUsec(((stopWaitTime - startWaitTime) + (stopBlockTime - startBlockTime)) * 1000);
 				}
 				stopCPUTime = getCurrentCpuTimeNano();
@@ -833,8 +833,8 @@ public class Operation implements TTL {
 		} else {
 			long cpuUsed = getUsedCpuTimeNano();
 			double cpuUsec = (cpuUsed / 1000.0d);
-			long blockTime = ownerThread.getBlockedTime();
-			long waitTime = ownerThread.getWaitedTime();
+			long blockTime = ownerThread == null ? 0 : ownerThread.getBlockedTime();
+			long waitTime = ownerThread == null ? 0 : ownerThread.getWaitedTime();
 			wallTime = (long) (cpuUsec + ((waitTime - startWaitTime) * 1000) + ((blockTime - startBlockTime) * 1000));
 		}
 		return wallTime;
@@ -858,9 +858,6 @@ public class Operation implements TTL {
 		return stopWaitTime > 0 ? ((stopWaitTime - startWaitTime) * 1000) : -1;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public int hashCode() {
 		int prime = 31;
@@ -876,9 +873,6 @@ public class Operation implements TTL {
 		return result;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -911,9 +905,6 @@ public class Operation implements TTL {
 		return true;
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public String toString() {
 		OpType type = getType();
