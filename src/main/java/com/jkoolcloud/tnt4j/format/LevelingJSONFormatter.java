@@ -271,8 +271,7 @@ public class LevelingJSONFormatter extends JSONFormatter {
 		}
 
 		StringBuilder jsonString = new StringBuilder(256);
-		jsonString.append(Utils.quote(StringEscapeUtils.escapeJson(Utils.replace(prop.getKey(), keyReplacements))))
-				.append(ATTR_SEP);
+		jsonString.append(Utils.quote(StringEscapeUtils.escapeJson(getKeyStr(prop.getKey())))).append(ATTR_SEP);
 
 		if (isNoNeedToQuote(value)) {
 			jsonString.append(value);
@@ -282,6 +281,14 @@ public class LevelingJSONFormatter extends JSONFormatter {
 		jsonString.append(ATTR_JSON);
 
 		return jsonString.toString();
+	}
+
+	protected String getKeyStr(String key) {
+		return Utils.replace(key, keyReplacements);
+	}
+
+	protected String getValueStr(Object value) {
+		return Utils.replace(Utils.toString(value), valueReplacements);
 	}
 
 	protected String getSnapName(Snapshot snapshot) {
