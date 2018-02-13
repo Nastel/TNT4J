@@ -30,9 +30,12 @@ import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 
@@ -97,6 +100,12 @@ public class Utils {
 	public static final Object[] NO_PARAMS_O = {};
 
 	public static final int CLIENT_CODE_STACK_INDEX;
+
+	/**
+	 * Replacements configuration RegEx pattern.
+	 */
+	public static final Pattern REP_CFG_PATTERN = Pattern
+			.compile("\"(\\s*([^\"\\\\]|\\\\.)+\\s*)\"->\"(\\s*([^\"\\\\]|\\\\.)+\\s*)\"");
 
 	static {
 		int index = 0;
@@ -1474,6 +1483,79 @@ public class Utils {
 				return b.append(']').toString();
 			}
 			b.append(", "); // NON-NLS
+		}
+	}
+
+	/**
+	 * Performs <tt>source</tt></> string contents <tt>os</tt> replacement with provided new fragment <tt>ns</tt>.
+	 *
+	 * @param source
+	 *            source string
+	 * @param os
+	 *            fragment to be replaced
+	 * @param ns
+	 *            replacement fragment
+	 * @return string having replaced content
+	 */
+	public static String replace(String source, String os, String ns) {
+		if (source == null) {
+			return null;
+		}
+		int i = 0;
+		if ((i = source.indexOf(os, i)) >= 0) {
+			char[] sourceArray = source.toCharArray();
+			char[] nsArray = ns.toCharArray();
+			int oLength = os.length();
+			StringBuilder buf = new StringBuilder(sourceArray.length);
+			buf.append(sourceArray, 0, i).append(nsArray);
+			i += oLength;
+			int j = i;
+			// Replace all remaining instances of oldString with newString.
+			while ((i = source.indexOf(os, i)) > 0) {
+				buf.append(sourceArray, j, i - j).append(nsArray);
+				i += oLength;
+				j = i;
+			}
+			buf.append(sourceArray, j, sourceArray.length - j);
+			source = Utils.getString(buf);
+		}
+		return source;
+	}
+
+	/**
+	 * Performs provided string contents replacement using symbols defined in {@code replacements} map.
+	 *
+	 * @param str
+	 *            string to apply replacements
+	 * @param replacements
+	 *            replacements map
+	 * @return string having applied replacements
+	 *
+	 * @see #replace(String, String, String)
+	 */
+	public static String replace(String str, Map<String, String> replacements) {
+		if (StringUtils.isNotEmpty(str)) {
+			for (Map.Entry<String, String> kre : replacements.entrySet()) {
+				str = replace(str, kre.getKey(), kre.getValue());
+			}
+		}
+
+		return str;
+	}
+
+	/**
+	 * Parses replacements configuration string and puts replacements into provided map.
+	 *
+	 * @param repCfgStr
+	 *            replacements configuration string
+	 * @param replacementsMap
+	 *            replacements map to alter
+	 */
+	public static void parseReplacements(String repCfgStr, Map<String, String> replacementsMap) {
+		Matcher m = Utils.REP_CFG_PATTERN.matcher(repCfgStr);
+
+		while (m.find()) {
+			replacementsMap.put(StringEscapeUtils.unescapeJava(m.group(1)), StringEscapeUtils.unescapeJava(m.group(3)));
 		}
 	}
 }
