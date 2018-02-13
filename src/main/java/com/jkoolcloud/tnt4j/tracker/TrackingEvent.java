@@ -718,7 +718,7 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	 * 
 	 * @return signed self
 	 * @throws NoSuchAlgorithmException
-	 *
+	 *             if signature calculation algorithm is not provided by environment
 	 */
 	public TrackingEvent sign() throws NoSuchAlgorithmException {
 		if (tracker != null) {

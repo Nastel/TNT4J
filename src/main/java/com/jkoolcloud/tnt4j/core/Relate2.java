@@ -24,14 +24,16 @@ package com.jkoolcloud.tnt4j.core;
 public interface Relate2<T> {
 	int OBJ_ONE = 0;
 	int OBJ_TWO = 1;
-	
+
 	/**
-	 * Relate object A to given object B
-	 * {@code objA->ObjB}
+	 * Relate object A to given object B {@code objA->ObjB}
 	 *
-	 * @param objA first object to relate
-	 * @param objB object to relate to
-	 * @param type of relationship between objA and objB {@code objA->ObjB}
+	 * @param objA
+	 *            first object to relate
+	 * @param objB
+	 *            object to relate to
+	 * @param type
+	 *            of relationship between objA and objB {@code objA->ObjB}
 	 * @return same relation object
 	 */
 	Relate2<T> relate2(T objA, T objB, OpType type);
@@ -39,8 +41,10 @@ public interface Relate2<T> {
 	/**
 	 * Relate current object to given object B
 	 *
-	 * @param objB object to relate to
-	 * @param type of relationship
+	 * @param objB
+	 *            object to relate to
+	 * @param type
+	 *            of relationship
 	 * @return same relation object
 	 */
 	Relate2<T> relate2(T objB, OpType type);
@@ -51,17 +55,19 @@ public interface Relate2<T> {
 	 * @return same relation object
 	 */
 	Relate2<T> clear2();
-	
+
 	/**
 	 * Obtain relation type
 	 *
 	 * @return relation type.
 	 */
 	OpType get2Type();
-	
+
 	/**
 	 * Obtain relation binding which consists of 2 elements.
 	 *
+	 * @param index
+	 *            relation index: 0 - source, 1 - target
 	 * @return relation binding
 	 */
 	T get2(int index);

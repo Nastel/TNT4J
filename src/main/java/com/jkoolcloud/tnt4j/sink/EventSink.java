@@ -56,6 +56,7 @@ public interface EventSink extends Sink, TTL, KeyValueStats {
 	 *
 	 * @param key
 	 *            key to resolve to message
+	 * @return message string resolved from bundle by <tt>key</tt>
 	 */
 	String getString(Object key);
 

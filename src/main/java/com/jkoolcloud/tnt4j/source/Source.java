@@ -37,11 +37,12 @@ public interface Source {
 	 */
 	String getFQName();
 
-
 	/**
-	 * Gets the fully qualified name used to identify this source type=source-name#parent-source
-	 * and append it to {@code StringBuilder}
-	 * 
+	 * Gets the fully qualified name used to identify this source type=source-name#parent-source and append it to
+	 * {@code StringBuilder}
+	 *
+	 * @param buff
+	 *            string builder to append
 	 * @return returns {@code StringBuilder} instance containing appended source name
 	 */
 	StringBuilder getFQName(StringBuilder buff);
@@ -56,7 +57,8 @@ public interface Source {
 	/**
 	 * Gets parent source associated with the given type
 	 * 
-	 * @param type source type
+	 * @param type
+	 *            source type
 	 * @return parent source
 	 */
 	Source getSource(SourceType type);
@@ -101,7 +103,8 @@ public interface Source {
 	/**
 	 * Sets streaming source name (sender name)
 	 * 
-	 * @param ssn streaming source name (sender name)
+	 * @param ssn
+	 *            streaming source name (sender name)
 	 */
 	void setSSN(String ssn);
 

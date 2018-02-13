@@ -19,19 +19,14 @@ import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
-import com.jkoolcloud.tnt4j.core.ActivityStatus;
-import com.jkoolcloud.tnt4j.core.Property;
-import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.TrackingLogger;
-import com.jkoolcloud.tnt4j.core.OpLevel;
-import com.jkoolcloud.tnt4j.core.ValueTypes;
+import com.jkoolcloud.tnt4j.core.*;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
- * Common methods used by all logging appender implementations to handle tags, qualifiers
- * within log messages.
+ * Common methods used by all logging appender implementations to handle tags, qualifiers within log messages.
  * </p>
  *
  * @version $Revision: 1 $
@@ -39,29 +34,36 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class AppenderTools implements AppenderConstants {
 
-    private AppenderTools() {
-    }
-    
+	private AppenderTools() {
+	}
+
 	/**
 	 * Strip type qualifier from a given key
 	 *
-	 * @param key key with prefixed type qualifier
+	 * @param key
+	 *            key with prefixed type qualifier
 	 * @return stripped key
 	 */
 	public static String getKey(String key) {
 		int eIdx = key.indexOf("/");
 		if (key.length() > 3 && key.charAt(0) == '%' && eIdx > 0) {
-			return key.substring(eIdx+1);
+			return key.substring(eIdx + 1);
 		}
 		return key;
 	}
 
 	/**
 	 * Extract value type from the key
-	 * <tr><td><b>%[s|i|l|f|d|n|b][:valType]/user-key</b></td><td>User defined key/value pair (e.g #%l:byte/memory=7634732)</td></tr>
+	 * <table>
+	 * <caption>Key/Value mapping</caption>
+	 * <tr>
+	 * <td><b>%[s|i|l|f|d|n|b][:valType]/user-key</b></td>
+	 * <td>User defined key/value pair (e.g #%l:byte/memory=7634732)</td>
+	 * </tr>
 	 * </table>
 	 *
-	 * @param key key with prefixed type qualifier
+	 * @param key
+	 *            key with prefixed type qualifier
 	 * @return value type extracted from the key - %[data-type][:value-type]/user-key
 	 */
 	public static String getValueType(String key) {
@@ -69,21 +71,27 @@ public class AppenderTools implements AppenderConstants {
 			int sIdx = key.indexOf(":");
 			if (sIdx > 0) {
 				int eIdx = key.indexOf("/");
-				return ((eIdx - sIdx) > 1? key.substring(sIdx+1, eIdx): ValueTypes.VALUE_TYPE_NONE);
+				return ((eIdx - sIdx) > 1 ? key.substring(sIdx + 1, eIdx) : ValueTypes.VALUE_TYPE_NONE);
 			}
 		}
 		return ValueTypes.VALUE_TYPE_NONE;
 	}
 
 	/**
-	 * Convert annotated value with key type qualifier such as %type/
-	 * into key, value property.
+	 * Convert annotated value with key type qualifier such as %type/ into key, value property.
 	 * <table>
-	 * <tr><td><b>%[s|i|l|f|d|n|b][:value-type]/user-key</b></td><td>User defined key/value pair and [s|i|l|f|n|d|b] are type specifiers (i=Integer, l=Long, d=Double, f=Float, n=Number, s=String, b=Boolean) (e.g #%i/myfield=7634732)</td></tr>
+	 * <caption>Key/Value mapping</caption>
+	 * <tr>
+	 * <td><b>%[s|i|l|f|d|n|b][:value-type]/user-key</b></td>
+	 * <td>User defined key/value pair and [s|i|l|f|n|d|b] are type specifiers (i=Integer, l=Long, d=Double, f=Float,
+	 * n=Number, s=String, b=Boolean) (e.g #%i/myfield=7634732)</td>
+	 * </tr>
 	 * </table>
 	 *
-	 * @param key key with prefixed type qualifier
-	 * @param value to be converted based on type qualifier
+	 * @param key
+	 *            key with prefixed type qualifier
+	 * @param value
+	 *            to be converted based on type qualifier
 	 *
 	 * @return property containing key and value
 	 */
@@ -109,15 +117,16 @@ public class AppenderTools implements AppenderConstants {
 			} else if (key.startsWith(TAG_TYPE_BOOLEAN)) {
 				pValue = Boolean.parseBoolean(value);
 			}
-		} catch (NumberFormatException ne) {}
+		} catch (NumberFormatException ne) {
+		}
 		return new Property(getKey(key), pValue, getValueType(key));
 	}
 
 	/**
-	 * Determine if a given tag is an activity instruction that
-	 * signifies activity start/end.
+	 * Determine if a given tag is an activity instruction that signifies activity start/end.
 	 *
-	 * @param attrs activity attributes
+	 * @param attrs
+	 *            activity attributes
 	 * @return true if activity instruction.
 	 */
 	public static boolean isActivityInstruction(Map<String, String> attrs) {
@@ -127,19 +136,25 @@ public class AppenderTools implements AppenderConstants {
 	/**
 	 * Process a given event into a TNT4J activity object {@link TrackingActivity}
 	 *
-	 * @param logger tracking logger instance
-	 * @param category name associated with the set of attributes
-	 * @param attrs a set of name/value pairs
-	 * @param level  logging level
-	 * @param ex exception associated with this event
+	 * @param logger
+	 *            tracking logger instance
+	 * @param category
+	 *            name associated with the set of attributes
+	 * @param attrs
+	 *            a set of name/value pairs
+	 * @param level
+	 *            logging level
+	 * @param ex
+	 *            exception associated with this event
 	 *
 	 * @return tnt4j tracking activity object
 	 */
-	public static TrackingActivity processActivityAttrs(TrackingLogger logger, String category, Map<String, String> attrs, OpLevel level, Throwable ex) {
+	public static TrackingActivity processActivityAttrs(TrackingLogger logger, String category,
+			Map<String, String> attrs, OpLevel level, Throwable ex) {
 		Snapshot snapshot = null;
 		TrackingActivity activity = logger.getCurrentActivity();
 
-		for (Map.Entry<String, String> entry: attrs.entrySet()) {
+		for (Map.Entry<String, String> entry : attrs.entrySet()) {
 			String key = entry.getKey();
 			String value = entry.getValue();
 			if (key.equalsIgnoreCase(PARAM_CORRELATOR_LABEL)) {
@@ -148,14 +163,13 @@ public class AppenderTools implements AppenderConstants {
 				activity.setLocation(value);
 			} else if (key.equalsIgnoreCase(PARAM_RESOURCE_LABEL)) {
 				activity.setResource(value);
-			}  else if (key.equalsIgnoreCase(PARAM_USER_LABEL)) {
+			} else if (key.equalsIgnoreCase(PARAM_USER_LABEL)) {
 				activity.setUser(value);
 			} else if (key.equalsIgnoreCase(PARAM_SEVERITY_LABEL)) {
 				activity.setSeverity(OpLevel.valueOf(value));
 			} else if (key.equalsIgnoreCase(PARAM_EXCEPTION_LABEL)) {
 				activity.setException(value);
-			} else if (key.equalsIgnoreCase(PARAM_BEGIN_LABEL)
-					|| key.equals(PARAM_END_LABEL)
+			} else if (key.equalsIgnoreCase(PARAM_BEGIN_LABEL) || key.equals(PARAM_END_LABEL)
 					|| key.equals(PARAM_APPL_LABEL)) {
 				// skip and process later
 			} else if ((activity != null) && !Utils.isEmpty(key) && !Utils.isEmpty(value)) {
@@ -170,7 +184,7 @@ public class AppenderTools implements AppenderConstants {
 
 		Object activityName = attrs.get(PARAM_BEGIN_LABEL);
 		if (attrs.get(PARAM_END_LABEL) != null && !activity.isNoop()) {
-			activity.setStatus(ex != null? ActivityStatus.EXCEPTION: ActivityStatus.END);
+			activity.setStatus(ex != null ? ActivityStatus.EXCEPTION : ActivityStatus.END);
 			activity.stop(ex);
 			logger.tnt(activity);
 		} else if (activityName != null) {
@@ -185,8 +199,8 @@ public class AppenderTools implements AppenderConstants {
 	}
 
 	/**
-	 * Parse a given message into a map of key/value pairs. Tags are identified by '#key=value .. #keyN=value'
-	 * sequence. String values should be enclosed in single quotes.
+	 * Parse a given message into a map of key/value pairs. Tags are identified by '#key=value .. #keyN=value' sequence.
+	 * String values should be enclosed in single quotes.
 	 *
 	 * @param tags
 	 *            a set of name/value pairs
@@ -230,8 +244,9 @@ public class AppenderTools implements AppenderConstants {
 				String[] curTag = msg.substring(start, curPos).split("=");
 				String name = curTag[0].trim().replace("'", "");
 				String value = (curTag.length > 1 ? curTag[1] : "");
-				if (value.startsWith("'") && value.endsWith("'"))
+				if (value.startsWith("'") && value.endsWith("'")) {
 					value = StringEscapeUtils.unescapeJava(value.substring(1, value.length() - 1));
+				}
 				tags.put(name, value);
 			}
 		}

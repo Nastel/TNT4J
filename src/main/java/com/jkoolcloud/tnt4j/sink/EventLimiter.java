@@ -27,18 +27,20 @@ import com.jkoolcloud.tnt4j.limiter.Limiter;
 public class EventLimiter {
 	public static final long BLOCK_NONE = 0;
 	public static final long BLOCK_UNTIL_GRANTED = -1;
-	
+
 	Limiter limiter;
 	long timeout;
 	TimeUnit unit;
-	
+
 	/**
-	 * Create an event rate limiter with specified limiter
-	 * implementation and timeout.
+	 * Create an event rate limiter with specified limiter implementation and timeout.
 	 * 
-	 * @param limiter rate limiter implementation
-	 * @param timeout where < 0 to block until granted, 0 no block, > 0 block for max timeout
-	 * @param unit time unit for timeout value
+	 * @param limiter
+	 *            rate limiter implementation
+	 * @param timeout
+	 *            where &lt; 0 to block until granted, 0 no block, &gt; 0 block for max timeout
+	 * @param unit
+	 *            time unit for timeout value
 	 * @see Limiter
 	 */
 	public EventLimiter(Limiter limiter, long timeout, TimeUnit unit) {
@@ -46,7 +48,7 @@ public class EventLimiter {
 		this.timeout = timeout;
 		this.unit = unit;
 	}
-	
+
 	/**
 	 * Get rate limiter implementation
 	 *
@@ -56,13 +58,14 @@ public class EventLimiter {
 	public Limiter getLimiter() {
 		return limiter;
 	}
-	
+
 	/**
-	 * Obtain permit for messages/bytes chunk.
-	 * This call may block to satisfy max limits.
+	 * Obtain permit for messages/bytes chunk. This call may block to satisfy max limits.
 	 * 
-	 * @param msgs message count
-	 * @param bytes byte count
+	 * @param msgs
+	 *            message count
+	 * @param bytes
+	 *            byte count
 	 * @return true if permit obtained, false otherwise
 	 */
 	public boolean obtain(int msgs, int bytes) {

@@ -41,8 +41,9 @@ public enum OpLevel {
 	 */
 	public static OpLevel valueOf(int value) {
 		int ordnl = value;
-		if (ordnl < 0 || ordnl >= enumList.length)
+		if (ordnl < 0 || ordnl >= enumList.length) {
 			throw new IllegalArgumentException("value '" + value + "' is not valid for enumeration OpLevel");
+		}
 		return enumList[ordnl];
 	}
 
@@ -51,7 +52,7 @@ public enum OpLevel {
 	 *
 	 * @return randomly selected level within the range
 	 * @throws IllegalArgumentException
-	 *             if maxLevel < minLevel
+	 *             if maxLevel &lt; minLevel
 	 */
 	public static OpLevel anyLevel() {
 		return valueOf(Utils.randomRange(TRACE.ordinal(), (enumList.length - 1)));
@@ -66,7 +67,7 @@ public enum OpLevel {
 	 *            maximum level number
 	 * @return randomly selected level within specified range
 	 * @throws IllegalArgumentException
-	 *             if maxLevel < minLevel
+	 *             if maxLevel &lt; minLevel
 	 */
 	public static OpLevel anyLevel(int minLevel, int maxLevel) {
 		return valueOf(Utils.randomRange(minLevel, maxLevel));
@@ -84,8 +85,9 @@ public enum OpLevel {
 	 *             if object cannot be matched to a member of the enumeration
 	 */
 	public static OpLevel valueOf(Object value) {
-		if (value == null)
+		if (value == null) {
 			throw new NullPointerException("object must be non-null");
+		}
 		if (value instanceof Number) {
 			return valueOf(((Number) value).intValue());
 		} else if (value instanceof String) {

@@ -15,7 +15,7 @@
  */
 
 /**
- * TNT4J UUID & Signature factory implementation
+ * TNT4J UUID &amp; Signature factory implementation
  * 
  * @author albert
  * @version 1.0

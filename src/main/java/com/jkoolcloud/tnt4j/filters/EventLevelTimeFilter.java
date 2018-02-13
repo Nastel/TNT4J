@@ -36,13 +36,12 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
- * This class implements a simple event filter based on severity level threshold & time performance such as elapsed,
+ * This class implements a simple event filter based on severity level threshold &amp; time performance such as elapsed,
  * wait/wall times and message pattern (regex). Use this class to filter out events/messages based time/level
  * combination. A given severity must be greater than or equal to the given level threshold to pass this filter. A given
  * activity must be greater or equal to the given elapsed/wait/wall time. Set time objectives to -1 to disable time
  * based filtering.
- * </p>
- * 
+ *
  * @see OpLevel
  * @see EventSink
  * @see SinkEventFilter

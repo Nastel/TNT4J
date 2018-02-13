@@ -20,8 +20,8 @@ import java.security.NoSuchAlgorithmException;
 import com.jkoolcloud.tnt4j.core.Message;
 
 /**
- * Implementations of this interface provide implementation for 
- * generating message/event signatures/hashes for temper protection/detection.
+ * Implementations of this interface provide implementation for generating message/event signatures/hashes for temper
+ * protection/detection.
  *
  * @version $Revision: 1 $
  */
@@ -29,18 +29,22 @@ public interface SignFactory {
 	/**
 	 * Return a new signature/hash
 	 * 
-	 * @param obj object instance for which hash is to be generated
+	 * @param obj
+	 *            object instance for which hash is to be generated
 	 * @return string value of signature associated with a given object
-	 * @throws NoSuchAlgorithmException 
+	 * @throws NoSuchAlgorithmException
+	 *             if signature calculation algorithm is not provided by environment
 	 */
 	String sign(Object obj) throws NoSuchAlgorithmException;
-	
+
 	/**
 	 * Return a new signature/hash
 	 * 
-	 * @param obj message instance for which hash is to be generated
+	 * @param obj
+	 *            message instance for which hash is to be generated
 	 * @return string value of signature associated with a given object
-	 * @throws NoSuchAlgorithmException 
+	 * @throws NoSuchAlgorithmException
+	 *             if signature calculation algorithm is not provided by environment
 	 */
 	String sign(Message obj) throws NoSuchAlgorithmException;
 }

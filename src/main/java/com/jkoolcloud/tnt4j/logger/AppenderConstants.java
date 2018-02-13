@@ -15,10 +15,9 @@
  */
 package com.jkoolcloud.tnt4j.logger;
 
-
 /**
  * <p>
- * Common constants used by all logging appenders: tags & qualifiers.
+ * Common constants used by all logging appenders: tags &amp; qualifiers.
  * </p>
  * 
  * @version $Revision: 11 $

@@ -37,7 +37,9 @@ public class DefaultSource implements Source {
 
 	/**
 	 * Creates an Source object with the specified properties.
-	 * 
+	 *
+	 * @param fac
+	 *            source factory instance
 	 * @param name
 	 *            Name used to identify the source
 	 * @param type
@@ -93,10 +95,11 @@ public class DefaultSource implements Source {
 
 	@Override
 	public Source getSource(SourceType type) {
-		if (this.sourceType.equals(type))
+		if (this.sourceType.equals(type)) {
 			return this;
-		return parentSource != null ? (parentSource.getType().equals(type) ? parentSource : parentSource
-		        .getSource(type)) : null;
+		}
+		return parentSource != null
+				? (parentSource.getType().equals(type) ? parentSource : parentSource.getSource(type)) : null;
 	}
 
 	/**
@@ -151,7 +154,8 @@ public class DefaultSource implements Source {
 	 * Set source type associated with this source.
 	 * </p>
 	 * 
-	 * @param type source type
+	 * @param type
+	 *            source type
 	 */
 	protected void setType(SourceType type) {
 		sourceType = type;
@@ -162,7 +166,7 @@ public class DefaultSource implements Source {
 	 */
 	@Override
 	public int hashCode() {
-		final int prime = 31;
+		int prime = 31;
 		int result = 1;
 
 		result = prime * result + ((sname == null) ? 0 : sname.hashCode());
@@ -178,18 +182,22 @@ public class DefaultSource implements Source {
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (!(obj instanceof Source))
+		}
+		if (!(obj instanceof Source)) {
 			return false;
+		}
 
-		final Source other = (Source) obj;
+		Source other = (Source) obj;
 
 		if (sname == null) {
-			if (other.getName() != null)
+			if (other.getName() != null) {
 				return false;
+			}
 		} else if (!sname.equals(other.getName())) {
 			return false;
 		}
@@ -199,8 +207,9 @@ public class DefaultSource implements Source {
 		}
 
 		if (user == null) {
-			if (other.getUser() != null)
+			if (other.getUser() != null) {
 				return false;
+			}
 		} else if (!user.equals(other.getUser())) {
 			return false;
 		}

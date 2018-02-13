@@ -17,9 +17,8 @@ package com.jkoolcloud.tnt4j.locator;
 
 /**
  * <p>
- * This interface defines GEO location service, which is used to determine
- * current geographical address and convert regular address to GPS location.
- * Developers should create specific geo location implementations.
+ * This interface defines GEO location service, which is used to determine current geographical address and convert
+ * regular address to GPS location. Developers should create specific geo location implementations.
  * </p>
  * 
  * 
@@ -28,34 +27,35 @@ package com.jkoolcloud.tnt4j.locator;
 
 public interface GeoLocator {
 	/**
-	 * Convert "Latitude,Longitude" coordinates
-	 * to readable location.
-	 * 
+	 * Convert "Latitude,Longitude" coordinates to readable location.
+	 *
+	 * @param coord
+	 *            coordinates string
 	 * @return readable location e.g "Brooklyn, New York"
 	 */
 	String coordsToLabel(String coord);
 
 	/**
-	 * Obtain current GEO coordinates of the current runtime 
-	 * as string "Latitude,Longitude"
+	 * Obtain current GEO coordinates of the current runtime as string "Latitude,Longitude"
 	 * 
 	 * @return coordinates as string "Latitude,Longitude"
 	 */
 	String getCurrentCoords();
 
 	/**
-	 * Obtain GEO based on a given IP address 
-	 * as string "Latitude,Longitude"
+	 * Obtain GEO based on a given IP address as string "Latitude,Longitude"
 	 * 
-	 * @param ipaddr IP address
+	 * @param ipaddr
+	 *            IP address
 	 * @return location based on IP address as string "Latitude,Longitude"
 	 */
 	String getCoordsForIp(String ipaddr);
 
 	/**
-	 * Convert a given address to GEO coordinates 
+	 * Convert a given address to GEO coordinates
 	 * 
-	 * @param address geo address
+	 * @param address
+	 *            geo address
 	 * @return geo coordinates as string "Latitude,Longitude"
 	 */
 	String toCoords(String address);

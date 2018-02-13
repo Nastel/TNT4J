@@ -76,9 +76,12 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	 * Create a buffered sink instance with a specified out sink maximum capacity. Event will be dropped if capacity is
 	 * exceeded. Obtain drop counts and queue sizes using {@link #getDropCount()} method.
 	 * 
-	 * @param f buffered event sink factory
-	 * @param sink out sink where events/log message are written out
-	 * @param blocking set to true to block if full, false to drop messages if full
+	 * @param f
+	 *            buffered event sink factory
+	 * @param sink
+	 *            out sink where events/log message are written out
+	 * @param blocking
+	 *            set to true to block if full, false to drop messages if full
 	 * 
 	 */
 	public BufferedEventSink(BufferedEventSinkFactory f, EventSink sink, boolean blocking) {
@@ -92,8 +95,10 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	/**
 	 * Set maximum signal timeout.
 	 * 
-	 * @param duration time
-	 * @param units time unit
+	 * @param duration
+	 *            time
+	 * @param units
+	 *            time unit
 	 */
 	public void setSignalTimeout(long duration, TimeUnit units) {
 		signalTimeout = units.toMillis(duration);
@@ -102,7 +107,8 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	/**
 	 * Set maximum signal timeout in milliseconds
 	 * 
-	 * @param duration time
+	 * @param duration
+	 *            time
 	 */
 	public void setSignalTimeout(long duration) {
 		setSignalTimeout(duration, TimeUnit.MILLISECONDS);
@@ -146,9 +152,9 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	}
 
 	public long defaultTTL() {
-		return (ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT;		
+		return (ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT;
 	}
-	
+
 	@Override
 	public void setLimiter(EventLimiter limiter) {
 		outSink.setLimiter(limiter);
@@ -188,7 +194,9 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	public void log(TrackingActivity activity) {
 		_checkState();
 		if (isLoggable(activity)) {
-			if (ttl != TTL.TTL_CONTEXT) activity.setTTL(ttl);
+			if (ttl != TTL.TTL_CONTEXT) {
+				activity.setTTL(ttl);
+			}
 			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, activity);
 			_writeEvent(sinkEvent, block);
 		} else {
@@ -200,7 +208,9 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	public void log(TrackingEvent event) {
 		_checkState();
 		if (isLoggable(event)) {
-			if (ttl != TTL.TTL_CONTEXT) event.setTTL(ttl);
+			if (ttl != TTL.TTL_CONTEXT) {
+				event.setTTL(ttl);
+			}
 			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, event);
 			_writeEvent(sinkEvent, block);
 		} else {
@@ -212,7 +222,9 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	public void log(Snapshot snapshot) {
 		_checkState();
 		if (isLoggable(snapshot)) {
-			if (ttl != TTL.TTL_CONTEXT) snapshot.setTTL(ttl);
+			if (ttl != TTL.TTL_CONTEXT) {
+				snapshot.setTTL(ttl);
+			}
 			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, snapshot);
 			_writeEvent(sinkEvent, block);
 		} else {
@@ -226,9 +238,9 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	}
 
 	@Override
-    public void log(OpLevel sev, ResourceBundle bundle, String key, Object... args) {
+	public void log(OpLevel sev, ResourceBundle bundle, String key, Object... args) {
 		log(source, sev, bundle, key, args);
-    }
+	}
 
 	@Override
 	public void log(Source src, OpLevel sev, String msg, Object... args) {
@@ -236,15 +248,15 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	}
 
 	@Override
-    public void log(Source src, OpLevel sev, ResourceBundle bundle, String key, Object... args) {
+	public void log(Source src, OpLevel sev, ResourceBundle bundle, String key, Object... args) {
 		log(defaultTTL(), src, sev, bundle, key, args);
-    }
+	}
 
 	@Override
 	public void log(long ttl_sec, Source src, OpLevel sev, String msg, Object... args) {
 		log(ttl_sec, src, sev, outSink.getResourceBundle(), msg, args);
 	}
-	
+
 	@Override
 	public void log(long ttl_sec, Source src, OpLevel sev, ResourceBundle bundle, String key, Object... args) {
 		_checkState();
@@ -261,8 +273,8 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 		_checkState();
 		String txtMsg = String.valueOf(msg);
 		if (isLoggable(OpLevel.NONE, txtMsg, args)) {
-			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, getSource(), OpLevel.NONE,
-					defaultTTL(), txtMsg, resolveArguments(args));
+			SinkLogEvent sinkEvent = new SinkLogEvent(outSink, getSource(), OpLevel.NONE, defaultTTL(), txtMsg,
+					resolveArguments(args));
 			_writeEvent(sinkEvent, block);
 		} else {
 			skipCount.incrementAndGet();
@@ -284,7 +296,6 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 			}
 		}
 	}
-
 
 	@Override
 	public void removeSinkErrorListener(SinkErrorListener listener) {
@@ -378,11 +389,14 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	/**
 	 * Convert object array into an array of strings
 	 *
-	 * @param args array of objects
+	 * @param args
+	 *            array of objects
 	 * @return array of string objects
 	 */
-	protected Object [] resolveArguments(Object...args) {
-		if (args == null || args.length == 0) return null;
+	protected Object[] resolveArguments(Object... args) {
+		if (args == null || args.length == 0) {
+			return null;
+		}
 		for (int i = 0; i < args.length; i++) {
 			if (!(args[i] instanceof Throwable)) {
 				args[i] = String.valueOf(args[i]);
@@ -403,7 +417,8 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	/**
 	 * Override this method to check state of the sink before logging occurs.
 	 *
-	 * @throws IllegalStateException if sink is in wrong state
+	 * @throws IllegalStateException
+	 *             if sink is in wrong state
 	 */
 	protected void _checkState() throws IllegalStateException {
 		AbstractEventSink.checkState(this);
@@ -493,10 +508,16 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	/**
 	 * Send a signal to the underlying sink and wait for signal to be processed up to a max time.
 	 *
-	 * @param signalType type of signal to send
-	 * @param wait max time to wait
-	 * @param tunit time unit for wait
+	 * @param signalType
+	 *            type of signal to send
+	 * @param wait
+	 *            max time to wait
+	 * @param tunit
+	 *            time unit for wait
 	 * @return sink factory instance
+	 *
+	 * @throws IOException
+	 *             if IO error occurs when writing sink log event
 	 */
 	protected BufferedEventSink signal(int signalType, long wait, TimeUnit tunit) throws IOException {
 		signalCount.incrementAndGet();
@@ -508,7 +529,8 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	/**
 	 * Handle failed event by retrying to process it or dropping it depending on if it is possible to retry processing.
 	 *
-	 * @param ev sink error event
+	 * @param ev
+	 *            sink error event
 	 * @return sink factory instance
 	 */
 	protected BufferedEventSink handleError(SinkError ev) {
@@ -530,17 +552,17 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	}
 
 	@Override
-    public String getString(Object key) {
-	    return outSink.getString(key);
-    }
+	public String getString(Object key) {
+		return outSink.getString(key);
+	}
 
 	@Override
-    public void setResourceBundle(ResourceBundle bundle) {
+	public void setResourceBundle(ResourceBundle bundle) {
 		outSink.setResourceBundle(bundle);
 	}
 
 	@Override
-    public ResourceBundle getResourceBundle() {
-	    return outSink.getResourceBundle();
-    }
+	public ResourceBundle getResourceBundle() {
+		return outSink.getResourceBundle();
+	}
 }

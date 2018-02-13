@@ -724,7 +724,7 @@ public class Utils {
 	 * @param marker
 	 *            class marker to be used to locate the stack frame
 	 * @param offset
-	 *            offset from the located stack frame (must be >= 0)
+	 *            offset from the located stack frame (must be &gt;= 0)
 	 * @return name triggering operation
 	 */
 	public static String getMethodNameFromStack(String marker, int offset) {
@@ -750,7 +750,7 @@ public class Utils {
 	 * @param classMarker
 	 *            class marker to be used to locate the stack frame
 	 * @param offset
-	 *            offset from the located stack frame (must be >= 0)
+	 *            offset from the located stack frame (must be &gt;= 0)
 	 * @return name triggering operation
 	 */
 	public static String getMethodNameFromStack(Class<?> classMarker, int offset) {
@@ -1309,8 +1309,12 @@ public class Utils {
 	 *
 	 * @return instance of the objects specified by the class name
 	 * @throws IllegalAccessException
+	 *             if the class or its nullary constructor is not accessible
 	 * @throws InstantiationException
+	 *             if class is abstract, an interface, an array class, a primitive type, or void; or if the class has no
+	 *             nullary constructor; or if the instantiation fails for some other reason
 	 * @throws ClassNotFoundException
+	 *             if the class cannot be located
 	 */
 	public static Object createInstance(String className)
 			throws InstantiationException, IllegalAccessException, ClassNotFoundException {

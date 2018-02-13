@@ -779,6 +779,8 @@ public class Operation implements TTL {
 	/**
 	 * Override this method to implement logic once operation started.
 	 *
+	 * @param timer
+	 *            operation start timestamp
 	 */
 	protected void onStart(long timer) {
 	}
@@ -786,6 +788,8 @@ public class Operation implements TTL {
 	/**
 	 * Override this method to implement logic once operation stopped.
 	 *
+	 * @param timer
+	 *            operation stop timestamp
 	 */
 	protected void onStop(long timer) {
 	}

@@ -50,7 +50,8 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class PooledLogger implements KeyValueStats, IOShutdown {
 	protected static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(PooledLogger.class);
-	protected static final double ERROR_RATE = Double.valueOf(System.getProperty("tnt4j.pooled.logger.error.rate", "0.1"));
+	protected static final double ERROR_RATE = Double
+			.valueOf(System.getProperty("tnt4j.pooled.logger.error.rate", "0.1"));
 	protected static final int REOPEN_FREQ = Integer.getInteger("tnt4j.pooled.logger.reopen.freq.ms", 10000);
 
 	static final String KEY_Q_SIZE = "pooled-queue-size";
@@ -95,8 +96,12 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	/**
 	 * Create a pooled logger instance.
 	 *
-	 * @param threadPoolSize number of threads that will be used to log all enqueued events.
-	 * @param maxCapacity maximum queue capacity to hold incoming events, exceeding capacity will drop incoming events.
+	 * @param name
+	 *            pool name to set
+	 * @param threadPoolSize
+	 *            number of threads that will be used to log all enqueued events.
+	 * @param maxCapacity
+	 *            maximum queue capacity to hold incoming events, exceeding capacity will drop incoming events.
 	 */
 	public PooledLogger(String name, int threadPoolSize, int maxCapacity) {
 		poolName = name;
@@ -109,11 +114,25 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 
 	@Override
 	public void shutdown(Throwable ex) {
+		if (shutdown) {
+			return;
+		}
+
 		shutdown = true;
+
+		for (int i = 0; i < poolSize; i++) {
+			eventQ.offer(SinkLogEvent.DIE_PILL);
+		}
+		delayQ.offer(new DelayedElement<SinkLogEvent>(SinkLogEvent.DIE_PILL, 0));
+
+		stop();
+
+		eventQ.clear();
+		delayQ.clear();
 	}
 
 	/**
-	 * Obtain pool name
+	 * Obtain pool name.
 	 *
 	 * @return pool name
 	 */
@@ -294,7 +313,8 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	/**
 	 * Inserts the specified log event at the tail of this pooled logger.
 	 *
-	 * @param event logging event
+	 * @param event
+	 *            logging event
 	 * @return {@code true} if event is inserted/accepted {@code false} otherwise
 	 */
 	public boolean offer(SinkLogEvent event) {
@@ -302,15 +322,19 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 		if (!shutdown || (event.getSignal() != null)) {
 			flag = eventQ.offer(event);
 		}
-		if (!flag) dropCount.incrementAndGet();
+		if (!flag) {
+			dropCount.incrementAndGet();
+		}
 		return flag;
 	}
 
 	/**
 	 * Inserts the specified log event at the tail of this pooled logger and block until insert is completed.
 	 *
-	 * @param event logging event
-	 * @throws InterruptedException if interrupted waiting for space in logger
+	 * @param event
+	 *            logging event
+	 * @throws InterruptedException
+	 *             if interrupted waiting for space in logger
 	 */
 	public void put(SinkLogEvent event) throws InterruptedException {
 		if (!shutdown || (event.getSignal() != null)) {
@@ -343,7 +367,8 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	 * Allow the pool to drop queued events when exception occur. default behavior is to re-queue messages back on the
 	 * queue for retry.
 	 *
-	 * @param dropOnError {@code true} to allow drops, {@code false} otherwise
+	 * @param dropOnError
+	 *            {@code true} to allow drops, {@code false} otherwise
 	 */
 	public void dropOnError(boolean dropOnError) {
 		this.dropOnError = dropOnError;
@@ -361,7 +386,8 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	/**
 	 * Interval wait time before retrying send of failed messages.
 	 *
-	 * @param retryInterval time interval in milliseconds
+	 * @param retryInterval
+	 *            time interval in milliseconds
 	 */
 	public void setRetryInterval(int retryInterval) {
 		this.retryInterval = retryInterval;
@@ -372,6 +398,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	 *
 	 * @return sink event instance
 	 * @throws InterruptedException
+	 *             if interrupted while waiting
 	 */
 	protected SinkLogEvent takeEvent() throws InterruptedException {
 		return eventQ.take();
@@ -382,6 +409,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	 *
 	 * @return sink event instance
 	 * @throws InterruptedException
+	 *             if interrupted while waiting
 	 */
 	protected SinkLogEvent takeDelayedEvent() throws InterruptedException {
 		DelayedElement<SinkLogEvent> elm = delayQ.take();
@@ -391,8 +419,8 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	/**
 	 * Inserts the specified log event at the tail of this pooled logger and block until insert is completed.
 	 *
-	 * @param event logging event
-	 * @throws InterruptedException if interrupted waiting for space in logger
+	 * @param event
+	 *            logging event
 	 */
 	public void putDelayed(SinkLogEvent event) {
 		putDelayed(event, retryInterval, TimeUnit.MILLISECONDS);
@@ -401,10 +429,12 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	/**
 	 * Inserts the specified log event at the tail of this pooled logger and block until insert is completed.
 	 *
-	 * @param event logging event
-	 * @param delay time duration
-	 * @param unit time unit for duration
-	 * @throws InterruptedException if interrupted waiting for space in logger
+	 * @param event
+	 *            logging event
+	 * @param delay
+	 *            time duration
+	 * @param unit
+	 *            time unit for duration
 	 */
 	public void putDelayed(SinkLogEvent event, long delay, TimeUnit unit) {
 		reQCount.incrementAndGet();
@@ -412,10 +442,12 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	}
 
 	/**
-	 * Handle event that could not be processed
+	 * Handle event that could not be processed.
 	 *
-	 * @return event event instance
-	 * @throws InterruptedException
+	 * @param event
+	 *            skipped sink log event
+	 * @param ex
+	 *            skip reason
 	 */
 	private void skipEvent(SinkLogEvent event, Throwable ex) {
 		// add logic to handle skipped event
@@ -430,8 +462,10 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	/**
 	 * Handle event error during event processing
 	 *
-	 * @param event event instance
-	 * @param err exception
+	 * @param event
+	 *            event instance
+	 * @param err
+	 *            exception
 	 */
 	private void eventError(SinkLogEvent event, Throwable err) {
 		try {
@@ -455,7 +489,8 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	/**
 	 * Determine if event sink is ready to accept events
 	 *
-	 * @param sink event sink
+	 * @param sink
+	 *            event sink
 	 * @throws IOException
 	 */
 	private boolean isLoggable(EventSink sink) throws IOException {
@@ -479,7 +514,8 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	/**
 	 * Handle event signal processing
 	 *
-	 * @param event event instance
+	 * @param event
+	 *            event instance
 	 * @throws IOException
 	 */
 	private void handleSignal(SinkLogEvent event) throws IOException {
@@ -510,7 +546,8 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	/**
 	 * Handle event processing
 	 *
-	 * @param event event instance
+	 * @param event
+	 *            event instance
 	 * @throws IOException
 	 */
 	private void onEvent(SinkLogEvent event) throws IOException {
@@ -527,7 +564,8 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	/**
 	 * Write event to the underlying event sink
 	 *
-	 * @param event event instance
+	 * @param event
+	 *            event instance
 	 * @throws IOException
 	 */
 	private void sendEvent(SinkLogEvent event) {
@@ -561,7 +599,8 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	/**
 	 * Open event sink
 	 *
-	 * @param sink event sink
+	 * @param sink
+	 *            event sink
 	 * @throws IOException
 	 */
 	private void openSink(EventSink sink) throws IOException {
@@ -584,8 +623,10 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	/**
 	 * Event processing completed
 	 *
-	 * @param event event instance
-	 * @param start timer in nanoseconds
+	 * @param event
+	 *            event instance
+	 * @param start
+	 *            timer in nanoseconds
 	 */
 	private long eventComplete(long start, SinkLogEvent event) {
 		long elaspedUsec = (System.nanoTime() - start) / 1000;
@@ -598,7 +639,8 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	/**
 	 * Fully process a single event
 	 *
-	 * @param event event instance
+	 * @param event
+	 *            event instance
 	 */
 	protected void processEvent(SinkLogEvent event) {
 		long start = System.nanoTime();
@@ -615,8 +657,11 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	 * Start the the thread pool and all threads in this pooled logger.
 	 */
 	protected synchronized void start() {
-		if (started) return;
-		NamedThreadFactory tFactory = new NamedThreadFactory("PooledLoggingTask(" + poolName + "," + poolSize + "," + capacity + ")/task-");
+		if (started) {
+			return;
+		}
+		NamedThreadFactory tFactory = new NamedThreadFactory(
+				"PooledLoggingTask(" + poolName + "," + poolSize + "," + capacity + ")/task-");
 		threadPool = Executors.newFixedThreadPool((poolSize + 1), tFactory);
 		for (int i = 0; i < poolSize; i++) {
 			threadPool.execute(new PooledLoggingTask(this));
@@ -629,7 +674,9 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	 * Stop the the thread pool and all threads in this pooled logger.
 	 */
 	protected synchronized void stop() {
-		if (threadPool == null) return;
+		if (threadPool == null) {
+			return;
+		}
 		threadPool.shutdown();
 		try {
 			threadPool.awaitTermination(20, TimeUnit.SECONDS);

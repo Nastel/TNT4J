@@ -21,9 +21,8 @@ import com.jkoolcloud.tnt4j.core.Handle;
 
 /**
  * <p>
- * This interface defines a message destination end point. Message destination is
- * an entity that can be opened/closed as well as written to.
- * </p>
+ * This interface defines a message destination end point. Message destination is an entity that can be opened/closed as
+ * well as written to.
  *
  *
  * @version $Revision: 3 $
@@ -40,15 +39,22 @@ public interface Sink extends Handle {
 	/**
 	 * This method allows writing to the underlying message destination.
 	 *
-	 * @param msg message to be written to the sink
-	 * @param args arguments associated with the message
-	 * @throws IOException if error writing to sink
-	 * @throws InterruptedException if interrupted during write operation
+	 * @param msg
+	 *            message to be written to the sink
+	 * @param args
+	 *            arguments associated with the message
+	 * @throws IOException
+	 *             if error writing to sink
+	 * @throws InterruptedException
+	 *             if interrupted during write operation
 	 */
 	void write(Object msg, Object... args) throws IOException, InterruptedException;
 
 	/**
 	 * Flush all buffered write requests (if any) out to sink.
+	 *
+	 * @throws IOException
+	 *             if error while flushing sink
 	 */
 	void flush() throws IOException;
 }

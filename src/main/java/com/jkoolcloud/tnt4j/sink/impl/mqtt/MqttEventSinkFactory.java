@@ -18,11 +18,7 @@ package com.jkoolcloud.tnt4j.sink.impl.mqtt;
 import java.util.Map;
 import java.util.Properties;
 
-import org.eclipse.paho.client.mqttv3.MqttClient;
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
-import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
-import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
+import org.eclipse.paho.client.mqttv3.*;
 import org.eclipse.paho.client.mqttv3.persist.MemoryPersistence;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
@@ -34,9 +30,10 @@ import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
- * <p>Concrete implementation of {@link EventSinkFactory} interface over MQTT, which
- * creates instances of {@link EventSink}. This factory uses {@link MqttEventSink}
- * as the underlying provider.</p>
+ * <p>
+ * Concrete implementation of {@link EventSinkFactory} interface over MQTT, which creates instances of
+ * {@link EventSink}. This factory uses {@link MqttEventSink} as the underlying provider.
+ * </p>
  *
  *
  * @see EventSink
@@ -51,7 +48,7 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 	 * MQTT server URL
 	 */
 	String serverURI;
-	
+
 	/**
 	 * MQTT client id
 	 */
@@ -61,7 +58,7 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 	 * MQTT user name
 	 */
 	String userName;
-	
+
 	/**
 	 * MQTT user password
 	 */
@@ -80,55 +77,55 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 	/**
 	 * MQTT quality of service
 	 */
-	int qos = 1; 
-	
+	int qos = 1;
+
 	/**
 	 * MQTT keep alive interval in seconds
 	 */
-	int keepAlive = 60; 
-	
+	int keepAlive = 60;
+
 	/**
 	 * MQTT connection timeout in seconds
 	 */
-	int connTimeout = 30; 
-	
+	int connTimeout = 30;
+
 	/**
 	 * MQTT connection clean session flag
 	 */
-	boolean cleanSession = true; 
-	
+	boolean cleanSession = true;
+
 	/**
 	 * MQTT enable SSL
 	 */
-	boolean ssl = false; 
-	
+	boolean ssl = false;
+
 	/**
 	 * MQTT message retention
 	 */
-	boolean retainMsg = false; 
-	
+	boolean retainMsg = false;
+
 	/**
 	 * MQTT connection options
 	 */
 	MqttConnectOptions options = new MqttConnectOptions();
-	
-	@Override
-    public EventSink getEventSink(String name) {
-	    return configureSink(new MqttEventSink(this, name, null, new JSONFormatter(false)));
-    }
 
 	@Override
-    public EventSink getEventSink(String name, Properties props) {
-	    return configureSink(new MqttEventSink(this, name, props, new JSONFormatter(false)));
-    }
+	public EventSink getEventSink(String name) {
+		return configureSink(new MqttEventSink(this, name, null, new JSONFormatter(false)));
+	}
 
 	@Override
-    public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-	    return configureSink(new MqttEventSink(this, name, props, frmt));
-    }
+	public EventSink getEventSink(String name, Properties props) {
+		return configureSink(new MqttEventSink(this, name, props, new JSONFormatter(false)));
+	}
 
 	@Override
-    public void setConfiguration(Map<String, Object> settings) throws ConfigException {
+	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
+		return configureSink(new MqttEventSink(this, name, props, frmt));
+	}
+
+	@Override
+	public void setConfiguration(Map<String, Object> settings) throws ConfigException {
 		super.setConfiguration(settings);
 		serverURI = Utils.getString("mqtt-server-url", settings, "tcp://localhost:1883");
 		clientid = Utils.getString("mqtt-clientid", settings, MqttClient.generateClientId());
@@ -160,52 +157,65 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 		options.setConnectionTimeout(connTimeout);
 		options.setMqttVersion(version);
 		options.setCleanSession(cleanSession);
-    }
+	}
 
 	/**
 	 * Create and connect MQTT client
 	 * 
 	 * @return MQTT client instance, connected
+	 *
+	 * @throws org.eclipse.paho.client.mqttv3.MqttException
+	 *             when server communication or security error occurs
 	 */
 	public MqttClient newMqttClient() throws MqttException {
-	    MqttClient client = new MqttClient(serverURI, clientid, new MemoryPersistence());
-	    client.connect(options);
-	    return client;
-    }
+		MqttClient client = new MqttClient(serverURI, clientid, new MemoryPersistence());
+		client.connect(options);
+		return client;
+	}
 
 	/**
 	 * Create a new MQTT message with specific contents
 	 * 
-	 * @param bytes message contents
+	 * @param bytes
+	 *            message contents
 	 * @return new MQTT message with specific contents
 	 */
 	public MqttMessage newMqttMessage(byte[] bytes) {
-	    MqttMessage msg = new MqttMessage(bytes);
-	    msg.setRetained(retainMsg);
-	    msg.setQos(qos);
-	    return msg;
-    }
-	
+		MqttMessage msg = new MqttMessage(bytes);
+		msg.setRetained(retainMsg);
+		msg.setQos(qos);
+		return msg;
+	}
+
 	/**
 	 * Create a new MQTT message with specific contents
 	 * 
-	 * @param contents message contents
+	 * @param contents
+	 *            message contents
 	 * @return new MQTT message with specific contents
 	 */
 	public MqttMessage newMqttMessage(String contents) {
-	    return newMqttMessage(contents.getBytes());
-    }
-	
+		return newMqttMessage(contents.getBytes());
+	}
+
 	/**
 	 * Publish message to a given MQTT client
 	 * 
-	 * @param evSink event sink
-	 * @param client MQTT client
-	 * @param msg MQTT message instance
-	 * 
+	 * @param evSink
+	 *            event sink
+	 * @param client
+	 *            MQTT client
+	 * @param msg
+	 *            MQTT message instance
+	 *
+	 * @throws org.eclipse.paho.client.mqttv3.MqttPersistenceException
+	 *             when a problem with storing the message
+	 * @throws org.eclipse.paho.client.mqttv3.MqttException
+	 *             for other errors encountered while publishing the message. For instance client not connected
 	 */
-	public void publish(EventSink evSink, MqttClient client, MqttMessage msg) throws MqttPersistenceException, MqttException {
-		String mqttTopic = (topic == null? evSink.getName(): topic);
+	public void publish(EventSink evSink, MqttClient client, MqttMessage msg)
+			throws MqttPersistenceException, MqttException {
+		String mqttTopic = (topic == null ? evSink.getName() : topic);
 		client.publish(mqttTopic, msg);
 	}
 }

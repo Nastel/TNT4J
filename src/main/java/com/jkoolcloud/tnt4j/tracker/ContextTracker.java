@@ -24,10 +24,10 @@ import java.util.concurrent.ConcurrentMap;
 import com.jkoolcloud.tnt4j.uuid.DefaultUUIDFactory;
 
 /**
- * Helper class that allows sharing of variables within ThreaLocal and across threads within the same JVM. 
- * This class is useful when passing correlators, tags and other key value pairs within and across threads. 
- * Use {{@link #getRef(Object, String)} and {{@link #clearRef(Object)} to track object references across
- * thread boundaries within the same JVM.
+ * Helper class that allows sharing of variables within ThreaLocal and across threads within the same JVM. This class is
+ * useful when passing correlators, tags and other key value pairs within and across threads. Use
+ * {{@link #getRef(Object, String)} and {{@link #clearRef(Object)} to track object references across thread boundaries
+ * within the same JVM.
  * 
  * @version $Revision: 1 $
  *
@@ -37,7 +37,7 @@ public class ContextTracker {
 	public static final String JK_CORR_REQUEST_ID = "JK_CORR_RID";
 
 	private static final ConcurrentMap<String, ContextRef> REF_MAP = new ConcurrentHashMap<String, ContextRef>();
-	
+
 	private static ThreadLocal<ConcurrentMap<String, String>> CONTEXT = new ThreadLocal<ConcurrentMap<String, String>>() {
 		@Override
 		public ConcurrentMap<String, String> initialValue() {
@@ -46,9 +46,9 @@ public class ContextTracker {
 	};
 
 	/**
-	 * Obtain a context reference {@link ContextRef} for a specific object.
-	 * Tracking reference is cached until {{@link #clearRef(Object)} is called.
-	 * Use this method to track object references across threads within the same JVM.
+	 * Obtain a context reference {@link ContextRef} for a specific object. Tracking reference is cached until
+	 * {{@link #clearRef(Object)} is called. Use this method to track object references across threads within the same
+	 * JVM.
 	 * 
 	 * @param obj
 	 *            object for which context reference is obtained
@@ -57,14 +57,12 @@ public class ContextTracker {
 	public ContextRef getRef(Object obj) {
 		return getRef(obj, DefaultUUIDFactory.getInstance().newUUID());
 	}
-	
+
 	/**
-	 * Obtain a context reference {@link ContextRef} for a specific object and
-	 * associate it with a specified correlation id.
-	 * Context reference is cached until {{@link #clearRef(Object)} is called.
-	 * Use this method to track object references across threads within the same JVM.
-	 * The thread passing object to another thread should call {@link #getRef(Object)}
-	 * and the thread that receives object should call {@link #clearRef(Object)}.
+	 * Obtain a context reference {@link ContextRef} for a specific object and associate it with a specified correlation
+	 * id. Context reference is cached until {{@link #clearRef(Object)} is called. Use this method to track object
+	 * references across threads within the same JVM. The thread passing object to another thread should call
+	 * {@link #getRef(Object)} and the thread that receives object should call {@link #clearRef(Object)}.
 	 * 
 	 * @param obj
 	 *            object for which context reference is obtained
@@ -78,16 +76,15 @@ public class ContextTracker {
 		if (ref == null) {
 			ref = new ContextRef(obj, cid);
 			ContextRef prev = REF_MAP.putIfAbsent(ref.oid(), ref);
-			ref = prev != null? prev: ref;
+			ref = prev != null ? prev : ref;
 		}
 		return ref;
 	}
-	
+
 	/**
-	 * Discard a context reference {@link ContextRef} associated with a given object.
-	 * Context references are created and cached using {@link #getRef(Object)} and 
-	 * discarded using {@link #clearRef(Object)}.
-	 * Use this method to track object references across threads within the same JVM.
+	 * Discard a context reference {@link ContextRef} associated with a given object. Context references are created and
+	 * cached using {@link #getRef(Object)} and discarded using {@link #clearRef(Object)}. Use this method to track
+	 * object references across threads within the same JVM.
 	 * 
 	 * @param obj
 	 *            object whose reference is discarded
@@ -97,8 +94,7 @@ public class ContextTracker {
 		String refKey = ContextRef.getObjectRef(obj);
 		return REF_MAP.remove(refKey);
 	}
-	
-	
+
 	/**
 	 * Associates the specified value with default key {@code JK_CORR_SESSION_ID} with this map.
 	 * 
@@ -118,7 +114,7 @@ public class ContextTracker {
 	public static String get() {
 		return get(JK_CORR_SESSION_ID);
 	}
-	
+
 	/**
 	 * Associates the specified value with default key {@code JK_CORR_REQUEST_ID} with this map.
 	 * 
@@ -140,8 +136,10 @@ public class ContextTracker {
 	}
 
 	/**
-	 * Get value associated with a given key
-	 * 
+	 * Get value associated with a given key.
+	 *
+	 * @param key
+	 *            key of associated value to get
 	 * @return value associated with a given key
 	 */
 	public static String get(String key) {

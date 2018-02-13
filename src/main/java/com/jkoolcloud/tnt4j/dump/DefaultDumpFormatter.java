@@ -32,14 +32,14 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * "vm.name": "123036@server",
  * "vm.pid": 123036,
  * "dump.sink": "com.jkoolcloud.tnt4j.dump.FileDumpSink@45d64c37{file: .\123036@server.dump, append: true, is.open: true}",
- * "dump.time.string": "<time-stamp-string>"
+ * "dump.time.string": "&lt;time-stamp-string&gt;"
  * }
  * {
  * "dump.reason": "java.lang.Exception: VM-Shutdown"
  * "dump.name": "runtimeMetrics",
  * "dump.provider": "com.nastel.TradeApp",
  * "dump.category": "ApplRuntime",
- * "dump.time.string": "<time-stamp-string>",
+ * "dump.time.string": "&lt;time-stamp-string&gt;",
  * "dump.time.stamp": 1394115455190,
  * "dump.snapshot": {
  *  ....
@@ -56,11 +56,10 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * "vm.name": "123036@server",
  * "vm.pid": 123036,
  * "dump.sink": "com.jkoolcloud.tnt4j.dump.FileDumpSink@45d64c37{file: .\123036@server.dump, append: true, is.open: true}",
- * "dump.time.string": "<time-stamp-string>"
+ * "dump.time.string": "&lt;time-stamp-string&gt;"
  * "dump.elapsed.ms=": 1334
  * }
  * </pre>
- * </p>
  *
  *
  * @version $Revision: 10 $
