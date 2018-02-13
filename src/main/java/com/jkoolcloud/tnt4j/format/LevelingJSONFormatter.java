@@ -102,6 +102,16 @@ public class LevelingJSONFormatter extends JSONFormatter {
 		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP);
 		Utils.quote(event.getOperation().getType(), jsonString).append(ATTR_JSON);
 
+		if (level > 0) {
+			jsonString.append(JSON_SOURCE_FQN_LABEL).append(ATTR_SEP);
+			Utils.quote(StringEscapeUtils.escapeJson(event.getSource().getFQName()), jsonString).append(ATTR_JSON);
+			if (!Utils.isEmpty(event.getOperation().getResolvedName())) {
+				String escaped = StringEscapeUtils.escapeJson(event.getOperation().getResolvedName()); // escape double quote chars
+				jsonString.append(JSON_OPERATION_LABEL).append(ATTR_SEP);
+				Utils.quote(escaped, jsonString).append(ATTR_JSON);
+			}
+		}
+
 		Snapshot selfSnapshot = getSelfSnapshot(event.getOperation());
 		if (event.getTag() != null) {
 			Set<String> tags = event.getTag();
@@ -147,6 +157,15 @@ public class LevelingJSONFormatter extends JSONFormatter {
 			String escaped = StringEscapeUtils.escapeJson(ssn); // escape double quote chars
 			jsonString.append(JSON_SOURCE_SSN_LABEL).append(ATTR_SEP);
 			Utils.quote(escaped, jsonString).append(ATTR_JSON);
+		}
+		if (level > 0) {
+			jsonString.append(JSON_SOURCE_FQN_LABEL).append(ATTR_SEP);
+			Utils.quote(StringEscapeUtils.escapeJson(activity.getSource().getFQName()), jsonString).append(ATTR_JSON);
+			if (!Utils.isEmpty(activity.getResolvedName())) {
+				String escaped = StringEscapeUtils.escapeJson(activity.getResolvedName()); // escape double quote chars
+				jsonString.append(JSON_OPERATION_LABEL).append(ATTR_SEP);
+				Utils.quote(escaped, jsonString).append(ATTR_JSON);
+			}
 		}
 		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP);
 		Utils.quote(activity.getType(), jsonString).append(ATTR_JSON);
@@ -255,7 +274,6 @@ public class LevelingJSONFormatter extends JSONFormatter {
 		jsonString.append(Utils.quote(StringEscapeUtils.escapeJson(Utils.replace(prop.getKey(), keyReplacements))))
 				.append(ATTR_SEP);
 
-		jsonString.append(JSON_VALUE_LABEL).append(ATTR_SEP);
 		if (isNoNeedToQuote(value)) {
 			jsonString.append(value);
 		} else {
