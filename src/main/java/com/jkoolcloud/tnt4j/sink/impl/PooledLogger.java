@@ -114,21 +114,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 
 	@Override
 	public void shutdown(Throwable ex) {
-		if (shutdown) {
-			return;
-		}
-
 		shutdown = true;
-
-		for (int i = 0; i < poolSize; i++) {
-			eventQ.offer(SinkLogEvent.DIE_PILL);
-		}
-		delayQ.offer(new DelayedElement<SinkLogEvent>(SinkLogEvent.DIE_PILL, 0));
-
-		stop();
-
-		eventQ.clear();
-		delayQ.clear();
 	}
 
 	/**
@@ -579,19 +565,11 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 		} else if (sinkObject instanceof Snapshot) {
 			outSink.log(event.getSnapshot());
 		} else if (event.getEventSource() != null) {
-			outSink.log(event.getTTL(), 
-				event.getEventSource(),
-				event.getSeverity(), 
-				event.getResourceBundle(),
-				String.valueOf(sinkObject),
-			    event.getArguments());
+			outSink.log(event.getTTL(), event.getEventSource(), event.getSeverity(), event.getResourceBundle(),
+					String.valueOf(sinkObject), event.getArguments());
 		} else {
-			outSink.log(event.getTTL(),
-				outSink.getSource(),
-				event.getSeverity(),
-				event.getResourceBundle(),
-				String.valueOf(sinkObject),
-			    event.getArguments());
+			outSink.log(event.getTTL(), outSink.getSource(), event.getSeverity(), event.getResourceBundle(),
+					String.valueOf(sinkObject), event.getArguments());
 		}
 		loggedCount.incrementAndGet();
 	}
