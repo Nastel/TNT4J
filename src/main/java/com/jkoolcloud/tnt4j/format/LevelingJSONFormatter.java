@@ -42,10 +42,10 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * <ul>
  * <li>Level - level of TNT4J metadata in produced JSON: {@code 0} - only payload is serialized, {@code 9} - produces
  * all TNT4J metadata (same as {@link com.jkoolcloud.tnt4j.format.JSONFormatter}). Default value - {@code 0}.</li>
- * <li>KeyReplacements - property key string replacement fragments having format: "original1"->"replacement1"
- * "original2"->"replacement2" ... "originalX"->"replacementX". Default value - {@code ""}.</li>
- * <li>ValueReplacements - property value string replacement fragments having format: "original1"->"replacement1"
- * "original2"->"replacement2" ... "originalX"->"replacementX". Default value - {@code ""}.</li>
+ * <li>KeyReplacements - property key string replacement fragments having format: "original1"-&gt;"replacement1"
+ * "original2"-&gt;"replacement2" ... "originalX"-&gt;"replacementX". Default value - {@code ""}.</li>
+ * <li>ValueReplacements - property value string replacement fragments having format: "original1"-&gt;"replacement1"
+ * "original2"-&gt;"replacement2" ... "originalX"-&gt;"replacementX". Default value - {@code ""}.</li>
  * </ul>
  *
  * @version $Revision: 1 $

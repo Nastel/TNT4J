@@ -1487,7 +1487,7 @@ public class Utils {
 	}
 
 	/**
-	 * Performs <tt>source</tt></> string contents <tt>os</tt> replacement with provided new fragment <tt>ns</tt>.
+	 * Performs <tt>source</tt> string contents <tt>os</tt> replacement with provided new fragment <tt>ns</tt>.
 	 *
 	 * @param source
 	 *            source string
