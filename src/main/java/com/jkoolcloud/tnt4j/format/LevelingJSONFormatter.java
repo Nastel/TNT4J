@@ -278,7 +278,6 @@ public class LevelingJSONFormatter extends JSONFormatter {
 		} else {
 			Utils.quote(StringEscapeUtils.escapeJson(Utils.toString(value)), jsonString);
 		}
-		jsonString.append(ATTR_JSON);
 
 		return jsonString.toString();
 	}
