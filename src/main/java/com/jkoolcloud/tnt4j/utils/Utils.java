@@ -946,9 +946,9 @@ public class Utils {
 	 */
 	public static String getExceptionMessages(Throwable ex) {
 		Throwable root = ExceptionUtils.getRootCause(ex);
-		String msgsStr = ExceptionUtils.getMessage(ex);
+		String msgsStr = ex == null ? "" : ex.toString();
 		if (root != null) {
-			msgsStr += ", root cause: " + ExceptionUtils.getMessage(root);
+			msgsStr += ", root cause: " + root.toString();
 		}
 
 		return msgsStr;
