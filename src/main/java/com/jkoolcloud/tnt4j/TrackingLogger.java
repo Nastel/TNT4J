@@ -201,9 +201,15 @@ public class TrackingLogger implements Tracker {
 			addDumpProvider(defaultDumpSink, new ThreadDeadlockDumpProvider(Utils.VM_NAME));
 			addDumpProvider(defaultDumpSink, new LoggerDumpProvider(Utils.VM_NAME));
 		}
-		if (dumpOnVmHook) dumpOnShutdown(dumpOnVmHook);
-		if (dumpOnException) dumpOnUncaughtException();
-		if (flushOnVmHook) flushOnShutdown(flushOnVmHook);
+		if (dumpOnVmHook) {
+			dumpOnShutdown(dumpOnVmHook);
+		}
+		if (dumpOnException) {
+			dumpOnUncaughtException();
+		}
+		if (flushOnVmHook) {
+			flushOnShutdown(flushOnVmHook);
+		}
 	}
 
 	/** Cannot instantiate. */
@@ -219,11 +225,13 @@ public class TrackingLogger implements Tracker {
 	private static void initJavaTiming() {
 		ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
 		boolean cpuTimingSupported = tmbean.isCurrentThreadCpuTimeSupported();
-		if (cpuTimingSupported)
+		if (cpuTimingSupported) {
 			tmbean.setThreadCpuTimeEnabled(cpuTimingSupported);
+		}
 		boolean contTimingSupported = tmbean.isThreadContentionMonitoringSupported();
-		if (contTimingSupported)
+		if (contTimingSupported) {
 			tmbean.setThreadContentionMonitoringEnabled(contTimingSupported);
+		}
 	}
 
 	@Override
@@ -236,8 +244,9 @@ public class TrackingLogger implements Tracker {
 	}
 
 	private void checkState() {
-		if (logger == null)
+		if (logger == null) {
 			throw new IllegalStateException("tracker not initialized");
+		}
 	}
 
 	private static void registerTracker(TrackingLogger tracker) {
@@ -247,7 +256,8 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Obtain an allocation stack trace for the specified logger instance
 	 *
-	 * @param logger instance
+	 * @param logger
+	 *            instance
 	 *
 	 * @return an allocation stack trace for the logger instance
 	 */
@@ -301,7 +311,8 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Shutdown defined tracking logger.
 	 *
-	 * @param logger tracking logger to shut down
+	 * @param logger
+	 *            tracking logger to shut down
 	 */
 	public static void shutdown(TrackingLogger logger) {
 		try {
@@ -503,8 +514,9 @@ public class TrackingLogger implements Tracker {
 	 * @see OpLevel
 	 */
 	public boolean isSet(OpLevel sev, Object key, Object value) {
-		if (logger != null)
+		if (logger != null) {
 			return selector.isSet(sev, key, value);
+		}
 		return false;
 	}
 
@@ -549,9 +561,12 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Set sev/key/value combination for tracking
 	 *
-	 * @param sev severity of to be checked
-	 * @param key key associated with tracking activity
-	 * @param value associated value with a given key
+	 * @param sev
+	 *            severity of to be checked
+	 * @param key
+	 *            key associated with tracking activity
+	 * @param value
+	 *            associated value with a given key
 	 *
 	 * @see OpLevel
 	 */
@@ -565,8 +580,10 @@ public class TrackingLogger implements Tracker {
 	 * Set sev/key combination for tracking. This is the same as calling {@code set(sev, key, null)}, where value is
 	 * null.
 	 *
-	 * @param sev severity of to be checked
-	 * @param key key associated with tracking activity
+	 * @param sev
+	 *            severity of to be checked
+	 * @param key
+	 *            key associated with tracking activity
 	 *
 	 * @see OpLevel
 	 */
@@ -579,7 +596,8 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Get value associated with a given key from the tracking selector repository.
 	 *
-	 * @param key key associated with tracking activity
+	 * @param key
+	 *            key associated with tracking activity
 	 * @return value for specified key, or {@code null} if key not found
 	 */
 	public Object get(Object key) {
@@ -634,7 +652,8 @@ public class TrackingLogger implements Tracker {
 	 *            user defined arguments supplied along side given message
 	 * @see OpLevel
 	 * @see java.text.MessageFormat
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 */
 	@Override
 	public void log(OpLevel level, String msg, Object... args) {
@@ -816,12 +835,15 @@ public class TrackingLogger implements Tracker {
 	 *
 	 * @param activity
 	 *            tracking activity to be reported
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 * @see TrackingActivity
 	 */
 	@Override
 	public void tnt(TrackingActivity activity) {
-		if (activity == null) return;
+		if (activity == null) {
+			return;
+		}
 		checkState();
 		logger.tnt(activity);
 	}
@@ -832,12 +854,15 @@ public class TrackingLogger implements Tracker {
 	 * 
 	 * @param event
 	 *            tracking event to be reported as a single activity
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 * @see TrackingEvent
 	 */
 	@Override
 	public void tnt(TrackingEvent event) {
-		if (event == null) return;
+		if (event == null) {
+			return;
+		}
 		checkState();
 		logger.tnt(event);
 	}
@@ -847,13 +872,16 @@ public class TrackingLogger implements Tracker {
 	 *
 	 * @param snapshot
 	 *            snapshot to be tracked and logged
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 * @see Snapshot
 	 * @see Property
 	 */
 	@Override
 	public void tnt(Snapshot snapshot) {
-		if (snapshot == null) return;
+		if (snapshot == null) {
+			return;
+		}
 		checkState();
 		logger.tnt(snapshot);
 	}
@@ -871,7 +899,8 @@ public class TrackingLogger implements Tracker {
 	 *            event text message
 	 * @param args
 	 *            argument list, exception passed along side given message
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
@@ -896,7 +925,8 @@ public class TrackingLogger implements Tracker {
 	 *            event text message
 	 * @param args
 	 *            argument list, exception passed along side given message
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
@@ -924,7 +954,8 @@ public class TrackingLogger implements Tracker {
 	 *            event text message
 	 * @param args
 	 *            argument list, exception passed along side given message
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
@@ -950,7 +981,8 @@ public class TrackingLogger implements Tracker {
 	 *            event binary message
 	 * @param args
 	 *            argument list, exception passed along side given message
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
@@ -975,7 +1007,8 @@ public class TrackingLogger implements Tracker {
 	 *            event binary message
 	 * @param args
 	 *            argument list, exception passed along side given message
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
@@ -1003,7 +1036,8 @@ public class TrackingLogger implements Tracker {
 	 *            event binary message
 	 * @param args
 	 *            argument list, exception passed along side given message
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 * @see TrackingActivity
 	 * @see OpLevel
 	 */
@@ -1146,7 +1180,8 @@ public class TrackingLogger implements Tracker {
 	 * tracking logic into a single class.
 	 *
 	 * @see TrackingFilter
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 */
 	@Override
 	public void setTrackingFilter(TrackingFilter filter) {
@@ -1157,9 +1192,11 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Add a sink log listener, which is triggered log activities occurs when writing to the event sink.
 	 *
-	 * @param listener user supplied sink log listener
+	 * @param listener
+	 *            user supplied sink log listener
 	 * @see SinkErrorListener
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 */
 	public void addSinkLogEventListener(SinkLogEventListener listener) {
 		checkState();
@@ -1169,8 +1206,10 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Remove a sink log listener, which is triggered log activities occurs when writing to the event sink.
 	 *
-	 * @param listener user supplied sink log listener
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @param listener
+	 *            user supplied sink log listener
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 * @see SinkErrorListener
 	 */
 	public void removeSinkLogEventListener(SinkLogEventListener listener) {
@@ -1181,9 +1220,11 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Add and register a sink error listener, which is triggered error occurs when writing to the event sink.
 	 *
-	 * @param listener user supplied sink error listener
+	 * @param listener
+	 *            user supplied sink error listener
 	 * @see SinkErrorListener
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 */
 	public void addSinkErrorListener(SinkErrorListener listener) {
 		checkState();
@@ -1193,7 +1234,8 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Remove a sink error listener, which is triggered error occurs when writing to the event sink.
 	 *
-	 * @param listener user supplied sink error listener
+	 * @param listener
+	 *            user supplied sink error listener
 	 * @see SinkErrorListener
 	 */
 	public void removeSinkErrorListener(SinkErrorListener listener) {
@@ -1205,9 +1247,11 @@ public class TrackingLogger implements Tracker {
 	 * Add and register a sink filter, which is used to filter out events written to the underlying sink. Sink event
 	 * listeners get called every time an event/activity or message is written to the underlying event sink.
 	 *
-	 * @param filter user supplied sink filter
+	 * @param filter
+	 *            user supplied sink filter
 	 * @see SinkEventFilter
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 */
 	public void addSinkEventFilter(SinkEventFilter filter) {
 		checkState();
@@ -1217,8 +1261,10 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Remove sink filter, which is used to filter out events written to the underlying sink.
 	 *
-	 * @param filter user supplied sink filter
-	 * @throws IllegalStateException when tracker is not initialized
+	 * @param filter
+	 *            user supplied sink filter
+	 * @throws IllegalStateException
+	 *             when tracker is not initialized
 	 * @see SinkEventFilter
 	 */
 	public void removeSinkEventFilter(SinkEventFilter filter) {
@@ -1229,7 +1275,8 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Add and register a dump listener, which is triggered when dump is generated by {@code dump()} call.
 	 *
-	 * @param lst user supplied dump listener
+	 * @param lst
+	 *            user supplied dump listener
 	 * @see DumpListener
 	 */
 	public static void addDumpListener(DumpListener lst) {
@@ -1239,7 +1286,8 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Remove a dump listener, which is triggered when dump is generated by {@code dump()} call.
 	 *
-	 * @param lst user supplied dump listener
+	 * @param lst
+	 *            user supplied dump listener
 	 * @see DumpListener
 	 */
 	public static void removeDumpListener(DumpListener lst) {
@@ -1251,7 +1299,8 @@ public class TrackingLogger implements Tracker {
 	 * that generate application specific dumps. By default supplied dump provider is associated with a default
 	 * {@code DumpSink}.
 	 *
-	 * @param dp user supplied dump provider
+	 * @param dp
+	 *            user supplied dump provider
 	 *
 	 * @see DumpProvider
 	 * @see DumpSink
@@ -1268,8 +1317,10 @@ public class TrackingLogger implements Tracker {
 	 * {@code ThreadDumpProvider}, {@code ThreadDeadlockDumpProvider} are auto registered with {@code FileDumpSink}
 	 * during initialization of {@code TrackingLogger} class.
 	 *
-	 * @param df user supplied dump destination associated with dump provider
-	 * @param dp user supplied dump provider
+	 * @param df
+	 *            user supplied dump destination associated with dump provider
+	 * @param dp
+	 *            user supplied dump provider
 	 *
 	 * @see DumpProvider
 	 * @see DumpSink
@@ -1319,7 +1370,8 @@ public class TrackingLogger implements Tracker {
 	 * obtain dumps of instance {@code DumpCollection}. Registered instances of {@code DumpListener} are triggered for
 	 * before, after, error, complete conditions during this call.
 	 *
-	 * @param reason reason why dump is generated
+	 * @param reason
+	 *            reason why dump is generated
 	 *
 	 * @see DumpListener
 	 * @see DumpCollection
@@ -1360,25 +1412,29 @@ public class TrackingLogger implements Tracker {
 	/**
 	 * Enable/disable VM shutdown hook that will automatically trigger a dump.
 	 *
-	 * @param flag enable/disable VM shutdown hook that triggers a dump
+	 * @param flag
+	 *            enable/disable VM shutdown hook that triggers a dump
 	 */
 	public static void dumpOnShutdown(boolean flag) {
-		if (flag)
+		if (flag) {
 			Runtime.getRuntime().addShutdownHook(dumpHook);
-		else
+		} else {
 			Runtime.getRuntime().removeShutdownHook(dumpHook);
+		}
 	}
 
 	/**
 	 * Enable/disable VM shutdown hook that will automatically flush all registered trackers.
 	 *
-	 * @param flag enable/disable VM shutdown hook that triggers a flush
+	 * @param flag
+	 *            enable/disable VM shutdown hook that triggers a flush
 	 */
 	public static void flushOnShutdown(boolean flag) {
-		if (flag)
+		if (flag) {
 			Runtime.getRuntime().addShutdownHook(flushShutdown);
-		else
+		} else {
 			Runtime.getRuntime().removeShutdownHook(flushShutdown);
+		}
 	}
 
 	/**
@@ -1496,7 +1552,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	@Override
-    public void reopen() throws IOException {
+	public void reopen() throws IOException {
 		close();
 		open();
 	}
@@ -1547,5 +1603,10 @@ public class TrackingLogger implements Tracker {
 	public String newUUID(Object obj) {
 		checkState();
 		return logger.newUUID(obj);
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "{logger: " + logger + "}";
 	}
 }
