@@ -47,10 +47,14 @@ public class FileEventSink extends AbstractEventSink {
 	/**
 	 * Create a file based event sink instance.
 	 * 
-	 * @param nm logical event sink name
-	 * @param fileName associated with the sink where all entries are recorded
-	 * @param append true to append to file, false otherwise (file recreated)
-	 * @param frm event formatter to be used for formatting event entries
+	 * @param nm
+	 *            logical event sink name
+	 * @param fileName
+	 *            associated with the sink where all entries are recorded
+	 * @param append
+	 *            true to append to file, false otherwise (file recreated)
+	 * @param frm
+	 *            event formatter to be used for formatting event entries
 	 */
 	public FileEventSink(String nm, String fileName, boolean append, EventFormatter frm) {
 		super(nm, frm);
@@ -125,5 +129,10 @@ public class FileEventSink extends AbstractEventSink {
 		if (isOpen()) {
 			fileSink.flush();
 		}
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "{fileSink:" + fileSink + "}";
 	}
 }
