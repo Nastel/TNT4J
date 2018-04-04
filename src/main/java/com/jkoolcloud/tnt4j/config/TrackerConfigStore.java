@@ -421,19 +421,29 @@ public class TrackerConfigStore extends TrackerConfig {
 		IOException exc = null;
 		if (fileName != null) {
 			try {
+				Reader rdr;
 				try {
 					URL cfgResource = new URL(fileName);
-					return new BufferedReader(new InputStreamReader(cfgResource.openStream()));
+					InputStream ins;
+					try {
+						ins = cfgResource.openStream();
+					} catch (IOException ioe) {
+						ins = getClass().getClassLoader().getResourceAsStream(cfgResource.getFile());
+					}
+
+					rdr = new InputStreamReader(ins);
 				} catch (MalformedURLException ioe) {
-					return new BufferedReader(new FileReader(fileName));
+					rdr = new FileReader(fileName);
 				}
+
+				return new BufferedReader(rdr);
 			} catch (IOException ioe) {
 				exc = ioe;
 			}
 		}
 
 		String tnt4jResource = "/" + TNT4J_PROPERTIES;
-		InputStream ins = getClass().getResourceAsStream(tnt4jResource);
+		InputStream ins = getClass().getClassLoader().getResourceAsStream(tnt4jResource);
 		if (ins == null) {
 			FileNotFoundException ioe = new FileNotFoundException("Resource '" + tnt4jResource + "' not found");
 			if (exc != null) {
