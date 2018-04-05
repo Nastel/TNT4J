@@ -341,7 +341,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 			eventQ.put(event);
 		} else {
 			dropCount.incrementAndGet();
-			throw new InterruptedException("Unable to accept events: " + this.getName() + " is shutdown");
+			throw new InterruptedException("Unable to accept events: " + getName() + " is shutdown");
 		}
 	}
 
@@ -380,7 +380,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	 * @return {@code true} means messaged can be dropped, {@code false} re-queued
 	 */
 	public boolean isDropOnError() {
-		return this.dropOnError;
+		return dropOnError;
 	}
 
 	/**
@@ -494,6 +494,10 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	 * @throws IOException
 	 */
 	private boolean isLoggable(EventSink sink) throws IOException {
+		// if (isShut()) {
+		// return false;
+		// }
+
 		if (!sink.isOpen()) {
 			synchronized (sink) {
 				if (sink.errorState()) {

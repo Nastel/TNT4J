@@ -319,7 +319,7 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 
 	@Override
 	public boolean isOpen() {
-		return true;
+		return factory.getPooledLogger() != null;
 	}
 
 	@Override
@@ -411,7 +411,7 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	 * @return sink factory instance
 	 */
 	public EventSinkFactory getFactory() {
-		return this.factory;
+		return factory;
 	}
 
 	/**
@@ -501,8 +501,13 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 
 	@Override
 	public void shutdown(Throwable ex) throws IOException {
-		factory.getPooledLogger().shutdown(ex);
+		if (factory != null && factory.getPooledLogger() != null) {
+			factory.getPooledLogger().shutdown(ex);
+		}
 		signal(SinkLogEvent.SIGNAL_SHUTDOWN, signalTimeout, TimeUnit.MILLISECONDS);
+		if (factory != null) {
+			factory.cleanup();
+		}
 	}
 
 	/**
@@ -547,8 +552,8 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 
 	@Override
 	public void reopen() throws IOException {
-		this.close();
-		this.open();
+		close();
+		open();
 	}
 
 	@Override

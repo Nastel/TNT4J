@@ -26,11 +26,11 @@ import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
- * <p>Buffered implementation of {@link EventSinkFactory} interface, which
- * creates instances of {@link BufferedEventSink}. This factory relies on the
- * specified concrete {@link EventSinkFactory} instance specified by {@link EventSinkFactory}
- * configuration attribute. This factory uses specified event sink factory to create event sinks and wraps
- * then with instances of {@link BufferedEventSink}.
+ * <p>
+ * Buffered implementation of {@link EventSinkFactory} interface, which creates instances of {@link BufferedEventSink}.
+ * This factory relies on the specified concrete {@link EventSinkFactory} instance specified by {@link EventSinkFactory}
+ * configuration attribute. This factory uses specified event sink factory to create event sinks and wraps then with
+ * instances of {@link BufferedEventSink}.
  *
  *
  * @see EventSink
@@ -56,18 +56,17 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	}
 
 	/**
-	 * Create a default buffered sink factory with a given sink factory
-	 * used to create concrete event sinks.
+	 * Create a default buffered sink factory with a given sink factory used to create concrete event sinks.
 	 *
-	 * @param factory concrete event sink factory instance
+	 * @param factory
+	 *            concrete event sink factory instance
 	 */
 	public BufferedEventSinkFactory(EventSinkFactory factory) {
 		sinkFactory = factory;
 	}
 
 	/**
-	 * Obtain an instance of pooled logger, which allows logging of events
-	 * asynchronously by a thread pool.
+	 * Obtain an instance of pooled logger, which allows logging of events asynchronously by a thread pool.
 	 *
 	 * @return pooled logger instance
 	 * @see PooledLogger
@@ -80,9 +79,9 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	protected EventSink configureSink(EventSink sink) {
 		BufferedEventSink bsink = (BufferedEventSink) sink;
 		bsink.setSignalTimeout(signalTimeout);
-		return super.configureSink(bsink);	
+		return super.configureSink(bsink);
 	}
-	
+
 	@Override
 	public EventSink getEventSink(String name) {
 		return configureSink(new BufferedEventSink(this, sinkFactory.getEventSink(name), blockWrites));
@@ -101,8 +100,9 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	@Override
 	public void setConfiguration(Map<String, Object> props) throws ConfigException {
 		super.setConfiguration(props);
-		sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory", "EventSinkFactory.", props);		
-		pooledFactory = (PooledLoggerFactory) Utils.createConfigurableObject("PooledLoggerFactory", "PooledLoggerFactory.", props);	
+		sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory", "EventSinkFactory.", props);
+		pooledFactory = (PooledLoggerFactory) Utils.createConfigurableObject("PooledLoggerFactory",
+				"PooledLoggerFactory.", props);
 		blockWrites = Utils.getBoolean("BlockWrites", props, blockWrites);
 		signalTimeout = Utils.getLong("SignalTimeout", props, signalTimeout);
 		if (sinkFactory == null) {
@@ -111,5 +111,9 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 		if (pooledFactory == null) {
 			throw new ConfigException("Missing PooledLoggerFactory implementation", props);
 		}
-	}	
+	}
+
+	public void cleanup() {
+		pooledFactory.cleanup();
+	}
 }

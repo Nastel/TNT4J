@@ -26,14 +26,13 @@ import java.util.Map;
  */
 public interface PooledLoggerFactory {
 	/**
-	 * Obtain a default instance of pooled logger, which allows logging of events
-	 * asynchronously by a thread pool.
+	 * Obtain a default instance of pooled logger, which allows logging of events asynchronously by a thread pool.
 	 *
 	 * @return pooled logger instance associated with this factory
 	 * @see PooledLogger
 	 */
 	PooledLogger getPooledLogger();
-	
+
 	/**
 	 * Obtain a map of all registered pooled loggers
 	 *
@@ -41,4 +40,6 @@ public interface PooledLoggerFactory {
 	 * @see PooledLogger
 	 */
 	Map<String, PooledLogger> getPooledLoggers();
+
+	void cleanup();
 }

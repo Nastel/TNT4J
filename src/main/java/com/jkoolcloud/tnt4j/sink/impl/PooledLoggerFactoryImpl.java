@@ -44,7 +44,7 @@ public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurabl
 
 	private static final ConcurrentMap<String, PooledLogger> POOLED_LOGGERS = new ConcurrentHashMap<String, PooledLogger>();
 
-	int poolSize  = MAX_POOL_SIZE;
+	int poolSize = MAX_POOL_SIZE;
 	int capacity = MAX_CAPACITY;
 	int retryInterval = RETRY_INTERVAL;
 	boolean dropOnError = DROP_ON_EXCEPTION;
@@ -57,12 +57,12 @@ public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurabl
 	 */
 	public PooledLoggerFactoryImpl() {
 	}
-		
+
 	/**
-	 * Obtain an instance of pooled logger, which allows logging of events
-	 * asynchronously by a thread pool.
+	 * Obtain an instance of pooled logger, which allows logging of events asynchronously by a thread pool.
 	 *
-	 * @param pName pool name
+	 * @param pName
+	 *            pool name
 	 * @return pooled logger instance
 	 * @see PooledLogger
 	 */
@@ -76,31 +76,39 @@ public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurabl
 	}
 
 	@Override
-    public Map<String, PooledLogger> getPooledLoggers() {
+	public Map<String, PooledLogger> getPooledLoggers() {
 		Map<String, PooledLogger> copy = new HashMap<String, PooledLogger>();
 		copy.putAll(POOLED_LOGGERS);
-	    return POOLED_LOGGERS;
-    }
+		return copy;
+	}
 
 	@Override
-    public Map<String, Object> getConfiguration() {
-	    return props;
-    }
+	public Map<String, Object> getConfiguration() {
+		return props;
+	}
 
 	@Override
-    public void setConfiguration(Map<String, Object> settings) throws ConfigException {
+	public void setConfiguration(Map<String, Object> settings) throws ConfigException {
 		// obtain all optional attributes
-		poolName = Utils.getString("Name", settings, DEFAULT_POOL_NAME);	
+		poolName = Utils.getString("Name", settings, DEFAULT_POOL_NAME);
 		poolSize = Utils.getInt("Size", settings, MAX_POOL_SIZE);
-		capacity = Utils.getInt("Capacity", settings, MAX_CAPACITY);				
-		retryInterval = Utils.getInt("RetryInterval", settings, RETRY_INTERVAL);				
-		dropOnError = Utils.getBoolean("DropOnError", settings, DROP_ON_EXCEPTION);				
+		capacity = Utils.getInt("Capacity", settings, MAX_CAPACITY);
+		retryInterval = Utils.getInt("RetryInterval", settings, RETRY_INTERVAL);
+		dropOnError = Utils.getBoolean("DropOnError", settings, DROP_ON_EXCEPTION);
 		// create and register pooled logger instance if not yet available
 		PooledLogger pooledLogger = new PooledLogger(poolName, poolSize, capacity);
 		pooledLogger.dropOnError(dropOnError);
 		pooledLogger.setRetryInterval(retryInterval);
 		if (POOLED_LOGGERS.putIfAbsent(poolName, pooledLogger) == null) {
 			pooledLogger.start();
-		}		
-    }
+		}
+	}
+
+	@Override
+	public void cleanup() {
+		for (PooledLogger pl : POOLED_LOGGERS.values()) {
+			pl.shutdown(null);
+		}
+		POOLED_LOGGERS.clear();
+	}
 }
