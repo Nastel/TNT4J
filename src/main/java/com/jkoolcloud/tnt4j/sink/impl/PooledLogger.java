@@ -114,7 +114,21 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 
 	@Override
 	public void shutdown(Throwable ex) {
+		if (shutdown) {
+			return;
+		}
+
 		shutdown = true;
+
+		for (int i = 0; i < poolSize; i++) {
+			eventQ.offer(SinkLogEvent.DIE_PILL);
+		}
+		delayQ.offer(new DelayedElement<SinkLogEvent>(SinkLogEvent.DIE_PILL, 0));
+
+		stop();
+
+		eventQ.clear();
+		delayQ.clear();
 	}
 
 	/**

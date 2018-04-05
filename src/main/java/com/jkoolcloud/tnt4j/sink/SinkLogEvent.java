@@ -42,6 +42,8 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class SinkLogEvent extends EventObject implements TTL {
 	private static final long serialVersionUID = 1L;
 
+	public static final SinkLogEvent DIE_PILL = new SinkLogEvent();
+
 	public static final int SIGNAL_PROCESS = 0;
 	public static final int SIGNAL_FLUSH = 1;
 	public static final int SIGNAL_CLOSE = 5;
@@ -58,6 +60,10 @@ public class SinkLogEvent extends EventObject implements TTL {
 	private long ttl;
 	private long startTimeNanos = System.nanoTime();
 	private long stopTimeNanos = 0;
+
+	private SinkLogEvent() {
+		super(new Object());
+	}
 
 	/**
 	 * Create a new log event instance designed as a signal

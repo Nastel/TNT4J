@@ -26,19 +26,22 @@ import com.jkoolcloud.tnt4j.sink.SinkLogEvent;
  * @version $Revision: 1 $
  * @see PooledLogger
  */
-class DelayedLoggingTask implements Runnable {
-	PooledLogger pooledLogger;
-
+class DelayedLoggingTask extends AbstractPoolLoggingTask {
 	protected DelayedLoggingTask(PooledLogger logger) {
-		pooledLogger = logger;
+		super(logger);
 	}
 
 	@Override
 	public void run() {
 		try {
-			while (true) {
+			while (!canceled) {
 				SinkLogEvent event = pooledLogger.takeDelayedEvent();
-				pooledLogger.put(event);
+
+				if (event == SinkLogEvent.DIE_PILL) {
+					cancel();
+				} else {
+					pooledLogger.put(event);
+				}
 			}
 		} catch (Throwable e) {
 			PooledLogger.logger.log(OpLevel.WARNING,
