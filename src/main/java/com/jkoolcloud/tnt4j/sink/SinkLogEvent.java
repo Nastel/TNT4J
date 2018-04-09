@@ -42,8 +42,6 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class SinkLogEvent extends EventObject implements TTL {
 	private static final long serialVersionUID = 1L;
 
-	public static final SinkLogEvent DIE_PILL = new SinkLogEvent();
-
 	public static final int SIGNAL_PROCESS = 0;
 	public static final int SIGNAL_FLUSH = 1;
 	public static final int SIGNAL_CLOSE = 5;
@@ -61,8 +59,17 @@ public class SinkLogEvent extends EventObject implements TTL {
 	private long startTimeNanos = System.nanoTime();
 	private long stopTimeNanos = 0;
 
-	private SinkLogEvent() {
-		super(new Object());
+	/**
+	 * Create a new log event instance designed as a signal
+	 *
+	 * @param source
+	 *            source object associated with the event
+	 * @param signalType
+	 *            signal type
+	 */
+	public SinkLogEvent(Object source, int signalType) {
+		super(source);
+		this.signalType = signalType;
 	}
 
 	/**
@@ -178,7 +185,8 @@ public class SinkLogEvent extends EventObject implements TTL {
 	 * @param args
 	 *            argument list associated with the message
 	 */
-	public SinkLogEvent(EventSink sink, Source evSource, OpLevel sev, long ttl, ResourceBundle bundle, Object key, Object... args) {
+	public SinkLogEvent(EventSink sink, Source evSource, OpLevel sev, long ttl, ResourceBundle bundle, Object key,
+			Object... args) {
 		super(sink);
 		logObj = key;
 		if (args != null && args.length > 0) {
@@ -219,11 +227,12 @@ public class SinkLogEvent extends EventObject implements TTL {
 	}
 
 	/**
-	 * Return resource bundle associated with this event
+	 * Returns resource bundle associated with this event
+	 * 
 	 * @return resource bundle or null of none
 	 */
 	public ResourceBundle getResourceBundle() {
-		return bundle != null? bundle: ((EventSink) getSource()).getResourceBundle();
+		return bundle != null ? bundle : ((EventSink) getSource()).getResourceBundle();
 	}
 
 	/**
@@ -265,7 +274,8 @@ public class SinkLogEvent extends EventObject implements TTL {
 	/**
 	 * Set log exception
 	 * 
-	 * @param ex exception instance
+	 * @param ex
+	 *            exception instance
 	 */
 	public void setException(Throwable ex) {
 		error = ex;

@@ -37,7 +37,7 @@ class DelayedLoggingTask extends AbstractPoolLoggingTask {
 			while (!canceled) {
 				SinkLogEvent event = pooledLogger.takeDelayedEvent();
 
-				if (event == SinkLogEvent.DIE_PILL) {
+				if (event == PooledLogger.DIE_EVENT) {
 					cancel();
 				} else {
 					pooledLogger.put(event);
