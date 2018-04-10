@@ -404,4 +404,47 @@ public class PropertySnapshot implements Snapshot {
 	public void setSignature(String sign) {
 		this.sign = sign;
 	}
+
+	@Override
+	public Object getFieldValue(String fieldName) {
+		if ("Name".equalsIgnoreCase(fieldName)) {
+			return getName();
+		}
+		if ("ParentId".equalsIgnoreCase(fieldName)) {
+			return getParentId();
+		}
+		if ("TrackId".equalsIgnoreCase(fieldName)) {
+			return getTrackingId();
+		}
+		if ("Type".equalsIgnoreCase(fieldName)) {
+			return getType();
+		}
+		if ("Category".equalsIgnoreCase(fieldName)) {
+			return getCategory();
+		}
+		if ("Id".equalsIgnoreCase(fieldName)) {
+			return getId();
+		}
+		if ("Signature".equalsIgnoreCase(fieldName)) {
+			return getSignature();
+		}
+		if ("Source".equalsIgnoreCase(fieldName)) {
+			return getSource();
+		}
+		if ("Timestamp".equalsIgnoreCase(fieldName)) {
+			return getTime();
+		}
+		if ("TTL".equalsIgnoreCase(fieldName)) {
+			return getTTL();
+		}
+		if ("Severity".equalsIgnoreCase(fieldName)) {
+			return getSeverity();
+		}
+		if ("Correlators".equalsIgnoreCase(fieldName)) {
+			return getCorrelator();
+		}
+
+		return get(fieldName);
+
+	}
 }

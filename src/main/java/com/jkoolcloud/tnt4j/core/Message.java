@@ -407,4 +407,33 @@ public class Message {
 		return str.toString();
 	}
 
+	public Object getFieldValue(String fieldName) {
+		if ("TrackingId".equalsIgnoreCase(fieldName)) {
+			return getTrackingId();
+		}
+		if ("Size".equalsIgnoreCase(fieldName)) {
+			return getSize();
+		}
+		if ("Message".equalsIgnoreCase(fieldName)) {
+			return getMessage();
+		}
+		if ("MessageAge".equalsIgnoreCase(fieldName)) {
+			return getMessageAge();
+		}
+		if ("MessageArgs".equalsIgnoreCase(fieldName)) {
+			return getMessageArgs();
+		}
+		if ("MimeType".equalsIgnoreCase(fieldName)) {
+			return getMimeType();
+		}
+		if ("Encoding".equalsIgnoreCase(fieldName)) {
+			return getEncoding();
+		}
+		if ("Charset".equalsIgnoreCase(fieldName)) {
+			return getCharset();
+		}
+		return null;
+
+	}
+
 }

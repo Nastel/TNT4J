@@ -137,4 +137,13 @@ public interface Trackable extends TTL {
 	 * @return name of this trackable instance
 	 */
 	String getName();
+
+	/**
+	 * Returns value of <tt>fieldName</tt> defined field/property for this trackable.
+	 *
+	 * @param fieldName
+	 *            trackable field or property name
+	 * @return field/property contained value
+	 */
+	Object getFieldValue(String fieldName);
 }

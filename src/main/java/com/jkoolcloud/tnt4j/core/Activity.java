@@ -410,6 +410,67 @@ public class Activity extends Operation implements Trackable {
 	}
 
 	@Override
+	public Object getFieldValue(String fieldName) {
+		if ("Name".equalsIgnoreCase(fieldName)) {
+			return getName();
+		}
+		if ("ParentId".equalsIgnoreCase(fieldName)) {
+			return getParentId();
+		}
+		if ("TrackId".equalsIgnoreCase(fieldName)) {
+			return getTrackingId();
+		}
+		if ("Status".equalsIgnoreCase(fieldName)) {
+			return getStatus();
+		}
+		if ("Type".equalsIgnoreCase(fieldName)) {
+			return getType();
+		}
+		if ("PID".equalsIgnoreCase(fieldName)) {
+			return getPID();
+		}
+		if ("TID".equalsIgnoreCase(fieldName)) {
+			return getTID();
+		}
+		if ("ElapsedUsec".equalsIgnoreCase(fieldName)) {
+			return getElapsedTimeUsec();
+		}
+		if ("WallUsec".equalsIgnoreCase(fieldName)) {
+			return getWallTimeUsec();
+		}
+		if ("FQName".equalsIgnoreCase(fieldName)) {
+			return getSource().getFQName();
+		}
+		if ("IdCount".equalsIgnoreCase(fieldName)) {
+			return getIdCount();
+		}
+		if ("SnapCount".equalsIgnoreCase(fieldName)) {
+			return getSnapshotCount();
+		}
+		if ("StartTime".equalsIgnoreCase(fieldName)) {
+			return getStartTime();
+		}
+		if ("EndTime".equalsIgnoreCase(fieldName)) {
+			return getEndTime();
+		}
+		if ("Severity".equalsIgnoreCase(fieldName)) {
+			return getSeverity();
+		}
+		if ("Resource".equalsIgnoreCase(fieldName)) {
+			return getResource();
+		}
+		if ("Source".equalsIgnoreCase(fieldName)) {
+			return getSource();
+		}
+		Property property = getProperty(fieldName);
+		if (property != null) {
+			return property.getValue();
+		}
+
+		return super.getFieldValue(fieldName);
+	}
+
+	@Override
 	public String getSignature() {
 		return sign;
 	}

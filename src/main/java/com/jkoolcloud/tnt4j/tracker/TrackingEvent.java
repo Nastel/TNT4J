@@ -792,4 +792,41 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	public String getName() {
 		return operation.getName();
 	}
+
+	@Override
+	public Object getFieldValue(String fieldName) {
+		if ("Name".equalsIgnoreCase(fieldName)) {
+			return getName();
+		}
+		if ("ParentId".equalsIgnoreCase(fieldName)) {
+			return getParentId();
+		}
+		if ("TrackId".equalsIgnoreCase(fieldName)) {
+			return getTrackingId();
+		}
+		if ("Type".equalsIgnoreCase(fieldName)) {
+			return getType();
+		}
+		if ("FQName".equalsIgnoreCase(fieldName)) {
+			return getSource().getFQName();
+		}
+		if ("Signature".equalsIgnoreCase(fieldName)) {
+			return getSource().getFQName();
+		}
+		if ("Severity".equalsIgnoreCase(fieldName)) {
+			return getSeverity();
+		}
+		if ("Signature".equalsIgnoreCase(fieldName)) {
+			return getSignature();
+		}
+		if ("Tag".equalsIgnoreCase(fieldName)) {
+			return getTag();
+		}
+
+		if (operation != null) {
+			return operation.getFieldValue(fieldName);
+		}
+
+		return super.getFieldValue(fieldName);
+	}
 }

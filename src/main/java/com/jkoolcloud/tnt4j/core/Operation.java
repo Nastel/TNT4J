@@ -1042,4 +1042,74 @@ public class Operation implements TTL {
 	public int getSnapshotCount() {
 		return snapshots != null ? snapshots.size() : 0;
 	}
+
+	public Object getFieldValue(String fieldName) {
+
+		if ("ElapsedTimeUsec".equalsIgnoreCase(fieldName)) {
+			return getElapsedTimeUsec();
+		}
+		if ("StartTime".equalsIgnoreCase(fieldName)) {
+			return getStartTime();
+		}
+		if ("EndTime".equalsIgnoreCase(fieldName)) {
+			return getEndTime();
+		}
+		if ("elapsedTimeNano".equalsIgnoreCase(fieldName)) {
+			return getElapsedTimeNano();
+		}
+		if ("WaitTimeUsec".equalsIgnoreCase(fieldName)) {
+			return getWaitTimeUsec();
+		}
+		if ("PID".equalsIgnoreCase(fieldName)) {
+			return getPID();
+		}
+		if ("TID".equalsIgnoreCase(fieldName)) {
+			return getTID();
+		}
+		if ("ReasonCode".equalsIgnoreCase(fieldName)) {
+			return getReasonCode();
+		}
+		if ("Resource".equalsIgnoreCase(fieldName)) {
+			return getResource();
+		}
+		if ("User".equalsIgnoreCase(fieldName)) {
+			return getUser();
+		}
+		if ("ExceptionString".equalsIgnoreCase(fieldName)) {
+			return getExceptionString();
+		}
+		if ("Location".equalsIgnoreCase(fieldName)) {
+			return getLocation();
+		}
+		if ("Location".equalsIgnoreCase(fieldName)) {
+			return getLocation();
+		}
+		if ("Type".equalsIgnoreCase(fieldName)) {
+			return getType();
+		}
+		if ("Type".equalsIgnoreCase(fieldName)) {
+			return getType();
+		}
+		if ("CompCode".equalsIgnoreCase(fieldName)) {
+			return getCompCode();
+		}
+		if ("Severity".equalsIgnoreCase(fieldName)) {
+			return getSeverity();
+		}
+		if ("TTL".equalsIgnoreCase(fieldName)) {
+			return getTTL();
+		}
+		if ("Throwable".equalsIgnoreCase(fieldName)) {
+			return getThrowable();
+		}
+		if ("Correlator".equalsIgnoreCase(fieldName)) {
+			return getCorrelator();
+		}
+		if ("Snapshots".equalsIgnoreCase(fieldName)) {
+			getSnapshots();
+		}
+
+		return getProperty(fieldName);
+
+	}
 }
