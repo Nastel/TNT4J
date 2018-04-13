@@ -1558,4 +1558,78 @@ public class Utils {
 			replacementsMap.put(StringEscapeUtils.unescapeJava(m.group(1)), StringEscapeUtils.unescapeJava(m.group(3)));
 		}
 	}
+
+	/**
+	 * Returns an input stream for reading the specified resource.
+	 * <p>
+	 * Does all the same as {@link #getResourceAsStream(Class, String)}, just setting resource loader {@code clazz} to
+	 * {@code null}.
+	 *
+	 * @param resourceName
+	 *            name (path) of the desired resource
+	 * @return input stream to read the resource, or {@code null} if the resource could not be found
+	 *
+	 * @see #getResourceAsStream(Class, String)
+	 */
+	public static InputStream getResourceAsStream(String resourceName) {
+		return getResourceAsStream(null, resourceName);
+	}
+
+	/**
+	 * Returns an input stream for reading the specified resource.
+	 * <p>
+	 * This method takes provided {@code resourceName} builds two additional resource paths: absolute and relative. Then
+	 * tries to load resource using this sequence:
+	 * <ul>
+	 * <li>over {@link java.lang.ClassLoader} using provided resource name (path)</li>
+	 * <li>over {@link java.lang.ClassLoader} using absolute resource path</li>
+	 * <li>over {@link java.lang.Class} using provided resource name (path)</li>
+	 * <li>over {@link java.lang.Class} using absolute resource path</li>
+	 * <li>over {@link java.lang.Class} using relative resource path</li>
+	 * </ul>
+	 *
+	 * @param clazz
+	 *            class to use for resource loading, or {@code null} to use {@link Thread#getContextClassLoader()}
+	 * @param resourceName
+	 *            name (path) of the desired resource
+	 * @return input stream to read the resource, or {@code null} if the resource could not be found
+	 *
+	 * @see java.lang.ClassLoader#getResourceAsStream(String)
+	 * @see Class#getResourceAsStream(String)
+	 * @see Thread#getContextClassLoader()
+	 */
+	public static InputStream getResourceAsStream(Class<?> clazz, String resourceName) {
+		if (StringUtils.isEmpty(resourceName)) {
+			return null;
+		}
+
+		String aResourceName;
+		String rResourceName;
+		if (resourceName.startsWith("/")) {
+			aResourceName = resourceName.substring(1);
+			rResourceName = resourceName;
+		} else {
+			aResourceName = resourceName;
+			rResourceName = "/" + resourceName;
+		}
+
+		Class<?> lClass = clazz == null ? Thread.currentThread().getClass() : clazz;
+		ClassLoader cl = clazz == null ? Thread.currentThread().getContextClassLoader() : clazz.getClassLoader();
+
+		InputStream ins = cl.getResourceAsStream(resourceName);
+		if (ins == null && StringUtils.isNotEmpty(aResourceName)) {
+			ins = cl.getResourceAsStream(aResourceName);
+		}
+		if (ins == null) {
+			ins = lClass.getResourceAsStream(resourceName);
+		}
+		if (ins == null && StringUtils.isNotEmpty(aResourceName)) {
+			ins = lClass.getResourceAsStream(aResourceName);
+		}
+		if (ins == null && StringUtils.isNotEmpty(rResourceName)) {
+			ins = lClass.getResourceAsStream(rResourceName);
+		}
+
+		return ins;
+	}
 }
