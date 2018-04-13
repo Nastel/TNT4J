@@ -428,7 +428,7 @@ public class TrackerConfigStore extends TrackerConfig {
 					try {
 						ins = cfgResource.openStream();
 					} catch (IOException ioe) {
-						ins = getClass().getClassLoader().getResourceAsStream(cfgResource.getFile());
+						ins = Utils.getResourceAsStream(TrackerConfigStore.class, cfgResource.getFile());
 					}
 
 					rdr = new InputStreamReader(ins);
@@ -442,8 +442,8 @@ public class TrackerConfigStore extends TrackerConfig {
 			}
 		}
 
-		String tnt4jResource = "/" + TNT4J_PROPERTIES;
-		InputStream ins = getClass().getClassLoader().getResourceAsStream(tnt4jResource);
+		String tnt4jResource = TNT4J_PROPERTIES;
+		InputStream ins = Utils.getResourceAsStream(TrackerConfigStore.class, tnt4jResource);
 		if (ins == null) {
 			FileNotFoundException ioe = new FileNotFoundException("Resource '" + tnt4jResource + "' not found");
 			if (exc != null) {
