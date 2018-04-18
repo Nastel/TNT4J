@@ -544,6 +544,9 @@ public class Utils {
 	 * @return String with characters at start of string replaced with specified {@code hideChars}
 	 */
 	public static String hide(String str, String hideChars, int lastNo) {
+		if (str == null) {
+			return str;
+		}
 		int length = str.length() - lastNo;
 		if (length > 0) {
 			String fake = str.substring(0, length);
@@ -568,6 +571,9 @@ public class Utils {
 	 * @return String with characters at end of string replaced with specified {@code hideChars}
 	 */
 	public static String hideEnd(String str, String hideChars, int startNo) {
+		if (str == null) {
+			return str;
+		}
 		int length = str.length() - startNo;
 		if (length > 0) {
 			String fake = str.substring(startNo, str.length());
