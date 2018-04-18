@@ -22,9 +22,10 @@ import com.jkoolcloud.tnt4j.sink.SinkLogEvent;
  * This class implements a task for asynchronous handling and delivery of delayed logging events to various event sinks.
  * Delayed events are those that could not be handled due to error or some other non-deliverable condition.
  *
- *
  * @version $Revision: 1 $
- * @see PooledLogger
+ *
+ * @see com.jkoolcloud.tnt4j.sink.impl.PooledLogger#takeDelayedEvent()
+ * @see com.jkoolcloud.tnt4j.sink.impl.PooledLogger#put(com.jkoolcloud.tnt4j.sink.SinkLogEvent)
  */
 class DelayedLoggingTask extends AbstractPoolLoggingTask {
 	protected DelayedLoggingTask(PooledLogger logger) {
@@ -34,7 +35,7 @@ class DelayedLoggingTask extends AbstractPoolLoggingTask {
 	@Override
 	public void run() {
 		try {
-			while (!canceled) {
+			while (!isCanceled()) {
 				SinkLogEvent event = pooledLogger.takeDelayedEvent();
 
 				if (event == PooledLogger.DIE_EVENT) {

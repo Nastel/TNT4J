@@ -19,12 +19,12 @@ import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.sink.SinkLogEvent;
 
 /**
- * This class implements a task for handling asynchronous handling and delivery of logging events to various event
- * sinks.
- *
+ * This class implements a task for asynchronous handling and delivery of logging events to various event sinks.
  *
  * @version $Revision: 1 $
- * @see PooledLogger
+ * 
+ * @see com.jkoolcloud.tnt4j.sink.impl.PooledLogger#takeEvent()
+ * @see com.jkoolcloud.tnt4j.sink.impl.PooledLogger#processEvent(com.jkoolcloud.tnt4j.sink.SinkLogEvent)
  */
 class PooledLoggingTask extends AbstractPoolLoggingTask {
 	protected PooledLoggingTask(PooledLogger logger) {
@@ -34,7 +34,7 @@ class PooledLoggingTask extends AbstractPoolLoggingTask {
 	@Override
 	public void run() {
 		try {
-			while (!canceled) {
+			while (!isCanceled()) {
 				SinkLogEvent event = pooledLogger.takeEvent();
 				if (event == PooledLogger.DIE_EVENT) {
 					cancel();

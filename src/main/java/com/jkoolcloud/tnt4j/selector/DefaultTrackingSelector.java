@@ -44,8 +44,8 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(DefaultTrackingSelector.class);
-	private static final boolean DEFAULT_RETURN_UNDEFINED = Boolean
-			.valueOf(System.getProperty("tnt4j.selector.undefined.isset", "true"));
+	private static final boolean DEFAULT_RETURN_UNDEFINED = Utils.getBoolean("tnt4j.selector.undefined.isset",
+			System.getProperties(), true);
 	private HashMap<Object, PropertyToken> tokenMap = new HashMap<Object, PropertyToken>(89);
 	private Map<String, Object> config = null;
 	private TokenRepository tokenRepository = null;

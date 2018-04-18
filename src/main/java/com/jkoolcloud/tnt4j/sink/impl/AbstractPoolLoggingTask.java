@@ -17,18 +17,40 @@
 package com.jkoolcloud.tnt4j.sink.impl;
 
 /**
- * @author akausinis
- * @version 1.0
+ * Base class for handling and delivery of logging events to various event sinks.
+ *
+ * @version $Revision: 1 $
+ *
+ * @see PooledLogger
  */
 public abstract class AbstractPoolLoggingTask implements Runnable {
 	PooledLogger pooledLogger;
-	boolean canceled;
 
+	private boolean canceled;
+
+	/**
+	 * Constructs a new AbstractPoolLoggingTask instance.
+	 *
+	 * @param logger
+	 *            pooled logger instance to be used by this task
+	 */
 	protected AbstractPoolLoggingTask(PooledLogger logger) {
 		pooledLogger = logger;
 	}
 
+	/**
+	 * Sets this task as canceled.
+	 */
 	public void cancel() {
 		canceled = true;
+	}
+
+	/**
+	 * Checks if task is canceled.
+	 *
+	 * @return {@code true} if task is canceled, {@code false} - otherwise
+	 */
+	public boolean isCanceled() {
+		return canceled;
 	}
 }
