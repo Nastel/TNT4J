@@ -547,6 +547,7 @@ public class Utils {
 		if (str == null) {
 			return str;
 		}
+		
 		int length = str.length() - lastNo;
 		if (length > 0) {
 			String fake = str.substring(0, length);
@@ -574,6 +575,7 @@ public class Utils {
 		if (str == null) {
 			return str;
 		}
+		
 		int length = str.length() - startNo;
 		if (length > 0) {
 			String fake = str.substring(startNo, str.length());
