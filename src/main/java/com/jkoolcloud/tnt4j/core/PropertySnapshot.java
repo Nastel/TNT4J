@@ -405,46 +405,89 @@ public class PropertySnapshot implements Snapshot {
 		this.sign = sign;
 	}
 
+	/**
+	 * Returns value of {@code fieldName} defined field/property for this snapshot.
+	 * <p>
+	 * List of supported field names (in common with {@link com.jkoolcloud.tnt4j.source.Source#getFieldValue(String)}):
+	 * <ul>
+	 * <li>Name</li>
+	 * <li>ParentId</li>
+	 * <li>TrackingId</li>
+	 * <li>Type</li>
+	 * <li>Category</li>
+	 * <li>Id</li>
+	 * <li>Signature</li>
+	 * <li>Source</li>
+	 * <li>Timestamp</li>
+	 * <li>TTL</li>
+	 * <li>Severity</li>
+	 * <li>Correlators</li>
+	 * <li>Properties</li>
+	 * <li>PropertiesCount</li>
+	 * <li>Custom property name from contained properties set</li>
+	 * </ul>
+	 *
+	 * @param fieldName
+	 *            snapshot field or property name
+	 * @return field/property contained value
+	 */
 	@Override
 	public Object getFieldValue(String fieldName) {
 		if ("Name".equalsIgnoreCase(fieldName)) {
-			return getName();
+			return snapName;
 		}
 		if ("ParentId".equalsIgnoreCase(fieldName)) {
-			return getParentId();
+			return parent_id;
 		}
-		if ("TrackId".equalsIgnoreCase(fieldName)) {
-			return getTrackingId();
+		if ("TrackingId".equalsIgnoreCase(fieldName)) {
+			return tracking_id;
 		}
 		if ("Type".equalsIgnoreCase(fieldName)) {
-			return getType();
+			return opType;
 		}
 		if ("Category".equalsIgnoreCase(fieldName)) {
-			return getCategory();
+			return category;
 		}
 		if ("Id".equalsIgnoreCase(fieldName)) {
-			return getId();
+			return id;
 		}
 		if ("Signature".equalsIgnoreCase(fieldName)) {
-			return getSignature();
+			return sign;
 		}
 		if ("Source".equalsIgnoreCase(fieldName)) {
-			return getSource();
+			return source;
 		}
 		if ("Timestamp".equalsIgnoreCase(fieldName)) {
 			return getTime();
 		}
 		if ("TTL".equalsIgnoreCase(fieldName)) {
-			return getTTL();
+			return ttl;
 		}
 		if ("Severity".equalsIgnoreCase(fieldName)) {
-			return getSeverity();
+			return level;
 		}
 		if ("Correlators".equalsIgnoreCase(fieldName)) {
-			return getCorrelator();
+			return correlators;
+		}
+		if ("Properties".equalsIgnoreCase(fieldName)) {
+			return propSet;
+		}
+		if ("PropertiesCount".equalsIgnoreCase(fieldName)) {
+			return propSet == null ? 0 : propSet.size();
 		}
 
-		return get(fieldName);
+		if (source != null) {
+			Object sfValue = source.getFieldValue(fieldName);
+			if (sfValue != null) {
+				return sfValue;
+			}
+		}
 
+		Property property = get(fieldName);
+		if (property != null) {
+			return property.getValue();
+		}
+
+		return null;
 	}
 }

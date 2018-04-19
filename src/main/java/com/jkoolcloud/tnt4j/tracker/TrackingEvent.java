@@ -385,11 +385,8 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	 */
 	@Override
 	public String toString() {
-		return 	"{" + operation.getSeverity()
-				+ ",[" + getMessage() + "],"
-				+ "[" + operation.getName() + "],"
-				+ super.toString()
-				+ "," + operation + "}";
+		return "{" + operation.getSeverity() + ",[" + getMessage() + "]," + "[" + operation.getName() + "],"
+				+ super.toString() + "," + operation + "}";
 	}
 
 	/**
@@ -793,38 +790,64 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 		return operation.getName();
 	}
 
+	/**
+	 * Returns value of {@code fieldName} defined field/property for this tracking event.
+	 * <p>
+	 * List of supported field names (in common with {@link com.jkoolcloud.tnt4j.core.Operation#getFieldValue(String)},
+	 * {@link com.jkoolcloud.tnt4j.source.Source#getFieldValue(String)} and
+	 * {@link com.jkoolcloud.tnt4j.core.Message#getFieldValue(String)}):
+	 * <ul>
+	 * <li>Source</li>
+	 * <li>ParentId</li>
+	 * <li>Signature</li>
+	 * <li>Severity</li>
+	 * <li>Relation1</li>
+	 * <li>Relation2</li>
+	 * <li>RelationType</li>
+	 * </ul>
+	 *
+	 * @param fieldName
+	 *            event field or property name
+	 * @return field/property contained value
+	 *
+	 * @see com.jkoolcloud.tnt4j.core.Operation#getFieldValue(String)
+	 * @see com.jkoolcloud.tnt4j.core.Message#getFieldValue(String)
+	 */
 	@Override
 	public Object getFieldValue(String fieldName) {
-		if ("Name".equalsIgnoreCase(fieldName)) {
-			return getName();
+		if ("Source".equalsIgnoreCase(fieldName)) {
+			return source;
 		}
 		if ("ParentId".equalsIgnoreCase(fieldName)) {
-			return getParentId();
-		}
-		if ("TrackId".equalsIgnoreCase(fieldName)) {
-			return getTrackingId();
-		}
-		if ("Type".equalsIgnoreCase(fieldName)) {
-			return getType();
-		}
-		if ("FQName".equalsIgnoreCase(fieldName)) {
-			return getSource().getFQName();
+			return parent;
 		}
 		if ("Signature".equalsIgnoreCase(fieldName)) {
-			return getSource().getFQName();
+			return sign;
 		}
 		if ("Severity".equalsIgnoreCase(fieldName)) {
 			return getSeverity();
 		}
-		if ("Signature".equalsIgnoreCase(fieldName)) {
-			return getSignature();
+		if ("Relation1".equalsIgnoreCase(fieldName)) {
+			return get2(OBJ_ONE);
 		}
-		if ("Tag".equalsIgnoreCase(fieldName)) {
-			return getTag();
+		if ("Relation2".equalsIgnoreCase(fieldName)) {
+			return get2(OBJ_TWO);
+		}
+		if ("RelationType".equalsIgnoreCase(fieldName)) {
+			return relationType;
 		}
 
+		if (source != null) {
+			Object sfValue = source.getFieldValue(fieldName);
+			if (sfValue != null) {
+				return sfValue;
+			}
+		}
 		if (operation != null) {
-			return operation.getFieldValue(fieldName);
+			Object opFieldValue = operation.getFieldValue(fieldName);
+			if (opFieldValue != null) {
+				return opFieldValue;
+			}
 		}
 
 		return super.getFieldValue(fieldName);

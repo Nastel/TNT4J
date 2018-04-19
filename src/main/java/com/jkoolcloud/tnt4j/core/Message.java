@@ -407,33 +407,60 @@ public class Message {
 		return str.toString();
 	}
 
+	/**
+	 * Returns value of {@code fieldName} defined field/property for this message.
+	 * <p>
+	 * List of supported field names:
+	 * <ul>
+	 * <li>TrackingId</li>
+	 * <li>Size</li>
+	 * <li>Message</li>
+	 * <li>MessagePattern</li>
+	 * <li>MessageArgs</li>
+	 * <li>MessageAge</li>
+	 * <li>MimeType</li>
+	 * <li>Encoding</li>
+	 * <li>Charset</li>
+	 * <li>Tag</li>
+	 * </ul>
+	 *
+	 * @param fieldName
+	 *            message field or property name
+	 * @return field/property contained value
+	 */
 	public Object getFieldValue(String fieldName) {
 		if ("TrackingId".equalsIgnoreCase(fieldName)) {
-			return getTrackingId();
+			return signature;
 		}
 		if ("Size".equalsIgnoreCase(fieldName)) {
-			return getSize();
+			return size;
 		}
 		if ("Message".equalsIgnoreCase(fieldName)) {
 			return getMessage();
 		}
-		if ("MessageAge".equalsIgnoreCase(fieldName)) {
-			return getMessageAge();
+		if ("MessagePattern".equalsIgnoreCase(fieldName)) {
+			return strData;
 		}
 		if ("MessageArgs".equalsIgnoreCase(fieldName)) {
-			return getMessageArgs();
+			return argList;
+		}
+		if ("MessageAge".equalsIgnoreCase(fieldName)) {
+			return messageAge;
 		}
 		if ("MimeType".equalsIgnoreCase(fieldName)) {
-			return getMimeType();
+			return mimeType;
 		}
 		if ("Encoding".equalsIgnoreCase(fieldName)) {
-			return getEncoding();
+			return encoding;
 		}
 		if ("Charset".equalsIgnoreCase(fieldName)) {
-			return getCharset();
+			return charset;
 		}
-		return null;
+		if ("Tag".equalsIgnoreCase(fieldName)) {
+			return tags;
+		}
 
+		return null;
 	}
 
 }

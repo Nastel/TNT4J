@@ -21,12 +21,10 @@ import java.util.Set;
 import com.jkoolcloud.tnt4j.source.Source;
 
 /**
- * Classes that implement this interface support define trackable objects.
- * Trackable are objects which can be tracked and related to one another using
- * tracking id and correlation id. Each trackable objects has a tracking id
- * which uniquely identifies this instance, parent id -- tracking id of the parent
- * trackable instance and correlator which is a user defined token which could be
- * another tracking id from another trackable source.
+ * Classes that implement this interface support define trackable objects. Trackable are objects which can be tracked
+ * and related to one another using tracking id and correlation id. Each trackable objects has a tracking id which
+ * uniquely identifies this instance, parent id -- tracking id of the parent trackable instance and correlator which is
+ * a user defined token which could be another tracking id from another trackable source.
  *
  * @version $Revision: 2 $
  */
@@ -34,14 +32,14 @@ public interface Trackable extends TTL {
 	/**
 	 * Set current/active {@link Source} with the trackable entity
 	 *
-	 * @param src application source handle
+	 * @param src
+	 *            application source handle
 	 * @see Source
 	 */
 	void setSource(Source src);
 
 	/**
-	 * Obtains current/active {@link Source} handle associated
-	 * with the current trackable objects
+	 * Obtains current/active {@link Source} handle associated with the current trackable objects
 	 *
 	 * @return current active application handle
 	 * @see Source
@@ -49,8 +47,7 @@ public interface Trackable extends TTL {
 	Source getSource();
 
 	/**
-	 * Returns user defined correlators, which are used to relate any
-	 * pair of trackable instances.
+	 * Returns user defined correlators, which are used to relate any pair of trackable instances.
 	 *
 	 * @return user-defined correlator
 	 */
@@ -59,14 +56,16 @@ public interface Trackable extends TTL {
 	/**
 	 * Sets tracking correlators
 	 *
-	 * @param cid tracking correlator list
+	 * @param cid
+	 *            tracking correlator list
 	 */
 	void setCorrelator(String... cid);
 
 	/**
 	 * Sets tracking correlators
 	 *
-	 * @param cids tracking correlator list
+	 * @param cids
+	 *            tracking correlator list
 	 */
 	void setCorrelator(Collection<String> cids);
 
@@ -85,20 +84,19 @@ public interface Trackable extends TTL {
 	String getParentId();
 
 	/**
-	 * Get signature associated with this tracking instance.
-	 * Use signature for point to point temper detection. Signatures
-	 * should be computed based on contents of the trackable instance.
+	 * Get signature associated with this tracking instance. Use signature for point to point temper detection.
+	 * Signatures should be computed based on contents of the trackable instance.
 	 *
 	 * @return item tracking identifier
 	 */
 	String getSignature();
 
 	/**
-	 * Sets signature for temper detection/protection.
-	 * Use signature for point to point temper detection. Signatures
+	 * Sets signature for temper detection/protection. Use signature for point to point temper detection. Signatures
 	 * should be computed based on contents of the trackable instance.
 	 *
-	 * @param sign tracking identifier
+	 * @param sign
+	 *            tracking identifier
 	 */
 	void setSignature(String sign);
 
@@ -112,22 +110,26 @@ public interface Trackable extends TTL {
 	/**
 	 * Sets tracking identifier
 	 *
-	 * @param id tracking identifier
+	 * @param id
+	 *            tracking identifier
 	 */
 	void setTrackingId(String id);
 
 	/**
 	 * Sets the parent object for this object.
 	 *
-	 * @param parentObject parent object
-	 * @throws IllegalArgumentException if parentObject is not a valid type of parent
+	 * @param parentObject
+	 *            parent object
+	 * @throws IllegalArgumentException
+	 *             if parentObject is not a valid type of parent
 	 */
 	void setParentId(Trackable parentObject);
 
 	/**
 	 * Sets the parent ID for this object.
 	 *
-	 * @param parentId parent ID
+	 * @param parentId
+	 *            parent ID
 	 */
 	void setParentId(String parentId);
 
@@ -139,7 +141,7 @@ public interface Trackable extends TTL {
 	String getName();
 
 	/**
-	 * Returns value of <tt>fieldName</tt> defined field/property for this trackable.
+	 * Returns value of {@code fieldName} defined field/property for this trackable.
 	 *
 	 * @param fieldName
 	 *            trackable field or property name

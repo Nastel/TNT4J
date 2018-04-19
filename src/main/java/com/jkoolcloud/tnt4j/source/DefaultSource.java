@@ -237,4 +237,47 @@ public class DefaultSource implements Source {
 	public SourceFactory getSourceFactory() {
 		return factory;
 	}
+
+	/**
+	 * Returns value of {@code fieldName} defined field for this source.
+	 * <p>
+	 * List of supported field names :
+	 * <ul>
+	 * <li>SourceFQN</li>
+	 * <li>SourceUser</li>
+	 * <li>SourceName</li>
+	 * <li>SourceURL</li>
+	 * <li>SourceSSN</li>
+	 * <li>SourceType</li>
+	 * </ul>
+	 *
+	 * @param fieldName
+	 *            source field or property name
+	 * @return field contained value
+	 *
+	 * @see com.jkoolcloud.tnt4j.core.Trackable#getFieldValue(String)
+	 */
+	@Override
+	public Object getFieldValue(String fieldName) {
+		if ("SourceFQN".equalsIgnoreCase(fieldName)) {
+			return getFQName();
+		}
+		if ("SourceUser".equalsIgnoreCase(fieldName)) {
+			return user;
+		}
+		if ("SourceName".equalsIgnoreCase(fieldName)) {
+			return sname;
+		}
+		if ("SourceURL".equalsIgnoreCase(fieldName)) {
+			return url;
+		}
+		if ("SourceSSN".equalsIgnoreCase(fieldName)) {
+			return getSSN();
+		}
+		if ("SourceType".equalsIgnoreCase(fieldName)) {
+			return sourceType;
+		}
+
+		return null;
+	}
 }

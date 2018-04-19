@@ -121,4 +121,13 @@ public interface Source {
 	 * @return source factory
 	 */
 	SourceFactory getSourceFactory();
+
+	/**
+	 * Returns value of {@code fieldName} defined field for this source.
+	 *
+	 * @param fieldName
+	 *            source field name
+	 * @return field contained value
+	 */
+	Object getFieldValue(String fieldName);
 }

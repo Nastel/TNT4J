@@ -684,8 +684,7 @@ public class Operation implements TTL {
 			if (startTimeNano > 0) {
 				startTimeUs = endTimeUs - (elapsedTimeNano / 1000);
 			} else {
-				throw new IllegalArgumentException("end.time=" + endTimeUs
-						+ " is less than start.time=" + startTimeUs
+				throw new IllegalArgumentException("end.time=" + endTimeUs + " is less than start.time=" + startTimeUs
 						+ ", delta.usec=" + (endTimeUs - startTimeUs));
 			}
 		}
@@ -917,24 +916,17 @@ public class Operation implements TTL {
 		UsecTimestamp eTime = getEndTime();
 		StringBuilder str = new StringBuilder();
 
-		str.append(getClass().getSimpleName()).append("{")
-		   .append("Name:").append(getName()).append(",")
-		   .append("Type:").append(type == null ? "null" : type.toString()).append(",")
-		   .append("Correlator:").append(getCorrelator()).append(",")
-		   .append("Location:").append(getLocation()).append(",")
-		   .append("Resource:").append(res == null ? "null" : res.toString()).append(",")
-		   .append("User:").append(getUser()).append(",")
-		   .append("SnapCount=").append(getSnapshotCount()).append(",")
-		   .append("PropCount=").append(getPropertyCount()).append(",")
-		   .append("CompCode:").append(getCompCode()).append(",")
-		   .append("ReasonCode:").append(getReasonCode()).append(",")
-		   .append("PID:").append(getPID()).append(",")
-		   .append("TID:").append(getTID()).append(",")
-		   .append("ElapsedUsec:").append(getElapsedTimeUsec()).append(",")
-		   .append("WaitUsec:").append(getWaitTimeUsec()).append(",")
-		   .append("WallUsec:").append(getWallTimeUsec()).append(",")
-		   .append("StartTime:[").append(sTime.toString()).append("],")
-		   .append("EndTime:[").append(eTime.toString()).append("],")
+		str.append(getClass().getSimpleName()).append("{").append("Name:").append(getName()).append(",").append("Type:")
+				.append(type == null ? "null" : type.toString()).append(",").append("Correlator:")
+				.append(getCorrelator()).append(",").append("Location:").append(getLocation()).append(",")
+				.append("Resource:").append(res == null ? "null" : res.toString()).append(",").append("User:")
+				.append(getUser()).append(",").append("SnapCount=").append(getSnapshotCount()).append(",")
+				.append("PropCount=").append(getPropertyCount()).append(",").append("CompCode:").append(getCompCode())
+				.append(",").append("ReasonCode:").append(getReasonCode()).append(",").append("PID:").append(getPID())
+				.append(",").append("TID:").append(getTID()).append(",").append("ElapsedUsec:")
+				.append(getElapsedTimeUsec()).append(",").append("WaitUsec:").append(getWaitTimeUsec()).append(",")
+				.append("WallUsec:").append(getWallTimeUsec()).append(",").append("StartTime:[")
+				.append(sTime.toString()).append("],").append("EndTime:[").append(eTime.toString()).append("],")
 				.append("Exception:").append(getExceptionString()).append("}");
 
 		return str.toString();
@@ -1043,10 +1035,63 @@ public class Operation implements TTL {
 		return snapshots != null ? snapshots.size() : 0;
 	}
 
+	/**
+	 * Returns value of {@code fieldName} defined field/property for this operation.
+	 * <p>
+	 * List of supported field names:
+	 * <ul>
+	 * <li>ElapsedTimeUsec</li>
+	 * <li>ElapsedTimeNano</li>
+	 * <li>StartTimeUsec</li>
+	 * <li>StartTimeNano</li>
+	 * <li>StopTimeNano</li>
+	 * <li>EndTimeUsec</li>
+	 * <li>StartTime</li>
+	 * <li>EndTime</li>
+	 * <li>WaitTimeUsec</li>
+	 * <li>PID</li>
+	 * <li>TID</li>
+	 * <li>ReasonCode</li>
+	 * <li>Name</li>
+	 * <li>Resource</li>
+	 * <li>User</li>
+	 * <li>Exception</li>
+	 * <li>Location</li>
+	 * <li>Type</li>
+	 * <li>CompCode</li>
+	 * <li>Severity</li>
+	 * <li>TTL</li>
+	 * <li>Throwable</li>
+	 * <li>Correlator</li>
+	 * <li>Snapshots</li>
+	 * <li>SnapshotsCount</li>
+	 * <li>Properties</li>
+	 * <li>PropertiesCount</li>
+	 * <li>Custom property name from contained properties set</li>
+	 * </ul>
+	 *
+	 * @param fieldName
+	 *            operation field or property name
+	 * @return field/property contained value
+	 */
 	public Object getFieldValue(String fieldName) {
-
 		if ("ElapsedTimeUsec".equalsIgnoreCase(fieldName)) {
-			return getElapsedTimeUsec();
+			return elapsedTimeUsec;
+		}
+		if ("ElapsedTimeNano".equalsIgnoreCase(fieldName)) {
+			return elapsedTimeNano;
+		}
+		if ("StartTimeUsec".equalsIgnoreCase(fieldName)) {
+			return startTimeUs;
+		}
+		if ("StartTimeNano".equalsIgnoreCase(fieldName)) {
+			return startTimeNano;
+		}
+		if ("StopTimeNano".equalsIgnoreCase(fieldName)) {
+			return stopTimeNano;
+		}
+		if ("EndTimeUsec".equalsIgnoreCase(fieldName)) {
+			return endTimeUs;
 		}
 		if ("StartTime".equalsIgnoreCase(fieldName)) {
 			return getStartTime();
@@ -1054,62 +1099,69 @@ public class Operation implements TTL {
 		if ("EndTime".equalsIgnoreCase(fieldName)) {
 			return getEndTime();
 		}
-		if ("elapsedTimeNano".equalsIgnoreCase(fieldName)) {
-			return getElapsedTimeNano();
-		}
 		if ("WaitTimeUsec".equalsIgnoreCase(fieldName)) {
-			return getWaitTimeUsec();
+			return waitTimeUsec;
 		}
 		if ("PID".equalsIgnoreCase(fieldName)) {
-			return getPID();
+			return pid;
 		}
 		if ("TID".equalsIgnoreCase(fieldName)) {
-			return getTID();
+			return tid;
 		}
 		if ("ReasonCode".equalsIgnoreCase(fieldName)) {
-			return getReasonCode();
+			return opRC;
+		}
+		if ("Name".equalsIgnoreCase(fieldName)) {
+			return opName;
 		}
 		if ("Resource".equalsIgnoreCase(fieldName)) {
-			return getResource();
+			return resource;
 		}
 		if ("User".equalsIgnoreCase(fieldName)) {
-			return getUser();
+			return user;
 		}
-		if ("ExceptionString".equalsIgnoreCase(fieldName)) {
-			return getExceptionString();
-		}
-		if ("Location".equalsIgnoreCase(fieldName)) {
-			return getLocation();
+		if ("Exception".equalsIgnoreCase(fieldName)) {
+			return exceptionStr;
 		}
 		if ("Location".equalsIgnoreCase(fieldName)) {
-			return getLocation();
+			return location;
 		}
 		if ("Type".equalsIgnoreCase(fieldName)) {
-			return getType();
-		}
-		if ("Type".equalsIgnoreCase(fieldName)) {
-			return getType();
+			return opType;
 		}
 		if ("CompCode".equalsIgnoreCase(fieldName)) {
-			return getCompCode();
+			return opCC;
 		}
 		if ("Severity".equalsIgnoreCase(fieldName)) {
-			return getSeverity();
+			return opLevel;
 		}
 		if ("TTL".equalsIgnoreCase(fieldName)) {
-			return getTTL();
+			return ttlSec;
 		}
 		if ("Throwable".equalsIgnoreCase(fieldName)) {
-			return getThrowable();
+			return exHandle;
 		}
 		if ("Correlator".equalsIgnoreCase(fieldName)) {
-			return getCorrelator();
+			return correlators;
 		}
 		if ("Snapshots".equalsIgnoreCase(fieldName)) {
-			getSnapshots();
+			return snapshots;
+		}
+		if ("SnapshotsCount".equalsIgnoreCase(fieldName)) {
+			return getSnapshotCount();
+		}
+		if ("Properties".equalsIgnoreCase(fieldName)) {
+			return properties;
+		}
+		if ("PropertiesCount".equalsIgnoreCase(fieldName)) {
+			return getPropertyCount();
 		}
 
-		return getProperty(fieldName);
+		Property property = getProperty(fieldName);
+		if (property != null) {
+			return property.getValue();
+		}
 
+		return null;
 	}
 }

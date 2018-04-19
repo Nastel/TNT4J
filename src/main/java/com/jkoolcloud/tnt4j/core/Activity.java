@@ -409,62 +409,44 @@ public class Activity extends Operation implements Trackable {
 		return str.toString();
 	}
 
+	/**
+	 * Returns value of {@code fieldName} defined field/property for this activity.
+	 * <p>
+	 * List of supported field names (in common with {@link Operation#getFieldValue(String)}):
+	 * <ul>
+	 * <li>Source</li>
+	 * <li>ParentId</li>
+	 * <li>TrackingId</li>
+	 * <li>Status</li>
+	 * <li>Signature</li>
+	 * <li>Ids</li>
+	 * </ul>
+	 *
+	 * @param fieldName
+	 *            activity field or property name
+	 * @return field/property contained value
+	 *
+	 * @see com.jkoolcloud.tnt4j.core.Operation#getFieldValue(String)
+	 */
 	@Override
 	public Object getFieldValue(String fieldName) {
-		if ("Name".equalsIgnoreCase(fieldName)) {
-			return getName();
+		if ("Source".equalsIgnoreCase(fieldName)) {
+			return appl;
 		}
 		if ("ParentId".equalsIgnoreCase(fieldName)) {
-			return getParentId();
+			return parentId;
 		}
-		if ("TrackId".equalsIgnoreCase(fieldName)) {
-			return getTrackingId();
+		if ("TrackingId".equalsIgnoreCase(fieldName)) {
+			return tracking_id;
 		}
 		if ("Status".equalsIgnoreCase(fieldName)) {
-			return getStatus();
+			return status;
 		}
-		if ("Type".equalsIgnoreCase(fieldName)) {
-			return getType();
+		if ("Signature".equalsIgnoreCase(fieldName)) {
+			return sign;
 		}
-		if ("PID".equalsIgnoreCase(fieldName)) {
-			return getPID();
-		}
-		if ("TID".equalsIgnoreCase(fieldName)) {
-			return getTID();
-		}
-		if ("ElapsedUsec".equalsIgnoreCase(fieldName)) {
-			return getElapsedTimeUsec();
-		}
-		if ("WallUsec".equalsIgnoreCase(fieldName)) {
-			return getWallTimeUsec();
-		}
-		if ("FQName".equalsIgnoreCase(fieldName)) {
-			return getSource().getFQName();
-		}
-		if ("IdCount".equalsIgnoreCase(fieldName)) {
-			return getIdCount();
-		}
-		if ("SnapCount".equalsIgnoreCase(fieldName)) {
-			return getSnapshotCount();
-		}
-		if ("StartTime".equalsIgnoreCase(fieldName)) {
-			return getStartTime();
-		}
-		if ("EndTime".equalsIgnoreCase(fieldName)) {
-			return getEndTime();
-		}
-		if ("Severity".equalsIgnoreCase(fieldName)) {
-			return getSeverity();
-		}
-		if ("Resource".equalsIgnoreCase(fieldName)) {
-			return getResource();
-		}
-		if ("Source".equalsIgnoreCase(fieldName)) {
-			return getSource();
-		}
-		Property property = getProperty(fieldName);
-		if (property != null) {
-			return property.getValue();
+		if ("Ids".equalsIgnoreCase(fieldName)) {
+			return idset;
 		}
 
 		return super.getFieldValue(fieldName);
