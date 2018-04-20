@@ -52,8 +52,7 @@ public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurabl
 	protected Map<String, Object> props;
 
 	/**
-	 * Create a default pooled logger factory
-	 *
+	 * Create a default pooled logger factory.
 	 */
 	public PooledLoggerFactoryImpl() {
 	}
@@ -106,7 +105,10 @@ public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurabl
 		}
 	}
 
-	public static void shutdown() {
+	/**
+	 * Shuts down all pooled loggers.
+	 */
+	public static void shutdownAllLoggers() {
 		for (PooledLogger pl : POOLED_LOGGERS.values()) {
 			pl.shutdown(null);
 		}

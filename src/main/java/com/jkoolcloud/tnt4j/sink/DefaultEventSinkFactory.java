@@ -15,6 +15,7 @@
  */
 package com.jkoolcloud.tnt4j.sink;
 
+import com.jkoolcloud.tnt4j.sink.impl.PooledLoggerFactoryImpl;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
@@ -157,5 +158,12 @@ public class DefaultEventSinkFactory {
 	 */
 	public static EventSink defaultEventSink(Class<?> clazz) {
 		return defaultEventSink(clazz.getName());
+	}
+
+	/**
+	 * Shuts down all TNT4J sinks related resources.
+	 */
+	public static void shutdownAll() {
+		PooledLoggerFactoryImpl.shutdownAllLoggers();
 	}
 }

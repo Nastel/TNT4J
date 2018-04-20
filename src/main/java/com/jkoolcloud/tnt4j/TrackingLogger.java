@@ -27,7 +27,6 @@ import com.jkoolcloud.tnt4j.core.*;
 import com.jkoolcloud.tnt4j.dump.*;
 import com.jkoolcloud.tnt4j.selector.TrackingSelector;
 import com.jkoolcloud.tnt4j.sink.*;
-import com.jkoolcloud.tnt4j.sink.impl.PooledLoggerFactoryImpl;
 import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.source.SourceType;
 import com.jkoolcloud.tnt4j.tracker.*;
@@ -306,8 +305,6 @@ public class TrackingLogger implements Tracker {
 		for (TrackingLogger logger : trackers) {
 			shutdown(logger);
 		}
-		PooledLoggerFactoryImpl.shutdown();
-		TRACKERS.clear();
 	}
 
 	/**
