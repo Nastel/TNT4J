@@ -241,7 +241,7 @@ public class DefaultSource implements Source {
 	/**
 	 * Returns value of {@code fieldName} defined field for this source.
 	 * <p>
-	 * List of supported field names :
+	 * List of supported field names:
 	 * <ul>
 	 * <li>SourceFQN</li>
 	 * <li>SourceUser</li>

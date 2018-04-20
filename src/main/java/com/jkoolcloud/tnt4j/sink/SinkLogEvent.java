@@ -83,9 +83,8 @@ public class SinkLogEvent extends EventObject implements TTL {
 	 *            signal type
 	 */
 	public SinkLogEvent(EventSink sink, Thread th, int signalType) {
-		super(sink);
+		this(sink, signalType);
 		this.logObj = th;
-		this.signalType = signalType;
 	}
 
 	/**
@@ -320,14 +319,9 @@ public class SinkLogEvent extends EventObject implements TTL {
 
 	@Override
 	public String toString() {
-		return super.toString() 
-			+ "{source: " + getSource()
-			+ ", sev: " + level
-			+ ", ttl: " + ttl
-			+ ", log.obj: " + Utils.quote(logObj)
-			+ ", ev.source: " + Utils.quote(evSrc)
-			+ ", exception: " + Utils.quote(error)
-			+ "}";
+		return super.toString() + "{source: " + getSource() + ", sev: " + level + ", ttl: " + ttl + ", log.obj: "
+				+ Utils.quote(logObj) + ", ev.source: " + Utils.quote(evSrc) + ", exception: " + Utils.quote(error)
+				+ "}";
 	}
 
 	@Override

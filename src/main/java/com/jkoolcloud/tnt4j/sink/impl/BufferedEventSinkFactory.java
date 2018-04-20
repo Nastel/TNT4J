@@ -114,6 +114,8 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	}
 
 	public void cleanup() {
-		pooledFactory.cleanup();
+		if (pooledFactory != null) {
+			pooledFactory.cleanup();
+		}
 	}
 }

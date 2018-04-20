@@ -319,7 +319,7 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 
 	@Override
 	public boolean isOpen() {
-		return factory.getPooledLogger() != null;
+		return factory != null && factory.getPooledLogger() != null;
 	}
 
 	@Override
@@ -348,7 +348,9 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 		stats.put(Utils.qualify(this, KEY_OBJECTS_REQUEUED), rqCount.get());
 		stats.put(Utils.qualify(this, KEY_FLUSH_COUNT), signalCount.get());
 		stats.put(Utils.qualify(this, KEY_TOTAL_ERRORS), errorCount.get());
-		factory.getPooledLogger().getStats(stats);
+		if (isOpen()) {
+			factory.getPooledLogger().getStats(stats);
+		}
 		return outSink.getStats(stats);
 	}
 
@@ -501,13 +503,15 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 
 	@Override
 	public void shutdown(Throwable ex) throws IOException {
-		if (factory != null && factory.getPooledLogger() != null) {
+		// shutdown normally using signal
+		SinkLogEvent shutdownEvt = new SinkLogEvent(outSink, Thread.currentThread(), SinkLogEvent.SIGNAL_SHUTDOWN);
+		shutdownEvt.setException(ex);
+		signal(shutdownEvt, signalTimeout, TimeUnit.MILLISECONDS);
+		if (isOpen()) {
+			// also issue immediate logger shutdown in case signal times out
 			factory.getPooledLogger().shutdown(ex);
 		}
-		signal(SinkLogEvent.SIGNAL_SHUTDOWN, signalTimeout, TimeUnit.MILLISECONDS);
-		if (factory != null) {
-			factory.cleanup();
-		}
+		factory.cleanup();
 	}
 
 	/**
@@ -523,10 +527,31 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	 *
 	 * @throws IOException
 	 *             if IO error occurs when writing sink log event
+	 *
+	 * @see #signal(com.jkoolcloud.tnt4j.sink.SinkLogEvent, long, java.util.concurrent.TimeUnit)
 	 */
 	protected BufferedEventSink signal(int signalType, long wait, TimeUnit tunit) throws IOException {
+		return signal(new SinkLogEvent(outSink, Thread.currentThread(), signalType), wait, tunit);
+	}
+
+	/**
+	 * Send a signal to the underlying sink and wait for signal to be processed up to a max time.
+	 *
+	 * @param evt
+	 *            signal event to send
+	 * @param wait
+	 *            max time to wait
+	 * @param tunit
+	 *            time unit for wait
+	 * @return sink factory instance
+	 *
+	 * @throws IOException
+	 *             if IO error occurs when writing sink log event
+	 */
+	protected BufferedEventSink signal(SinkLogEvent evt, long wait, TimeUnit tunit) throws IOException {
+		_checkState();
 		signalCount.incrementAndGet();
-		_writeEvent(new SinkLogEvent(outSink, Thread.currentThread(), signalType), true);
+		_writeEvent(evt, true);
 		LockSupport.parkNanos(this, tunit.toNanos(wait));
 		return this;
 	}
@@ -540,7 +565,7 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	 */
 	protected BufferedEventSink handleError(SinkError ev) {
 		errorCount.incrementAndGet();
-		if (!factory.getPooledLogger().isDQfull()) {
+		if (isOpen() && !factory.getPooledLogger().isDQfull()) {
 			SinkLogEvent event = ev.getSinkEvent();
 			factory.getPooledLogger().putDelayed(event);
 			rqCount.incrementAndGet();
