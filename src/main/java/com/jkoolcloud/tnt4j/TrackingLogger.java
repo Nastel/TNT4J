@@ -27,6 +27,7 @@ import com.jkoolcloud.tnt4j.core.*;
 import com.jkoolcloud.tnt4j.dump.*;
 import com.jkoolcloud.tnt4j.selector.TrackingSelector;
 import com.jkoolcloud.tnt4j.sink.*;
+import com.jkoolcloud.tnt4j.sink.impl.PooledLoggerFactoryImpl;
 import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.source.SourceType;
 import com.jkoolcloud.tnt4j.tracker.*;
@@ -138,7 +139,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * TrackingLogger.dumpOnShutdown(true);
  * ...
  * // associated dump provider with a user define dump file
- * TrackingLogger.addDumpProvider(TrackinLogger.getDumpDestinationFactory().getInstance("my-dump.log"), new MyDumpProvider());
+ * TrackingLogger.addDumpProvider(TrackingLogger.getDumpDestinationFactory().getInstance("my-dump.log"), new MyDumpProvider());
  * TrackingLogger.dumpOnShutdown(true);
  * ...
  * TrackingLogger.dumpState(); // MyDumpProvider will be called when dumpState() is called.
@@ -298,14 +299,15 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Shutdown all available trackers and sinks
-	 *
+	 * Shutdown all available trackers and sinks.
 	 */
 	public static void shutdownAll() {
 		List<TrackingLogger> trackers = getAllTrackers();
 		for (TrackingLogger logger : trackers) {
 			shutdown(logger);
 		}
+		PooledLoggerFactoryImpl.shutdown();
+		TRACKERS.clear();
 	}
 
 	/**

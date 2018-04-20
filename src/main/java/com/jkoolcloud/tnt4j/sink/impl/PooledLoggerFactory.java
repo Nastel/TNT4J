@@ -40,9 +40,4 @@ public interface PooledLoggerFactory {
 	 * @see PooledLogger
 	 */
 	Map<String, PooledLogger> getPooledLoggers();
-
-	/**
-	 * Cleans factory instance, releasing internally allocated resources.
-	 */
-	void cleanup();
 }

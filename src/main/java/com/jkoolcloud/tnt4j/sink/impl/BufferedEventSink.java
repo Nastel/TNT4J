@@ -511,7 +511,6 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 			// also issue immediate logger shutdown in case signal times out
 			factory.getPooledLogger().shutdown(ex);
 		}
-		factory.cleanup();
 	}
 
 	/**

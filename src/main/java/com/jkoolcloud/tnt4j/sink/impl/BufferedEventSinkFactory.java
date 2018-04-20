@@ -112,10 +112,4 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 			throw new ConfigException("Missing PooledLoggerFactory implementation", props);
 		}
 	}
-
-	public void cleanup() {
-		if (pooledFactory != null) {
-			pooledFactory.cleanup();
-		}
-	}
 }

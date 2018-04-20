@@ -89,6 +89,8 @@ public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurabl
 
 	@Override
 	public void setConfiguration(Map<String, Object> settings) throws ConfigException {
+		this.props = settings;
+
 		// obtain all optional attributes
 		poolName = Utils.getString("Name", settings, DEFAULT_POOL_NAME);
 		poolSize = Utils.getInt("Size", settings, MAX_POOL_SIZE);
@@ -104,8 +106,7 @@ public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurabl
 		}
 	}
 
-	@Override
-	public void cleanup() {
+	public static void shutdown() {
 		for (PooledLogger pl : POOLED_LOGGERS.values()) {
 			pl.shutdown(null);
 		}
