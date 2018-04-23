@@ -42,6 +42,8 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
 import com.jkoolcloud.tnt4j.core.Handle;
+import com.jkoolcloud.tnt4j.core.Property;
+import com.jkoolcloud.tnt4j.core.Snapshot;
 
 /**
  * General utility methods.
@@ -547,7 +549,7 @@ public class Utils {
 		if (str == null) {
 			return str;
 		}
-		
+
 		int length = str.length() - lastNo;
 		if (length > 0) {
 			String fake = str.substring(0, length);
@@ -575,7 +577,7 @@ public class Utils {
 		if (str == null) {
 			return str;
 		}
-		
+
 		int length = str.length() - startNo;
 		if (length > 0) {
 			String fake = str.substring(startNo, str.length());
@@ -1639,5 +1641,26 @@ public class Utils {
 		}
 
 		return ins;
+	}
+
+	/**
+	 * Finds snapshot contained property by defined property name ignoring case.
+	 *
+	 * @param snapshot
+	 *            property snapshot instance
+	 * @param propName
+	 *            property name
+	 * @return snapshot contained property
+	 */
+	public static Property getSnapPropertyIgnoreCase(Snapshot snapshot, String propName) {
+		if (snapshot != null) {
+			for (Property prop : snapshot.getSnapshot()) {
+				if (prop.getKey().equalsIgnoreCase(propName)) {
+					return prop;
+				}
+			}
+		}
+
+		return null;
 	}
 }
