@@ -88,7 +88,7 @@ public class FileEventSink extends AbstractEventSink {
 
 	@Override
 	protected void _checkState() throws IllegalStateException {
-		if (fileSink == null || !fileSink.isOpen()) {
+		if (!isOpen()) {
 			throw new IllegalStateException("Sink is not defined or closed");
 		}
 	}
@@ -119,6 +119,8 @@ public class FileEventSink extends AbstractEventSink {
 	}
 
 	protected void _writeLog(String msg) {
+		_checkState();
+
 		PrintStream printer = fileSink.getPrintStream();
 		printer.println(msg);
 		printer.flush();
