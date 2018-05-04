@@ -493,7 +493,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	/**
 	 * Format a given {@link Property} into JSON format.
 	 * <p>
-	 * If property is transient (@link {@link com.jkoolcloud.tnt4j.core.Property#isTransient()}, empty string
+	 * If property is transient {@link com.jkoolcloud.tnt4j.core.Property#isTransient()}, empty string
 	 * {@value #EMPTY_STR} is returned.
 	 * <p>
 	 * Empty string {@value #EMPTY_STR} is returned when {@code specialNumbersHandling} is set to

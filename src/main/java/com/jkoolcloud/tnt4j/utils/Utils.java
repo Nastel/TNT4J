@@ -1392,11 +1392,11 @@ public class Utils {
 	}
 
 	/**
-	 * Checks whether provided number value is special: (@code 'Infinity'} or {@code 'NaN'}.
+	 * Checks whether provided number value is special: {@code 'Infinity'} or {@code 'NaN'}.
 	 *
 	 * @param value
 	 *            number to check
-	 * @return {@code true} if number value is (@code 'Infinity'} or {@code 'NaN'}, {@code false} - otherwise
+	 * @return {@code true} if number value is {@code 'Infinity'} or {@code 'NaN'}, {@code false} - otherwise
 	 *
 	 * @see Float#isInfinite()
 	 * @see Float#isNaN()
