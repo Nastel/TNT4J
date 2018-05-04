@@ -157,6 +157,20 @@ public interface ConfigFactory {
 
 	/**
 	 * Create a default tracking configuration
+	 *
+	 * @param clazz
+	 *            class for which to obtain configuration
+	 * @param type
+	 *            source type
+	 * @param configReader
+	 *            configuration reader configuration elements to read from (e.g. String, byte[])
+	 * @see TrackerConfig
+	 * @return new {@link TrackerConfig} instance with default values and factories
+	 */
+	TrackerConfig getConfig(Class<?> clazz, SourceType type, Reader configReader);
+
+	/**
+	 * Create a default tracking configuration
 	 * 
 	 * @param source
 	 *            user defined source

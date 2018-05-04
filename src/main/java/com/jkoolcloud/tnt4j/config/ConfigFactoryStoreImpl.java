@@ -102,6 +102,11 @@ public class ConfigFactoryStoreImpl implements ConfigFactory {
 	}
 
 	@Override
+	public TrackerConfig getConfig(Class<?> clazz, SourceType type, Reader configReader) {
+		return getConfig(clazz.getName(), type, configReader);
+	}
+
+	@Override
 	public TrackerConfig getConfig(Source source, Map<String, Properties> configMap) {
 		return new TrackerConfigStore(source, configMap);
 	}
