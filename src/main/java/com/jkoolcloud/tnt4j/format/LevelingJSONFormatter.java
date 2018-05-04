@@ -116,7 +116,7 @@ public class LevelingJSONFormatter extends JSONFormatter {
 		if (event.getTag() != null) {
 			Set<String> tags = event.getTag();
 			if (!tags.isEmpty()) {
-				selfSnapshot.add("tag", tags);
+				selfSnapshot.add(JSON_MSG_TAG_FIELD, tags);
 			}
 		}
 
@@ -171,7 +171,7 @@ public class LevelingJSONFormatter extends JSONFormatter {
 		Utils.quote(activity.getType(), jsonString).append(ATTR_JSON);
 
 		Snapshot selfSnapshot = getSelfSnapshot(activity);
-		selfSnapshot.add("id.count", activity.getIdCount());
+		selfSnapshot.add(JSON_ID_COUNT_FIELD, activity.getIdCount());
 
 		activity.addSnapshot(selfSnapshot);
 
@@ -194,20 +194,20 @@ public class LevelingJSONFormatter extends JSONFormatter {
 		if (op.getCorrelator() != null) {
 			Set<String> cids = op.getCorrelator();
 			if (!cids.isEmpty()) {
-				selfSnapshot.add("corrid", cids);
+				selfSnapshot.add(JSON_CORR_ID_FIELD, cids);
 			}
 		}
 		if (op.getUser() != null) {
-			selfSnapshot.add("user", op.getUser());
+			selfSnapshot.add(JSON_USER_FIELD, op.getUser());
 		}
 		if (op.getLocation() != null) {
-			selfSnapshot.add("location", op.getLocation());
+			selfSnapshot.add(JSON_LOCATION_FIELD, op.getLocation());
 		}
-		selfSnapshot.add("level", op.getSeverity());
-		selfSnapshot.add("pid", op.getPID());
-		selfSnapshot.add("tid", op.getTID());
-		selfSnapshot.add("snap.count", op.getSnapshotCount());
-		selfSnapshot.add("elapsed.usec", op.getElapsedTimeUsec());
+		selfSnapshot.add(JSON_SEVERITY_FIELD, op.getSeverity());
+		selfSnapshot.add(JSON_PID_FIELD, op.getPID());
+		selfSnapshot.add(JSON_TID_FIELD, op.getTID());
+		selfSnapshot.add(JSON_SNAPSHOT_COUNT_FIELD, op.getSnapshotCount());
+		selfSnapshot.add(JSON_ELAPSED_TIME_USEC_FIELD, op.getElapsedTimeUsec());
 
 		return selfSnapshot;
 	}
