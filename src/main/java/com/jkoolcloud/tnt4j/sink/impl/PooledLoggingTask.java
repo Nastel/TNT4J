@@ -36,7 +36,7 @@ class PooledLoggingTask extends AbstractPoolLoggingTask {
 		try {
 			while (!isCanceled()) {
 				SinkLogEvent event = pooledLogger.takeEvent();
-				if (event == PooledLogger.DIE_EVENT) {
+				if (event.getSignalType() == SinkLogEvent.SIGNAL_TERMINATE) {
 					cancel();
 				} else {
 					pooledLogger.processEvent(event);

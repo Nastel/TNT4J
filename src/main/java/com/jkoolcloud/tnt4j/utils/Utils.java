@@ -1291,7 +1291,7 @@ public class Utils {
 	public static Map<String, Object> getAttributes(String prefix, Map<String, Object> p) {
 		HashMap<String, Object> settings = new HashMap<String, Object>(11);
 		for (Entry<String, Object> entry : p.entrySet()) {
-			String key = entry.getKey().toString();
+			String key = entry.getKey();
 			if (key.startsWith(prefix)) {
 				settings.put(key.substring(prefix.length()), entry.getValue());
 			}

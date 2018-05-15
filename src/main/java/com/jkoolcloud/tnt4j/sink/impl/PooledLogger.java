@@ -54,8 +54,6 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 			.valueOf(System.getProperty("tnt4j.pooled.logger.error.rate", "0.1"));
 	protected static final int REOPEN_FREQ = Integer.getInteger("tnt4j.pooled.logger.reopen.freq.ms", 10000);
 
-	static final SinkLogEvent DIE_EVENT = new SinkLogEvent(new Object(), SinkLogEvent.SIGNAL_SHUTDOWN);
-
 	static final String KEY_Q_SIZE = "pooled-queue-size";
 	static final String KEY_Q_TASKS = "pooled-queue-tasks";
 	static final String KEY_Q_CAPACITY = "pooled-queue-capacity";
@@ -124,10 +122,11 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 
 		// when ex is null it must be immediate shutdown request
 		if (ex == null) {
+			SinkLogEvent dieEvent = new SinkLogEvent(this, SinkLogEvent.SIGNAL_TERMINATE);
 			for (int i = 0; i < poolSize; i++) {
-				eventQ.offer(DIE_EVENT);
+				eventQ.offer(dieEvent);
 			}
-			delayQ.offer(new DelayedElement<SinkLogEvent>(DIE_EVENT, 0));
+			delayQ.offer(new DelayedElement<SinkLogEvent>(dieEvent, 0));
 
 			stop();
 

@@ -113,7 +113,7 @@ public class SocketEventSink extends AbstractEventSink {
 
 	@Override
 	public boolean isOpen() {
-		return socketSink != null && socketSink.isConnected();
+		return socketSink != null && socketSink.isConnected();// && outStream != null;
 	}
 
 	@Override
@@ -126,7 +126,7 @@ public class SocketEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public void flush() throws IOException {
+	public synchronized void flush() throws IOException {
 		if (isOpen()) {
 			outStream.flush();
 		}
@@ -189,7 +189,9 @@ public class SocketEventSink extends AbstractEventSink {
 			reopen();
 			writeLine(msg, true);
 		} catch (IOException ioe) {
-			if (e != null) ioe.initCause(e);
+			if (e != null) {
+				ioe.initCause(e);
+			}
 			throw ioe;
 		}
 	}

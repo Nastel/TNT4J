@@ -46,6 +46,7 @@ public class SinkLogEvent extends EventObject implements TTL {
 	public static final int SIGNAL_FLUSH = 1;
 	public static final int SIGNAL_CLOSE = 5;
 	public static final int SIGNAL_SHUTDOWN = 10;
+	public static final int SIGNAL_TERMINATE = 11;
 
 	private Object logObj = null;
 	private Snapshot snapshot = null;
