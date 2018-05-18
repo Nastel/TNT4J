@@ -102,7 +102,7 @@ public class KafkaEventSink extends AbstractEventSink {
 			Map<MetricName, ? extends Metric> kMetrics = producer.metrics();
 			Set<MetricName> keys = kMetrics.keySet();
 			for (MetricName kMetric : keys) {
-				stats.put(Utils.qualify(this, kMetric.group() + "/" + kMetric.name()), kMetrics.get(kMetric).value());
+				stats.put(Utils.qualify(this, kMetric.group() + "/" + kMetric.name()), kMetrics.get(kMetric).metricValue());
 			}
 		}
 		return this;
