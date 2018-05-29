@@ -54,7 +54,7 @@ public class KafkaEventSink extends AbstractEventSink {
 
 	Properties kprops;
 	Producer<String, String> producer;
-	
+
 	/**
 	 * Create a Kafka event sink
 	 * 
@@ -63,33 +63,33 @@ public class KafkaEventSink extends AbstractEventSink {
 	 * @param evf event formatter associated with this sink
 	 */
 	public KafkaEventSink(String nm, Properties props, EventFormatter evf) {
-	    super(nm, evf);
-	    this.kprops = props;
-    }
+		super(nm, evf);
+		this.kprops = props;
+	}
 
 	@Override
-    public boolean isSet(OpLevel sev) {
-	    return true;
-    }
+	public boolean isSet(OpLevel sev) {
+		return true;
+	}
 
 	@Override
-    public Object getSinkHandle() {
-	    return producer;
-    }
+	public Object getSinkHandle() {
+		return producer;
+	}
 
 	@Override
-    public boolean isOpen() {
-	    return producer != null;
-    }
+	public boolean isOpen() {
+		return producer != null;
+	}
 
 	@Override
-    public synchronized void open() throws IOException {
+	public synchronized void open() throws IOException {
 		close();
 		producer = new KafkaProducer<String, String>(kprops);
 	}
 
 	@Override
-    public synchronized void close() throws IOException {
+	public synchronized void close() throws IOException {
 		if (producer != null) {
 			producer.close();
 		}
@@ -102,37 +102,39 @@ public class KafkaEventSink extends AbstractEventSink {
 			Map<MetricName, ? extends Metric> kMetrics = producer.metrics();
 			Set<MetricName> keys = kMetrics.keySet();
 			for (MetricName kMetric : keys) {
-				stats.put(Utils.qualify(this, kMetric.group() + "/" + kMetric.name()), kMetrics.get(kMetric).metricValue());
+				stats.put(Utils.qualify(this, kMetric.group() + "/" + kMetric.name()),
+						kMetrics.get(kMetric).metricValue());
 			}
 		}
 		return this;
 	}
-	
+
 	@Override
-    protected void _log(TrackingEvent event) throws Exception {
-		producer.send(new ProducerRecord<String, String>(getName(), 
-				event.getOperation().getName(), getEventFormatter().format(event)));
+	protected void _log(TrackingEvent event) throws Exception {
+		producer.send(new ProducerRecord<String, String>(getName(), event.getOperation().getName(),
+				getEventFormatter().format(event)));
 	}
 
 	@Override
-    protected void _log(TrackingActivity activity) throws Exception {
-		producer.send(new ProducerRecord<String, String>(getName(), 
-				activity.getName(), getEventFormatter().format(activity)));
-    }
+	protected void _log(TrackingActivity activity) throws Exception {
+		producer.send(new ProducerRecord<String, String>(getName(), activity.getName(),
+				getEventFormatter().format(activity)));
+	}
 
 	@Override
-    protected void _log(Snapshot snapshot) throws Exception {
-		producer.send(new ProducerRecord<String, String>(getName(), 
-				snapshot.getCategory(), getEventFormatter().format(snapshot)));
-    }
+	protected void _log(Snapshot snapshot) throws Exception {
+		producer.send(new ProducerRecord<String, String>(getName(), snapshot.getCategory(),
+				getEventFormatter().format(snapshot)));
+	}
 
 	@Override
-    protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception {
-		producer.send(new ProducerRecord<String, String>(getName(), src.getFQName(), getEventFormatter().format(ttl, src, sev, msg, args)));
-    }
+	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception {
+		producer.send(new ProducerRecord<String, String>(getName(), src.getFQName(),
+				getEventFormatter().format(ttl, src, sev, msg, args)));
+	}
 
 	@Override
-    protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
+	protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
 		producer.send(new ProducerRecord<String, String>(getName(), getEventFormatter().format(msg, args)));
-    }
+	}
 }
