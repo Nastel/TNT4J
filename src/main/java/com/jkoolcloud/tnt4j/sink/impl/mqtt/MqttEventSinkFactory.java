@@ -125,7 +125,7 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> settings) throws ConfigException {
+	public void setConfiguration(Map<String, ?> settings) throws ConfigException {
 		super.setConfiguration(settings);
 		serverURI = Utils.getString("mqtt-server-url", settings, "tcp://localhost:1883");
 		clientid = Utils.getString("mqtt-clientid", settings, MqttClient.generateClientId());

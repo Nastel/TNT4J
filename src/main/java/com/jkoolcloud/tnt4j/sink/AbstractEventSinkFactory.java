@@ -57,7 +57,7 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	private ResourceBundle defBundle;
 	private EventFormatter evFormatter;
 
-	protected Map<String, Object> config = null;
+	protected Map<String, ?> config = null;
 
 	/**
 	 * Obtain the default instance of {@link SinkEventFilter} configured for this factory.
@@ -135,7 +135,7 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> props) throws ConfigException {
+	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		config = props;
 		setTTL(Utils.getLong("TTL", props, getTTL()));
 		double maxmps = Utils.getDouble("RateMaxMPS", props, Limiter.MAX_RATE);
@@ -169,7 +169,7 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	}
 
 	@Override
-	public Map<String, Object> getConfiguration() {
+	public Map<String, ?> getConfiguration() {
 		return config;
 	}
 

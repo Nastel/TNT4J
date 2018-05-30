@@ -76,7 +76,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	int minLevel = OpLevel.INFO.ordinal();
 
 	ConcurrentMap<String, AtomicLong> pastMsgs;
-	Map<String, Object> config;
+	Map<String, ?> config;
 
 	/**
 	 * Create a default filter with {@link OpLevel#INFO} as default threshold.
@@ -183,12 +183,12 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	}
 
 	@Override
-	public Map<String, Object> getConfiguration() {
+	public Map<String, ?> getConfiguration() {
 		return config;
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> settings) {
+	public void setConfiguration(Map<String, ?> settings) {
 		config = settings;
 
 		String levelStr = Utils.getString(LEVEL, settings, OpLevel.INFO.toString());

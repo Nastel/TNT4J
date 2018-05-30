@@ -20,48 +20,49 @@ import java.util.Properties;
 
 /**
  * <p>
- * This class represents an exception that occurs when an error occurs
- * when TNT4J objects are configured. 
+ * This class represents an exception that occurs when an error occurs when TNT4J objects are configured.
  * </p>
  * 
  * @version $Revision: 1 $
  */
 
 public class ConfigException extends Exception {
-    private static final long serialVersionUID = 3062997853952792045L;
-    
-    private final Map<?, ?> config;
-    
-	/**
-	 * Create a configuration exception with a given message and
-	 * configuration settings.
-	 *
-	 * @param msg error message
-	 * @param settings configuration settings
-	 */
-   public ConfigException(String msg, Map<String, Object> settings) {
-    	super(msg);
-    	config = settings;
-    }
+	private static final long serialVersionUID = 3062997853952792045L;
+
+	private final Map<?, ?> config;
 
 	/**
-	 * Create a configuration exception with a given message and
-	 * configuration settings.
+	 * Create a configuration exception with a given message and configuration settings.
 	 *
-	 * @param msg error message
-	 * @param settings configuration settings
+	 * @param msg
+	 *            error message
+	 * @param settings
+	 *            configuration settings
 	 */
-    public ConfigException(String msg, Properties settings) {
-    	super(msg);
-    	config = settings;
-    }
+	public ConfigException(String msg, Map<String, ?> settings) {
+		super(msg);
+		config = settings;
+	}
+
+	/**
+	 * Create a configuration exception with a given message and configuration settings.
+	 *
+	 * @param msg
+	 *            error message
+	 * @param settings
+	 *            configuration settings
+	 */
+	public ConfigException(String msg, Properties settings) {
+		super(msg);
+		config = settings;
+	}
 
 	/**
 	 * Return configuration settings related to the exception
 	 *
 	 * @return configuration settings
 	 */
-    public Map<?, ?> getConfiguration() {
-    	return config;
-    }
+	public Map<?, ?> getConfiguration() {
+		return config;
+	}
 }

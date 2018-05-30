@@ -90,7 +90,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	private String rootSSN = DEFAULT_SOURCE_ROOT_SSN;
 	private String[] defaultSources = DEFAULT_SOURCES.clone();
 
-	private Map<String, Object> config;
+	private Map<String, ?> config;
 	private Source rootSource;
 	private GeoLocator geoLocator = DefaultGeoService.getInstance();
 
@@ -152,12 +152,12 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	}
 
 	@Override
-	public Map<String, Object> getConfiguration() {
+	public Map<String, ?> getConfiguration() {
 		return config;
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> settings) throws ConfigException {
+	public void setConfiguration(Map<String, ?> settings) throws ConfigException {
 		config = settings;
 
 		GeoLocator locator = (GeoLocator) Utils.createConfigurableObject("GeoLocator", "GeoLocator.", config);

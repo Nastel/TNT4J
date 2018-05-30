@@ -19,9 +19,9 @@ import java.util.Map;
 
 /**
  * <p>
- * This interface defines classes that can be configured using
- * properties.
+ * This interface defines classes that can be configured using properties.
  * </p>
+ * 
  * @version $Revision: 1 $
  *
  */
@@ -31,13 +31,15 @@ public interface Configurable {
 	 *
 	 * @return current configuration settings
 	 */
-	Map<String, Object> getConfiguration();
+	Map<String, ?> getConfiguration();
 
 	/**
 	 * Apply given configuration settings
 	 *
-	 * @param settings apply given settings as configuration (name, value pairs)
-	 * @throws ConfigException if error applying configuration settings
+	 * @param settings
+	 *            apply given settings as configuration (name, value pairs)
+	 * @throws ConfigException
+	 *             if error applying configuration settings
 	 */
-	void setConfiguration(Map<String, Object> settings) throws ConfigException;
+	void setConfiguration(Map<String, ?> settings) throws ConfigException;
 }

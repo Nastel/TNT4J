@@ -47,7 +47,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	private static final boolean DEFAULT_RETURN_UNDEFINED = Utils.getBoolean("tnt4j.selector.undefined.isset",
 			System.getProperties(), true);
 	private HashMap<Object, PropertyToken> tokenMap = new HashMap<Object, PropertyToken>(89);
-	private Map<String, Object> config = null;
+	private Map<String, ?> config = null;
 	private TokenRepository tokenRepository = null;
 	private PropertyListenerImpl listener = null;
 
@@ -202,12 +202,12 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	}
 
 	@Override
-	public Map<String, Object> getConfiguration() {
+	public Map<String, ?> getConfiguration() {
 		return config;
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> props) throws ConfigException {
+	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		config = props;
 		TokenRepository tokenRepo = (TokenRepository) Utils.createConfigurableObject("Repository", "Repository.",
 				config);

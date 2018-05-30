@@ -49,7 +49,7 @@ public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurabl
 	int retryInterval = RETRY_INTERVAL;
 	boolean dropOnError = DROP_ON_EXCEPTION;
 	String poolName = DEFAULT_POOL_NAME;
-	protected Map<String, Object> props;
+	protected Map<String, ?> props;
 
 	/**
 	 * Create a default pooled logger factory.
@@ -82,12 +82,12 @@ public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurabl
 	}
 
 	@Override
-	public Map<String, Object> getConfiguration() {
+	public Map<String, ?> getConfiguration() {
 		return props;
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> settings) throws ConfigException {
+	public void setConfiguration(Map<String, ?> settings) throws ConfigException {
 		this.props = settings;
 
 		// obtain all optional attributes

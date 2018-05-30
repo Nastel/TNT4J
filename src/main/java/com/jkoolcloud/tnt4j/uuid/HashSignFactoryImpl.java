@@ -33,7 +33,7 @@ public class HashSignFactoryImpl implements SignFactory, Configurable {
 	public static final String DEFAULT_HASH_ALGO = "MD5";
 
 	private String algo = DEFAULT_HASH_ALGO;
-	private Map<String, Object> settings;
+	private Map<String, ?> settings;
 
 	/**
 	 * Create a new signature factory using MD5 algorithm
@@ -44,10 +44,10 @@ public class HashSignFactoryImpl implements SignFactory, Configurable {
 	}
 
 	/**
-	 * Create a new signature factory using a specified
-	 * digest algorithm.
+	 * Create a new signature factory using a specified digest algorithm.
 	 * 
-	 * @param alg digest algorithm (e.g. MD5) 
+	 * @param alg
+	 *            digest algorithm (e.g. MD5)
 	 * 
 	 */
 	public HashSignFactoryImpl(String alg) {
@@ -68,12 +68,12 @@ public class HashSignFactoryImpl implements SignFactory, Configurable {
 	}
 
 	@Override
-	public Map<String, Object> getConfiguration() {
+	public Map<String, ?> getConfiguration() {
 		return settings;
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> props) throws ConfigException {
+	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		this.settings = props;
 		algo = Utils.getString("Algorithm", settings, DEFAULT_HASH_ALGO);
 	}

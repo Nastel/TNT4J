@@ -1150,7 +1150,7 @@ public class Utils {
 	 *             if error creating or applying configuration
 	 *
 	 */
-	public static Object createConfigurableObject(String classProp, String prefix, Map<String, Object> config)
+	public static Object createConfigurableObject(String classProp, String prefix, Map<String, ?> config)
 			throws ConfigException {
 		Object className = config.get(classProp);
 		if (className == null) {
@@ -1212,8 +1212,7 @@ public class Utils {
 	 * @throws ConfigException
 	 *             if error applying configuration
 	 */
-	public static Object applyConfiguration(String prefix, Map<String, Object> prop, Object obj)
-			throws ConfigException {
+	public static Object applyConfiguration(String prefix, Map<String, ?> prop, Object obj) throws ConfigException {
 		if (obj instanceof Configurable) {
 			return applyConfiguration(prefix, prop, (Configurable) obj);
 		}
@@ -1253,7 +1252,7 @@ public class Utils {
 	 * @throws ConfigException
 	 *             if error applying configuration
 	 */
-	public static Configurable applyConfiguration(String prefix, Map<String, Object> prop, Configurable cfg)
+	public static Configurable applyConfiguration(String prefix, Map<String, ?> prop, Configurable cfg)
 			throws ConfigException {
 		cfg.setConfiguration(getAttributes(prefix, prop));
 		return cfg;
@@ -1288,9 +1287,9 @@ public class Utils {
 	 *
 	 * @return a map containing only those attributes that match a prefix.
 	 */
-	public static Map<String, Object> getAttributes(String prefix, Map<String, Object> p) {
+	public static Map<String, Object> getAttributes(String prefix, Map<String, ?> p) {
 		HashMap<String, Object> settings = new HashMap<String, Object>(11);
-		for (Entry<String, Object> entry : p.entrySet()) {
+		for (Entry<String, ?> entry : p.entrySet()) {
 			String key = entry.getKey();
 			if (key.startsWith(prefix)) {
 				settings.put(key.substring(prefix.length()), entry.getValue());

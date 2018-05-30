@@ -63,7 +63,7 @@ public class KafkaEventSinkFactory extends AbstractEventSinkFactory {
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> settings) throws ConfigException {
+	public void setConfiguration(Map<String, ?> settings) throws ConfigException {
 		super.setConfiguration(settings);
 		kafkaTopic = Utils.getString("topic", settings, DEFAULT_KAFKA_TOPIC);
 		kafkaPropFile = Utils.getString("propFile", settings, kafkaPropFile);
@@ -74,7 +74,7 @@ public class KafkaEventSinkFactory extends AbstractEventSinkFactory {
 		}
 	}
 
-	protected void loadKafkaProps(String fname, Map<String, Object> settings) throws ConfigException {
+	protected void loadKafkaProps(String fname, Map<String, ?> settings) throws ConfigException {
 		try {
 			kafkaProps.load(new FileInputStream(new File(fname)));
 		} catch (Throwable e) {

@@ -59,7 +59,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	private String configName = null;
 	private PropertiesConfiguration config = null;
-	protected Map<String, Object> settings = null;
+	protected Map<String, ?> settings = null;
 	private long refDelay = 20000;
 
 	/**
@@ -202,12 +202,12 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	}
 
 	@Override
-	public Map<String, Object> getConfiguration() {
+	public Map<String, ?> getConfiguration() {
 		return settings;
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> props) throws ConfigException {
+	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		settings = props;
 		configName = Utils.getString("Url", props, configName);
 		refDelay = Utils.getLong("RefreshTime", props, refDelay);

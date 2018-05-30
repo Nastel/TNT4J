@@ -48,7 +48,7 @@ public class DefaultFormatter implements EventFormatter, Configurable {
 	protected TimeZone timeZone = TimeZone.getDefault();
 	protected String formatString = "{2} | {1} | {0} | {3}";
 
-	private Map<String, Object> config = null;
+	private Map<String, ?> config = null;
 
 	/**
 	 * Create a default event formatter
@@ -60,7 +60,8 @@ public class DefaultFormatter implements EventFormatter, Configurable {
 	/**
 	 * Create a default event formatter
 	 *
-	 * @param format string (e.g. "{2} | {1} | {0} | {3}")
+	 * @param format
+	 *            string (e.g. "{2} | {1} | {0} | {3}")
 	 */
 	public DefaultFormatter(String format) {
 		formatString = format;
@@ -69,8 +70,10 @@ public class DefaultFormatter implements EventFormatter, Configurable {
 	/**
 	 * Create a default event formatter
 	 *
-	 * @param format string (e.g. "{2} | {1} | {0} | {3}")
-	 * @param tz time zone
+	 * @param format
+	 *            string (e.g. "{2} | {1} | {0} | {3}")
+	 * @param tz
+	 *            time zone
 	 */
 	public DefaultFormatter(String format, TimeZone tz) {
 		formatString = format;
@@ -80,8 +83,10 @@ public class DefaultFormatter implements EventFormatter, Configurable {
 	/**
 	 * Create a default event formatter
 	 *
-	 * @param format string (e.g. "{2} | {1} | {0} | {3}")
-	 * @param tzid time zone id
+	 * @param format
+	 *            string (e.g. "{2} | {1} | {0} | {3}")
+	 * @param tzid
+	 *            time zone id
 	 */
 	public DefaultFormatter(String format, String tzid) {
 		formatString = format;
@@ -117,16 +122,17 @@ public class DefaultFormatter implements EventFormatter, Configurable {
 	@Override
 	public String format(long ttl, Source src, OpLevel level, String msg, Object... args) {
 		String srcName = src != null ? src.getFQName() : DefaultSourceFactory.getInstance().getRootSource().getFQName();
-		return Utils.format(formatString, UsecTimestamp.getTimeStamp(timeZone), level, Utils.format(msg, args), srcName);
+		return Utils.format(formatString, UsecTimestamp.getTimeStamp(timeZone), level, Utils.format(msg, args),
+				srcName);
 	}
 
 	@Override
-	public Map<String, Object> getConfiguration() {
+	public Map<String, ?> getConfiguration() {
 		return config;
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> settings) {
+	public void setConfiguration(Map<String, ?> settings) {
 		config = settings;
 
 		separator = Utils.getString("Separator", settings, SEPARATOR);

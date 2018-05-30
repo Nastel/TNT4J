@@ -106,7 +106,8 @@ public class LevelingJSONFormatter extends JSONFormatter {
 			jsonString.append(JSON_SOURCE_FQN_LABEL).append(ATTR_SEP);
 			Utils.quote(StringEscapeUtils.escapeJson(event.getSource().getFQName()), jsonString).append(ATTR_JSON);
 			if (!Utils.isEmpty(event.getOperation().getResolvedName())) {
-				String escaped = StringEscapeUtils.escapeJson(event.getOperation().getResolvedName()); // escape double quote chars
+				String escaped = StringEscapeUtils.escapeJson(event.getOperation().getResolvedName()); // escape double
+																										// quote chars
 				jsonString.append(JSON_OPERATION_LABEL).append(ATTR_SEP);
 				Utils.quote(escaped, jsonString).append(ATTR_JSON);
 			}
@@ -354,7 +355,7 @@ public class LevelingJSONFormatter extends JSONFormatter {
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> settings) {
+	public void setConfiguration(Map<String, ?> settings) {
 		super.setConfiguration(settings);
 
 		level = Utils.getInt("Level", settings, level);

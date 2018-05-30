@@ -98,7 +98,7 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> props) throws ConfigException {
+	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		super.setConfiguration(props);
 		sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory", "EventSinkFactory.", props);
 		pooledFactory = (PooledLoggerFactory) Utils.createConfigurableObject("PooledLoggerFactory",

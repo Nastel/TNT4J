@@ -91,7 +91,7 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> props) throws ConfigException {
+	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		fileName = Utils.getString("FileName", props, fileName);
 		append = Utils.getBoolean("Append", props, append);
 		super.setConfiguration(props);

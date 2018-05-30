@@ -64,7 +64,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	protected static final String ARRAY_START = "[";
 	protected static final String ARRAY_START_LINE = "[\n";
 
-	private Map<String, Object> config = null;
+	private Map<String, ?> config = null;
 	protected boolean newLineFormat = true;
 	protected String defOpName = DEF_OP_NAME;
 	protected SpecNumbersHandling specialNumbersHandling = SpecNumbersHandling.SUPPRESS;
@@ -115,7 +115,8 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			jsonString.append(START_JSON);
 			jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
 
-			String msgText = StringEscapeUtils.escapeJson(Utils.format(Utils.toString(obj), args)); // escape double quote chars
+			String msgText = StringEscapeUtils.escapeJson(Utils.format(Utils.toString(obj), args)); // escape double
+																									// quote chars
 			jsonString.append(JSON_MSG_TEXT_LABEL).append(ATTR_SEP);
 			Utils.quote(msgText, jsonString);
 			jsonString.append(END_JSON);
@@ -690,12 +691,12 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	}
 
 	@Override
-	public Map<String, Object> getConfiguration() {
+	public Map<String, ?> getConfiguration() {
 		return config;
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> settings) {
+	public void setConfiguration(Map<String, ?> settings) {
 		config = settings;
 		newLineFormat = Utils.getBoolean("Newline", settings, newLineFormat);
 		defOpName = Utils.getString("OpName", settings, defOpName);

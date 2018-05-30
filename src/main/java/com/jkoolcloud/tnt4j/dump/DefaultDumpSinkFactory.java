@@ -39,7 +39,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class DefaultDumpSinkFactory implements DumpSinkFactory, Configurable {
 	public static final String DEFAULT_DUMP_FOLDER = System.getProperty("tnt4j.dump.folder", "." + File.separator);
 
-	protected Map<String, Object> config = null;
+	protected Map<String, ?> config = null;
 	private boolean append = true;
 	private String dumpLocation;
 
@@ -84,12 +84,12 @@ public class DefaultDumpSinkFactory implements DumpSinkFactory, Configurable {
 	}
 
 	@Override
-	public Map<String, Object> getConfiguration() {
+	public Map<String, ?> getConfiguration() {
 		return config;
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> props) throws ConfigException {
+	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		config = props;
 		append = Utils.getBoolean("Append", props, append);
 		dumpLocation = Utils.getString("DumpLocation", props, dumpLocation);

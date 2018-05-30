@@ -23,38 +23,35 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
- * Simple implementation of {@link GeoLocator} which uses
- * java property to lookup current location.
+ * Simple implementation of {@link GeoLocator} which uses java property to lookup current location.
  * </p>
  * 
  * 
  * @version $Revision: 1 $
  */
 public class PropertyGeoLocator implements GeoLocator, Configurable {
-	public  static final String UNKNOWN_LOCATION = "0,0";
-	
+	public static final String UNKNOWN_LOCATION = "0,0";
+
 	private String geo_coords;
-	private Map<String, Object> settings;
-	
+	private Map<String, ?> settings;
+
 	/**
-	 * Create default property geo locator
-	 * This locator uses simple property lookup to determine
-	 * GEO location.
+	 * Create default property geo locator This locator uses simple property lookup to determine GEO location.
 	 * 
 	 */
 	public PropertyGeoLocator() {
 	}
 
 	/**
-	 * Create default geo locator with a given
-	 * java property used for geo lookup
+	 * Create default geo locator with a given java property used for geo lookup
 	 * 
-	 * @param prop property name for geo lookup
+	 * @param prop
+	 *            property name for geo lookup
 	 */
 	public PropertyGeoLocator(String prop) {
-		this.geo_coords = System.getProperty(prop, UNKNOWN_LOCATION);		
+		this.geo_coords = System.getProperty(prop, UNKNOWN_LOCATION);
 	}
-	
+
 	@Override
 	public String getCurrentCoords() {
 		return geo_coords;
@@ -76,12 +73,12 @@ public class PropertyGeoLocator implements GeoLocator, Configurable {
 	}
 
 	@Override
-	public Map<String, Object> getConfiguration() {
+	public Map<String, ?> getConfiguration() {
 		return settings;
 	}
 
 	@Override
-	public void setConfiguration(Map<String, Object> vars) throws ConfigException {
+	public void setConfiguration(Map<String, ?> vars) throws ConfigException {
 		this.settings = vars;
 		this.geo_coords = Utils.getString("geoaddr", settings, UNKNOWN_LOCATION);
 	}
