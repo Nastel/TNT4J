@@ -38,7 +38,7 @@ interface JSONLabels {
 	String JSON_TYPE_NO_FIELD = "type-no";
 	String JSON_VALUE_FIELD = "value";
 	String JSON_VALUE_TYPE_FIELD = "value-type";
-	String JSON_CORR_ID_FIELD = "corr-id";
+	String JSON_CORR_ID_FIELD = "corrid";   // Implementation based on this value 
 	String JSON_TRACK_ID_FIELD = "tracking-id";
 	String JSON_TRACK_SIGN_FIELD = "tracking-sign";
 	String JSON_PARENT_TRACK_ID_FIELD = "parent-id"; // doc also defines "parent-tracking-id"
