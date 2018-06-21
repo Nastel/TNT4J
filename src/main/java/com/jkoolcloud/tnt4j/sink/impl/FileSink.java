@@ -19,6 +19,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 import com.jkoolcloud.tnt4j.format.DefaultFormatter;
 import com.jkoolcloud.tnt4j.format.Formatter;
@@ -47,7 +49,8 @@ public class FileSink implements Sink {
 	/**
 	 * Create a file based sink based on given filename.
 	 * 
-	 * @param filename for generating a sink instance
+	 * @param filename
+	 *            for generating a sink instance
 	 */
 	public FileSink(String filename) {
 		this(filename, true);
@@ -56,8 +59,10 @@ public class FileSink implements Sink {
 	/**
 	 * Create a file based sink based on given filename, append flag.
 	 * 
-	 * @param filename for generating a sink instance
-	 * @param appnd append to the underlying destination
+	 * @param filename
+	 *            for generating a sink instance
+	 * @param appnd
+	 *            append to the underlying destination
 	 */
 	public FileSink(String filename, boolean appnd) {
 		this(filename, appnd, new DefaultFormatter());
@@ -66,9 +71,12 @@ public class FileSink implements Sink {
 	/**
 	 * Create a file based sink based on given filename, append flag, and a given {@link Formatter}.
 	 * 
-	 * @param filename for writing to the sink
-	 * @param appnd append to the underlying destination
-	 * @param format user defined formatter
+	 * @param filename
+	 *            for writing to the sink
+	 * @param appnd
+	 *            append to the underlying destination
+	 * @param format
+	 *            user defined formatter
 	 * @see Formatter
 	 */
 	public FileSink(String filename, boolean appnd, Formatter format) {
@@ -134,8 +142,7 @@ public class FileSink implements Sink {
 	@Override
 	public void write(Object msg, Object... args) throws IOException {
 		if (isOpen()) {
-			printer.println(formatter.format(msg, args));
-			printer.flush();
+			print_(formatter.format(msg, args));
 		} else {
 			throw new IOException("Sink is closed, sink.file=" + file);
 		}
@@ -157,5 +164,17 @@ public class FileSink implements Sink {
 	public void reopen() throws IOException {
 		this.close();
 		this.open();
+	}
+
+	private static Lock lock = new ReentrantLock();
+
+	void print_(String msg) {
+		lock.lock();
+		try {
+			printer.println(msg);
+		} finally {
+			lock.unlock();
+		}
+		printer.flush();
 	}
 }

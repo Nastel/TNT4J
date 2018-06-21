@@ -16,7 +16,6 @@
 package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.io.IOException;
-import java.io.PrintStream;
 
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
@@ -122,8 +121,7 @@ public class FileEventSink extends AbstractEventSink {
 		_checkState();
 
 		PrintStream printer = fileSink.getPrintStream();
-		printer.println(msg);
-		printer.flush();
+		fileSink.print_(msg);
 	}
 
 	@Override
