@@ -120,7 +120,6 @@ public class FileEventSink extends AbstractEventSink {
 	protected void _writeLog(String msg) {
 		_checkState();
 
-		PrintStream printer = fileSink.getPrintStream();
 		fileSink.print_(msg);
 	}
 
