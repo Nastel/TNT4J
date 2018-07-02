@@ -15,12 +15,15 @@
  */
 package com.jkoolcloud.tnt4j.sink.impl.slf4j;
 
+import java.util.Map;
 import java.util.Properties;
 
+import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.DefaultFormatter;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.sink.AbstractEventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.EventSink;
+import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
@@ -38,19 +41,22 @@ import com.jkoolcloud.tnt4j.sink.EventSink;
  */
 public class SLF4JEventSinkFactory extends AbstractEventSinkFactory {
 
+	String name;
+
 	@Override
 	public EventSink getEventSink(String name) {
-		return configureSink(new SLF4JEventSink(name, System.getProperties(), new DefaultFormatter()));
+		return configureSink(new SLF4JEventSink(this.name == null ? name : this.name, System.getProperties(),
+				new DefaultFormatter()));
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
-		return configureSink(new SLF4JEventSink(name, props, new DefaultFormatter()));
+		return configureSink(new SLF4JEventSink(this.name == null ? name : this.name, props, new DefaultFormatter()));
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-		return configureSink(new SLF4JEventSink(name, props, frmt));
+		return configureSink(new SLF4JEventSink(this.name == null ? name : this.name, props, frmt));
 	}
 
 	/**
@@ -74,4 +80,11 @@ public class SLF4JEventSinkFactory extends AbstractEventSinkFactory {
 	public static EventSink defaultEventSink(Class<?> clazz) {
 		return defaultEventSink(clazz.getName());
 	}
+
+	@Override
+	public void setConfiguration(Map<String, ?> props) throws ConfigException {
+		name = Utils.getString("nameOverride", props, name);
+		super.setConfiguration(props);
+	}
+
 }
