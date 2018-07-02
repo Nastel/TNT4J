@@ -18,6 +18,8 @@ package com.jkoolcloud.tnt4j.sink.impl.slf4j;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.DefaultFormatter;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
@@ -41,22 +43,41 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class SLF4JEventSinkFactory extends AbstractEventSinkFactory {
 
-	String name;
+	private String loggerName;
+
+	/**
+	 * Create a default sink factory with no custom predefined logger name.
+	 */
+	public SLF4JEventSinkFactory() {
+	}
+
+	/**
+	 * Create a sink factory with a custom predefined logger name.
+	 *
+	 * @param loggerName
+	 *            custom predefined logger name to use
+	 */
+	public SLF4JEventSinkFactory(String loggerName) {
+		this.loggerName = loggerName;
+	}
 
 	@Override
 	public EventSink getEventSink(String name) {
-		return configureSink(new SLF4JEventSink(this.name == null ? name : this.name, System.getProperties(),
-				new DefaultFormatter()));
+		return getEventSink(name, System.getProperties());
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
-		return configureSink(new SLF4JEventSink(this.name == null ? name : this.name, props, new DefaultFormatter()));
+		return getEventSink(name, props, new DefaultFormatter("{2} | {3}"));
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-		return configureSink(new SLF4JEventSink(this.name == null ? name : this.name, props, frmt));
+		return configureSink(new SLF4JEventSink(getLoggerName(name), props, frmt));
+	}
+
+	private String getLoggerName(String name) {
+		return StringUtils.isEmpty(loggerName) ? name : loggerName;
 	}
 
 	/**
@@ -83,8 +104,9 @@ public class SLF4JEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
 	public void setConfiguration(Map<String, ?> props) throws ConfigException {
-		name = Utils.getString("nameOverride", props, name);
 		super.setConfiguration(props);
+
+		loggerName = Utils.getString("LoggerName", props, loggerName);
 	}
 
 }

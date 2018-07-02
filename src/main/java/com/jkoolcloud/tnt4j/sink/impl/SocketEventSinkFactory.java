@@ -82,8 +82,7 @@ public class SocketEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name) {
-		return configureSink(new SocketEventSink(name, hostName, port, new JSONFormatter(false),
-				eventSinkFactory.getEventSink(name, System.getProperties(), new JSONFormatter())));
+		return getEventSink(name, System.getProperties());
 	}
 
 	@Override
@@ -94,8 +93,7 @@ public class SocketEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-		return configureSink(
-				new SocketEventSink(name, hostName, port, frmt, eventSinkFactory.getEventSink(name, props, frmt)));
+		return getEventSink(name, props, frmt, eventSinkFactory.getEventSink(name, props, frmt));
 	}
 
 	/**

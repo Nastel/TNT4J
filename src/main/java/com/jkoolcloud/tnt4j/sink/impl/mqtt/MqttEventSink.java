@@ -132,35 +132,36 @@ public class MqttEventSink extends AbstractEventSink {
 
 	@Override
 	protected void _log(TrackingEvent event) throws Exception {
-		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(event));
-		factory.publish(this, mqttClient, message);
+		writeLine(getEventFormatter().format(event));
 	}
 
 	@Override
 	protected void _log(TrackingActivity activity) throws Exception {
-		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(activity));
-		factory.publish(this, mqttClient, message);
+		writeLine(getEventFormatter().format(activity));
 	}
 
 	@Override
 	protected void _log(Snapshot snapshot) throws Exception {
-		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(snapshot));
-		factory.publish(this, mqttClient, message);
+		writeLine(getEventFormatter().format(snapshot));
 	}
 
 	@Override
 	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception {
-		MqttMessage message = factory.newMqttMessage(getEventFormatter().format(ttl, src, sev, msg, args));
-		factory.publish(this, mqttClient, message);
+		writeLine(getEventFormatter().format(ttl, src, sev, msg, args));
 	}
 
 	@Override
 	protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
 		try {
-			MqttMessage message = factory.newMqttMessage(getEventFormatter().format(msg, args));
-			factory.publish(this, mqttClient, message);
+			writeLine(getEventFormatter().format(msg, args));
 		} catch (MqttException e) {
 			throw new IOException(e);
 		}
+	}
+
+	private void writeLine(String msg) throws MqttException {
+		incrementBytesSent(msg.length());
+		MqttMessage message = factory.newMqttMessage(msg);
+		factory.publish(this, mqttClient, message);
 	}
 }

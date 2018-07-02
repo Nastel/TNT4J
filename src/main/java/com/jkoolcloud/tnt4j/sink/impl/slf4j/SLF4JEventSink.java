@@ -67,119 +67,22 @@ public class SLF4JEventSink extends AbstractEventSink {
 
 	@Override
 	protected void _log(TrackingEvent event) {
-		switch (event.getSeverity()) {
-		case HALT:
-		case FATAL:
-		case CRITICAL:
-		case FAILURE:
-		case ERROR:
-			logger.error(getEventFormatter().format(event), event.getOperation().getThrowable());
-			break;
-		case DEBUG:
-			logger.debug(getEventFormatter().format(event), event.getOperation().getThrowable());
-			break;
-		case TRACE:
-			logger.trace(getEventFormatter().format(event), event.getOperation().getThrowable());
-			break;
-		case NOTICE:
-		case WARNING:
-			logger.warn(getEventFormatter().format(event), event.getOperation().getThrowable());
-			break;
-		case NONE:
-			break;
-		case INFO:
-		default:
-			logger.info(getEventFormatter().format(event), event.getOperation().getThrowable());
-			break;
-		}
+		writeLine(event.getSeverity(), getEventFormatter().format(event), event.getOperation().getThrowable());
 	}
 
 	@Override
 	protected void _log(TrackingActivity activity) {
-		Throwable ex = activity.getThrowable();
-		switch (activity.getSeverity()) {
-		case HALT:
-		case FATAL:
-		case CRITICAL:
-		case FAILURE:
-		case ERROR:
-			logger.error(getEventFormatter().format(activity), ex);
-			break;
-		case DEBUG:
-			logger.debug(getEventFormatter().format(activity), ex);
-			break;
-		case TRACE:
-			logger.trace(getEventFormatter().format(activity), ex);
-			break;
-		case NOTICE:
-		case WARNING:
-			logger.warn(getEventFormatter().format(activity), ex);
-			break;
-		case NONE:
-			break;
-		case INFO:
-		default:
-			logger.info(getEventFormatter().format(activity), ex);
-			break;
-		}
+		writeLine(activity.getSeverity(), getEventFormatter().format(activity), activity.getThrowable());
 	}
 
 	@Override
 	protected void _log(Snapshot snapshot) {
-		switch (snapshot.getSeverity()) {
-		case HALT:
-		case FATAL:
-		case CRITICAL:
-		case FAILURE:
-		case ERROR:
-			logger.error(getEventFormatter().format(snapshot));
-			break;
-		case DEBUG:
-			logger.debug(getEventFormatter().format(snapshot));
-			break;
-		case TRACE:
-			logger.trace(getEventFormatter().format(snapshot));
-			break;
-		case NOTICE:
-		case WARNING:
-			logger.warn(getEventFormatter().format(snapshot));
-			break;
-		case NONE:
-			break;
-		case INFO:
-		default:
-			logger.info(getEventFormatter().format(snapshot));
-			break;
-		}
+		writeLine(snapshot.getSeverity(), getEventFormatter().format(snapshot), null);
 	}
 
 	@Override
 	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) {
-		switch (sev) {
-		case HALT:
-		case FATAL:
-		case CRITICAL:
-		case FAILURE:
-		case ERROR:
-			logger.error(getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
-			break;
-		case DEBUG:
-			logger.debug(getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
-			break;
-		case TRACE:
-			logger.trace(getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
-			break;
-		case NOTICE:
-		case WARNING:
-			logger.warn(getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
-			break;
-		case NONE:
-			break;
-		case INFO:
-		default:
-			logger.info(getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
-			break;
-		}
+		writeLine(sev, getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
 	}
 
 	@Override
@@ -208,7 +111,7 @@ public class SLF4JEventSink extends AbstractEventSink {
 
 	@Override
 	protected void _write(Object msg, Object... args) throws IOException {
-		logger.info(getEventFormatter().format(msg, args));
+		writeLine(OpLevel.INFO, getEventFormatter().format(msg, args), Utils.getThrowable(args));
 	}
 
 	@Override
@@ -230,5 +133,38 @@ public class SLF4JEventSink extends AbstractEventSink {
 
 	@Override
 	public void close() throws IOException {
+	}
+
+	private void writeLine(OpLevel sev, String msg, Throwable t) {
+		switch (sev) {
+		case HALT:
+		case FATAL:
+		case CRITICAL:
+		case FAILURE:
+		case ERROR:
+			incrementBytesSent(msg.length());
+			logger.error(msg, t);
+			break;
+		case DEBUG:
+			incrementBytesSent(msg.length());
+			logger.debug(msg, t);
+			break;
+		case TRACE:
+			incrementBytesSent(msg.length());
+			logger.trace(msg, t);
+			break;
+		case NOTICE:
+		case WARNING:
+			incrementBytesSent(msg.length());
+			logger.warn(msg, t);
+			break;
+		case NONE:
+			break;
+		case INFO:
+		default:
+			incrementBytesSent(msg.length());
+			logger.info(msg, t);
+			break;
+		}
 	}
 }

@@ -54,11 +54,16 @@ public class SocketEventSink extends AbstractEventSink {
 	 * Create a socket event sink based on a given host, port and formatter. Another sink can be associated with this
 	 * sink where all events are routed.
 	 *
-	 * @param name logical name assigned to this sink
-	 * @param host name where all messages are sent
-	 * @param port number where all messages are sent
-	 * @param frm event formatter associated with this sink
-	 * @param sink piped sink where all events are piped
+	 * @param name
+	 *            logical name assigned to this sink
+	 * @param host
+	 *            name where all messages are sent
+	 * @param port
+	 *            number where all messages are sent
+	 * @param frm
+	 *            event formatter associated with this sink
+	 * @param sink
+	 *            piped sink where all events are piped
 	 */
 	public SocketEventSink(String name, String host, int port, EventFormatter frm, EventSink sink) {
 		super(name, frm);
@@ -170,6 +175,7 @@ public class SocketEventSink extends AbstractEventSink {
 
 		try {
 			byte[] bytes = msg.getBytes();
+			incrementBytesSent(bytes.length);
 			outStream.write(bytes, 0, bytes.length);
 			if (!msg.endsWith("\n")) {
 				outStream.write('\n');

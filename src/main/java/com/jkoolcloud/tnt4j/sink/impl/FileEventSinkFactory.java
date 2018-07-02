@@ -66,12 +66,12 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name) {
-		return configureSink(new FileEventSink(name, fileName, append, new SimpleFormatter("{0} | {1} | {2}")));
+		return getEventSink(name, System.getProperties());
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
-		return configureSink(new FileEventSink(name, fileName, append, new SimpleFormatter("{0} | {1} | {2}")));
+		return getEventSink(name, props, new SimpleFormatter("{0} | {1} | {2}"));
 	}
 
 	@Override
@@ -92,8 +92,8 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
 	public void setConfiguration(Map<String, ?> props) throws ConfigException {
+		super.setConfiguration(props);
 		fileName = Utils.getString("FileName", props, fileName);
 		append = Utils.getBoolean("Append", props, append);
-		super.setConfiguration(props);
 	}
 }

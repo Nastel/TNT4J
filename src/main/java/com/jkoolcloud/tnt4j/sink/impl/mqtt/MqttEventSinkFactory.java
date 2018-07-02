@@ -111,12 +111,12 @@ public class MqttEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name) {
-		return configureSink(new MqttEventSink(this, name, null, new JSONFormatter(false)));
+		return getEventSink(name, null);
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
-		return configureSink(new MqttEventSink(this, name, props, new JSONFormatter(false)));
+		return getEventSink(name, props, new JSONFormatter(false));
 	}
 
 	@Override

@@ -58,9 +58,12 @@ public class KafkaEventSink extends AbstractEventSink {
 	/**
 	 * Create a Kafka event sink
 	 * 
-	 * @param nm event sink name (kafka topic)
-	 * @param props properties for kafka sink
-	 * @param evf event formatter associated with this sink
+	 * @param nm
+	 *            event sink name (kafka topic)
+	 * @param props
+	 *            properties for kafka sink
+	 * @param evf
+	 *            event formatter associated with this sink
 	 */
 	public KafkaEventSink(String nm, Properties props, EventFormatter evf) {
 		super(nm, evf);
@@ -111,30 +114,35 @@ public class KafkaEventSink extends AbstractEventSink {
 
 	@Override
 	protected void _log(TrackingEvent event) throws Exception {
-		producer.send(new ProducerRecord<String, String>(getName(), event.getOperation().getName(),
+		writeLine(new ProducerRecord<String, String>(getName(), event.getOperation().getName(),
 				getEventFormatter().format(event)));
 	}
 
 	@Override
 	protected void _log(TrackingActivity activity) throws Exception {
-		producer.send(new ProducerRecord<String, String>(getName(), activity.getName(),
+		writeLine(new ProducerRecord<String, String>(getName(), activity.getName(),
 				getEventFormatter().format(activity)));
 	}
 
 	@Override
 	protected void _log(Snapshot snapshot) throws Exception {
-		producer.send(new ProducerRecord<String, String>(getName(), snapshot.getCategory(),
+		writeLine(new ProducerRecord<String, String>(getName(), snapshot.getCategory(),
 				getEventFormatter().format(snapshot)));
 	}
 
 	@Override
 	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception {
-		producer.send(new ProducerRecord<String, String>(getName(), src.getFQName(),
+		writeLine(new ProducerRecord<String, String>(getName(), src.getFQName(),
 				getEventFormatter().format(ttl, src, sev, msg, args)));
 	}
 
 	@Override
 	protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
-		producer.send(new ProducerRecord<String, String>(getName(), getEventFormatter().format(msg, args)));
+		writeLine(new ProducerRecord<String, String>(getName(), getEventFormatter().format(msg, args)));
+	}
+
+	private void writeLine(ProducerRecord<String, String> rec) {
+		incrementBytesSent(rec.value().length());
+		producer.send(rec);
 	}
 }

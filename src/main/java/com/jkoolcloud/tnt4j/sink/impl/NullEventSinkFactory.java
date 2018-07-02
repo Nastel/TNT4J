@@ -43,7 +43,7 @@ public class NullEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
-		return configureSink(new NullEventSink(name));
+		return getEventSink(name);
 	}
 
 	@Override

@@ -16,11 +16,7 @@
 package com.jkoolcloud.tnt4j.sink;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.jkoolcloud.tnt4j.core.KeyValueStats;
@@ -76,6 +72,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	private AtomicLong loggedSnaps = new AtomicLong(0);
 	private AtomicLong errorCount = new AtomicLong(0);
 	private AtomicLong skipCount = new AtomicLong(0);
+	private AtomicLong sentBytes = new AtomicLong(0);
 
 	/**
 	 * Create an event sink with a given name
@@ -211,6 +208,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		stats.put(Utils.qualify(this, KEY_LOGGED_MSGS), loggedMsgs.get());
 		stats.put(Utils.qualify(this, KEY_SINK_WRITES), sinkWrites.get());
 		stats.put(Utils.qualify(this, KEY_SKIPPED_COUNT), skipCount.get());
+		stats.put(Utils.qualify(this, KEY_BYTES_COUNT), sentBytes.get());
 		if (lastTime.get() > 0) {
 			stats.put(Utils.qualify(this, KEY_LAST_TIMESTAMP), new Date(lastTime.get()));
 			stats.put(Utils.qualify(this, KEY_LAST_AGE), (System.currentTimeMillis() - lastTime.get()));
@@ -240,6 +238,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		loggedMsgs.set(0);
 		sinkWrites.set(0);
 		skipCount.set(0);
+		sentBytes.set(0);
 	}
 
 	@Override
@@ -337,8 +336,9 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public boolean isLoggable(long ttl, Source source, OpLevel level, String msg, Object... args) {
 		boolean pass = isSet(level);
-		if (filters.isEmpty())
+		if (filters.isEmpty()) {
 			return pass;
+		}
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, ttl, source, level, msg, args));
 			if (!pass) {
@@ -352,8 +352,9 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public boolean isLoggable(Snapshot snapshot) {
 		boolean pass = isSet(snapshot.getSeverity());
-		if (filters.isEmpty())
+		if (filters.isEmpty()) {
 			return pass;
+		}
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, snapshot));
 			if (!pass) {
@@ -367,8 +368,9 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public boolean isLoggable(TrackingActivity activity) {
 		boolean pass = isSet(activity.getSeverity());
-		if (filters.isEmpty())
+		if (filters.isEmpty()) {
 			return pass;
+		}
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, activity));
 			if (!pass) {
@@ -382,8 +384,9 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public boolean isLoggable(TrackingEvent event) {
 		boolean pass = isSet(event.getSeverity());
-		if (filters.isEmpty())
+		if (filters.isEmpty()) {
 			return pass;
+		}
 		for (SinkEventFilter filter : filters) {
 			pass = (pass && filter.filter(this, event));
 			if (!pass) {
@@ -598,8 +601,9 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 *             if sink is in wrong state
 	 */
 	public static void checkState(EventSink sink) throws IllegalStateException {
-		if (sink == null || !sink.isOpen())
+		if (sink == null || !sink.isOpen()) {
 			throw new IllegalStateException("Sink closed or unavailable: sink=" + sink);
+		}
 	}
 
 	/**
@@ -707,4 +711,14 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 *             if interrupted during write operation
 	 */
 	protected abstract void _write(Object msg, Object... args) throws IOException, InterruptedException;
+
+	/**
+	 * Adds {@code bCount} defined bytes count to sink statistics.
+	 *
+	 * @param bCount
+	 *            bytes count to add
+	 */
+	protected void incrementBytesSent(int bCount) {
+		sentBytes.addAndGet(bCount);
+	}
 }
