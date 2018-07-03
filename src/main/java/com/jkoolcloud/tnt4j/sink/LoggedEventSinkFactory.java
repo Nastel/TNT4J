@@ -24,6 +24,7 @@ import org.apache.commons.lang.StringUtils;
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.sink.impl.FileEventSinkFactory;
+import com.jkoolcloud.tnt4j.sink.impl.NullEventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
@@ -41,6 +42,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * {@link com.jkoolcloud.tnt4j.sink.impl.FileEventSinkFactory}.</li>
  * <li>slf4j:logger_name - defines SLF4J logger name to be used with
  * {@link com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory}</li>
+ * <li>null - means {@link com.jkoolcloud.tnt4j.sink.impl.NullEventSinkFactory} shall be used</li>
  * </ul>
  * </li>
  * <li>eventSinkFactory - defines logger sink factory class and configuration properties for that factory.</li>
@@ -50,11 +52,13 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *
  * @see com.jkoolcloud.tnt4j.sink.impl.FileEventSinkFactory
  * @see com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory
+ * @see com.jkoolcloud.tnt4j.sink.impl.NullEventSinkFactory
  * @see com.jkoolcloud.tnt4j.sink.impl.SocketEventSinkFactory
  */
 public abstract class LoggedEventSinkFactory extends AbstractEventSinkFactory {
 	protected static final String SINK_PREF_FILE = "file:";
 	protected static final String SINK_PREF_SLF4J = "slf4j:";
+	protected static final String SINK_PREF_NULL = "null";
 
 	private String sinkDescriptor = null;
 	private EventSinkFactory eventSinkFactory = null;
@@ -98,6 +102,8 @@ public abstract class LoggedEventSinkFactory extends AbstractEventSinkFactory {
 				eventSinkFactory = new SLF4JEventSinkFactory(sinkDescriptor.substring(SINK_PREF_SLF4J.length()));
 			} else if (sinkDescriptor.startsWith(SINK_PREF_FILE)) {
 				eventSinkFactory = new FileEventSinkFactory(sinkDescriptor.substring(SINK_PREF_FILE.length()));
+			} else if (SINK_PREF_NULL.equals(sinkDescriptor)) {
+				eventSinkFactory = new NullEventSinkFactory();
 			} else {
 				throw new ConfigException("Unknown LogSink descriptor: " + sinkDescriptor, settings);
 			}
