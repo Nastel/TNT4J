@@ -20,11 +20,9 @@ import java.io.IOException;
 import java.net.Socket;
 
 import com.jkoolcloud.tnt4j.core.OpLevel;
-import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
-import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
 import com.jkoolcloud.tnt4j.sink.EventSink;
-import com.jkoolcloud.tnt4j.source.Source;
+import com.jkoolcloud.tnt4j.sink.LoggedEventSink;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 import com.jkoolcloud.tnt4j.utils.Utils;
@@ -35,7 +33,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * </p>
  *
  *
- * @version $Revision: 15 $
+ * @version $Revision: 16 $
  *
  * @see TrackingActivity
  * @see TrackingEvent
@@ -43,10 +41,9 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @see EventSink
  * @see EventFormatter
  */
-public class SocketEventSink extends AbstractEventSink {
+public class SocketEventSink extends LoggedEventSink {
 	private Socket socketSink = null;
 	private DataOutputStream outStream = null;
-	private EventSink logSink = null;
 	private String hostName = "localhost";
 	private int portNo = 6400;
 
@@ -66,49 +63,9 @@ public class SocketEventSink extends AbstractEventSink {
 	 *            piped sink where all events are piped
 	 */
 	public SocketEventSink(String name, String host, int port, EventFormatter frm, EventSink sink) {
-		super(name, frm);
+		super(name, frm, sink);
 		hostName = host;
 		portNo = port;
-		logSink = sink;
-	}
-
-	@Override
-	protected void _log(TrackingActivity activity) throws IOException {
-		writeLine(getEventFormatter().format(activity));
-		if (canForward(activity.getSeverity())) {
-			logSink.log(activity);
-		}
-	}
-
-	@Override
-	protected void _log(TrackingEvent event) throws IOException {
-		writeLine(getEventFormatter().format(event));
-		if (canForward(event.getSeverity())) {
-			logSink.log(event);
-		}
-	}
-
-	@Override
-	protected void _log(Snapshot snapshot) throws IOException {
-		writeLine(getEventFormatter().format(snapshot));
-		if (canForward(snapshot.getSeverity())) {
-			logSink.log(snapshot);
-		}
-	}
-
-	@Override
-	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws IOException {
-		writeLine(getEventFormatter().format(ttl, src, sev, msg, args));
-		if (canForward(sev)) {
-			logSink.log(ttl, src, sev, msg, args);
-		}
-	}
-
-	@Override
-	protected void _write(Object msg, Object... args) throws IOException {
-		if (isOpen()) {
-			writeLine(getEventFormatter().format(msg, args));
-		}
 	}
 
 	@Override
@@ -125,9 +82,7 @@ public class SocketEventSink extends AbstractEventSink {
 	public synchronized void open() throws IOException {
 		socketSink = new Socket(hostName, portNo);
 		outStream = new DataOutputStream(socketSink.getOutputStream());
-		if (logSink != null) {
-			logSink.open();
-		}
+		super.open();
 	}
 
 	@Override
@@ -141,28 +96,24 @@ public class SocketEventSink extends AbstractEventSink {
 	public synchronized void close() throws IOException {
 		try {
 			if (isOpen()) {
-				Utils.close(logSink);
 				outStream.close();
 				socketSink.close();
 			}
 		} finally {
 			outStream = null;
 			socketSink = null;
+			super.close();
 		}
 	}
 
 	@Override
 	public String toString() {
-		return super.toString() 
-			+ "{host: " + hostName 
-			+ ", port: " + portNo 
-			+ ", socket: " + socketSink 
-			+ ", formatter: " + getEventFormatter() 
-			+ ", piped.sink: " + logSink 
-			+ "}";
+		return super.toString() + "{host: " + hostName + ", port: " + portNo + ", socket: " + socketSink
+				+ ", formatter: " + getEventFormatter() + "}";
 	}
 
-	private void writeLine(String msg) throws IOException {
+	@Override
+	protected void writeLine(String msg) throws IOException {
 		writeLine(msg, false);
 	}
 
@@ -203,18 +154,9 @@ public class SocketEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public boolean isSet(OpLevel sev) {
-		return logSink != null ? logSink.isSet(sev) : true;
-	}
-
-	@Override
 	protected void _checkState() throws IllegalStateException {
 		if (!isOpen()) {
 			throw new IllegalStateException("Sink closed: " + hostName + ":" + this.portNo + ", socket=" + socketSink);
 		}
-	}
-
-	private boolean canForward(OpLevel sev) {
-		return logSink != null && logSink.isSet(sev);
 	}
 }

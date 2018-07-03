@@ -95,11 +95,6 @@ public class MqttEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public boolean isSet(OpLevel sev) {
-		return true;
-	}
-
-	@Override
 	public Object getSinkHandle() {
 		return mqttClient;
 	}

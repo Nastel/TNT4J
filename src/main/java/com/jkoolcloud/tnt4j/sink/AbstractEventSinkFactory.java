@@ -30,8 +30,8 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 /**
  * <p>
  * Abstract event sink factory class that all sink factories should subclass from. Derived classes should call
- * {@code configure()} before returning {@link EventSink} instances back using {@code getEventSink()} method calls. See
- * example below:
+ * {@link #configureSink(EventSink)} before returning {@link EventSink} instances back using {@code #getEventSink()}
+ * method calls. See example below:
  * </p>
  * 
  * <pre>
@@ -45,9 +45,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @see Configurable
  *
  * @version $Revision: 1 $
- *
  */
-
 public abstract class AbstractEventSinkFactory implements EventSinkFactory, Configurable {
 	private SinkEventFilter eventFilter = null;
 	private SinkErrorListener errorListener = null;

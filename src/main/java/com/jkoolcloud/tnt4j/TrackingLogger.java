@@ -191,8 +191,8 @@ public class TrackingLogger implements Tracker {
 
 		boolean enableDefaultDumpProviders = config.getBoolean("tracker.dump.provider.default", Boolean.getBoolean("tnt4j.dump.provider.default"));
 		boolean dumpOnVmHook = config.getBoolean("tracker.dump.on.vm.shutdown", Boolean.getBoolean("tnt4j.dump.on.vm.shutdown"));
-		boolean dumpOnException= config.getBoolean("tracker.dump.on.exception", Boolean.getBoolean("tnt4j.dump.on.exception"));
-		boolean flushOnVmHook= config.getBoolean("tracker.flush.on.vm.shutdown", Boolean.getBoolean("tnt4j.flush.on.vm.shutdown"));
+		boolean dumpOnException = config.getBoolean("tracker.dump.on.exception", Boolean.getBoolean("tnt4j.dump.on.exception"));
+		boolean flushOnVmHook = config.getBoolean("tracker.flush.on.vm.shutdown", Boolean.getBoolean("tnt4j.flush.on.vm.shutdown"));
 
 		if (enableDefaultDumpProviders) {
 			addDumpProvider(defaultDumpSink, new PropertiesDumpProvider(Utils.VM_NAME));

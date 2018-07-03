@@ -21,10 +21,9 @@ import java.util.Properties;
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.format.JSONFormatter;
-import com.jkoolcloud.tnt4j.sink.AbstractEventSinkFactory;
-import com.jkoolcloud.tnt4j.sink.DefaultEventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
+import com.jkoolcloud.tnt4j.sink.LoggedEventSinkFactory;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
@@ -39,14 +38,12 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @see EventFormatter
  * @see JSONFormatter
  *
- * @version $Revision: 5 $
+ * @version $Revision: 6 $
  *
  */
-public class SocketEventSinkFactory extends AbstractEventSinkFactory {
+public class SocketEventSinkFactory extends LoggedEventSinkFactory {
 	private String hostName = System.getProperty("tnt4j.sink.factory.socket.host", "localhost");
 	private int port = Integer.getInteger("tnt4j.sink.factory.socket.port", 6400);
-
-	private EventSinkFactory eventSinkFactory = DefaultEventSinkFactory.getInstance();
 
 	/**
 	 * Create a socket event sink factory. Same as {@code SocketEventSinkFactory("localhost", 6400)}.
@@ -88,12 +85,12 @@ public class SocketEventSinkFactory extends AbstractEventSinkFactory {
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
 		return configureSink(new SocketEventSink(name, hostName, port, new JSONFormatter(false),
-				eventSinkFactory.getEventSink(name, props, new JSONFormatter())));
+				getLogSink(name, props, new JSONFormatter())));
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-		return getEventSink(name, props, frmt, eventSinkFactory.getEventSink(name, props, frmt));
+		return getEventSink(name, props, frmt, getLogSink(name, props, frmt));
 	}
 
 	/**
@@ -119,10 +116,13 @@ public class SocketEventSinkFactory extends AbstractEventSinkFactory {
 	@Override
 	public void setConfiguration(Map<String, ?> settings) throws ConfigException {
 		super.setConfiguration(settings);
+
 		hostName = Utils.getString("Host", settings, hostName);
 		port = Utils.getInt("Port", settings, port);
-		eventSinkFactory = (EventSinkFactory) Utils.createConfigurableObject("eventSinkFactory", "eventSinkFactory.",
-				settings);
-		eventSinkFactory = eventSinkFactory == null ? DefaultEventSinkFactory.getInstance() : eventSinkFactory;
+	}
+
+	@Override
+	protected boolean doInitDefaultLogger() {
+		return true;
 	}
 }

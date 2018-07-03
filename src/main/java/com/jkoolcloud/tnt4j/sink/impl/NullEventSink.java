@@ -17,19 +17,19 @@ package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.io.IOException;
 
+import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
+import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
 import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.source.Source;
-import com.jkoolcloud.tnt4j.core.OpLevel;
-import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 
 /**
  * <p>
- * This class implements {@link EventSink} with NOOP (empty) underlying output.
- * All events written to this sink are discarded.
+ * This class implements {@link EventSink} with NOOP (empty) underlying output. All events written to this sink are
+ * discarded.
  * </p>
  * 
  * 
@@ -43,16 +43,11 @@ import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 public class NullEventSink extends AbstractEventSink {
 
 	public NullEventSink(String nm) {
-	    super(nm);
-    }
+		super(nm);
+	}
 
 	public NullEventSink(String nm, EventFormatter fmt) {
-	    super(nm, fmt);
-    }
-
-	@Override
-	public boolean isSet(OpLevel sev) {
-		return true;
+		super(nm, fmt);
 	}
 
 	@Override

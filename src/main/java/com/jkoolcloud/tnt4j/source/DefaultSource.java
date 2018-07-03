@@ -222,15 +222,8 @@ public class DefaultSource implements Source {
 	 */
 	@Override
 	public String toString() {
-		StringBuilder str = new StringBuilder(256);
-
-		str.append(super.toString()).append("{").append("FQName: ").append(getFQName()).append(",").append("Name: ")
-				.append(getName()).append(",").append("User: ").append(getUser()).append(",").append("Type: ")
-				.append(getType()).append(",").append("URL: ");
-		Utils.quote(getUrl(), str).append(",").append("SSN: ");
-		Utils.quote(getSSN(), str).append("}");
-
-		return str.toString();
+		return super.toString() + "{FQName: " + getFQName() + ", Name: " + getName() + ", User: " + getUser()
+				+ ", Type: " + getType() + ", URL: " + Utils.quote(getUrl()) + ", SSN: " + Utils.quote(getSSN()) + "}";
 	}
 
 	@Override

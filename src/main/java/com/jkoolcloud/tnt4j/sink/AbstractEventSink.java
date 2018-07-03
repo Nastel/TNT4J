@@ -93,8 +93,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 *            event formatter instance
 	 */
 	public AbstractEventSink(String nm, EventFormatter fmt) {
-		this.name = nm;
-		this.formatter = fmt;
+		this(nm, TTL.TTL_DEFAULT, fmt);
 	}
 
 	/**
@@ -321,6 +320,11 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	public EventSink filterOnLog(boolean flag) {
 		filterCheck = flag;
 		return this;
+	}
+
+	@Override
+	public boolean isSet(OpLevel sev) {
+		return true;
 	}
 
 	@Override
@@ -693,7 +697,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 * @param args
 	 *            arguments passed along the message
 	 * @throws Exception
-	 *             if logging message
+	 *             if error logging message
 	 * @see OpLevel
 	 */
 	protected abstract void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception;
