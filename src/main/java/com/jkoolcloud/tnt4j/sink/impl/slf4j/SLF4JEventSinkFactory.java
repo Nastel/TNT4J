@@ -43,6 +43,8 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class SLF4JEventSinkFactory extends AbstractEventSinkFactory {
 
+	private static final String FORMAT_PATTERN = "{2} | {3}";
+
 	private String loggerName;
 
 	/**
@@ -68,7 +70,7 @@ public class SLF4JEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
-		return getEventSink(name, props, new DefaultFormatter("{2} | {3}"));
+		return getEventSink(name, props, new DefaultFormatter(FORMAT_PATTERN));
 	}
 
 	@Override
@@ -88,7 +90,7 @@ public class SLF4JEventSinkFactory extends AbstractEventSinkFactory {
 	 * @return event sink
 	 */
 	public static EventSink defaultEventSink(String name) {
-		return new SLF4JEventSink(name, System.getProperties(), new DefaultFormatter());
+		return new SLF4JEventSink(name, System.getProperties(), new DefaultFormatter(FORMAT_PATTERN));
 	}
 
 	/**
