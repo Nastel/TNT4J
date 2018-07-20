@@ -53,9 +53,14 @@ import com.jkoolcloud.tnt4j.core.Snapshot;
 public class Utils {
 
 	/**
-	 * Current stack frame class marker prefix
+	 * Current stack frame class marker prefix.
 	 */
 	public static final String OP_STACK_MARKER_PREFIX = "$";
+
+	/**
+	 * System property name prefix.
+	 */
+	public static final String SYS_PROP_PREFIX = "$";
 
 	/**
 	 * ASCII character set.
@@ -212,7 +217,7 @@ public class Utils {
 	 * @return resolved variable or itself if not a variable
 	 */
 	public static String resolve(String name, String defValue) {
-		if (name.startsWith("$")) {
+		if (name.startsWith(SYS_PROP_PREFIX)) {
 			return System.getProperty(name.substring(1), defValue);
 		} else {
 			return name;
@@ -231,7 +236,7 @@ public class Utils {
 	 * @return resolved variable or itself if not a variable
 	 */
 	public static String resolve(Properties props, String name, String defValue) {
-		if (name.startsWith("$")) {
+		if (name.startsWith(SYS_PROP_PREFIX)) {
 			return props.getProperty(name.substring(1), defValue);
 		} else {
 			return name;

@@ -522,7 +522,7 @@ TNT4J depends on the following external packages:
 * Apache commons codec 1.11 (http://commons.apache.org/proper/commons-codec/)
 * Google Guava Libraries (https://code.google.com/p/guava-libraries/)
 * SLF4J 1.7.25 (http://www.slf4j.org/)
-* Eclipse Paho MQTTv3 1.1.1 (http://www.eclipse.org/paho/)
+* Eclipse Paho MQTTv3 1.2.0 (http://www.eclipse.org/paho/)
 * Java UUID Generator (JUG) 3.1.4 (http://wiki.fasterxml.com/JugHome/)
 
 To build TNT4J:

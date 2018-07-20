@@ -112,7 +112,7 @@ public class FileEventSink extends AbstractEventSink {
 		_writeLog(getEventFormatter().format(ttl, src, sev, msg, args));
 	}
 
-	protected void _writeLog(String msg) {
+	protected synchronized void _writeLog(String msg) {
 		_checkState();
 
 		incrementBytesSent(msg.length());

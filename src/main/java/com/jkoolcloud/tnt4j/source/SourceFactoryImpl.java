@@ -78,9 +78,9 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 					typeValue = UNKNOWN_SOURCE;
 				}
 			}
-			if (typeValue.startsWith("$")) {
+			if (typeValue.startsWith(Utils.SYS_PROP_PREFIX)) {
 				// points to another environment variable
-				typeValue = System.getProperty(typeValue.substring(1), UNKNOWN_SOURCE);
+				typeValue = System.getProperty(typeValue.substring(Utils.SYS_PROP_PREFIX.length()), UNKNOWN_SOURCE);
 			}
 			DEFAULT_SOURCES[i++] = typeValue;
 		}
