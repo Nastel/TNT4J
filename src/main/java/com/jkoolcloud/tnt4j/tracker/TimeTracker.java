@@ -56,11 +56,13 @@ public class TimeTracker {
 	 * @param capacity
 	 *            maximum capacity
 	 * @param lifeSpan
-	 *            life span in milliseconds
+	 *            life span in specified time unit
+	 * @param tunit
+	 *            time unit
 	 */
-	private TimeTracker(int capacity, long lifeSpan) {
+	private TimeTracker(int capacity, long lifeSpan, TimeUnit tunit) {
 		EVENT_CACHE = CacheBuilder.newBuilder().concurrencyLevel(Runtime.getRuntime().availableProcessors())
-				.recordStats().maximumSize(capacity).expireAfterWrite(lifeSpan, TimeUnit.MILLISECONDS).build();
+				.recordStats().maximumSize(capacity).expireAfterWrite(lifeSpan, tunit).build();
 		EVENT_MAP = EVENT_CACHE.asMap();
 	}
 
@@ -74,7 +76,22 @@ public class TimeTracker {
 	 * @return a new time tracker instance
 	 */
 	public static TimeTracker newTracker(int capacity, long lifeSpan) {
-		return new TimeTracker(capacity, lifeSpan);
+		return new TimeTracker(capacity, lifeSpan, TimeUnit.MILLISECONDS);
+	}
+
+	/**
+	 * Create a default time tracker with specified capacity and life span.
+	 * 
+	 * @param capacity
+	 *            maximum capacity
+	 * @param lifeSpan
+	 *            life span in specified time unit
+	 * @param tunit
+	 *            time unit
+	 * @return a new time tracker instance
+	 */
+	public static TimeTracker newTracker(int capacity, long lifeSpan, TimeUnit tunit) {
+		return new TimeTracker(capacity, lifeSpan, tunit);
 	}
 
 	/**
@@ -112,6 +129,22 @@ public class TimeTracker {
 	}
 
 	/**
+	 * Hit and obtain hit count
+	 * 
+	 * @param key
+	 *            timer key
+	 * @return hit count
+	 */
+	public long hitAndGetCount(String key) {
+		TimeStats timeStats = EVENT_MAP.get(key);
+		if (timeStats == null) {
+			timeStats = EVENT_MAP.putIfAbsent(key, new TimeStats());
+			timeStats = timeStats == null ? EVENT_MAP.get(key) : timeStats;
+		}
+		return timeStats.getHitCount();
+	}
+
+	/**
 	 * obtain hit count for a specific key
 	 * 
 	 * @param key
@@ -133,6 +166,20 @@ public class TimeTracker {
 	public long getElapsedNanos(String key) {
 		TimeStats last = EVENT_MAP.get(key);
 		return last != null ? last.getAgeNanos() : 0;
+	}
+
+	/**
+	 * obtain elapsed time for a specific key in specified time units
+	 * 
+	 * @param key
+	 *            timer key
+	 * @param tunit
+	 *            time unit
+	 * @return hit count for a specific key
+	 */
+	public long getElapsedTime(String key, TimeUnit tunit) {
+		TimeStats last = EVENT_MAP.get(key);
+		return last != null ? tunit.convert(last.getAgeNanos(), TimeUnit.NANOSECONDS): 0;
 	}
 
 	/**

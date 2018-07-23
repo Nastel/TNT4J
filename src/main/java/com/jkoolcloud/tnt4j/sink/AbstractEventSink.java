@@ -520,7 +520,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public void log(long ttl_sec, Source src, OpLevel sev, ResourceBundle bundle, String key, Object... args) {
 		_checkState();
-		boolean doLog = filterCheck ? isLoggable(ttl_sec, source, sev, key) : true;
+		boolean doLog = filterCheck ? isLoggable(ttl_sec, source, sev, Utils.getString(bundle, key)) : true;
 		if (doLog) {
 			long nttl = defaultTTL(ttl_sec);
 			try {
