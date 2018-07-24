@@ -21,12 +21,14 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.codec.language.Soundex;
 
+import com.jkoolcloud.tnt4j.TrackingLogger;
 import com.jkoolcloud.tnt4j.config.Configurable;
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Property;
 import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.core.TTL;
 import com.jkoolcloud.tnt4j.core.ValueTypes;
+import com.jkoolcloud.tnt4j.dump.TimeTrackerDumpProvider;
 import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.sink.SinkEventFilter;
 import com.jkoolcloud.tnt4j.source.Source;
@@ -212,6 +214,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 		dupsSuppress = Utils.getBoolean(DUPS_SUPPRESS, settings, dupsSuppress);
 		if (dupsSuppress) {
 			msgTracker = TimeTracker.newTracker(dupCacheSize, dupTimeoutSec*2, TimeUnit.SECONDS);
+			TrackingLogger.addDumpProvider(new TimeTrackerDumpProvider(EventLevelTimeFilter.class.getName(), "DupMsgHits", msgTracker));
 		}
 
 		msgRegx = Utils.getString(MSG_PATTERN, settings, null);
@@ -237,13 +240,13 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 
 	private boolean isDuplicate(TrackingEvent event, String msg) {
 		if (msgTracker != null) {
-			String key = dupUseSoundex? msg: soundex.soundex(msg);
+			String key = dupUseSoundex? soundex.soundex(msg): msg;
 			long hitCount = msgTracker.hitAndGetCount(key);
-			if ((hitCount > 1) && (msgTracker.getElapsedTime(msg, TimeUnit.SECONDS) < dupTimeoutSec)) {
+			if ((hitCount > 1) && (msgTracker.getAge(msg, TimeUnit.SECONDS) < dupTimeoutSec)) {
 				return true;
 			} else if (event != null && hitCount > 1) {
 				event.getOperation().addProperty(new Property("_occurences", hitCount, ValueTypes.VALUE_TYPE_COUNTER));
-				event.getOperation().addProperty(new Property("_last_age_ms", msgTracker.getElapsedTime(msg, TimeUnit.MILLISECONDS), ValueTypes.VALUE_TYPE_AGE_MSEC));
+				event.getOperation().addProperty(new Property("_last_age_ms", msgTracker.getAge(msg, TimeUnit.MILLISECONDS), ValueTypes.VALUE_TYPE_AGE_MSEC));
 			}
 		}
 		return false;

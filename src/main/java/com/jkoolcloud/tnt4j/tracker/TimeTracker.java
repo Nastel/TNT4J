@@ -141,6 +141,7 @@ public class TimeTracker {
 			timeStats = EVENT_MAP.putIfAbsent(key, new TimeStats());
 			timeStats = timeStats == null ? EVENT_MAP.get(key) : timeStats;
 		}
+		timeStats.hit();
 		return timeStats.getHitCount();
 	}
 
@@ -163,7 +164,7 @@ public class TimeTracker {
 	 *            timer key
 	 * @return hit count for a specific key
 	 */
-	public long getElapsedNanos(String key) {
+	public long getAgeNanos(String key) {
 		TimeStats last = EVENT_MAP.get(key);
 		return last != null ? last.getAgeNanos() : 0;
 	}
@@ -177,9 +178,9 @@ public class TimeTracker {
 	 *            time unit
 	 * @return hit count for a specific key
 	 */
-	public long getElapsedTime(String key, TimeUnit tunit) {
+	public long getAge(String key, TimeUnit tunit) {
 		TimeStats last = EVENT_MAP.get(key);
-		return last != null ? tunit.convert(last.getAgeNanos(), TimeUnit.NANOSECONDS): 0;
+		return last != null ? last.getAge(tunit): 0;
 	}
 
 	/**

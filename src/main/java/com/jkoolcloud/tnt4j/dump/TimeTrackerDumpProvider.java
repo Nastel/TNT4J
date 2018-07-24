@@ -16,6 +16,7 @@
 package com.jkoolcloud.tnt4j.dump;
 
 import java.util.Map.Entry;
+import java.util.concurrent.TimeUnit;
 
 import com.jkoolcloud.tnt4j.tracker.TimeStats;
 import com.jkoolcloud.tnt4j.tracker.TimeTracker;
@@ -35,11 +36,17 @@ public class TimeTrackerDumpProvider extends DefaultDumpProvider{
 	    this.timeTracker = tTracker;
     }
 
+	public TimeTrackerDumpProvider(String name, String cat, TimeTracker tTracker) {
+	    super(name, cat);
+	    this.timeTracker = tTracker;
+    }
+
 	@Override
     public DumpCollection getDump() {
-		Dump dump = new Dump("TimerTable", this);	
+		Dump dump = new Dump(getCategoryName() + "-Table", this);	
 		for (Entry<String, TimeStats> entry: timeTracker.getTimeStats().entrySet()) {
 			dump.add(entry.getKey() + "/hits", entry.getValue().getHitCount());
+			dump.add(entry.getKey() + "/age.sec", entry.getValue().getAge(TimeUnit.SECONDS));
 			dump.add(entry.getKey() + "/age.nano", entry.getValue().getAgeNanos());
 		}
 	    return dump;

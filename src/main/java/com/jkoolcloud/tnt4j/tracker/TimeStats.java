@@ -15,6 +15,7 @@
  */
 package com.jkoolcloud.tnt4j.tracker;
 
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
@@ -52,6 +53,17 @@ public class TimeStats {
 	 */
 	public long getAgeNanos() {
 		return (System.nanoTime() - nanoStamp.get());
+	}
+	
+	/**
+	 * Obtain age in nanoseconds since the last hit
+	 * 
+	 * @param tunit
+	 *            target time unit
+	 * @return age in specified time units
+	 */
+	public long getAge(TimeUnit tunit) {
+		return tunit.convert(System.nanoTime() - nanoStamp.get(), TimeUnit.NANOSECONDS);
 	}
 	
 	/**

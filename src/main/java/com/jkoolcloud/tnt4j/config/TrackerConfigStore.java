@@ -283,8 +283,8 @@ public class TrackerConfigStore extends TrackerConfig {
 		try {
 			return Utils.createConfigurableObject(classProp, prefix, props);
 		} catch (Throwable e) {
-			logger.log(OpLevel.ERROR, "Failed to create configurable instance class={0}, property={1}, prefix={2}",
-					props.get(classProp), classProp, prefix, e);
+			logger.log(OpLevel.ERROR, "Failed to create configurable instance class={0}, property={1}, prefix={2}, props={3}",
+					props.get(classProp), classProp, prefix, props, e);
 		}
 		return null;
 	}
