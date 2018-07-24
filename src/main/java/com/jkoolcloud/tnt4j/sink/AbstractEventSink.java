@@ -16,7 +16,11 @@
 package com.jkoolcloud.tnt4j.sink;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.jkoolcloud.tnt4j.core.KeyValueStats;
@@ -76,7 +80,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 
 	/**
 	 * Create an event sink with a given name
-	 * 
+	 *
 	 * @param nm
 	 *            event sink name
 	 */
@@ -86,7 +90,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 
 	/**
 	 * Create an event sink with a given name and event formatter and default {@link TTL}
-	 * 
+	 *
 	 * @param nm
 	 *            event sink name
 	 * @param fmt
@@ -98,14 +102,14 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 
 	/**
 	 * Create an event sink with a given name and event formatter
-	 * 
+	 *
 	 * @param nm
 	 *            event sink name
 	 * @param ttl
 	 *            time to live for events written to this sink
 	 * @param fmt
 	 *            event formatter instance
-	 * 
+	 *
 	 * @see TTL
 	 */
 	public AbstractEventSink(String nm, long ttl, EventFormatter fmt) {
@@ -520,7 +524,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public void log(long ttl_sec, Source src, OpLevel sev, ResourceBundle bundle, String key, Object... args) {
 		_checkState();
-		boolean doLog = filterCheck ? isLoggable(ttl_sec, source, sev, Utils.getString(bundle, key)) : true;
+		boolean doLog = filterCheck ? isLoggable(ttl_sec, source, sev, Utils.getString(bundle, key), args) : true;
 		if (doLog) {
 			long nttl = defaultTTL(ttl_sec);
 			try {
@@ -622,7 +626,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 
 	/**
 	 * Applies rate limiting on mps/bps
-	 * 
+	 *
 	 * @param msgCount
 	 *            messages sent
 	 * @param byteCount
@@ -638,7 +642,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 
 	/**
 	 * Applies rate limiting on mps/bps
-	 * 
+	 *
 	 * @param obj
 	 *            object to be sent
 	 * @return true if permit obtained, false otherwise
