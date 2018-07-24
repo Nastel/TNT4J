@@ -96,7 +96,9 @@ public class DefaultDumpFormatter implements DumpFormatter {
 		buffer.append(padding);
 		Utils.quote("dump.time.stamp", buffer).append(": ").append(dump.getTime()).append(END_ATTR);
 		buffer.append(padding);
-		Utils.quote("dump.snapshot", buffer).append(": {\n");
+		Utils.quote("dump.snapshot.size", buffer).append(": ").append(dump.getSnapshot().size()).append(END_ATTR);
+		buffer.append(padding);
+		Utils.quote("dump.snapshot.details", buffer).append(": {\n");
 		int startLen = buffer.length();
 
 		String subPadding = padding + INDENT;
