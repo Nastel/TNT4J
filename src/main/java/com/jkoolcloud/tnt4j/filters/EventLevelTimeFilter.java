@@ -62,7 +62,8 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	public static final String DUPS_SUPPRESS = "SuppressDups";
 	public static final String DUPS_TIMEOUT = "SuppressTimeSec";
 	public static final String DUPS_CACHE_SIZE = "SuppressCacheSize";
-	public static final String DUPS_SUPPRESS_SOUNDEX = "SuppressUseSoundex";
+	public static final String DUPS_USE_SOUNDEX = "SuppressUseSoundex";
+	public static final String DUPS_APPEND_STATS = "SuppressAppendStats";
 	public static final String MSG_PATTERN = "MsgRegex";
 	public static final String OFF_LEVEL_LABEL = "OFF";
 	public static final int OFF_LEVEL_INT = 100;
@@ -73,6 +74,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 
 	boolean dupsSuppress = false;
 	boolean dupUseSoundex = false;
+	boolean dupAppendStats = false;
 	long dupTimeoutSec = 30;
 	int dupCacheSize = 100;
 	Soundex soundex = new Soundex();
@@ -210,13 +212,13 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 		// configure duplicate detection
 		dupTimeoutSec = Utils.getLong(DUPS_TIMEOUT, settings, dupTimeoutSec);
 		dupCacheSize = Utils.getInt(DUPS_CACHE_SIZE, settings, dupCacheSize);
-		dupUseSoundex = Utils.getBoolean(DUPS_SUPPRESS_SOUNDEX, settings, dupUseSoundex);
+		dupUseSoundex = Utils.getBoolean(DUPS_USE_SOUNDEX, settings, dupUseSoundex);
+		dupAppendStats = Utils.getBoolean(DUPS_APPEND_STATS, settings, dupAppendStats);
 		dupsSuppress = Utils.getBoolean(DUPS_SUPPRESS, settings, dupsSuppress);
 		if (dupsSuppress) {
 			msgTracker = TimeTracker.newTracker(dupCacheSize, dupTimeoutSec*2, TimeUnit.SECONDS);
 			TrackingLogger.addDumpProvider(new TimeTrackerDumpProvider(EventLevelTimeFilter.class.getName(), "DupMsgHits", msgTracker));
 		}
-
 		msgRegx = Utils.getString(MSG_PATTERN, settings, null);
 		if (msgRegx != null) {
 			msgPattern = Pattern.compile(msgRegx);
@@ -245,7 +247,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 			if ((hitCount > 1) && (msgTracker.getHitAge(msg, TimeUnit.SECONDS) < dupTimeoutSec)) {
 				msgTracker.missAndGetCount(key);
 				return true;
-			} else if (event != null && hitCount > 1) {
+			} else if (dupAppendStats && (event != null && hitCount > 1)) {
 				event.getOperation().addProperty(new Property("_hitCount", hitCount, ValueTypes.VALUE_TYPE_COUNTER));
 				event.getOperation().addProperty(new Property("_missCount", msgTracker.getMissCount(key), ValueTypes.VALUE_TYPE_COUNTER));
 				event.getOperation().addProperty(new Property("_hit_last_age_ms", msgTracker.getHitAge(msg, TimeUnit.MILLISECONDS), ValueTypes.VALUE_TYPE_AGE_MSEC));
