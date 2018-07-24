@@ -104,6 +104,15 @@ public class TimeTracker {
 	}
 
 	/**
+	 * Miss and obtain elapsed nanoseconds since last miss based. Time statistics is maintained per thread.
+	 * 
+	 * @return elapsed nanoseconds since last miss
+	 */
+	public static long missAndGet() {
+		return THREAD_TIMER.get().miss();
+	}
+
+	/**
 	 * Obtain time statistics maintained per thread
 	 * 
 	 * @return time statistics maintained per thread
@@ -129,6 +138,22 @@ public class TimeTracker {
 	}
 
 	/**
+	 * Miss and obtain elapsed nanoseconds since last miss
+	 * 
+	 * @param key
+	 *            timer key
+	 * @return elapsed nanoseconds since last miss
+	 */
+	public long missAndGet(String key) {
+		TimeStats timeStats = EVENT_MAP.get(key);
+		if (timeStats == null) {
+			timeStats = EVENT_MAP.putIfAbsent(key, new TimeStats());
+			timeStats = timeStats == null ? EVENT_MAP.get(key) : timeStats;
+		}
+		return timeStats.miss();
+	}
+
+	/**
 	 * Hit and obtain hit count
 	 * 
 	 * @param key
@@ -146,6 +171,23 @@ public class TimeTracker {
 	}
 
 	/**
+	 * Miss and obtain miss count
+	 * 
+	 * @param key
+	 *            timer key
+	 * @return miss count
+	 */
+	public long missAndGetCount(String key) {
+		TimeStats timeStats = EVENT_MAP.get(key);
+		if (timeStats == null) {
+			timeStats = EVENT_MAP.putIfAbsent(key, new TimeStats());
+			timeStats = timeStats == null ? EVENT_MAP.get(key) : timeStats;
+		}
+		timeStats.miss();
+		return timeStats.getMissCount();
+	}
+
+	/**
 	 * obtain hit count for a specific key
 	 * 
 	 * @param key
@@ -155,6 +197,18 @@ public class TimeTracker {
 	public long getHitCount(String key) {
 		TimeStats last = EVENT_MAP.get(key);
 		return last != null ? last.getHitCount() : 0;
+	}
+
+	/**
+	 * obtain miss count for a specific key
+	 * 
+	 * @param key
+	 *            timer key
+	 * @return hit count for a specific key
+	 */
+	public long getMissCount(String key) {
+		TimeStats last = EVENT_MAP.get(key);
+		return last != null ? last.getMissCount() : 0;
 	}
 
 	/**
@@ -170,7 +224,7 @@ public class TimeTracker {
 	}
 
 	/**
-	 * obtain elapsed time for a specific key in specified time units
+	 * obtain hit elapsed time for a specific key in specified time units
 	 * 
 	 * @param key
 	 *            timer key
@@ -178,9 +232,23 @@ public class TimeTracker {
 	 *            time unit
 	 * @return hit count for a specific key
 	 */
-	public long getAge(String key, TimeUnit tunit) {
+	public long getHitAge(String key, TimeUnit tunit) {
 		TimeStats last = EVENT_MAP.get(key);
-		return last != null ? last.getAge(tunit): 0;
+		return last != null ? last.getHitAge(tunit): 0;
+	}
+
+	/**
+	 * obtain miss elapsed time for a specific key in specified time units
+	 * 
+	 * @param key
+	 *            timer key
+	 * @param tunit
+	 *            time unit
+	 * @return miss count for a specific key
+	 */
+	public long getMissAge(String key, TimeUnit tunit) {
+		TimeStats last = EVENT_MAP.get(key);
+		return last != null ? last.getMissAge(tunit): 0;
 	}
 
 	/**

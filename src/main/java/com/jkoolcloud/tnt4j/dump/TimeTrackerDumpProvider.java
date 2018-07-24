@@ -45,7 +45,10 @@ public class TimeTrackerDumpProvider extends DefaultDumpProvider{
     public DumpCollection getDump() {
 		Dump dump = new Dump(getCategoryName() + "-Table", this);	
 		for (Entry<String, TimeStats> entry: timeTracker.getTimeStats().entrySet()) {
-			dump.add(entry.getKey(), entry.getValue().getHitCount()+ "-" + entry.getValue().getAge(TimeUnit.MILLISECONDS));
+			dump.add(entry.getKey(), 
+					"h(" + entry.getValue().getHitCount() + "-" + entry.getValue().getHitAge(TimeUnit.MILLISECONDS) +")" 
+					+ "m(" + entry.getValue().getMissCount() + "-" + entry.getValue().getMissAge(TimeUnit.MILLISECONDS) +")"
+					);
 		}
 	    return dump;
     }
