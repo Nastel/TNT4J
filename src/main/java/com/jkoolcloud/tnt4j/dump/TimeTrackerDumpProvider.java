@@ -22,34 +22,59 @@ import com.jkoolcloud.tnt4j.tracker.TimeStats;
 import com.jkoolcloud.tnt4j.tracker.TimeTracker;
 
 /**
- * This class implements a dump handler for {@link TimeTracker}.
- * It dumps the contents of a timing table. The timings maintain the number of nanoseconds
- * since last hit on a given key.
+ * This class implements a dump handler for {@link TimeTracker}. It dumps the contents of a timing table {@link TimeTracker}. 
+ * The timings maintain the number of nanoseconds since last hit/miss on a given key.
  *
  * @version $Revision: 1$
  */
-public class TimeTrackerDumpProvider extends DefaultDumpProvider{
+public class TimeTrackerDumpProvider extends DefaultDumpProvider {
 	private TimeTracker timeTracker;
-	
-	public TimeTrackerDumpProvider(String name, TimeTracker tTracker) {
-	    super(name, "HitTimings");
-	    this.timeTracker = tTracker;
-    }
 
+	/**
+	 * Create a new instance of {@link TimeTrackerDumpProvider} instance.
+	 * which provides an implementation to dump the contents of {@link TimeTracker}
+	 *
+	 * @param name
+	 *            name of the time tracker dump provider
+	 * @param tTracker
+	 *            time tracker instance
+	 *
+	 * @see DefaultDumpProvider
+	 * @see TimeTracker
+	 */
+	public TimeTrackerDumpProvider(String name, TimeTracker tTracker) {
+		this(name, "KeyTimings", tTracker);
+	}
+
+	/**
+	 * Create a new instance of {@link TimeTrackerDumpProvider} instance.
+	 * which provides an implementation to dump the contents of {@link TimeTracker}
+	 *
+	 * @param name
+	 *            name of the time tracker dump provider
+	 * @param cat
+	 *            category of the time tracker dump provider
+	 * @param tTracker
+	 *            time tracker instance
+	 *
+	 * @see DefaultDumpProvider
+	 * @see TimeTracker
+	 */
 	public TimeTrackerDumpProvider(String name, String cat, TimeTracker tTracker) {
-	    super(name, cat);
-	    this.timeTracker = tTracker;
-    }
+		super(name, cat);
+		this.timeTracker = tTracker;
+	}
 
 	@Override
-    public DumpCollection getDump() {
-		Dump dump = new Dump(getCategoryName() + "-Table", this);	
-		for (Entry<String, TimeStats> entry: timeTracker.getTimeStats().entrySet()) {
-			dump.add(entry.getKey(), 
-					"h(" + entry.getValue().getHitCount() + "-" + entry.getValue().getHitAge(TimeUnit.MILLISECONDS) +")" 
-					+ "m(" + entry.getValue().getMissCount() + "-" + entry.getValue().getMissAge(TimeUnit.MILLISECONDS) +")"
-					);
+	public DumpCollection getDump() {
+		Dump dump = new Dump(getCategoryName() + "-Table", this);
+		for (Entry<String, TimeStats> entry : timeTracker.getTimeStats().entrySet()) {
+			dump.add(
+			        entry.getKey(),
+			        "h(" + entry.getValue().getHitCount() + "-" + entry.getValue().getHitAge(TimeUnit.MILLISECONDS)
+			                + ")" + "m(" + entry.getValue().getMissCount() + "-"
+			                + entry.getValue().getMissAge(TimeUnit.MILLISECONDS) + ")");
 		}
-	    return dump;
-    }
+		return dump;
+	}
 }
