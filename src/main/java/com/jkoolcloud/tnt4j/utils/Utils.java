@@ -15,7 +15,13 @@
  */
 package com.jkoolcloud.tnt4j.utils;
 
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -28,8 +34,15 @@ import java.nio.charset.CharsetEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Properties;
+import java.util.Random;
+import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +51,8 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
@@ -51,6 +66,7 @@ import com.jkoolcloud.tnt4j.core.Snapshot;
  * @version $Revision: 5 $
  */
 public class Utils {
+	private static Logger logger = LoggerFactory.getLogger(Utils.class);
 
 	/**
 	 * Current stack frame class marker prefix.
@@ -253,7 +269,7 @@ public class Utils {
 	 * @return string representation
 	 */
 	public static String qualify(Object obj, String key) {
-		return obj.getClass().getSimpleName() + "/" + key;
+		return obj.getClass().getSimpleName() + ":" + obj.hashCode() + "/" + key;
 	}
 
 	/**
@@ -1162,11 +1178,14 @@ public class Utils {
 			return null;
 		}
 		try {
+			logger.debug("createConfigurableObject: {}, {}", classProp, prefix);
 			Object obj = Utils.createInstance(className.toString());
 			return Utils.applyConfiguration(prefix, config, obj);
 		} catch (ConfigException ce) {
+			logger.error("createConfigurableObject: {}, {}", classProp, prefix, ce);
 			throw ce;
 		} catch (Throwable e) {
+			logger.error("createConfigurableObject: {}, {}", classProp, prefix, e);
 			ConfigException ce = new ConfigException(e.getMessage(), config);
 			ce.initCause(e);
 			throw ce;
@@ -1193,11 +1212,14 @@ public class Utils {
 			return null;
 		}
 		try {
+			logger.debug("createConfigurableObject: {}, {}", classProp, prefix);
 			Object obj = Utils.createInstance(className.toString());
 			return Utils.applyConfiguration(prefix, config, obj);
 		} catch (ConfigException ce) {
+			logger.error("createConfigurableObject: {}, {}", classProp, prefix, ce);
 			throw ce;
 		} catch (Throwable e) {
+			logger.error("createConfigurableObject: {}, {}", classProp, prefix, e);
 			ConfigException ce = new ConfigException(e.getMessage(), config);
 			ce.initCause(e);
 			throw ce;
@@ -1219,6 +1241,7 @@ public class Utils {
 	 */
 	public static Object applyConfiguration(String prefix, Map<String, ?> prop, Object obj) throws ConfigException {
 		if (obj instanceof Configurable) {
+			logger.debug("applyConfiguration: {}, {}, {}", prefix, obj, prop);
 			return applyConfiguration(prefix, prop, (Configurable) obj);
 		}
 		return obj;
@@ -1239,6 +1262,7 @@ public class Utils {
 	 */
 	public static Object applyConfiguration(String prefix, Properties prop, Object obj) throws ConfigException {
 		if (obj instanceof Configurable) {
+			logger.debug("applyConfiguration: {}, {}, {}", prefix, obj, prop);
 			return applyConfiguration(prefix, prop, (Configurable) obj);
 		}
 		return obj;
@@ -1259,6 +1283,7 @@ public class Utils {
 	 */
 	public static Configurable applyConfiguration(String prefix, Map<String, ?> prop, Configurable cfg)
 			throws ConfigException {
+		logger.debug("applyConfiguration: {}, {}, {}", prefix, cfg, prop);
 		cfg.setConfiguration(getAttributes(prefix, prop));
 		return cfg;
 	}
@@ -1278,6 +1303,7 @@ public class Utils {
 	 */
 	public static Configurable applyConfiguration(String prefix, Properties prop, Configurable cfg)
 			throws ConfigException {
+		logger.debug("applyConfiguration: {}, {}, {}", prefix, cfg, prop);
 		cfg.setConfiguration(getAttributes(prefix, prop));
 		return cfg;
 	}
@@ -1344,6 +1370,7 @@ public class Utils {
 		if (className == null) {
 			return null;
 		}
+		logger.debug("createInstance: {}", className);
 		Class<?> classObj = Class.forName(className);
 		return classObj.newInstance();
 	}
@@ -1366,6 +1393,7 @@ public class Utils {
 		if (className == null) {
 			return null;
 		}
+		logger.debug("createInstance: {}, {}, {}", className, args, types);
 		Class<?> classObj = Class.forName(className);
 		Constructor<?> ct = classObj.getConstructor(types);
 		return ct.newInstance(args);

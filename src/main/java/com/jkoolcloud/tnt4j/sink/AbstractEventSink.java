@@ -192,7 +192,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 
 	@Override
 	public Map<String, Object> getStats() {
-		LinkedHashMap<String, Object> stats = new LinkedHashMap<String, Object>();
+		LinkedHashMap<String, Object> stats = new LinkedHashMap<String, Object>(32);
 		getStats(stats);
 		return stats;
 	}
@@ -659,33 +659,33 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 *
 	 * @param event
 	 *            to be sent to the sink
-	 * @throws Exception
+	 * @throws IOException
 	 *             if error logging tracking event
 	 * @see TrackingEvent
 	 */
-	protected abstract void _log(TrackingEvent event) throws Exception;
+	protected abstract void _log(TrackingEvent event) throws IOException;
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 *
 	 * @param activity
 	 *            to be sent to the sink
-	 * @throws Exception
+	 * @throws IOException
 	 *             if error logging tracking activity
 	 * @see TrackingActivity
 	 */
-	protected abstract void _log(TrackingActivity activity) throws Exception;
+	protected abstract void _log(TrackingActivity activity) throws IOException;
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 *
 	 * @param snapshot
 	 *            string message to be logged
-	 * @throws Exception
+	 * @throws IOException
 	 *             if error logging snapshot
 	 * @see OpLevel
 	 */
-	protected abstract void _log(Snapshot snapshot) throws Exception;
+	protected abstract void _log(Snapshot snapshot) throws IOException;
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.
@@ -700,11 +700,11 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 *            string message to be logged
 	 * @param args
 	 *            arguments passed along the message
-	 * @throws Exception
+	 * @throws IOException
 	 *             if error logging message
 	 * @see OpLevel
 	 */
-	protected abstract void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception;
+	protected abstract void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws IOException;
 
 	/**
 	 * Override this method to add actual implementation for all subclasses.

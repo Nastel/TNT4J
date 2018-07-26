@@ -109,7 +109,7 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 			throw new ConfigException("Missing EventSinkFactory implementation", props);
 		}
 		if (pooledFactory == null) {
-			throw new ConfigException("Missing PooledLoggerFactory implementation", props);
+			pooledFactory = new PooledLoggerFactoryImpl();
 		}
 	}
 }

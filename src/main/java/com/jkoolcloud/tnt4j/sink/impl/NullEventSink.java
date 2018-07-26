@@ -77,18 +77,18 @@ public class NullEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	protected void _log(TrackingEvent event) throws Exception {
+	protected void _log(TrackingEvent event) throws IOException {
 	}
 
 	@Override
-	protected void _log(TrackingActivity activity) throws Exception {
+	protected void _log(TrackingActivity activity) throws IOException {
 	}
 
 	@Override
-	protected void _log(Snapshot snapshot) throws Exception {
+	protected void _log(Snapshot snapshot) throws IOException {
 	}
 
 	@Override
-	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception {
+	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws IOException {
 	}
 }

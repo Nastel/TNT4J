@@ -127,7 +127,7 @@ public abstract class LoggedEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	protected void _log(Snapshot snapshot) throws Exception {
+	protected void _log(Snapshot snapshot) throws IOException {
 		writeLine(getEventFormatter().format(snapshot));
 		if (canForward(snapshot.getSeverity())) {
 			logSink.log(snapshot);

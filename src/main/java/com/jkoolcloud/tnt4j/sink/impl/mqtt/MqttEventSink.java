@@ -126,37 +126,37 @@ public class MqttEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	protected void _log(TrackingEvent event) throws Exception {
+	protected void _log(TrackingEvent event) throws IOException {
 		writeLine(getEventFormatter().format(event));
 	}
 
 	@Override
-	protected void _log(TrackingActivity activity) throws Exception {
+	protected void _log(TrackingActivity activity) throws IOException {
 		writeLine(getEventFormatter().format(activity));
 	}
 
 	@Override
-	protected void _log(Snapshot snapshot) throws Exception {
+	protected void _log(Snapshot snapshot) throws IOException {
 		writeLine(getEventFormatter().format(snapshot));
 	}
 
 	@Override
-	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception {
+	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws IOException {
 		writeLine(getEventFormatter().format(ttl, src, sev, msg, args));
 	}
 
 	@Override
 	protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
-		try {
-			writeLine(getEventFormatter().format(msg, args));
-		} catch (MqttException e) {
-			throw new IOException(e);
-		}
+		writeLine(getEventFormatter().format(msg, args));
 	}
 
-	private void writeLine(String msg) throws MqttException {
+	private void writeLine(String msg) throws IOException {
 		incrementBytesSent(msg.length());
-		MqttMessage message = factory.newMqttMessage(msg);
-		factory.publish(this, mqttClient, message);
+		try {
+			MqttMessage message = factory.newMqttMessage(msg);
+			factory.publish(this, mqttClient, message);
+		} catch (MqttException mqe) {
+			throw new IOException(mqe);
+		}
 	}
 }

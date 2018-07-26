@@ -108,25 +108,25 @@ public class KafkaEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	protected void _log(TrackingEvent event) throws Exception {
+	protected void _log(TrackingEvent event) throws IOException {
 		writeLine(new ProducerRecord<String, String>(getName(), event.getOperation().getName(),
 				getEventFormatter().format(event)));
 	}
 
 	@Override
-	protected void _log(TrackingActivity activity) throws Exception {
+	protected void _log(TrackingActivity activity) throws IOException {
 		writeLine(new ProducerRecord<String, String>(getName(), activity.getName(),
 				getEventFormatter().format(activity)));
 	}
 
 	@Override
-	protected void _log(Snapshot snapshot) throws Exception {
+	protected void _log(Snapshot snapshot) throws IOException {
 		writeLine(new ProducerRecord<String, String>(getName(), snapshot.getCategory(),
 				getEventFormatter().format(snapshot)));
 	}
 
 	@Override
-	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws Exception {
+	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws IOException {
 		writeLine(new ProducerRecord<String, String>(getName(), src.getFQName(),
 				getEventFormatter().format(ttl, src, sev, msg, args)));
 	}
