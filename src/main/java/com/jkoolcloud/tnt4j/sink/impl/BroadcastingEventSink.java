@@ -176,45 +176,35 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	@Override
 	protected void _log(TrackingEvent event) throws IOException {
 		for (EventSink sink : eventSinks) {
-			if (sink.isOpen()) {
-				sink.log(event);
-			}
+			sink.log(event);
 		}
 	}
 
 	@Override
 	protected void _log(TrackingActivity activity) throws IOException {
 		for (EventSink sink : eventSinks) {
-			if (sink.isOpen()) {
-				sink.log(activity);
-			}
+			sink.log(activity);
 		}
 	}
 
 	@Override
 	protected void _log(Snapshot snapshot) throws IOException {
 		for (EventSink sink : eventSinks) {
-			if (sink.isOpen()) {
-				sink.log(snapshot);
-			}
+			sink.log(snapshot);
 		}
 	}
 
 	@Override
 	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws IOException {
 		for (EventSink sink : eventSinks) {
-			if (sink.isOpen()) {
-				sink.log(ttl, src, sev, msg, args);
-			}
+			sink.log(ttl, src, sev, msg, args);
 		}
 	}
 
 	@Override
 	protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
 		for (EventSink sink : eventSinks) {
-			if (sink.isOpen()) {
-				sink.write(msg, args);
-			}
+			sink.write(msg, args);
 		}
 	}
 	

@@ -39,6 +39,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 
+	String broadcastSeq;
 	List<EventSinkFactory> sinkFactories = new Vector<EventSinkFactory>(3, 3);
 	
 	/**
@@ -58,6 +59,16 @@ public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 		sinkFactories.addAll(sf);
 	}
 
+	/**
+	 * Obtain current broadcast sequence string
+	 * 
+	 * @return broadcast sequence string
+	 *
+	 */
+	public String getBroadcastSequence() {
+		return broadcastSeq;
+	}
+	
 	protected List<EventSinkFactory> getEventSinkFactories() {
 		return sinkFactories;
 	}
@@ -81,12 +92,31 @@ public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		super.setConfiguration(props);
 		
-		int counter = 0;
-		EventSinkFactory sinkFactory = null;
-		do  {
-			sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory." + counter, "EventSinkFactory." + counter + ".", props);
-			if (sinkFactory != null) sinkFactories.add(sinkFactory);
-			counter++;
-		} while (sinkFactory != null);
+		broadcastSeq = Utils.getString("BroadcastSequence", props, null); 
+		if (broadcastSeq == null) {
+			initBroadcastSequence(props);
+		} else {
+			initBroadcastSequence(broadcastSeq.split(","), props);			
+		}
+	}
+
+	private void initBroadcastSequence(Map<String, ?> props) throws ConfigException {
+		for (int counter=0; (loadEventSinkFactory(String.valueOf(counter), props) != null); counter++);
+	}
+
+	private void initBroadcastSequence(String [] seq, Map<String, ?> props) throws ConfigException {
+		for (int i = 0; i < seq.length; i++) {
+			if (loadEventSinkFactory(seq[i], props) == null) {
+				throw new ConfigException("Could not find broadcast factory sequence=" + seq[i], props);
+			}
+		}	
+	}
+	
+	private EventSinkFactory loadEventSinkFactory(String fcName, Map<String, ?> props) throws ConfigException {
+		EventSinkFactory sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory." + fcName, "EventSinkFactory." + fcName + ".", props);
+		if (sinkFactory != null) {
+			sinkFactories.add(sinkFactory);	
+		}
+		return sinkFactory;
 	}
 }
