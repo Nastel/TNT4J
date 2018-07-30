@@ -47,13 +47,13 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @version $Revision: 1 $
  */
 public abstract class AbstractEventSinkFactory implements EventSinkFactory, Configurable {
+	private long ttl = TTL.TTL_CONTEXT;
 	private SinkEventFilter eventFilter = null;
 	private SinkErrorListener errorListener = null;
 	private SinkLogEventListener eventListener = null;
 	private EventLimiter limiter = null;
-	private long ttl = TTL.TTL_CONTEXT;
-	private ResourceBundle defBundle;
-	private EventFormatter evFormatter;
+	private ResourceBundle defBundle = null;
+	private EventFormatter evFormatter = null;
 
 	protected Map<String, ?> config = null;
 
@@ -138,8 +138,8 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 		setTTL(Utils.getLong("TTL", props, getTTL()));
 		double maxmps = Utils.getDouble("RateMaxMPS", props, Limiter.MAX_RATE);
 		double maxbps = Utils.getDouble("RateMaxBPS", props, Limiter.MAX_RATE);
-		boolean enabled = Utils.getBoolean("RateLimit", props, false);
 		long timeout = Utils.getLong("RateTimeout", props, EventLimiter.BLOCK_UNTIL_GRANTED);
+		boolean enabled = Utils.getBoolean("RateLimit", props, false);
 		if (enabled) {
 			limiter = newEventLimiterImpl(maxmps, maxbps, enabled, timeout);
 		}
@@ -151,8 +151,7 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 
 		eventFilter = (SinkEventFilter) Utils.createConfigurableObject("Filter", "Filter.", config);
 		errorListener = (SinkErrorListener) Utils.createConfigurableObject("ErrorListener", "ErrorListener.", config);
-		eventListener = (SinkLogEventListener) Utils.createConfigurableObject("EventListener", "EventListener.",
-				config);
+		eventListener = (SinkLogEventListener) Utils.createConfigurableObject("EventListener", "EventListener.", config);
 		evFormatter = (EventFormatter) Utils.createConfigurableObject("Formatter", "Formatter.", config);
 	}
 
