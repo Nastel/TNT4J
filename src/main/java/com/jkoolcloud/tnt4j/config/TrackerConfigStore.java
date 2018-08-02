@@ -123,8 +123,10 @@ public class TrackerConfigStore extends TrackerConfig {
 	private static final String SOURCE_KEY = "source";
 	private static final String ENABLED_KEY = "enabled";
 	private static final String LIKE_KEY = "like";
+	private static final String IMPORT_KEY = "import";
 
 	private String configFile = null;
+	private Map<String, Properties> configMap = null;
 
 	/**
 	 * Create an default configuration with a specific source name. Configuration is loaded from a file or string
@@ -173,12 +175,12 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            name of the source instance associated with the configuration
 	 * @param type
 	 *            type of the source instance
-	 * @param configMap
+	 * @param cfgMap
 	 *            configuration map containing source/properties configuration
 	 */
-	protected TrackerConfigStore(String source, SourceType type, Map<String, Properties> configMap) {
+	protected TrackerConfigStore(String source, SourceType type, Map<String, Properties> cfgMap) {
 		super(source, type);
-		loadConfigProps(configMap);
+		loadConfigProps(cfgMap);
 	}
 
 	/**
@@ -201,12 +203,12 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
-	 * @param configMap
+	 * @param cfgMap
 	 *            configuration map containing source/properties configuration
 	 */
-	protected TrackerConfigStore(String source, Map<String, Properties> configMap) {
+	protected TrackerConfigStore(String source, Map<String, Properties> cfgMap) {
 		super(source, SourceType.APPL);
-		loadConfigProps(configMap);
+		loadConfigProps(cfgMap);
 	}
 
 	/**
@@ -214,12 +216,12 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *
 	 * @param source
 	 *            source instance associated with the configuration
-	 * @param configMap
+	 * @param cfgMap
 	 *            configuration map containing source/properties configuration
 	 */
-	protected TrackerConfigStore(Source source, Map<String, Properties> configMap) {
+	protected TrackerConfigStore(Source source, Map<String, Properties> cfgMap) {
 		super(source);
-		loadConfigProps(configMap);
+		loadConfigProps(cfgMap);
 	}
 
 	/**
@@ -246,6 +248,26 @@ public class TrackerConfigStore extends TrackerConfig {
 		initConfigExt(fileName);
 	}
 
+	/**
+	 * Get current configuration map for all sources
+	 *
+	 * @return current configuration map
+	 */
+	public Map<String, Properties> getConfigMap() {
+		return configMap;
+	}
+
+	/**
+	 * Get current configuration for a specific source
+	 * 
+	 * @param key
+	 *            configuration key
+	 * @return current configuration for a specific key (source)
+	 */
+	public Properties getConfig(Object key) {
+		return configMap.get(key);
+	}
+
 	private void initConfigExt(String fileName) {
 		if (StringUtils.isEmpty(fileName)) {
 			String cfgData = System.getProperty(TNT4J_PROPERTIES_KEY, TNT4J_PROPERTIES);
@@ -263,7 +285,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	private void initConfig(String fileName) {
 		configFile = fileName == null ? System.getProperty(TNT4J_PROPERTIES_KEY, TNT4J_PROPERTIES) : fileName;
 		setProperty(TNT4J_PROPERTIES_KEY, configFile);
-		Map<String, Properties> configMap = loadConfiguration(configFile);
+		configMap = loadConfiguration(configFile);
 		loadConfigProps(configMap);
 	}
 
@@ -274,7 +296,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            configuration data reader
 	 */
 	public void initConfig(Reader configReader) {
-		Map<String, Properties> configMap = loadConfiguration(configReader);
+		configMap = loadConfiguration(configReader);
 		loadConfigProps(configMap);
 	}
 
@@ -283,8 +305,9 @@ public class TrackerConfigStore extends TrackerConfig {
 		try {
 			return Utils.createConfigurableObject(classProp, prefix, props);
 		} catch (Throwable e) {
-			logger.log(OpLevel.ERROR, "Failed to create configurable instance class={0}, property={1}, prefix={2}, props={3}",
-					props.get(classProp), classProp, prefix, props, e);
+			logger.log(OpLevel.ERROR,
+			        "Failed to create configurable instance class={0}, property={1}, prefix={2}, props={3}",
+			        props.get(classProp), classProp, prefix, props, e);
 		}
 		return null;
 	}
@@ -299,28 +322,24 @@ public class TrackerConfigStore extends TrackerConfig {
 	 */
 	public void applyProperties() {
 		if (props != null) {
-			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.DEBUG, "Loaded properties source={0}, tid={1}, properties={2}", srcName,
-						Thread.currentThread().getId(), props);
-			}
+			logger.log(OpLevel.DEBUG, "Loading properties source={0}, tid={1}, properties.size={2}", srcName,
+				        Thread.currentThread().getId(), props.size());
 			setUUIDFactory((UUIDFactory) createConfigurableObject("uuid.factory", "uuid.factory."));
 			setSignFactory((SignFactory) createConfigurableObject("sign.factory", "sign.factory."));
 			setGeoLocator((GeoLocator) createConfigurableObject("geo.locator", "geo.locator."));
-			setDefaultEventSinkFactory((EventSinkFactory) createConfigurableObject("default.event.sink.factory",
-					"default.event.sink.factory."));
+			setDefaultEventSinkFactory((EventSinkFactory) createConfigurableObject("default.event.sink.factory", "default.event.sink.factory."));
 			setSourceFactory((SourceFactory) createConfigurableObject("source.factory", "source.factory."));
 			setTrackerFactory((TrackerFactory) createConfigurableObject("tracker.factory", "tracker.factory."));
-			setEventSinkFactory(
-					(EventSinkFactory) createConfigurableObject("event.sink.factory", "event.sink.factory."));
+			setEventSinkFactory((EventSinkFactory) createConfigurableObject("event.sink.factory", "event.sink.factory."));
 			setEventFormatter((EventFormatter) createConfigurableObject("event.formatter", "event.formatter."));
 			setTrackingSelector((TrackingSelector) createConfigurableObject("tracking.selector", "tracking.selector."));
 			setDumpSinkFactory((DumpSinkFactory) createConfigurableObject("dump.sink.factory", "dump.sink.factory."));
 			setActivityListener((ActivityListener) createConfigurableObject("activity.listener", "activity.listener."));
-			setSinkLogEventListener(
-					(SinkLogEventListener) createConfigurableObject("sink.log.listener", "sink.log.listener."));
-			setSinkErrorListener(
-					(SinkErrorListener) createConfigurableObject("sink.error.listener", "sink.error.listener."));
+			setSinkLogEventListener((SinkLogEventListener) createConfigurableObject("sink.log.listener", "sink.log.listener."));
+			setSinkErrorListener((SinkErrorListener) createConfigurableObject("sink.error.listener", "sink.error.listener."));
 			setSinkEventFilter((SinkEventFilter) createConfigurableObject("sink.event.filter", "sink.event.filter."));
+			logger.log(OpLevel.DEBUG, "Loaded properties source={0}, tid={1}, properties.size={2}", srcName,
+			        Thread.currentThread().getId(), props.size());
 		}
 	}
 
@@ -351,7 +370,7 @@ public class TrackerConfigStore extends TrackerConfig {
 		try {
 			map = loadConfigResource(configFile);
 			logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, file={1}, config.size={2}, tid={3}", srcName,
-					configFile, map.size(), Thread.currentThread().getId());
+			        configFile, map.size(), Thread.currentThread().getId());
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, "Unable to load configuration: source={0}, file={1}", srcName, configFile, e);
 		}
@@ -362,12 +381,12 @@ public class TrackerConfigStore extends TrackerConfig {
 		Map<String, Properties> map = null;
 		try {
 			map = loadConfigResource(
-					reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader));
+			        reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader));
 			logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, reader={1}, config.size={2}, tid={3}", srcName,
-					reader.getClass().getSimpleName(), map.size(), Thread.currentThread().getId());
+			        reader.getClass().getSimpleName(), map.size(), Thread.currentThread().getId());
 		} catch (Throwable e) {
-			logger.log(OpLevel.ERROR, "Unable to load configuration: source={0}, reader={1}", srcName,
-					reader.getClass().getSimpleName(), e);
+			logger.log(OpLevel.ERROR, "Failed to load configuration: source={0}, reader={1}", srcName,
+			        reader.getClass().getSimpleName(), e);
 		}
 		return map;
 	}
@@ -384,14 +403,32 @@ public class TrackerConfigStore extends TrackerConfig {
 				config = readStanza(reader);
 				String key = config.getProperty(SOURCE_KEY);
 				String like = config.getProperty(LIKE_KEY);
+				String include = config.getProperty(IMPORT_KEY);
 				String enabled = config.getProperty(ENABLED_KEY);
 				if (enabled != null && enabled.equalsIgnoreCase("true")) {
 					logger.log(OpLevel.WARNING, "Disabling properties for source={0}, like={1}, enabled={2}", key, like,
-							enabled);
+					        enabled);
 					continue;
 				}
+				if (include != null) {
+					// parse and process a comma separated list of "import" elements
+					String[] incList = include.split(",");
+					for (String includeFile : incList) {
+						map.putAll(loadConfiguration(includeFile));
+						logger.log(OpLevel.DEBUG,
+						        "Import configuration source={0}, config.file={1}, import.file={2}, map.size={3}, tid={4}",
+						        key, configFile, includeFile, map.size(), Thread.currentThread().getId());
+					}
+				}
 				if (like != null) {
-					config = mergeConfig(key, like, config, map);
+					// parse and process a comma separated list of "like" elements
+					String[] likeList = like.split(",");
+					for (String copyFrom : likeList) {
+						config = mergeConfig(key, copyFrom, config, map);
+						logger.log(OpLevel.DEBUG,
+						        "Merge configuration source={0}, config.file={1}, like.source={2}, config.size={3}, tid={4}",
+						        key, configFile, copyFrom, config.size(), Thread.currentThread().getId());
+					}
 				}
 				if (key != null) {
 					map.put(key, config);
@@ -408,7 +445,7 @@ public class TrackerConfigStore extends TrackerConfig {
 		if (copyFrom == null) {
 			copyFrom = map.get(DEFAULT_SOURCE);
 			logger.log(OpLevel.WARNING, "Properties for source={0}, like={1} not found, assigning default set={2}", key,
-					like, DEFAULT_SOURCE);
+			        like, DEFAULT_SOURCE);
 		}
 		// merge properties from "like" model with original
 		Properties merged = new Properties();
@@ -461,18 +498,14 @@ public class TrackerConfigStore extends TrackerConfig {
 			line = reader.readLine();
 			if (line != null) {
 				line = line.trim();
-				if ((line.isEmpty())
-						|| line.startsWith(";")
-						|| line.startsWith("#")
-						|| line.startsWith("//")
-						|| line.startsWith("{")
-						|| line.startsWith("}")) {
+				if ((line.isEmpty()) || line.startsWith(";") || line.startsWith("#") || line.startsWith("//")
+				        || line.startsWith("{") || line.startsWith("}")) {
 					continue;
 				}
 				int sepIndex = line.indexOf(":");
 				if (sepIndex <= 0) {
 					logger.log(OpLevel.WARNING, "Skipping invalid source={0}, file={1}, entry='{2}'", srcName,
-							configFile, line);
+					        configFile, line);
 					continue;
 				}
 				String key = line.substring(0, sepIndex).trim();

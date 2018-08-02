@@ -1241,7 +1241,7 @@ public class Utils {
 	 */
 	public static Object applyConfiguration(String prefix, Map<String, ?> prop, Object obj) throws ConfigException {
 		if (obj instanceof Configurable) {
-			logger.debug("applyConfiguration: {}, {}, {}", prefix, obj, prop);
+			logger.debug("applyConfiguration: {}, {}, size={}", prefix, obj, prop.size());
 			return applyConfiguration(prefix, prop, (Configurable) obj);
 		}
 		return obj;
@@ -1262,7 +1262,7 @@ public class Utils {
 	 */
 	public static Object applyConfiguration(String prefix, Properties prop, Object obj) throws ConfigException {
 		if (obj instanceof Configurable) {
-			logger.debug("applyConfiguration: {}, {}, {}", prefix, obj, prop);
+			logger.debug("applyConfiguration: {}, {}, size={}", prefix, obj, prop.size());
 			return applyConfiguration(prefix, prop, (Configurable) obj);
 		}
 		return obj;
@@ -1283,7 +1283,7 @@ public class Utils {
 	 */
 	public static Configurable applyConfiguration(String prefix, Map<String, ?> prop, Configurable cfg)
 			throws ConfigException {
-		logger.debug("applyConfiguration: {}, {}, {}", prefix, cfg, prop);
+		logger.debug("applyConfiguration: {}, {}, size={}", prefix, cfg, prop.size());
 		cfg.setConfiguration(getAttributes(prefix, prop));
 		return cfg;
 	}
@@ -1303,7 +1303,7 @@ public class Utils {
 	 */
 	public static Configurable applyConfiguration(String prefix, Properties prop, Configurable cfg)
 			throws ConfigException {
-		logger.debug("applyConfiguration: {}, {}, {}", prefix, cfg, prop);
+		logger.debug("applyConfiguration: {}, {}, size={}", prefix, cfg, prop.size());
 		cfg.setConfiguration(getAttributes(prefix, prop));
 		return cfg;
 	}
