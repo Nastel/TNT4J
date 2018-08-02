@@ -373,6 +373,8 @@ public class TrackerConfigStore extends TrackerConfig {
 			        configFile, map.size(), Thread.currentThread().getId());
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, "Unable to load configuration: source={0}, file={1}", srcName, configFile, e);
+			RuntimeException re = new RuntimeException(e);
+			throw re;
 		}
 		return map;
 	}
@@ -446,6 +448,9 @@ public class TrackerConfigStore extends TrackerConfig {
 			copyFrom = map.get(DEFAULT_SOURCE);
 			logger.log(OpLevel.WARNING, "Properties for source={0}, like={1} not found, assigning default set={2}", key,
 			        like, DEFAULT_SOURCE);
+			if  (copyFrom == null) {
+				throw new RuntimeException("Missing properties for source=" + key + ", like=" + like);
+			}
 		}
 		// merge properties from "like" model with original
 		Properties merged = new Properties();
