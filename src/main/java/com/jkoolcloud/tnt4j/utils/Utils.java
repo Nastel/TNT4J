@@ -1178,7 +1178,7 @@ public class Utils {
 			return null;
 		}
 		try {
-			logger.debug("createConfigurableObject: {}, {}", classProp, prefix);
+			logger.trace("createConfigurableObject: {}, {}", classProp, prefix);
 			Object obj = Utils.createInstance(className.toString());
 			return Utils.applyConfiguration(prefix, config, obj);
 		} catch (ConfigException ce) {
@@ -1212,7 +1212,7 @@ public class Utils {
 			return null;
 		}
 		try {
-			logger.debug("createConfigurableObject: {}, {}", classProp, prefix);
+			logger.trace("createConfigurableObject: {}, {}", classProp, prefix);
 			Object obj = Utils.createInstance(className.toString());
 			return Utils.applyConfiguration(prefix, config, obj);
 		} catch (ConfigException ce) {
@@ -1241,7 +1241,7 @@ public class Utils {
 	 */
 	public static Object applyConfiguration(String prefix, Map<String, ?> prop, Object obj) throws ConfigException {
 		if (obj instanceof Configurable) {
-			logger.debug("applyConfiguration: {}, {}, size={}", prefix, obj, prop.size());
+			logger.trace("applyConfiguration: {}, {}, size={}", prefix, obj, prop.size());
 			return applyConfiguration(prefix, prop, (Configurable) obj);
 		}
 		return obj;
@@ -1262,7 +1262,7 @@ public class Utils {
 	 */
 	public static Object applyConfiguration(String prefix, Properties prop, Object obj) throws ConfigException {
 		if (obj instanceof Configurable) {
-			logger.debug("applyConfiguration: {}, {}, size={}", prefix, obj, prop.size());
+			logger.trace("applyConfiguration: {}, {}, size={}", prefix, obj, prop.size());
 			return applyConfiguration(prefix, prop, (Configurable) obj);
 		}
 		return obj;
@@ -1283,7 +1283,7 @@ public class Utils {
 	 */
 	public static Configurable applyConfiguration(String prefix, Map<String, ?> prop, Configurable cfg)
 			throws ConfigException {
-		logger.debug("applyConfiguration: {}, {}, size={}", prefix, cfg, prop.size());
+		logger.trace("applyConfiguration: {}, {}, size={}", prefix, cfg, prop.size());
 		cfg.setConfiguration(getAttributes(prefix, prop));
 		return cfg;
 	}
@@ -1303,7 +1303,7 @@ public class Utils {
 	 */
 	public static Configurable applyConfiguration(String prefix, Properties prop, Configurable cfg)
 			throws ConfigException {
-		logger.debug("applyConfiguration: {}, {}, size={}", prefix, cfg, prop.size());
+		logger.trace("applyConfiguration: {}, {}, size={}", prefix, cfg, prop.size());
 		cfg.setConfiguration(getAttributes(prefix, prop));
 		return cfg;
 	}
@@ -1370,7 +1370,7 @@ public class Utils {
 		if (className == null) {
 			return null;
 		}
-		logger.debug("createInstance: {}", className);
+		logger.trace("createInstance: {}", className);
 		Class<?> classObj = Class.forName(className);
 		return classObj.newInstance();
 	}
@@ -1393,7 +1393,7 @@ public class Utils {
 		if (className == null) {
 			return null;
 		}
-		logger.debug("createInstance: {}, {}, {}", className, args, types);
+		logger.trace("createInstance: {}, {}, {}", className, args, types);
 		Class<?> classObj = Class.forName(className);
 		Constructor<?> ct = classObj.getConstructor(types);
 		return ct.newInstance(args);

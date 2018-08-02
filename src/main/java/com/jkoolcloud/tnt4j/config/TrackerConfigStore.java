@@ -118,13 +118,16 @@ public class TrackerConfigStore extends TrackerConfig {
 
 	public static final String TNT4J_PROPERTIES_KEY = "tnt4j.config";
 	public static final String TNT4J_PROPERTIES = "tnt4j.properties";
+	public static final String TNT4J_PROPERTIES_PATH = "tnt4j.config.path";
 
 	private static final String DEFAULT_SOURCE = "*";
 	private static final String SOURCE_KEY = "source";
 	private static final String ENABLED_KEY = "enabled";
 	private static final String LIKE_KEY = "like";
 	private static final String IMPORT_KEY = "import";
+	private static final String IMPORT_PATH = "import.path";
 
+	private String configPath = System.getProperty(TNT4J_PROPERTIES_PATH);
 	private String configFile = null;
 	private Map<String, Properties> configMap = null;
 
@@ -268,6 +271,15 @@ public class TrackerConfigStore extends TrackerConfig {
 		return configMap.get(key);
 	}
 
+	protected String getConfigFromPath(String path, String fileName) {
+		String cfgPath = (path == null? configPath: path);
+		if (cfgPath == null) {
+			return fileName;
+		} else {
+			return cfgPath.endsWith(File.separator)? (cfgPath + fileName):  (cfgPath + File.separator + fileName);
+		}
+	}
+	
 	private void initConfigExt(String fileName) {
 		if (StringUtils.isEmpty(fileName)) {
 			String cfgData = System.getProperty(TNT4J_PROPERTIES_KEY, TNT4J_PROPERTIES);
@@ -406,6 +418,7 @@ public class TrackerConfigStore extends TrackerConfig {
 				String key = config.getProperty(SOURCE_KEY);
 				String like = config.getProperty(LIKE_KEY);
 				String include = config.getProperty(IMPORT_KEY);
+				String includePath = config.getProperty(IMPORT_PATH);
 				String enabled = config.getProperty(ENABLED_KEY);
 				if (enabled != null && enabled.equalsIgnoreCase("true")) {
 					logger.log(OpLevel.WARNING, "Disabling properties for source={0}, like={1}, enabled={2}", key, like,
@@ -416,6 +429,7 @@ public class TrackerConfigStore extends TrackerConfig {
 					// parse and process a comma separated list of "import" elements
 					String[] incList = include.split(",");
 					for (String includeFile : incList) {
+						includeFile = getConfigFromPath(includePath, includeFile);
 						map.putAll(loadConfiguration(includeFile));
 						logger.log(OpLevel.DEBUG,
 						        "Import configuration source={0}, config.file={1}, import.file={2}, map.size={3}, tid={4}",
@@ -477,7 +491,6 @@ public class TrackerConfigStore extends TrackerConfig {
 				} catch (MalformedURLException ioe) {
 					rdr = new FileReader(fileName);
 				}
-
 				return new BufferedReader(rdr);
 			} catch (IOException ioe) {
 				exc = ioe;
