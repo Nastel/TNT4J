@@ -439,12 +439,14 @@ public class TrackerConfigStore extends TrackerConfig {
 				if (like != null) {
 					// parse and process a comma separated list of "like" elements
 					String[] likeList = like.split(",");
-					for (String copyFrom : likeList) {
-						config = mergeConfig(key, copyFrom, config, map);
+					Properties mergedConfig = new Properties();
+					for (String copyFromKey : likeList) {
+						mergedConfig = copyConfig(key, copyFromKey, mergedConfig, map);
 						logger.log(OpLevel.DEBUG,
 						        "Merge configuration source={0}, config.file={1}, like.source={2}, config.size={3}, tid={4}",
-						        key, configFile, copyFrom, config.size(), Thread.currentThread().getId());
+						        key, configFile, copyFromKey, mergedConfig.size(), Thread.currentThread().getId());
 					}
+					config = mergeConfig(key, config, mergedConfig);
 				}
 				if (key != null) {
 					map.put(key, config);
@@ -456,21 +458,26 @@ public class TrackerConfigStore extends TrackerConfig {
 		return map;
 	}
 
-	private Properties mergeConfig(String key, String like, Properties config, Map<String, Properties> map) {
-		Properties copyFrom = map.get(like);
+	private Properties mergeConfig(String key, Properties toConfig, Properties fromConfig) {
+		Properties merged = new Properties();
+		merged.putAll(fromConfig);
+		merged.putAll(toConfig);
+		return merged;
+	}
+
+	private Properties copyConfig(String key, String like, Properties toConfig, Map<String, Properties> fromMap) {
+		Properties copyFrom = fromMap.get(like);
 		if (copyFrom == null) {
-			copyFrom = map.get(DEFAULT_SOURCE);
+			copyFrom = fromMap.get(DEFAULT_SOURCE);
 			logger.log(OpLevel.WARNING, "Properties for source={0}, like={1} not found, assigning default set={2}", key,
 			        like, DEFAULT_SOURCE);
 			if  (copyFrom == null) {
 				throw new RuntimeException("Missing properties for source=" + key + ", like=" + like);
 			}
 		}
-		// merge properties from "like" model with original
-		Properties merged = new Properties();
-		merged.putAll(copyFrom);
-		merged.putAll(config);
-		return merged;
+		// copy properties from "like" model with original
+		toConfig.putAll(copyFrom);
+		return toConfig;
 	}
 
 	private BufferedReader getConfigReader(String fileName) throws IOException {
