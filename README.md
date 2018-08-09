@@ -192,8 +192,7 @@ event.sink.factory.EventSinkFactory: com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JE
 ...
 ```
 ### Secure
-TNT4J supports communication using various protocols including HTTPS.  This ensures that data is encrypted. This includes streaming 
-on-premise, in a hybrid cloud or pure cloud based configuration.
+TNT4J supports secure communication over various protocols such as HTTPS. This ensures that data is encrypted for on-premise, hybrid cloud or pure cloud based deployments.
 See example below: 
 ```
 ...
