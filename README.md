@@ -83,6 +83,40 @@ Embed TNT4J into your application and realize the benefits in a matter if minute
 TNT4J can take advantage of other lower level logging frameworks such as slf4j, log4j.
 Default TNT4J binding is based on slf4j.
 
+### TNT4J Stream Configuration
+TNT4j stream configuration is defined in `tnt4j.properties` which is located by specifying `tnt4j.config` java property (example `-Dtnt4j.config=./config/tnt4j.properties`. This configuration file defines all event sources, target event sink bindings such as file, MQTT, Kafka, HTTPS etc as well stream specific attributes. Here is example of a sample stream configuration:
+```
+; TNT4J Common Definitions
+{
+	; import common tnt4j logger definitions
+	source: common.base
+	import: tnt4j-common.properties
+}
+
+;Stanza used for sources that start with com.jkoolcloud
+{
+	source: com.myappl
+	like: default.logger	
+	source.factory.RootSSN: tnt4j-samples
+	
+	tracker.default.snapshot.category: DefaultCategory	
+	event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.BufferedEventSinkFactory
+	event.sink.factory.EventSinkFactory: com.jkoolcloud.tnt4j.sink.impl.FileEventSinkFactory
+	event.sink.factory.PooledLoggerFactory: com.jkoolcloud.tnt4j.sink.impl.PooledLoggerFactoryImpl
+	event.sink.factory.Filter: com.jkoolcloud.tnt4j.filters.EventLevelTimeFilter
+	event.sink.factory.Filter.Level: INFO
+	event.formatter: com.jkoolcloud.tnt4j.format.SimpleFormatter
+	activity.listener: com.jkoolcloud.tnt4j.tracker.DefaultActivityListener
+}
+
+;Stanza used for sources that start with org
+{
+	source: org
+	; import settings from com.myappl stanza
+	like: com.myappl
+}
+```
+
 ### Stream over Kafka
 Stream your events over Apache Kafka using `com.jkoolcloud.tnt4j.sink.impl.kafka.KafkaEventSinkFactory` event sink factory.
 Configure event sink in `tnt4j.properties` as follows:
