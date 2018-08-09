@@ -394,7 +394,8 @@ public class TrackerConfigStore extends TrackerConfig {
 	private Map<String, Properties> loadConfiguration(Reader reader) {
 		Map<String, Properties> map = null;
 		try {
-			map = loadConfigResource(reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader));
+			BufferedReader bfReader = (reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader));
+			map = loadConfigResource(bfReader);
 			logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, reader={1}, config.size={2}, tid={3}", srcName,
 			        reader.getClass().getSimpleName(), map.size(), Thread.currentThread().getId());
 		} catch (Throwable e) {
