@@ -394,8 +394,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	private Map<String, Properties> loadConfiguration(Reader reader) {
 		Map<String, Properties> map = null;
 		try {
-			map = loadConfigResource(
-			        reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader));
+			map = loadConfigResource(reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader));
 			logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, reader={1}, config.size={2}, tid={3}", srcName,
 			        reader.getClass().getSimpleName(), map.size(), Thread.currentThread().getId());
 		} catch (Throwable e) {
@@ -411,50 +410,46 @@ public class TrackerConfigStore extends TrackerConfig {
 
 	private Map<String, Properties> loadConfigResource(BufferedReader reader) throws IOException {
 		Map<String, Properties> map = new LinkedHashMap<String, Properties>(111);
-		try {
-			Properties config = null;
-			do {
-				config = readStanza(reader);
-				String key = config.getProperty(SOURCE_KEY);
-				String like = config.getProperty(LIKE_KEY);
-				String include = config.getProperty(IMPORT_KEY);
-				String includePath = config.getProperty(IMPORT_PATH);
-				String enabled = config.getProperty(ENABLED_KEY);
-				if (enabled != null && enabled.equalsIgnoreCase("true")) {
-					logger.log(OpLevel.WARNING, "Disabling properties for source={0}, like={1}, enabled={2}", key, like,
-					        enabled);
-					continue;
+		Properties config = null;
+		do {
+			config = readStanza(reader);
+			String key = config.getProperty(SOURCE_KEY);
+			String like = config.getProperty(LIKE_KEY);
+			String include = config.getProperty(IMPORT_KEY);
+			String includePath = config.getProperty(IMPORT_PATH);
+			String enabled = config.getProperty(ENABLED_KEY);
+			if (enabled != null && enabled.equalsIgnoreCase("true")) {
+				logger.log(OpLevel.WARNING, "Disabling properties for source={0}, like={1}, enabled={2}", 
+						key, like, enabled);
+				continue;
+			}
+			if (include != null) {
+				// parse and process a comma separated list of "import" elements
+				String[] incList = include.split(",");
+				for (String includeFile : incList) {
+					includeFile = getConfigFromPath(includePath, includeFile);
+					map.putAll(loadConfiguration(includeFile));
+					logger.log(OpLevel.DEBUG,
+					        "Import configuration source={0}, config.file={1}, import.file={2}, map.size={3}, tid={4}",
+					        key, configFile, includeFile, map.size(), Thread.currentThread().getId());
 				}
-				if (include != null) {
-					// parse and process a comma separated list of "import" elements
-					String[] incList = include.split(",");
-					for (String includeFile : incList) {
-						includeFile = getConfigFromPath(includePath, includeFile);
-						map.putAll(loadConfiguration(includeFile));
-						logger.log(OpLevel.DEBUG,
-						        "Import configuration source={0}, config.file={1}, import.file={2}, map.size={3}, tid={4}",
-						        key, configFile, includeFile, map.size(), Thread.currentThread().getId());
-					}
+			}
+			if (like != null) {
+				// parse and process a comma separated list of "like" elements
+				String[] likeList = like.split(",");
+				Properties mergedConfig = new Properties();
+				for (String copyFromKey : likeList) {
+					mergedConfig = copyConfig(key, copyFromKey, mergedConfig, map);
+					logger.log(OpLevel.DEBUG,
+					        "Merge configuration source={0}, config.file={1}, like.source={2}, config.size={3}, tid={4}",
+					        key, configFile, copyFromKey, mergedConfig.size(), Thread.currentThread().getId());
 				}
-				if (like != null) {
-					// parse and process a comma separated list of "like" elements
-					String[] likeList = like.split(",");
-					Properties mergedConfig = new Properties();
-					for (String copyFromKey : likeList) {
-						mergedConfig = copyConfig(key, copyFromKey, mergedConfig, map);
-						logger.log(OpLevel.DEBUG,
-						        "Merge configuration source={0}, config.file={1}, like.source={2}, config.size={3}, tid={4}",
-						        key, configFile, copyFromKey, mergedConfig.size(), Thread.currentThread().getId());
-					}
-					config = mergeConfig(key, config, mergedConfig);
-				}
-				if (key != null) {
-					map.put(key, config);
-				}
-			} while (!config.isEmpty());
-		} finally {
-			Utils.close(reader);
-		}
+				config = mergeConfig(key, config, mergedConfig);
+			}
+			if (key != null) {
+				map.put(key, config);
+			}
+		} while (!config.isEmpty());
 		return map;
 	}
 
