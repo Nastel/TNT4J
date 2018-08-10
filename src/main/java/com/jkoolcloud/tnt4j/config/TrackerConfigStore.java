@@ -271,15 +271,31 @@ public class TrackerConfigStore extends TrackerConfig {
 		return configMap.get(key);
 	}
 
+	/**
+	 * Get current configuration file based on a given path and file
+	 * 
+	 * @param path
+	 *            configuration path (folder)
+	 * @param fileName
+	 *            configuration file name
+	 * 
+	 * @return configuration file name
+	 */
 	protected String getConfigFromPath(String path, String fileName) {
-		String cfgPath = (path == null? configPath: path);
+		String cfgPath = (path == null ? configPath : path);
 		if (cfgPath == null) {
 			return fileName;
 		} else {
-			return cfgPath.endsWith(File.separator)? (cfgPath + fileName):  (cfgPath + File.separator + fileName);
+			return cfgPath.endsWith(File.separator) ? (cfgPath + fileName) : (cfgPath + File.separator + fileName);
 		}
 	}
 	
+	/**
+	 * Initialize configuration based on a given file and extended attributes
+	 * 
+	 * @param fileName
+	 *            configuration file name
+	 */
 	private void initConfigExt(String fileName) {
 		if (StringUtils.isEmpty(fileName)) {
 			String cfgData = System.getProperty(TNT4J_PROPERTIES_KEY, TNT4J_PROPERTIES);
@@ -294,6 +310,12 @@ public class TrackerConfigStore extends TrackerConfig {
 		}
 	}
 
+	/**
+	 * Initialize configuration based on a given file
+	 * 
+	 * @param fileName
+	 *            configuration file name
+	 */
 	private void initConfig(String fileName) {
 		configFile = fileName == null ? System.getProperty(TNT4J_PROPERTIES_KEY, TNT4J_PROPERTIES) : fileName;
 		setProperty(TNT4J_PROPERTIES_KEY, configFile);
@@ -312,6 +334,14 @@ public class TrackerConfigStore extends TrackerConfig {
 		loadConfigProps(configMap);
 	}
 
+	/**
+	 * Create a configurable object based on class and prefix
+	 *
+	 * @param classProp
+	 *            class implementation key
+	 * @param prefix
+	 *            prefix for configuring class implementation
+	 */
 	private Object createConfigurableObject(String classProp, String prefix) {
 		Properties props = getProperties();
 		try {
@@ -324,6 +354,12 @@ public class TrackerConfigStore extends TrackerConfig {
 		return null;
 	}
 
+	/**
+	 * Load and apply configuration properties
+	 *
+	 * @param map
+	 *           map of keys and associated properties
+	 */
 	private void loadConfigProps(Map<String, Properties> map) {
 		setProperties(loadProperties(map));
 		applyProperties();
@@ -355,6 +391,13 @@ public class TrackerConfigStore extends TrackerConfig {
 		}
 	}
 
+	/**
+	 * Load properties for its source
+	 *
+	 * @param map
+	 *            map of keys and associated properties
+	 * @return properties associated with this configuration source
+	 */
 	private Properties loadProperties(Map<String, Properties> map) {
 		int maxKeyLen = 0;
 		Properties selectedSet = null;
@@ -377,6 +420,13 @@ public class TrackerConfigStore extends TrackerConfig {
 		return selectedSet;
 	}
 
+	/**
+	 * Load configuration from a file
+	 *
+	 * @param configFile
+	 *            configuration file name or URL
+	 * @return map of keys and associated properties
+	 */
 	private Map<String, Properties> loadConfiguration(String configFile) {
 		Map<String, Properties> map = null;
 		try {
@@ -391,6 +441,13 @@ public class TrackerConfigStore extends TrackerConfig {
 		return map;
 	}
 
+	/**
+	 * Load configuration from a reader
+	 *
+	 * @param reader
+	 *            configuration reader
+	 * @return map of keys and associated properties
+	 */
 	private Map<String, Properties> loadConfiguration(Reader reader) {
 		Map<String, Properties> map = null;
 		try {
@@ -405,10 +462,24 @@ public class TrackerConfigStore extends TrackerConfig {
 		return map;
 	}
 
+	/**
+	 * Load configuration resources from a file
+	 *
+	 * @param fileName
+	 *            configuration file name
+	 * @return map of keys and associated properties
+	 */
 	private Map<String, Properties> loadConfigResource(String fileName) throws IOException {
 		return loadConfigResource(getConfigReader(fileName));
 	}
 
+	/**
+	 * Load configuration resources from a reader
+	 *
+	 * @param reader
+	 *            configuration reader
+	 * @return map of keys and associated properties
+	 */
 	private Map<String, Properties> loadConfigResource(BufferedReader reader) throws IOException {
 		Map<String, Properties> map = new LinkedHashMap<String, Properties>(111);
 		Properties config = null;
@@ -454,6 +525,18 @@ public class TrackerConfigStore extends TrackerConfig {
 		return map;
 	}
 
+	/**
+	 * Merge configurations
+	 *
+	 * @param key
+	 *            configuration source key
+	 * @param toConfig
+	 *            target configuration for merge
+	 * @param fromConfig
+	 *            source configuration for merge
+	 * 
+	 * @return merged configuration
+	 */
 	private Properties mergeConfig(String key, Properties toConfig, Properties fromConfig) {
 		Properties merged = new Properties();
 		merged.putAll(fromConfig);
@@ -461,6 +544,20 @@ public class TrackerConfigStore extends TrackerConfig {
 		return merged;
 	}
 
+	/**
+	 * Copy configurations
+	 *
+	 * @param key
+	 *            configuration source key
+	 * @param like
+	 *            source of configuration to copy from
+	 * @param toConfig
+	 *            target configuration for merge
+	 * @param fromMap
+	 *            source configuration for merge
+	 * 
+	 * @return merged configuration
+	 */
 	private Properties copyConfig(String key, String like, Properties toConfig, Map<String, Properties> fromMap) {
 		Properties copyFrom = fromMap.get(like);
 		if (copyFrom == null) {
@@ -476,42 +573,81 @@ public class TrackerConfigStore extends TrackerConfig {
 		return toConfig;
 	}
 
-	private BufferedReader getConfigReader(String fileName) throws IOException {
-		IOException exc = null;
-		if (fileName != null) {
+	/**
+	 * Get reader for a specific URL
+	 *
+	 * @param url
+	 *            configuration URL
+	 * @throws IOException
+	 * @return reader associated with given URL
+	 */
+	private BufferedReader getReaderFromURL(String url) throws IOException {
+		Reader rdr;
+		try {
+			URL cfgResource = new URL(url);
+			InputStream ins;
 			try {
-				Reader rdr;
-				try {
-					URL cfgResource = new URL(fileName);
-					InputStream ins;
-					try {
-						ins = cfgResource.openStream();
-					} catch (IOException ioe) {
-						ins = Utils.getResourceAsStream(TrackerConfigStore.class, cfgResource.getFile());
-					}
-
-					rdr = new InputStreamReader(ins);
-				} catch (MalformedURLException ioe) {
-					rdr = new FileReader(fileName);
-				}
-				return new BufferedReader(rdr);
+				ins = cfgResource.openStream();
 			} catch (IOException ioe) {
-				exc = ioe;
+				ins = Utils.getResourceAsStream(TrackerConfigStore.class, cfgResource.getFile());
 			}
+			rdr = new InputStreamReader(ins);
+		} catch (MalformedURLException ioe) {
+			rdr = new FileReader(url);
 		}
-
-		String tnt4jResource = TNT4J_PROPERTIES;
-		InputStream ins = Utils.getResourceAsStream(TrackerConfigStore.class, tnt4jResource);
-		if (ins == null) {
-			FileNotFoundException ioe = new FileNotFoundException("Resource '" + tnt4jResource + "' not found");
-			if (exc != null) {
-				ioe.initCause(exc);
-			}
-			throw ioe;
-		}
-		return new BufferedReader(new InputStreamReader(ins));
+		return new BufferedReader(rdr);
 	}
 
+	/**
+	 * Get reader for a specific resource
+	 *
+	 * @param resName
+	 *            configuration resource name
+	 * @throws IOException
+	 * @return reader associated with given URL
+	 */
+	private BufferedReader getReaderFromResource(String resName) throws IOException {
+		InputStream ins = Utils.getResourceAsStream(TrackerConfigStore.class, resName);
+		if (ins == null) {
+			FileNotFoundException ioe = new FileNotFoundException("Resource '" + resName + "' not found");
+			throw ioe;
+		}
+		return new BufferedReader(new InputStreamReader(ins));		
+	}
+	
+	/**
+	 * Get reader for a specific resource or URL
+	 *
+	 * @param resName
+	 *            configuration resource name
+	 * @throws IOException
+	 * @return reader associated with given URL
+	 */
+	private BufferedReader getConfigReader(String resName) throws IOException {
+		Throwable exc = null;
+		if (resName != null) {
+			try {
+				return getReaderFromURL(resName);
+			} catch (Throwable e) {
+				exc = e;
+			}
+		}
+		try {
+			return getReaderFromResource(TNT4J_PROPERTIES);
+		} catch (IOException e) {
+			if (exc != null) e.initCause(exc);
+			throw e;
+		}
+	}
+
+	/**
+	 * Read configuration stanza
+	 *
+	 * @param reader
+	 *            configuration reader
+	 * @throws IOException
+	 * @return properties associated with configuration
+	 */
 	private Properties readStanza(BufferedReader reader) throws IOException {
 		String line;
 		Properties props = new Properties();
