@@ -85,7 +85,7 @@ Default TNT4J binding is based on slf4j.
 
 ### TNT4J Stream Configuration
 TNT4j stream configuration is defined in `tnt4j.properties` which is located by specifying `tnt4j.config` java property (example `-Dtnt4j.config=./config/tnt4j.properties`. This configuration file defines all event sources, target event sink bindings such as file, MQTT, Kafka, HTTPS etc as well stream specific attributes. Here is example of a sample stream configuration:
-```
+```properties
 ; TNT4J Common Definitions
 {
 	; import common tnt4j logger definitions
@@ -96,10 +96,10 @@ TNT4j stream configuration is defined in `tnt4j.properties` which is located by 
 ;Stanza used for sources that start with com.jkoolcloud
 {
 	source: com.myappl
-	like: default.logger	
+	like: default.logger
 	source.factory.RootSSN: tnt4j-samples
 	
-	tracker.default.snapshot.category: DefaultCategory	
+	tracker.default.snapshot.category: DefaultCategory
 	event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.BufferedEventSinkFactory
 	event.sink.factory.EventSinkFactory: com.jkoolcloud.tnt4j.sink.impl.FileEventSinkFactory
 	event.sink.factory.PooledLoggerFactory: com.jkoolcloud.tnt4j.sink.impl.PooledLoggerFactoryImpl
@@ -121,7 +121,7 @@ TNT4j stream configuration is defined in `tnt4j.properties` which is located by 
 Stream your events over Apache Kafka using `com.jkoolcloud.tnt4j.sink.impl.kafka.KafkaEventSinkFactory` event sink factory.
 Configure event sink in `tnt4j.properties` as follows:
 
-```
+```properties
 ...
 ; Use buffered event sink around Kafka event sink factory
 event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.BufferedEventSinkFactory
@@ -134,7 +134,7 @@ event.formatter: com.jkoolcloud.tnt4j.format.JSONFormatter
 ...
 ```
 `tnt4j-topic` refers to a Kafka topic which must be created and available. Below is a sample `tnt4j-kafka.properties` configuration:
-```
+```properties
 bootstrap.servers=localhost:9092
 acks=all
 retries=0
@@ -147,7 +147,7 @@ value.serializer=org.apache.kafka.common.serialization.StringSerializer
 ### Stream over MQTT
 Stream your events over MQTT using `com.jkoolcloud.tnt4j.sink.impl.mqtt.MqttEventSinkFactory` event sink factory.
 Configure event sink in `tnt4j.properties` as follows:
-```
+```properties
 ...
 ; Use buffered event sink around MQTT event sink factory
 event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.BufferedEventSinkFactory
@@ -218,7 +218,7 @@ logger.debug("My message {0}, {1}, {2}", arg0, arg1, arg3);
 ```
 TNT4J enhances logging performance by supporting asynchronous pooled logging, which delegates logging to a dedicated thread pool. Use 
 `BufferedEventSinkFactory` in your `tnt4.properties` configuration to enable this feature. See example below: 
-```
+```properties
 ...
 event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.BufferedEventSinkFactory
 event.sink.factory.PooledLoggerFactory: com.jkoolcloud.tnt4j.sink.impl.PooledLoggerFactoryImpl
@@ -226,9 +226,10 @@ event.sink.factory.EventSinkFactory: com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JE
 ...
 ```
 ### Secure
-TNT4J supports secure communication over various protocols such as HTTPS. This ensures that data is encrypted for on-premise, hybrid cloud or pure cloud based deployments.
+TNT4J supports secure communication over various protocols such as HTTPS. This ensures that data is encrypted for on-premise, hybrid cloud 
+or pure cloud based deployments.
 See example below: 
-```
+```properties
 ...
 event.sink.factory.EventSinkFactory.Url: https://data.jkoolcloud.com	
 ...
