@@ -225,14 +225,6 @@ event.sink.factory.PooledLoggerFactory: com.jkoolcloud.tnt4j.sink.impl.PooledLog
 event.sink.factory.EventSinkFactory: com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory
 ...
 ```
-### Secure
-TNT4J supports secure communication over various protocols such as HTTPS. This ensures that data is encrypted for on-premise, hybrid cloud or pure cloud based deployments.
-See example below: 
-```
-...
-event.sink.factory.EventSinkFactory.Url: https://data.jkoolcloud.com	
-...
-```
 ### Simplicity & Clean Code
 No need to check for `isDebugEnabled()` before logging messages. Just register your own `SinkEventFilter` and consolidate all checking into 
 a single listener.
