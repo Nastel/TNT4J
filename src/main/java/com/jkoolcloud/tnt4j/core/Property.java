@@ -208,6 +208,8 @@ public class Property {
 			return "char";
 		} else if (value instanceof Date) {
 			return "date";
+		} else if (value instanceof UsecTimestamp) {
+			return "date.usec";
 		} else if (value instanceof BigInteger) {
 			return "long";
 		} else if (value instanceof BigDecimal) {
