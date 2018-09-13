@@ -16,6 +16,7 @@
 package com.jkoolcloud.tnt4j.format;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringEscapeUtils;
@@ -530,12 +531,40 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		}
 		jsonString.append(JSON_VALUE_LABEL).append(ATTR_SEP);
 		if (isNoNeedToQuote(value)) {
-			jsonString.append(value);
+			jsonString.append(propValueToString(value));
 		} else {
-			Utils.quote(StringEscapeUtils.escapeJson(Utils.toString(value)), jsonString);
+			Utils.quote(StringEscapeUtils.escapeJson(propValueToString(value)), jsonString);
 		}
 		jsonString.append(END_JSON);
 		return jsonString.toString();
+	}
+
+	/**
+	 * Converts property value to string representation specific for JKool.
+	 * <p>
+	 * <ul>
+	 * <li>{@link Date} value is serialized as number using {@link java.util.Date#getTime()}</li>
+	 * <li>{@link com.jkoolcloud.tnt4j.core.UsecTimestamp} value is serialized as number using
+	 * {@link com.jkoolcloud.tnt4j.core.UsecTimestamp#getTimeUsec()}</li>
+	 * <li>all other cases are serialized using {@link Utils#toString(Object)}</li>
+	 * </ul>
+	 *
+	 * @param propValue
+	 *            property value to convert
+	 * @return string representation of property value
+	 *
+	 * @see java.util.Date#getTime()
+	 * @see com.jkoolcloud.tnt4j.core.UsecTimestamp#getTimeUsec()
+	 * @see com.jkoolcloud.tnt4j.utils.Utils#toString(Object)
+	 */
+	protected static String propValueToString(Object propValue) {
+		if (propValue instanceof Date) {
+			return Long.toString(((Date) propValue).getTime());
+		} else if (propValue instanceof UsecTimestamp) {
+			return Long.toString(((UsecTimestamp) propValue).getTimeUsec());
+		} else {
+			return Utils.toString(propValue);
+		}
 	}
 
 	/**
@@ -543,10 +572,14 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	 *
 	 * @param value
 	 *            value to check
-	 * @return {@code true} if value is one of: {@code null}, boolean, number, {@code false} - otherwise
+	 * @return {@code true} if value is one of: {@code null}, boolean, number, date, timestamp, {@code false} -
+	 *         otherwise
+	 *
+	 * @see #isSpecialSuppress(Object)
 	 */
 	protected boolean isNoNeedToQuote(Object value) {
-		return value == null || value instanceof Boolean || (value instanceof Number && !isSpecialEnquote(value));
+		return value == null || value instanceof Boolean || value instanceof Date || value instanceof UsecTimestamp
+				|| (value instanceof Number && !isSpecialEnquote(value));
 	}
 
 	/**
@@ -556,6 +589,8 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	 * @param value
 	 *            value to check
 	 * @return {@code true} if value is special and should be suppressed, {@code false} - otherwise
+	 *
+	 * @see #isSpecial(Object)
 	 */
 	protected boolean isSpecialSuppress(Object value) {
 		return specialNumbersHandling == SpecNumbersHandling.SUPPRESS && isSpecial(value);

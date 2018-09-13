@@ -275,9 +275,9 @@ public class LevelingJSONFormatter extends JSONFormatter {
 		jsonString.append(Utils.quote(StringEscapeUtils.escapeJson(getKeyStr(prop.getKey())))).append(ATTR_SEP);
 
 		if (isNoNeedToQuote(value)) {
-			jsonString.append(value);
+			jsonString.append(propValueToString(value));
 		} else {
-			Utils.quote(StringEscapeUtils.escapeJson(Utils.toString(value)), jsonString);
+			Utils.quote(StringEscapeUtils.escapeJson(propValueToString(value)), jsonString);
 		}
 
 		return jsonString.toString();
