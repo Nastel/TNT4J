@@ -72,7 +72,7 @@ class MyEventFilter implements SinkEventFilter {
 	public boolean filter(EventSink sink, Snapshot snapshot) {
 		return logger.isSet(snapshot.getSeverity(), "myappl.token");
 	}
-	
+
 	@Override
 	public boolean filter(EventSink sink, long ttl, Source src, OpLevel level, String msg, Object... args) {
 		return logger.isSet(level, "myappl.token");
@@ -98,7 +98,7 @@ TNT4j stream configuration is defined in `tnt4j.properties` which is located by 
 	source: com.myappl
 	like: default.logger
 	source.factory.RootSSN: tnt4j-samples
-	
+
 	tracker.default.snapshot.category: DefaultCategory
 	event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.BufferedEventSinkFactory
 	event.sink.factory.EventSinkFactory: com.jkoolcloud.tnt4j.sink.impl.FileEventSinkFactory
@@ -164,10 +164,10 @@ event.sink.factory.mqtt-pwd: mqtt-pwd
 ### SLF4J Event Sink Integration
 TNT4J provides SLF4J event sink implementation via `com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory` event sink factory.
 Other logging frameworks can be supported by implementing `EventSinkFactory` & `EventSink` interfaces. 
-TNT4J default integration is with SLF4J/SimpleLogger. 
+TNT4J default integration is with SLF4J/SimpleLogger.
 
 All TNT4J messages can be routed via a SLF4J event sink and therefore can take advantage of the underlying logging frameworks supported by 
-SLF4J. 
+SLF4J.
 
 Developers may also enrich event messages and pass context to TNT4J using hash tag enrichment scheme.
 Hash tags are used to decorate event messages with important meta data about each log message. 
@@ -183,7 +183,7 @@ logically related events/messages. Hash tags `#beg`, `#end` are used to demarcat
 activities.
 
 User defined fields can be reported using `#[data-type][:value-type]/your-metric-name=your-value` convention (e.g. `#%i/order-no=62627` or 
-`#%d:currency/amount=50.45`). 
+`#%d:currency/amount=50.45`).
 
 `TNT4JAppender` supports the following optional `data-type` qualifiers:
 ```
@@ -208,7 +208,7 @@ All `value-type` qualifiers are defined in `com.jkoolcloud.tnt4j.core.ValueTypes
 	addr 		-- generic address
 ```
 Not specifying a qualifier defaults to auto detection of type by `TNT4JAppender`. 
-First `number` qualifier is tested and defaults to `string` if the test fails (e.g. `#order-no=62627`). 
+First `number` qualifier is tested and defaults to `string` if the test fails (e.g. `#order-no=62627`).
 
 ### Performance
 No need to concatenate messages before logging. String concatenation is expensive especially in loops. Simply log using message patterns as 
@@ -234,7 +234,7 @@ logger.addSinkEventFilter(new MyLogFilter());
 logger.debug("My message {0}, {1}, {2}", arg0, arg1, arg2);
 ```
 
-All conditional logging can be consolidated into a single listener object. 
+All conditional logging can be consolidated into a single listener object.
 
 ### Flexible Filtering
 Filter out not only based on category/severity (as slf4j), but also based on performance objectives. Example: log events only if their 
@@ -307,7 +307,7 @@ logger.set(OpLevel.DEBUG, "myapp.mykey", myvalue);
 
 Imagine writing an application that has to pass tracking context/flag to applications downstream, how would you do that?
 TNT4J lets you set and get conditional variables within and across application boundaries.
-	
+
 Set and check tracking context as follows (track all requests matching a specific zip code only):
 ```java
 // set level, key & value pair
@@ -408,7 +408,7 @@ logger.tnt(OpLevel.INFO, OpType.RECEIVE, "ReceiveOrder", order_id,
 ```
 
 **NOTE:** TNT4J uses NTP natively to synchronize times across servers to enable cross server event correlation in time. To enable NTP time 
-synchronization define java property `-Dtnt4j.time.server=ntp-server:123`. 
+synchronization define java property `-Dtnt4j.time.server=ntp-server:123`.
 
 **TIP:** Developers should use `TimeServer.currentTimeMillis()` instead of `System.currentTimeMillis()` to obtain time adjusted to NTP time. 
 TNT4J also maintains a microsecond resolution clock using `Useconds.CURRENT.get()` which returns the number of microseconds between the 
@@ -554,7 +554,7 @@ To build TNT4J:
 *  Please use JCenter or Maven and these dependencies will be downloaded automatically. 
 *  You will need to point TNT4J to it's property file via the -Dtnt4j.config argument. This property file is located here in GitHub under 
 the `/config` directory. If using JCenter or Maven, it can be found in the zip assembly along with the source code and javadoc.
-	
+
 Known Projects Using TNT4J
 ===============================================
 * jKool Event Streaming Library - JESL (https://github.com/Nastel/JESL)
