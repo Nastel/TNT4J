@@ -541,7 +541,6 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 
 	/**
 	 * Converts property value to string representation specific for JKool.
-	 * <p>
 	 * <ul>
 	 * <li>{@link Date} value is serialized as number using {@link java.util.Date#getTime()}</li>
 	 * <li>{@link com.jkoolcloud.tnt4j.core.UsecTimestamp} value is serialized as number using
