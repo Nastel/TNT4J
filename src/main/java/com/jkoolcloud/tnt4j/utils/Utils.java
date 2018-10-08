@@ -15,13 +15,7 @@
  */
 package com.jkoolcloud.tnt4j.utils;
 
-import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
-import java.io.InputStream;
-import java.io.PrintStream;
-import java.io.PrintWriter;
-import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -34,15 +28,8 @@ import java.nio.charset.CharsetEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Properties;
-import java.util.Random;
-import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -577,7 +564,7 @@ public class Utils {
 			if (!fake.isEmpty()) {
 				fake = fake.replaceAll(".", hideChars);
 			}
-			return fake + str.substring(length, str.length());
+			return fake + str.substring(length);
 		}
 		return str;
 	}
@@ -601,7 +588,7 @@ public class Utils {
 
 		int length = str.length() - startNo;
 		if (length > 0) {
-			String fake = str.substring(startNo, str.length());
+			String fake = str.substring(startNo);
 			if (!fake.isEmpty()) {
 				fake = fake.replaceAll(".", hideChars);
 			}

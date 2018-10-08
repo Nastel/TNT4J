@@ -28,12 +28,10 @@ import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
-
-
 /**
- * Broadcasting event sink factory allows creation of event sinks that can write to multiple event sinks
- * at once. The factory wraps around multiple event sink factories.
- *  
+ * Broadcasting event sink factory allows creation of event sinks that can write to multiple event sinks at once. The
+ * factory wraps around multiple event sink factories.
+ * 
  * @author albert
  *
  */
@@ -41,7 +39,7 @@ public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 
 	String broadcastSeq;
 	List<EventSinkFactory> sinkFactories = new Vector<EventSinkFactory>(3, 3);
-	
+
 	/**
 	 * Create a default broadcasting sink factory
 	 *
@@ -52,7 +50,8 @@ public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 	/**
 	 * Create a default broadcasting sink factory
 	 * 
-	 * @param sf list of event sink factories
+	 * @param sf
+	 *            list of event sink factories
 	 *
 	 */
 	public BroadcastingEventSinkFactory(List<EventSinkFactory> sf) {
@@ -68,11 +67,11 @@ public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 	public String getBroadcastSequence() {
 		return broadcastSeq;
 	}
-	
+
 	protected List<EventSinkFactory> getEventSinkFactories() {
 		return sinkFactories;
 	}
-	
+
 	@Override
 	public EventSink getEventSink(String name) {
 		return configureSink(new BroadcastingEventSink(this, name));
@@ -91,31 +90,33 @@ public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 	@Override
 	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		super.setConfiguration(props);
-		
-		broadcastSeq = Utils.getString("BroadcastSequence", props, null); 
+
+		broadcastSeq = Utils.getString("BroadcastSequence", props, null);
 		if (broadcastSeq == null) {
 			initBroadcastSequence(props);
 		} else {
-			initBroadcastSequence(broadcastSeq.split(","), props);			
+			initBroadcastSequence(broadcastSeq.split(","), props);
 		}
 	}
 
 	private void initBroadcastSequence(Map<String, ?> props) throws ConfigException {
-		for (int counter=0; (loadEventSinkFactory(String.valueOf(counter), props) != null); counter++);
+		for (int counter = 0; (loadEventSinkFactory(String.valueOf(counter), props) != null); counter++) {
+		}
 	}
 
-	private void initBroadcastSequence(String [] seq, Map<String, ?> props) throws ConfigException {
-		for (int i = 0; i < seq.length; i++) {
-			if (loadEventSinkFactory(seq[i], props) == null) {
-				throw new ConfigException("Could not find broadcast factory sequence=" + seq[i], props);
+	private void initBroadcastSequence(String[] seq, Map<String, ?> props) throws ConfigException {
+		for (String s : seq) {
+			if (loadEventSinkFactory(s, props) == null) {
+				throw new ConfigException("Could not find broadcast factory sequence=" + s, props);
 			}
-		}	
+		}
 	}
-	
+
 	private EventSinkFactory loadEventSinkFactory(String fcName, Map<String, ?> props) throws ConfigException {
-		EventSinkFactory sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory." + fcName, "EventSinkFactory." + fcName + ".", props);
+		EventSinkFactory sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory." + fcName,
+				"EventSinkFactory." + fcName + ".", props);
 		if (sinkFactory != null) {
-			sinkFactories.add(sinkFactory);	
+			sinkFactories.add(sinkFactory);
 		}
 		return sinkFactory;
 	}
