@@ -61,11 +61,11 @@ public class FileSink implements Sink {
 	 * 
 	 * @param filename
 	 *            for generating a sink instance
-	 * @param appnd
+	 * @param append
 	 *            append to the underlying destination
 	 */
-	public FileSink(String filename, boolean appnd) {
-		this(filename, appnd, new DefaultFormatter());
+	public FileSink(String filename, boolean append) {
+		this(filename, append, new DefaultFormatter());
 	}
 
 	/**
@@ -73,14 +73,14 @@ public class FileSink implements Sink {
 	 * 
 	 * @param filename
 	 *            for writing to the sink
-	 * @param appnd
+	 * @param append
 	 *            append to the underlying destination
 	 * @param format
 	 *            user defined formatter
 	 * @see Formatter
 	 */
-	public FileSink(String filename, boolean appnd, Formatter format) {
-		append = appnd;
+	public FileSink(String filename, boolean append, Formatter format) {
+		this.append = append;
 		file = new File(filename);
 		formatter = format;
 	}

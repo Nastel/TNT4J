@@ -24,7 +24,6 @@ import com.jkoolcloud.tnt4j.sink.impl.FileSink;
  * This class implements {@link DumpSink} with file as the underlying storage for dump collections.
  * </p>
  *
- *
  * @version $Revision: 3 $
  *
  * @see DumpSink
@@ -33,7 +32,7 @@ import com.jkoolcloud.tnt4j.sink.impl.FileSink;
  */
 
 public class FileDumpSink extends FileSink implements DumpSink {
-	private DumpFormatter formatter = null;
+	private DumpFormatter dumpFormatter = null;
 
 	/**
 	 * Create a dump destination based on given filename, append flag. and a {@link DefaultDumpFormatter}.
@@ -50,11 +49,11 @@ public class FileDumpSink extends FileSink implements DumpSink {
 	 *
 	 * @param filename
 	 *            for generating a dump destination instance
-	 * @param appnd
+	 * @param append
 	 *            append to the underlying destination
 	 */
-	public FileDumpSink(String filename, boolean appnd) {
-		this(filename, appnd, new DefaultDumpFormatter());
+	public FileDumpSink(String filename, boolean append) {
+		this(filename, append, new DefaultDumpFormatter());
 	}
 
 	/**
@@ -62,21 +61,21 @@ public class FileDumpSink extends FileSink implements DumpSink {
 	 *
 	 * @param filename
 	 *            for generating a dump destination instance
-	 * @param appnd
+	 * @param append
 	 *            append to the underlying destination
 	 * @param format
 	 *            user defined dump formatter
 	 * @see DumpFormatter
 	 */
-	public FileDumpSink(String filename, boolean appnd, DumpFormatter format) {
-		super(filename, appnd, format);
-		formatter = format;
+	public FileDumpSink(String filename, boolean append, DumpFormatter format) {
+		super(filename, append, format);
+		dumpFormatter = format;
 	}
 
 	@Override
 	public synchronized void close() {
 		if (isOpen()) {
-			printer.println(formatter.getCloseStanza(this));
+			printer.println(dumpFormatter.getCloseStanza(this));
 			printer.flush();
 		}
 		super.close();
@@ -86,7 +85,7 @@ public class FileDumpSink extends FileSink implements DumpSink {
 	public synchronized void open() throws IOException {
 		super.open();
 		if (isOpen()) {
-			printer.println(formatter.getOpenStanza(this));
+			printer.println(dumpFormatter.getOpenStanza(this));
 			printer.flush();
 		}
 	}
@@ -94,9 +93,9 @@ public class FileDumpSink extends FileSink implements DumpSink {
 	@Override
 	public synchronized void write(DumpCollection dump) throws IOException {
 		if (isOpen()) {
-			printer.println(formatter.getHeader(dump));
-			printer.println(formatter.format(dump));
-			printer.println(formatter.getFooter(dump));
+			printer.println(dumpFormatter.getHeader(dump));
+			printer.println(dumpFormatter.format(dump));
+			printer.println(dumpFormatter.getFooter(dump));
 			printer.flush();
 		} else {
 			throw new IOException("Dump sink is closed, file=" + getFileName());

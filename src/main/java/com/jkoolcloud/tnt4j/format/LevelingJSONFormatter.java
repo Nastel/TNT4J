@@ -146,9 +146,6 @@ public class LevelingJSONFormatter extends JSONFormatter {
 		}
 
 		StringBuilder jsonString = new StringBuilder(1024);
-		String START_JSON = newLineFormat ? START_LINE : START;
-		String END_JSON = newLineFormat ? END_LINE : END;
-		String ATTR_JSON = newLineFormat ? ATTR_END_LINE : ATTR_END;
 
 		jsonString.append(START_JSON);
 		jsonString.append(JSON_SOURCE_LABEL).append(ATTR_SEP);

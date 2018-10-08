@@ -293,9 +293,6 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	@Override
 	public String format(TrackingActivity activity) {
 		StringBuilder jsonString = new StringBuilder(1024);
-		String START_JSON = newLineFormat ? START_LINE : START;
-		String END_JSON = newLineFormat ? END_LINE : END;
-		String ATTR_JSON = newLineFormat ? ATTR_END_LINE : ATTR_END;
 
 		jsonString.append(START_JSON);
 		if (!Utils.isEmpty(activity.getTrackingId())) {
