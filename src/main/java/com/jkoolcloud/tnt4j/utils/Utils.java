@@ -1027,6 +1027,21 @@ public class Utils {
 	}
 
 	/**
+	 * Close an object without exceptions
+	 *
+	 * @param obj
+	 *            object to close
+	 */
+	public static void close(AutoCloseable obj) {
+		try {
+			if (obj != null) {
+				obj.close();
+			}
+		} catch (Throwable e) {
+		}
+	}
+
+	/**
 	 * Check if a handle is open
 	 *
 	 * @param handle
