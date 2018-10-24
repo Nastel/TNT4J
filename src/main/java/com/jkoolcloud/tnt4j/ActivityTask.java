@@ -15,14 +15,12 @@
  */
 package com.jkoolcloud.tnt4j;
 
-import com.jkoolcloud.tnt4j.core.ActivityListener;
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 
 /**
- * <p> 
- * This class implements a runnable task implementation
- * scheduled by {@link ActivityScheduler}.
+ * <p>
+ * This class implements a runnable task implementation scheduled by {@link ActivityScheduler}.
  * </p>
  * 
  * 
@@ -30,7 +28,7 @@ import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
  * 
  * @see TrackingLogger
  * @see TrackingActivity
- * @see ActivityListener
+ * @see com.jkoolcloud.tnt4j.core.ActivityListener
  * @see OpLevel
  */
 public class ActivityTask implements Runnable {
@@ -38,35 +36,38 @@ public class ActivityTask implements Runnable {
 	TrackingLogger logger;
 	TrackingActivity activity;
 	OpLevel level;
-	
+
 	/**
-	 * Create a task for a specific logger, default activity name
-	 * and {@code OpLevel.SUCCESS} severity
+	 * Create a task for a specific logger, default activity name and {@code OpLevel.SUCCESS} severity
 	 * 
-	 * @param lg tracking logger instance
+	 * @param lg
+	 *            tracking logger instance
 	 */
 	protected ActivityTask(TrackingLogger lg) {
 		this(lg, "ActivityTask", OpLevel.INFO);
 	}
-	
+
 	/**
-	 * Create a task for a specific logger, activity name
-	 * and {@code OpLevel.SUCCESS} severity
+	 * Create a task for a specific logger, activity name and {@code OpLevel.SUCCESS} severity
 	 * 
-	 * @param lg tracking logger instance
-	 * @param name activity name
+	 * @param lg
+	 *            tracking logger instance
+	 * @param name
+	 *            activity name
 	 */
 	protected ActivityTask(TrackingLogger lg, String name) {
 		this(lg, name, OpLevel.INFO);
 	}
-	
+
 	/**
-	 * Create a task for a specific logger, activity name
-	 * and  severity
+	 * Create a task for a specific logger, activity name and severity
 	 * 
-	 * @param lg tracking logger instance
-	 * @param name activity name
-	 * @param level severity level
+	 * @param lg
+	 *            tracking logger instance
+	 * @param name
+	 *            activity name
+	 * @param level
+	 *            severity level
 	 */
 	protected ActivityTask(TrackingLogger lg, String name, OpLevel level) {
 		logger = lg;
@@ -83,21 +84,19 @@ public class ActivityTask implements Runnable {
 	protected TrackingActivity getActivity() {
 		return activity;
 	}
-	
+
 	/**
-	 * This method is called when activity is started
-	 * Override this method to change behavior when activity starts
+	 * This method is called when activity is started Override this method to change behavior when activity starts
 	 */
 	protected void startActvity() {
 		activity = logger.newActivity(level, activityName);
-		activity.start();		
+		activity.start();
 	}
-	
+
 	/**
-	 * This method is called when activity ends
-	 * Override this method to change behavior when activity ends.
-	 * This method also reports activity via configured {@code TrackingLogger}
-	 * instance conditional upon {{@link #doSample()} returning true.
+	 * This method is called when activity ends Override this method to change behavior when activity ends. This method
+	 * also reports activity via configured {@code TrackingLogger} instance conditional upon {{@link #doSample()}
+	 * returning true.
 	 * 
 	 * @return elapsed time of the activity in microseconds.
 	 */
@@ -108,27 +107,25 @@ public class ActivityTask implements Runnable {
 		}
 		return activity.getElapsedTimeUsec();
 	}
-	
+
 	/**
-	 * This method is called when activity ends {@link #endActivity()}.
-	 * Override this method to change behavior when activity ends.
-	 * Return true to allow tracking of current activity, false to
-	 * ignore tracking. 
-	 * By default if {@code OpType.NOOP} are ignored.
+	 * This method is called when activity ends {@link #endActivity()}. Override this method to change behavior when
+	 * activity ends. Return true to allow tracking of current activity, false to ignore tracking. By default if
+	 * {@code OpType.NOOP} are ignored.
 	 * 
 	 * @return true to track current activity, false to ignore
 	 */
 	protected boolean doSample() {
 		return true;
 	}
-	
+
 	@Override
-    public void run() {
+	public void run() {
 		try {
 			endActivity();
 		} catch (Throwable e) {
 		} finally {
-			startActvity();			
+			startActvity();
 		}
-    }
+	}
 }
