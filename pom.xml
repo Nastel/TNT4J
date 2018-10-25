@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <product.vendor>jKool, LLC</product.vendor>
 
-        <project.java.version>1.6</project.java.version>
+        <project.java.version>1.7</project.java.version>
         <java.source.version>${project.java.version}</java.source.version>
         <java.target.version>${project.java.version}</java.target.version>
         <java.compiler.version>${project.java.version}</java.compiler.version>
@@ -60,7 +60,7 @@
         <gpg.skip.sign>true</gpg.skip.sign>
         <build.assemblies.attach>false</build.assemblies.attach>
 
-        <commons.lang.version>3.5</commons.lang.version>
+        <commons.lang.version>3.8.1</commons.lang.version>
         <commons.codec.version>1.11</commons.codec.version>
         <commons.configuration.version>1.10</commons.configuration.version>
         <commons.net.version>3.6</commons.net.version>
@@ -69,7 +69,7 @@
         <uuid.generator.version>3.1.5</uuid.generator.version>
         <slf4j.version>1.7.25</slf4j.version>
         <eclipse.paho.version>1.2.0</eclipse.paho.version>
-        <kafka.clients.version>1.1.0</kafka.clients.version>
+        <kafka.clients.version>1.1.1</kafka.clients.version>
     </properties>
 
     <dependencies>
