@@ -18,7 +18,7 @@ package com.jkoolcloud.tnt4j.sink.impl.slf4j;
 import java.util.Map;
 import java.util.Properties;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.DefaultFormatter;
