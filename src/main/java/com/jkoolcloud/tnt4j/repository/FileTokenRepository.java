@@ -21,16 +21,21 @@ import java.net.URL;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
-import org.apache.commons.configuration.AbstractConfiguration;
-import org.apache.commons.configuration.AbstractFileConfiguration;
-import org.apache.commons.configuration.ConfigurationException;
-import org.apache.commons.configuration.PropertiesConfiguration;
-import org.apache.commons.configuration.event.ConfigurationErrorEvent;
-import org.apache.commons.configuration.event.ConfigurationErrorListener;
-import org.apache.commons.configuration.event.ConfigurationEvent;
-import org.apache.commons.configuration.event.ConfigurationListener;
-import org.apache.commons.configuration.reloading.FileChangedReloadingStrategy;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.BasicConfigurationBuilder;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.ReloadingFileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
+import org.apache.commons.configuration2.builder.fluent.PropertiesBuilderParameters;
+import org.apache.commons.configuration2.event.ConfigurationErrorEvent;
+import org.apache.commons.configuration2.event.ConfigurationEvent;
+import org.apache.commons.configuration2.event.EventListener;
+import org.apache.commons.configuration2.ex.ConfigurationException;
+import org.apache.commons.configuration2.ex.ConfigurationRuntimeException;
+import org.apache.commons.configuration2.reloading.PeriodicReloadingTrigger;
+import org.apache.commons.configuration2.reloading.ReloadingEvent;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
@@ -54,13 +59,14 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 public class FileTokenRepository implements TokenRepository, Configurable {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(FileTokenRepository.class);
-	private static ConcurrentHashMap<TokenRepositoryListener, TokenConfigurationListener> LISTEN_MAP = new ConcurrentHashMap<TokenRepositoryListener, TokenConfigurationListener>(
+	private static ConcurrentHashMap<TokenRepositoryListener, EventListener<?>[]> LISTEN_MAP = new ConcurrentHashMap<>(
 			49);
 
 	private String configName = null;
-	private PropertiesConfiguration config = null;
+	private BasicConfigurationBuilder<PropertiesConfiguration> config = null;
+	private PeriodicReloadingTrigger cfgReloadTrigger = null;
 	protected Map<String, ?> settings = null;
-	private long refDelay = 20000;
+	private long refDelay = TimeUnit.SECONDS.toMillis(20);
 
 	/**
 	 * Create file/property based token repository instance based on default file name or url specified by
@@ -90,10 +96,14 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 		if (configName == null) {
 			return;
 		}
-		TokenConfigurationListener pListener = new TokenConfigurationListener(listener, logger);
-		LISTEN_MAP.put(listener, pListener);
-		config.addConfigurationListener(pListener);
-		config.addErrorListener(pListener);
+		TokenConfigurationListener cfListener = new TokenConfigurationListener(listener, logger);
+		TokenConfigurationErrorListener cfErrListener = new TokenConfigurationErrorListener(listener, logger);
+		EventListener<?>[] pListeners = new EventListener[2];
+		pListeners[0] = cfListener;
+		pListeners[1] = cfErrListener;
+		LISTEN_MAP.put(listener, pListeners);
+		config.addEventListener(ConfigurationEvent.ANY, cfListener);
+		config.addEventListener(ConfigurationErrorEvent.ANY, cfErrListener);
 	}
 
 	@Override
@@ -101,35 +111,51 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 		if (configName == null) {
 			return;
 		}
-		TokenConfigurationListener pListener = LISTEN_MAP.get(listener);
-		if (pListener != null) {
+		EventListener<?>[] pListeners = LISTEN_MAP.get(listener);
+		if (pListeners != null) {
 			LISTEN_MAP.remove(listener);
-			config.removeConfigurationListener(pListener);
-			config.removeErrorListener(pListener);
+			config.removeEventListener(ConfigurationEvent.ANY, (TokenConfigurationListener) pListeners[0]);
+			config.removeEventListener(ConfigurationErrorEvent.ANY, (TokenConfigurationErrorListener) pListeners[1]);
 		}
 	}
 
 	@Override
 	public Object get(String key) {
-		return config != null ? config.getProperty(key) : null;
+		try {
+			return config != null ? config.getConfiguration().getProperty(key) : null;
+		} catch (ConfigurationException exc) {
+			throw new ConfigurationRuntimeException("Failed to get configuration property", exc);
+		}
 	}
 
 	@Override
 	public Iterator<? extends Object> getKeys() {
-		return config != null ? config.getKeys() : null;
+		try {
+			return config != null ? config.getConfiguration().getKeys() : null;
+		} catch (ConfigurationException exc) {
+			throw new ConfigurationRuntimeException("Failed to get configuration properties key set", exc);
+		}
 	}
 
 	@Override
 	public void remove(String key) {
 		if (config != null) {
-			config.clearProperty(key);
+			try {
+				config.getConfiguration().clearProperty(key);
+			} catch (ConfigurationException exc) {
+				throw new ConfigurationRuntimeException("Failed to remove configuration property", exc);
+			}
 		}
 	}
 
 	@Override
 	public void set(String key, Object value) {
 		if (config != null) {
-			config.setProperty(key, value);
+			try {
+				config.getConfiguration().setProperty(key, value);
+			} catch (ConfigurationException exc) {
+				throw new ConfigurationRuntimeException("Failed to set configuration property", exc);
+			}
 		}
 	}
 
@@ -140,7 +166,13 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
 	public String toString() {
-		return super.toString() + "{url: " + getName() + ", delay: " + refDelay + ", config: " + config + "}";
+		PropertiesConfiguration cfg;
+		try {
+			cfg = config.getConfiguration();
+		} catch (ConfigurationException exc) {
+			cfg = null;
+		}
+		return super.toString() + "{url: " + getName() + ", delay: " + refDelay + ", config: " + cfg + "}";
 	}
 
 	@Override
@@ -155,15 +187,11 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 		}
 		try {
 			initConfig();
-			if (refDelay > 0) {
-				FileChangedReloadingStrategy reloadConfig = new FileChangedReloadingStrategy();
-				reloadConfig.setRefreshDelay(refDelay);
-				config.setReloadingStrategy(reloadConfig);
+			if (cfgReloadTrigger != null) {
+				cfgReloadTrigger.start();
 			}
 		} catch (Throwable e) {
-			IOException ioe = new IOException(e.toString());
-			ioe.initCause(e);
-			throw ioe;
+			throw new IOException(e);
 		}
 	}
 
@@ -171,28 +199,48 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	 * Initialize property configuration based on a configured configuration file name. The method attempts to load it
 	 * from URL if given config is URL, then load it from class path and then from file system.
 	 *
-	 * @throws ConfigurationException
-	 *             if error loading configuration file
 	 * @throws MalformedURLException
 	 *             if malformed configuration file name
 	 */
-	protected void initConfig() throws ConfigurationException, MalformedURLException {
+	protected void initConfig() throws MalformedURLException {
 		int urlIndex = configName.indexOf("://");
+
+		PropertiesBuilderParameters params = new Parameters().properties();
+
 		if (urlIndex > 0) {
-			config = new PropertiesConfiguration(new URL(configName));
-			new PropertiesConfiguration(configName);
+			params.setURL(new URL(configName));
 		} else {
 			URL configResource = getClass().getResource("/" + configName);
 			if (configResource != null) {
-				config = new PropertiesConfiguration(configResource);
+				params.setURL(configResource);
 			} else {
-				config = new PropertiesConfiguration(configName);
+				params.setFileName(configName);
 			}
 		}
+
+		if (refDelay > 0) {
+			params.setReloadingRefreshDelay(refDelay);
+
+			ReloadingFileBasedConfigurationBuilder<PropertiesConfiguration> builder = new ReloadingFileBasedConfigurationBuilder<>(
+					PropertiesConfiguration.class);
+			builder.configure(params);
+
+			cfgReloadTrigger = new PeriodicReloadingTrigger(builder.getReloadingController(), null, refDelay,
+					TimeUnit.MILLISECONDS);
+
+			config = builder;
+		} else {
+			config = new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class);
+			config.configure(params);
+		}
+
 	}
 
 	@Override
 	public void close() throws IOException {
+		if (cfgReloadTrigger != null) {
+			cfgReloadTrigger.shutdown();
+		}
 	}
 
 	@Override
@@ -219,7 +267,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	}
 }
 
-class TokenConfigurationListener implements ConfigurationListener, ConfigurationErrorListener {
+class TokenConfigurationListener implements EventListener<ConfigurationEvent> {
 	TokenRepositoryListener repListener = null;
 	EventSink logger = null;
 
@@ -229,38 +277,42 @@ class TokenConfigurationListener implements ConfigurationListener, Configuration
 	}
 
 	@Override
-	public void configurationChanged(ConfigurationEvent event) {
+	public void onEvent(ConfigurationEvent event) {
 		if (event.isBeforeUpdate()) {
 			return;
 		}
-		logger.log(OpLevel.DEBUG, "configurationChanged: type={0}, {1}:{2}", event.getType(), event.getPropertyName(),
-				event.getPropertyValue());
-		switch (event.getType()) {
-		case AbstractConfiguration.EVENT_ADD_PROPERTY:
+		logger.log(OpLevel.DEBUG, "configurationChanged: type={0}, {1}:{2}", event.getEventType(),
+				event.getPropertyName(), event.getPropertyValue());
+		if (event.getEventType() == ConfigurationEvent.ADD_PROPERTY) {
 			repListener.repositoryChanged(new TokenRepositoryEvent(event.getSource(), TokenRepository.EVENT_ADD_KEY,
 					event.getPropertyName(), event.getPropertyValue(), null));
-			break;
-		case AbstractConfiguration.EVENT_SET_PROPERTY:
+		} else if (event.getEventType() == ConfigurationEvent.SET_PROPERTY) {
 			repListener.repositoryChanged(new TokenRepositoryEvent(event.getSource(), TokenRepository.EVENT_SET_KEY,
 					event.getPropertyName(), event.getPropertyValue(), null));
-			break;
-		case AbstractConfiguration.EVENT_CLEAR_PROPERTY:
+		} else if (event.getEventType() == ConfigurationEvent.CLEAR_PROPERTY) {
 			repListener.repositoryChanged(new TokenRepositoryEvent(event.getSource(), TokenRepository.EVENT_CLEAR_KEY,
 					event.getPropertyName(), event.getPropertyValue(), null));
-			break;
-		case AbstractConfiguration.EVENT_CLEAR:
+		} else if (event.getEventType() == ConfigurationEvent.CLEAR) {
 			repListener.repositoryChanged(new TokenRepositoryEvent(event.getSource(), TokenRepository.EVENT_CLEAR,
 					event.getPropertyName(), event.getPropertyValue(), null));
-			break;
-		case AbstractFileConfiguration.EVENT_RELOAD:
+		} else if (event.getEventType() == ReloadingEvent.ANY) {
 			repListener.repositoryChanged(new TokenRepositoryEvent(event.getSource(), TokenRepository.EVENT_RELOAD,
 					event.getPropertyName(), event.getPropertyValue(), null));
-			break;
 		}
+	}
+}
+
+class TokenConfigurationErrorListener implements EventListener<ConfigurationErrorEvent> {
+	TokenRepositoryListener repListener = null;
+	EventSink logger = null;
+
+	public TokenConfigurationErrorListener(TokenRepositoryListener listener, EventSink log) {
+		repListener = listener;
+		logger = log;
 	}
 
 	@Override
-	public void configurationError(ConfigurationErrorEvent event) {
+	public void onEvent(ConfigurationErrorEvent event) {
 		logger.log(OpLevel.ERROR, "Configuration error detected, event={0}", event, event.getCause());
 		repListener.repositoryError(new TokenRepositoryEvent(event.getSource(), TokenRepository.EVENT_EXCEPTION,
 				event.getPropertyName(), event.getPropertyValue(), event.getCause()));
