@@ -65,6 +65,7 @@
         <commons.codec.version>1.11</commons.codec.version>
         <commons.configuration.version>2.3</commons.configuration.version>
         <commons.net.version>3.6</commons.net.version>
+        <commons.text.version>1.6</commons.text.version>
 
         <guava.version>20.0</guava.version>
         <uuid.generator.version>3.1.5</uuid.generator.version>
@@ -93,6 +94,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-configuration2</artifactId>
             <version>${commons.configuration.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-text</artifactId>
+            <version>${commons.text.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-net</groupId>
