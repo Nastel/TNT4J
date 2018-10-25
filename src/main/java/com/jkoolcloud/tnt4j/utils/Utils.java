@@ -684,7 +684,7 @@ public class Utils {
 	 * @return true if two specified objects are equal
 	 */
 	public static boolean equal(Object obj1, Object obj2) {
-		return obj1 == obj2 || (obj1 != null && obj1.equals(obj2));
+		return Objects.equals(obj1, obj2);
 	}
 
 	/**
@@ -1321,7 +1321,7 @@ public class Utils {
 	 * @return a map containing only those attributes that match a prefix.
 	 */
 	public static Map<String, Object> getAttributes(String prefix, Map<String, ?> p) {
-		HashMap<String, Object> settings = new HashMap<String, Object>(11);
+		HashMap<String, Object> settings = new HashMap<>(11);
 		for (Entry<String, ?> entry : p.entrySet()) {
 			String key = entry.getKey();
 			if (key.startsWith(prefix)) {
@@ -1342,7 +1342,7 @@ public class Utils {
 	 * @return a map containing only those attributes that match a prefix.
 	 */
 	public static Map<String, Object> getAttributes(String prefix, Properties p) {
-		HashMap<String, Object> settings = new HashMap<String, Object>(11);
+		HashMap<String, Object> settings = new HashMap<>(11);
 		for (Entry<Object, Object> entry : p.entrySet()) {
 			String key = entry.getKey().toString();
 			if (key.startsWith(prefix)) {

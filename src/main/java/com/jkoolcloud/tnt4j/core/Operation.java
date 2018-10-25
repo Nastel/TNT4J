@@ -81,9 +81,9 @@ public class Operation implements TTL {
 	private long endTimeUs;
 	private Throwable exHandle;
 
-	private HashSet<String> correlators = new HashSet<String>(89);
-	private HashMap<String, Snapshot> snapshots = new HashMap<String, Snapshot>(89);
-	private HashMap<String, Property> properties = new HashMap<String, Property>(89);
+	private HashSet<String> correlators = new HashSet<>(89);
+	private HashMap<String, Snapshot> snapshots = new HashMap<>(89);
+	private HashMap<String, Property> properties = new HashMap<>(89);
 
 	// timing attributes
 	private int startStopCount = 0;

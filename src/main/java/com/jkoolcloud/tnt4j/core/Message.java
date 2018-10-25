@@ -58,7 +58,7 @@ public class Message {
 	private String mimeType = MIME_TYPE_TEXT_PLAIN;
 	private String encoding = ENCODING_NONE;
 	private String charset = CHARSET_DEFAULT;
-	private HashSet<String> tags = new HashSet<String>(89);
+	private HashSet<String> tags = new HashSet<>(89);
 
 	/**
 	 * Creates a message object with empty signature.

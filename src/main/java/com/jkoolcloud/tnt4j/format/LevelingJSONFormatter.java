@@ -62,8 +62,8 @@ public class LevelingJSONFormatter extends JSONFormatter {
 	private Comparator<Snapshot> snapshotComparator;
 	private Comparator<Property> propertyComparator;
 
-	protected Map<String, String> keyReplacements = new HashMap<String, String>();
-	protected Map<String, String> valueReplacements = new HashMap<String, String>();
+	protected Map<String, String> keyReplacements = new HashMap<>();
+	protected Map<String, String> valueReplacements = new HashMap<>();
 
 	/**
 	 * Create leveling JSON formatter without newlines during formatting

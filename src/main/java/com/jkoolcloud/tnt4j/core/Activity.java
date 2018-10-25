@@ -52,7 +52,7 @@ public class Activity extends Operation implements Trackable {
 	private String sign;
 	private ActivityStatus status = ActivityStatus.BEGIN;
 
-	private HashSet<String> idset = new HashSet<String>(89);
+	private HashSet<String> idset = new HashSet<>(89);
 	private ArrayList<ActivityListener> activityListeners = null;
 
 	/**
@@ -144,7 +144,7 @@ public class Activity extends Operation implements Trackable {
 	 */
 	public void addActivityListener(ActivityListener listener) {
 		if (activityListeners == null) {
-			activityListeners = new ArrayList<ActivityListener>(10);
+			activityListeners = new ArrayList<>(10);
 		}
 		activityListeners.add(listener);
 	}

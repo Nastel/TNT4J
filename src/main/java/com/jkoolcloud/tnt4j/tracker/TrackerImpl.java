@@ -54,7 +54,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class TrackerImpl implements Tracker, SinkErrorListener {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerImpl.class);
-	private static ThreadLocal<LightStack<TrackingActivity>> ACTIVITY_STACK = new ThreadLocal<LightStack<TrackingActivity>>();
+	private static ThreadLocal<LightStack<TrackingActivity>> ACTIVITY_STACK = new ThreadLocal<>();
 
 	public static final String DEFAULT_SNAPSHOT_CAT_KEY = "tracker.default.snapshot.category";
 	public static final String DEFAULT_SNAPSHOT_CATEGORY = "None";
@@ -238,7 +238,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
 		if (stack == null) {
-			stack = new LightStack<TrackingActivity>();
+			stack = new LightStack<>();
 			ACTIVITY_STACK.set(stack);
 		}
 		// associate with the parent activity if there is any
@@ -299,7 +299,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public Map<String, Object> getStats() {
-		Map<String, Object> stats = new LinkedHashMap<String, Object>();
+		Map<String, Object> stats = new LinkedHashMap<>();
 		getStats(stats);
 		return stats;
 	}

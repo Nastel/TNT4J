@@ -30,8 +30,7 @@ import java.util.Map;
  * @version $Revision: 2 $
  */
 public class SizeOf {
-    
-   
+
 	/**
 	 * Instance of java.lang.instrument.Instrument injected by the Java VM
 	 *
@@ -42,15 +41,17 @@ public class SizeOf {
 	private static boolean SKIP_STATIC_FIELD = false;
 	private static boolean SKIP_FINAL_FIELD = false;
 	private static boolean SKIP_FLYWEIGHT_FIELD = false;
-	
-    private SizeOf() {
-    }
+
+	private SizeOf() {
+	}
 
 	/**
 	 * Callback method used by the Java VM to inject the java.lang.instrument.Instrument instance
 	 *
-	 * @param options agent arguments
-	 * @param inst instrumenter
+	 * @param options
+	 *            agent arguments
+	 * @param inst
+	 *            instrumenter
 	 */
 	public static void premain(String options, Instrumentation inst) {
 		SizeOf.inst = inst;
@@ -65,8 +66,9 @@ public class SizeOf {
 	 *
 	 */
 	public static long sizeOf(Object object) {
-		if ((inst == null) || (SKIP_FLYWEIGHT_FIELD && isSharedFlyweight(object)))
+		if ((inst == null) || (SKIP_FLYWEIGHT_FIELD && isSharedFlyweight(object))) {
 			return 0;
+		}
 		return inst.getObjectSize(object);
 	}
 
@@ -74,12 +76,13 @@ public class SizeOf {
 	 * Compute an implementation-specific approximation of the amount of storage consumed by objectToSize and by all the
 	 * objects reachable from it
 	 *
-	 * @param objectToSize object whose size is to be approximated
+	 * @param objectToSize
+	 *            object whose size is to be approximated
 	 * @return an implementation-specific approximation of the amount of storage consumed by objectToSize and by all the
 	 *         objects reachable from it
 	 */
 	public static long deepSizeOf(Object objectToSize) {
-		Map<Object, Long> doneObj = new IdentityHashMap<Object, Long>();
+		Map<Object, Long> doneObj = new IdentityHashMap<>();
 		return deepSizeOf(objectToSize, doneObj, null, 0);
 	}
 
@@ -87,13 +90,15 @@ public class SizeOf {
 	 * Compute an implementation-specific approximation of the amount of storage consumed by objectToSize and by all the
 	 * objects reachable from it
 	 *
-	 * @param objectToSize object whose size is to be approximated
-	 * @param doneFields set of fields already computed (along with their sizes)
+	 * @param objectToSize
+	 *            object whose size is to be approximated
+	 * @param doneFields
+	 *            set of fields already computed (along with their sizes)
 	 * @return an implementation-specific approximation of the amount of storage consumed by objectToSize and by all the
 	 *         objects reachable from it
 	 */
 	public static long deepSizeOf(Object objectToSize, Map<Field, Long> doneFields) {
-		Map<Object, Long> doneObj = new IdentityHashMap<Object, Long>();
+		Map<Object, Long> doneObj = new IdentityHashMap<>();
 		return deepSizeOf(objectToSize, doneObj, doneFields, 0);
 	}
 
@@ -130,7 +135,9 @@ public class SizeOf {
 					if (isComputable(field)) {
 						long fSize = deepSizeOf(obj, doneObj, doneFields, depth + 1);
 						size += fSize;
-						if (doneFields != null) doneFields.put(field, fSize);
+						if (doneFields != null) {
+							doneFields.put(field, fSize);
+						}
 					}
 				}
 				clazz = clazz.getSuperclass();
@@ -140,24 +147,25 @@ public class SizeOf {
 		return size;
 	}
 
-
 	/**
 	 * Determines if the field is computable based on flags set for primitive, static and final fields.
 	 *
-	 * @param field to test
+	 * @param field
+	 *            to test
 	 * @return true if the field must be computed
 	 */
 	private static boolean isComputable(Field field) {
 		int modificatori = field.getModifiers();
 
-		if (field.getType().isPrimitive())
+		if (field.getType().isPrimitive()) {
 			return false;
-		else if (SKIP_STATIC_FIELD && Modifier.isStatic(modificatori))
+		} else if (SKIP_STATIC_FIELD && Modifier.isStatic(modificatori)) {
 			return false;
-		else if (SKIP_FINAL_FIELD && Modifier.isFinal(modificatori))
+		} else if (SKIP_FINAL_FIELD && Modifier.isFinal(modificatori)) {
 			return false;
-		else
+		} else {
 			return true;
+		}
 	}
 
 	/**
@@ -192,7 +200,8 @@ public class SizeOf {
 	/**
 	 * If true deepSizeOf() doesn't compute the final fields of an object. Default value is false.
 	 *
-	 * @param skip_final_field flag to skip final fields
+	 * @param skip_final_field
+	 *            flag to skip final fields
 	 */
 	public static void skipFinal(boolean skip_final_field) {
 		SKIP_FINAL_FIELD = skip_final_field;
@@ -201,7 +210,8 @@ public class SizeOf {
 	/**
 	 * If true deepSizeOf() doesn't compute the static fields of an object. Default value is false.
 	 *
-	 * @param skip_static_field flag to skip static fields
+	 * @param skip_static_field
+	 *            flag to skip static fields
 	 */
 	public static void skipStatic(boolean skip_static_field) {
 		SKIP_STATIC_FIELD = skip_static_field;
@@ -210,7 +220,8 @@ public class SizeOf {
 	/**
 	 * If true flyweight objects has a size of 0. Default value is false.
 	 *
-	 * @param skip flag to skip flyweight objects
+	 * @param skip
+	 *            flag to skip flyweight objects
 	 */
 	public static void skipFlyweight(boolean skip) {
 		SKIP_FLYWEIGHT_FIELD = skip;
