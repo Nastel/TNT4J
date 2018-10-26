@@ -93,7 +93,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
 	public void addRepositoryListener(TokenRepositoryListener listener) {
-		if (configName == null) {
+		if (configName == null || !isOpen()) {
 			return;
 		}
 		TokenConfigurationListener cfListener = new TokenConfigurationListener(listener, logger);
@@ -108,7 +108,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
 	public void removeRepositoryListener(TokenRepositoryListener listener) {
-		if (configName == null) {
+		if (configName == null || !isOpen()) {
 			return;
 		}
 		EventListener<?>[] pListeners = LISTEN_MAP.get(listener);
@@ -122,7 +122,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	@Override
 	public Object get(String key) {
 		try {
-			return config != null ? config.getConfiguration().getProperty(key) : null;
+			return isOpen() ? config.getConfiguration().getProperty(key) : null;
 		} catch (ConfigurationException exc) {
 			throw new ConfigurationRuntimeException("Failed to get configuration property", exc);
 		}
@@ -131,7 +131,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	@Override
 	public Iterator<? extends Object> getKeys() {
 		try {
-			return config != null ? config.getConfiguration().getKeys() : null;
+			return isOpen() ? config.getConfiguration().getKeys() : null;
 		} catch (ConfigurationException exc) {
 			throw new ConfigurationRuntimeException("Failed to get configuration properties key set", exc);
 		}
@@ -139,7 +139,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
 	public void remove(String key) {
-		if (config != null) {
+		if (isOpen()) {
 			try {
 				config.getConfiguration().clearProperty(key);
 			} catch (ConfigurationException exc) {
@@ -150,7 +150,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
 	public void set(String key, Object value) {
-		if (config != null) {
+		if (isOpen()) {
 			try {
 				config.getConfiguration().setProperty(key, value);
 			} catch (ConfigurationException exc) {
@@ -166,11 +166,12 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
 	public String toString() {
-		PropertiesConfiguration cfg;
+		PropertiesConfiguration cfg = null;
 		try {
-			cfg = config.getConfiguration();
+			if (isOpen()) {
+				cfg = config.getConfiguration();
+			}
 		} catch (ConfigurationException exc) {
-			cfg = null;
 		}
 		return super.toString() + "{url: " + getName() + ", delay: " + refDelay + ", config: " + cfg + "}";
 	}
@@ -246,7 +247,36 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	@Override
 	public void reopen() throws IOException {
 		close();
+		removeListenersFromClosed();
+
 		open();
+		addListenersToOpened();
+	}
+
+	private void removeListenersFromClosed() {
+		if (isOpen()) {
+			for (Map.Entry<TokenRepositoryListener, EventListener<?>[]> le : LISTEN_MAP.entrySet()) {
+				EventListener<?>[] pListeners = le.getValue();
+				if (pListeners != null) {
+					config.removeEventListener(ConfigurationEvent.ANY, (TokenConfigurationListener) pListeners[0]);
+					config.removeEventListener(ConfigurationErrorEvent.ANY,
+							(TokenConfigurationErrorListener) pListeners[1]);
+				}
+			}
+		}
+	}
+
+	private void addListenersToOpened() {
+		if (isOpen()) {
+			for (Map.Entry<TokenRepositoryListener, EventListener<?>[]> le : LISTEN_MAP.entrySet()) {
+				EventListener<?>[] pListeners = le.getValue();
+				if (pListeners != null) {
+					config.addEventListener(ConfigurationEvent.ANY, (TokenConfigurationListener) pListeners[0]);
+					config.addEventListener(ConfigurationErrorEvent.ANY,
+							(TokenConfigurationErrorListener) pListeners[1]);
+				}
+			}
+		}
 	}
 
 	@Override
