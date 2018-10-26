@@ -950,4 +950,40 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	public String toString(String pattern, TimeZone tz) {
 		return getTimeStamp(pattern, tz, msecs, usecs);
 	}
+
+	/**
+	 * Purpose of this method is to make this class compatible with Groovy script standard for number operator "plus"
+	 * {@code '+'} overloading. See <a href="http://groovy-lang.org/operators.html">Groovy operators spec</a> section
+	 * "Operator overloading".
+	 * <p>
+	 * Performs same as {@link #add(UsecTimestamp)}.
+	 *
+	 * @param other
+	 *            timestamp to add to current one
+	 * @return current UsecTimestamp instance
+	 *
+	 * @see #add(UsecTimestamp)
+	 */
+	public UsecTimestamp plus(UsecTimestamp other) {
+		add(other);
+
+		return this;
+	}
+
+	/**
+	 * Purpose of this method is to make this class compatible with Groovy script standard for number operator "minus"
+	 * {@code '-'} overloading. See <a href="http://groovy-lang.org/operators.html">Groovy operators spec</a> section
+	 * "Operator overloading".
+	 * <p>
+	 * Performs same as {@link #difference(UsecTimestamp)}.
+	 *
+	 * @param other
+	 *            other UsecTimestamp instance
+	 * @return difference, in microseconds, between two timestamps
+	 *
+	 * @see #difference(UsecTimestamp)
+	 */
+	public long minus(UsecTimestamp other) {
+		return difference(other);
+	}
 }
