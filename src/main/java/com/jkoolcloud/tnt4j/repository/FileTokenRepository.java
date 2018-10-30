@@ -59,8 +59,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 public class FileTokenRepository implements TokenRepository, Configurable {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(FileTokenRepository.class);
-	private static ConcurrentHashMap<TokenRepositoryListener, EventListener<?>[]> LISTEN_MAP = new ConcurrentHashMap<>(
-			49);
+	private static ConcurrentHashMap<TokenRepositoryListener, EventListener<?>[]> LISTEN_MAP = new ConcurrentHashMap<>(49);
 
 	private String configName = null;
 	private BasicConfigurationBuilder<PropertiesConfiguration> config = null;
@@ -221,14 +220,9 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 		if (refDelay > 0) {
 			params.setReloadingRefreshDelay(refDelay);
-
-			ReloadingFileBasedConfigurationBuilder<PropertiesConfiguration> builder = new ReloadingFileBasedConfigurationBuilder<>(
-					PropertiesConfiguration.class);
+			ReloadingFileBasedConfigurationBuilder<PropertiesConfiguration> builder = new ReloadingFileBasedConfigurationBuilder<>(PropertiesConfiguration.class);
 			builder.configure(params);
-
-			cfgReloadTrigger = new PeriodicReloadingTrigger(builder.getReloadingController(), null, refDelay,
-					TimeUnit.MILLISECONDS);
-
+			cfgReloadTrigger = new PeriodicReloadingTrigger(builder.getReloadingController(), null, refDelay, TimeUnit.MILLISECONDS);
 			config = builder;
 		} else {
 			config = new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class);

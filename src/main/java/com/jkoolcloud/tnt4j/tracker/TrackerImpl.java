@@ -106,7 +106,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			logger.log(OpLevel.ERROR,
 					"Failed to open handle={4}, vm.name={0}, tid={1}, event.sink={2}, source={3}, reason={5}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), handle,
-					Utils.getExceptionMessages(ioe));
+					Utils.getExceptionMessages(ioe), ioe);
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR, "Failed to open handle={4}, vm.name={0}, tid={1}, event.sink={2}, source={3}",
@@ -132,7 +132,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			logger.log(OpLevel.ERROR,
 					"Failed to open event sink vm.name={0}, tid={1}, event.sink={2}, source={3}, reason={4}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(),
-					Utils.getExceptionMessages(ioe));
+					Utils.getExceptionMessages(ioe), ioe);
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR, "Failed to open event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
@@ -161,7 +161,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			logger.log(OpLevel.ERROR,
 					"Failed to close event sink vm.name={0}, tid={1}, event.sink={2}, source={3}, reason={4}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(),
-					Utils.getExceptionMessages(ioe));
+					Utils.getExceptionMessages(ioe), ioe);
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR, "Failed to close event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
@@ -180,7 +180,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			logger.log(OpLevel.ERROR,
 					"Failed to reset event sink vm.name={0}, tid={1}, event.sink={2}, source={3}, reason={4}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(),
-					Utils.getExceptionMessages(ioe));
+					Utils.getExceptionMessages(ioe), ioe);
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR, "Failed to reset event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
