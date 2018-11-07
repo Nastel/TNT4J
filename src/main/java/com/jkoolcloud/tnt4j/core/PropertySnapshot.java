@@ -31,6 +31,7 @@ import com.jkoolcloud.tnt4j.source.Source;
 public class PropertySnapshot implements Snapshot {
 	public static final String CATEGORY_DEFAULT = "Default";
 
+	private String guid;
 	private long ttl = Operation.TTL_DEFAULT;
 	private OpLevel level;
 	private OpType opType = OpType.SNAPSHOT;
@@ -124,6 +125,16 @@ public class PropertySnapshot implements Snapshot {
 		level = lvl;
 		opType = type;
 		id = snapName + "@" + category;
+	}
+
+	@Override
+	public String getGUID() {
+		return guid;
+	}
+
+	@Override
+	public void setGUID(String uid) {
+		this.guid = uid;
 	}
 
 	/**

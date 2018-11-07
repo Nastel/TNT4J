@@ -137,6 +137,10 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		StringBuilder jsonString = new StringBuilder(1024);
 
 		jsonString.append(START_JSON);
+		if (!Utils.isEmpty(event.getGUID())) {
+			jsonString.append(JSON_GUID_LABEL).append(ATTR_SEP);
+			Utils.quote(event.getGUID(), jsonString).append(ATTR_JSON);
+		}
 		if (!Utils.isEmpty(event.getTrackingId())) {
 			jsonString.append(JSON_TRACK_ID_LABEL).append(ATTR_SEP);
 			Utils.quote(event.getTrackingId(), jsonString).append(ATTR_JSON);
@@ -295,6 +299,10 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		StringBuilder jsonString = new StringBuilder(1024);
 
 		jsonString.append(START_JSON);
+		if (!Utils.isEmpty(activity.getGUID())) {
+			jsonString.append(JSON_GUID_LABEL).append(ATTR_SEP);
+			Utils.quote(activity.getGUID(), jsonString).append(ATTR_JSON);
+		}
 		if (!Utils.isEmpty(activity.getTrackingId())) {
 			jsonString.append(JSON_TRACK_ID_LABEL).append(ATTR_SEP);
 			Utils.quote(activity.getTrackingId(), jsonString).append(ATTR_JSON);
@@ -424,6 +432,10 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		StringBuilder jsonString = new StringBuilder(1024);
 		jsonString.append(START_JSON);
 
+		if (!Utils.isEmpty(snap.getGUID())) {
+			jsonString.append(JSON_GUID_LABEL).append(ATTR_SEP);
+			Utils.quote(snap.getGUID(), jsonString).append(ATTR_JSON);
+		}
 		if (!Utils.isEmpty(snap.getTrackingId())) {
 			jsonString.append(JSON_TRACK_ID_LABEL).append(ATTR_SEP);
 			Utils.quote(snap.getTrackingId(), jsonString).append(ATTR_JSON);
@@ -451,8 +463,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			Utils.quote(escaped, jsonString).append(ATTR_JSON);
 		}
 		jsonString.append(JSON_COUNT_LABEL).append(ATTR_SEP).append(snap.size()).append(ATTR_JSON);
-		jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(snap.getTimeStamp().getTimeUsec())
-				.append(ATTR_JSON);
+		jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(snap.getTimeStamp().getTimeUsec()).append(ATTR_JSON);
 		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(snap.getTTL()).append(ATTR_JSON);
 
 		Source source = snap.getSource();

@@ -53,7 +53,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *
  * @version $Revision: 12 $
  */
-public class Operation implements TTL {
+public class Operation implements TTL, GlobalID {
 
 	/**
 	 * Noop operation name
@@ -67,6 +67,7 @@ public class Operation implements TTL {
 	private long tid;
 	private int opRC = 0;
 
+	private String guid; // unique id
 	private String opName;
 	private String resource;
 	private String user;
@@ -136,6 +137,26 @@ public class Operation implements TTL {
 		setPID(Utils.getVMPID());
 		setTID(Thread.currentThread().getId());
 		enableTiming = threadTiming;
+	}
+
+	/**
+	 * Gets globally unique identifier for this operation
+	 *
+	 * @return globally unique identifier for this operation
+	 */
+	public String getGUID() {
+		return guid;
+	}
+
+	/**
+	 * Sets the globally unique id for this operation
+	 * (optional)
+	 *
+	 * @param uid
+	 *            globally unique id
+	 */
+	public void setGUID(String uid) {
+		this.guid = uid;
 	}
 
 	/**
@@ -1113,6 +1134,9 @@ public class Operation implements TTL {
 		}
 		if ("Name".equalsIgnoreCase(fieldName)) {
 			return opName;
+		}
+		if ("Guid".equalsIgnoreCase(fieldName)) {
+			return guid;
 		}
 		if ("Resource".equalsIgnoreCase(fieldName)) {
 			return resource;
