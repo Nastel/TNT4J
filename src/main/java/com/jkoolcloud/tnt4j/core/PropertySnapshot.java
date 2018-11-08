@@ -486,6 +486,9 @@ public class PropertySnapshot implements Snapshot {
 		if ("PropertiesCount".equalsIgnoreCase(fieldName)) {
 			return propSet == null ? 0 : propSet.size();
 		}
+		if ("Guid".equalsIgnoreCase(fieldName)) {
+			return guid;
+		}
 
 		if (source != null) {
 			Object sfValue = source.getFieldValue(fieldName);
