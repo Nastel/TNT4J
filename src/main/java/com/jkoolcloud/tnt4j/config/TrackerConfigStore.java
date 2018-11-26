@@ -17,7 +17,10 @@ package com.jkoolcloud.tnt4j.config;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -107,10 +110,8 @@ import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
  * @see EventFormatter
  * @see EventSinkFactory
  *
- * @version $Revision: 11 $
- *
+ * @version $Revision: 12 $
  */
-
 public class TrackerConfigStore extends TrackerConfig {
 	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerConfigStore.class);
 
@@ -128,7 +129,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	private static final String IMPORT_KEY = "import";
 	private static final String IMPORT_PATH = "import.path";
 
-	private String configPath = System.getProperty(TNT4J_PROPERTIES_PATH_KEY, TNT4J_PROPERTIES_PATH);
+	private String configPath = System.getProperty(TNT4J_PROPERTIES_PATH_KEY);
 	private String configFile = null;
 	private Map<String, Properties> configMap = null;
 
@@ -283,12 +284,49 @@ public class TrackerConfigStore extends TrackerConfig {
 	 * @return configuration file name
 	 */
 	protected String getConfigFromPath(String path, String fileName) {
-		String cfgPath = (path == null ? configPath : path);
+		String cfgPath = (path == null ? getConfigPath() : path);
 		if (cfgPath == null) {
 			return fileName;
 		} else {
 			return cfgPath.endsWith(File.separator) ? (cfgPath + fileName) : (cfgPath + File.separator + fileName);
 		}
+	}
+
+	/**
+	 * Get configuration files root path.
+	 * <p>
+	 * Configuration files root path is one of:
+	 * <ul>
+	 * <li>system property {@value #TNT4J_PROPERTIES_PATH_KEY} defined value</li>
+	 * <li>if system property {@value #TNT4J_PROPERTIES_PATH_KEY} is not defined, then system property
+	 * {@value #TNT4J_PROPERTIES_KEY} defined configuration file parent path is used</li>
+	 * <li>if system property {@value #TNT4J_PROPERTIES_KEY} is not defined, {@value #TNT4J_PROPERTIES_PATH} path is
+	 * used</li>
+	 * </ul>
+	 * 
+	 * @return configuration files path
+	 */
+	protected String getConfigPath() {
+		if (configPath == null) {
+			if (configFile != null) {
+				try {
+					URL cfgFileURL = new URL(configFile);
+					URI cfgFileURI = cfgFileURL.toURI();
+					Path p = cfgFileURI.isOpaque() ? Paths.get(cfgFileURI.getSchemeSpecificPart())
+							: Paths.get(cfgFileURI);
+					p = p.getParent();
+					configPath = p == null ? null : p.toString();
+				} catch (Throwable exc) {
+					Path p = Paths.get(configFile);
+					p = p.getParent();
+					configPath = p == null ? null : p.toString();
+				}
+			} else {
+				configPath = TNT4J_PROPERTIES_PATH;
+			}
+		}
+
+		return configPath;
 	}
 
 	/**

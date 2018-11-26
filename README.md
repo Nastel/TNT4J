@@ -85,12 +85,17 @@ Default TNT4J binding is based on slf4j.
 
 ### TNT4J Stream Configuration
 TNT4J stream configuration is defined in `tnt4j.properties` which is located by specifying `tnt4j.config` java property (example 
-`-Dtnt4j.config=./config/tnt4j.properties`). 
+`-Dtnt4j.config=./config/tnt4j.properties`).
 
 In case TNT4J configuration is split to separate external configuration files, use `tnt4j.config.path` java property to define root path, 
 common for all these files (e.g. `-Dtnt4j.config.path=./config/`). Then `tnt4j.properties` file defined `import`s will be treated as 
 relative paths to java property `tnt4j.config.path` defined path (e.g. `import: tnt4j-common.properties` will be like 
-`./config/tnt4j-common.properties`)     
+`./config/tnt4j-common.properties`).
+
+By default common configuration files root path is resolved in following sequence:
+* defined using system property `tnt4j.config.path`
+* parent path of system property `tnt4j.config` defined configuration file
+* path defined by `./config` value
 
 This configuration file defines all event sources, target event sink bindings such as file, MQTT, Kafka, HTTPS etc as well stream specific 
 attributes. Here is example of a sample stream configuration:
@@ -123,6 +128,18 @@ attributes. Here is example of a sample stream configuration:
 	source: org
 	; import settings from com.myappl stanza
 	like: com.myappl
+}
+```
+**NOTE:** `import` token allows to define *absolute file path* or file path *relative to common configuration files root path*. If there are 
+files out of common configuration files root path scope, there is configuration token `import.path` allowing to define individual path for 
+`import` defined file within same stanza, e.g.:
+```properties
+; TNT4J Common Definitions
+{
+	; import common tnt4j logger definitions
+	source: common.base
+	import: tnt4j-common.properties
+	import.path: ../../personal-config/
 }
 ```
 
