@@ -118,7 +118,8 @@ public class TrackerConfigStore extends TrackerConfig {
 
 	public static final String TNT4J_PROPERTIES_KEY = "tnt4j.config";
 	public static final String TNT4J_PROPERTIES = "tnt4j.properties";
-	public static final String TNT4J_PROPERTIES_PATH = "tnt4j.config.path";
+	public static final String TNT4J_PROPERTIES_PATH = "./config";
+	public static final String TNT4J_PROPERTIES_PATH_KEY = "tnt4j.config.path";
 
 	private static final String DEFAULT_SOURCE = "*";
 	private static final String SOURCE_KEY = "source";
@@ -127,7 +128,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	private static final String IMPORT_KEY = "import";
 	private static final String IMPORT_PATH = "import.path";
 
-	private String configPath = System.getProperty(TNT4J_PROPERTIES_PATH);
+	private String configPath = System.getProperty(TNT4J_PROPERTIES_PATH_KEY, TNT4J_PROPERTIES_PATH);
 	private String configFile = null;
 	private Map<String, Properties> configMap = null;
 

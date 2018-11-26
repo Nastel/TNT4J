@@ -84,7 +84,16 @@ TNT4J can take advantage of other lower level logging frameworks such as slf4j, 
 Default TNT4J binding is based on slf4j.
 
 ### TNT4J Stream Configuration
-TNT4j stream configuration is defined in `tnt4j.properties` which is located by specifying `tnt4j.config` java property (example `-Dtnt4j.config=./config/tnt4j.properties`. This configuration file defines all event sources, target event sink bindings such as file, MQTT, Kafka, HTTPS etc as well stream specific attributes. Here is example of a sample stream configuration:
+TNT4J stream configuration is defined in `tnt4j.properties` which is located by specifying `tnt4j.config` java property (example 
+`-Dtnt4j.config=./config/tnt4j.properties`). 
+
+In case TNT4J configuration is split to separate external configuration files, use `tnt4j.config.path` java property to define root path, 
+common for all these files (e.g. `-Dtnt4j.config.path=./config`). Then `tnt4j.properties` file defined `import`s will be treated as relative 
+paths to java property `tnt4j.config.path` defined path (e.g. `import: tnt4j-common.properties` will be like 
+`./config/tnt4j-common.properties`)     
+
+This configuration file defines all event sources, target event sink bindings such as file, MQTT, Kafka, HTTPS etc as well stream specific 
+attributes. Here is example of a sample stream configuration:
 ```properties
 ; TNT4J Common Definitions
 {
@@ -552,7 +561,7 @@ TNT4J depends on the following external packages:
 
 To build TNT4J:
 *  Please use JCenter or Maven and these dependencies will be downloaded automatically. 
-*  You will need to point TNT4J to it's property file via the -Dtnt4j.config argument. This property file is located here in GitHub under 
+*  You will need to point TNT4J to it's property file via the `-Dtnt4j.config` argument. This property file is located here in GitHub under 
 the `/config` directory. If using JCenter or Maven, it can be found in the zip assembly along with the source code and javadoc.
 
 Known Projects Using TNT4J
