@@ -88,8 +88,8 @@ TNT4J stream configuration is defined in `tnt4j.properties` which is located by 
 `-Dtnt4j.config=./config/tnt4j.properties`). 
 
 In case TNT4J configuration is split to separate external configuration files, use `tnt4j.config.path` java property to define root path, 
-common for all these files (e.g. `-Dtnt4j.config.path=./config`). Then `tnt4j.properties` file defined `import`s will be treated as relative 
-paths to java property `tnt4j.config.path` defined path (e.g. `import: tnt4j-common.properties` will be like 
+common for all these files (e.g. `-Dtnt4j.config.path=./config/`). Then `tnt4j.properties` file defined `import`s will be treated as 
+relative paths to java property `tnt4j.config.path` defined path (e.g. `import: tnt4j-common.properties` will be like 
 `./config/tnt4j-common.properties`)     
 
 This configuration file defines all event sources, target event sink bindings such as file, MQTT, Kafka, HTTPS etc as well stream specific 

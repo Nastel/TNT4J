@@ -118,7 +118,7 @@ public class TrackerConfigStore extends TrackerConfig {
 
 	public static final String TNT4J_PROPERTIES_KEY = "tnt4j.config";
 	public static final String TNT4J_PROPERTIES = "tnt4j.properties";
-	public static final String TNT4J_PROPERTIES_PATH = "./config";
+	public static final String TNT4J_PROPERTIES_PATH = "./config/";
 	public static final String TNT4J_PROPERTIES_PATH_KEY = "tnt4j.config.path";
 
 	private static final String DEFAULT_SOURCE = "*";
