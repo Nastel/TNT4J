@@ -19,12 +19,11 @@ import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
+import java.net.*;
 import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
@@ -1171,7 +1170,6 @@ public class Utils {
 	 * @return configuration object
 	 * @throws ConfigException
 	 *             if error creating or applying configuration
-	 *
 	 */
 	public static Object createConfigurableObject(String classProp, String prefix, Map<String, ?> config)
 			throws ConfigException {
@@ -1696,5 +1694,45 @@ public class Utils {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Resolves parent path of provided string representation of {@code path}.
+	 * <p>
+	 * String representation of {@code path} can be URL, absolute or relative file path.
+	 * <p>
+	 * Returned parent path is normalized.
+	 *
+	 * @param path
+	 *            string representation of path
+	 * @return string representation of parent path, or {@code null} if {@code path} does not have a parent path
+	 *
+	 * @throws java.io.IOException
+	 */
+	public static String getParentPath(String path) throws IOException {
+		Throwable exc = null;
+		Path p = null;
+
+		try {
+			URI pathURI = new URL(path).toURI();
+			p = pathURI.isOpaque() ? Paths.get(pathURI.getSchemeSpecificPart()) : Paths.get(pathURI);
+		} catch (Throwable e) {
+			exc = e;
+		}
+
+		if (p == null) {
+			try {
+				p = Paths.get(path);
+			} catch (Throwable e) {
+				if (exc != null) {
+					e.initCause(exc);
+				}
+
+				throw new IOException("Failed to initiate path from: " + path, e);
+			}
+		}
+
+		p = p.getParent();
+		return p == null ? null : p.normalize().toString();
 	}
 }

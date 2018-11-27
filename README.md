@@ -130,9 +130,9 @@ attributes. Here is example of a sample stream configuration:
 	like: com.myappl
 }
 ```
-**NOTE:** `import` token allows to define *absolute file path* or file path *relative to common configuration files root path*. If there are 
-files out of common configuration files root path scope, there is configuration token `import.path` allowing to define individual path for 
-`import` defined file within same stanza, e.g.:
+**NOTE:** `import` property allows to define *absolute file path* or file path *relative to common configuration files root path*. If some 
+files are out of common configuration files root path scope, use configuration property `import.path`, allowing to define individual path 
+for `import` defined file within same stanza, e.g.:
 ```properties
 ; TNT4J Common Definitions
 {

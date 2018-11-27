@@ -17,10 +17,7 @@ package com.jkoolcloud.tnt4j.config;
 
 import java.io.*;
 import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -280,10 +277,12 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            configuration path (folder)
 	 * @param fileName
 	 *            configuration file name
-	 * 
 	 * @return configuration file name
+	 *
+	 * @throws IOException
+	 *             if I/O error occurs while accessing configuration file
 	 */
-	protected String getConfigFromPath(String path, String fileName) {
+	protected String getConfigFromPath(String path, String fileName) throws IOException {
 		String cfgPath = (path == null ? getConfigPath() : path);
 		if (cfgPath == null) {
 			return fileName;
@@ -305,22 +304,14 @@ public class TrackerConfigStore extends TrackerConfig {
 	 * </ul>
 	 * 
 	 * @return configuration files path
+	 *
+	 * @throws IOException
+	 *             if I/O error occurs while resolving parent path
 	 */
-	protected String getConfigPath() {
+	protected String getConfigPath() throws IOException {
 		if (configPath == null) {
 			if (configFile != null) {
-				try {
-					URL cfgFileURL = new URL(configFile);
-					URI cfgFileURI = cfgFileURL.toURI();
-					Path p = cfgFileURI.isOpaque() ? Paths.get(cfgFileURI.getSchemeSpecificPart())
-							: Paths.get(cfgFileURI);
-					p = p.getParent();
-					configPath = p == null ? null : p.toString();
-				} catch (Throwable exc) {
-					Path p = Paths.get(configFile);
-					p = p.getParent();
-					configPath = p == null ? null : p.toString();
-				}
+				configPath = Utils.getParentPath(configFile);
 			} else {
 				configPath = TNT4J_PROPERTIES_PATH;
 			}
@@ -512,6 +503,9 @@ public class TrackerConfigStore extends TrackerConfig {
 	 * @param fileName
 	 *            configuration file name
 	 * @return map of keys and associated properties
+	 *
+	 * @throws IOException
+	 *             if I/O error occurs accessing configuration resource
 	 */
 	private Map<String, Properties> loadConfigResource(String fileName) throws IOException {
 		return loadConfigResource(getConfigReader(fileName));
@@ -523,6 +517,9 @@ public class TrackerConfigStore extends TrackerConfig {
 	 * @param reader
 	 *            configuration reader
 	 * @return map of keys and associated properties
+	 *
+	 * @throws IOException
+	 *             if I/O error occurs while reading configuration
 	 */
 	private Map<String, Properties> loadConfigResource(BufferedReader reader) throws IOException {
 		Map<String, Properties> map = new LinkedHashMap<>(111);
@@ -578,7 +575,6 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            target configuration for merge
 	 * @param fromConfig
 	 *            source configuration for merge
-	 * 
 	 * @return merged configuration
 	 */
 	private Properties mergeConfig(String key, Properties toConfig, Properties fromConfig) {
@@ -599,7 +595,6 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            target configuration for merge
 	 * @param fromMap
 	 *            source configuration for merge
-	 * 
 	 * @return merged configuration
 	 */
 	private Properties copyConfig(String key, String like, Properties toConfig, Map<String, Properties> fromMap) {
@@ -622,8 +617,10 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *
 	 * @param url
 	 *            configuration URL
-	 * @throws IOException
 	 * @return reader associated with given URL
+	 *
+	 * @throws IOException
+	 *             if I/O error occurs accessing configuration file
 	 */
 	private BufferedReader getReaderFromURL(String url) throws IOException {
 		Reader rdr;
@@ -647,14 +644,15 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *
 	 * @param resName
 	 *            configuration resource name
-	 * @throws IOException
 	 * @return reader associated with given URL
+	 *
+	 * @throws IOException
+	 *             if resource not found or can't be accessed
 	 */
 	private BufferedReader getReaderFromResource(String resName) throws IOException {
 		InputStream ins = Utils.getResourceAsStream(TrackerConfigStore.class, resName);
 		if (ins == null) {
-			FileNotFoundException ioe = new FileNotFoundException("Resource '" + resName + "' not found");
-			throw ioe;
+			throw new FileNotFoundException("Resource '" + resName + "' not found");
 		}
 		return new BufferedReader(new InputStreamReader(ins));
 	}
@@ -664,8 +662,10 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *
 	 * @param resName
 	 *            configuration resource name
-	 * @throws IOException
 	 * @return reader associated with given URL
+	 *
+	 * @throws IOException
+	 *             if I/O error occurs accessing configuration resource
 	 */
 	private BufferedReader getConfigReader(String resName) throws IOException {
 		Throwable exc = null;
@@ -691,8 +691,10 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *
 	 * @param reader
 	 *            configuration reader
-	 * @throws IOException
 	 * @return properties associated with configuration
+	 *
+	 * @throws IOException
+	 *             if I/O error occurs reading configuration stanza lines
 	 */
 	private Properties readStanza(BufferedReader reader) throws IOException {
 		String line;
