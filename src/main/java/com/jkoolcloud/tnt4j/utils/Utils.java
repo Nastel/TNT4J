@@ -1707,7 +1707,7 @@ public class Utils {
 	 *            string representation of path
 	 * @return string representation of parent path, or {@code null} if {@code path} does not have a parent path
 	 *
-	 * @throws java.io.IOException
+	 * @throws java.io.IOException on error
 	 */
 	public static String getParentPath(String path) throws IOException {
 		Throwable exc = null;
