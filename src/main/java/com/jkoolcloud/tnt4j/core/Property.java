@@ -211,9 +211,9 @@ public class Property {
 		} else if (value instanceof UsecTimestamp) {
 			return "date.usec";
 		} else if (value instanceof BigInteger) {
-			return "long";
+			return "bint";
 		} else if (value instanceof BigDecimal) {
-			return "double";
+			return "bdec";
 		} else if (value != null) {
 			return value.getClass().getSimpleName();
 		} else {
