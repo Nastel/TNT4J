@@ -20,8 +20,8 @@ import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.*;
-import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -482,7 +482,7 @@ public class Utils {
 	 * @return ASCII encoder
 	 */
 	public static CharsetEncoder getAsciiEncoder() {
-		return Charset.forName(ASCII).newEncoder();
+		return StandardCharsets.US_ASCII.newEncoder();
 	}
 
 	/**
@@ -1707,7 +1707,9 @@ public class Utils {
 	 *            string representation of path
 	 * @return string representation of parent path, or {@code null} if {@code path} does not have a parent path
 	 *
-	 * @throws java.io.IOException on error
+	 * @throws java.io.IOException
+	 *             if the {@code path} defined URL is malformed or does not comply RFC2396 and cannot be converted to a
+	 *             URI; if the {@code path} string cannot be converted to a {@link Path}
 	 */
 	public static String getParentPath(String path) throws IOException {
 		Throwable exc = null;
