@@ -964,7 +964,7 @@ public class Utils {
 	public static String getExceptionMessages(Throwable ex) {
 		Throwable root = ExceptionUtils.getRootCause(ex);
 		String msgsStr = ex == null ? "" : ex.toString();
-		if (root != null) {
+		if (root != null && !root.equals(ex)) {
 			msgsStr += ", root cause: " + root.toString();
 		}
 
