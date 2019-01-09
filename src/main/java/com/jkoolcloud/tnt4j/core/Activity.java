@@ -47,7 +47,6 @@ import com.jkoolcloud.tnt4j.source.Source;
  */
 public class Activity extends Operation implements Trackable {
 	private Source appl;
-	private String tracking_id;
 	private String parentId;
 	private String sign;
 	private ActivityStatus status = ActivityStatus.BEGIN;
@@ -219,7 +218,7 @@ public class Activity extends Operation implements Trackable {
 	 */
 	@Override
 	public String getTrackingId() {
-		return tracking_id;
+		return this.getGUID();
 	}
 
 	/**
@@ -231,7 +230,7 @@ public class Activity extends Operation implements Trackable {
 	 */
 	@Override
 	public void setTrackingId(String id) {
-		this.tracking_id = id;
+		this.setGUID(id);
 	}
 
 	/**
@@ -349,7 +348,7 @@ public class Activity extends Operation implements Trackable {
 	 */
 	@Override
 	public int hashCode() {
-		return 31 + ((tracking_id == null) ? 0 : tracking_id.hashCode());
+		return 31 + ((getGUID() == null) ? 0 : getGUID().hashCode());
 	}
 
 	/**
@@ -369,11 +368,11 @@ public class Activity extends Operation implements Trackable {
 
 		Activity other = (Activity) obj;
 
-		if (tracking_id == null) {
-			if (other.tracking_id != null) {
+		if (getGUID() == null) {
+			if (other.getGUID() != null) {
 				return false;
 			}
-		} else if (!tracking_id.equals(other.tracking_id)) {
+		} else if (!getGUID().equals(other.getGUID())) {
 			return false;
 		}
 		return true;
@@ -437,7 +436,10 @@ public class Activity extends Operation implements Trackable {
 			return parentId;
 		}
 		if ("TrackingId".equalsIgnoreCase(fieldName)) {
-			return tracking_id;
+			return getGUID();
+		}
+		if ("Guid".equalsIgnoreCase(fieldName)) {
+			return getGUID();
 		}
 		if ("Status".equalsIgnoreCase(fieldName)) {
 			return status;
