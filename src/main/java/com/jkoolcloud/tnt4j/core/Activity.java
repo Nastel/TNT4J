@@ -430,27 +430,26 @@ public class Activity extends Operation implements Trackable {
 	@Override
 	public Object getFieldValue(String fieldName) {
 		if ("Source".equalsIgnoreCase(fieldName)) {
-			return appl;
+			return getSource();
 		}
 		if ("ParentId".equalsIgnoreCase(fieldName)) {
-			return parentId;
+			return getParentId();
 		}
 		if ("TrackingId".equalsIgnoreCase(fieldName)) {
-			return getGUID();
+			return getTrackingId();
 		}
 		if ("Guid".equalsIgnoreCase(fieldName)) {
 			return getGUID();
 		}
 		if ("Status".equalsIgnoreCase(fieldName)) {
-			return status;
+			return getStatus();
 		}
 		if ("Signature".equalsIgnoreCase(fieldName)) {
-			return sign;
+			return getSignature();
 		}
 		if ("Ids".equalsIgnoreCase(fieldName)) {
-			return idset;
+			return getIds();
 		}
-
 		return super.getFieldValue(fieldName);
 	}
 
