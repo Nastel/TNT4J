@@ -144,17 +144,18 @@ public class Operation implements TTL, GlobalID {
 	 *
 	 * @return globally unique identifier for this operation
 	 */
+	@Override
 	public String getGUID() {
 		return guid;
 	}
 
 	/**
-	 * Sets the globally unique id for this operation
-	 * (optional)
+	 * Sets the globally unique id for this operation (optional)
 	 *
 	 * @param uid
 	 *            globally unique id
 	 */
+	@Override
 	public void setGUID(String uid) {
 		this.guid = uid;
 	}
@@ -937,18 +938,26 @@ public class Operation implements TTL, GlobalID {
 		UsecTimestamp eTime = getEndTime();
 		StringBuilder str = new StringBuilder();
 
-		str.append(getClass().getSimpleName()).append("{").append("Name:").append(getName()).append(",").append("Type:")
-				.append(type == null ? "null" : type.toString()).append(",").append("Correlator:")
-				.append(getCorrelator()).append(",").append("Location:").append(getLocation()).append(",")
-				.append("Resource:").append(res == null ? "null" : res).append(",").append("User:").append(getUser())
-				.append(",").append("SnapCount=").append(getSnapshotCount()).append(",").append("PropCount=")
-				.append(getPropertyCount()).append(",").append("CompCode:").append(getCompCode()).append(",")
-				.append("ReasonCode:").append(getReasonCode()).append(",").append("PID:").append(getPID()).append(",")
-				.append("TID:").append(getTID()).append(",").append("ElapsedUsec:").append(getElapsedTimeUsec())
-				.append(",").append("WaitUsec:").append(getWaitTimeUsec()).append(",").append("WallUsec:")
-				.append(getWallTimeUsec()).append(",").append("StartTime:[").append(sTime.toString()).append("],")
-				.append("EndTime:[").append(eTime.toString()).append("],").append("Exception:")
-				.append(getExceptionString()).append("}");
+		str.append(getClass().getSimpleName()).append("{")
+				.append("Name:").append(getName()).append(",")
+				.append("Guid:").append(getGUID ()).append(",")
+				.append("Type:").append(type == null ? "null" : type.toString()).append(",")
+				.append("Correlator:").append(getCorrelator()).append(",")
+				.append("Location:").append(getLocation()).append(",")
+				.append("Resource:").append(res == null ? "null" : res).append(",")
+				.append("User:").append(getUser()).append(",")
+				.append("SnapCount=").append(getSnapshotCount()).append(",")
+				.append("PropCount=").append(getPropertyCount()).append(",")
+				.append("CompCode:").append(getCompCode()).append(",")
+				.append("ReasonCode:").append(getReasonCode()).append(",")
+				.append("PID:").append(getPID()).append(",")
+				.append("TID:").append(getTID()).append(",")
+				.append("ElapsedUsec:").append(getElapsedTimeUsec()).append(",")
+				.append("WaitUsec:").append(getWaitTimeUsec()).append(",")
+				.append("WallUsec:").append(getWallTimeUsec()).append(",")
+				.append("StartTime:[").append(sTime.toString()).append("],")
+				.append("EndTime:[").append(eTime.toString()).append("],")
+				.append("Exception:").append(getExceptionString()).append("}");
 
 		return str.toString();
 	}
@@ -1073,6 +1082,7 @@ public class Operation implements TTL, GlobalID {
 	 * <li>PID</li>
 	 * <li>TID</li>
 	 * <li>ReasonCode</li>
+	 * <li>Guid</li>
 	 * <li>Name</li>
 	 * <li>Resource</li>
 	 * <li>User</li>
@@ -1132,11 +1142,11 @@ public class Operation implements TTL, GlobalID {
 		if ("ReasonCode".equalsIgnoreCase(fieldName)) {
 			return opRC;
 		}
-		if ("Name".equalsIgnoreCase(fieldName)) {
-			return opName;
-		}
 		if ("Guid".equalsIgnoreCase(fieldName)) {
 			return guid;
+		}
+		if ("Name".equalsIgnoreCase(fieldName)) {
+			return opName;
 		}
 		if ("Resource".equalsIgnoreCase(fieldName)) {
 			return resource;

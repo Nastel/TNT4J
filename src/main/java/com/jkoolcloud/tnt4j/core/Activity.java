@@ -393,6 +393,7 @@ public class Activity extends Operation implements Trackable {
 			.append("Name:").append(getName()).append(",")
 			.append("ParentId:").append(parentId != null? parentId: "root").append(",")
 			.append("TrackId:").append(getTrackingId()).append(",")
+			.append("Guid:").append(getGUID()).append(",")
 			.append("Status:").append(Status == null ? "null" : Status.toString()).append(",")
 			.append("Type:").append(sType == null ? "null" : sType.toString()).append(",")
 			.append("PID:").append(getPID()).append(",")
@@ -416,6 +417,7 @@ public class Activity extends Operation implements Trackable {
 	 * <li>Source</li>
 	 * <li>ParentId</li>
 	 * <li>TrackingId</li>
+	 * <li>Guid</li>
 	 * <li>Status</li>
 	 * <li>Signature</li>
 	 * <li>Ids</li>

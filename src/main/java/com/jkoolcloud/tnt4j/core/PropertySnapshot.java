@@ -280,7 +280,8 @@ public class PropertySnapshot implements Snapshot {
 	public String toString() {
 		StringBuilder str = new StringBuilder(512);
 		str.append(this.getClass().getSimpleName()).append("{Category: " + category + ", Name: " + snapName)
-				.append(", TimeStamp: ").append(timeStamp).append(", Count: " + this.size()).append(", List: [");
+				.append(", Guid: ").append(guid).append(", TimeStamp: ").append(timeStamp)
+				.append(", Count: " + this.size()).append(", List: [");
 		for (Property item : propSet.values()) {
 			str.append(item);
 		}
@@ -428,6 +429,7 @@ public class PropertySnapshot implements Snapshot {
 	 * <li>Category</li>
 	 * <li>Id</li>
 	 * <li>Signature</li>
+	 * <li>Guid</li>
 	 * <li>Source</li>
 	 * <li>Timestamp</li>
 	 * <li>TTL</li>
@@ -465,6 +467,9 @@ public class PropertySnapshot implements Snapshot {
 		if ("Signature".equalsIgnoreCase(fieldName)) {
 			return sign;
 		}
+		if ("Guid".equalsIgnoreCase(fieldName)) {
+			return guid;
+		}
 		if ("Source".equalsIgnoreCase(fieldName)) {
 			return source;
 		}
@@ -485,9 +490,6 @@ public class PropertySnapshot implements Snapshot {
 		}
 		if ("PropertiesCount".equalsIgnoreCase(fieldName)) {
 			return propSet == null ? 0 : propSet.size();
-		}
-		if ("Guid".equalsIgnoreCase(fieldName)) {
-			return guid;
 		}
 
 		if (source != null) {
