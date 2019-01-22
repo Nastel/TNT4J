@@ -77,7 +77,7 @@ public class Operation implements TTL, GlobalID {
 	private OpType opType;
 	private OpCompCode opCC = OpCompCode.SUCCESS;
 	private OpLevel opLevel = OpLevel.INFO;
-	private long ttlSec = Trackable.TTL_DEFAULT; // 0 is default time to live
+	private long ttlSec = TTL.TTL_DEFAULT; // 0 is default time to live
 	private long startTimeUs;
 	private long endTimeUs;
 	private Throwable exHandle;
@@ -940,7 +940,7 @@ public class Operation implements TTL, GlobalID {
 
 		str.append(getClass().getSimpleName()).append("{")
 				.append("Name:").append(getName()).append(",")
-				.append("Guid:").append(getGUID ()).append(",")
+				.append("Guid:").append(getGUID()).append(",")
 				.append("Type:").append(type == null ? "null" : type.toString()).append(",")
 				.append("Correlator:").append(getCorrelator()).append(",")
 				.append("Location:").append(getLocation()).append(",")

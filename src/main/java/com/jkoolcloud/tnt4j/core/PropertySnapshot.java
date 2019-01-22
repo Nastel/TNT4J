@@ -32,7 +32,7 @@ public class PropertySnapshot implements Snapshot {
 	public static final String CATEGORY_DEFAULT = "Default";
 
 	private String guid;
-	private long ttl = Operation.TTL_DEFAULT;
+	private long ttl = TTL.TTL_DEFAULT;
 	private OpLevel level;
 	private OpType opType = OpType.SNAPSHOT;
 	private String id = null;
