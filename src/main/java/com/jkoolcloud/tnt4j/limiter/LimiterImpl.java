@@ -41,14 +41,25 @@ public class LimiterImpl implements Limiter {
 	AtomicDouble lastDelaySec = new AtomicDouble(0);
 	AtomicLong lastAccessTime = new AtomicLong(System.nanoTime());
 
-	RateLimiter bpsLimiter =  RateLimiter.create(MAX_RATE);
-	RateLimiter mpsLimiter =  RateLimiter.create(MAX_RATE);
+	RateLimiter bpsLimiter = RateLimiter.create(MAX_RATE);
+	RateLimiter mpsLimiter = RateLimiter.create(MAX_RATE);
 
+	/**
+	 * Create a a limiter with specified rate limits
+	 *
+	 * @param maxMps max messages per second (0 -- no limit)
+	 * @param maxBps max bytes per second (0 -- no limit)
+	 * @param enabled true to enable limits, false otherwise
+	 */
 	public LimiterImpl(double maxMps, double maxBps, boolean enabled) {
 		setLimits(maxMps, maxBps);
 		setEnabled(enabled);
 	}
 
+	/**
+	 * Access limiter and reset counters if needed
+	 *
+	 */
 	protected void accessLimiter() {
 		long accessTime = System.nanoTime();
 		if (isEnabled() && (timeSinceLastReset(accessTime) > idleReset)) {
@@ -63,7 +74,14 @@ public class LimiterImpl implements Limiter {
 			lastAccessTime.compareAndSet(prev, accessTime);
 	}	
 
+	/**
+	 * Count the number of messages and bytes
+	 *
+	 * @param msgs message count
+	 * @param bytes byte count
+	 */
 	protected void count(int msgs, int bytes) {
+		accessLimiter();
 		if (bytes > 0) {
 			totalByteCount.addAndGet(bytes);
 		}
@@ -72,6 +90,12 @@ public class LimiterImpl implements Limiter {
 		}
 	}
 
+	/**
+	 * Count time since last limiter access in ms
+	 *
+	 * @param accessTimeNanos time counter in nanoseconds
+	 * @return number of ms since last access
+	 */
 	protected long timeSinceLastReset(long accessTimeNanos) {
 		return TimeUnit.NANOSECONDS.toMillis(accessTimeNanos - lastAccessTime.get());		
 	}	
@@ -89,29 +113,29 @@ public class LimiterImpl implements Limiter {
 
 	@Override
     public double getMaxMPS() {
-	    return mpsLimiter.getRate();
+	    return mpsLimiter.getRate() == MAX_RATE? 0: mpsLimiter.getRate();
     }
 
 	@Override
     public double getMaxBPS() {
-	    return bpsLimiter.getRate();
+	    return bpsLimiter.getRate() == MAX_RATE? 0: bpsLimiter.getRate();
     }
 
 	@Override
     public Limiter setLimits(double maxMps, double maxBps) {
-		mpsLimiter.setRate(maxMps <= 0.0D ? MAX_RATE : maxMps);
-		bpsLimiter.setRate(maxBps <= 0.0D ? MAX_RATE : maxBps);
+		mpsLimiter.setRate(maxMps <= UNLIMITED_RATE ? MAX_RATE : maxMps);
+		bpsLimiter.setRate(maxBps <= UNLIMITED_RATE ? MAX_RATE : maxBps);
 		return this;
     }
 
 	@Override
     public double getMPS() {
-		return totalMsgCount.get() * 1000.0 / getAge();
+		return (totalMsgCount.get() * 1000.0) / getAge();
     }
 
 	@Override
     public double getBPS() {
-		return totalByteCount.get() * 1000.0 / getAge();
+		return (totalByteCount.get() * 1000.0) / getAge();
     }
 
 	@Override
@@ -134,29 +158,32 @@ public class LimiterImpl implements Limiter {
     }
 
 	@Override
-    public boolean tryObtain(int msgs, int bytes, long timeout, TimeUnit unit) {
-		accessLimiter();
+	public boolean tryObtain(int msgs, int bytes, long timeout, TimeUnit unit) {
 		count(msgs, bytes);
-		if (!doLimit || (msgs == 0 && bytes == 0)) {
-			return true;
-		}
-
 		boolean permit = true;
-		if (bytes > 0) {
-			permit = bpsLimiter.tryAcquire(bytes, timeout, unit);
+		try {
+			if (!isEnabled() || (msgs == 0 && bytes == 0)) {
+				return true;
+			}
+			if (bytes > 0) {
+				permit = bpsLimiter.tryAcquire(bytes, timeout, unit);
+			}
+			if (msgs > 0 && !permit) {
+				permit = permit || mpsLimiter.tryAcquire(msgs, timeout, unit);
+			} else if (msgs > 0) {
+				mpsLimiter.tryAcquire(msgs);
+			}
+			return permit;
+		} finally {
+			if (!permit) {
+				totalDenyCount.incrementAndGet();
+			}
 		}
-		if (msgs > 0 && !permit) {
-			permit = permit && mpsLimiter.tryAcquire(msgs, timeout, unit);
-		}
-		if (!permit) {
-			totalDenyCount.incrementAndGet();
-		}
-		return permit;
 	}
 
 	@Override
 	public double obtain(int msgs, int bytes) {
-		accessLimiter();
+		count(msgs, bytes);
 		double delayTimeSec = 0;
 		try {
 			if (!isEnabled() || (msgs == 0 && bytes == 0)) {
@@ -169,7 +196,6 @@ public class LimiterImpl implements Limiter {
 				mpsLimiter.tryAcquire(msgs);
 			}
 		} finally {
-			count(msgs, bytes);
 			if (delayTimeSec > 0) {
 				lastDelaySec.set(delayTimeSec);
 				totalDelayTimeSec.addAndGet(delayTimeSec);
