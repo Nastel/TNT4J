@@ -32,10 +32,10 @@ public class LimiterImpl implements Limiter {
 	long start = System.currentTimeMillis();
 	long idleReset = 0L;	// time between limiter accesses before resetting (0 implies no idle reset)
 
-	AtomicLong byteCount = new AtomicLong(0);
-	AtomicLong msgCount = new AtomicLong(0);
-	AtomicLong delayCount = new AtomicLong(0);
-	AtomicLong denyCount = new AtomicLong(0);
+	AtomicLong totalByteCount = new AtomicLong(0);
+	AtomicLong totalMsgCount = new AtomicLong(0);
+	AtomicLong totalDelayCount = new AtomicLong(0);
+	AtomicLong totalDenyCount = new AtomicLong(0);
 
 	AtomicDouble totalDelayTimeSec = new AtomicDouble(0);
 	AtomicDouble lastDelaySec = new AtomicDouble(0);
@@ -48,6 +48,33 @@ public class LimiterImpl implements Limiter {
 		setLimits(maxMps, maxBps);
 		setEnabled(enabled);
 	}
+
+	protected void accessLimiter() {
+		long accessTime = System.nanoTime();
+		if (isEnabled() && (timeSinceLastReset(accessTime) > idleReset)) {
+			synchronized (this) {
+				if (timeSinceLastReset(accessTime) > idleReset) {
+					reset();				
+				}
+			}
+		}
+		long prev = lastAccessTime.get();
+		if (accessTime > prev)
+			lastAccessTime.compareAndSet(prev, accessTime);
+	}	
+
+	protected void count(int msgs, int bytes) {
+		if (bytes > 0) {
+			totalByteCount.addAndGet(bytes);
+		}
+		if (msgs > 0) {
+			totalMsgCount.addAndGet(msgs);
+		}
+	}
+
+	protected long timeSinceLastReset(long accessTimeNanos) {
+		return TimeUnit.NANOSECONDS.toMillis(accessTimeNanos - lastAccessTime.get());		
+	}	
 
 	@Override
 	public long getIdleReset() {
@@ -79,12 +106,12 @@ public class LimiterImpl implements Limiter {
 
 	@Override
     public double getMPS() {
-		return msgCount.get() * 1000.0 / getAge();
+		return totalMsgCount.get() * 1000.0 / getAge();
     }
 
 	@Override
     public double getBPS() {
-		return byteCount.get() * 1000.0 / getAge();
+		return totalByteCount.get() * 1000.0 / getAge();
     }
 
 	@Override
@@ -122,7 +149,7 @@ public class LimiterImpl implements Limiter {
 			permit = permit && mpsLimiter.tryAcquire(msgs, timeout, unit);
 		}
 		if (!permit) {
-			denyCount.incrementAndGet();
+			totalDenyCount.incrementAndGet();
 		}
 		return permit;
 	}
@@ -139,52 +166,25 @@ public class LimiterImpl implements Limiter {
 			if (delayTimeSec == 0) {
 				delayTimeSec += (msgs > 0 ? mpsLimiter.acquire(msgs) : 0);
 			} else {
-				mpsLimiter.tryAcquire(msgs, 0, TimeUnit.MILLISECONDS);
+				mpsLimiter.tryAcquire(msgs);
 			}
 		} finally {
 			count(msgs, bytes);
 			if (delayTimeSec > 0) {
 				lastDelaySec.set(delayTimeSec);
 				totalDelayTimeSec.addAndGet(delayTimeSec);
-				delayCount.incrementAndGet();
+				totalDelayCount.incrementAndGet();
 			}
 		}
 		return delayTimeSec;
 	}
 
-	protected void count(int msgs, int bytes) {
-		if (bytes > 0) {
-			byteCount.addAndGet(bytes);
-		}
-		if (msgs > 0) {
-			msgCount.addAndGet(msgs);
-		}
-	}
-
-	protected long timeSinceLastReset(long accessTime) {
-		return TimeUnit.NANOSECONDS.toMillis(accessTime - lastAccessTime.get());		
-	}
-	
-	protected void accessLimiter() {
-		long accessTime = System.nanoTime();
-		if (isEnabled() && (timeSinceLastReset(accessTime) > idleReset)) {
-			synchronized (this) {
-				if (timeSinceLastReset(accessTime) > idleReset) {
-					reset();				
-				}
-			}
-		}
-		long prev = lastAccessTime.get();
-		if (accessTime > prev)
-			lastAccessTime.compareAndSet(prev, accessTime);
-	}
-
 	@Override
     public Limiter reset() {
-		byteCount.set(0);
-		msgCount.set(0);
+		totalByteCount.set(0);
+		totalMsgCount.set(0);
 		totalDelayTimeSec.set(0);
-		delayCount.set(0);
+		totalDelayCount.set(0);
 		start = System.currentTimeMillis();
 		return this;
 	}
@@ -201,12 +201,12 @@ public class LimiterImpl implements Limiter {
 
 	@Override
     public long getTotalBytes() {
-	    return byteCount.get();
+	    return totalByteCount.get();
     }
 
 	@Override
     public long getTotalMsgs() {
-	    return msgCount.get();
+	    return totalMsgCount.get();
     }
 
 	@Override
@@ -221,16 +221,16 @@ public class LimiterImpl implements Limiter {
 
 	@Override
     public long getDelayCount() {
-	    return delayCount.get();
+	    return totalDelayCount.get();
     }
 
 	@Override
     public long getDenyCount() {
-	    return denyCount.get();
+	    return totalDenyCount.get();
     }
 
 	@Override
 	public long getTimeSinceLastAccess() {
-		return TimeUnit.NANOSECONDS.toMillis(System.nanoTime() - lastAccessTime.get());		
-	}
+		return timeSinceLastReset(System.nanoTime());		
+	}	
 }
