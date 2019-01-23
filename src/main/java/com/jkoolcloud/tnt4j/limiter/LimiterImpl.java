@@ -130,31 +130,23 @@ public class LimiterImpl implements Limiter {
 	@Override
 	public double obtain(int msgs, int bytes) {
 		accessLimiter();
-		count(msgs, bytes);
-		if (!doLimit || (msgs == 0 && bytes == 0)) {
-			return 0;
-		}
-
-		double elapsedSecByBps = 0;
-		double elapsedSecByMps = 0;
 		double delayTimeSec = 0;
-		int delayCounter = 0;
-
 		try {
-			elapsedSecByBps = bytes > 0 ? bpsLimiter.acquire(bytes) : 0;
-			if (elapsedSecByBps > 0) {
-				delayCounter++;
+			if (!isEnabled() || (msgs == 0 && bytes == 0)) {
+				return 0;
+			}
+			delayTimeSec = bytes > 0 ? bpsLimiter.acquire(bytes) : 0;
+			if (delayTimeSec == 0) {
+				delayTimeSec += (msgs > 0 ? mpsLimiter.acquire(msgs) : 0);
 			} else {
-				elapsedSecByMps = msgs > 0 ? mpsLimiter.acquire(msgs) : 0;
-				if (elapsedSecByMps > 0)
-					delayCounter++;
+				mpsLimiter.tryAcquire(msgs, 0, TimeUnit.MILLISECONDS);
 			}
 		} finally {
-			delayTimeSec = elapsedSecByBps + elapsedSecByMps;
+			count(msgs, bytes);
 			if (delayTimeSec > 0) {
 				lastDelaySec.set(delayTimeSec);
 				totalDelayTimeSec.addAndGet(delayTimeSec);
-				delayCount.addAndGet(delayCounter);
+				delayCount.incrementAndGet();
 			}
 		}
 		return delayTimeSec;
@@ -175,7 +167,7 @@ public class LimiterImpl implements Limiter {
 	
 	protected void accessLimiter() {
 		long accessTime = System.nanoTime();
-		if (timeSinceLastReset(accessTime) > idleReset) {
+		if (isEnabled() && (timeSinceLastReset(accessTime) > idleReset)) {
 			synchronized (this) {
 				if (timeSinceLastReset(accessTime) > idleReset) {
 					reset();				
