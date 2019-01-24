@@ -42,7 +42,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <product.vendor>jKool, LLC</product.vendor>
 
-        <project.java.version>1.7</project.java.version>
+        <project.java.version>1.8</project.java.version>
         <java.source.version>${project.java.version}</java.source.version>
         <java.target.version>${project.java.version}</java.target.version>
         <java.compiler.version>${project.java.version}</java.compiler.version>
