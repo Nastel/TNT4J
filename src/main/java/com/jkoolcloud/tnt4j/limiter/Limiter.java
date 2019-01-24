@@ -24,6 +24,7 @@ import java.util.concurrent.TimeUnit;
  * @version $Revision: 1 $
  */
 public interface Limiter {
+	double UNLIMITED_RATE = 0;
 	double MAX_RATE = Double.MAX_VALUE;
 
 	/**
