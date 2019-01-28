@@ -188,7 +188,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 	}
 
-	private void reportActivity(TrackingActivity activity) throws IOException, URISyntaxException {
+	private void _repotItem(TrackingActivity activity) throws IOException, URISyntaxException {
 		try {
 			if (!eventSink.isOpen()) {
 				eventSink.open();
@@ -203,7 +203,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 	}
 
-	private void reportEvent(TrackingEvent event) throws IOException, URISyntaxException {
+	private void _repotItem(TrackingEvent event) throws IOException, URISyntaxException {
 		try {
 			if (!eventSink.isOpen()) {
 				eventSink.open();
@@ -214,6 +214,17 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			}
 			eventSink.log(event);
 			eventCount.incrementAndGet();
+		}
+	}
+
+	private void _repotItem(Snapshot snap) throws IOException, URISyntaxException {
+		try {
+			if (!eventSink.isOpen()) {
+				eventSink.open();
+			}
+		} finally {
+			eventSink.log(snap);
+			snapCount.incrementAndGet();
 		}
 	}
 
@@ -452,7 +463,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		long start = System.nanoTime();
 		try {
 			if (!activity.isNoop()) {
-				reportActivity(activity);
+				_repotItem(activity);
 			} else {
 				noopCount.incrementAndGet();
 			}
@@ -473,7 +484,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		long start = System.nanoTime();
 		try {
 			if (!event.isNoop()) {
-				reportEvent(event);
+				_repotItem(event);
 			} else {
 				noopCount.incrementAndGet();
 			}
@@ -492,8 +503,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public void tnt(Snapshot snapshot) {
 		long start = System.nanoTime();
 		try {
-			eventSink.log(snapshot);
-			snapCount.incrementAndGet();
+			_repotItem(snapshot);
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
 			if (logger.isSet(OpLevel.DEBUG)) {

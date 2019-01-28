@@ -56,16 +56,16 @@ public class NullEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public void open() throws IOException {
-	}
-
-	@Override
 	public boolean isOpen() {
 		return true;
 	}
 
 	@Override
-	public void close() throws IOException {
+	protected void _open() throws IOException {
+	}
+
+	@Override
+	protected void _close() throws IOException {
 	}
 
 	@Override
