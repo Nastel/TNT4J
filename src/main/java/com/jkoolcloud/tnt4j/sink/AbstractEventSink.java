@@ -605,7 +605,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 *             if sink is in wrong state
 	 */
 	public static void checkState(EventSink sink) throws IllegalStateException {
-		if (sink == null || !sink.isOpen()) {
+		if (!Utils.isOpen(sink)) {
 			throw new IllegalStateException("Sink closed or unavailable: sink=" + sink);
 		}
 	}

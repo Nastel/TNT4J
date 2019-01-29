@@ -188,33 +188,33 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 	}
 
-	private void reportActivity(TrackingActivity activity) throws IOException, URISyntaxException {
-		try {
-			if (!eventSink.isOpen()) {
-				eventSink.open();
-			}
-		} finally {
-			if (!activity.isStopped()) {
-				activity.stop();
-			}
-			eventSink.log(activity);
-			snapCount.addAndGet(activity.getSnapshotCount());
-			activityCount.incrementAndGet();
+	private void checkSinkState() throws IOException, URISyntaxException {
+		if (!eventSink.isOpen()) {
+			eventSink.open();
 		}
 	}
 
-	private void reportEvent(TrackingEvent event) throws IOException, URISyntaxException {
-		try {
-			if (!eventSink.isOpen()) {
-				eventSink.open();
-			}
-		} finally {
-			if (!event.isStopped()) {
-				event.stop();
-			}
-			eventSink.log(event);
-			eventCount.incrementAndGet();
+	private void reportActivity(TrackingActivity activity) throws IOException, URISyntaxException {
+		if (!activity.isStopped()) {
+			activity.stop();
 		}
+
+		checkSinkState();
+
+		eventSink.log(activity);
+		snapCount.addAndGet(activity.getSnapshotCount());
+		activityCount.incrementAndGet();
+	}
+
+	private void reportEvent(TrackingEvent event) throws IOException, URISyntaxException {
+		if (!event.isStopped()) {
+			event.stop();
+		}
+
+		checkSinkState();
+
+		eventSink.log(event);
+		eventCount.incrementAndGet();
 	}
 
 	private boolean isTrackingEnabled(OpLevel level, Object... args) {
@@ -451,10 +451,10 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public void tnt(TrackingActivity activity) {
 		long start = System.nanoTime();
 		try {
-			if (!activity.isNoop()) {
-				reportActivity(activity);
-			} else {
+			if (activity.isNoop()) {
 				noopCount.incrementAndGet();
+			} else {
+				reportActivity(activity);
 			}
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
@@ -472,10 +472,10 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public void tnt(TrackingEvent event) {
 		long start = System.nanoTime();
 		try {
-			if (!event.isNoop()) {
-				reportEvent(event);
-			} else {
+			if (event.isNoop()) {
 				noopCount.incrementAndGet();
+			} else {
+				reportEvent(event);
 			}
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
@@ -492,6 +492,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public void tnt(Snapshot snapshot) {
 		long start = System.nanoTime();
 		try {
+			checkSinkState();
 			eventSink.log(snapshot);
 			snapCount.incrementAndGet();
 		} catch (Throwable ex) {
@@ -510,6 +511,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public void log(OpLevel sev, String msg, Object... args) {
 		long start = System.nanoTime();
 		try {
+			checkSinkState();
 			eventSink.log(eventSink.getTTL(), getSource(), sev, msg, args);
 			msgCount.incrementAndGet();
 		} catch (Throwable ex) {
@@ -688,7 +690,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public boolean isOpen() {
-		return eventSink != null && eventSink.isOpen();
+		return Utils.isOpen(eventSink);
 	}
 
 	@Override
