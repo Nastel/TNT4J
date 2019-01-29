@@ -72,12 +72,12 @@ public class FileEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public void open() throws IOException {
+	protected void _open() throws IOException {
 		fileSink.open();
 	}
 
 	@Override
-	public void close() throws IOException {
+	protected void _close() throws IOException {
 		fileSink.close();
 	}
 

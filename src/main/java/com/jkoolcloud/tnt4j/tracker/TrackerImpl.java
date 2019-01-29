@@ -188,13 +188,13 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 	}
 
-	private void checkSinkState() throws IOException, URISyntaxException {
+    private void checkSinkState() throws IOException, URISyntaxException {
 		if (!eventSink.isOpen()) {
 			eventSink.open();
 		}
 	}
 
-	private void reportActivity(TrackingActivity activity) throws IOException, URISyntaxException {
+	private void _repotItem(TrackingActivity activity) throws IOException, URISyntaxException {
 		if (!activity.isStopped()) {
 			activity.stop();
 		}
@@ -206,7 +206,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		activityCount.incrementAndGet();
 	}
 
-	private void reportEvent(TrackingEvent event) throws IOException, URISyntaxException {
+	private void _repotItem(TrackingEvent event) throws IOException, URISyntaxException {
 		if (!event.isStopped()) {
 			event.stop();
 		}
@@ -215,6 +215,17 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 		eventSink.log(event);
 		eventCount.incrementAndGet();
+	}
+
+	private void _repotItem(Snapshot snap) throws IOException, URISyntaxException {
+		try {
+			if (!eventSink.isOpen()) {
+				eventSink.open();
+			}
+		} finally {
+			eventSink.log(snap);
+			snapCount.incrementAndGet();
+		}
 	}
 
 	private boolean isTrackingEnabled(OpLevel level, Object... args) {
@@ -454,7 +465,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (activity.isNoop()) {
 				noopCount.incrementAndGet();
 			} else {
-				reportActivity(activity);
+				_repotItem(activity);
 			}
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
@@ -475,7 +486,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (event.isNoop()) {
 				noopCount.incrementAndGet();
 			} else {
-				reportEvent(event);
+				_repotItem(event);
 			}
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
@@ -492,9 +503,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public void tnt(Snapshot snapshot) {
 		long start = System.nanoTime();
 		try {
-			checkSinkState();
-			eventSink.log(snapshot);
-			snapCount.incrementAndGet();
+			_repotItem(snapshot);
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
 			if (logger.isSet(OpLevel.DEBUG)) {

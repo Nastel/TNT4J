@@ -416,6 +416,26 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	}
 
 	@Override
+	public void open() throws IOException {
+		_checkState();
+		try {
+			_open();
+		} catch (Throwable ex) {
+			notifyListeners(new SinkLogEvent(this, SinkLogEvent.SIGNAL_OPEN), ex);
+		}
+	}
+
+	@Override
+	public void close() throws IOException {
+		_checkState();
+		try {
+			_close();
+		} catch (Throwable ex) {
+			notifyListeners(new SinkLogEvent(this, SinkLogEvent.SIGNAL_CLOSE), ex);
+		}
+	}
+
+	@Override
 	public void log(TrackingActivity activity) {
 		_checkState();
 		boolean doLog = filterCheck ? isLoggable(activity) : true;
@@ -650,6 +670,20 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 		return true;
 	}
 
+	/**
+	 * Override this method to open the sink implementation
+	 *
+	 * @throws IOException if error opening handle
+	 */
+	protected abstract void _open() throws IOException;
+	
+    /**
+	 * Override this method to close the sink implementation
+     *
+     * @throws IOException if an I/O error occurs
+     */
+    protected abstract void _close() throws IOException;
+    
 	/**
 	 * Override this method to add actual implementation for all subclasses.
 	 *

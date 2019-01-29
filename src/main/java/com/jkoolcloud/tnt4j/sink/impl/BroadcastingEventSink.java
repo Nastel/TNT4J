@@ -139,7 +139,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public void open() throws IOException {
+	protected void _open() throws IOException {
 		int openCount = 0;
 		IOException lastE = null;
 		for (EventSink sink : eventSinks) {
@@ -156,7 +156,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public void close() throws IOException {
+	protected void _close() throws IOException {
 		IOException lastE = null;
 		for (EventSink sink : eventSinks) {
 			try {
