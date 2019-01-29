@@ -82,15 +82,13 @@ public class KafkaEventSink extends AbstractEventSink {
 
 	@Override
 	protected synchronized void _open() throws IOException {
-		close();
+		_close();
 		producer = new KafkaProducer<>(kprops);
 	}
 
 	@Override
 	protected synchronized void _close() throws IOException {
-		if (producer != null) {
-			producer.close();
-		}
+		Utils.close(producer);
 	}
 
 	@Override

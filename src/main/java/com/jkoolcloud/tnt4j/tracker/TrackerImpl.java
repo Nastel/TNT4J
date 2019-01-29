@@ -188,44 +188,40 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 	}
 
-    private void checkSinkState() throws IOException, URISyntaxException {
+	private void _checkSinkState() throws IOException, URISyntaxException {
 		if (!eventSink.isOpen()) {
 			eventSink.open();
 		}
 	}
 
-	private void _repotItem(TrackingActivity activity) throws IOException, URISyntaxException {
+	private void _reportItem(TrackingActivity activity) throws IOException, URISyntaxException {
 		if (!activity.isStopped()) {
 			activity.stop();
 		}
 
-		checkSinkState();
+		_checkSinkState();
 
 		eventSink.log(activity);
 		snapCount.addAndGet(activity.getSnapshotCount());
 		activityCount.incrementAndGet();
 	}
 
-	private void _repotItem(TrackingEvent event) throws IOException, URISyntaxException {
+	private void _reportItem(TrackingEvent event) throws IOException, URISyntaxException {
 		if (!event.isStopped()) {
 			event.stop();
 		}
 
-		checkSinkState();
+		_checkSinkState();
 
 		eventSink.log(event);
 		eventCount.incrementAndGet();
 	}
 
-	private void _repotItem(Snapshot snap) throws IOException, URISyntaxException {
-		try {
-			if (!eventSink.isOpen()) {
-				eventSink.open();
-			}
-		} finally {
-			eventSink.log(snap);
-			snapCount.incrementAndGet();
-		}
+	private void _reportItem(Snapshot snap) throws IOException, URISyntaxException {
+		_checkSinkState();
+
+		eventSink.log(snap);
+		snapCount.incrementAndGet();
 	}
 
 	private boolean isTrackingEnabled(OpLevel level, Object... args) {
@@ -465,7 +461,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (activity.isNoop()) {
 				noopCount.incrementAndGet();
 			} else {
-				_repotItem(activity);
+				_reportItem(activity);
 			}
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
@@ -486,7 +482,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			if (event.isNoop()) {
 				noopCount.incrementAndGet();
 			} else {
-				_repotItem(event);
+				_reportItem(event);
 			}
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
@@ -503,7 +499,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public void tnt(Snapshot snapshot) {
 		long start = System.nanoTime();
 		try {
-			_repotItem(snapshot);
+			_reportItem(snapshot);
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
 			if (logger.isSet(OpLevel.DEBUG)) {
@@ -520,7 +516,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public void log(OpLevel sev, String msg, Object... args) {
 		long start = System.nanoTime();
 		try {
-			checkSinkState();
+			_checkSinkState();
 			eventSink.log(eventSink.getTTL(), getSource(), sev, msg, args);
 			msgCount.incrementAndGet();
 		} catch (Throwable ex) {
