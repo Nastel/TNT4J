@@ -16,10 +16,7 @@
 
 package com.jkoolcloud.tnt4j.sink.impl;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Vector;
+import java.util.*;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
@@ -38,7 +35,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 
 	String broadcastSeq;
-	List<EventSinkFactory> sinkFactories = new Vector<>(3, 3);
+	final Collection<EventSinkFactory> sinkFactories = Collections.synchronizedList(new ArrayList<EventSinkFactory>(3));
 
 	/**
 	 * Create a default broadcasting sink factory
@@ -68,7 +65,7 @@ public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 		return broadcastSeq;
 	}
 
-	protected List<EventSinkFactory> getEventSinkFactories() {
+	protected Collection<EventSinkFactory> getEventSinkFactories() {
 		return sinkFactories;
 	}
 
