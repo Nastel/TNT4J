@@ -115,6 +115,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 
 	private synchronized void openEventSink() {
+		closeEventSink();
+
 		try {
 			if (tConfig.getSinkErrorListener() != null) {
 				eventSink.addSinkErrorListener(tConfig.getSinkErrorListener());
@@ -710,9 +712,6 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public synchronized void close() {
-		if (!isOpen()) {
-			return;
-		}
 		try {
 			closeEventSink();
 			Utils.close(selector);
