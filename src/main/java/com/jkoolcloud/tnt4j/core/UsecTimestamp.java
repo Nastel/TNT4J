@@ -821,7 +821,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 
 		if (pattern == null) {
 			SimpleDateFormat df = new SimpleDateFormat(DFLT_JAVA_FORMAT + String.format("%03d", usecs) + " z");
-			df.setTimeZone(tz == null ? DEFAULT_TZ : null);
+			df.setTimeZone(tz == null ? DEFAULT_TZ : tz);
 			tsStr = df.format(new Date(msecs));
 		}
 
@@ -829,7 +829,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 			int fracSecPos = pattern == null ? -1 : pattern.indexOf('S');
 			if (fracSecPos < 0) {
 				SimpleDateFormat df = new SimpleDateFormat(pattern);
-				df.setTimeZone(tz == null ? DEFAULT_TZ : null);
+				df.setTimeZone(tz == null ? DEFAULT_TZ : tz);
 				tsStr = df.format(new Date(msecs));
 			}
 		}
@@ -838,7 +838,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 			String usecStr = String.format("%03d", usecs);
 			pattern = pattern.replaceFirst("SS*", "SSS" + usecStr);
 			SimpleDateFormat df = new SimpleDateFormat(pattern);
-			df.setTimeZone(tz == null ? DEFAULT_TZ : null);
+			df.setTimeZone(tz == null ? DEFAULT_TZ : tz);
 			tsStr = df.format(new Date(msecs));
 		}
 
