@@ -17,15 +17,14 @@ package com.jkoolcloud.tnt4j.tracker;
 
 import com.jkoolcloud.tnt4j.core.OpLevel;
 
-
 /**
+ * A simple event filter interface for filtering out tracking activities and events.
  * <p>
- * A simple event filter interface for filtering out tracking activities and events. 
- * Implementations of this interface are registered with {@link Tracker} to filter out
- * tracking activities and tracking events. {@link #isTrackingEnabled(Tracker, OpLevel, Object...)} is called from {@link Tracker} instances
- * when activities and events are created using {@code Tracker.newEvent()}  and {@code Tracker.newActvity} calls.
+ * Implementations of this interface are registered with {@link Tracker} to filter out tracking activities and tracking
+ * events. {@link #isTrackingEnabled(Tracker, OpLevel, Object...)} is called from {@link Tracker} instances when
+ * activities and events are created using {@code Tracker.newEvent()} and {@code Tracker.newActivity} calls.
+ * <p>
  * Any activity or event with {@code OpType.NOOP} is automatically filtered out.
- * </p>
  * 
  * @see Tracker
  * @see TrackingEvent
@@ -44,9 +43,9 @@ public interface TrackingFilter {
 	 * @param level
 	 *            severity level of the tracking event/activity
 	 * @param args
-	 *            a set of arguments passed to {@code Tracker.newEvent} and {@code Tracker.newActvity} calls
+	 *            a set of arguments passed to {@code Tracker.newEvent} and {@code Tracker.newActivity} calls
 	 * @return true if tracking is enabled
 	 * @see Tracker
 	 */
-	boolean isTrackingEnabled(Tracker tracker, OpLevel level, Object...args);
+	boolean isTrackingEnabled(Tracker tracker, OpLevel level, Object... args);
 }

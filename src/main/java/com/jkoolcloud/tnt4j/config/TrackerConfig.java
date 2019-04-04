@@ -123,9 +123,9 @@ public class TrackerConfig {
 	}
 
 	/**
-	 * True of configuration was initialized and built using {{@link #build()}, false otherwise.
+	 * True of configuration was initialized and built using {@link #build()}, false otherwise.
 	 *
-	 * @return True of configuration was initialized and built using {{@link #build()}, false otherwise
+	 * @return True of configuration was initialized and built using {@link #build()}, false otherwise
 	 */
 	public boolean isBuilt() {
 		return built;

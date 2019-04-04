@@ -24,9 +24,9 @@ import java.util.concurrent.ConcurrentMap;
 import com.jkoolcloud.tnt4j.uuid.DefaultUUIDFactory;
 
 /**
- * Helper class that allows sharing of variables within ThreaLocal and across threads within the same JVM. This class is
- * useful when passing correlators, tags and other key value pairs within and across threads. Use
- * {{@link #getRef(Object, String)} and {{@link #clearRef(Object)} to track object references across thread boundaries
+ * Helper class that allows sharing of variables within ThreadLocal and across threads within the same JVM. This class
+ * is useful when passing correlators, tags and other key value pairs within and across threads. Use
+ * {@link #getRef(Object, String)} and {@link #clearRef(Object)} to track object references across thread boundaries
  * within the same JVM.
  * 
  * @version $Revision: 1 $
@@ -47,7 +47,7 @@ public class ContextTracker {
 
 	/**
 	 * Obtain a context reference {@link ContextRef} for a specific object. Tracking reference is cached until
-	 * {{@link #clearRef(Object)} is called. Use this method to track object references across threads within the same
+	 * {@link #clearRef(Object)} is called. Use this method to track object references across threads within the same
 	 * JVM.
 	 * 
 	 * @param obj
@@ -60,7 +60,7 @@ public class ContextTracker {
 
 	/**
 	 * Obtain a context reference {@link ContextRef} for a specific object and associate it with a specified correlation
-	 * id. Context reference is cached until {{@link #clearRef(Object)} is called. Use this method to track object
+	 * id. Context reference is cached until {@link #clearRef(Object)} is called. Use this method to track object
 	 * references across threads within the same JVM. The thread passing object to another thread should call
 	 * {@link #getRef(Object)} and the thread that receives object should call {@link #clearRef(Object)}.
 	 * 
