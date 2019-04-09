@@ -155,8 +155,11 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 					eventSink.removeSinkErrorListener(tConfig.getSinkErrorListener());
 				}
 				eventSink.removeSinkErrorListener(this);
-				eventSink.flush();
-				eventSink.close();
+
+				if (eventSink.isOpen()) {
+					eventSink.flush();
+					eventSink.close();
+				}
 			}
 		} catch (IOException ioe) {
 			errorCount.incrementAndGet();
@@ -173,7 +176,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	private synchronized void resetEventSink() {
 		try {
-			if (eventSink != null) {
+			if (Utils.isOpen(eventSink)) {
 				eventSink.flush();
 				eventSink.close();
 			}
