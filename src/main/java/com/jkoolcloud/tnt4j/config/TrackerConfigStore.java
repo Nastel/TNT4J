@@ -18,6 +18,8 @@ package com.jkoolcloud.tnt4j.config;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -156,7 +158,7 @@ public class TrackerConfigStore extends TrackerConfig {
 
 	/**
 	 * Create an default configuration with a specific source name. Configuration is loaded from a file or string
-	 * specified by {@code tnt4j.config} property if fileName is null.
+	 * specified by {@code tnt4j.config} property if fileName is {@code null}.
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
@@ -214,7 +216,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Create an default configuration with a specific source name and a given file name;
+	 * Create an default configuration with a specific source name and a given file name.
 	 *
 	 * @param source
 	 *            source instance associated with the configuration
@@ -238,7 +240,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Create an default configuration with a specific source name and a given file name;
+	 * Create an default configuration with a specific source name and a given file name.
 	 *
 	 * @param source
 	 *            source instance associated with the configuration
@@ -251,7 +253,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Get current configuration map for all sources
+	 * Get current configuration map for all sources.
 	 *
 	 * @return current configuration map
 	 */
@@ -260,7 +262,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Get current configuration for a specific source
+	 * Get current configuration for a specific source.
 	 * 
 	 * @param key
 	 *            configuration key
@@ -271,7 +273,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Get current configuration file based on a given path and file
+	 * Get current configuration file based on a given path and file.
 	 * 
 	 * @param path
 	 *            configuration path (folder)
@@ -321,7 +323,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Initialize configuration based on a given file and extended attributes
+	 * Initialize configuration based on a given file and extended attributes.
 	 * 
 	 * @param fileName
 	 *            configuration file name
@@ -341,7 +343,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Initialize configuration based on a given file
+	 * Initialize configuration based on a given file.
 	 * 
 	 * @param fileName
 	 *            configuration file name
@@ -365,7 +367,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Create a configurable object based on class and prefix
+	 * Create a configurable object based on class and prefix.
 	 *
 	 * @param classProp
 	 *            class implementation key
@@ -385,7 +387,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Load and apply configuration properties
+	 * Load and apply configuration properties.
 	 *
 	 * @param map
 	 *            map of keys and associated properties
@@ -426,7 +428,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Load properties for its source
+	 * Load properties for its source.
 	 *
 	 * @param map
 	 *            map of keys and associated properties
@@ -455,7 +457,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Load configuration from a file
+	 * Load configuration from a file.
 	 *
 	 * @param configFile
 	 *            configuration file name or URL
@@ -476,7 +478,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Load configuration from a reader
+	 * Load configuration from a reader.
 	 *
 	 * @param reader
 	 *            configuration reader
@@ -498,7 +500,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Load configuration resources from a file
+	 * Load configuration resources from a file.
 	 *
 	 * @param fileName
 	 *            configuration file name
@@ -512,7 +514,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Load configuration resources from a reader
+	 * Load configuration resources from a reader.
 	 *
 	 * @param reader
 	 *            configuration reader
@@ -567,7 +569,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Merge configurations
+	 * Merge configurations.
 	 *
 	 * @param key
 	 *            configuration source key
@@ -585,7 +587,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Copy configurations
+	 * Copy configurations.
 	 *
 	 * @param key
 	 *            configuration source key
@@ -613,7 +615,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Get reader for a specific URL
+	 * Get reader for a specific URL.
 	 *
 	 * @param url
 	 *            configuration URL
@@ -630,7 +632,7 @@ public class TrackerConfigStore extends TrackerConfig {
 			try {
 				ins = cfgResource.openStream();
 			} catch (IOException ioe) {
-				ins = Utils.getResourceAsStream(TrackerConfigStore.class, cfgResource.getFile());
+				ins = getResourceAsStream(getName(cfgResource));
 			}
 			rdr = new InputStreamReader(ins);
 		} catch (MalformedURLException ioe) {
@@ -639,8 +641,33 @@ public class TrackerConfigStore extends TrackerConfig {
 		return new BufferedReader(rdr);
 	}
 
+	private static String getName(URL url) {
+		String pStr = url.getPath();
+		Path p = Paths.get(pStr);
+
+		return p.getFileName().toString();
+	}
+
 	/**
-	 * Get reader for a specific resource
+	 * Returns an {@link java.io.InputStream} for reading the specified configuration resource.
+	 *
+	 * @param resName
+	 *            configuration resource name
+	 * @return input stream to read the configuration resource, or {@code null} if the configuration resource could not
+	 *         be found
+	 */
+	private InputStream getResourceAsStream(String resName) {
+		InputStream ins = Utils.getResourceAsStream(TrackerConfigStore.class, resName);
+
+		if (ins == null) {
+			ins = Utils.getResourceAsStream(resName);
+		}
+
+		return ins;
+	}
+
+	/**
+	 * Get reader for a specific resource.
 	 *
 	 * @param resName
 	 *            configuration resource name
@@ -650,7 +677,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *             if resource not found or can't be accessed
 	 */
 	private BufferedReader getReaderFromResource(String resName) throws IOException {
-		InputStream ins = Utils.getResourceAsStream(TrackerConfigStore.class, resName);
+		InputStream ins = getResourceAsStream(resName);
 		if (ins == null) {
 			throw new FileNotFoundException("Resource '" + resName + "' not found");
 		}
@@ -658,7 +685,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Get reader for a specific resource or URL
+	 * Get reader for a specific resource or URL.
 	 *
 	 * @param resName
 	 *            configuration resource name
@@ -687,7 +714,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Read configuration stanza
+	 * Read configuration stanza.
 	 *
 	 * @param reader
 	 *            configuration reader
