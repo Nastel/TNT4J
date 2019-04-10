@@ -626,23 +626,27 @@ public class TrackerConfigStore extends TrackerConfig {
 	 */
 	private BufferedReader getReaderFromURL(String url) throws IOException {
 		Reader rdr;
+		InputStream ins;
 		try {
 			URL cfgResource = new URL(url);
-			InputStream ins;
 			try {
 				ins = cfgResource.openStream();
 			} catch (IOException ioe) {
-				ins = getResourceAsStream(getName(cfgResource));
+				ins = getResourceAsStream(getName(cfgResource.getPath()));
 			}
 			rdr = new InputStreamReader(ins);
 		} catch (MalformedURLException ioe) {
-			rdr = new FileReader(url);
+			try {
+				rdr = new FileReader(url);
+			} catch (FileNotFoundException fnfe) {
+				ins = getResourceAsStream(getName(url));
+				rdr = new InputStreamReader(ins);
+			}
 		}
 		return new BufferedReader(rdr);
 	}
 
-	private static String getName(URL url) {
-		String pStr = url.getPath();
+	private static String getName(String pStr) {
 		Path p = Paths.get(pStr);
 
 		return p.getFileName().toString();
@@ -656,7 +660,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	 * @return input stream to read the configuration resource, or {@code null} if the configuration resource could not
 	 *         be found
 	 */
-	private InputStream getResourceAsStream(String resName) {
+	private static InputStream getResourceAsStream(String resName) {
 		InputStream ins = Utils.getResourceAsStream(TrackerConfigStore.class, resName);
 
 		if (ins == null) {
