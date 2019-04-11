@@ -188,9 +188,9 @@ event.sink.factory.mqtt-pwd: mqtt-pwd
 ```
 
 ### SLF4J Event Sink Integration
+TNT4J provides default logging integration over `SLF4J` API.
 TNT4J provides SLF4J event sink implementation via `com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory` event sink factory.
 Other logging frameworks can be supported by implementing `EventSinkFactory` & `EventSink` interfaces. 
-TNT4J default integration is with SLF4J/SimpleLogger.
 
 All TNT4J messages can be routed via a SLF4J event sink and therefore can take advantage of the underlying logging frameworks supported by 
 SLF4J.
