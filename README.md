@@ -84,7 +84,21 @@ TNT4J can take advantage of other lower level logging frameworks such as slf4j, 
 Default TNT4J binding is based on slf4j.
 
 ### TNT4J Stream Configuration
-TNT4j stream configuration is defined in `tnt4j.properties` which is located by specifying `tnt4j.config` java property (example `-Dtnt4j.config=./config/tnt4j.properties`. This configuration file defines all event sources, target event sink bindings such as file, MQTT, Kafka, HTTPS etc as well stream specific attributes. Here is example of a sample stream configuration:
+TNT4J stream configuration is defined in `tnt4j.properties` which is located by specifying `tnt4j.config` java property (example 
+`-Dtnt4j.config=./config/tnt4j.properties`).
+
+In case TNT4J configuration is split to separate external configuration files, use `tnt4j.config.path` java property to define root path, 
+common for all these files (e.g. `-Dtnt4j.config.path=./config/`). Then `tnt4j.properties` file defined `import`s will be treated as 
+relative paths to java property `tnt4j.config.path` defined path (e.g. `import: tnt4j-common.properties` will be like 
+`./config/tnt4j-common.properties`).
+
+By default common configuration files root path is resolved in following sequence:
+* defined using system property `tnt4j.config.path`
+* parent path of system property `tnt4j.config` defined configuration file
+* path defined by `./config` value
+
+This configuration file defines all event sources, target event sink bindings such as file, MQTT, Kafka, HTTPS etc as well stream specific 
+attributes. Here is example of a sample stream configuration:
 ```properties
 ; TNT4J Common Definitions
 {
@@ -114,6 +128,18 @@ TNT4j stream configuration is defined in `tnt4j.properties` which is located by 
 	source: org
 	; import settings from com.myappl stanza
 	like: com.myappl
+}
+```
+**NOTE:** `import` property allows to define *absolute file path* or file path *relative to common configuration files root path*. If some 
+files are out of common configuration files root path scope, use configuration property `import.path`, allowing to define individual path 
+for `import` defined file within same stanza, e.g.:
+```properties
+; TNT4J Common Definitions
+{
+	; import common tnt4j logger definitions
+	source: common.base
+	import: tnt4j-common.properties
+	import.path: ../../personal-config/
 }
 ```
 
@@ -162,9 +188,9 @@ event.sink.factory.mqtt-pwd: mqtt-pwd
 ```
 
 ### SLF4J Event Sink Integration
+TNT4J provides default logging integration over `SLF4J` API.
 TNT4J provides SLF4J event sink implementation via `com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory` event sink factory.
 Other logging frameworks can be supported by implementing `EventSinkFactory` & `EventSink` interfaces. 
-TNT4J default integration is with SLF4J/SimpleLogger.
 
 All TNT4J messages can be routed via a SLF4J event sink and therefore can take advantage of the underlying logging frameworks supported by 
 SLF4J.
@@ -552,7 +578,7 @@ TNT4J depends on the following external packages:
 
 To build TNT4J:
 *  Please use JCenter or Maven and these dependencies will be downloaded automatically. 
-*  You will need to point TNT4J to it's property file via the -Dtnt4j.config argument. This property file is located here in GitHub under 
+*  You will need to point TNT4J to it's property file via the `-Dtnt4j.config` argument. This property file is located here in GitHub under 
 the `/config` directory. If using JCenter or Maven, it can be found in the zip assembly along with the source code and javadoc.
 
 Known Projects Using TNT4J
