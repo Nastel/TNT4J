@@ -32,60 +32,110 @@ public class LimiterImpl implements Limiter {
 	long start = System.currentTimeMillis();
 	long idleReset = 0L;	// time between limiter accesses before resetting (0 implies no idle reset)
 
-	AtomicLong byteCount = new AtomicLong(0);
-	AtomicLong msgCount = new AtomicLong(0);
-	AtomicLong delayCount = new AtomicLong(0);
-	AtomicLong denyCount = new AtomicLong(0);
+	AtomicLong totalByteCount = new AtomicLong(0);
+	AtomicLong totalMsgCount = new AtomicLong(0);
+	AtomicLong totalDelayCount = new AtomicLong(0);
+	AtomicLong totalDenyCount = new AtomicLong(0);
 
-	AtomicDouble sleepCount = new AtomicDouble(0);
-	AtomicDouble lastSleep = new AtomicDouble(0);
+	AtomicDouble totalDelayTimeSec = new AtomicDouble(0);
+	AtomicDouble lastDelaySec = new AtomicDouble(0);
+	AtomicLong lastAccessTime = new AtomicLong(System.nanoTime());
 
-	AtomicLong lastAccess = new AtomicLong(System.nanoTime());
+	RateLimiter bpsLimiter = RateLimiter.create(MAX_RATE);
+	RateLimiter mpsLimiter = RateLimiter.create(MAX_RATE);
 
-	RateLimiter bpsLimiter =  RateLimiter.create(MAX_RATE);
-	RateLimiter mpsLimiter =  RateLimiter.create(MAX_RATE);
-
+	/**
+	 * Create a a limiter with specified rate limits
+	 *
+	 * @param maxMps max messages per second (0 -- no limit)
+	 * @param maxBps max bytes per second (0 -- no limit)
+	 * @param enabled true to enable limits, false otherwise
+	 */
 	public LimiterImpl(double maxMps, double maxBps, boolean enabled) {
 		setLimits(maxMps, maxBps);
 		setEnabled(enabled);
 	}
 
+	/**
+	 * Access limiter and reset counters if needed
+	 *
+	 */
+	protected void accessLimiter() {
+		long accessTime = System.nanoTime();
+		if (isEnabled() && (timeSinceLastReset(accessTime) > idleReset)) {
+			synchronized (this) {
+				if (timeSinceLastReset(accessTime) > idleReset) {
+					reset();				
+				}
+			}
+		}
+		long prev = lastAccessTime.get();
+		if (accessTime > prev)
+			lastAccessTime.compareAndSet(prev, accessTime);
+	}	
+
+	/**
+	 * Count the number of messages and bytes
+	 *
+	 * @param msgs message count
+	 * @param bytes byte count
+	 */
+	protected void count(int msgs, int bytes) {
+		accessLimiter();
+		if (bytes > 0) {
+			totalByteCount.addAndGet(bytes);
+		}
+		if (msgs > 0) {
+			totalMsgCount.addAndGet(msgs);
+		}
+	}
+
+	/**
+	 * Count time since last limiter access in ms
+	 *
+	 * @param accessTimeNanos time counter in nanoseconds
+	 * @return number of ms since last access
+	 */
+	protected long timeSinceLastReset(long accessTimeNanos) {
+		return TimeUnit.NANOSECONDS.toMillis(accessTimeNanos - lastAccessTime.get());		
+	}	
+
 	@Override
 	public long getIdleReset() {
-		return idleReset / (1000L * 1000L);	// maintained as nanoseconds, return as msec
+		return idleReset;
 	}
 
 	@Override
-	public Limiter setIdleReset(long idleReset) {
-		this.idleReset = idleReset * (1000L * 1000L);		// input is msec, convert to nanoseconds to compare with nanoTime
+	public Limiter setIdleReset(long idleResetMs) {
+		this.idleReset = idleResetMs;
 		return this;
 	}
 
 	@Override
     public double getMaxMPS() {
-	    return mpsLimiter.getRate();
+	    return mpsLimiter.getRate() == MAX_RATE? 0: mpsLimiter.getRate();
     }
 
 	@Override
     public double getMaxBPS() {
-	    return bpsLimiter.getRate();
+	    return bpsLimiter.getRate() == MAX_RATE? 0: bpsLimiter.getRate();
     }
 
 	@Override
     public Limiter setLimits(double maxMps, double maxBps) {
-		mpsLimiter.setRate(maxMps <= 0.0D ? MAX_RATE : maxMps);
-		bpsLimiter.setRate(maxBps <= 0.0D ? MAX_RATE : maxBps);
+		mpsLimiter.setRate(maxMps <= UNLIMITED_RATE ? MAX_RATE : maxMps);
+		bpsLimiter.setRate(maxBps <= UNLIMITED_RATE ? MAX_RATE : maxBps);
 		return this;
     }
 
 	@Override
     public double getMPS() {
-		return msgCount.get() * 1000.0 / getAge();
+		return (totalMsgCount.get() * 1000.0) / getAge();
     }
 
 	@Override
     public double getBPS() {
-		return byteCount.get() * 1000.0 / getAge();
+		return (totalByteCount.get() * 1000.0) / getAge();
     }
 
 	@Override
@@ -108,92 +158,59 @@ public class LimiterImpl implements Limiter {
     }
 
 	@Override
-    public boolean tryObtain(int msgs, int bytes, long timeout, TimeUnit unit) {
-		testIdleReset();
+	public boolean tryObtain(int msgs, int bytes, long timeout, TimeUnit unit) {
 		count(msgs, bytes);
-		if (!doLimit || (msgs == 0 && bytes == 0)) {
-			return true;
-		}
-
 		boolean permit = true;
-		if (bytes > 0) {
-			permit = bpsLimiter.tryAcquire(bytes, timeout, unit);
+		try {
+			if (!isEnabled() || (msgs == 0 && bytes == 0)) {
+				return true;
+			}
+			if (bytes > 0) {
+				permit = bpsLimiter.tryAcquire(bytes, timeout, unit);
+			}
+			if (msgs > 0 && !permit) {
+				permit = permit || mpsLimiter.tryAcquire(msgs, timeout, unit);
+			} else if (msgs > 0) {
+				mpsLimiter.tryAcquire(msgs);
+			}
+			return permit;
+		} finally {
+			if (!permit) {
+				totalDenyCount.incrementAndGet();
+			}
 		}
-		if (msgs > 0) {
-			permit = permit && mpsLimiter.tryAcquire(msgs, timeout, unit);
-		}
-		if (!permit) {
-			denyCount.incrementAndGet();
-		}
-		return permit;
 	}
 
 	@Override
-    public double obtain(int msgs, int bytes) {
-		testIdleReset();
+	public double obtain(int msgs, int bytes) {
 		count(msgs, bytes);
-		if (!doLimit || ( msgs == 0 && bytes == 0)) {
-			return 0;
-		}
-
-		double elapsedSecByBps;
-		double elapsedSecByMps;
-		int delayCounter = 0;
-
-		elapsedSecByBps = bytes > 0? bpsLimiter.acquire(bytes): 0;
-		if (elapsedSecByBps > 0) delayCounter++;
-
-		elapsedSecByMps = msgs > 0? mpsLimiter.acquire(msgs): 0;
-		if (elapsedSecByMps > 0) delayCounter++;
-
-		double sleepTime = elapsedSecByBps + elapsedSecByMps;
-		if (sleepTime > 0) {
-			lastSleep.set(sleepTime);
-			sleepCount.addAndGet(sleepTime);
-			delayCount.addAndGet(delayCounter);
-		}
-	    return sleepTime;
-	}
-
-	protected void count(int msgs, int bytes) {
-		if (bytes > 0) {
-			byteCount.addAndGet(bytes);
-		}
-		if (msgs > 0) {
-			msgCount.addAndGet(msgs);
-		}
-	}
-
-	protected void testIdleReset() {
-		long accessTime = System.nanoTime();
-
-		if (doLimit && idleReset > 0 && (accessTime-lastAccess.get()) > idleReset) {
-			synchronized(this) {
-				// test again in case multiple threads are attempting at same time
-				// and one of the other threads successfully recreated limiters
-				if ((accessTime-lastAccess.get()) > idleReset) {
-					mpsLimiter = RateLimiter.create(mpsLimiter.getRate());
-					bpsLimiter = RateLimiter.create(bpsLimiter.getRate());
-
-					// record this access time so that other threads blocked at
-					// same time don't also recreate limiters
-					lastAccess.set(accessTime);
-					reset();
-				}
+		double delayTimeSec = 0;
+		try {
+			if (!isEnabled() || (msgs == 0 && bytes == 0)) {
+				return 0;
+			}
+			delayTimeSec = bytes > 0 ? bpsLimiter.acquire(bytes) : 0;
+			if (delayTimeSec == 0) {
+				delayTimeSec += (msgs > 0 ? mpsLimiter.acquire(msgs) : 0);
+			} else {
+				mpsLimiter.tryAcquire(msgs);
+			}
+		} finally {
+			if (delayTimeSec > 0) {
+				lastDelaySec.set(delayTimeSec);
+				totalDelayTimeSec.addAndGet(delayTimeSec);
+				totalDelayCount.incrementAndGet();
 			}
 		}
-
-		long prev = lastAccess.getAndSet(accessTime);
-		if (prev > accessTime)
-			lastAccess.set(prev);
+		return delayTimeSec;
 	}
 
 	@Override
     public Limiter reset() {
-		byteCount.set(0);
-		msgCount.set(0);
-		sleepCount.set(0);
-		delayCount.set(0);
+		totalByteCount.set(0);
+		totalMsgCount.set(0);
+		totalDelayTimeSec.set(0);
+		totalDelayCount.set(0);
 		start = System.currentTimeMillis();
 		return this;
 	}
@@ -210,36 +227,36 @@ public class LimiterImpl implements Limiter {
 
 	@Override
     public long getTotalBytes() {
-	    return byteCount.get();
+	    return totalByteCount.get();
     }
 
 	@Override
     public long getTotalMsgs() {
-	    return msgCount.get();
+	    return totalMsgCount.get();
     }
 
 	@Override
     public double getLastDelayTime() {
-	    return lastSleep.get();
+	    return lastDelaySec.get();
     }
 
 	@Override
     public double getTotalDelayTime() {
-	    return sleepCount.get();
+	    return totalDelayTimeSec.get();
     }
 
 	@Override
     public long getDelayCount() {
-	    return delayCount.get();
+	    return totalDelayCount.get();
     }
 
 	@Override
     public long getDenyCount() {
-	    return denyCount.get();
+	    return totalDenyCount.get();
     }
 
 	@Override
 	public long getTimeSinceLastAccess() {
-		return (System.nanoTime() - lastAccess.get()) / (1000L * 1000L);	// return as msec
-	}
+		return timeSinceLastReset(System.nanoTime());		
+	}	
 }

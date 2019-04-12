@@ -19,8 +19,7 @@ import java.util.concurrent.Delayed;
 import java.util.concurrent.TimeUnit;
 
 /**
- * This class implements a delayed element which a specific
- * expiration time.
+ * This class implements a delayed element which a specific expiration time.
  *
  *
  * @version $Revision: 1 $
@@ -29,37 +28,42 @@ public class DelayedElement<T> implements Delayed {
 	private T elm;
 	private long expiryTime;
 
-    /**
-     * Create a delayed element wrapper
-     * 
-     * @param element object instance
-     * @param delay time in milliseconds
-     */
+	/**
+	 * Create a delayed element wrapper
+	 * 
+	 * @param element
+	 *            object instance
+	 * @param delay
+	 *            time in milliseconds
+	 */
 	public DelayedElement(T element, long delay) {
 		this(element, delay, TimeUnit.MILLISECONDS);
 	}
 
-    /**
-     * Create a delayed element wrapper
-     * 
-     * @param element object instance
-     * @param delay time in milliseconds
-     * @param unit time unit for delay
-     */
+	/**
+	 * Create a delayed element wrapper
+	 * 
+	 * @param element
+	 *            object instance
+	 * @param delay
+	 *            time in milliseconds
+	 * @param unit
+	 *            time unit for delay
+	 */
 	public DelayedElement(T element, long delay, TimeUnit unit) {
 		this.elm = element;
 		this.expiryTime = System.currentTimeMillis() + TimeUnit.MILLISECONDS.convert(delay, unit);
 	}
 
-    /**
-     * Obtain element instance
-     * 
-     * @return element instance
-     */
+	/**
+	 * Obtain element instance
+	 * 
+	 * @return element instance
+	 */
 	public T getElement() {
 		return elm;
 	}
-	
+
 	@Override
 	public long getDelay(TimeUnit timeUnit) {
 		long diff = expiryTime - System.currentTimeMillis();
@@ -68,13 +72,7 @@ public class DelayedElement<T> implements Delayed {
 
 	@Override
 	public int compareTo(Delayed o) {
-		if (getDelay(TimeUnit.MILLISECONDS) < o.getDelay(TimeUnit.MILLISECONDS)) {
-			return -1;
-		}
-		if (getDelay(TimeUnit.MILLISECONDS) > o.getDelay(TimeUnit.MILLISECONDS)) {
-			return 1;
-		}
-		return 0;
+		return Long.compare(getDelay(TimeUnit.MILLISECONDS), o.getDelay(TimeUnit.MILLISECONDS));
 	}
 
 	@Override

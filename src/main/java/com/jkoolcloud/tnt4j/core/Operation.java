@@ -53,7 +53,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *
  * @version $Revision: 12 $
  */
-public class Operation implements TTL {
+public class Operation implements TTL, GlobalID {
 
 	/**
 	 * Noop operation name
@@ -67,6 +67,7 @@ public class Operation implements TTL {
 	private long tid;
 	private int opRC = 0;
 
+	private String guid; // unique id
 	private String opName;
 	private String resource;
 	private String user;
@@ -76,14 +77,14 @@ public class Operation implements TTL {
 	private OpType opType;
 	private OpCompCode opCC = OpCompCode.SUCCESS;
 	private OpLevel opLevel = OpLevel.INFO;
-	private long ttlSec = Trackable.TTL_DEFAULT; // 0 is default time to live
+	private long ttlSec = TTL.TTL_DEFAULT; // 0 is default time to live
 	private long startTimeUs;
 	private long endTimeUs;
 	private Throwable exHandle;
 
-	private HashSet<String> correlators = new HashSet<String>(89);
-	private HashMap<String, Snapshot> snapshots = new HashMap<String, Snapshot>(89);
-	private HashMap<String, Property> properties = new HashMap<String, Property>(89);
+	private HashSet<String> correlators = new HashSet<>(89);
+	private HashMap<String, Snapshot> snapshots = new HashMap<>(89);
+	private HashMap<String, Property> properties = new HashMap<>(89);
 
 	// timing attributes
 	private int startStopCount = 0;
@@ -136,6 +137,27 @@ public class Operation implements TTL {
 		setPID(Utils.getVMPID());
 		setTID(Thread.currentThread().getId());
 		enableTiming = threadTiming;
+	}
+
+	/**
+	 * Gets globally unique identifier for this operation
+	 *
+	 * @return globally unique identifier for this operation
+	 */
+	@Override
+	public String getGUID() {
+		return guid;
+	}
+
+	/**
+	 * Sets the globally unique id for this operation (optional)
+	 *
+	 * @param uid
+	 *            globally unique id
+	 */
+	@Override
+	public void setGUID(String uid) {
+		this.guid = uid;
 	}
 
 	/**
@@ -916,18 +938,26 @@ public class Operation implements TTL {
 		UsecTimestamp eTime = getEndTime();
 		StringBuilder str = new StringBuilder();
 
-		str.append(getClass().getSimpleName()).append("{").append("Name:").append(getName()).append(",").append("Type:")
-				.append(type == null ? "null" : type.toString()).append(",").append("Correlator:")
-				.append(getCorrelator()).append(",").append("Location:").append(getLocation()).append(",")
-				.append("Resource:").append(res == null ? "null" : res).append(",").append("User:").append(getUser())
-				.append(",").append("SnapCount=").append(getSnapshotCount()).append(",").append("PropCount=")
-				.append(getPropertyCount()).append(",").append("CompCode:").append(getCompCode()).append(",")
-				.append("ReasonCode:").append(getReasonCode()).append(",").append("PID:").append(getPID()).append(",")
-				.append("TID:").append(getTID()).append(",").append("ElapsedUsec:").append(getElapsedTimeUsec())
-				.append(",").append("WaitUsec:").append(getWaitTimeUsec()).append(",").append("WallUsec:")
-				.append(getWallTimeUsec()).append(",").append("StartTime:[").append(sTime.toString()).append("],")
-				.append("EndTime:[").append(eTime.toString()).append("],").append("Exception:")
-				.append(getExceptionString()).append("}");
+		str.append(getClass().getSimpleName()).append("{")
+				.append("Name:").append(getName()).append(",")
+				.append("Guid:").append(getGUID()).append(",")
+				.append("Type:").append(type == null ? "null" : type.toString()).append(",")
+				.append("Correlator:").append(getCorrelator()).append(",")
+				.append("Location:").append(getLocation()).append(",")
+				.append("Resource:").append(res == null ? "null" : res).append(",")
+				.append("User:").append(getUser()).append(",")
+				.append("SnapCount=").append(getSnapshotCount()).append(",")
+				.append("PropCount=").append(getPropertyCount()).append(",")
+				.append("CompCode:").append(getCompCode()).append(",")
+				.append("ReasonCode:").append(getReasonCode()).append(",")
+				.append("PID:").append(getPID()).append(",")
+				.append("TID:").append(getTID()).append(",")
+				.append("ElapsedUsec:").append(getElapsedTimeUsec()).append(",")
+				.append("WaitUsec:").append(getWaitTimeUsec()).append(",")
+				.append("WallUsec:").append(getWallTimeUsec()).append(",")
+				.append("StartTime:[").append(sTime.toString()).append("],")
+				.append("EndTime:[").append(eTime.toString()).append("],")
+				.append("Exception:").append(getExceptionString()).append("}");
 
 		return str.toString();
 	}
@@ -1052,6 +1082,7 @@ public class Operation implements TTL {
 	 * <li>PID</li>
 	 * <li>TID</li>
 	 * <li>ReasonCode</li>
+	 * <li>Guid</li>
 	 * <li>Name</li>
 	 * <li>Resource</li>
 	 * <li>User</li>
@@ -1110,6 +1141,9 @@ public class Operation implements TTL {
 		}
 		if ("ReasonCode".equalsIgnoreCase(fieldName)) {
 			return opRC;
+		}
+		if ("Guid".equalsIgnoreCase(fieldName)) {
+			return guid;
 		}
 		if ("Name".equalsIgnoreCase(fieldName)) {
 			return opName;

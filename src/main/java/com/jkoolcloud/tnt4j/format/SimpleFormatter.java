@@ -56,7 +56,8 @@ public class SimpleFormatter extends DefaultFormatter {
 	/**
 	 * Create a simple event formatter instance with a given format
 	 *
-	 * @param format string (e.g. "{2} | {1} | {0}")
+	 * @param format
+	 *            string (e.g. "{2} | {1} | {0}")
 	 */
 	public SimpleFormatter(String format) {
 		super(format);
@@ -65,8 +66,10 @@ public class SimpleFormatter extends DefaultFormatter {
 	/**
 	 * Create a simple event formatter instance with a given format, timezone
 	 *
-	 * @param format string (e.g. "{2} | {1} | {0}")
-	 * @param tz time zone
+	 * @param format
+	 *            string (e.g. "{2} | {1} | {0}")
+	 * @param tz
+	 *            time zone
 	 */
 	public SimpleFormatter(String format, TimeZone tz) {
 		super(format, tz);
@@ -128,6 +131,10 @@ public class SimpleFormatter extends DefaultFormatter {
 		if (event.getTrackingId() != null) {
 			msg.append(separator);
 			msg.append("track-id: '").append(event.getTrackingId()).append("'");
+		}
+		if (!Utils.isEmpty(event.getGUID())) {
+			msg.append(separator);
+			msg.append("guid: '").append(event.getGUID()).append("'");
 		}
 		if (event.getOperation().getPropertyCount() > 0) {
 			msg.append("\n\t").append("Properties {");
@@ -203,6 +210,10 @@ public class SimpleFormatter extends DefaultFormatter {
 			msg.append(separator);
 			msg.append("track-id: '").append(activity.getTrackingId()).append("'");
 		}
+		if (!Utils.isEmpty(activity.getGUID())) {
+			msg.append(separator);
+			msg.append("guid: '").append(activity.getGUID()).append("'");
+		}
 		if (activity.getSnapshotCount() > 0) {
 			msg.append(separator);
 			Collection<Snapshot> snapshots = activity.getSnapshots();
@@ -247,6 +258,10 @@ public class SimpleFormatter extends DefaultFormatter {
 		if (tid != null) {
 			msg.append(separator);
 			msg.append("track-id: '").append(tid).append("'");
+		}
+		if (!Utils.isEmpty(snap.getGUID())) {
+			msg.append(separator);
+			msg.append("guid: '").append(snap.getGUID()).append("'");
 		}
 		if (!cid.isEmpty()) {
 			msg.append(separator);

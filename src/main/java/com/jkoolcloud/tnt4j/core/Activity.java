@@ -47,12 +47,11 @@ import com.jkoolcloud.tnt4j.source.Source;
  */
 public class Activity extends Operation implements Trackable {
 	private Source appl;
-	private String tracking_id;
 	private String parentId;
 	private String sign;
 	private ActivityStatus status = ActivityStatus.BEGIN;
 
-	private HashSet<String> idset = new HashSet<String>(89);
+	private HashSet<String> idset = new HashSet<>(89);
 	private ArrayList<ActivityListener> activityListeners = null;
 
 	/**
@@ -144,7 +143,7 @@ public class Activity extends Operation implements Trackable {
 	 */
 	public void addActivityListener(ActivityListener listener) {
 		if (activityListeners == null) {
-			activityListeners = new ArrayList<ActivityListener>(10);
+			activityListeners = new ArrayList<>(10);
 		}
 		activityListeners.add(listener);
 	}
@@ -219,7 +218,7 @@ public class Activity extends Operation implements Trackable {
 	 */
 	@Override
 	public String getTrackingId() {
-		return tracking_id;
+		return this.getGUID();
 	}
 
 	/**
@@ -231,7 +230,7 @@ public class Activity extends Operation implements Trackable {
 	 */
 	@Override
 	public void setTrackingId(String id) {
-		this.tracking_id = id;
+		this.setGUID(id);
 	}
 
 	/**
@@ -349,7 +348,7 @@ public class Activity extends Operation implements Trackable {
 	 */
 	@Override
 	public int hashCode() {
-		return 31 + ((tracking_id == null) ? 0 : tracking_id.hashCode());
+		return 31 + ((getGUID() == null) ? 0 : getGUID().hashCode());
 	}
 
 	/**
@@ -369,11 +368,11 @@ public class Activity extends Operation implements Trackable {
 
 		Activity other = (Activity) obj;
 
-		if (tracking_id == null) {
-			if (other.tracking_id != null) {
+		if (getGUID() == null) {
+			if (other.getGUID() != null) {
 				return false;
 			}
-		} else if (!tracking_id.equals(other.tracking_id)) {
+		} else if (!getGUID().equals(other.getGUID())) {
 			return false;
 		}
 		return true;
@@ -394,6 +393,7 @@ public class Activity extends Operation implements Trackable {
 			.append("Name:").append(getName()).append(",")
 			.append("ParentId:").append(parentId != null? parentId: "root").append(",")
 			.append("TrackId:").append(getTrackingId()).append(",")
+			.append("Guid:").append(getGUID()).append(",")
 			.append("Status:").append(Status == null ? "null" : Status.toString()).append(",")
 			.append("Type:").append(sType == null ? "null" : sType.toString()).append(",")
 			.append("PID:").append(getPID()).append(",")
@@ -417,6 +417,7 @@ public class Activity extends Operation implements Trackable {
 	 * <li>Source</li>
 	 * <li>ParentId</li>
 	 * <li>TrackingId</li>
+	 * <li>Guid</li>
 	 * <li>Status</li>
 	 * <li>Signature</li>
 	 * <li>Ids</li>
@@ -431,24 +432,26 @@ public class Activity extends Operation implements Trackable {
 	@Override
 	public Object getFieldValue(String fieldName) {
 		if ("Source".equalsIgnoreCase(fieldName)) {
-			return appl;
+			return getSource();
 		}
 		if ("ParentId".equalsIgnoreCase(fieldName)) {
-			return parentId;
+			return getParentId();
 		}
 		if ("TrackingId".equalsIgnoreCase(fieldName)) {
-			return tracking_id;
+			return getTrackingId();
+		}
+		if ("Guid".equalsIgnoreCase(fieldName)) {
+			return getGUID();
 		}
 		if ("Status".equalsIgnoreCase(fieldName)) {
-			return status;
+			return getStatus();
 		}
 		if ("Signature".equalsIgnoreCase(fieldName)) {
-			return sign;
+			return getSignature();
 		}
 		if ("Ids".equalsIgnoreCase(fieldName)) {
-			return idset;
+			return getIds();
 		}
-
 		return super.getFieldValue(fieldName);
 	}
 

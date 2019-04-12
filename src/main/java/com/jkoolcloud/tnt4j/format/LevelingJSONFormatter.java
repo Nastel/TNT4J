@@ -18,8 +18,8 @@ package com.jkoolcloud.tnt4j.format;
 
 import java.util.*;
 
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.text.StringEscapeUtils;
 
 import com.jkoolcloud.tnt4j.core.Operation;
 import com.jkoolcloud.tnt4j.core.Property;
@@ -62,8 +62,8 @@ public class LevelingJSONFormatter extends JSONFormatter {
 	private Comparator<Snapshot> snapshotComparator;
 	private Comparator<Property> propertyComparator;
 
-	protected Map<String, String> keyReplacements = new HashMap<String, String>();
-	protected Map<String, String> valueReplacements = new HashMap<String, String>();
+	protected Map<String, String> keyReplacements = new HashMap<>();
+	protected Map<String, String> valueReplacements = new HashMap<>();
 
 	/**
 	 * Create leveling JSON formatter without newlines during formatting

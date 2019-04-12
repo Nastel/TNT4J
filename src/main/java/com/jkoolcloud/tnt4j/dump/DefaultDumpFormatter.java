@@ -69,7 +69,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @see DumpCollection
  */
 public class DefaultDumpFormatter implements DumpFormatter {
-	private static ThreadLocal<Long> TIME_TABLE = new ThreadLocal<Long>();
+	private static ThreadLocal<Long> TIME_TABLE = new ThreadLocal<>();
 
 	private static final String INDENT = "\t";
 	private static final String NEWLINE = "\n";

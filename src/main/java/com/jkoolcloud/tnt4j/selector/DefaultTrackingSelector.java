@@ -46,7 +46,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(DefaultTrackingSelector.class);
 	private static final boolean DEFAULT_RETURN_UNDEFINED = Utils.getBoolean("tnt4j.selector.undefined.isset",
 			System.getProperties(), true);
-	private HashMap<Object, PropertyToken> tokenMap = new HashMap<Object, PropertyToken>(89);
+	private HashMap<Object, PropertyToken> tokenMap = new HashMap<>(89);
 	private Map<String, ?> config = null;
 	private TokenRepository tokenRepository = null;
 	private PropertyListenerImpl listener = null;
@@ -70,7 +70,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 
 	@Override
 	public boolean isOpen() {
-		return tokenRepository != null && tokenRepository.isOpen();
+		return Utils.isOpen(tokenRepository);
 	}
 
 	@Override

@@ -54,7 +54,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class TrackerImpl implements Tracker, SinkErrorListener {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerImpl.class);
-	private static ThreadLocal<LightStack<TrackingActivity>> ACTIVITY_STACK = new ThreadLocal<LightStack<TrackingActivity>>();
+	private static ThreadLocal<LightStack<TrackingActivity>> ACTIVITY_STACK = new ThreadLocal<>();
 
 	public static final String DEFAULT_SNAPSHOT_CAT_KEY = "tracker.default.snapshot.category";
 	public static final String DEFAULT_SNAPSHOT_CATEGORY = "None";
@@ -106,7 +106,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			logger.log(OpLevel.ERROR,
 					"Failed to open handle={4}, vm.name={0}, tid={1}, event.sink={2}, source={3}, reason={5}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), handle,
-					Utils.getExceptionMessages(ioe));
+					Utils.getExceptionMessages(ioe), ioe);
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR, "Failed to open handle={4}, vm.name={0}, tid={1}, event.sink={2}, source={3}",
@@ -115,6 +115,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 
 	private synchronized void openEventSink() {
+		closeEventSink();
+
 		try {
 			if (tConfig.getSinkErrorListener() != null) {
 				eventSink.addSinkErrorListener(tConfig.getSinkErrorListener());
@@ -132,7 +134,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			logger.log(OpLevel.ERROR,
 					"Failed to open event sink vm.name={0}, tid={1}, event.sink={2}, source={3}, reason={4}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(),
-					Utils.getExceptionMessages(ioe));
+					Utils.getExceptionMessages(ioe), ioe);
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR, "Failed to open event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
@@ -153,15 +155,18 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 					eventSink.removeSinkErrorListener(tConfig.getSinkErrorListener());
 				}
 				eventSink.removeSinkErrorListener(this);
-				eventSink.flush();
-				eventSink.close();
+
+				if (eventSink.isOpen()) {
+					eventSink.flush();
+					eventSink.close();
+				}
 			}
 		} catch (IOException ioe) {
 			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR,
 					"Failed to close event sink vm.name={0}, tid={1}, event.sink={2}, source={3}, reason={4}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(),
-					Utils.getExceptionMessages(ioe));
+					Utils.getExceptionMessages(ioe), ioe);
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR, "Failed to close event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
@@ -171,7 +176,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	private synchronized void resetEventSink() {
 		try {
-			if (eventSink != null) {
+			if (Utils.isOpen(eventSink)) {
 				eventSink.flush();
 				eventSink.close();
 			}
@@ -180,7 +185,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			logger.log(OpLevel.ERROR,
 					"Failed to reset event sink vm.name={0}, tid={1}, event.sink={2}, source={3}, reason={4}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(),
-					Utils.getExceptionMessages(ioe));
+					Utils.getExceptionMessages(ioe), ioe);
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR, "Failed to reset event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
@@ -188,33 +193,40 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 	}
 
-	private void reportActivity(TrackingActivity activity) throws IOException, URISyntaxException {
-		try {
-			if (!eventSink.isOpen()) {
-				eventSink.open();
-			}
-		} finally {
-			if (!activity.isStopped()) {
-				activity.stop();
-			}
-			eventSink.log(activity);
-			snapCount.addAndGet(activity.getSnapshotCount());
-			activityCount.incrementAndGet();
+	private void _checkSinkState() throws IOException, URISyntaxException {
+		if (!eventSink.isOpen()) {
+			eventSink.open();
 		}
 	}
 
-	private void reportEvent(TrackingEvent event) throws IOException, URISyntaxException {
-		try {
-			if (!eventSink.isOpen()) {
-				eventSink.open();
-			}
-		} finally {
-			if (!event.isStopped()) {
-				event.stop();
-			}
-			eventSink.log(event);
-			eventCount.incrementAndGet();
+	private void _reportItem(TrackingActivity activity) throws IOException, URISyntaxException {
+		if (!activity.isStopped()) {
+			activity.stop();
 		}
+
+		_checkSinkState();
+
+		eventSink.log(activity);
+		snapCount.addAndGet(activity.getSnapshotCount());
+		activityCount.incrementAndGet();
+	}
+
+	private void _reportItem(TrackingEvent event) throws IOException, URISyntaxException {
+		if (!event.isStopped()) {
+			event.stop();
+		}
+
+		_checkSinkState();
+
+		eventSink.log(event);
+		eventCount.incrementAndGet();
+	}
+
+	private void _reportItem(Snapshot snap) throws IOException, URISyntaxException {
+		_checkSinkState();
+
+		eventSink.log(snap);
+		snapCount.incrementAndGet();
 	}
 
 	private boolean isTrackingEnabled(OpLevel level, Object... args) {
@@ -238,7 +250,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
 		if (stack == null) {
-			stack = new LightStack<TrackingActivity>();
+			stack = new LightStack<>();
 			ACTIVITY_STACK.set(stack);
 		}
 		// associate with the parent activity if there is any
@@ -299,7 +311,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public Map<String, Object> getStats() {
-		Map<String, Object> stats = new LinkedHashMap<String, Object>();
+		Map<String, Object> stats = new LinkedHashMap<>();
 		getStats(stats);
 		return stats;
 	}
@@ -451,10 +463,10 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public void tnt(TrackingActivity activity) {
 		long start = System.nanoTime();
 		try {
-			if (!activity.isNoop()) {
-				reportActivity(activity);
-			} else {
+			if (activity.isNoop()) {
 				noopCount.incrementAndGet();
+			} else {
+				_reportItem(activity);
 			}
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
@@ -472,10 +484,10 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public void tnt(TrackingEvent event) {
 		long start = System.nanoTime();
 		try {
-			if (!event.isNoop()) {
-				reportEvent(event);
-			} else {
+			if (event.isNoop()) {
 				noopCount.incrementAndGet();
+			} else {
+				_reportItem(event);
 			}
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
@@ -492,8 +504,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public void tnt(Snapshot snapshot) {
 		long start = System.nanoTime();
 		try {
-			eventSink.log(snapshot);
-			snapCount.incrementAndGet();
+			_reportItem(snapshot);
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
 			if (logger.isSet(OpLevel.DEBUG)) {
@@ -510,6 +521,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	public void log(OpLevel sev, String msg, Object... args) {
 		long start = System.nanoTime();
 		try {
+			_checkSinkState();
 			eventSink.log(eventSink.getTTL(), getSource(), sev, msg, args);
 			msgCount.incrementAndGet();
 		} catch (Throwable ex) {
@@ -688,7 +700,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public boolean isOpen() {
-		return eventSink != null && eventSink.isOpen();
+		return Utils.isOpen(eventSink);
 	}
 
 	@Override
@@ -703,9 +715,6 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public synchronized void close() {
-		if (!isOpen()) {
-			return;
-		}
 		try {
 			closeEventSink();
 			Utils.close(selector);

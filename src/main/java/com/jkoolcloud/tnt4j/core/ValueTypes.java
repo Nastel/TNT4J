@@ -37,6 +37,13 @@ public interface ValueTypes {
 	String VALUE_TYPE_CURRENCY_EUR = "currency.eur";
 	String VALUE_TYPE_CURRENCY_UK = "currency.uk";
 
+	String VALUE_TYPE_CRYPTO     = "crypto";
+	String VALUE_TYPE_CRYPTO_BTC = "crypto.btc";
+	String VALUE_TYPE_CRYPTO_ETH = "crypto.eth";
+	String VALUE_TYPE_CRYPTO_WEI = "crypto.eth.wei";
+	String VALUE_TYPE_CRYPTO_EOS = "crypto.eos";
+	String VALUE_TYPE_CRYPTO_LTC = "crypto.ltc";
+
 	// size/length value types
 	String VALUE_TYPE_SIZE = "size";
 	String VALUE_TYPE_SIZE_BYTE = "size.byte";

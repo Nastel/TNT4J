@@ -168,14 +168,14 @@ public abstract class LoggedEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public void open() throws IOException {
+	protected void _open() throws IOException {
 		if (logSink != null && !logSink.isOpen()) {
 			logSink.open();
 		}
 	}
 
 	@Override
-	public void close() throws IOException {
+	protected void _close() throws IOException {
 		Utils.close(logSink);
 	}
 }

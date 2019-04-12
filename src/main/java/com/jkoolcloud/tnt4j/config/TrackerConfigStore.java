@@ -18,6 +18,8 @@ package com.jkoolcloud.tnt4j.config;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -107,10 +109,8 @@ import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
  * @see EventFormatter
  * @see EventSinkFactory
  *
- * @version $Revision: 11 $
- *
+ * @version $Revision: 12 $
  */
-
 public class TrackerConfigStore extends TrackerConfig {
 	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerConfigStore.class);
 
@@ -118,7 +118,8 @@ public class TrackerConfigStore extends TrackerConfig {
 
 	public static final String TNT4J_PROPERTIES_KEY = "tnt4j.config";
 	public static final String TNT4J_PROPERTIES = "tnt4j.properties";
-	public static final String TNT4J_PROPERTIES_PATH = "tnt4j.config.path";
+	public static final String TNT4J_PROPERTIES_PATH = "./config/";
+	public static final String TNT4J_PROPERTIES_PATH_KEY = "tnt4j.config.path";
 
 	private static final String DEFAULT_SOURCE = "*";
 	private static final String SOURCE_KEY = "source";
@@ -127,7 +128,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	private static final String IMPORT_KEY = "import";
 	private static final String IMPORT_PATH = "import.path";
 
-	private String configPath = System.getProperty(TNT4J_PROPERTIES_PATH);
+	private String configPath = System.getProperty(TNT4J_PROPERTIES_PATH_KEY);
 	private String configFile = null;
 	private Map<String, Properties> configMap = null;
 
@@ -157,7 +158,7 @@ public class TrackerConfigStore extends TrackerConfig {
 
 	/**
 	 * Create an default configuration with a specific source name. Configuration is loaded from a file or string
-	 * specified by {@code tnt4j.config} property if fileName is null.
+	 * specified by {@code tnt4j.config} property if fileName is {@code null}.
 	 *
 	 * @param source
 	 *            name of the source instance associated with the configuration
@@ -215,7 +216,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Create an default configuration with a specific source name and a given file name;
+	 * Create an default configuration with a specific source name and a given file name.
 	 *
 	 * @param source
 	 *            source instance associated with the configuration
@@ -239,7 +240,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Create an default configuration with a specific source name and a given file name;
+	 * Create an default configuration with a specific source name and a given file name.
 	 *
 	 * @param source
 	 *            source instance associated with the configuration
@@ -252,7 +253,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Get current configuration map for all sources
+	 * Get current configuration map for all sources.
 	 *
 	 * @return current configuration map
 	 */
@@ -261,7 +262,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Get current configuration for a specific source
+	 * Get current configuration for a specific source.
 	 * 
 	 * @param key
 	 *            configuration key
@@ -272,26 +273,57 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Get current configuration file based on a given path and file
+	 * Get current configuration file based on a given path and file.
 	 * 
 	 * @param path
 	 *            configuration path (folder)
 	 * @param fileName
 	 *            configuration file name
-	 * 
 	 * @return configuration file name
+	 *
+	 * @throws IOException
+	 *             if I/O error occurs while accessing configuration file
 	 */
-	protected String getConfigFromPath(String path, String fileName) {
-		String cfgPath = (path == null ? configPath : path);
+	protected String getConfigFromPath(String path, String fileName) throws IOException {
+		String cfgPath = (path == null ? getConfigPath() : path);
 		if (cfgPath == null) {
 			return fileName;
 		} else {
 			return cfgPath.endsWith(File.separator) ? (cfgPath + fileName) : (cfgPath + File.separator + fileName);
 		}
 	}
-	
+
 	/**
-	 * Initialize configuration based on a given file and extended attributes
+	 * Get configuration files root path.
+	 * <p>
+	 * Configuration files root path is one of:
+	 * <ul>
+	 * <li>system property {@value #TNT4J_PROPERTIES_PATH_KEY} defined value</li>
+	 * <li>if system property {@value #TNT4J_PROPERTIES_PATH_KEY} is not defined, then system property
+	 * {@value #TNT4J_PROPERTIES_KEY} defined configuration file parent path is used</li>
+	 * <li>if system property {@value #TNT4J_PROPERTIES_KEY} is not defined, {@value #TNT4J_PROPERTIES_PATH} path is
+	 * used</li>
+	 * </ul>
+	 * 
+	 * @return configuration files path
+	 *
+	 * @throws IOException
+	 *             if I/O error occurs while resolving parent path
+	 */
+	protected String getConfigPath() throws IOException {
+		if (configPath == null) {
+			if (configFile != null) {
+				configPath = Utils.getParentPath(configFile);
+			} else {
+				configPath = TNT4J_PROPERTIES_PATH;
+			}
+		}
+
+		return configPath;
+	}
+
+	/**
+	 * Initialize configuration based on a given file and extended attributes.
 	 * 
 	 * @param fileName
 	 *            configuration file name
@@ -311,7 +343,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Initialize configuration based on a given file
+	 * Initialize configuration based on a given file.
 	 * 
 	 * @param fileName
 	 *            configuration file name
@@ -335,7 +367,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Create a configurable object based on class and prefix
+	 * Create a configurable object based on class and prefix.
 	 *
 	 * @param classProp
 	 *            class implementation key
@@ -348,17 +380,17 @@ public class TrackerConfigStore extends TrackerConfig {
 			return Utils.createConfigurableObject(classProp, prefix, props);
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR,
-			        "Failed to create configurable instance class={0}, property={1}, prefix={2}, props={3}",
-			        props.get(classProp), classProp, prefix, props, e);
+					"Failed to create configurable instance class={0}, property={1}, prefix={2}, props={3}",
+					props.get(classProp), classProp, prefix, props, e);
 		}
 		return null;
 	}
 
 	/**
-	 * Load and apply configuration properties
+	 * Load and apply configuration properties.
 	 *
 	 * @param map
-	 *           map of keys and associated properties
+	 *            map of keys and associated properties
 	 */
 	private void loadConfigProps(Map<String, Properties> map) {
 		setProperties(loadProperties(map));
@@ -371,28 +403,32 @@ public class TrackerConfigStore extends TrackerConfig {
 	public void applyProperties() {
 		if (props != null) {
 			logger.log(OpLevel.DEBUG, "Loading properties source={0}, tid={1}, properties.size={2}", srcName,
-				        Thread.currentThread().getId(), props.size());
+					Thread.currentThread().getId(), props.size());
 			setUUIDFactory((UUIDFactory) createConfigurableObject("uuid.factory", "uuid.factory."));
 			setSignFactory((SignFactory) createConfigurableObject("sign.factory", "sign.factory."));
 			setGeoLocator((GeoLocator) createConfigurableObject("geo.locator", "geo.locator."));
-			setDefaultEventSinkFactory((EventSinkFactory) createConfigurableObject("default.event.sink.factory", "default.event.sink.factory."));
+			setDefaultEventSinkFactory((EventSinkFactory) createConfigurableObject("default.event.sink.factory",
+					"default.event.sink.factory."));
 			setSourceFactory((SourceFactory) createConfigurableObject("source.factory", "source.factory."));
 			setTrackerFactory((TrackerFactory) createConfigurableObject("tracker.factory", "tracker.factory."));
-			setEventSinkFactory((EventSinkFactory) createConfigurableObject("event.sink.factory", "event.sink.factory."));
+			setEventSinkFactory(
+					(EventSinkFactory) createConfigurableObject("event.sink.factory", "event.sink.factory."));
 			setEventFormatter((EventFormatter) createConfigurableObject("event.formatter", "event.formatter."));
 			setTrackingSelector((TrackingSelector) createConfigurableObject("tracking.selector", "tracking.selector."));
 			setDumpSinkFactory((DumpSinkFactory) createConfigurableObject("dump.sink.factory", "dump.sink.factory."));
 			setActivityListener((ActivityListener) createConfigurableObject("activity.listener", "activity.listener."));
-			setSinkLogEventListener((SinkLogEventListener) createConfigurableObject("sink.log.listener", "sink.log.listener."));
-			setSinkErrorListener((SinkErrorListener) createConfigurableObject("sink.error.listener", "sink.error.listener."));
+			setSinkLogEventListener(
+					(SinkLogEventListener) createConfigurableObject("sink.log.listener", "sink.log.listener."));
+			setSinkErrorListener(
+					(SinkErrorListener) createConfigurableObject("sink.error.listener", "sink.error.listener."));
 			setSinkEventFilter((SinkEventFilter) createConfigurableObject("sink.event.filter", "sink.event.filter."));
 			logger.log(OpLevel.DEBUG, "Loaded properties source={0}, tid={1}, properties.size={2}", srcName,
-			        Thread.currentThread().getId(), props.size());
+					Thread.currentThread().getId(), props.size());
 		}
 	}
 
 	/**
-	 * Load properties for its source
+	 * Load properties for its source.
 	 *
 	 * @param map
 	 *            map of keys and associated properties
@@ -421,7 +457,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Load configuration from a file
+	 * Load configuration from a file.
 	 *
 	 * @param configFile
 	 *            configuration file name or URL
@@ -432,7 +468,7 @@ public class TrackerConfigStore extends TrackerConfig {
 		try {
 			map = loadConfigResource(configFile);
 			logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, file={1}, config.size={2}, tid={3}", srcName,
-			        configFile, map.size(), Thread.currentThread().getId());
+					configFile, map.size(), Thread.currentThread().getId());
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, "Unable to load configuration: source={0}, file={1}", srcName, configFile, e);
 			RuntimeException re = new RuntimeException(e);
@@ -442,7 +478,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Load configuration from a reader
+	 * Load configuration from a reader.
 	 *
 	 * @param reader
 	 *            configuration reader
@@ -451,37 +487,44 @@ public class TrackerConfigStore extends TrackerConfig {
 	private Map<String, Properties> loadConfiguration(Reader reader) {
 		Map<String, Properties> map = null;
 		try {
-			BufferedReader bfReader = (reader instanceof BufferedReader ? (BufferedReader) reader : new BufferedReader(reader));
+			BufferedReader bfReader = (reader instanceof BufferedReader ? (BufferedReader) reader
+					: new BufferedReader(reader));
 			map = loadConfigResource(bfReader);
 			logger.log(OpLevel.DEBUG, "Loaded configuration source={0}, reader={1}, config.size={2}, tid={3}", srcName,
-			        reader.getClass().getSimpleName(), map.size(), Thread.currentThread().getId());
+					reader.getClass().getSimpleName(), map.size(), Thread.currentThread().getId());
 		} catch (Throwable e) {
 			logger.log(OpLevel.ERROR, "Failed to load configuration: source={0}, reader={1}", srcName,
-			        reader.getClass().getSimpleName(), e);
+					reader.getClass().getSimpleName(), e);
 		}
 		return map;
 	}
 
 	/**
-	 * Load configuration resources from a file
+	 * Load configuration resources from a file.
 	 *
 	 * @param fileName
 	 *            configuration file name
 	 * @return map of keys and associated properties
+	 *
+	 * @throws IOException
+	 *             if I/O error occurs accessing configuration resource
 	 */
 	private Map<String, Properties> loadConfigResource(String fileName) throws IOException {
 		return loadConfigResource(getConfigReader(fileName));
 	}
 
 	/**
-	 * Load configuration resources from a reader
+	 * Load configuration resources from a reader.
 	 *
 	 * @param reader
 	 *            configuration reader
 	 * @return map of keys and associated properties
+	 *
+	 * @throws IOException
+	 *             if I/O error occurs while reading configuration
 	 */
 	private Map<String, Properties> loadConfigResource(BufferedReader reader) throws IOException {
-		Map<String, Properties> map = new LinkedHashMap<String, Properties>(111);
+		Map<String, Properties> map = new LinkedHashMap<>(111);
 		Properties config = null;
 		do {
 			config = readStanza(reader);
@@ -491,8 +534,8 @@ public class TrackerConfigStore extends TrackerConfig {
 			String includePath = config.getProperty(IMPORT_PATH);
 			String enabled = config.getProperty(ENABLED_KEY);
 			if (enabled != null && enabled.equalsIgnoreCase("true")) {
-				logger.log(OpLevel.WARNING, "Disabling properties for source={0}, like={1}, enabled={2}", 
-						key, like, enabled);
+				logger.log(OpLevel.WARNING, "Disabling properties for source={0}, like={1}, enabled={2}", key, like,
+						enabled);
 				continue;
 			}
 			if (include != null) {
@@ -502,8 +545,8 @@ public class TrackerConfigStore extends TrackerConfig {
 					includeFile = getConfigFromPath(includePath, includeFile);
 					map.putAll(loadConfiguration(includeFile));
 					logger.log(OpLevel.DEBUG,
-					        "Import configuration source={0}, config.file={1}, import.file={2}, map.size={3}, tid={4}",
-					        key, configFile, includeFile, map.size(), Thread.currentThread().getId());
+							"Import configuration source={0}, config.file={1}, import.file={2}, map.size={3}, tid={4}",
+							key, configFile, includeFile, map.size(), Thread.currentThread().getId());
 				}
 			}
 			if (like != null) {
@@ -513,8 +556,8 @@ public class TrackerConfigStore extends TrackerConfig {
 				for (String copyFromKey : likeList) {
 					mergedConfig = copyConfig(key, copyFromKey, mergedConfig, map);
 					logger.log(OpLevel.DEBUG,
-					        "Merge configuration source={0}, config.file={1}, like.source={2}, config.size={3}, tid={4}",
-					        key, configFile, copyFromKey, mergedConfig.size(), Thread.currentThread().getId());
+							"Merge configuration source={0}, config.file={1}, like.source={2}, config.size={3}, tid={4}",
+							key, configFile, copyFromKey, mergedConfig.size(), Thread.currentThread().getId());
 				}
 				config = mergeConfig(key, config, mergedConfig);
 			}
@@ -526,7 +569,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Merge configurations
+	 * Merge configurations.
 	 *
 	 * @param key
 	 *            configuration source key
@@ -534,7 +577,6 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            target configuration for merge
 	 * @param fromConfig
 	 *            source configuration for merge
-	 * 
 	 * @return merged configuration
 	 */
 	private Properties mergeConfig(String key, Properties toConfig, Properties fromConfig) {
@@ -545,7 +587,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Copy configurations
+	 * Copy configurations.
 	 *
 	 * @param key
 	 *            configuration source key
@@ -555,7 +597,6 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            target configuration for merge
 	 * @param fromMap
 	 *            source configuration for merge
-	 * 
 	 * @return merged configuration
 	 */
 	private Properties copyConfig(String key, String like, Properties toConfig, Map<String, Properties> fromMap) {
@@ -563,8 +604,8 @@ public class TrackerConfigStore extends TrackerConfig {
 		if (copyFrom == null) {
 			copyFrom = fromMap.get(DEFAULT_SOURCE);
 			logger.log(OpLevel.WARNING, "Properties for source={0}, like={1} not found, assigning default set={2}", key,
-			        like, DEFAULT_SOURCE);
-			if  (copyFrom == null) {
+					like, DEFAULT_SOURCE);
+			if (copyFrom == null) {
 				throw new RuntimeException("Missing properties for source=" + key + ", like=" + like);
 			}
 		}
@@ -574,54 +615,88 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	/**
-	 * Get reader for a specific URL
+	 * Get reader for a specific URL.
 	 *
 	 * @param url
 	 *            configuration URL
-	 * @throws IOException
 	 * @return reader associated with given URL
+	 *
+	 * @throws IOException
+	 *             if I/O error occurs accessing configuration file
 	 */
 	private BufferedReader getReaderFromURL(String url) throws IOException {
 		Reader rdr;
+		InputStream ins;
 		try {
 			URL cfgResource = new URL(url);
-			InputStream ins;
 			try {
 				ins = cfgResource.openStream();
 			} catch (IOException ioe) {
-				ins = Utils.getResourceAsStream(TrackerConfigStore.class, cfgResource.getFile());
+				ins = getResourceAsStream(getName(cfgResource.getPath()));
 			}
 			rdr = new InputStreamReader(ins);
 		} catch (MalformedURLException ioe) {
-			rdr = new FileReader(url);
+			try {
+				rdr = new FileReader(url);
+			} catch (FileNotFoundException fnfe) {
+				ins = getResourceAsStream(getName(url));
+				rdr = new InputStreamReader(ins);
+			}
 		}
 		return new BufferedReader(rdr);
 	}
 
+	private static String getName(String pStr) {
+		Path p = Paths.get(pStr);
+
+		return p.getFileName().toString();
+	}
+
 	/**
-	 * Get reader for a specific resource
+	 * Returns an {@link java.io.InputStream} for reading the specified configuration resource.
 	 *
 	 * @param resName
 	 *            configuration resource name
-	 * @throws IOException
+	 * @return input stream to read the configuration resource, or {@code null} if the configuration resource could not
+	 *         be found
+	 */
+	private static InputStream getResourceAsStream(String resName) {
+		InputStream ins = Utils.getResourceAsStream(TrackerConfigStore.class, resName);
+
+		if (ins == null) {
+			ins = Utils.getResourceAsStream(resName);
+		}
+
+		return ins;
+	}
+
+	/**
+	 * Get reader for a specific resource.
+	 *
+	 * @param resName
+	 *            configuration resource name
 	 * @return reader associated with given URL
+	 *
+	 * @throws IOException
+	 *             if resource not found or can't be accessed
 	 */
 	private BufferedReader getReaderFromResource(String resName) throws IOException {
-		InputStream ins = Utils.getResourceAsStream(TrackerConfigStore.class, resName);
+		InputStream ins = getResourceAsStream(resName);
 		if (ins == null) {
-			FileNotFoundException ioe = new FileNotFoundException("Resource '" + resName + "' not found");
-			throw ioe;
+			throw new FileNotFoundException("Resource '" + resName + "' not found");
 		}
-		return new BufferedReader(new InputStreamReader(ins));		
+		return new BufferedReader(new InputStreamReader(ins));
 	}
-	
+
 	/**
-	 * Get reader for a specific resource or URL
+	 * Get reader for a specific resource or URL.
 	 *
 	 * @param resName
 	 *            configuration resource name
-	 * @throws IOException
 	 * @return reader associated with given URL
+	 *
+	 * @throws IOException
+	 *             if I/O error occurs accessing configuration resource
 	 */
 	private BufferedReader getConfigReader(String resName) throws IOException {
 		Throwable exc = null;
@@ -635,18 +710,22 @@ public class TrackerConfigStore extends TrackerConfig {
 		try {
 			return getReaderFromResource(TNT4J_PROPERTIES);
 		} catch (IOException e) {
-			if (exc != null) e.initCause(exc);
+			if (exc != null) {
+				e.initCause(exc);
+			}
 			throw e;
 		}
 	}
 
 	/**
-	 * Read configuration stanza
+	 * Read configuration stanza.
 	 *
 	 * @param reader
 	 *            configuration reader
-	 * @throws IOException
 	 * @return properties associated with configuration
+	 *
+	 * @throws IOException
+	 *             if I/O error occurs reading configuration stanza lines
 	 */
 	private Properties readStanza(BufferedReader reader) throws IOException {
 		String line;
@@ -656,13 +735,13 @@ public class TrackerConfigStore extends TrackerConfig {
 			if (line != null) {
 				line = line.trim();
 				if ((line.isEmpty()) || line.startsWith(";") || line.startsWith("#") || line.startsWith("//")
-				        || line.startsWith("{") || line.startsWith("}")) {
+						|| line.startsWith("{") || line.startsWith("}")) {
 					continue;
 				}
 				int sepIndex = line.indexOf(":");
 				if (sepIndex <= 0) {
 					logger.log(OpLevel.WARNING, "Skipping invalid source={0}, file={1}, entry='{2}'", srcName,
-					        configFile, line);
+							configFile, line);
 					continue;
 				}
 				String key = line.substring(0, sepIndex).trim();

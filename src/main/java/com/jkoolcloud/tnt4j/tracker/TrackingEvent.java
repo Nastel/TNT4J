@@ -852,4 +852,20 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 
 		return super.getFieldValue(fieldName);
 	}
+
+	/* (non-Javadoc)
+	 * @see com.jkoolcloud.tnt4j.core.Trackable#getGUID()
+	 */
+	@Override
+	public String getGUID() {
+		return operation.getGUID();
+	}
+
+	/* (non-Javadoc)
+	 * @see com.jkoolcloud.tnt4j.core.Trackable#setGUID(java.lang.String)
+	 */
+	@Override
+	public void setGUID(String uid) {
+		operation.setGUID(uid);
+	}
 }

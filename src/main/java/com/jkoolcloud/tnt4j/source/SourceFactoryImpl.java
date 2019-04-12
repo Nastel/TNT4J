@@ -166,7 +166,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 		// initialize default geo location to the current location
 		String location = geoLocator.getCurrentCoords();
 		if (location != null) {
-			defaultSources[SourceType.GEOADDR.ordinal()] = geoLocator.getCurrentCoords();
+			defaultSources[SourceType.GEOADDR.ordinal()] = location;
 		}
 
 		// initialize source types for this factory
@@ -235,13 +235,12 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	 */
 	protected String getNameFromType(String name, SourceType type) {
 		if (name == null || name.equals("?")) {
-			if (type == SourceType.GEOADDR) {
-				String location = geoLocator.getCurrentCoords();
-				if (location != null) {
-					return location;
-				}
+			String srcValue = defaultSources[type.ordinal()];
+			if (srcValue == null && type == SourceType.GEOADDR) {
+				srcValue = geoLocator.getCurrentCoords();
 			}
-			return defaultSources[type.ordinal()];
+
+			return srcValue;
 		}
 		return Utils.resolve(name, UNKNOWN_SOURCE);
 	}

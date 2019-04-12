@@ -105,7 +105,7 @@ public class MqttEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public void open() throws IOException {
+	protected void _open() throws IOException {
 		try {
 			mqttClient = factory.newMqttClient();
 		} catch (MqttException e) {
@@ -114,7 +114,7 @@ public class MqttEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public void close() throws IOException {
+	protected void _close() throws IOException {
 		if (mqttClient != null) {
 			try {
 				mqttClient.close();

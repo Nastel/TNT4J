@@ -17,11 +17,7 @@
 package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.io.IOException;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Vector;
+import java.util.*;
 
 import com.jkoolcloud.tnt4j.core.KeyValueStats;
 import com.jkoolcloud.tnt4j.core.OpLevel;
@@ -45,9 +41,9 @@ public class BroadcastingEventSink extends AbstractEventSink {
 
 	public static final String KEY_SINK_SIZE = "broadcast-sink-count";
 	public static final String KEY_OPEN_COUNT = "broadcast-open-sinks";
-	
+
 	BroadcastingEventSinkFactory brFactory;
-	List<EventSink> eventSinks = new Vector<EventSink>(3, 3);
+	final Collection<EventSink> eventSinks = Collections.synchronizedList(new ArrayList<EventSink>(3));
 
 	/**
 	 * Create broadcasting event sink factory
@@ -99,7 +95,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	 * @see BroadcastingEventSinkFactory
 	 */
 	public BroadcastingEventSink(BroadcastingEventSinkFactory brdFactory, String name, Properties props,
-	        EventFormatter frmt) {
+			EventFormatter frmt) {
 		super(name, frmt);
 		this.brFactory = brdFactory;
 		for (EventSinkFactory fc : brdFactory.getEventSinkFactories()) {
@@ -109,7 +105,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 
 	@Override
 	public Map<String, Object> getStats() {
-		LinkedHashMap<String, Object> stats = new LinkedHashMap<String, Object>(32);
+		LinkedHashMap<String, Object> stats = new LinkedHashMap<>(32);
 		getStats(stats);
 		return stats;
 	}
@@ -143,7 +139,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public void open() throws IOException {
+	protected void _open() throws IOException {
 		int openCount = 0;
 		IOException lastE = null;
 		for (EventSink sink : eventSinks) {
@@ -160,7 +156,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	public void close() throws IOException {
+	protected void _close() throws IOException {
 		IOException lastE = null;
 		for (EventSink sink : eventSinks) {
 			try {
@@ -169,8 +165,9 @@ public class BroadcastingEventSink extends AbstractEventSink {
 				lastE = e;
 			}
 		}
-		if (lastE != null)
+		if (lastE != null) {
 			throw lastE;
+		}
 	}
 
 	@Override
@@ -207,11 +204,13 @@ public class BroadcastingEventSink extends AbstractEventSink {
 			sink.write(msg, args);
 		}
 	}
-	
+
 	private int openCount() {
 		int openCount = 0;
 		for (EventSink sink : eventSinks) {
-			if (sink.isOpen()) openCount++;
+			if (sink.isOpen()) {
+				openCount++;
+			}
 		}
 		return openCount;
 	}

@@ -79,21 +79,14 @@ public class SocketEventSink extends LoggedEventSink {
 	}
 
 	@Override
-	public synchronized void open() throws IOException {
+	protected synchronized void _open() throws IOException {
 		socketSink = new Socket(hostName, portNo);
 		outStream = new DataOutputStream(socketSink.getOutputStream());
-		super.open();
+		super._open();
 	}
 
 	@Override
-	public synchronized void flush() throws IOException {
-		if (isOpen()) {
-			outStream.flush();
-		}
-	}
-
-	@Override
-	public synchronized void close() throws IOException {
+	protected synchronized void _close() throws IOException {
 		try {
 			if (isOpen()) {
 				outStream.close();
@@ -102,7 +95,14 @@ public class SocketEventSink extends LoggedEventSink {
 		} finally {
 			outStream = null;
 			socketSink = null;
-			super.close();
+			super._close();
+		}
+	}
+
+	@Override
+	public synchronized void flush() throws IOException {
+		if (isOpen()) {
+			outStream.flush();
 		}
 	}
 

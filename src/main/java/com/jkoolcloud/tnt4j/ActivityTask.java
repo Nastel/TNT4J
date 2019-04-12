@@ -38,7 +38,7 @@ public class ActivityTask implements Runnable {
 	OpLevel level;
 
 	/**
-	 * Create a task for a specific logger, default activity name and {@code OpLevel.SUCCESS} severity
+	 * Create a task for a specific logger, default activity name and {@link OpLevel#INFO} severity
 	 * 
 	 * @param lg
 	 *            tracking logger instance
@@ -48,7 +48,7 @@ public class ActivityTask implements Runnable {
 	}
 
 	/**
-	 * Create a task for a specific logger, activity name and {@code OpLevel.SUCCESS} severity
+	 * Create a task for a specific logger, activity name and {@link OpLevel#INFO} severity
 	 * 
 	 * @param lg
 	 *            tracking logger instance
@@ -73,7 +73,7 @@ public class ActivityTask implements Runnable {
 		logger = lg;
 		activityName = name;
 		this.level = level;
-		startActvity();
+		startActivity();
 	}
 
 	/**
@@ -88,15 +88,15 @@ public class ActivityTask implements Runnable {
 	/**
 	 * This method is called when activity is started Override this method to change behavior when activity starts
 	 */
-	protected void startActvity() {
+	protected void startActivity() {
 		activity = logger.newActivity(level, activityName);
 		activity.start();
 	}
 
 	/**
 	 * This method is called when activity ends Override this method to change behavior when activity ends. This method
-	 * also reports activity via configured {@code TrackingLogger} instance conditional upon {{@link #doSample()}
-	 * returning true.
+	 * also reports activity via configured {@code TrackingLogger} instance conditional upon {@link #doSample()}
+	 * returning {@code true}.
 	 * 
 	 * @return elapsed time of the activity in microseconds.
 	 */
@@ -110,9 +110,9 @@ public class ActivityTask implements Runnable {
 
 	/**
 	 * This method is called when activity ends {@link #endActivity()}. Override this method to change behavior when
-	 * activity ends. Return true to allow tracking of current activity, false to ignore tracking. By default if
-	 * {@code OpType.NOOP} are ignored.
-	 * 
+	 * activity ends. Return {@code true} to allow tracking of current activity, {@code false} - to ignore tracking. By
+	 * default if {@code OpType.NOOP} are ignored.
+	 *
 	 * @return true to track current activity, false to ignore
 	 */
 	protected boolean doSample() {
@@ -125,7 +125,7 @@ public class ActivityTask implements Runnable {
 			endActivity();
 		} catch (Throwable e) {
 		} finally {
-			startActvity();
+			startActivity();
 		}
 	}
 }

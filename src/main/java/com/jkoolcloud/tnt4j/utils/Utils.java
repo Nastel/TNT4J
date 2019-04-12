@@ -19,12 +19,11 @@ import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.net.InetAddress;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.net.UnknownHostException;
-import java.nio.charset.Charset;
+import java.net.*;
 import java.nio.charset.CharsetEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
@@ -35,9 +34,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.SerializationUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -483,7 +482,7 @@ public class Utils {
 	 * @return ASCII encoder
 	 */
 	public static CharsetEncoder getAsciiEncoder() {
-		return Charset.forName(ASCII).newEncoder();
+		return StandardCharsets.US_ASCII.newEncoder();
 	}
 
 	/**
@@ -684,7 +683,7 @@ public class Utils {
 	 * @return true if two specified objects are equal
 	 */
 	public static boolean equal(Object obj1, Object obj2) {
-		return obj1 == obj2 || (obj1 != null && obj1.equals(obj2));
+		return Objects.equals(obj1, obj2);
 	}
 
 	/**
@@ -965,7 +964,7 @@ public class Utils {
 	public static String getExceptionMessages(Throwable ex) {
 		Throwable root = ExceptionUtils.getRootCause(ex);
 		String msgsStr = ex == null ? "" : ex.toString();
-		if (root != null) {
+		if (root != null && !root.equals(ex)) {
 			msgsStr += ", root cause: " + root.toString();
 		}
 
@@ -1171,7 +1170,6 @@ public class Utils {
 	 * @return configuration object
 	 * @throws ConfigException
 	 *             if error creating or applying configuration
-	 *
 	 */
 	public static Object createConfigurableObject(String classProp, String prefix, Map<String, ?> config)
 			throws ConfigException {
@@ -1321,7 +1319,7 @@ public class Utils {
 	 * @return a map containing only those attributes that match a prefix.
 	 */
 	public static Map<String, Object> getAttributes(String prefix, Map<String, ?> p) {
-		HashMap<String, Object> settings = new HashMap<String, Object>(11);
+		HashMap<String, Object> settings = new HashMap<>(11);
 		for (Entry<String, ?> entry : p.entrySet()) {
 			String key = entry.getKey();
 			if (key.startsWith(prefix)) {
@@ -1342,7 +1340,7 @@ public class Utils {
 	 * @return a map containing only those attributes that match a prefix.
 	 */
 	public static Map<String, Object> getAttributes(String prefix, Properties p) {
-		HashMap<String, Object> settings = new HashMap<String, Object>(11);
+		HashMap<String, Object> settings = new HashMap<>(11);
 		for (Entry<Object, Object> entry : p.entrySet()) {
 			String key = entry.getKey().toString();
 			if (key.startsWith(prefix)) {
@@ -1696,5 +1694,47 @@ public class Utils {
 		}
 
 		return null;
+	}
+
+	/**
+	 * Resolves parent path of provided string representation of {@code path}.
+	 * <p>
+	 * String representation of {@code path} can be URL, absolute or relative file path.
+	 * <p>
+	 * Returned parent path is normalized.
+	 *
+	 * @param path
+	 *            string representation of path
+	 * @return string representation of parent path, or {@code null} if {@code path} does not have a parent path
+	 *
+	 * @throws java.io.IOException
+	 *             if the {@code path} defined URL is malformed or does not comply RFC2396 and cannot be converted to a
+	 *             URI; if the {@code path} string cannot be converted to a {@link Path}
+	 */
+	public static String getParentPath(String path) throws IOException {
+		Throwable exc = null;
+		Path p = null;
+
+		try {
+			URI pathURI = new URL(path).toURI();
+			p = pathURI.isOpaque() ? Paths.get(pathURI.getSchemeSpecificPart()) : Paths.get(pathURI);
+		} catch (Throwable e) {
+			exc = e;
+		}
+
+		if (p == null) {
+			try {
+				p = Paths.get(path);
+			} catch (Throwable e) {
+				if (exc != null) {
+					e.initCause(exc);
+				}
+
+				throw new IOException("Failed to initiate path from: " + path, e);
+			}
+		}
+
+		p = p.getParent();
+		return p == null ? null : p.normalize().toString();
 	}
 }

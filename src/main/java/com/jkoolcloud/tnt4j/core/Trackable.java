@@ -28,7 +28,7 @@ import com.jkoolcloud.tnt4j.source.Source;
  *
  * @version $Revision: 2 $
  */
-public interface Trackable extends TTL {
+public interface Trackable extends TTL, GlobalID {
 	/**
 	 * Set current/active {@link Source} with the trackable entity
 	 *

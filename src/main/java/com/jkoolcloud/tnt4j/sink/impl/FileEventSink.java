@@ -25,6 +25,7 @@ import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
+import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
@@ -67,16 +68,16 @@ public class FileEventSink extends AbstractEventSink {
 
 	@Override
 	public boolean isOpen() {
-		return fileSink != null && fileSink.isOpen();
+		return Utils.isOpen(fileSink);
 	}
 
 	@Override
-	public void open() throws IOException {
+	protected void _open() throws IOException {
 		fileSink.open();
 	}
 
 	@Override
-	public void close() throws IOException {
+	protected void _close() throws IOException {
 		fileSink.close();
 	}
 

@@ -65,7 +65,7 @@ public class ObjectDumpProvider extends DefaultDumpProvider {
 	 */
 	public ObjectDumpProvider(String name, String cat, Object obj) {
 		super(name, cat);
-		ref = new WeakReference<Object>(obj);
+		ref = new WeakReference<>(obj);
 	}
 
 	/**

@@ -31,7 +31,8 @@ import com.jkoolcloud.tnt4j.source.Source;
 public class PropertySnapshot implements Snapshot {
 	public static final String CATEGORY_DEFAULT = "Default";
 
-	private long ttl = Operation.TTL_DEFAULT;
+	private String guid;
+	private long ttl = TTL.TTL_DEFAULT;
 	private OpLevel level;
 	private OpType opType = OpType.SNAPSHOT;
 	private String id = null;
@@ -42,8 +43,8 @@ public class PropertySnapshot implements Snapshot {
 	private String sign;
 	private UsecTimestamp timeStamp = null;
 	private Source source;
-	private HashSet<String> correlators = new HashSet<String>(89);
-	private Map<Object, Property> propSet = new LinkedHashMap<Object, Property>();
+	private HashSet<String> correlators = new HashSet<>(89);
+	private Map<Object, Property> propSet = new LinkedHashMap<>();
 
 	/**
 	 * Constructs a Property snapshot with the specified name and current time stamp.
@@ -124,6 +125,16 @@ public class PropertySnapshot implements Snapshot {
 		level = lvl;
 		opType = type;
 		id = snapName + "@" + category;
+	}
+
+	@Override
+	public String getGUID() {
+		return guid;
+	}
+
+	@Override
+	public void setGUID(String uid) {
+		this.guid = uid;
 	}
 
 	/**
@@ -269,7 +280,8 @@ public class PropertySnapshot implements Snapshot {
 	public String toString() {
 		StringBuilder str = new StringBuilder(512);
 		str.append(this.getClass().getSimpleName()).append("{Category: " + category + ", Name: " + snapName)
-				.append(", TimeStamp: ").append(timeStamp).append(", Count: " + this.size()).append(", List: [");
+				.append(", Guid: ").append(guid).append(", TimeStamp: ").append(timeStamp)
+				.append(", Count: " + this.size()).append(", List: [");
 		for (Property item : propSet.values()) {
 			str.append(item);
 		}
@@ -417,6 +429,7 @@ public class PropertySnapshot implements Snapshot {
 	 * <li>Category</li>
 	 * <li>Id</li>
 	 * <li>Signature</li>
+	 * <li>Guid</li>
 	 * <li>Source</li>
 	 * <li>Timestamp</li>
 	 * <li>TTL</li>
@@ -453,6 +466,9 @@ public class PropertySnapshot implements Snapshot {
 		}
 		if ("Signature".equalsIgnoreCase(fieldName)) {
 			return sign;
+		}
+		if ("Guid".equalsIgnoreCase(fieldName)) {
+			return guid;
 		}
 		if ("Source".equalsIgnoreCase(fieldName)) {
 			return source;

@@ -29,6 +29,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 interface JSONLabels {
 	// JSON fields
 	String JSON_NAME_FIELD = "name";
+	String JSON_GUID_FIELD = "_guid";
 	String JSON_CATEGORY_FIELD = "category";
 	String JSON_STATUS_FIELD = "status";
 	String JSON_COUNT_FIELD = "count";
@@ -82,6 +83,7 @@ interface JSONLabels {
 
 	// JSON quoted fields
 	String JSON_NAME_LABEL = Utils.quote(JSON_NAME_FIELD);
+	String JSON_GUID_LABEL = Utils.quote(JSON_GUID_FIELD);
 	String JSON_CATEGORY_LABEL = Utils.quote(JSON_CATEGORY_FIELD);
 	String JSON_STATUS_LABEL = Utils.quote(JSON_STATUS_FIELD);
 	String JSON_COUNT_LABEL = Utils.quote(JSON_COUNT_FIELD);
