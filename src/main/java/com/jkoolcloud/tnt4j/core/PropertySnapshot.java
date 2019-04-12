@@ -43,8 +43,8 @@ public class PropertySnapshot implements Snapshot {
 	private String sign;
 	private UsecTimestamp timeStamp = null;
 	private Source source;
-	private HashSet<String> correlators = new HashSet<>(89);
-	private Map<Object, Property> propSet = new LinkedHashMap<>();
+	private HashSet<String> correlators = new HashSet<String>(89);
+	private Map<Object, Property> propSet = new LinkedHashMap<Object, Property>();
 
 	/**
 	 * Constructs a Property snapshot with the specified name and current time stamp.

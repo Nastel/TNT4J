@@ -165,13 +165,14 @@ public class TrackingLogger implements Tracker {
 	private static final String TRACKER_SOURCE = System.getProperty("tnt4j.tracking.logger.source",
 			TrackingLogger.class.getName());
 
-	private static final ConcurrentHashMap<DumpProvider, List<DumpSink>> DUMP_DEST_TABLE = new ConcurrentHashMap<>(49);
+	private static final ConcurrentHashMap<DumpProvider, List<DumpSink>> DUMP_DEST_TABLE = new ConcurrentHashMap<DumpProvider, List<DumpSink>>(
+			49);
 	private static final Map<TrackingLogger, StackTraceElement[]> TRACKERS = Collections
 			.synchronizedMap(new WeakHashMap<TrackingLogger, StackTraceElement[]>(89));
 
-	private static final List<DumpProvider> DUMP_PROVIDERS = new ArrayList<>(10);
-	private static final List<DumpSink> DUMP_DESTINATIONS = new ArrayList<>(10);
-	private static final List<DumpListener> DUMP_LISTENERS = new ArrayList<>(10);
+	private static final List<DumpProvider> DUMP_PROVIDERS = new ArrayList<DumpProvider>(10);
+	private static final List<DumpSink> DUMP_DESTINATIONS = new ArrayList<DumpSink>(10);
+	private static final List<DumpListener> DUMP_LISTENERS = new ArrayList<DumpListener>(10);
 
 	private static final DumpHook dumpHook = new DumpHook();
 	private static final FlushShutdown flushShutdown = new FlushShutdown();
@@ -279,7 +280,7 @@ public class TrackingLogger implements Tracker {
 	 */
 	public static List<TrackingLogger> getAllTrackers() {
 		synchronized (TRACKERS) {
-			ArrayList<TrackingLogger> copy = new ArrayList<>(TRACKERS.size());
+			ArrayList<TrackingLogger> copy = new ArrayList<TrackingLogger>(TRACKERS.size());
 			for (TrackingLogger logger : TRACKERS.keySet()) {
 				if (logger != null) {
 					copy.add(logger);
@@ -339,7 +340,7 @@ public class TrackingLogger implements Tracker {
 	 */
 	public static List<StackTraceElement[]> getAllTrackerStackTrace() {
 		synchronized (TRACKERS) {
-			ArrayList<StackTraceElement[]> copy = new ArrayList<>(TRACKERS.size());
+			ArrayList<StackTraceElement[]> copy = new ArrayList<StackTraceElement[]>(TRACKERS.size());
 			for (StackTraceElement[] trace : TRACKERS.values()) {
 				if (trace != null) {
 					copy.add(trace);
@@ -1340,7 +1341,7 @@ public class TrackingLogger implements Tracker {
 		// add to dump->dest table second
 		List<DumpSink> destList = DUMP_DEST_TABLE.get(dp);
 		if (destList == null) {
-			destList = new ArrayList<>(10);
+			destList = new ArrayList<DumpSink>(10);
 			DUMP_PROVIDERS.add(dp);
 		}
 		boolean exists = destList.contains(df);
@@ -1470,7 +1471,7 @@ public class TrackingLogger implements Tracker {
 				try {
 					dest.close();
 				} catch (Throwable ex) {
-					ArrayList<DumpSink> list = new ArrayList<>(1);
+					ArrayList<DumpSink> list = new ArrayList<DumpSink>(1);
 					list.add(dest);
 					notifyDumpListeners(DumpProvider.DUMP_ERROR, Thread.currentThread(), null, list, ex);
 				}

@@ -83,7 +83,7 @@ public class KafkaEventSink extends AbstractEventSink {
 	@Override
 	protected synchronized void _open() throws IOException {
 		_close();
-		producer = new KafkaProducer<>(kprops);
+		producer = new KafkaProducer<String, String>(kprops);
 	}
 
 	@Override
@@ -98,8 +98,7 @@ public class KafkaEventSink extends AbstractEventSink {
 			Map<MetricName, ? extends Metric> kMetrics = producer.metrics();
 			Set<MetricName> keys = kMetrics.keySet();
 			for (MetricName kMetric : keys) {
-				stats.put(Utils.qualify(this, kMetric.group() + "/" + kMetric.name()),
-						kMetrics.get(kMetric).metricValue());
+				stats.put(Utils.qualify(this, kMetric.group() + "/" + kMetric.name()), kMetrics.get(kMetric).value());
 			}
 		}
 		return this;
@@ -107,23 +106,26 @@ public class KafkaEventSink extends AbstractEventSink {
 
 	@Override
 	protected void _log(TrackingEvent event) throws IOException {
-		writeLine(new ProducerRecord<>(getName(), event.getOperation().getName(), getEventFormatter().format(event)));
+		writeLine(new ProducerRecord<String, String>(getName(), event.getOperation().getName(),
+				getEventFormatter().format(event)));
 	}
 
 	@Override
 	protected void _log(TrackingActivity activity) throws IOException {
-		writeLine(new ProducerRecord<>(getName(), activity.getName(), getEventFormatter().format(activity)));
+		writeLine(new ProducerRecord<String, String>(getName(), activity.getName(),
+				getEventFormatter().format(activity)));
 	}
 
 	@Override
 	protected void _log(Snapshot snapshot) throws IOException {
-		writeLine(new ProducerRecord<>(getName(), snapshot.getCategory(), getEventFormatter().format(snapshot)));
+		writeLine(new ProducerRecord<String, String>(getName(), snapshot.getCategory(),
+				getEventFormatter().format(snapshot)));
 	}
 
 	@Override
 	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws IOException {
-		writeLine(
-				new ProducerRecord<>(getName(), src.getFQName(), getEventFormatter().format(ttl, src, sev, msg, args)));
+		writeLine(new ProducerRecord<String, String>(getName(), src.getFQName(),
+				getEventFormatter().format(ttl, src, sev, msg, args)));
 	}
 
 	@Override

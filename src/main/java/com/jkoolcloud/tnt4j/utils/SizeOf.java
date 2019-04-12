@@ -82,7 +82,7 @@ public class SizeOf {
 	 *         objects reachable from it
 	 */
 	public static long deepSizeOf(Object objectToSize) {
-		Map<Object, Long> doneObj = new IdentityHashMap<>();
+		Map<Object, Long> doneObj = new IdentityHashMap<Object, Long>();
 		return deepSizeOf(objectToSize, doneObj, null, 0);
 	}
 
@@ -98,7 +98,7 @@ public class SizeOf {
 	 *         objects reachable from it
 	 */
 	public static long deepSizeOf(Object objectToSize, Map<Field, Long> doneFields) {
-		Map<Object, Long> doneObj = new IdentityHashMap<>();
+		Map<Object, Long> doneObj = new IdentityHashMap<Object, Long>();
 		return deepSizeOf(objectToSize, doneObj, doneFields, 0);
 	}
 

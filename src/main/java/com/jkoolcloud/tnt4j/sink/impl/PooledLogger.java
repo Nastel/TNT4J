@@ -107,8 +107,8 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 		poolName = name;
 		poolSize = threadPoolSize;
 		capacity = maxCapacity;
-		eventQ = new ArrayBlockingQueue<>(capacity);
-		delayQ = new DelayQueue<>();
+		eventQ = new ArrayBlockingQueue<SinkLogEvent>(capacity);
+		delayQ = new DelayQueue<DelayedElement<SinkLogEvent>>();
 		errorLimiter = DefaultLimiterFactory.getInstance().newLimiter(PooledLogger.ERROR_RATE, Limiter.MAX_RATE);
 	}
 
@@ -126,7 +126,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 			for (int i = 0; i < poolSize; i++) {
 				eventQ.offer(dieEvent);
 			}
-			delayQ.offer(new DelayedElement<>(dieEvent, 0));
+			delayQ.offer(new DelayedElement<SinkLogEvent>(dieEvent, 0));
 
 			stop();
 
@@ -146,7 +146,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 
 	@Override
 	public Map<String, Object> getStats() {
-		Map<String, Object> stats = new LinkedHashMap<>();
+		Map<String, Object> stats = new LinkedHashMap<String, Object>();
 		getStats(stats);
 		return stats;
 	}
@@ -442,7 +442,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	 */
 	public void putDelayed(SinkLogEvent event, long delay, TimeUnit unit) {
 		reQCount.incrementAndGet();
-		delayQ.put(new DelayedElement<>(event, unit.toMillis(delay)));
+		delayQ.put(new DelayedElement<SinkLogEvent>(event, unit.toMillis(delay)));
 	}
 
 	/**

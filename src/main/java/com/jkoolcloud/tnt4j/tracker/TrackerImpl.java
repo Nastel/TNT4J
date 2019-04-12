@@ -54,7 +54,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class TrackerImpl implements Tracker, SinkErrorListener {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerImpl.class);
-	private static ThreadLocal<LightStack<TrackingActivity>> ACTIVITY_STACK = new ThreadLocal<>();
+	private static ThreadLocal<LightStack<TrackingActivity>> ACTIVITY_STACK = new ThreadLocal<LightStack<TrackingActivity>>();
 
 	public static final String DEFAULT_SNAPSHOT_CAT_KEY = "tracker.default.snapshot.category";
 	public static final String DEFAULT_SNAPSHOT_CATEGORY = "None";
@@ -250,7 +250,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 		LightStack<TrackingActivity> stack = ACTIVITY_STACK.get();
 		if (stack == null) {
-			stack = new LightStack<>();
+			stack = new LightStack<TrackingActivity>();
 			ACTIVITY_STACK.set(stack);
 		}
 		// associate with the parent activity if there is any
@@ -301,17 +301,13 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName()
-				+ "{jid=" + Integer.toHexString(System.identityHashCode(this))
-				+ ", name=" + getSource().getName()
-				+ ", keep.context=" + keepContext
-				+ ", sink=" + eventSink
-				+ "}";
+		return getClass().getSimpleName() + "{jid=" + Integer.toHexString(System.identityHashCode(this)) + ", name="
+				+ getSource().getName() + ", keep.context=" + keepContext + ", sink=" + eventSink + "}";
 	}
 
 	@Override
 	public Map<String, Object> getStats() {
-		Map<String, Object> stats = new LinkedHashMap<>();
+		Map<String, Object> stats = new LinkedHashMap<String, Object>();
 		getStats(stats);
 		return stats;
 	}

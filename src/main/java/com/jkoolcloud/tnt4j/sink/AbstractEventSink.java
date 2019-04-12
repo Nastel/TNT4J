@@ -47,9 +47,9 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @see SinkLogEventListener
  */
 public abstract class AbstractEventSink implements EventSink, EventSinkStats {
-	protected final ArrayList<SinkErrorListener> errorListeners = new ArrayList<>(10);
-	protected final ArrayList<SinkLogEventListener> logListeners = new ArrayList<>(10);
-	protected final ArrayList<SinkEventFilter> filters = new ArrayList<>(10);
+	protected final ArrayList<SinkErrorListener> errorListeners = new ArrayList<SinkErrorListener>(10);
+	protected final ArrayList<SinkLogEventListener> logListeners = new ArrayList<SinkLogEventListener>(10);
+	protected final ArrayList<SinkEventFilter> filters = new ArrayList<SinkEventFilter>(10);
 
 	private String name;
 	private Source source;
@@ -188,7 +188,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 
 	@Override
 	public Map<String, Object> getStats() {
-		LinkedHashMap<String, Object> stats = new LinkedHashMap<>(32);
+		LinkedHashMap<String, Object> stats = new LinkedHashMap<String, Object>(32);
 		getStats(stats);
 		return stats;
 	}

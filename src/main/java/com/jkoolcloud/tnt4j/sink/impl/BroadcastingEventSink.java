@@ -105,7 +105,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 
 	@Override
 	public Map<String, Object> getStats() {
-		LinkedHashMap<String, Object> stats = new LinkedHashMap<>(32);
+		LinkedHashMap<String, Object> stats = new LinkedHashMap<String, Object> (32);
 		getStats(stats);
 		return stats;
 	}

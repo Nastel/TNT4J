@@ -524,7 +524,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *             if I/O error occurs while reading configuration
 	 */
 	private Map<String, Properties> loadConfigResource(BufferedReader reader) throws IOException {
-		Map<String, Properties> map = new LinkedHashMap<>(111);
+		Map<String, Properties> map = new LinkedHashMap<String, Properties> (111);
 		Properties config = null;
 		do {
 			config = readStanza(reader);

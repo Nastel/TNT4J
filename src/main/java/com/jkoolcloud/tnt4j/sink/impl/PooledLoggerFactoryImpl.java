@@ -42,7 +42,7 @@ public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurabl
 	private static final int RETRY_INTERVAL = Integer.getInteger("tnt4j.pooled.logger.retry.interval", 5000);
 	private static final boolean DROP_ON_EXCEPTION = Boolean.getBoolean("tnt4j.pooled.logger.drop.on.error");
 
-	private static final ConcurrentMap<String, PooledLogger> POOLED_LOGGERS = new ConcurrentHashMap<>();
+	private static final ConcurrentMap<String, PooledLogger> POOLED_LOGGERS = new ConcurrentHashMap<String, PooledLogger>();
 
 	int poolSize = MAX_POOL_SIZE;
 	int capacity = MAX_CAPACITY;
@@ -76,7 +76,7 @@ public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurabl
 
 	@Override
 	public Map<String, PooledLogger> getPooledLoggers() {
-		Map<String, PooledLogger> copy = new HashMap<>();
+		Map<String, PooledLogger> copy = new HashMap<String, PooledLogger>();
 		copy.putAll(POOLED_LOGGERS);
 		return copy;
 	}

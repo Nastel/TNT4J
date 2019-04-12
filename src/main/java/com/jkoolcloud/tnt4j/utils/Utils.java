@@ -19,11 +19,12 @@ import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
-import java.net.*;
+import java.net.InetAddress;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.net.UnknownHostException;
+import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.MessageFormat;
@@ -32,11 +33,12 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.SerializationUtils;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
-import org.apache.commons.text.StringEscapeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -482,7 +484,7 @@ public class Utils {
 	 * @return ASCII encoder
 	 */
 	public static CharsetEncoder getAsciiEncoder() {
-		return StandardCharsets.US_ASCII.newEncoder();
+		return Charset.forName(ASCII).newEncoder();
 	}
 
 	/**
@@ -683,7 +685,7 @@ public class Utils {
 	 * @return true if two specified objects are equal
 	 */
 	public static boolean equal(Object obj1, Object obj2) {
-		return Objects.equals(obj1, obj2);
+		return obj1 == obj2 || (obj1 != null && obj1.equals(obj2));
 	}
 
 	/**
@@ -1026,21 +1028,6 @@ public class Utils {
 	}
 
 	/**
-	 * Close an object without exceptions
-	 *
-	 * @param obj
-	 *            object to close
-	 */
-	public static void close(AutoCloseable obj) {
-		try {
-			if (obj != null) {
-				obj.close();
-			}
-		} catch (Throwable e) {
-		}
-	}
-
-	/**
 	 * Check if a handle is open
 	 *
 	 * @param handle
@@ -1319,7 +1306,7 @@ public class Utils {
 	 * @return a map containing only those attributes that match a prefix.
 	 */
 	public static Map<String, Object> getAttributes(String prefix, Map<String, ?> p) {
-		HashMap<String, Object> settings = new HashMap<>(11);
+		HashMap<String, Object> settings = new HashMap<String, Object>(11);
 		for (Entry<String, ?> entry : p.entrySet()) {
 			String key = entry.getKey();
 			if (key.startsWith(prefix)) {
@@ -1340,7 +1327,7 @@ public class Utils {
 	 * @return a map containing only those attributes that match a prefix.
 	 */
 	public static Map<String, Object> getAttributes(String prefix, Properties p) {
-		HashMap<String, Object> settings = new HashMap<>(11);
+		HashMap<String, Object> settings = new HashMap<String, Object>(11);
 		for (Entry<Object, Object> entry : p.entrySet()) {
 			String key = entry.getKey().toString();
 			if (key.startsWith(prefix)) {
