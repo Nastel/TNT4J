@@ -1696,32 +1696,34 @@ public class Utils {
 	 *
 	 * @throws java.io.IOException
 	 *             if the {@code path} defined URL is malformed or does not comply RFC2396 and cannot be converted to a
-	 *             URI; if the {@code path} string cannot be converted to a {@link Path}
+	 *             URI; if the {@code path} string cannot be converted to a {@code Path}
 	 */
 	public static String getParentPath(String path) throws IOException {
-		Throwable exc = null;
-		Path p = null;
+		// Throwable exc = null;
+		// Path p = null;
+		//
+		// try {
+		// URI pathURI = new URL(path).toURI();
+		// p = pathURI.isOpaque() ? Paths.get(pathURI.getSchemeSpecificPart()) : Paths.get(pathURI);
+		// } catch (Throwable e) {
+		// exc = e;
+		// }
+		//
+		// if (p == null) {
+		// try {
+		// p = Paths.get(path);
+		// } catch (Throwable e) {
+		// if (exc != null) {
+		// e.initCause(exc);
+		// }
+		//
+		// throw new IOException("Failed to initiate path from: " + path, e);
+		// }
+		// }
+		//
+		// p = p.getParent();
+		// return p == null ? null : p.normalize().toString();
 
-		try {
-			URI pathURI = new URL(path).toURI();
-			p = pathURI.isOpaque() ? Paths.get(pathURI.getSchemeSpecificPart()) : Paths.get(pathURI);
-		} catch (Throwable e) {
-			exc = e;
-		}
-
-		if (p == null) {
-			try {
-				p = Paths.get(path);
-			} catch (Throwable e) {
-				if (exc != null) {
-					e.initCause(exc);
-				}
-
-				throw new IOException("Failed to initiate path from: " + path, e);
-			}
-		}
-
-		p = p.getParent();
-		return p == null ? null : p.normalize().toString();
+		return FilenameUtils.getFullPathNoEndSeparator(path);
 	}
 }
