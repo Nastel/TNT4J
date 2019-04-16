@@ -18,13 +18,12 @@ package com.jkoolcloud.tnt4j.config;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 
+import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import com.jkoolcloud.tnt4j.core.ActivityListener;
@@ -524,7 +523,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *             if I/O error occurs while reading configuration
 	 */
 	private Map<String, Properties> loadConfigResource(BufferedReader reader) throws IOException {
-		Map<String, Properties> map = new LinkedHashMap<String, Properties> (111);
+		Map<String, Properties> map = new LinkedHashMap<String, Properties>(111);
 		Properties config = null;
 		do {
 			config = readStanza(reader);
@@ -647,9 +646,10 @@ public class TrackerConfigStore extends TrackerConfig {
 	}
 
 	private static String getName(String pStr) {
-		Path p = Paths.get(pStr);
-
-		return p.getFileName().toString();
+		// Path p = Paths.get(pStr);
+		//
+		// return p.getFileName().toString();
+		return FilenameUtils.getName(pStr);
 	}
 
 	/**
