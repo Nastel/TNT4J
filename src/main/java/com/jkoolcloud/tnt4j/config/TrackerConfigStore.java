@@ -659,14 +659,17 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            configuration resource name
 	 * @return input stream to read the configuration resource, or {@code null} if the configuration resource could not
 	 *         be found
+	 * @throws FileNotFoundException 
 	 */
-	private static InputStream getResourceAsStream(String resName) {
+	private static InputStream getResourceAsStream(String resName) throws FileNotFoundException {
 		InputStream ins = Utils.getResourceAsStream(TrackerConfigStore.class, resName);
 
 		if (ins == null) {
 			ins = Utils.getResourceAsStream(resName);
 		}
-
+		if (ins == null) {
+			throw new FileNotFoundException("Resource '" + resName + "' not found");
+		}
 		return ins;
 	}
 
@@ -682,9 +685,6 @@ public class TrackerConfigStore extends TrackerConfig {
 	 */
 	private BufferedReader getReaderFromResource(String resName) throws IOException {
 		InputStream ins = getResourceAsStream(resName);
-		if (ins == null) {
-			throw new FileNotFoundException("Resource '" + resName + "' not found");
-		}
 		return new BufferedReader(new InputStreamReader(ins));
 	}
 
