@@ -579,7 +579,7 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            source configuration for merge
 	 * @return merged configuration
 	 */
-	private Properties mergeConfig(String key, Properties toConfig, Properties fromConfig) {
+	private static Properties mergeConfig(String key, Properties toConfig, Properties fromConfig) {
 		Properties merged = new Properties();
 		merged.putAll(fromConfig);
 		merged.putAll(toConfig);
@@ -599,7 +599,8 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            source configuration for merge
 	 * @return merged configuration
 	 */
-	private Properties copyConfig(String key, String like, Properties toConfig, Map<String, Properties> fromMap) {
+	private static Properties copyConfig(String key, String like, Properties toConfig,
+			Map<String, Properties> fromMap) {
 		Properties copyFrom = fromMap.get(like);
 		if (copyFrom == null) {
 			copyFrom = fromMap.get(DEFAULT_SOURCE);
@@ -624,9 +625,9 @@ public class TrackerConfigStore extends TrackerConfig {
 	 * @throws IOException
 	 *             if I/O error occurs accessing configuration file
 	 */
-	private BufferedReader getReaderFromURL(String url) throws IOException {
-		Reader rdr;
-		InputStream ins;
+	private static BufferedReader getReaderFromURL(String url) throws IOException {
+		Reader rdr = null;
+		InputStream ins = null;
 		try {
 			URL cfgResource = new URL(url);
 			try {
@@ -634,15 +635,22 @@ public class TrackerConfigStore extends TrackerConfig {
 			} catch (IOException ioe) {
 				ins = getResourceAsStream(getName(cfgResource.getPath()));
 			}
-			rdr = new InputStreamReader(ins);
-		} catch (MalformedURLException ioe) {
+		} catch (MalformedURLException mue) {
 			try {
 				rdr = new FileReader(url);
 			} catch (FileNotFoundException fnfe) {
 				ins = getResourceAsStream(getName(url));
-				rdr = new InputStreamReader(ins);
 			}
 		}
+
+		if (rdr == null) {
+			if (ins == null) {
+				throw new FileNotFoundException("Configuration resource '" + url + "' not found");
+			}
+
+			rdr = new InputStreamReader(ins);
+		}
+
 		return new BufferedReader(rdr);
 	}
 
@@ -659,16 +667,11 @@ public class TrackerConfigStore extends TrackerConfig {
 	 *            configuration resource name
 	 * @return input stream to read the configuration resource, or {@code null} if the configuration resource could not
 	 *         be found
-	 * @throws FileNotFoundException 
 	 */
-	private static InputStream getResourceAsStream(String resName) throws FileNotFoundException {
-		InputStream ins = Utils.getResourceAsStream(TrackerConfigStore.class, resName);
-
+	private static InputStream getResourceAsStream(String resName) {
+		InputStream ins = Utils.getResourceAsStream(resName);
 		if (ins == null) {
-			ins = Utils.getResourceAsStream(resName);
-		}
-		if (ins == null) {
-			throw new FileNotFoundException("Resource '" + resName + "' not found");
+			ins = Utils.getResourceAsStream(TrackerConfigStore.class, resName);
 		}
 		return ins;
 	}
@@ -683,8 +686,11 @@ public class TrackerConfigStore extends TrackerConfig {
 	 * @throws IOException
 	 *             if resource not found or can't be accessed
 	 */
-	private BufferedReader getReaderFromResource(String resName) throws IOException {
+	private static BufferedReader getReaderFromResource(String resName) throws IOException {
 		InputStream ins = getResourceAsStream(resName);
+		if (ins == null) {
+			throw new FileNotFoundException("Configuration resource '" + resName + "' not found");
+		}
 		return new BufferedReader(new InputStreamReader(ins));
 	}
 
@@ -698,22 +704,19 @@ public class TrackerConfigStore extends TrackerConfig {
 	 * @throws IOException
 	 *             if I/O error occurs accessing configuration resource
 	 */
-	private BufferedReader getConfigReader(String resName) throws IOException {
-		Throwable exc = null;
+	private static BufferedReader getConfigReader(String resName) throws IOException {
+		IOException urle = null;
 		if (resName != null) {
 			try {
 				return getReaderFromURL(resName);
-			} catch (Throwable e) {
-				exc = e;
+			} catch (IOException e) {
+				urle = e;
 			}
 		}
 		try {
 			return getReaderFromResource(TNT4J_PROPERTIES);
-		} catch (IOException e) {
-			if (exc != null) {
-				e.initCause(exc);
-			}
-			throw e;
+		} catch (IOException rese) {
+			throw urle == null ? urle : rese;
 		}
 	}
 
@@ -734,8 +737,7 @@ public class TrackerConfigStore extends TrackerConfig {
 			line = reader.readLine();
 			if (line != null) {
 				line = line.trim();
-				if ((line.isEmpty()) || line.startsWith(";") || line.startsWith("#") || line.startsWith("//")
-						|| line.startsWith("{") || line.startsWith("}")) {
+				if (line.isEmpty() || StringUtils.startsWithAny(line, ";", "#", "//", "{", "}")) {
 					continue;
 				}
 				int sepIndex = line.indexOf(":");
