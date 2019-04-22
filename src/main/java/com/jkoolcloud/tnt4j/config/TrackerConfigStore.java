@@ -647,16 +647,13 @@ public class TrackerConfigStore extends TrackerConfig {
 			if (ins == null) {
 				throw new FileNotFoundException("Configuration resource '" + url + "' not found");
 			}
-
 			rdr = new InputStreamReader(ins);
 		}
-
 		return new BufferedReader(rdr);
 	}
 
 	private static String getName(String pStr) {
 		Path p = Paths.get(pStr);
-
 		return p.getFileName().toString();
 	}
 
