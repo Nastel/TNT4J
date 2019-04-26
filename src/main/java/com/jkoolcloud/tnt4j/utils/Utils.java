@@ -37,8 +37,6 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.text.StringEscapeUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
@@ -52,7 +50,6 @@ import com.jkoolcloud.tnt4j.core.Snapshot;
  * @version $Revision: 5 $
  */
 public class Utils {
-	private static Logger logger = LoggerFactory.getLogger(Utils.class);
 
 	/**
 	 * Current stack frame class marker prefix.
@@ -102,7 +99,9 @@ public class Utils {
 	/**
 	 * Class method search empty parameters array.
 	 */
+	
 	public static final Class<?>[] NO_PARAMS_C = {};
+
 	/**
 	 * Method invocation empty parameters array.
 	 */
@@ -1178,14 +1177,11 @@ public class Utils {
 			return null;
 		}
 		try {
-			logger.trace("createConfigurableObject: {}, {}", classProp, prefix);
 			Object obj = Utils.createInstance(className.toString());
 			return Utils.applyConfiguration(prefix, config, obj);
 		} catch (ConfigException ce) {
-			logger.error("createConfigurableObject: {}, {}", classProp, prefix, ce);
 			throw ce;
 		} catch (Throwable e) {
-			logger.error("createConfigurableObject: {}, {}", classProp, prefix, e);
 			ConfigException ce = new ConfigException(e.getMessage(), config);
 			ce.initCause(e);
 			throw ce;
@@ -1212,14 +1208,11 @@ public class Utils {
 			return null;
 		}
 		try {
-			logger.trace("createConfigurableObject: {}, {}", classProp, prefix);
 			Object obj = Utils.createInstance(className.toString());
 			return Utils.applyConfiguration(prefix, config, obj);
 		} catch (ConfigException ce) {
-			logger.error("createConfigurableObject: {}, {}", classProp, prefix, ce);
 			throw ce;
 		} catch (Throwable e) {
-			logger.error("createConfigurableObject: {}, {}", classProp, prefix, e);
 			ConfigException ce = new ConfigException(e.getMessage(), config);
 			ce.initCause(e);
 			throw ce;
@@ -1241,7 +1234,6 @@ public class Utils {
 	 */
 	public static Object applyConfiguration(String prefix, Map<String, ?> prop, Object obj) throws ConfigException {
 		if (obj instanceof Configurable) {
-			logger.trace("applyConfiguration: {}, {}, size={}", prefix, obj, prop.size());
 			return applyConfiguration(prefix, prop, (Configurable) obj);
 		}
 		return obj;
@@ -1262,7 +1254,6 @@ public class Utils {
 	 */
 	public static Object applyConfiguration(String prefix, Properties prop, Object obj) throws ConfigException {
 		if (obj instanceof Configurable) {
-			logger.trace("applyConfiguration: {}, {}, size={}", prefix, obj, prop.size());
 			return applyConfiguration(prefix, prop, (Configurable) obj);
 		}
 		return obj;
@@ -1283,7 +1274,6 @@ public class Utils {
 	 */
 	public static Configurable applyConfiguration(String prefix, Map<String, ?> prop, Configurable cfg)
 			throws ConfigException {
-		logger.trace("applyConfiguration: {}, {}, size={}", prefix, cfg, prop.size());
 		cfg.setConfiguration(getAttributes(prefix, prop));
 		return cfg;
 	}
@@ -1303,7 +1293,6 @@ public class Utils {
 	 */
 	public static Configurable applyConfiguration(String prefix, Properties prop, Configurable cfg)
 			throws ConfigException {
-		logger.trace("applyConfiguration: {}, {}, size={}", prefix, cfg, prop.size());
 		cfg.setConfiguration(getAttributes(prefix, prop));
 		return cfg;
 	}
@@ -1370,7 +1359,6 @@ public class Utils {
 		if (className == null) {
 			return null;
 		}
-		logger.trace("createInstance: {}", className);
 		Class<?> classObj = Class.forName(className);
 		return classObj.newInstance();
 	}
@@ -1393,7 +1381,6 @@ public class Utils {
 		if (className == null) {
 			return null;
 		}
-		logger.trace("createInstance: {}, {}, {}", className, args, types);
 		Class<?> classObj = Class.forName(className);
 		Constructor<?> ct = classObj.getConstructor(types);
 		return ct.newInstance(args);

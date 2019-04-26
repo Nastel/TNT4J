@@ -107,8 +107,6 @@ public class SLF4JEventSinkFactory extends AbstractEventSinkFactory {
 	@Override
 	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		super.setConfiguration(props);
-
 		loggerName = Utils.getString("LoggerName", props, loggerName);
 	}
-
 }
