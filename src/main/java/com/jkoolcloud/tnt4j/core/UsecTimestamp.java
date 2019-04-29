@@ -533,12 +533,12 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * {@inheritDoc}
 	 *
 	 * <p>
-	 * Returns {@link #getTimeUsec()} as an int, possibly truncated.
+	 * Returns {@link #longValue()} as an int, possibly truncated.
 	 * </p>
 	 */
 	@Override
 	public int intValue() {
-		return (int) getTimeUsec();
+		return (int) longValue();
 	}
 
 	/**
@@ -557,24 +557,24 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * {@inheritDoc}
 	 *
 	 * <p>
-	 * Returns {@link #getTimeUsec()} as a float, possibly truncated.
+	 * Returns {@link #longValue()} as a float, possibly truncated.
 	 * </p>
 	 */
 	@Override
 	public float floatValue() {
-		return getTimeUsec();
+		return longValue();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>
-	 * Returns {@link #getTimeUsec()} as a double.
+	 * Returns {@link #longValue()} as a double.
 	 * </p>
 	 */
 	@Override
 	public double doubleValue() {
-		return getTimeUsec();
+		return longValue();
 	}
 
 	/**
@@ -858,14 +858,8 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		if (msecs > other.msecs) {
 			return 1;
 		}
-		if (usecs < other.usecs) {
-			return -1;
-		}
-		if (usecs > other.usecs) {
-			return 1;
-		}
 
-		return 0;
+		return Long.compare(usecs, other.usecs);
 	}
 
 	@Override
@@ -897,11 +891,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 			return false;
 		}
 
-		if (usecs != other.usecs) {
-			return false;
-		}
-
-		return true;
+		return usecs == other.usecs;
 	}
 
 	/**
