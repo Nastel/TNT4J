@@ -26,8 +26,8 @@ import com.jkoolcloud.tnt4j.TrackingLogger;
 import com.jkoolcloud.tnt4j.core.OpLevel;
 
 /**
- * TLog is sample utility which allows capture of input stream messages (such as STDIN) and pipe them into
- * a TNT4J event sink logger. This utility can be used to stream user entered messages from a console
+ * TLog is a utility which allows capture standard input stream messages (such as STDIN) and pipe them into
+ * a TNT4J event sink logger. TLog utility can be used to stream user entered messages from a console
  * or piped from other command line utilities.
  * 
  * @version $Revision: 1 $
@@ -58,18 +58,23 @@ public class TLog implements Closeable {
 	/*
 	 * Severity level for incoming messages
 	 */	
-	private OpLevel level = OpLevel.INFO;
+	private OpLevel logLevel = OpLevel.INFO;
 	
+	/*
+	 * Stop key to be used to terminate stream reading
+	 */	
+	private String stopKey = null;
+		
 	/**
 	 * Create instance of TLogger
 	 *
 	 * @param source log source name
-	 * @param sev severity level
+	 * @param level severity level
 	 * @param in input stream for reading messages
 	 */
-	public TLog(String source, OpLevel sev, InputStream in) {
+	public TLog(String source, OpLevel level, InputStream in) {
 		input = in;
-		level = sev;
+		logLevel = level;
 		logger = TrackingLogger.getInstance(source);		
 	}
 
@@ -77,10 +82,10 @@ public class TLog implements Closeable {
 	 * Create instance of TLogger reading from System.in
 	 *
 	 * @param source log source name
-	 * @param sev severity level
+	 * @param level severity level
 	 */
-	public TLog(String source, OpLevel sev) {
-		this(source, sev, System.in);
+	public TLog(String source, OpLevel level) {
+		this(source, level, System.in);
 	}
 
 	/**
@@ -120,43 +125,70 @@ public class TLog implements Closeable {
 	}
 
 	/**
-	 * Read input stream line by line and log it. This is a blocking call
-	 * and terminates when EOF is reached.
+	 * Define a stop key used to detect end of the stream and stop
+	 * reading the input stream. Line must start with the stop key to terminate
+	 * reading.
 	 *
+	 * @param key stop key
 	 */
-	public void tlog() {
-		while (scanner.hasNext()) {
-			String line = scanner.nextLine();
-			logger.log(level, line);
-		}		
+	public void setStopKey(String key) {
+		stopKey = key;
+	}
+	
+	/**
+	 * Return stop key word associated with the logger
+	 *
+	 * @return stop key associated with the logger, null if none.
+	 */
+	public String getStopKey() {
+		return stopKey;
 	}
 	
 	/**
 	 * Read input stream line by line and log it. This is a blocking call
-	 * and terminates when EOF is reached.
+	 * and terminates when EOF is reached or stop key word detected.
+	 * 
+	 */
+	public void tlog() {
+		tlog(logLevel);
+	}
+	
+	/**
+	 * Read input stream line by line and log it. This is a blocking call
+	 * and terminates when EOF is reached or stop key word (if defined) is detected.
 	 *
 	 * @param level severity level used for logging
 	 */
 	public void tlog(OpLevel level) {
-		while (scanner.hasNext()) {
-			String line = scanner.nextLine();
-			logger.log(level, line);
-		}		
+		if (scanner == null) {
+			throw new IllegalStateException("logger not opened. open() must be called first.");
+		}
+		synchronized (scanner) {
+			while (scanner.hasNext()) {
+				String line = scanner.nextLine();
+				if (stopKey != null && line.startsWith(stopKey))
+					break;
+				logger.log(level, line);
+			}
+		}
 	}
 		
 	private static Map<String, String> parseOptions(String[] args) {
 		HashMap<String, String> options = new HashMap<String, String>();
+		options.put("stopkey", "end");
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("--source") || (args[i].equals("-s"))) {
 				options.put("source", args[++i]);
 			} else if (args[i].equals("--level") || (args[i].equals("-l"))) {
 				options.put("level", args[++i]);
+			} else if (args[i].equals("--stopkey") || (args[i].equals("-k"))) {
+				options.put("stopkey", args[++i]);
 			} else {
 				throw new IllegalArgumentException("Unknown option: " + args[i]);
 			}
 		}
-		if (options.size() < 2) {
-			throw new IllegalArgumentException("Missing options: --source|-s source --level|-l severity");
+		if (options.size() < 3) {
+			throw new IllegalArgumentException("Missing options: --source|-s source --level|-l severity --stopkey|-k stop-keyword");
 		}
 		return options;
 	}
@@ -166,9 +198,11 @@ public class TLog implements Closeable {
 			Map<String, String> options = parseOptions(args);
 			System.out.println("Options: " + options);
 			String source = options.get("source");
+			String stopKey = options.get("stopkey");
 			OpLevel level = OpLevel.valueOf(options.get("level"));
 
 			tlog = new TLog(source, level);
+			tlog.setStopKey(stopKey);
 			tlog.open();
 			tlog.tlog();			
 		} catch (IllegalArgumentException la) {
