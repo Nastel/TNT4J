@@ -25,6 +25,14 @@ import java.util.Scanner;
 import com.jkoolcloud.tnt4j.TrackingLogger;
 import com.jkoolcloud.tnt4j.core.OpLevel;
 
+/**
+ * TLog is sample utility which allows capture of input stream messages (such as STDIN) and pipe them into
+ * a TNT4J event sink logger. This utility can be used to stream user entered messages from a console
+ * or piped from other command line utilities.
+ * 
+ * @version $Revision: 1 $
+ */
+
 public class TLog implements Closeable {
 
 	/*
@@ -33,7 +41,7 @@ public class TLog implements Closeable {
 	private static TLog tlog;
 
 	/*
-	 * Tracking logger instance where all messages are logged.
+	 * Tracking logger instance where all messages are logged
 	 */
 	private TrackingLogger logger;
 
@@ -100,13 +108,13 @@ public class TLog implements Closeable {
 	 *
 	 * @throws IOException when IO error occurs
 	 */
-	public void open() throws IOException {
+	public synchronized void open() throws IOException {
 		scanner = new Scanner(input);
 		logger.open();
 	}
 
 	@Override
-	public void close() throws IOException {
+	public synchronized void close() throws IOException {
 		Utils.close(logger);
 		Utils.close(scanner);
 	}
@@ -144,11 +152,11 @@ public class TLog implements Closeable {
 			} else if (args[i].equals("--level") || (args[i].equals("-l"))) {
 				options.put("level", args[++i]);
 			} else {
-				throw new IllegalArgumentException("Uknown option: " + args[i]);
+				throw new IllegalArgumentException("Unknown option: " + args[i]);
 			}
 		}
 		if (options.size() < 2) {
-			throw new IllegalArgumentException("Missing options: --source|-l source --level|-l severity");
+			throw new IllegalArgumentException("Missing options: --source|-s source --level|-l severity");
 		}
 		return options;
 	}
