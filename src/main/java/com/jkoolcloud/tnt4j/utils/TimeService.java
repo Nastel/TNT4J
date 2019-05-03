@@ -42,11 +42,12 @@ public class TimeService {
 
 	protected static final int ONE_K = 1000;
 	protected static final int ONE_M = 1000000;
-	protected static final boolean TIME_SERVER_VERBOSE = Boolean.getBoolean("tnt4j.time.server.verbose");
+	protected static boolean TIME_SERVER_VERBOSE = Boolean.getBoolean("tnt4j.time.server.verbose");
 
 	private static final String TIME_SERVER = System.getProperty("tnt4j.time.server");
 	private static final long TIME_SERVER_TIMEOUT = Long.getLong("tnt4j.time.server.timeout", 10000);
 
+	static boolean verbose = TIME_SERVER_VERBOSE;
 	static long timeOverheadNanos = 0;
 	static long timeOverheadMillis = 0;
 	static long adjustment = 0;
@@ -85,6 +86,15 @@ public class TimeService {
 		}
 	}
 
+	/**
+	 * Enable/disable verbose level
+	 * 
+	 * @param flag verbose flag
+	 */
+	public static void setVerbose(boolean flag) {
+		verbose = flag;
+	}
+	
 	/**
 	 * Obtain NTP connection host:port of the time server.
 	 *
@@ -128,7 +138,7 @@ public class TimeService {
 			timeInfo.computeDetails();
 			adjustment = timeInfo.getOffset() - timeOverheadMillis;
 			updatedTime = currentTimeMillis();
-			if (TIME_SERVER_VERBOSE) {
+			if (verbose) {
 				logger.log(OpLevel.DEBUG,
 						"Time server={0}, timeout.ms={1}, offset.ms={2}, delay.ms={3}, clock.adjust.ms={4}, overhead.nsec={5}",
 						TIME_SERVER, TIME_SERVER_TIMEOUT, timeInfo.getOffset(), timeInfo.getDelay(), adjustment,
@@ -221,15 +231,15 @@ public class TimeService {
 	 */
 	public static long calculateOverhead(long runs) {
 		long start = System.nanoTime();
-		_calculateOverheadCost(runs);
 		for (int i = 0; i < runs; i++) {
 			currentTimeMillis();
 		}
 		return ((System.nanoTime() - start) / runs);
 	}
-
-	private static long _calculateOverheadCost(long runs) {
-		return runs;
+	
+	public static void main(String[] args) throws IOException, NumberFormatException, InterruptedException {
+		TimeService.setVerbose(true);
+		Thread.sleep(Long.parseLong(args[0]));
 	}
 }
 
@@ -281,7 +291,7 @@ class ClockDriftMonitorTask implements Runnable {
 			TimeService.updateTime();
 			Useconds.CURRENT.sync();
 			updateCount++;
-			if (TimeService.TIME_SERVER_VERBOSE) {
+			if (TimeService.verbose) {
 				logger.log(OpLevel.DEBUG,
 						"Updated clocks: drift.ms={0}, interval.ms={1}, total.drift.ms={2}, updates={3}", drift,
 						interval, totalDrift, updateCount);
