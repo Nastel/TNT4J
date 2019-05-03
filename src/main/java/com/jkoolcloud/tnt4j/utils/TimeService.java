@@ -31,9 +31,9 @@ import com.jkoolcloud.tnt4j.sink.EventSink;
 
 /**
  * This class implements a time service that delivers synchronized time using NTP. Developers should use
- * {@code TimeService.currentTimeMillis()} instead of calling {@code System.currentTimeMillis()} to obtain synchronized
+ * {@link TimeService#currentTimeMillis()} instead of calling {@link System#currentTimeMillis()} to obtain synchronized
  * and adjusted current time. To enable NTP time synchronization set the following property:
- * {@code tnt4j.time.server=ntp-server:port}, otherwise {@code System.currentTimeMillis()} is returned.
+ * {@code tnt4j.time.server=ntp-server:port}, otherwise {@link System#currentTimeMillis()} is returned.
  *
  * @version $Revision: 1 $
  */
@@ -52,7 +52,7 @@ public class TimeService {
 	static long timeOverheadMillis = 0;
 	static long adjustment = 0;
 	static long updatedTime = 0;
-	static ScheduledExecutorService scheduler;
+	private static ScheduledExecutorService scheduler;
 	static ClockDriftMonitorTask clockSyncTask = null;
 
 	static NTPUDPClient timeServer = new NTPUDPClient();
@@ -75,8 +75,7 @@ public class TimeService {
 	}
 
 	/**
-	 * Schedule automatic clock synchronization with NTP and internal clocks
-	 *
+	 * Schedule automatic clock synchronization with NTP and internal clocks.
 	 */
 	private static synchronized void scheduleUpdates() {
 		if (scheduler == null) {
@@ -87,14 +86,15 @@ public class TimeService {
 	}
 
 	/**
-	 * Enable/disable verbose level
+	 * Enable/disable verbose level.
 	 * 
-	 * @param flag verbose flag
+	 * @param flag
+	 *            verbose flag
 	 */
 	public static void setVerbose(boolean flag) {
 		verbose = flag;
 	}
-	
+
 	/**
 	 * Obtain NTP connection host:port of the time server.
 	 *
@@ -105,7 +105,7 @@ public class TimeService {
 	}
 
 	/**
-	 * Obtain time stamp when the NTP time was synchronized
+	 * Obtain time stamp when the NTP time was synchronized.
 	 *
 	 * @return time stamp when NTP was updated
 	 */
@@ -114,7 +114,7 @@ public class TimeService {
 	}
 
 	/**
-	 * Obtain configured NTP server timeout
+	 * Obtain configured NTP server timeout.
 	 *
 	 * @return time server timeout in milliseconds
 	 */
@@ -123,7 +123,7 @@ public class TimeService {
 	}
 
 	/**
-	 * Obtain NTP time and synchronize with NTP server
+	 * Obtain NTP time and synchronize with NTP server.
 	 *
 	 * @throws IOException
 	 *             if error accessing time server
@@ -158,17 +158,16 @@ public class TimeService {
 	}
 
 	/**
-	 * Obtain number of milliseconds since NTP time was synchronized
+	 * Obtain number of milliseconds since NTP time was synchronized.
 	 *
 	 * @return time (ms) since last NTP synchronization
 	 */
 	public static long getUpdateAgeMillis() {
-		return TimeService.getLastUpdatedMillis() > 0
-				? TimeService.currentTimeMillis() - TimeService.getLastUpdatedMillis() : -1;
+		return getLastUpdatedMillis() > 0 ? currentTimeMillis() - getLastUpdatedMillis() : -1;
 	}
 
 	/**
-	 * Obtain NTP synchronized current time in milliseconds
+	 * Obtain NTP synchronized current time in milliseconds.
 	 *
 	 * @return current NTP synchronized time in milliseconds
 	 */
@@ -177,7 +176,7 @@ public class TimeService {
 	}
 
 	/**
-	 * Obtain NTP synchronized current time in microseconds precision (but necessarily accuracy)
+	 * Obtain NTP synchronized current time in microseconds precision (but necessarily accuracy).
 	 *
 	 * @return current NTP synchronized time in microseconds
 	 */
@@ -186,7 +185,7 @@ public class TimeService {
 	}
 
 	/**
-	 * Obtain currently measured clock drift in milliseconds
+	 * Obtain currently measured clock drift in milliseconds.
 	 *
 	 * @return clock drift in milliseconds
 	 */
@@ -195,7 +194,7 @@ public class TimeService {
 	}
 
 	/**
-	 * Obtain measured total clock drift in milliseconds since start up
+	 * Obtain measured total clock drift in milliseconds since start up.
 	 *
 	 * @return total clock drift since start up
 	 */
@@ -213,7 +212,7 @@ public class TimeService {
 	}
 
 	/**
-	 * Obtain currently measured clock drift interval in milliseconds
+	 * Obtain currently measured clock drift interval in milliseconds.
 	 *
 	 * @return clock drift interval in milliseconds
 	 */
@@ -236,9 +235,9 @@ public class TimeService {
 		}
 		return ((System.nanoTime() - start) / runs);
 	}
-	
+
 	public static void main(String[] args) throws IOException, NumberFormatException, InterruptedException {
-		TimeService.setVerbose(true);
+		setVerbose(true);
 		Thread.sleep(Long.parseLong(args[0]));
 	}
 }
