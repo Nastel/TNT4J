@@ -6,7 +6,7 @@
         <fileSet>
             <directory>config</directory>
             <includes>
-                <include>*.*</include>
+                <include>**/*.*</include>
             </includes>
             <outputDirectory>config</outputDirectory>
         </fileSet>
