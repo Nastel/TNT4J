@@ -673,13 +673,14 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 		if (threadPool == null) {
 			return;
 		}
-		threadPool.shutdown();
 		try {
+			threadPool.shutdown();
 			threadPool.awaitTermination(20, TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			Thread.currentThread().interrupt();
 		} finally {
 			threadPool.shutdownNow();
+			started = false;
 		}
 	}
 }
