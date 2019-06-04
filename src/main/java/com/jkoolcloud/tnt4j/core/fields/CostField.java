@@ -1,5 +1,5 @@
 /*
- * Copyright 2018 JKOOL, LLC.
+ * Copyright 2014-2019 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,11 +30,12 @@ import com.jkoolcloud.tnt4j.core.ValueTypes;
  */
 public class CostField extends Property {
 	public static final String COST_PROP_NAME = "cost";
-	
+
 	/**
 	 * Create a cost field with value type {@link ValueTypes}
 	 * 
-	 * @param value associated with the property
+	 * @param value
+	 *            associated with the property
 	 */
 	public CostField(Object value) {
 		super(COST_PROP_NAME, value, ValueTypes.VALUE_TYPE_CURRENCY_USD);
@@ -43,8 +44,10 @@ public class CostField extends Property {
 	/**
 	 * Create a cost field
 	 * 
-	 * @param value associated with the property
-	 * @param valType value type {@link ValueTypes}
+	 * @param value
+	 *            associated with the property
+	 * @param valType
+	 *            value type {@link ValueTypes}
 	 * @see ValueTypes
 	 */
 	public CostField(Object value, String valType) {
@@ -54,9 +57,12 @@ public class CostField extends Property {
 	/**
 	 * Create a cost field
 	 * 
-	 * @param value value associated with the property
-	 * @param valType value type {@link ValueTypes}
-	 * @param trans flag to mark field as transient
+	 * @param value
+	 *            value associated with the property
+	 * @param valType
+	 *            value type {@link ValueTypes}
+	 * @param trans
+	 *            flag to mark field as transient
 	 */
 	public CostField(Object value, String valType, boolean trans) {
 		super(COST_PROP_NAME, value, valType, trans);
@@ -65,8 +71,10 @@ public class CostField extends Property {
 	/**
 	 * Create a cost field, with value type {@link ValueTypes}
 	 * 
-	 * @param value associated with the property with {@link ValueTypes}
-	 * @param trans flag to mark field as transient
+	 * @param value
+	 *            associated with the property with {@link ValueTypes}
+	 * @param trans
+	 *            flag to mark field as transient
 	 */
 	public CostField(Object value, boolean trans) {
 		super(COST_PROP_NAME, value, ValueTypes.VALUE_TYPE_CURRENCY_USD, trans);
