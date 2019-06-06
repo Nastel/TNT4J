@@ -5,11 +5,10 @@
     <id>${project.build.finalName}-zip_deploy</id>
     <formats>
         <format>zip</format>
-        <format>tar.gz</format>
     </formats>
     <includeBaseDirectory>true</includeBaseDirectory>
     <baseDirectory>${release.deploy.finalName}</baseDirectory>
     <componentDescriptors>
-        <componentDescriptor>src/assembly/deployComponent.xml</componentDescriptor>
+        <componentDescriptor>src/assembly/deployComponentWin.xml</componentDescriptor>
     </componentDescriptors>
 </assembly>
