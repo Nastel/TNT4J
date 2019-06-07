@@ -25,7 +25,7 @@ public enum OpType {
 	OTHER, NOOP, CALL, ACTIVITY, EVENT, SNAPSHOT,
 	START, STOP, OPEN, CLOSE, SEND, RECEIVE,
 	INQUIRE, SET, BROWSE, ADD, UPDATE,
-	REMOVE, CLEAR, DATAGRAM;
+	REMOVE, CLEAR, LOG;
 
 	private static OpType[] enumList = OpType.values();
 

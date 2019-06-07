@@ -631,8 +631,8 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		Utils.quote(level, jsonString).append(ATTR_JSON);
 		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(level.ordinal()).append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP);
-		Utils.quote(OpType.DATAGRAM, jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_TYPE_NO_LABEL).append(ATTR_SEP).append(OpType.DATAGRAM.ordinal()).append(ATTR_JSON);
+		Utils.quote(OpType.LOG, jsonString).append(ATTR_JSON);
+		jsonString.append(JSON_TYPE_NO_LABEL).append(ATTR_SEP).append(OpType.LOG.ordinal()).append(ATTR_JSON);
 
 		jsonString.append(JSON_PID_LABEL).append(ATTR_SEP).append(Utils.getVMPID()).append(ATTR_JSON);
 		jsonString.append(JSON_TID_LABEL).append(ATTR_SEP).append(Thread.currentThread().getId()).append(ATTR_JSON);
