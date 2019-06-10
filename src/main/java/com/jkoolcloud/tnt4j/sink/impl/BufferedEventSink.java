@@ -58,7 +58,7 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	static final String KEY_TOTAL_ERRORS = "buffered-errors-total";
 
 	private long ttl = TTL.TTL_CONTEXT;
-	private long signalTimeout = 5000;
+	private long signalTimeout = TimeUnit.SECONDS.toMillis(5);
 	private boolean block = false;
 	private Source source;
 	private EventSink outSink = null;

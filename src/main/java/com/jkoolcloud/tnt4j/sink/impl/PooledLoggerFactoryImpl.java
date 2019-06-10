@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.TimeUnit;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
@@ -39,14 +40,14 @@ public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurabl
 	public static final String DEFAULT_POOL_NAME = "default";
 	private static final int MAX_POOL_SIZE = Integer.getInteger("tnt4j.pooled.logger.pool", 4);
 	private static final int MAX_CAPACITY = Integer.getInteger("tnt4j.pooled.logger.capacity", 10000);
-	private static final int RETRY_INTERVAL = Integer.getInteger("tnt4j.pooled.logger.retry.interval", 5000);
+	private static final long RETRY_INTERVAL = Long.getLong("tnt4j.pooled.logger.retry.interval", TimeUnit.SECONDS.toMillis(5));
 	private static final boolean DROP_ON_EXCEPTION = Boolean.getBoolean("tnt4j.pooled.logger.drop.on.error");
 
 	private static final ConcurrentMap<String, PooledLogger> POOLED_LOGGERS = new ConcurrentHashMap<>();
 
 	int poolSize = MAX_POOL_SIZE;
 	int capacity = MAX_CAPACITY;
-	int retryInterval = RETRY_INTERVAL;
+	long retryInterval = RETRY_INTERVAL;
 	boolean dropOnError = DROP_ON_EXCEPTION;
 	String poolName = DEFAULT_POOL_NAME;
 	protected Map<String, ?> props;
@@ -94,7 +95,7 @@ public class PooledLoggerFactoryImpl implements PooledLoggerFactory, Configurabl
 		poolName = Utils.getString("Name", settings, DEFAULT_POOL_NAME);
 		poolSize = Utils.getInt("Size", settings, MAX_POOL_SIZE);
 		capacity = Utils.getInt("Capacity", settings, MAX_CAPACITY);
-		retryInterval = Utils.getInt("RetryInterval", settings, RETRY_INTERVAL);
+		retryInterval = Utils.getLong("RetryInterval", settings, RETRY_INTERVAL);
 		dropOnError = Utils.getBoolean("DropOnError", settings, DROP_ON_EXCEPTION);
 		// create and register pooled logger instance if not yet available
 		PooledLogger pooledLogger = new PooledLogger(poolName, poolSize, capacity);

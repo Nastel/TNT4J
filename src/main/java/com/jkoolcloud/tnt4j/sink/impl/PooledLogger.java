@@ -52,7 +52,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	protected static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(PooledLogger.class);
 	protected static final double ERROR_RATE = Double
 			.valueOf(System.getProperty("tnt4j.pooled.logger.error.rate", "0.1"));
-	protected static final int REOPEN_FREQ = Integer.getInteger("tnt4j.pooled.logger.reopen.freq.ms", 10000);
+	protected static final long REOPEN_FREQ = Long.getLong("tnt4j.pooled.logger.reopen.freq.ms", TimeUnit.SECONDS.toMillis(10));
 
 	static final String KEY_Q_SIZE = "pooled-queue-size";
 	static final String KEY_Q_TASKS = "pooled-queue-tasks";
@@ -72,7 +72,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 
 	String poolName;
 	int poolSize, capacity;
-	int retryInterval = REOPEN_FREQ; // time in milliseconds
+	long retryInterval = REOPEN_FREQ; // time in milliseconds
 	boolean dropOnError = false;
 	ExecutorService threadPool;
 	Limiter errorLimiter;
@@ -393,7 +393,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	 * @param retryInterval
 	 *            time interval in milliseconds
 	 */
-	public void setRetryInterval(int retryInterval) {
+	public void setRetryInterval(long retryInterval) {
 		this.retryInterval = retryInterval;
 	}
 

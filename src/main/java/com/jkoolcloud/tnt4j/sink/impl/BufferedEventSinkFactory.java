@@ -17,6 +17,7 @@ package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.TimeUnit;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
@@ -43,7 +44,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 	String poolFactoryClass;
 	boolean blockWrites = false;
-	long signalTimeout = 10000;
+	long signalTimeout = TimeUnit.SECONDS.toMillis(10);
 	EventSinkFactory sinkFactory;
 	PooledLoggerFactory pooledFactory;
 

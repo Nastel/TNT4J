@@ -48,7 +48,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * <p>
  * This class implements a file based token repository based on a property file following the key=value pairs defined
  * per line. File is auto-reloaded by default based on 20sec refresh time. The reload time can be changed by setting
- * {@code tnt4j.file.respository.refresh} property
+ * {@code tnt4j.file.repository.refresh} property
  * </p>
  *
  * @see TokenRepository
@@ -60,12 +60,13 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class FileTokenRepository implements TokenRepository, Configurable {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(FileTokenRepository.class);
 	private static ConcurrentHashMap<TokenRepositoryListener, EventListener<?>[]> LISTEN_MAP = new ConcurrentHashMap<>(49);
+	private static long DEFAULT_REFRESH_DELAY = TimeUnit.SECONDS.toMillis(20);
 
 	private String configName = null;
 	private BasicConfigurationBuilder<PropertiesConfiguration> config = null;
 	private PeriodicReloadingTrigger cfgReloadTrigger = null;
 	protected Map<String, ?> settings = null;
-	private long refDelay = TimeUnit.SECONDS.toMillis(20);
+	private long refDelay;
 
 	/**
 	 * Create file/property based token repository instance based on default file name or url specified by
@@ -73,12 +74,13 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	 *
 	 */
 	public FileTokenRepository() {
-		this(System.getProperty("tnt4j.token.repository"), Long.getLong("tnt4j.file.respository.refresh", 20000));
+		this(System.getProperty("tnt4j.token.repository"),
+				Long.getLong("tnt4j.file.repository.refresh", DEFAULT_REFRESH_DELAY));
 	}
 
 	/**
 	 * Create file/property based token repository instance given a specific filename or url. File name is auto-loaded
-	 * based on {@code tnt4j.file.respository.refresh} property which is set to 20000 (ms) by default.
+	 * based on {@code tnt4j.file.repository.refresh} property which is set to 20000 (ms) by default.
 	 *
 	 * @param url
 	 *            file name or URL of the property file containing tokens
