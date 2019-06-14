@@ -290,7 +290,7 @@ public class PropertySnapshot implements Snapshot {
 	}
 
 	@Override
-	public Collection<Property> getSnapshot() {
+	public Collection<Property> getProperties() {
 		return propSet.values();
 	}
 

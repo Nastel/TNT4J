@@ -745,6 +745,18 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 
 	@Override
+	public Dataset newDataset(String name) {
+		return newDataset(Dataset.CATEGORY_DATASET, name);
+	}
+
+	@Override
+	public Dataset newDataset(String cat, String name) {
+		Dataset ds = new Dataset(cat, name);
+		ds.setSource(getSource());
+		return ds;
+	}
+
+	@Override
 	public Snapshot newSnapshot(String name) {
 		return newSnapshot(tConfig.getProperty(DEFAULT_SNAPSHOT_CAT_KEY, DEFAULT_SNAPSHOT_CATEGORY), name);
 	}

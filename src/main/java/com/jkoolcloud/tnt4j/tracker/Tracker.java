@@ -246,6 +246,28 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 	Snapshot newSnapshot(String cat, String name, OpLevel level);
 
 	/**
+	 * Create a new application dataset via {@link Dataset} object instance.
+	 *
+	 * @param name
+	 *            dataset name
+	 * @return a new dataset
+	 * @see Dataset
+	 */
+	Dataset newDataset(String name);
+
+	/**
+	 * Create a new application dataset via {@link Dataset} object instance.
+	 *
+	 * @param cat
+	 *            category name
+	 * @param name
+	 *            dataset name
+	 * @return a new dataset
+	 * @see Dataset
+	 */
+	Dataset newDataset(String cat, String name);
+
+	/**
 	 * Create a new property via {@link Property} instance.
 	 *
 	 * @param key

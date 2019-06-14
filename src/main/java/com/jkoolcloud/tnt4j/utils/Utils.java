@@ -1673,7 +1673,7 @@ public class Utils {
 	 */
 	public static Property getSnapPropertyIgnoreCase(Snapshot snapshot, String propName) {
 		if (snapshot != null) {
-			for (Property prop : snapshot.getSnapshot()) {
+			for (Property prop : snapshot.getProperties()) {
 				if (prop.getKey().equalsIgnoreCase(propName)) {
 					return prop;
 				}

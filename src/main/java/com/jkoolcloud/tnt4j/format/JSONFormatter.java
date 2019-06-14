@@ -494,7 +494,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		if (snap.size() > 0) {
 			jsonString.append(ATTR_JSON);
 			jsonString.append(JSON_PROPERTIES_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
-					.append(itemsToJSON(snap.getSnapshot())).append(ARRAY_END);
+					.append(itemsToJSON(snap.getProperties())).append(ARRAY_END);
 		}
 		jsonString.append(END_JSON);
 		return jsonString.toString();
