@@ -484,10 +484,11 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 				Utils.quote(escaped, jsonString).append(ATTR_JSON);
 			}
 		}
-		jsonString.append(JSON_SEVERITY_LABEL).append(ATTR_SEP);
-		Utils.quote(snap.getSeverity(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(snap.getSeverity().ordinal())
-				.append(ATTR_JSON);
+		if (snap.getSeverity().ordinal() > OpLevel.NONE.ordinal()) {
+			jsonString.append(JSON_SEVERITY_LABEL).append(ATTR_SEP);
+			Utils.quote(snap.getSeverity(), jsonString).append(ATTR_JSON);
+			jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(snap.getSeverity().ordinal()).append(ATTR_JSON);
+		}
 		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP);
 		Utils.quote(snap.getType(), jsonString).append(ATTR_JSON);
 		jsonString.append(JSON_TYPE_NO_LABEL).append(ATTR_SEP).append(snap.getType().ordinal());
