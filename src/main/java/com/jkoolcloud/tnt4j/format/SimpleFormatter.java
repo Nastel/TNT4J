@@ -268,7 +268,7 @@ public class SimpleFormatter extends DefaultFormatter {
 			msg.append("corr-id: '").append(cid).append("'");
 		}
 		msg.append(") {");
-		formatProperties(msg, snap.getSnapshot());
+		formatProperties(msg, snap.getProperties());
 		msg.append("\n\t}");
 		return msg;
 	}

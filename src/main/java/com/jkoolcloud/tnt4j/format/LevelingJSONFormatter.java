@@ -321,7 +321,7 @@ public class LevelingJSONFormatter extends JSONFormatter {
 	}
 
 	protected Collection<Property> getProperties(Snapshot snap) {
-		Collection<Property> pList = snap.getSnapshot();
+		Collection<Property> pList = snap.getProperties();
 
 		return getSortedCollection(pList, getPropertyComparator());
 	}

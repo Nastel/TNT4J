@@ -70,11 +70,11 @@ public interface Snapshot extends Trackable {
 	UsecTimestamp getTimeStamp();
 
 	/**
-	 * Obtain a collection containing snapshot elements
+	 * Obtain a collection containing snapshot properties
 	 *
-	 * @return collection containing snapshot elements
+	 * @return collection containing snapshot properties
 	 */
-	Collection<Property> getSnapshot();
+	Collection<Property> getProperties();
 
 	/**
 	 * Adds a property to the snapshot

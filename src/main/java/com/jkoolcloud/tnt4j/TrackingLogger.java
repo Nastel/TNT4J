@@ -1057,6 +1057,18 @@ public class TrackingLogger implements Tracker {
 	}
 
 	@Override
+	public Dataset newDataset(String name) {
+		checkState();
+		return logger.newDataset(name);
+	}
+
+	@Override
+	public Dataset newDataset(String cat, String name) {
+		checkState();
+		return logger.newDataset(cat, name);
+	}
+
+	@Override
 	public Snapshot newSnapshot(String name) {
 		checkState();
 		return logger.newSnapshot(name);
