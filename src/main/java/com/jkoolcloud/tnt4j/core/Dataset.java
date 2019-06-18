@@ -17,8 +17,9 @@
 package com.jkoolcloud.tnt4j.core;
 
 /**
+ * Data set defines a named list of properties
+ *  
  * @author albert
- *
  */
 public class Dataset extends PropertySnapshot {
 	public static final String CATEGORY_DATASET = "DATASET";
@@ -28,7 +29,7 @@ public class Dataset extends PropertySnapshot {
 	 * @param name dataset name
 	 */
 	public Dataset(String name) {
-		super(CATEGORY_DATASET, name, OpLevel.INFO, OpType.DATASET, UsecTimestamp.now());
+		super(CATEGORY_DATASET, name, OpLevel.NONE, OpType.DATASET, UsecTimestamp.now());
 	}
 	
 	/**
@@ -38,6 +39,6 @@ public class Dataset extends PropertySnapshot {
 	 * @param name dataset name
 	 */
 	public Dataset(String cat, String name) {
-		super(cat, name, OpLevel.INFO, OpType.DATASET, UsecTimestamp.now());
+		super(cat, name, OpLevel.NONE, OpType.DATASET, UsecTimestamp.now());
 	}
 }
