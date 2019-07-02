@@ -14,7 +14,11 @@
 
     <target name="rebuild" depends="mvn_windows_build, mvn_unix_build"/>
 
-    <target name="all" depends="rebuild"/>
+    <target name="pack" depends="mvn_windows_pack, mvn_unix_pack"/>
+
+    <target name="deploy" depends="mvn_windows_deploy, mvn_unix_deploy"/>
+
+    <target name="all" depends="pack"/>
 
     <target name="mvn_windows_clean" if="isWindows">
         <exec dir="." executable="cmd">
@@ -40,15 +44,27 @@
         </exec>
     </target>
 
+    <target name="mvn_windows_pack" if="isWindows">
+        <exec dir="." executable="cmd">
+            <arg line="/c mvn clean install -P pack-bin"/>
+        </exec>
+    </target>
+
+    <target name="mvn_unix_pack" if="isUnix">
+        <exec dir="." executable="sh">
+            <arg line="-c 'mvn clean install -P pack-bin'"/>
+        </exec>
+    </target>
+
     <target name="mvn_windows_deploy" if="isWindows">
         <exec dir="." executable="cmd">
-            <arg line="/c mvn deploy"/>
+            <arg line="/c mvn deploy -P pack-all"/>
         </exec>
     </target>
 
     <target name="mvn_unix_deploy" if="isUnix">
         <exec dir="." executable="sh">
-            <arg line="-c 'mvn deploy'"/>
+            <arg line="-c 'mvn deploy -P pack-all'"/>
         </exec>
     </target>
 

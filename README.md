@@ -190,7 +190,7 @@ event.sink.factory.mqtt-pwd: mqtt-pwd
 ### SLF4J Event Sink Integration
 TNT4J provides default logging integration over `SLF4J` API.
 TNT4J provides SLF4J event sink implementation via `com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory` event sink factory.
-Other logging frameworks can be supported by implementing `EventSinkFactory` & `EventSink` interfaces. 
+Other logging frameworks can be supported by implementing `EventSinkFactory` & `EventSink` interfaces.
 
 All TNT4J messages can be routed via a SLF4J event sink and therefore can take advantage of the underlying logging frameworks supported by 
 SLF4J.
@@ -577,7 +577,12 @@ TNT4J depends on the following external packages:
 * Java UUID Generator (JUG) 3.1.4 (http://wiki.fasterxml.com/JugHome/)
 
 To build TNT4J:
-*  Please use JCenter or Maven and these dependencies will be downloaded automatically. 
+*  Please use JCenter or Maven and these dependencies will be downloaded automatically.
+    * To build the project, run maven goals `clean package`
+    * To build the project and install to local repo, run maven goals `clean install`
+    * To make distributable release assemblies use one of profiles: `pack-bin` or `pack-all`:
+        * containing only binary distribution: run `mvn -P pack-bin`
+        * containing binary, source and javadoc distribution: run `mvn -P pack-all`
 *  You will need to point TNT4J to it's property file via the `-Dtnt4j.config` argument. This property file is located here in GitHub under 
 the `/config` directory. If using JCenter or Maven, it can be found in the zip assembly along with the source code and javadoc.
 
