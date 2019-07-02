@@ -59,8 +59,12 @@
 
         <assembly.line.endings>unix</assembly.line.endings>
 
-        <skipTests>true</skipTests>
-        <gpg.skip.sign>true</gpg.skip.sign>
+        <skip.source.pack>true</skip.source.pack>
+        <skip.javadoc.pack>true</skip.javadoc.pack>
+        <skip.assembly.pack>true</skip.assembly.pack>
+        <skip.tests>true</skip.tests>
+        <skip.gpg.sign>true</skip.gpg.sign>
+
         <build.assemblies.attach>false</build.assemblies.attach>
 
         <commons.lang.version>3.8.1</commons.lang.version>
@@ -160,6 +164,21 @@
                 <assembly.line.endings>crlf</assembly.line.endings>
             </properties>
         </profile>
+
+        <profile>
+            <id>pack-bin</id>
+            <properties>
+                <skip.assembly.pack>false</skip.assembly.pack>
+            </properties>
+        </profile>
+        <profile>
+            <id>pack-all</id>
+            <properties>
+                <skip.source.pack>false</skip.source.pack>
+                <skip.javadoc.pack>false</skip.javadoc.pack>
+                <skip.assembly.pack>false</skip.assembly.pack>
+            </properties>
+        </profile>
     </profiles>
 
     <build>
@@ -182,6 +201,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
                 <version>3.1.0</version>
+                <configuration>
+                    <skipSource>${skip.source.pack}</skipSource>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -198,10 +220,11 @@
                 <configuration>
                     <failOnError>false</failOnError>
                     <doclint>all</doclint>
+                    <skip>${skip.javadoc.pack}</skip>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>attach-javadocs</id>
+                        <id>build-javadocs-module</id>
                         <goals>
                             <goal>jar</goal>
                         </goals>
@@ -212,6 +235,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.1.0</version>
+                <configuration>
+                    <skipAssembly>${skip.assembly.pack}</skipAssembly>
+                </configuration>
                 <executions>
                     <execution>
                         <id>deploy-assembly</id>
@@ -252,7 +278,7 @@
                 <version>2.22.2</version>
                 <inherited>true</inherited>
                 <configuration>
-                    <skipTests>${skipTests}</skipTests>
+                    <skipTests>${skip.tests}</skipTests>
                 </configuration>
             </plugin>
             <plugin>
@@ -301,6 +327,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>1.6</version>
+                <configuration>
+                    <skip>${skip.gpg.sign}</skip>
+                </configuration>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>
@@ -308,9 +337,6 @@
                         <goals>
                             <goal>sign</goal>
                         </goals>
-                        <configuration>
-                            <skip>${gpg.skip.sign}</skip>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
