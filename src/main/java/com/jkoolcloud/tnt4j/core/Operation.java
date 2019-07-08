@@ -97,7 +97,7 @@ public class Operation implements TTL, GlobalID {
 	private boolean enableTiming = false;
 	private ThreadInfo ownerThread = null;
 	protected static ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
-	private boolean cpuTimingSupported = tmbean.isThreadCpuTimeEnabled() && tmbean.isThreadCpuTimeSupported();
+	private boolean cpuTimingSupported = tmbean.isThreadCpuTimeSupported() && tmbean.isThreadCpuTimeEnabled();
 	private boolean contTimingSupported = tmbean.isThreadContentionMonitoringSupported();
 
 	/**
