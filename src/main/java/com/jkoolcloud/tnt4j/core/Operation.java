@@ -96,8 +96,9 @@ public class Operation implements TTL, GlobalID {
 	private long stopWaitTime = 0;
 	private boolean enableTiming = false;
 	private ThreadInfo ownerThread = null;
-	private boolean cpuTimingSupported = ManagementFactory.getThreadMXBean().isThreadCpuTimeEnabled();
-	private boolean contTimingSupported = ManagementFactory.getThreadMXBean().isThreadContentionMonitoringEnabled();
+	protected static ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
+	private boolean cpuTimingSupported = tmbean.isThreadCpuTimeEnabled() && tmbean.isThreadCpuTimeSupported();
+	private boolean contTimingSupported = tmbean.isThreadContentionMonitoringSupported();
 
 	/**
 	 * Creates a Operation with the specified properties. Operation name can be any name or a relative name based on the
@@ -770,7 +771,6 @@ public class Operation implements TTL, GlobalID {
 		if (startStopCount == 0) {
 			startStopCount++;
 			if (enableTiming) {
-				ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
 				ownerThread = tmbean.getThreadInfo(Thread.currentThread().getId());
 				startCPUTime = cpuTimingSupported ? tmbean.getThreadCpuTime(ownerThread.getThreadId()) : 0;
 				if (contTimingSupported) {
@@ -822,8 +822,7 @@ public class Operation implements TTL, GlobalID {
 	 * @return total currently used CPU time in nanoseconds
 	 */
 	public long getCurrentCpuTimeNano() {
-		return (cpuTimingSupported && (ownerThread != null)
-				? ManagementFactory.getThreadMXBean().getThreadCpuTime(ownerThread.getThreadId()) : -1);
+		return (cpuTimingSupported && (ownerThread != null) ? tmbean.getThreadCpuTime(ownerThread.getThreadId()) : -1);
 	}
 
 	/**

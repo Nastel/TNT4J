@@ -71,8 +71,8 @@ public class DefaultActivityListener implements ActivityListener {
 
 	private static ConcurrentHashMap<Activity, ThreadContext> THREAD_CONTEXT = new ConcurrentHashMap<>();
 	protected static ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
-	protected static boolean cpuTimingSupported = tmbean.isThreadCpuTimeEnabled();
-	protected static boolean contTimingSupported = tmbean.isThreadContentionMonitoringEnabled();
+	protected static boolean cpuTimingSupported = tmbean.isThreadCpuTimeEnabled() && tmbean.isThreadCpuTimeSupported();
+	protected static boolean contTimingSupported = tmbean.isThreadContentionMonitoringSupported();
 
 	public DefaultActivityListener() {
 	}
