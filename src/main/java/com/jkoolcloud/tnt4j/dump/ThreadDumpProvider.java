@@ -36,7 +36,7 @@ public class ThreadDumpProvider extends DefaultDumpProvider {
 	/**
 	 * Create a new dump provider with a given name to dump thread stack
 	 * 
-	 *@param name
+	 * @param name
 	 *            provider name
 	 */
 	public ThreadDumpProvider(String name) {
@@ -49,8 +49,8 @@ public class ThreadDumpProvider extends DefaultDumpProvider {
 
 		ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
 		boolean contentionSupported = tmbean.isThreadContentionMonitoringSupported()
-		        && tmbean.isThreadContentionMonitoringEnabled();
-		boolean cputSupported = tmbean.isCurrentThreadCpuTimeSupported() && tmbean.isThreadCpuTimeEnabled();
+				&& tmbean.isThreadContentionMonitoringEnabled();
+		boolean cputSupported = tmbean.isThreadCpuTimeSupported() && tmbean.isThreadCpuTimeEnabled();
 		dump.add("java.thread.contention.supported", contentionSupported);
 		dump.add("java.thread.cpu.supported", cputSupported);
 
