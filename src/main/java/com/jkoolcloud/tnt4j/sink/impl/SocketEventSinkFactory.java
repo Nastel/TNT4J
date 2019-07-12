@@ -18,6 +18,8 @@ package com.jkoolcloud.tnt4j.sink.impl;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.format.JSONFormatter;
@@ -44,6 +46,10 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class SocketEventSinkFactory extends LoggedEventSinkFactory {
 	private String hostName = System.getProperty("tnt4j.sink.factory.socket.host", "localhost");
 	private int port = Integer.getInteger("tnt4j.sink.factory.socket.port", 6400);
+	private String proxyHost;
+	private int proxyPort = 0;
+	private String proxyUser;
+	private String proxyPass;
 
 	/**
 	 * Create a socket event sink factory. Same as {@code SocketEventSinkFactory("localhost", 6400)}.
@@ -84,7 +90,7 @@ public class SocketEventSinkFactory extends LoggedEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
-		return configureSink(new SocketEventSink(name, hostName, port, new JSONFormatter(false),
+		return configureSink(new SocketEventSink(name, hostName, port, proxyHost, proxyPort, new JSONFormatter(false),
 				getLogSink(name, props, new JSONFormatter())));
 	}
 
@@ -110,7 +116,21 @@ public class SocketEventSinkFactory extends LoggedEventSinkFactory {
 	 * @see EventFormatter
 	 */
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt, EventSink pipedSink) {
-		return configureSink(new SocketEventSink(name, hostName, port, frmt, pipedSink));
+		return configureSink(new SocketEventSink(name, hostName, port, proxyHost, proxyPort, frmt, pipedSink));
+	}
+
+	@Override
+	protected EventSink configureSink(EventSink sink) {
+		if (StringUtils.isNotEmpty(proxyUser)) {
+			if (System.getProperty("java.net.socks.username") == null) {
+				System.setProperty("java.net.socks.username", proxyUser);
+			}
+			if (System.getProperty("java.net.socks.password") == null) {
+				System.setProperty("java.net.socks.password", proxyPass);
+			}
+		}
+
+		return super.configureSink(sink);
 	}
 
 	@Override
@@ -119,6 +139,10 @@ public class SocketEventSinkFactory extends LoggedEventSinkFactory {
 
 		hostName = Utils.getString("Host", settings, hostName);
 		port = Utils.getInt("Port", settings, port);
+		proxyHost = Utils.getString("ProxyHost", settings, proxyHost);
+		proxyPort = Utils.getInt("ProxyPort", settings, proxyPort);
+		proxyUser = Utils.getString("ProxyUser", settings, proxyUser);
+		proxyPass = Utils.getString("ProxyPass", settings, proxyPass);
 	}
 
 	@Override

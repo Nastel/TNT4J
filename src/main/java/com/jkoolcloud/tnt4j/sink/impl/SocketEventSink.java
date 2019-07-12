@@ -17,7 +17,11 @@ package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.net.Socket;
+
+import org.apache.commons.lang3.StringUtils;
 
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
@@ -30,7 +34,12 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 /**
  * <p>
  * This class implements {@link EventSink} with socket as the underlying sink implementation.
- * </p>
+ * <p>
+ * In case your SOCKS proxy requires authentication, use system properties to define credentials:
+ * <ul>
+ * <li>{@code java.net.socks.username} - proxy user name</li>
+ * <li>{@code java.net.socks.password} - proxy user password</li>
+ * </ul>
  *
  *
  * @version $Revision: 16 $
@@ -46,6 +55,9 @@ public class SocketEventSink extends LoggedEventSink {
 	private DataOutputStream outStream = null;
 	private String hostName = "localhost";
 	private int portNo = 6400;
+
+	protected InetSocketAddress proxyAddr;
+	protected Proxy proxy = Proxy.NO_PROXY; // default to direct connection
 
 	/**
 	 * Create a socket event sink based on a given host, port and formatter. Another sink can be associated with this
@@ -68,6 +80,35 @@ public class SocketEventSink extends LoggedEventSink {
 		portNo = port;
 	}
 
+	/**
+	 * Create a socket event sink based on a given host, port and formatter. Another sink can be associated with this
+	 * sink where all events are routed.
+	 *
+	 * @param name
+	 *            logical name assigned to this sink
+	 * @param host
+	 *            name where all messages are sent
+	 * @param port
+	 *            number where all messages are sent
+	 * @param proxyHost
+	 *            proxy host name if any, null if none
+	 * @param proxyPort
+	 *            proxy port number if any, 0 of none
+	 * @param frm
+	 *            event formatter associated with this sink
+	 * @param sink
+	 *            piped sink where all events are piped
+	 */
+	public SocketEventSink(String name, String host, int port, String proxyHost, int proxyPort, EventFormatter frm,
+			EventSink sink) {
+		this(name, host, port, frm, sink);
+
+		if (!StringUtils.isEmpty(proxyHost)) {
+			proxyAddr = new InetSocketAddress(proxyHost, proxyPort);
+			proxy = new Proxy(Proxy.Type.SOCKS, proxyAddr);
+		}
+	}
+
 	@Override
 	public Object getSinkHandle() {
 		return socketSink;
@@ -80,7 +121,8 @@ public class SocketEventSink extends LoggedEventSink {
 
 	@Override
 	protected synchronized void _open() throws IOException {
-		socketSink = new Socket(hostName, portNo);
+		socketSink = new Socket(proxy);
+		socketSink.connect(new InetSocketAddress(hostName, portNo));
 		outStream = new DataOutputStream(socketSink.getOutputStream());
 		super._open();
 	}
@@ -108,8 +150,8 @@ public class SocketEventSink extends LoggedEventSink {
 
 	@Override
 	public String toString() {
-		return super.toString() + "{host: " + hostName + ", port: " + portNo + ", socket: " + socketSink
-				+ ", formatter: " + getEventFormatter() + "}";
+		return super.toString() + "{host: " + hostName + ", port: " + portNo + ", socket: " + socketSink + ", proxy: "
+				+ proxy + ", formatter: " + getEventFormatter() + "}";
 	}
 
 	@Override
@@ -156,7 +198,8 @@ public class SocketEventSink extends LoggedEventSink {
 	@Override
 	protected void _checkState() throws IllegalStateException {
 		if (!isOpen()) {
-			throw new IllegalStateException("Sink closed: " + hostName + ":" + this.portNo + ", socket=" + socketSink);
+			throw new IllegalStateException(
+					"Sink closed: " + hostName + ":" + portNo + ", socket=" + socketSink + ", proxy=" + proxy);
 		}
 	}
 }

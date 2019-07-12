@@ -143,6 +143,51 @@ for `import` defined file within same stanza, e.g.:
 }
 ```
 
+### Stream over socket
+Stream your events over socket using `com.jkoolcloud.tnt4j.sink.impl.SocketEventSinkFactory` event sink factory.
+Configure event sink in `tnt4j.properties` as follows:
+
+```properties
+...
+; Use buffered event sink around Kafka event sink factory
+event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.BufferedEventSinkFactory
+event.sink.factory.PooledLoggerFactory: com.jkoolcloud.tnt4j.sink.impl.PooledLoggerFactoryImpl
+
+event.sink.factory.EventSinkFactory: com.jkoolcloud.tnt4j.sink.impl.SocketEventSinkFactory
+event.sink.factory.EventSinkFactory.Host: localhost
+event.sink.factory.EventSinkFactory.Port: 6408
+...
+```
+
+#### Using proxy (SOCKSv5)
+Streaming over socket can be combined with use of proxy. Proxy authentication properties `ProxyUser` and `ProxyPass` are optional.
+Configure event sink in `tnt4j.properties` to use proxy as follows:
+
+```properties
+...
+; Use buffered event sink around Kafka event sink factory
+event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.BufferedEventSinkFactory
+event.sink.factory.PooledLoggerFactory: com.jkoolcloud.tnt4j.sink.impl.PooledLoggerFactoryImpl
+
+event.sink.factory.EventSinkFactory: com.jkoolcloud.tnt4j.sink.impl.SocketEventSinkFactory
+event.sink.factory.EventSinkFactory.Host: localhost
+event.sink.factory.EventSinkFactory.Port: 6408
+event.sink.factory.EventSinkFactory.ProxyHost: proxy.host.com
+event.sink.factory.EventSinkFactory.ProxyPort: 6666
+# Optional proxy properties
+event.sink.factory.EventSinkFactory.ProxyUser: proxy-user
+event.sink.factory.EventSinkFactory.ProxyPass: proxy-pass
+...
+```
+Proxy authentication credentials can be also passed through JVM system properties `java.net.socks.username` and `java.net.socks.password`, 
+e.g.:
+```cmd
+-Djava.net.socks.username=proxy-user -Djava.net.socks.password=proxy-pass
+```
+
+Also see [Java SE documentation](https://docs.oracle.com/javase/7/docs/api/java/net/doc-files/net-properties.html#proxies) for additional 
+proxy configuration details using JVM system properties.
+
 ### Stream over Kafka
 Stream your events over Apache Kafka using `com.jkoolcloud.tnt4j.sink.impl.kafka.KafkaEventSinkFactory` event sink factory.
 Configure event sink in `tnt4j.properties` as follows:
@@ -516,8 +561,8 @@ Here is short list of TNT4J features:
 * Extensible activity, sink, error listeners for pre, post event processing
 * Granular context such as thread id, process id, server, application name
 
-See Getting Started (https://github.com/Nastel/TNT4J/wiki/Getting-Started) for quick reference on TNT4J.
-Wiki is available at https://github.com/Nastel/TNT4J/wiki
+See [Getting Started](https://github.com/Nastel/TNT4J/wiki/Getting-Started) for quick reference on TNT4J.
+Also [Wiki](https://github.com/Nastel/TNT4J/wiki) is available.
 
 TNT4J Mission
 =======================================
@@ -567,14 +612,14 @@ Requirements
 * JDK 1.8+
 
 TNT4J depends on the following external packages:
-* Apache commons configuration 1.10 (http://commons.apache.org/proper/commons-configuration/)
-* Apache commons lang3 3.5 (http://commons.apache.org/proper/commons-lang/)
-* Apache commons net 3.6 (http://commons.apache.org/proper/commons-net/)
-* Apache commons codec 1.11 (http://commons.apache.org/proper/commons-codec/)
-* Google Guava Libraries (https://code.google.com/p/guava-libraries/)
-* SLF4J 1.7.25 (http://www.slf4j.org/)
-* Eclipse Paho MQTTv3 1.2.0 (http://www.eclipse.org/paho/)
-* Java UUID Generator (JUG) 3.1.4 (http://wiki.fasterxml.com/JugHome/)
+* [Apache commons configuration 1.10](http://commons.apache.org/proper/commons-configuration/)
+* [Apache commons lang3 3.5](http://commons.apache.org/proper/commons-lang/)
+* [Apache commons net 3.6](http://commons.apache.org/proper/commons-net/)
+* [Apache commons codec 1.11](http://commons.apache.org/proper/commons-codec/)
+* [Google Guava Libraries](https://code.google.com/p/guava-libraries/)
+* [SLF4J 1.7.25](http://www.slf4j.org/)
+* [Eclipse Paho MQTTv3 1.2.0](http://www.eclipse.org/paho/)
+* [Java UUID Generator (JUG) 3.1.4](http://wiki.fasterxml.com/JugHome/)
 
 To build TNT4J:
 *  Please use JCenter or Maven and these dependencies will be downloaded automatically.
@@ -588,14 +633,14 @@ the `/config` directory. If using JCenter or Maven, it can be found in the zip a
 
 Known Projects Using TNT4J
 ===============================================
-* jKool Event Streaming Library - JESL (https://github.com/Nastel/JESL)
-* TNT4J/Servlet-Filter - (https://github.com/Nastel/tnt4j-servlet-filter)
-* TNT4J/Stream-GC (https://github.com/Nastel/tnt4j-stream-gc)
-* TNT4J/Stream-JMX (https://github.com/Nastel/tnt4j-stream-jmx)
-* TNT4J/Syslogd - (https://github.com/Nastel/tnt4j-syslogd)
-* TNT4J/Log4J12 - (https://github.com/Nastel/tnt4j-log4j12)
-* TNT4J/Logback - (https://github.com/Nastel/tnt4j-logback)
-* TNT4J/Spark - (https://github.com/Nastel/tnt4j-spark)
-* TNT4J/Examples - (https://github.com/Nastel/tnt4j-examples)
-* Log & Metric Analytics Service - jkoolcloud.com (https://www.jkoolcloud.com)
-* Application Performance Monitoring - AutoPilot M6 (http://www.nastel.com/products/autopilot-m6.html)
+* jKool Event Streaming Library - [JESL](https://github.com/Nastel/JESL)
+* [TNT4J/Servlet-Filter](https://github.com/Nastel/tnt4j-servlet-filter)
+* [TNT4J/Stream-GC](https://github.com/Nastel/tnt4j-stream-gc)
+* [TNT4J/Stream-JMX](https://github.com/Nastel/tnt4j-stream-jmx)
+* [TNT4J/Syslogd](https://github.com/Nastel/tnt4j-syslogd)
+* [TNT4J/Log4J12](https://github.com/Nastel/tnt4j-log4j12)
+* [TNT4J/Logback](https://github.com/Nastel/tnt4j-logback)
+* [TNT4J/Spark](https://github.com/Nastel/tnt4j-spark)
+* [TNT4J/Examples](https://github.com/Nastel/tnt4j-examples)
+* Log & Metric Analytics Service - [jkoolcloud.com](https://www.jkoolcloud.com)
+* Application Performance Monitoring - [AutoPilot M6](http://www.nastel.com/products/autopilot-m6.html)
