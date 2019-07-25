@@ -41,4 +41,15 @@ public class Dataset extends PropertySnapshot {
 	public Dataset(String cat, String name) {
 		super(cat, name, OpLevel.NONE, OpType.DATASET, UsecTimestamp.now());
 	}
+	
+	/**
+	 * Create a data set instance
+	 * 
+	 * @param cat dataset category
+	 * @param name dataset name
+	 * @param time timestamp
+	 */
+	public Dataset(String cat, String name, UsecTimestamp time) {
+		super(cat, name, OpLevel.NONE, OpType.DATASET, time));
+	}
 }
