@@ -50,6 +50,6 @@ public class Dataset extends PropertySnapshot {
 	 * @param time timestamp
 	 */
 	public Dataset(String cat, String name, UsecTimestamp time) {
-		super(cat, name, OpLevel.NONE, OpType.DATASET, time));
+		super(cat, name, OpLevel.NONE, OpType.DATASET, time);
 	}
 }
