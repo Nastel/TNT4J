@@ -456,7 +456,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	private void skipEvent(SinkLogEvent event, Throwable ex) {
 		// add logic to handle skipped event
 		event.setException(ex);
-		if ((!dropOnError) && (delayQ.size() < capacity)) {
+		if (!dropOnError && (delayQ.size() < capacity)) {
 			putDelayed(event);
 		} else {
 			skipCount.incrementAndGet();

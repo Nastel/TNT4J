@@ -4,7 +4,7 @@
 
     <groupId>com.jkoolcloud</groupId>
     <artifactId>tnt4j</artifactId>
-    <version>2.12-SNAPSHOT</version>
+    <version>2.11.1</version>
     <packaging>jar</packaging>
 
     <name>tnt4j</name>
@@ -72,13 +72,13 @@
         <build.assemblies.attach>false</build.assemblies.attach>
 
         <commons.lang.version>3.9</commons.lang.version>
-        <commons.text.version>1.7</commons.text.version>
+        <commons.text.version>1.8</commons.text.version>
         <commons.codec.version>1.13</commons.codec.version>
-        <commons.configuration.version>2.5</commons.configuration.version>
+        <commons.configuration.version>2.6</commons.configuration.version>
         <commons.net.version>3.6</commons.net.version>
         <commons.beanutils.version>1.9.3</commons.beanutils.version>
 
-        <guava.version>28.0-jre</guava.version>
+        <guava.version>28.1-jre</guava.version>
         <uuid.generator.version>3.2.0</uuid.generator.version>
         <slf4j.version>1.7.28</slf4j.version>
         <eclipse.paho.version>1.2.1</eclipse.paho.version>
