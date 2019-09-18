@@ -728,6 +728,20 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
+	 * Returns the string representation of the current timestamp, with a given time zone
+	 * and locale.
+	 *
+	 * @param tz
+	 *            format current time based on a given timezone.
+	 * @param locale
+	 *            locale
+	 * @return formatted date/time string based on default pattern and given timezone
+	 */
+	public static String getTimeStamp(TimeZone tz, Locale locale) {
+		return getTimeStamp(null, tz, locale, TimeService.currentTimeMillis(), 0);
+	}
+
+	/**
 	 * Returns the string representation of the current timestamp.
 	 *
 	 * @return formatted date/time string based on default pattern
@@ -975,6 +989,25 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 */
 	public String toString(String pattern, String tz) {
 		return getTimeStamp(pattern, StringUtils.isEmpty(tz) ? DEFAULT_TZ : TimeZone.getTimeZone(tz), msecs, usecs);
+	}
+
+	/**
+	 * Returns the string representation of this timestamp based on the specified format pattern in the specified
+	 * timezone.
+	 *
+	 * @param pattern
+	 *            format pattern
+	 * @param tz
+	 *            timezone name
+	 * @param locale
+	 *            locale for date format to use.
+	 * @return formatted date/time string based on pattern
+	 */
+	public String toString(String pattern, String tz, String locale) {
+		return getTimeStamp(pattern,
+							StringUtils.isEmpty(tz) ? DEFAULT_TZ : TimeZone.getTimeZone(tz),
+							StringUtils.isEmpty(locale) ? null : Utils.getLocale(locale),
+							msecs, usecs);
 	}
 
 	/**
