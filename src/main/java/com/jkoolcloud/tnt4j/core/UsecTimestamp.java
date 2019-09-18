@@ -20,6 +20,7 @@ import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -817,10 +818,31 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(String pattern, TimeZone tz, long msecs, long usecs) {
+		return getTimeStamp(pattern, tz, null, msecs, usecs);
+	}
+
+	/**
+	 * Returns the string representation of the timestamp based on the specified format pattern, milliseconds and
+	 * microseconds.
+	 *
+	 * @param pattern
+	 *            format pattern
+	 * @param tz
+	 *            time zone
+	 * @param locale
+	 *            locale
+	 * @param msecs
+	 *            milliseconds
+	 * @param usecs
+	 *            microseconds
+	 * @return formatted date/time string based on pattern
+	 */
+	public static String getTimeStamp(String pattern, TimeZone tz, Locale locale, long msecs, long usecs) {
 		String tsStr = null;
 
 		if (pattern == null) {
-			SimpleDateFormat df = new SimpleDateFormat(DFLT_JAVA_FORMAT + String.format("%03d", usecs) + " z");
+			pattern = DFLT_JAVA_FORMAT + String.format("%03d", usecs) + " z";
+			SimpleDateFormat df = (locale == null ? new SimpleDateFormat(pattern) : new SimpleDateFormat(pattern, locale));
 			df.setTimeZone(tz == null ? DEFAULT_TZ : tz);
 			tsStr = df.format(new Date(msecs));
 		}
@@ -828,7 +850,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		if (tsStr == null) {
 			int fracSecPos = pattern == null ? -1 : pattern.indexOf('S');
 			if (fracSecPos < 0) {
-				SimpleDateFormat df = new SimpleDateFormat(pattern);
+				SimpleDateFormat df = (locale == null ? new SimpleDateFormat(pattern) : new SimpleDateFormat(pattern, locale));
 				df.setTimeZone(tz == null ? DEFAULT_TZ : tz);
 				tsStr = df.format(new Date(msecs));
 			}
@@ -837,7 +859,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		if (tsStr == null) {
 			String usecStr = String.format("%03d", usecs);
 			pattern = pattern.replaceFirst("SS*", "SSS" + usecStr);
-			SimpleDateFormat df = new SimpleDateFormat(pattern);
+			SimpleDateFormat df = (locale == null ? new SimpleDateFormat(pattern) : new SimpleDateFormat(pattern, locale));
 			df.setTimeZone(tz == null ? DEFAULT_TZ : tz);
 			tsStr = df.format(new Date(msecs));
 		}
@@ -917,6 +939,19 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
+	 * Returns the string representation of this timestamp in the specified timezone and locale.
+	 *
+	 * @param tz
+	 *            timezone
+	 * @param locale
+	 *            locale
+	 * @return formatted date/time string in specified timezone and locale
+	 */
+	public String toString(TimeZone tz, Locale locale) {
+		return getTimeStamp(null, tz, msecs, usecs);
+	}
+
+	/**
 	 * Returns the string representation of this timestamp based on the specified format pattern in the default
 	 * timezone.
 	 *
@@ -954,6 +989,22 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 */
 	public String toString(String pattern, TimeZone tz) {
 		return getTimeStamp(pattern, tz, msecs, usecs);
+	}
+
+	/**
+	 * Returns the string representation of this timestamp based on the specified format pattern in the specified
+	 * timezone and locale.
+	 *
+	 * @param pattern
+	 *            format pattern
+	 * @param tz
+	 *            timezone
+	 * @param locale
+	 *            locale
+	 * @return formatted date/time string based on pattern
+	 */
+	public String toString(String pattern, TimeZone tz, Locale locale) {
+		return getTimeStamp(pattern, tz, locale, msecs, usecs);
 	}
 
 	/**
