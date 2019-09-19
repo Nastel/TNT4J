@@ -728,8 +728,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Returns the string representation of the current timestamp, with a given time zone
-	 * and locale.
+	 * Returns the string representation of the current timestamp, with a given time zone and locale.
 	 *
 	 * @param tz
 	 *            format current time based on a given timezone.
@@ -856,27 +855,17 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 
 		if (pattern == null) {
 			pattern = DFLT_JAVA_FORMAT + String.format("%03d", usecs) + " z";
-			SimpleDateFormat df = (locale == null ? new SimpleDateFormat(pattern) : new SimpleDateFormat(pattern, locale));
-			df.setTimeZone(tz == null ? DEFAULT_TZ : tz);
-			tsStr = df.format(new Date(msecs));
 		}
 
-		if (tsStr == null) {
-			int fracSecPos = pattern == null ? -1 : pattern.indexOf('S');
-			if (fracSecPos < 0) {
-				SimpleDateFormat df = (locale == null ? new SimpleDateFormat(pattern) : new SimpleDateFormat(pattern, locale));
-				df.setTimeZone(tz == null ? DEFAULT_TZ : tz);
-				tsStr = df.format(new Date(msecs));
-			}
-		}
-
-		if (tsStr == null) {
+		int fracSecPos = pattern.indexOf('S');
+		if (fracSecPos >= 0) {
 			String usecStr = String.format("%03d", usecs);
 			pattern = pattern.replaceFirst("SS*", "SSS" + usecStr);
-			SimpleDateFormat df = (locale == null ? new SimpleDateFormat(pattern) : new SimpleDateFormat(pattern, locale));
-			df.setTimeZone(tz == null ? DEFAULT_TZ : tz);
-			tsStr = df.format(new Date(msecs));
 		}
+
+		SimpleDateFormat df = (locale == null ? new SimpleDateFormat(pattern) : new SimpleDateFormat(pattern, locale));
+		df.setTimeZone(tz == null ? DEFAULT_TZ : tz);
+		tsStr = df.format(new Date(msecs));
 
 		return tsStr.replace(" Z", " 00:00");
 	}
@@ -962,7 +951,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return formatted date/time string in specified timezone and locale
 	 */
 	public String toString(TimeZone tz, Locale locale) {
-		return getTimeStamp(null, tz, msecs, usecs);
+		return getTimeStamp(null, tz, locale, msecs, usecs);
 	}
 
 	/**
