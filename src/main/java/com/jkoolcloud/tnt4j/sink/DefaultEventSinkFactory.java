@@ -93,9 +93,6 @@ public class DefaultEventSinkFactory {
 		if (defaultFactory == null) {
 			String defaultFactoryClass = System.getProperty(DEFAULT_EVENT_FACTORY_KEY, DEFAULT_FACTORY_CLASS);
 			defaultFactory = createEventSinkFactory(defaultFactoryClass);
-			if (defaultFactory == null && !defaultFactoryClass.equals(DEFAULT_FACTORY_CLASS)) {
-				defaultFactory = createEventSinkFactory(DEFAULT_FACTORY_CLASS);
-			}
 		}
 	}
 
@@ -112,9 +109,8 @@ public class DefaultEventSinkFactory {
 		try {
 			return (EventSinkFactory) Utils.createInstance(className);
 		} catch (Throwable e) {
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
-		return null;
 	}
 
 	/**

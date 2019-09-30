@@ -17,6 +17,8 @@ package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Properties;
 
@@ -44,9 +46,15 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *
  */
 public class FileEventSinkFactory extends AbstractEventSinkFactory {
+	public static final String TMP_DIR = System.getProperty("java.io.tmpdir", "." + File.separator); 
 	public static final String FILE_SINK_FATORY_DEF_FILE = System.getProperty("tnt4j.file.event.sink.factory.file");
 	public static final String FILE_SINK_FATORY_LOG_EXT = System.getProperty("tnt4j.file.event.sink.factory.logext", ".log");
-	public static final String FILE_SINK_FATORY_DEF_FOLDER = System.getProperty("tnt4j.file.event.sink.factory.folder", "." + File.separator);
+	public static final String FILE_SINK_FATORY_DEF_FOLDER;
+	
+	static {
+		Path defLogPath = FileSystems.getDefault().getPath(TMP_DIR, Utils.getVMName());
+		FILE_SINK_FATORY_DEF_FOLDER = System.getProperty("tnt4j.file.event.sink.factory.folder", defLogPath.toString());
+	}
 	
 	boolean append = true;
 	String fileName = FILE_SINK_FATORY_DEF_FILE;
@@ -81,11 +89,19 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 		setFolder(folder);
 	}
 
-	public void setFolder(String folder) {
+	public FileEventSinkFactory setFolder(String folder) {
 		logFolder = folder;
-		if (!logFolder.endsWith(File.separator)) {
-			logFolder += File.separator;
-		}		
+		return this;
+	}
+	
+	public FileEventSinkFactory setFileName(String fn) {
+		fileName = fn;
+		return this;
+	}
+	
+	public FileEventSinkFactory setAppend(boolean flag) {
+		append = flag;
+		return this;
 	}
 	
 	@Override
@@ -100,8 +116,9 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-		String fname = (fileName != null)? fileName: name;
-		return configureSink(new FileEventSink(name, logFolder + fname + FILE_SINK_FATORY_LOG_EXT, append, frmt));
+		String fname = (fileName != null)? fileName: (name + FILE_SINK_FATORY_LOG_EXT);
+		fname = FileSystems.getDefault().getPath(logFolder, fname).toString();
+		return configureSink(new FileEventSink(name, fname, append, frmt));
 	}
 
 	@Override
@@ -118,8 +135,8 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 	@Override
 	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		super.setConfiguration(props);
-		fileName = Utils.getString("FileName", props, fileName);
+		setFileName(Utils.getString("FileName", props, fileName));
 		setFolder(Utils.getString("Folder", props, logFolder));
-		append = Utils.getBoolean("Append", props, append);
+		setAppend(Utils.getBoolean("Append", props, append));
 	}
 }
