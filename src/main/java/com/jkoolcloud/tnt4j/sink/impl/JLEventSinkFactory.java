@@ -1,0 +1,105 @@
+/*
+ * Copyright 2019 JKOOL, LLC.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.jkoolcloud.tnt4j.sink.impl;
+
+import java.io.FileInputStream;
+import java.nio.file.FileSystems;
+import java.util.Map;
+import java.util.Properties;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
+
+import com.jkoolcloud.tnt4j.config.ConfigException;
+import com.jkoolcloud.tnt4j.format.DefaultFormatter;
+import com.jkoolcloud.tnt4j.format.EventFormatter;
+import com.jkoolcloud.tnt4j.sink.EventSink;
+import com.jkoolcloud.tnt4j.utils.Utils;
+
+/**
+ * @author albert
+ *
+ */
+public class JLEventSinkFactory extends FileEventSinkFactory {
+	public static String DEF_PATTERN = System.getProperty("tnt4j.java.logging.pattern", "-%u-%g");
+	
+	static {
+		_loadConfig(System.getProperty("tnt4j.java.logging.config"));
+	}
+	
+	int logCount = 3;
+	int byteLimit = 10 * 1024 * 1024; // 10MB
+	String logConfigFile;
+	Level level = Level.FINE;
+
+	/**
+	 * Create a default sink factory with default file name based on current timestamp: yyyy-MM-dd.log.
+	 */
+	public JLEventSinkFactory() {
+	}
+
+	/**
+	 * Create a sink factory with a given file name.
+	 * 
+	 * @param fname
+	 *            file name
+	 */
+	public JLEventSinkFactory(String fname) {
+		fileName = fname;
+	}
+
+	/**
+	 * Create a sink factory with a given file name.
+	 * 
+	 * @param folder
+	 *            directory where all files are created
+	 * @param fname
+	 *            file name
+	 */
+	public JLEventSinkFactory(String folder, String fname) {
+		super(folder, fname);
+	}
+
+	@Override
+	public EventSink getEventSink(String name, Properties props) {
+		return getEventSink(name, props, new DefaultFormatter());
+	}
+
+	@Override
+	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
+		String pattern = (fileName != null)? fileName: (name + DEF_PATTERN + FILE_SINK_FATORY_LOG_EXT);
+		pattern = FileSystems.getDefault().getPath(logFolder, pattern).toString();
+		return configureSink(new JLEventSink(name, pattern, byteLimit, logCount, append, level, frmt));
+	}
+
+	@Override
+	public void setConfiguration(Map<String, ?> props) throws ConfigException {
+		super.setConfiguration(props);
+		logCount = Utils.getInt("LogCount", props, logCount);
+		byteLimit = Utils.getInt("ByteLimit", props, byteLimit);
+		level = Level.parse(Utils.getString("Level", props, level.getName()));
+	}
+	
+	private static void _loadConfig(String cfgFile) {
+		if (!Utils.isEmpty(cfgFile)) {
+			try {
+				LogManager.getLogManager().readConfiguration(new FileInputStream(cfgFile));
+			} catch (Throwable e) {
+				e.printStackTrace();
+			}
+		}		
+	}
+}

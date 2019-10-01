@@ -82,13 +82,6 @@ public class FileEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	protected void _checkState() throws IllegalStateException {
-		if (!isOpen()) {
-			throw new IllegalStateException("Sink is not defined or closed");
-		}
-	}
-
-	@Override
 	protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
 		_writeLog(getEventFormatter().format(msg, args));
 	}
