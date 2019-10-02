@@ -27,11 +27,22 @@ import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.DefaultFormatter;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.sink.EventSink;
+import com.jkoolcloud.tnt4j.sink.EventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.impl.FileEventSinkFactory;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
- * @author albert
+ * <p>
+ * Concrete implementation of {@link EventSinkFactory} interface for java unified logging (JUL), which creates instances of {@link JULEventSink}. This
+ * factory uses {@link JULEventSink} as the underlying sink provider provider and by default uses JUL XML formatter.
+ * </p>
+ *
+ *
+ * @see EventSink
+ * @see DefaultFormatter
+ * @see JULEventSink
+ *
+ * @version $Revision: 1 $
  *
  */
 public class JULEventSinkFactory extends FileEventSinkFactory {

@@ -26,23 +26,33 @@ import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
+import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 
 /**
- * @author albert
+ * <p>
+ * Concrete implementation of {@link EventSink} interface for java unified logging (JUL).
+ * The event sink uses file handler and JUL XML formatter.
+ * </p>
+ *
+ *
+ * @see AbstractEventSink
+ * @see JULEventSinkFactory
+ *
+ * @version $Revision: 1 $
  *
  */
 public class JULEventSink extends AbstractEventSink {
 
-	String pattern, configFile;
-	int logCount = 3;
-	int byteLimit = 10 * 1024 * 1024; // 10MB
-	boolean append = true;
-	Level level = Level.FINE;
-	FileHandler fhandler;
-	Logger logger;
+	protected String pattern;
+	protected int logCount = 3;
+	protected int byteLimit = 10 * 1024 * 1024; // 10MB
+	protected boolean append = true;
+	protected Level level = Level.FINE;
+	protected FileHandler fhandler;
+	protected Logger logger;
 
 	/**
 	 * Create logging event sink
