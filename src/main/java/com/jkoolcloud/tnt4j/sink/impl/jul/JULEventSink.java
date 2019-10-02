@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 JKOOL, LLC.
+ * Copyright 2014-2019 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jkoolcloud.tnt4j.sink.impl;
+package com.jkoolcloud.tnt4j.sink.impl.jul;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;
@@ -34,7 +34,7 @@ import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
  * @author albert
  *
  */
-public class JLEventSink extends AbstractEventSink {
+public class JULEventSink extends AbstractEventSink {
 
 	String pattern, configFile;
 	int logCount = 3;
@@ -52,7 +52,7 @@ public class JLEventSink extends AbstractEventSink {
 	 * @param pattern
 	 *            log file pattern
 	 */
-	public JLEventSink(String name, String pattern) {
+	public JULEventSink(String name, String pattern) {
 		super(name);
 		this.pattern = pattern;
 		logger = Logger.getLogger(name);
@@ -74,13 +74,8 @@ public class JLEventSink extends AbstractEventSink {
 	 * @param frmt
 	 *            message formatter
 	 */
-	public JLEventSink(String name, 
-			String pattern, 
-			int byteLimit, 
-			int logCount, 
-			boolean append, 
-			Level level,
-	        EventFormatter frmt) {
+	public JULEventSink(String name, String pattern, int byteLimit, int logCount, boolean append, Level level,
+			EventFormatter frmt) {
 		this(name, pattern);
 		this.setEventFormatter(frmt);
 		this.logCount = logCount;

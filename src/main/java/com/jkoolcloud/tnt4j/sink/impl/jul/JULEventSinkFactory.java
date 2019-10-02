@@ -1,11 +1,11 @@
 /*
- * Copyright 2019 JKOOL, LLC.
+ * Copyright 2014-2019 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jkoolcloud.tnt4j.sink.impl;
+package com.jkoolcloud.tnt4j.sink.impl.jul;
 
 import java.io.FileInputStream;
 import java.nio.file.FileSystems;
@@ -27,19 +27,20 @@ import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.DefaultFormatter;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.sink.EventSink;
+import com.jkoolcloud.tnt4j.sink.impl.FileEventSinkFactory;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * @author albert
  *
  */
-public class JLEventSinkFactory extends FileEventSinkFactory {
+public class JULEventSinkFactory extends FileEventSinkFactory {
 	public static String DEF_PATTERN = System.getProperty("tnt4j.java.logging.pattern", "-%u-%g");
-	
+
 	static {
 		_loadConfig(System.getProperty("tnt4j.java.logging.config"));
 	}
-	
+
 	int logCount = 3;
 	int byteLimit = 10 * 1024 * 1024; // 10MB
 	String logConfigFile;
@@ -48,7 +49,7 @@ public class JLEventSinkFactory extends FileEventSinkFactory {
 	/**
 	 * Create a default sink factory with default file name based on current timestamp: yyyy-MM-dd.log.
 	 */
-	public JLEventSinkFactory() {
+	public JULEventSinkFactory() {
 	}
 
 	/**
@@ -57,7 +58,7 @@ public class JLEventSinkFactory extends FileEventSinkFactory {
 	 * @param fname
 	 *            file name
 	 */
-	public JLEventSinkFactory(String fname) {
+	public JULEventSinkFactory(String fname) {
 		fileName = fname;
 	}
 
@@ -69,7 +70,7 @@ public class JLEventSinkFactory extends FileEventSinkFactory {
 	 * @param fname
 	 *            file name
 	 */
-	public JLEventSinkFactory(String folder, String fname) {
+	public JULEventSinkFactory(String folder, String fname) {
 		super(folder, fname);
 	}
 
@@ -80,9 +81,9 @@ public class JLEventSinkFactory extends FileEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-		String pattern = (fileName != null)? fileName: (name + DEF_PATTERN + FILE_SINK_FATORY_LOG_EXT);
+		String pattern = (fileName != null) ? fileName : (name + DEF_PATTERN + FILE_SINK_FATORY_LOG_EXT);
 		pattern = FileSystems.getDefault().getPath(logFolder, pattern).toString();
-		return configureSink(new JLEventSink(name, pattern, byteLimit, logCount, append, level, frmt));
+		return configureSink(new JULEventSink(name, pattern, byteLimit, logCount, append, level, frmt));
 	}
 
 	@Override
@@ -92,7 +93,7 @@ public class JLEventSinkFactory extends FileEventSinkFactory {
 		byteLimit = Utils.getInt("ByteLimit", props, byteLimit);
 		level = Level.parse(Utils.getString("Level", props, level.getName()));
 	}
-	
+
 	private static void _loadConfig(String cfgFile) {
 		if (!Utils.isEmpty(cfgFile)) {
 			try {
@@ -100,6 +101,6 @@ public class JLEventSinkFactory extends FileEventSinkFactory {
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
-		}		
+		}
 	}
 }
