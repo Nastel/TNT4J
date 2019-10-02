@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,9 +15,9 @@
  */
 
 /**
- * Kafka event sink implementation.
+ * Track and Trace 4J (TNT4J) is high level, simple to use API for tracking and tracing application behavior.
  * 
  * @author albert
  * @version 1.0
  */
-package com.jkoolcloud.tnt4j.sink.impl.kafka;
+package com.jkoolcloud.tnt4j;

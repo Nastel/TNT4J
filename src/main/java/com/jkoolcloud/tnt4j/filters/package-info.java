@@ -15,7 +15,7 @@
  */
 
 /**
- * Concrete event filter implementations
+ * Concrete event filter implementations.
  * 
  * @author albert
  * @version 1.0

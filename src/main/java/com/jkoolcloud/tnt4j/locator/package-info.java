@@ -15,7 +15,7 @@
  */
 
 /**
- * TNT4J GEO location interfaces &amp; default implementations
+ * TNT4J GEO location interfaces &amp; default implementations.
  * 
  * @author albert
  * @version 1.0

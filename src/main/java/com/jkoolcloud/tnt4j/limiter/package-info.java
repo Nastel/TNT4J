@@ -15,7 +15,7 @@
  */
 
 /**
- * TNT4J rate limiter framework implementation
+ * TNT4J rate limiter framework implementation.
  * 
  * @author albert
  * @version 1.0

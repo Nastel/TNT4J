@@ -15,7 +15,7 @@
  */
 
 /**
- * MQTT event sink implementation
+ * MQTT event sink implementation.
  * 
  * @author albert
  * @version 1.0

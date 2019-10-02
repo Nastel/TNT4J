@@ -15,7 +15,7 @@
  */
 
 /**
- * TNT4J default concrete sink implementations
+ * TNT4J default concrete sink implementations.
  * 
  * @author albert
  * @version 1.0
