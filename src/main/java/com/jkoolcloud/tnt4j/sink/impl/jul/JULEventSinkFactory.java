@@ -16,8 +16,10 @@
 
 package com.jkoolcloud.tnt4j.sink.impl.jul;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
@@ -46,16 +48,19 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *
  */
 public class JULEventSinkFactory extends FileEventSinkFactory {
-	public static String DEF_PATTERN = System.getProperty("tnt4j.java.logging.pattern", "-%u-%g");
+	public static final int DEF_LOG_COUNT = Integer.getInteger("tnt4j.jul.count", 3);
+	public static final int DEF_LOG_SIZE_BYTES = Integer.getInteger("tnt4j.jul.size", 10 * 1024 * 1024);
+	public static final String DEF_PATTERN = System.getProperty("tnt4j.jul.pattern", "-%u-%g");
+	public static final String DEF_LEVEL = System.getProperty("tnt4j.jul.level", Level.FINE.getName());
 
 	static {
-		_loadConfig(System.getProperty("tnt4j.java.logging.config"));
+		_loadConfig(System.getProperty("tnt4j.jul.config"));
 	}
 
-	int logCount = 3;
-	int byteLimit = 10 * 1024 * 1024; // 10MB
 	String logConfigFile;
-	Level level = Level.FINE;
+	int logCount = DEF_LOG_COUNT;
+	int byteLimit = DEF_LOG_SIZE_BYTES;
+	Level level = Level.parse(DEF_LEVEL);
 
 	/**
 	 * Create a default sink factory with default file name based on current timestamp: yyyy-MM-dd.log.
@@ -93,6 +98,8 @@ public class JULEventSinkFactory extends FileEventSinkFactory {
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
 		String pattern = (fileName != null) ? fileName : (name + DEF_PATTERN + FILE_SINK_FATORY_LOG_EXT);
+		File logDir = FileSystems.getDefault().getPath(logFolder).toFile();
+		if (!logDir.exists()) logDir.mkdirs(); 
 		pattern = FileSystems.getDefault().getPath(logFolder, pattern).toString();
 		return configureSink(new JULEventSink(name, pattern, byteLimit, logCount, append, level, frmt));
 	}
