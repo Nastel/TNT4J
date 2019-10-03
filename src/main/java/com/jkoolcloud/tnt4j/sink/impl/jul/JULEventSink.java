@@ -116,9 +116,11 @@ public class JULEventSink extends AbstractEventSink {
 
 	@Override
 	protected synchronized void _close() throws IOException {
-		logger.removeHandler(fhandler);
-		fhandler.close();
-		fhandler = null;
+		if (isOpen()) {
+			logger.removeHandler(fhandler);
+			fhandler.close();
+			fhandler = null;
+		}
 	}
 
 	@Override
