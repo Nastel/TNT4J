@@ -67,7 +67,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class DefaultEventSinkFactory {
 	public static final String DEFAULT_EVENT_FACTORY_KEY = "tnt4j.default.event.factory";
-	private static final String DEFAULT_FACTORY_CLASS = "com.jkoolcloud.tnt4j.sink.impl.FileEventSinkFactory";
+	private static final String DEFAULT_FACTORY_CLASS = "com.jkoolcloud.tnt4j.sink.impl.jul.JULEventSinkFactory";
 	private static EventSinkFactory defaultFactory;
 
 	static {
