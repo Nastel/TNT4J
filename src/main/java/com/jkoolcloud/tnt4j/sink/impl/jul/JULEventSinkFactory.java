@@ -19,7 +19,6 @@ package com.jkoolcloud.tnt4j.sink.impl.jul;
 import java.io.File;
 import java.io.FileInputStream;
 import java.nio.file.FileSystems;
-import java.nio.file.Path;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
