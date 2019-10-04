@@ -18,9 +18,9 @@ package com.jkoolcloud.tnt4j.sink.impl.jul;
 
 import java.io.IOException;
 import java.util.logging.FileHandler;
+import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.XMLFormatter;
 
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
@@ -53,6 +53,7 @@ public class JULEventSink extends AbstractEventSink {
 	protected Level level = Level.FINE;
 	protected FileHandler fhandler;
 	protected Logger logger;
+	protected Formatter jFmt;
 
 	/**
 	 * Create logging event sink
@@ -83,15 +84,18 @@ public class JULEventSink extends AbstractEventSink {
 	 *            append to file or not
 	 * @param frmt
 	 *            message formatter
+	 * @param jfmt
+	 *            JUL message formatter
 	 */
 	public JULEventSink(String name, String pattern, int byteLimit, int logCount, boolean append, Level level,
-			EventFormatter frmt) {
+			EventFormatter frmt, Formatter jfmt) {
 		this(name, pattern);
 		this.setEventFormatter(frmt);
 		this.logCount = logCount;
 		this.byteLimit = byteLimit;
 		this.append = append;
 		this.level = level;
+		this.jFmt = jfmt;
 	}
 
 	@Override
@@ -108,7 +112,7 @@ public class JULEventSink extends AbstractEventSink {
 	protected synchronized void _open() throws IOException {
 		if (!isOpen()) {
 			fhandler = new FileHandler(pattern, byteLimit, logCount, append);
-			fhandler.setFormatter(new XMLFormatter());
+			fhandler.setFormatter(jFmt);
 			logger.setLevel(level);
 			logger.addHandler(fhandler);
 		}
