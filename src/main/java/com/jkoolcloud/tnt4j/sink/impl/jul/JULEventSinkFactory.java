@@ -21,8 +21,10 @@ import java.io.FileInputStream;
 import java.nio.file.FileSystems;
 import java.util.Map;
 import java.util.Properties;
+import java.util.logging.Formatter;
 import java.util.logging.Level;
 import java.util.logging.LogManager;
+import java.util.logging.SimpleFormatter;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.DefaultFormatter;
@@ -53,6 +55,10 @@ public class JULEventSinkFactory extends FileEventSinkFactory {
 	public static final String DEF_LEVEL = System.getProperty("tnt4j.jul.level", Level.FINE.getName());
 
 	static {
+		String simpleFormat = System.getProperty("java.util.logging.SimpleFormatter.format");
+		if (simpleFormat == null) {
+			System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %5$s%6$s%n");
+		}
 		_loadConfig(System.getProperty("tnt4j.jul.config"));
 	}
 
@@ -60,6 +66,7 @@ public class JULEventSinkFactory extends FileEventSinkFactory {
 	int logCount = DEF_LOG_COUNT;
 	int byteLimit = DEF_LOG_SIZE_BYTES;
 	Level level = Level.parse(DEF_LEVEL);
+	Formatter julFmt = new SimpleFormatter();
 
 	/**
 	 * Create a default sink factory with default file name based on current timestamp: yyyy-MM-dd.log.
@@ -100,7 +107,7 @@ public class JULEventSinkFactory extends FileEventSinkFactory {
 		File logDir = FileSystems.getDefault().getPath(logFolder).toFile();
 		if (!logDir.exists()) logDir.mkdirs(); 
 		pattern = FileSystems.getDefault().getPath(logFolder, pattern).toString();
-		return configureSink(new JULEventSink(name, pattern, byteLimit, logCount, append, level, frmt));
+		return configureSink(new JULEventSink(name, pattern, byteLimit, logCount, append, level, frmt, julFmt));
 	}
 
 	@Override
