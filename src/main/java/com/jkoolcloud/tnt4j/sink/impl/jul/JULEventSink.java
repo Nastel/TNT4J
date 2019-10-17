@@ -33,8 +33,8 @@ import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 
 /**
  * <p>
- * Concrete implementation of {@link EventSink} interface for java unified logging (JUL).
- * The event sink uses file handler and JUL XML formatter.
+ * Concrete implementation of {@link EventSink} interface for java unified logging (JUL). The event sink uses file
+ * handler and JUL XML formatter.
  * </p>
  *
  *

@@ -36,8 +36,9 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
- * Concrete implementation of {@link EventSinkFactory} interface for java unified logging (JUL), which creates instances of {@link JULEventSink}. This
- * factory uses {@link JULEventSink} as the underlying sink provider provider and by default uses JUL XML formatter.
+ * Concrete implementation of {@link EventSinkFactory} interface for java unified logging (JUL), which creates instances
+ * of {@link JULEventSink}. This factory uses {@link JULEventSink} as the underlying sink provider provider and by
+ * default uses JUL XML formatter.
  * </p>
  *
  *
@@ -103,9 +104,11 @@ public class JULEventSinkFactory extends FileEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
-		String pattern = (fileName != null) ? fileName : (name + DEF_PATTERN + FILE_SINK_FATORY_LOG_EXT);
+		String pattern = (fileName != null) ? fileName : (name + DEF_PATTERN + FILE_SINK_FACTORY_LOG_EXT);
 		File logDir = FileSystems.getDefault().getPath(logFolder).toFile();
-		if (!logDir.exists()) logDir.mkdirs(); 
+		if (!logDir.exists()) {
+			logDir.mkdirs();
+		}
 		pattern = FileSystems.getDefault().getPath(logFolder, pattern).toString();
 		return configureSink(new JULEventSink(name, pattern, byteLimit, logCount, append, level, frmt, julFmt));
 	}
