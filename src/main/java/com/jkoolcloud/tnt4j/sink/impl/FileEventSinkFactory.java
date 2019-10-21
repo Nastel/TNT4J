@@ -50,12 +50,14 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 
 	public static final String TMP_DIR = System.getProperty("java.io.tmpdir", WORK_DIR);
 	public static final String FILE_SINK_FACTORY_DEF_FILE = System.getProperty("tnt4j.file.event.sink.factory.file");
-	public static final String FILE_SINK_FACTORY_LOG_EXT = System.getProperty("tnt4j.file.event.sink.factory.logext", ".log");
+	public static final String FILE_SINK_FACTORY_LOG_EXT = System.getProperty("tnt4j.file.event.sink.factory.logext",
+			".log");
 	public static final String FILE_SINK_FACTORY_DEF_FOLDER;
 
 	static {
 		Path defLogPath = FileSystems.getDefault().getPath(TMP_DIR, Utils.getVMName());
-		FILE_SINK_FACTORY_DEF_FOLDER = System.getProperty("tnt4j.file.event.sink.factory.folder", defLogPath.toString());
+		FILE_SINK_FACTORY_DEF_FOLDER = System.getProperty("tnt4j.file.event.sink.factory.folder",
+				defLogPath.toString());
 	}
 
 	protected boolean append = true;
@@ -140,21 +142,23 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 
 		String fName = Utils.getString("FileName", props, fileName);
 		String folder = Utils.getString("Folder", props, null);
-		File f = new File(fName);
-		fName = f.getName();
-		if (f.isAbsolute()) {
-			folder = f.getParent();
-		} else {
-			if (folder == null) {
+		if (fName != null) {
+			File f = new File(fName);
+			fName = f.getName();
+			if (f.isAbsolute()) {
 				folder = f.getParent();
-				if (!folder.startsWith(WORK_DIR)) {
-					folder = FileSystems.getDefault().getPath(logFolder, folder).toString();
+			} else {
+				if (folder == null) {
+					folder = f.getParent();
+					if (!folder.startsWith(WORK_DIR)) {
+						folder = FileSystems.getDefault().getPath(logFolder, folder).toString();
+					}
 				}
 			}
 		}
 
 		setFileName(fName);
-		setFolder(folder);
+		setFolder(folder == null ? logFolder : folder);
 		setAppend(Utils.getBoolean("Append", props, append));
 	}
 }
