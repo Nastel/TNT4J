@@ -281,6 +281,13 @@ All `value-type` qualifiers are defined in `com.jkoolcloud.tnt4j.core.ValueTypes
 Not specifying a qualifier defaults to auto detection of type by `TNT4JAppender`. 
 First `number` qualifier is tested and defaults to `string` if the test fails (e.g. `#order-no=62627`).
 
+### JUL (java.util.logging) Event Sink integration
+
+Use JVM system property `java.util.logging.config.file` to define JUL configuration file (e.g. `logging.properties`) reference:
+```cmd
+    -Djava.util.logging.config.file=./config/logging.properties
+```
+
 ### Performance
 No need to concatenate messages before logging. String concatenation is expensive especially in loops. Simply log using message patterns as 
 follows and TNT4J will resolve the message only if it actually gets logged:
