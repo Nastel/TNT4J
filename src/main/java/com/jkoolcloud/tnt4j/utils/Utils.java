@@ -32,6 +32,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -99,7 +100,7 @@ public class Utils {
 	/**
 	 * Class method search empty parameters array.
 	 */
-	
+
 	public static final Class<?>[] NO_PARAMS_C = {};
 
 	/**
@@ -436,10 +437,10 @@ public class Utils {
 	 * @return formatted string
 	 */
 	public static String format(String pattern, Object... args) {
-		if (args != null && args.length > 0) {
+		if (pattern != null && ArrayUtils.isNotEmpty(args)) {
 			return MessageFormat.format(pattern, args);
 		} else {
-			return String.valueOf(pattern);
+			return pattern;
 		}
 	}
 
