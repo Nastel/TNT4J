@@ -855,12 +855,12 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 
 		if (pattern == null) {
 			pattern = DFLT_JAVA_FORMAT + String.format("%03d", usecs) + " z";
-		}
-
-		int fracSecPos = pattern.indexOf('S');
-		if (fracSecPos >= 0) {
-			String usecStr = String.format("%03d", usecs);
-			pattern = pattern.replaceFirst("SS*", "SSS" + usecStr);
+		} else {
+			int fracSecPos = pattern.indexOf('S');
+			if (fracSecPos >= 0) {
+				String usecStr = String.format("%03d", usecs);
+				pattern = pattern.replaceFirst("SS*", "SSS" + usecStr);
+			}
 		}
 
 		SimpleDateFormat df = (locale == null ? new SimpleDateFormat(pattern) : new SimpleDateFormat(pattern, locale));
@@ -993,9 +993,9 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return formatted date/time string based on pattern
 	 */
 	public String toString(String pattern, String tz, String locale) {
-		return getTimeStamp(pattern,
-							StringUtils.isEmpty(tz) ? DEFAULT_TZ : TimeZone.getTimeZone(tz),
-							StringUtils.isEmpty(locale) ? null : Utils.getLocale(locale),
+		return getTimeStamp(pattern, //
+							StringUtils.isEmpty(tz) ? DEFAULT_TZ : TimeZone.getTimeZone(tz), //
+							StringUtils.isEmpty(locale) ? null : Utils.getLocale(locale), //
 							msecs, usecs);
 	}
 
