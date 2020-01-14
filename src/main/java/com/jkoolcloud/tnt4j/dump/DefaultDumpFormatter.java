@@ -136,7 +136,7 @@ public class DefaultDumpFormatter implements DumpFormatter {
 
 	@Override
 	public String format(Object obj, Object... args) {
-		return Utils.format(String.valueOf(obj), args);
+		return Utils.format(Utils.toString(obj), args);
 	}
 
 	@Override

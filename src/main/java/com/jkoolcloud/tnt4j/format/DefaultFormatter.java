@@ -100,7 +100,7 @@ public class DefaultFormatter implements EventFormatter, Configurable {
 		} else if (obj instanceof TrackingEvent) {
 			return format((TrackingEvent) obj);
 		} else {
-			return Utils.format(obj.toString(), args);
+			return Utils.format(Utils.toString(obj), args);
 		}
 	}
 

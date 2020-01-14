@@ -451,7 +451,7 @@ public class Utils {
 	 *            list of objects
 	 * @return Throwable exception
 	 */
-	public static Throwable getThrowable(Object args[]) {
+	public static Throwable getThrowable(Object[] args) {
 		if ((args != null) && (args.length > 0) && (args[args.length - 1] instanceof Throwable)) {
 			return (Throwable) args[args.length - 1];
 		}
