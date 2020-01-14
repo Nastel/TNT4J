@@ -4,7 +4,7 @@
 
     <groupId>com.jkoolcloud</groupId>
     <artifactId>tnt4j</artifactId>
-    <version>2.13-SNAPSHOT</version>
+    <version>2.12.2</version>
     <packaging>jar</packaging>
 
     <name>tnt4j</name>
