@@ -42,7 +42,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *
  * @version $Revision: 7 $
  */
-public class Message {
+public class Message implements Tagged {
 	public static final String ENCODING_BASE64 = "base64";
 	public static final String ENCODING_NONE = "none";
 	public static final String CHARSET_DEFAULT = Charset.defaultCharset().displayName();
@@ -58,7 +58,7 @@ public class Message {
 	private String mimeType = MIME_TYPE_TEXT_PLAIN;
 	private String encoding = ENCODING_NONE;
 	private String charset = CHARSET_DEFAULT;
-	private HashSet<String> tags = new HashSet<>(89);
+	private Set<String> tags = new HashSet<>(89);
 
 	/**
 	 * Creates a message object with empty signature.
@@ -228,16 +228,18 @@ public class Message {
 	 *
 	 * @return user-defined set of message tags
 	 */
+	@Override
 	public Set<String> getTag() {
 		return tags;
 	}
 
 	/**
-	 * Sets message tags, which are user-defined values associated with the message
+	 * Sets message tags, which are user-defined values associated with the message.
 	 *
 	 * @param tlist
-	 *            user-defined list of message tags
+	 *            user-defined array of message tags
 	 */
+	@Override
 	public void setTag(String... tlist) {
 		for (int i = 0; (tlist != null) && (i < tlist.length); i++) {
 			if (tlist[i] != null) {
@@ -252,6 +254,7 @@ public class Message {
 	 * @param tlist
 	 *            user-defined list of message tags
 	 */
+	@Override
 	public void setTag(Collection<String> tlist) {
 		if (tlist != null) {
 			this.tags.addAll(tlist);
@@ -259,9 +262,29 @@ public class Message {
 	}
 
 	/**
-	 * Remove all tags from this message
-	 *
+	 * Checks if this message is tagged by any tag from user-defined tags list.
+	 * 
+	 * @param tlist
+	 *            user-defined array of message tags
+	 * @return {@code true} if this message is tagged by any of user-defined tags, {@code false} - otherwise
 	 */
+	@Override
+	public boolean isTagged(String... tlist) {
+		if (tags != null) {
+			for (String tag : tags) {
+				if (this.tags.contains(tag)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Removes all tags associated with this message.
+	 */
+	@Override
 	public void clearTags() {
 		this.tags.clear();
 	}
@@ -397,12 +420,12 @@ public class Message {
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 
-		str.append(getClass().getSimpleName()).append("(")
-			.append("TrackId:").append(getTrackingId()).append(",")
-			.append("Tag:").append(getTag()).append(",")
-			.append("Encoding:").append(getEncoding()).append(",")
-			.append("MimeType:").append(getMimeType()).append(",")
-			.append("Size:").append(getSize()).append(")");
+		str.append(getClass().getSimpleName()).append("(") //
+				.append("TrackId:").append(getTrackingId()).append(",") //
+				.append("Tag:").append(getTag()).append(",") //
+				.append("Encoding:").append(getEncoding()).append(",") //
+				.append("MimeType:").append(getMimeType()).append(",") //
+				.append("Size:").append(getSize()).append(")");
 
 		return str.toString();
 	}

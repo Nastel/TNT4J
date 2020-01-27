@@ -16,8 +16,7 @@
 package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.io.IOException;
-import java.util.Map;
-import java.util.ResourceBundle;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.locks.LockSupport;
@@ -63,6 +62,7 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	private Source source;
 	private EventSink outSink = null;
 	private BufferedEventSinkFactory factory;
+	private Set<String> tags = new HashSet<>();
 
 	// sink stat counters
 	private AtomicLong totalCount = new AtomicLong(0);
@@ -593,5 +593,71 @@ public class BufferedEventSink implements EventSink, IOShutdown {
 	@Override
 	public ResourceBundle getResourceBundle() {
 		return outSink.getResourceBundle();
+	}
+
+	/**
+	 * Gets tags, which are user-defined values associated with this event sink.
+	 *
+	 * @return user-defined set of event sink tags
+	 */
+	@Override
+	public Set<String> getTag() {
+		return tags;
+	}
+
+	/**
+	 * Sets tags, which are user-defined values associated with this event sink.
+	 *
+	 * @param tlist
+	 *            user-defined array of event sink tags
+	 */
+	@Override
+	public void setTag(String... tlist) {
+		for (int i = 0; (tlist != null) && (i < tlist.length); i++) {
+			if (tlist[i] != null) {
+				this.tags.add(tlist[i]);
+			}
+		}
+	}
+
+	/**
+	 * Sets tags, which are user-defined values associated with this event sink.
+	 *
+	 * @param tlist
+	 *            user-defined list of event sink tags
+	 */
+	@Override
+	public void setTag(Collection<String> tlist) {
+		if (tlist != null) {
+			this.tags.addAll(tlist);
+		}
+	}
+
+	/**
+	 * Checks if this event sink is tagged by any tag from user-defined tags list.
+	 * 
+	 * @param tlist
+	 *            user-defined array of event sink tags
+	 * @return {@code true} if this event sink is tagged by any of user-defined tags, {@code false} - otherwise
+	 */
+	@Override
+	public boolean isTagged(String... tlist) {
+		if (tags != null) {
+			for (String tag : tags) {
+				if (this.tags.contains(tag)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Removes all tags associated with this event sink.
+	 */
+	@Override
+	public void clearTags() {
+		this.tags.clear();
 	}
 }

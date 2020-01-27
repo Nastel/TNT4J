@@ -15,8 +15,10 @@
  */
 package com.jkoolcloud.tnt4j.sink;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
@@ -56,6 +58,7 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	private EventFormatter evFormatter = null;
 
 	protected Map<String, ?> config = null;
+	private Set<String> tags = new HashSet<>();
 
 	/**
 	 * Obtain the default instance of {@link SinkEventFilter} configured for this factory.
@@ -129,6 +132,7 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 			sink.setEventFormatter(evFormatter);
 		}
 		sink.setTTL(ttl);
+		sink.setTag(tags);
 		return sink;
 	}
 
@@ -136,6 +140,7 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		config = props;
 		setTTL(Utils.getLong("TTL", props, getTTL()));
+		setTags(Utils.getString("Tag", props, null));
 		double maxmps = Utils.getDouble("RateMaxMPS", props, Limiter.MAX_RATE);
 		double maxbps = Utils.getDouble("RateMaxBPS", props, Limiter.MAX_RATE);
 		long timeout = Utils.getLong("RateTimeout", props, EventLimiter.BLOCK_UNTIL_GRANTED);
@@ -151,7 +156,8 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 
 		eventFilter = (SinkEventFilter) Utils.createConfigurableObject("Filter", "Filter.", config);
 		errorListener = (SinkErrorListener) Utils.createConfigurableObject("ErrorListener", "ErrorListener.", config);
-		eventListener = (SinkLogEventListener) Utils.createConfigurableObject("EventListener", "EventListener.", config);
+		eventListener = (SinkLogEventListener) Utils.createConfigurableObject("EventListener", "EventListener.",
+				config);
 		evFormatter = (EventFormatter) Utils.createConfigurableObject("Formatter", "Formatter.", config);
 	}
 
@@ -163,6 +169,19 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	@Override
 	public void setTTL(long ttl) {
 		this.ttl = ttl;
+	}
+
+	public void setTags(String tag) {
+		if (tag != null) {
+			String[] sTags = tag.split(",");
+
+			for (String stg : sTags) {
+				String ttg = stg.trim();
+				if (!ttg.isEmpty()) {
+					this.tags.add(ttg);
+				}
+			}
+		}
 	}
 
 	@Override

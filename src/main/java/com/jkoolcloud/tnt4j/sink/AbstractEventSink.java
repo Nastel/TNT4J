@@ -62,6 +62,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	private Throwable lastError;
 	private long lastErrorTime = 0;
 	private boolean errorState = false;
+	private Set<String> tags = new HashSet<>();
 
 	// internal event sink statistics
 	private AtomicLong loggedActivities = new AtomicLong(0);
@@ -758,5 +759,71 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	 */
 	protected void incrementBytesSent(int bCount) {
 		sentBytes.addAndGet(bCount);
+	}
+
+	/**
+	 * Gets tags, which are user-defined values associated with this event sink.
+	 *
+	 * @return user-defined set of event sink tags
+	 */
+	@Override
+	public Set<String> getTag() {
+		return tags;
+	}
+
+	/**
+	 * Sets tags, which are user-defined values associated with this event sink.
+	 *
+	 * @param tlist
+	 *            user-defined array of event sink tags
+	 */
+	@Override
+	public void setTag(String... tlist) {
+		for (int i = 0; (tlist != null) && (i < tlist.length); i++) {
+			if (tlist[i] != null) {
+				this.tags.add(tlist[i]);
+			}
+		}
+	}
+
+	/**
+	 * Sets tags, which are user-defined values associated with this event sink.
+	 *
+	 * @param tlist
+	 *            user-defined list of event sink tags
+	 */
+	@Override
+	public void setTag(Collection<String> tlist) {
+		if (tlist != null) {
+			this.tags.addAll(tlist);
+		}
+	}
+
+	/**
+	 * Checks if this event sink is tagged by any tag from user-defined tags list.
+	 * 
+	 * @param tlist
+	 *            user-defined array of event sink tags
+	 * @return {@code true} if this event sink is tagged by any of user-defined tags, {@code false} - otherwise
+	 */
+	@Override
+	public boolean isTagged(String... tlist) {
+		if (tags != null) {
+			for (String tag : tags) {
+				if (this.tags.contains(tag)) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Removes all tags associated with this event sink.
+	 */
+	@Override
+	public void clearTags() {
+		this.tags.clear();
 	}
 }
