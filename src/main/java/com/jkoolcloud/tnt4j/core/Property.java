@@ -235,12 +235,12 @@ public class Property {
 		String key = getKey();
 		StringBuilder str = new StringBuilder();
 
-		str.append(getClass().getSimpleName()).append("{")
-		   .append("Name:").append(key).append(",")
-		   .append("Value:").append(getValue()).append(",")
-		   .append("Type:").append(getDataType()).append(",")
-		   .append("Value-Type:").append(getValueType()).append(",")
-		   .append("Transient:").append(isTransient()).append("}");
+		str.append(getClass().getSimpleName()).append("{") //
+				.append("Name:").append(key).append(",") //
+				.append("Value:").append(getValue()).append(",") //
+				.append("Type:").append(getDataType()).append(",") //
+				.append("Value-Type:").append(getValueType()).append(",") //
+				.append("Transient:").append(isTransient()).append("}");
 
 		return str.toString();
 	}

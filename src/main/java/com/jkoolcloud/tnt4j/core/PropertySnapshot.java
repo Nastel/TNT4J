@@ -279,9 +279,13 @@ public class PropertySnapshot implements Snapshot {
 	@Override
 	public String toString() {
 		StringBuilder str = new StringBuilder(512);
-		str.append(this.getClass().getSimpleName()).append("{Category: " + category + ", Name: " + snapName)
-				.append(", Guid: ").append(guid).append(", TimeStamp: ").append(timeStamp)
-				.append(", Count: " + this.size()).append(", List: [");
+		str.append(this.getClass().getSimpleName()) //
+				.append("{Category: " + category) //
+				.append(", Name: ").append(snapName) //
+				.append(", Guid: ").append(guid) //
+				.append(", TimeStamp: ").append(timeStamp) //
+				.append(", Count: " + this.size()) //
+				.append(", List: [");
 		for (Property item : propSet.values()) {
 			str.append(item);
 		}

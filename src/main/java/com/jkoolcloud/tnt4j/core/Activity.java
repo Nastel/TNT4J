@@ -389,22 +389,22 @@ public class Activity extends Operation implements Trackable {
 		UsecTimestamp eTime = getEndTime();
 		StringBuilder str = new StringBuilder();
 
-		str.append(getClass().getSimpleName()).append("{")
-			.append("Name:").append(getName()).append(",")
-			.append("ParentId:").append(parentId != null? parentId: "root").append(",")
-			.append("TrackId:").append(getTrackingId()).append(",")
-			.append("Guid:").append(getGUID()).append(",")
-			.append("Status:").append(Status == null ? "null" : Status.toString()).append(",")
-			.append("Type:").append(sType == null ? "null" : sType.toString()).append(",")
-			.append("PID:").append(getPID()).append(",")
-			.append("TID:").append(getTID()).append(",")
-			.append("ElapsedUsec:").append(getElapsedTimeUsec()).append(",")
-			.append("WallUsec:").append(getWallTimeUsec()).append(",")
-			.append("FQName:").append(getSource().getFQName()).append(",")
-			.append("IdCount=").append(getIdCount()).append(",")
-			.append("SnapCount=").append(getSnapshotCount()).append(",")
-			.append("StartTime:[").append(sTime.toString()).append("],")
-			.append("EndTime:[").append(eTime.toString()).append("]}");
+		str.append(getClass().getSimpleName()).append("{") //
+				.append("Name:").append(getName()).append(",") //
+				.append("ParentId:").append(parentId != null ? parentId : "root").append(",") //
+				.append("TrackId:").append(getTrackingId()).append(",") //
+				.append("Guid:").append(getGUID()).append(",") //
+				.append("Status:").append(Status == null ? "null" : Status.toString()).append(",") //
+				.append("Type:").append(sType == null ? "null" : sType.toString()).append(",") //
+				.append("PID:").append(getPID()).append(",") //
+				.append("TID:").append(getTID()).append(",") //
+				.append("ElapsedUsec:").append(getElapsedTimeUsec()).append(",") //
+				.append("WallUsec:").append(getWallTimeUsec()).append(",") //
+				.append("FQName:").append(getSource().getFQName()).append(",") //
+				.append("IdCount=").append(getIdCount()).append(",") //
+				.append("SnapCount=").append(getSnapshotCount()).append(",") //
+				.append("StartTime:[").append(sTime.toString()).append("],") //
+				.append("EndTime:[").append(eTime.toString()).append("]}");
 
 		return str.toString();
 	}

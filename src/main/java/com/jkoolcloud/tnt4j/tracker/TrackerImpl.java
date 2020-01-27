@@ -301,11 +301,11 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 
 	@Override
 	public String toString() {
-		return getClass().getSimpleName()
-				+ "{jid=" + Integer.toHexString(System.identityHashCode(this))
-				+ ", name=" + getSource().getName()
-				+ ", keep.context=" + keepContext
-				+ ", sink=" + eventSink
+		return getClass().getSimpleName() //
+				+ "{jid=" + Integer.toHexString(System.identityHashCode(this)) //
+				+ ", name=" + getSource().getName() //
+				+ ", keep.context=" + keepContext //
+				+ ", sink=" + eventSink //
 				+ "}";
 	}
 

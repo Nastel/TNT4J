@@ -28,7 +28,7 @@ import java.util.Map;
 public interface Snapshot extends Trackable {
 
 	/**
-	 * Obtain snapshot id (fully qualified name), which is a combination of name and category. {@code name@category}
+	 * Obtain snapshot id (fully qualified name), which is a combination of name and category {@code name@category}.
 	 *
 	 * @return snapshot id
 	 */
