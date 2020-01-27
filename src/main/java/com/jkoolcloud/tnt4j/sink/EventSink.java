@@ -17,10 +17,7 @@ package com.jkoolcloud.tnt4j.sink;
 
 import java.util.ResourceBundle;
 
-import com.jkoolcloud.tnt4j.core.KeyValueStats;
-import com.jkoolcloud.tnt4j.core.OpLevel;
-import com.jkoolcloud.tnt4j.core.Snapshot;
-import com.jkoolcloud.tnt4j.core.TTL;
+import com.jkoolcloud.tnt4j.core.*;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
@@ -42,7 +39,7 @@ import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
  * @version $Revision: 7 $
  *
  */
-public interface EventSink extends Sink, TTL, KeyValueStats {
+public interface EventSink extends Sink, TTL, KeyValueStats, Tagged {
 
 	/**
 	 * Determine of sink is in error state -- meaning no successful write/log since last error;
