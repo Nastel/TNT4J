@@ -809,7 +809,7 @@ public abstract class AbstractEventSink implements EventSink, EventSinkStats {
 	@Override
 	public boolean isTagged(String... tlist) {
 		if (tags != null) {
-			for (String tag : tags) {
+			for (String tag : tlist) {
 				if (this.tags.contains(tag)) {
 					return true;
 				}
