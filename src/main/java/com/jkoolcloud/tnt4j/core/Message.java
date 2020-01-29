@@ -16,9 +16,6 @@
 package com.jkoolcloud.tnt4j.core;
 
 import java.nio.charset.Charset;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 
 import org.apache.commons.codec.binary.Base64;
 
@@ -42,7 +39,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *
  * @version $Revision: 7 $
  */
-public class Message implements Tagged {
+public class Message extends TagsSet {
 	public static final String ENCODING_BASE64 = "base64";
 	public static final String ENCODING_NONE = "none";
 	public static final String CHARSET_DEFAULT = Charset.defaultCharset().displayName();
@@ -58,7 +55,6 @@ public class Message implements Tagged {
 	private String mimeType = MIME_TYPE_TEXT_PLAIN;
 	private String encoding = ENCODING_NONE;
 	private String charset = CHARSET_DEFAULT;
-	private Set<String> tags = new HashSet<>(89);
 
 	/**
 	 * Creates a message object with empty signature.
@@ -221,72 +217,6 @@ public class Message implements Tagged {
 			throw new IllegalArgumentException("messageAge must be non-negative");
 		}
 		this.messageAge = messageAge;
-	}
-
-	/**
-	 * Gets message tags, which are user-defined values associated with the message.
-	 *
-	 * @return user-defined set of message tags
-	 */
-	@Override
-	public Set<String> getTag() {
-		return tags;
-	}
-
-	/**
-	 * Sets message tags, which are user-defined values associated with the message.
-	 *
-	 * @param tlist
-	 *            user-defined array of message tags
-	 */
-	@Override
-	public void setTag(String... tlist) {
-		for (int i = 0; (tlist != null) && (i < tlist.length); i++) {
-			if (tlist[i] != null) {
-				this.tags.add(tlist[i]);
-			}
-		}
-	}
-
-	/**
-	 * Sets message tags, which are user-defined values associated with the message.
-	 *
-	 * @param tlist
-	 *            user-defined list of message tags
-	 */
-	@Override
-	public void setTag(Collection<String> tlist) {
-		if (tlist != null) {
-			this.tags.addAll(tlist);
-		}
-	}
-
-	/**
-	 * Checks if this message is tagged by any tag from user-defined tags list.
-	 * 
-	 * @param tlist
-	 *            user-defined array of message tags
-	 * @return {@code true} if this message is tagged by any of user-defined tags, {@code false} - otherwise
-	 */
-	@Override
-	public boolean isTagged(String... tlist) {
-		if (tags != null) {
-			for (String tag : tlist) {
-				if (this.tags.contains(tag)) {
-					return true;
-				}
-			}
-		}
-
-		return false;
-	}
-
-	/**
-	 * Removes all tags associated with this message.
-	 */
-	@Override
-	public void clearTags() {
-		this.tags.clear();
 	}
 
 	/**
@@ -480,7 +410,7 @@ public class Message implements Tagged {
 			return charset;
 		}
 		if ("Tag".equalsIgnoreCase(fieldName)) {
-			return tags;
+			return getTag();
 		}
 
 		return null;

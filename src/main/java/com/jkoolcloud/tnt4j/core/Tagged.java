@@ -17,10 +17,9 @@
 package com.jkoolcloud.tnt4j.core;
 
 import java.util.Collection;
-import java.util.Set;
 
 /**
- * This interface defines classes that can be tagged be user-defined string values.
+ * This interface defines classes that can be tagged by user-defined string values.
  *
  * @version $Revision: 1 $
  */
@@ -47,7 +46,7 @@ public interface Tagged {
 	 *
 	 * @return user-defined set of tags
 	 */
-	Set<String> getTag();
+	Collection<String> getTag();
 
 	/**
 	 * Checks if this object is tagged by any tag from user-defined tags list.
