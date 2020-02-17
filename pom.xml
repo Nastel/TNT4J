@@ -183,6 +183,12 @@
                 <skip.assembly.pack>false</skip.assembly.pack>
             </properties>
         </profile>
+        <profile>
+            <id>run-tests</id>
+            <properties>
+                <skip.tests>false</skip.tests>
+            </properties>
+        </profile>
     </profiles>
 
     <build>
