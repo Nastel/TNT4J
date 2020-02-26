@@ -99,6 +99,8 @@ public class DefaultFormatter implements EventFormatter, Configurable {
 			return format((TrackingActivity) obj);
 		} else if (obj instanceof TrackingEvent) {
 			return format((TrackingEvent) obj);
+		} else if (obj instanceof Snapshot) {
+			return format((Snapshot) obj);
 		} else {
 			return Utils.format(Utils.toString(obj), args);
 		}
