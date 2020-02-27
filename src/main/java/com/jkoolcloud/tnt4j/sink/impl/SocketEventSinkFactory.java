@@ -90,8 +90,7 @@ public class SocketEventSinkFactory extends LoggedEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
-		return configureSink(new SocketEventSink(name, hostName, port, proxyHost, proxyPort, new JSONFormatter(false),
-				getLogSink(name, props, new JSONFormatter())));
+		return getEventSink(name, props, new JSONFormatter(false), getLogSink(name, props, new JSONFormatter()));
 	}
 
 	@Override
