@@ -121,6 +121,8 @@ public class SocketEventSink extends LoggedEventSink {
 
 	@Override
 	protected synchronized void _open() throws IOException {
+		_close();
+
 		socketSink = new Socket(proxy);
 		socketSink.connect(new InetSocketAddress(hostName, portNo));
 		outStream = new DataOutputStream(socketSink.getOutputStream());
@@ -151,7 +153,7 @@ public class SocketEventSink extends LoggedEventSink {
 	@Override
 	public String toString() {
 		return super.toString() + "{host: " + hostName + ", port: " + portNo + ", socket: " + socketSink + ", proxy: "
-				+ proxy + ", formatter: " + getEventFormatter() + "}";
+				+ proxy + "}";
 	}
 
 	@Override
@@ -192,14 +194,6 @@ public class SocketEventSink extends LoggedEventSink {
 				ioe.initCause(e);
 			}
 			throw ioe;
-		}
-	}
-
-	@Override
-	protected void _checkState() throws IllegalStateException {
-		if (!isOpen()) {
-			throw new IllegalStateException(
-					"Sink closed: " + hostName + ":" + portNo + ", socket=" + socketSink + ", proxy=" + proxy);
 		}
 	}
 }

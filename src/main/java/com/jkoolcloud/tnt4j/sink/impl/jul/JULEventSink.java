@@ -159,7 +159,7 @@ public class JULEventSink extends AbstractEventSink {
 
 	@Override
 	public String toString() {
-		return super.toString() + "{" + this.getClass().getName() + ": " + fhandler + "}";
+		return super.toString() + "{handler: " + fhandler + "}";
 	}
 
 	protected synchronized void _writeLog(Level level, String msg) {

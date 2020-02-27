@@ -756,4 +756,9 @@ public abstract class AbstractEventSink extends TagsSet implements EventSink, Ev
 	protected void incrementBytesSent(int bCount) {
 		sentBytes.addAndGet(bCount);
 	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "{name: " + name + "}";
+	}
 }
