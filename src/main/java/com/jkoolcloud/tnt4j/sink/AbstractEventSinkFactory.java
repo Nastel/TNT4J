@@ -172,6 +172,8 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	}
 
 	public void setTags(String tag) {
+		tags.clear();
+
 		if (tag != null) {
 			String[] sTags = tag.split(",");
 
