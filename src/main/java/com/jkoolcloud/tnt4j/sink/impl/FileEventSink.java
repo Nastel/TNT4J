@@ -122,6 +122,8 @@ public class FileEventSink extends AbstractEventSink {
 
 	@Override
 	public String toString() {
-		return super.toString() + "{fileSink: " + fileSink + "}";
+		return super.toString()//
+				+ "{fileSink: " + fileSink //
+				+ "}";
 	}
 }

@@ -152,8 +152,12 @@ public class SocketEventSink extends LoggedEventSink {
 
 	@Override
 	public String toString() {
-		return super.toString() + "{host: " + hostName + ", port: " + portNo + ", socket: " + socketSink + ", proxy: "
-				+ proxy + "}";
+		return super.toString() //
+				+ "{host: " + hostName //
+				+ ", port: " + portNo //
+				+ ", socket: " + socketSink //
+				+ ", proxy: " + proxy //
+				+ "}";
 	}
 
 	@Override

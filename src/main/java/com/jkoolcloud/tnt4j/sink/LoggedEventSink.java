@@ -164,7 +164,9 @@ public abstract class LoggedEventSink extends AbstractEventSink {
 
 	@Override
 	public String toString() {
-		return super.toString() + "{piped.sink: " + logSink + "}";
+		return super.toString() //
+				+ "{piped.sink: " + logSink //
+				+ "}";
 	}
 
 	@Override

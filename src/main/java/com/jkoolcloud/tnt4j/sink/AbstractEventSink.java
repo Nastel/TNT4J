@@ -759,6 +759,8 @@ public abstract class AbstractEventSink extends TagsSet implements EventSink, Ev
 
 	@Override
 	public String toString() {
-		return super.toString() + "{name: " + name + "}";
+		return getClass().getSimpleName() //
+				+ "{name: " + name //
+				+ "}";
 	}
 }

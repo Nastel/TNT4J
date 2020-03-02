@@ -350,12 +350,12 @@ public class Message extends TagsSet {
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 
-		str.append(getClass().getSimpleName()).append("(") //
+		str.append(getClass().getSimpleName()).append("{") //
 				.append("TrackId:").append(getTrackingId()).append(",") //
 				.append("Tag:").append(getTag()).append(",") //
 				.append("Encoding:").append(getEncoding()).append(",") //
 				.append("MimeType:").append(getMimeType()).append(",") //
-				.append("Size:").append(getSize()).append(")");
+				.append("Size:").append(getSize()).append("}");
 
 		return str.toString();
 	}
