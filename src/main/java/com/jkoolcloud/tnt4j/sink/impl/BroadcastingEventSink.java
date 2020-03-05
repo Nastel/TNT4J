@@ -43,7 +43,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	public static final String KEY_OPEN_COUNT = "broadcast-open-sinks";
 
 	BroadcastingEventSinkFactory brFactory;
-	final Collection<EventSink> eventSinks = Collections.synchronizedList(new ArrayList<EventSink>(3));
+	final Collection<EventSink> eventSinks = Collections.synchronizedList(new ArrayList<>(3));
 
 	/**
 	 * Create broadcasting event sink factory

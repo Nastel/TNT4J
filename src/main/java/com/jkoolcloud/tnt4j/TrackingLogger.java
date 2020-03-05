@@ -167,7 +167,7 @@ public class TrackingLogger implements Tracker {
 
 	private static final ConcurrentHashMap<DumpProvider, List<DumpSink>> DUMP_DEST_TABLE = new ConcurrentHashMap<>(49);
 	private static final Map<TrackingLogger, StackTraceElement[]> TRACKERS = Collections
-			.synchronizedMap(new WeakHashMap<TrackingLogger, StackTraceElement[]>(89));
+			.synchronizedMap(new WeakHashMap<>(89));
 
 	private static final List<DumpProvider> DUMP_PROVIDERS = new ArrayList<>(10);
 	private static final List<DumpSink> DUMP_DESTINATIONS = new ArrayList<>(10);

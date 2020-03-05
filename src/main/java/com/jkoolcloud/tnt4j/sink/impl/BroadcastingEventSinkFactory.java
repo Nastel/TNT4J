@@ -35,7 +35,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 
 	String broadcastSeq;
-	final Collection<EventSinkFactory> sinkFactories = Collections.synchronizedList(new ArrayList<EventSinkFactory>(3));
+	final Collection<EventSinkFactory> sinkFactories = Collections.synchronizedList(new ArrayList<>(3));
 
 	/**
 	 * Create a default broadcasting sink factory

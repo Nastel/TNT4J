@@ -333,7 +333,7 @@ public class LevelingJSONFormatter extends JSONFormatter {
 		} else {
 			cList = Collections.list(Collections.enumeration(col));
 		}
-		Collections.sort(cList, comp);
+		cList.sort(comp);
 
 		return cList;
 	}

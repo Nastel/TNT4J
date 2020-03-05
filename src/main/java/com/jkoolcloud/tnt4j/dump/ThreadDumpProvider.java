@@ -60,7 +60,7 @@ public class ThreadDumpProvider extends DefaultDumpProvider {
 		long[] tids = tmbean.getAllThreadIds();
 		ThreadInfo[] tinfos = tmbean.getThreadInfo(tids, Integer.MAX_VALUE);
 		for (ThreadInfo ti : tinfos) {
-			dump.add(ti.getThreadName() + "-" + String.valueOf(ti.getThreadId()), ti);
+			dump.add(ti.getThreadName() + "-" + ti.getThreadId(), ti);
 		}
 		return dump;
 	}

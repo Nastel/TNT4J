@@ -183,15 +183,15 @@ public class SizeOf {
 			} else if (obj instanceof Boolean) {
 				return (obj == Boolean.TRUE || obj == Boolean.FALSE);
 			} else if (obj instanceof Integer) {
-				return (obj == Integer.valueOf((Integer) obj));
+				return (obj == (Integer) obj);
 			} else if (obj instanceof Short) {
-				return (obj == Short.valueOf((Short) obj));
+				return (obj == (Short) obj);
 			} else if (obj instanceof Byte) {
-				return (obj == Byte.valueOf((Byte) obj));
+				return (obj == (Byte) obj);
 			} else if (obj instanceof Long) {
-				return (obj == Long.valueOf((Long) obj));
+				return (obj == (Long) obj);
 			} else if (obj instanceof Character) {
-				return (obj == Character.valueOf((Character) obj));
+				return (obj == (Character) obj);
 			}
 		}
 		return false;

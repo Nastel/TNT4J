@@ -51,8 +51,9 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class PooledLogger implements KeyValueStats, IOShutdown {
 	protected static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(PooledLogger.class);
 	protected static final double ERROR_RATE = Double
-			.valueOf(System.getProperty("tnt4j.pooled.logger.error.rate", "0.1"));
-	protected static final long REOPEN_FREQ = Long.getLong("tnt4j.pooled.logger.reopen.freq.ms", TimeUnit.SECONDS.toMillis(10));
+			.parseDouble(System.getProperty("tnt4j.pooled.logger.error.rate", "0.1"));
+	protected static final long REOPEN_FREQ = Long.getLong("tnt4j.pooled.logger.reopen.freq.ms",
+			TimeUnit.SECONDS.toMillis(10));
 
 	static final String KEY_Q_SIZE = "pooled-queue-size";
 	static final String KEY_Q_TASKS = "pooled-queue-tasks";

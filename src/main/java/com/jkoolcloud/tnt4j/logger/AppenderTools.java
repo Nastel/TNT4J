@@ -45,7 +45,7 @@ public class AppenderTools implements AppenderConstants {
 	 * @return stripped key
 	 */
 	public static String getKey(String key) {
-		int eIdx = key.indexOf("/");
+		int eIdx = key.indexOf('/');
 		if (key.length() > 3 && key.charAt(0) == '%' && eIdx > 0) {
 			return key.substring(eIdx + 1);
 		}
@@ -68,7 +68,7 @@ public class AppenderTools implements AppenderConstants {
 	 */
 	public static String getValueType(String key) {
 		if (key.startsWith(TAG_TYPE_QUALIFIER)) {
-			int sIdx = key.indexOf(":");
+			int sIdx = key.indexOf(':');
 			if (sIdx > 0) {
 				int eIdx = key.indexOf("/");
 				return ((eIdx - sIdx) > 1 ? key.substring(sIdx + 1, eIdx) : ValueTypes.VALUE_TYPE_NONE);

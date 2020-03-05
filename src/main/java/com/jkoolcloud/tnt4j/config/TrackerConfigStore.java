@@ -737,7 +737,7 @@ public class TrackerConfigStore extends TrackerConfig {
 				if (line.isEmpty() || StringUtils.startsWithAny(line, ";", "#", "//", "{", "}")) {
 					continue;
 				}
-				int sepIndex = line.indexOf(":");
+				int sepIndex = line.indexOf(':');
 				if (sepIndex <= 0) {
 					logger.log(OpLevel.WARNING, "Skipping invalid source={0}, file={1}, entry='{2}'", srcName,
 							configFile, line);

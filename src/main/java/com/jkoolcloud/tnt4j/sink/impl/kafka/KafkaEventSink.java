@@ -18,7 +18,6 @@ package com.jkoolcloud.tnt4j.sink.impl.kafka;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
@@ -96,10 +95,9 @@ public class KafkaEventSink extends AbstractEventSink {
 		super.getStats(stats);
 		if (isOpen()) {
 			Map<MetricName, ? extends Metric> kMetrics = producer.metrics();
-			Set<MetricName> keys = kMetrics.keySet();
-			for (MetricName kMetric : keys) {
-				stats.put(Utils.qualify(this, kMetric.group() + "/" + kMetric.name()),
-						kMetrics.get(kMetric).metricValue());
+			for (Map.Entry<MetricName, ? extends Metric> entry : kMetrics.entrySet()) {
+				MetricName kMetric = entry.getKey();
+				stats.put(Utils.qualify(this, kMetric.group() + "/" + kMetric.name()), entry.getValue().metricValue());
 			}
 		}
 		return this;
@@ -128,7 +126,7 @@ public class KafkaEventSink extends AbstractEventSink {
 
 	@Override
 	protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
-		writeLine(new ProducerRecord<String, String>(getName(), getEventFormatter().format(msg, args)));
+		writeLine(new ProducerRecord<>(getName(), getEventFormatter().format(msg, args)));
 	}
 
 	private void writeLine(ProducerRecord<String, String> rec) {

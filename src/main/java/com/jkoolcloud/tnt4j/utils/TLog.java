@@ -26,9 +26,9 @@ import com.jkoolcloud.tnt4j.TrackingLogger;
 import com.jkoolcloud.tnt4j.core.OpLevel;
 
 /**
- * TLog is a utility which allows capture standard input stream messages (such as STDIN) and pipe them into
- * a TNT4J event sink logger. TLog utility can be used to stream user entered messages from a console
- * or piped from other command line utilities.
+ * TLog is a utility which allows capture standard input stream messages (such as STDIN) and pipe them into a TNT4J
+ * event sink logger. TLog utility can be used to stream user entered messages from a console or piped from other
+ * command line utilities.
  * 
  * @version $Revision: 1 $
  */
@@ -57,32 +57,37 @@ public class TLog implements Closeable {
 
 	/*
 	 * Severity level for incoming messages
-	 */	
+	 */
 	private OpLevel logLevel = OpLevel.INFO;
-	
+
 	/*
 	 * Stop key to be used to terminate stream reading
-	 */	
+	 */
 	private String stopKey = null;
-		
+
 	/**
 	 * Create instance of TLogger
 	 *
-	 * @param source log source name
-	 * @param level severity level
-	 * @param in input stream for reading messages
+	 * @param source
+	 *            log source name
+	 * @param level
+	 *            severity level
+	 * @param in
+	 *            input stream for reading messages
 	 */
 	public TLog(String source, OpLevel level, InputStream in) {
 		input = in;
 		logLevel = level;
-		logger = TrackingLogger.getInstance(source);		
+		logger = TrackingLogger.getInstance(source);
 	}
 
 	/**
 	 * Create instance of TLogger reading from System.in
 	 *
-	 * @param source log source name
-	 * @param level severity level
+	 * @param source
+	 *            log source name
+	 * @param level
+	 *            severity level
 	 */
 	public TLog(String source, OpLevel level) {
 		this(source, level, System.in);
@@ -91,18 +96,20 @@ public class TLog implements Closeable {
 	/**
 	 * Create instance of TLogger with default severity level of INFO
 	 *
-	 * @param source log source name
-	 * @param in input stream for reading messages
+	 * @param source
+	 *            log source name
+	 * @param in
+	 *            input stream for reading messages
 	 */
 	public TLog(String source, InputStream in) {
 		this(source, OpLevel.INFO, in);
 	}
 
 	/**
-	 * Create instance of TLogger with default severity level of INFO
-	 * and reading from System.in
+	 * Create instance of TLogger with default severity level of INFO and reading from System.in
 	 *
-	 * @param source log source name
+	 * @param source
+	 *            log source name
 	 */
 	public TLog(String source) {
 		this(source, OpLevel.INFO, System.in);
@@ -111,7 +118,8 @@ public class TLog implements Closeable {
 	/**
 	 * Open TLogger instance
 	 *
-	 * @throws IOException when IO error occurs
+	 * @throws IOException
+	 *             when IO error occurs
 	 */
 	public synchronized void open() throws IOException {
 		scanner = new Scanner(input);
@@ -125,16 +133,16 @@ public class TLog implements Closeable {
 	}
 
 	/**
-	 * Define a stop key used to detect end of the stream and stop
-	 * reading the input stream. Line must start with the stop key to terminate
-	 * reading.
+	 * Define a stop key used to detect end of the stream and stop reading the input stream. Line must start with the
+	 * stop key to terminate reading.
 	 *
-	 * @param key stop key
+	 * @param key
+	 *            stop key
 	 */
 	public void setStopKey(String key) {
 		stopKey = key;
 	}
-	
+
 	/**
 	 * Return stop key word associated with the logger
 	 *
@@ -143,21 +151,22 @@ public class TLog implements Closeable {
 	public String getStopKey() {
 		return stopKey;
 	}
-	
+
 	/**
-	 * Read input stream line by line and log it. This is a blocking call
-	 * and terminates when EOF is reached or stop key word detected.
+	 * Read input stream line by line and log it. This is a blocking call and terminates when EOF is reached or stop key
+	 * word detected.
 	 * 
 	 */
 	public void tlog() {
 		tlog(logLevel);
 	}
-	
+
 	/**
-	 * Read input stream line by line and log it. This is a blocking call
-	 * and terminates when EOF is reached or stop key word (if defined) is detected.
+	 * Read input stream line by line and log it. This is a blocking call and terminates when EOF is reached or stop key
+	 * word (if defined) is detected.
 	 *
-	 * @param level severity level used for logging
+	 * @param level
+	 *            severity level used for logging
 	 */
 	public void tlog(OpLevel level) {
 		if (scanner == null) {
@@ -167,14 +176,16 @@ public class TLog implements Closeable {
 			while (scanner.hasNext()) {
 				String line = scanner.nextLine();
 				if (stopKey != null && line.startsWith(stopKey))
+				{
 					break;
+				}
 				logger.log(level, line);
 			}
 		}
 	}
-		
+
 	private static Map<String, String> parseOptions(String[] args) {
-		HashMap<String, String> options = new HashMap<String, String>();
+		HashMap<String, String> options = new HashMap<>();
 		options.put("stopkey", "end");
 		for (int i = 0; i < args.length; i++) {
 			if (args[i].equals("--source") || (args[i].equals("-s"))) {
@@ -188,7 +199,8 @@ public class TLog implements Closeable {
 			}
 		}
 		if (options.size() < 3) {
-			throw new IllegalArgumentException("Missing options: --source|-s source --level|-l severity --stopkey|-k stop-keyword");
+			throw new IllegalArgumentException(
+					"Missing options: --source|-s source --level|-l severity --stopkey|-k stop-keyword");
 		}
 		return options;
 	}
@@ -204,7 +216,7 @@ public class TLog implements Closeable {
 			tlog = new TLog(source, level);
 			tlog.setStopKey(stopKey);
 			tlog.open();
-			tlog.tlog();			
+			tlog.tlog();
 		} catch (IllegalArgumentException la) {
 			System.err.println(la.getMessage());
 		} finally {

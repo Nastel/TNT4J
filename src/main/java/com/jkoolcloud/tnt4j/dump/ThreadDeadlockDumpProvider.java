@@ -53,7 +53,7 @@ public class ThreadDeadlockDumpProvider extends ThreadDumpProvider {
 		if (dead != null) {
 			ThreadInfo[] tinfos = tmbean.getThreadInfo(dead, Integer.MAX_VALUE);
 			for (ThreadInfo ti : tinfos) {
-				dump.add(ti.getThreadName() + "-" + String.valueOf(ti.getThreadId()), ti);
+				dump.add(ti.getThreadName() + "-" + ti.getThreadId(), ti);
 			}
 		}
 		return dump;
