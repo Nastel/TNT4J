@@ -1099,7 +1099,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 */
 	public UsecTimestamp plus(UsecTimestamp other) {
 		add(other);
-
 		return this;
 	}
 
@@ -1118,8 +1117,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 */
 	public UsecTimestamp plus(long usecs) {
 		add(usecs);
-
-		return this
+		return this;
 	}
 
 	/**
