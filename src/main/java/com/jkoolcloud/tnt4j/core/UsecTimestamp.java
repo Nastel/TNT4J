@@ -45,6 +45,9 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, Cloneable, Serializable {
 	private static final long serialVersionUID = 3658590467907047916L;
 
+	protected static final int SECS_SCALE = 1000;
+	protected static final int MAX_USEC = SECS_SCALE - 1;
+
 	private static final String DFLT_JAVA_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 	public static final String DEFAULT_FORMAT = DFLT_JAVA_FORMAT + "SSS z";
 	private static final TimeZone DEFAULT_TZ = TimeZone.getDefault();// TimeZone.getTimeZone("UTC");
@@ -96,7 +99,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @param usecs
 	 *            fraction microseconds
 	 * @throws IllegalArgumentException
-	 *             if any arguments are negative, or if usecs is greater than 999
+	 *             if any arguments are negative, or if usecs is greater than {@value #MAX_USEC}
 	 */
 	public UsecTimestamp(long msecs, long usecs) {
 		setTimestampValues(msecs, usecs, 0);
@@ -113,7 +116,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @param recvdLamportClock
 	 *            Lamport clock of the received event (0 do not compute Lamport clock)
 	 * @throws IllegalArgumentException
-	 *             if any arguments are negative, or if usecs is greater than 999
+	 *             if any arguments are negative, or if usecs is greater than {@value #MAX_USEC}
 	 */
 	public UsecTimestamp(long msecs, long usecs, long recvdLamportClock) {
 		setTimestampValues(msecs, usecs, recvdLamportClock);
@@ -435,16 +438,16 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		}
 
 		this.msecs = upscale(usecTime);
-		this.usecs = (int) (usecTime - downscale(this.msecs));
+		this.usecs = usecTime - downscale(this.msecs);
 		return this;
 	}
 
 	private static long upscale(long timeUnitValue) {
-		return timeUnitValue / 1000L;
+		return timeUnitValue / SECS_SCALE;
 	}
 
 	private static long downscale(long timeUnitValue) {
-		return timeUnitValue * 1000;
+		return timeUnitValue * SECS_SCALE;
 	}
 
 	/**
@@ -459,7 +462,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		}
 
 		this.msecs = timestamp.getTime();
-		if (usecs > 999) {
+		if (usecs > MAX_USEC) {
 			// extract milliseconds portion from usecs and add to msecs
 			long msecs = upscale(usecs);
 			this.msecs += msecs;
@@ -478,13 +481,13 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @param recvdLamportClock
 	 *            received Lamport clock
 	 * @throws IllegalArgumentException
-	 *             if any arguments are negative, or if usecs is greater than 999
+	 *             if any arguments are negative, or if usecs is greater than {@value #MAX_USEC}
 	 */
 	protected void setTimestampValues(long msecs, long usecs, long recvdLamportClock) {
 		if (msecs < 0) {
 			throw new IllegalArgumentException("msecs must be non-negative");
 		}
-		if (usecs < 0 || usecs > 999) {
+		if (usecs < 0 || usecs > MAX_USEC) {
 			throw new IllegalArgumentException("usecs must be in the range [0,999], inclusive");
 		}
 
@@ -603,7 +606,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return fractional microseconds
 	 */
 	public long getSecUsecPart() {
-		int msec = (int) (msecs - downscale(upscale(msecs)));
+		long msec = msecs - downscale(upscale(msecs));
 		return downscale(msec) + usecs;
 	}
 
@@ -691,7 +694,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 *            microseconds value to add/subtract
 	 */
 	protected static void add_(UsecTimestamp ts, long msecs, long usecs) {
-		if (usecs > 999 || usecs < -999) {
+		if (usecs > MAX_USEC || usecs < -MAX_USEC) {
 			long ms = upscale(usecs);
 			msecs += ms;
 			usecs -= downscale(ms);
@@ -699,13 +702,13 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 
 		ts.usecs += usecs;
 
-		if (ts.usecs > 999) {
+		if (ts.usecs > MAX_USEC) {
 			long ms = upscale(ts.usecs);
 			msecs += ms;
 			ts.usecs -= downscale(ms);
 		} else if (ts.usecs < 0) {
 			msecs--;
-			ts.usecs += 1000;
+			ts.usecs += SECS_SCALE;
 		}
 
 		ts.msecs += msecs;
@@ -729,7 +732,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 
 		if (thisUsecs < otherUsecs) {
 			thisMsecs--;
-			thisUsecs += 1000;
+			thisUsecs += SECS_SCALE;
 		}
 
 		return downscale(thisMsecs - otherMsecs) + (thisUsecs - otherUsecs);
@@ -883,7 +886,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 */
 	public static String getTimeStamp(String pattern, TimeZone tz, Locale locale, long usecs) {
 		long msecs = upscale(usecs);
-		return getTimeStamp(pattern, tz, locale, msecs, (usecs - downscale(msecs)));
+		return getTimeStamp(pattern, tz, locale, msecs, usecs - downscale(msecs));
 	}
 
 	/**
@@ -1098,6 +1101,25 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		add(other);
 
 		return this;
+	}
+
+	/**
+	 * Purpose of this method is to make this class compatible with Groovy script standard for number operator "plus"
+	 * {@code '+'} overloading. See <a href="http://groovy-lang.org/operators.html">Groovy operators spec</a> section
+	 * "Operator overloading".
+	 * <p>
+	 * Performs same as {@link #add(long)}.
+	 *
+	 * @param usecs
+	 *            time value in microseconds to add
+	 * @return current UsecTimestamp instance
+	 *
+	 * @see #add(long)
+	 */
+	public UsecTimestamp plus(long usecs) {
+		add(usecs);
+
+		return this
 	}
 
 	/**
