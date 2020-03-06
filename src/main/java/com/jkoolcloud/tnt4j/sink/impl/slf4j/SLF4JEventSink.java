@@ -22,30 +22,23 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.jkoolcloud.tnt4j.core.OpLevel;
-import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
-import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
-import com.jkoolcloud.tnt4j.source.Source;
-import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
-import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
-import com.jkoolcloud.tnt4j.utils.Utils;
+import com.jkoolcloud.tnt4j.sink.impl.LoggerEventSink;
 
 /**
  * <p>
- * {@code EventSink} implementation that routes log messages to SLF4J. This implementation is designed to log messages
- * over SLF4J framework.
+ * {@link com.jkoolcloud.tnt4j.sink.EventSink} implementation that routes log messages to SLF4J. This implementation is
+ * designed to log messages over SLF4J framework.
  * </p>
  * 
- * 
- * @see TrackingEvent
- * @see EventFormatter
- * @see AbstractEventSink
- * @see OpLevel
- * 
- * @version $Revision: 11 $
- * 
+ * @version $Revision: 12 $
+ *
+ * @see com.jkoolcloud.tnt4j.tracker.TrackingEvent
+ * @see com.jkoolcloud.tnt4j.format.EventFormatter
+ * @see com.jkoolcloud.tnt4j.core.OpLevel
+ * @see com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory
  */
-public class SLF4JEventSink extends AbstractEventSink {
+public class SLF4JEventSink extends LoggerEventSink {
 
 	private Logger logger = null;
 
@@ -63,26 +56,6 @@ public class SLF4JEventSink extends AbstractEventSink {
 	public SLF4JEventSink(String name, Properties props, EventFormatter frmt) {
 		super(name, frmt);
 		_open();
-	}
-
-	@Override
-	protected void _log(TrackingEvent event) {
-		writeLine(event.getSeverity(), getEventFormatter().format(event), event.getOperation().getThrowable());
-	}
-
-	@Override
-	protected void _log(TrackingActivity activity) {
-		writeLine(activity.getSeverity(), getEventFormatter().format(activity), activity.getThrowable());
-	}
-
-	@Override
-	protected void _log(Snapshot snapshot) {
-		writeLine(snapshot.getSeverity(), getEventFormatter().format(snapshot), null);
-	}
-
-	@Override
-	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) {
-		writeLine(sev, getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
 	}
 
 	@Override
@@ -110,11 +83,6 @@ public class SLF4JEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	protected void _write(Object msg, Object... args) throws IOException {
-		writeLine(OpLevel.INFO, getEventFormatter().format(msg, args), Utils.getThrowable(args));
-	}
-
-	@Override
 	public Object getSinkHandle() {
 		return logger;
 	}
@@ -135,26 +103,35 @@ public class SLF4JEventSink extends AbstractEventSink {
 	protected void _close() throws IOException {
 	}
 
-	private void writeLine(OpLevel sev, String msg, Throwable t) {
+	@Override
+	protected void writeLine(OpLevel sev, LogEntry entry, Throwable t) {
+		if (!isSet(sev)) {
+			return;
+		}
+
 		switch (sev) {
 		case HALT:
 		case FATAL:
 		case CRITICAL:
 		case FAILURE:
 		case ERROR:
+			String msg = entry.getString();
 			incrementBytesSent(msg.length());
 			logger.error(msg, t);
 			break;
 		case DEBUG:
+			msg = entry.getString();
 			incrementBytesSent(msg.length());
 			logger.debug(msg, t);
 			break;
 		case TRACE:
+			msg = entry.getString();
 			incrementBytesSent(msg.length());
 			logger.trace(msg, t);
 			break;
 		case NOTICE:
 		case WARNING:
+			msg = entry.getString();
 			incrementBytesSent(msg.length());
 			logger.warn(msg, t);
 			break;
@@ -162,6 +139,7 @@ public class SLF4JEventSink extends AbstractEventSink {
 			break;
 		case INFO:
 		default:
+			msg = entry.getString();
 			incrementBytesSent(msg.length());
 			logger.info(msg, t);
 			break;

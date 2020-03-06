@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.jkoolcloud.tnt4j.sink.impl.jul;
 
 import java.io.IOException;
@@ -23,28 +22,23 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import com.jkoolcloud.tnt4j.core.OpLevel;
-import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
-import com.jkoolcloud.tnt4j.sink.AbstractEventSink;
-import com.jkoolcloud.tnt4j.sink.EventSink;
-import com.jkoolcloud.tnt4j.source.Source;
-import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
-import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
+import com.jkoolcloud.tnt4j.sink.impl.LoggerEventSink;
 
 /**
  * <p>
- * Concrete implementation of {@link EventSink} interface for java unified logging (JUL). The event sink uses file
- * handler and JUL XML formatter.
+ * Concrete implementation of {@link com.jkoolcloud.tnt4j.sink.EventSink} interface for java unified logging (JUL). The
+ * event sink uses file handler and JUL XML formatter.
  * </p>
  *
+ * @version $Revision: 2 $
  *
- * @see AbstractEventSink
- * @see JULEventSinkFactory
- *
- * @version $Revision: 1 $
- *
+ * @see com.jkoolcloud.tnt4j.tracker.TrackingEvent
+ * @see com.jkoolcloud.tnt4j.format.EventFormatter
+ * @see com.jkoolcloud.tnt4j.core.OpLevel
+ * @see com.jkoolcloud.tnt4j.sink.impl.jul.JULEventSinkFactory
  */
-public class JULEventSink extends AbstractEventSink {
+public class JULEventSink extends LoggerEventSink {
 
 	protected String pattern;
 	protected int logCount = 3;
@@ -99,6 +93,11 @@ public class JULEventSink extends AbstractEventSink {
 	}
 
 	@Override
+	public boolean isSet(OpLevel sev) {
+		return logger.isLoggable(getLevel(sev));
+	}
+
+	@Override
 	public Object getSinkHandle() {
 		return logger;
 	}
@@ -128,50 +127,17 @@ public class JULEventSink extends AbstractEventSink {
 	}
 
 	@Override
-	protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
-		_writeLog(Level.INFO, getEventFormatter().format(msg, args));
-	}
-
-	@Override
-	protected void _log(TrackingEvent event) throws IOException {
-		_writeLog(getLevel(event.getSeverity()), getEventFormatter().format(event));
-	}
-
-	@Override
-	protected void _log(TrackingActivity activity) throws IOException {
-		_writeLog(getLevel(activity.getSeverity()), getEventFormatter().format(activity));
-	}
-
-	@Override
-	protected void _log(Snapshot snapshot) {
-		_writeLog(getLevel(snapshot.getSeverity()), getEventFormatter().format(snapshot));
-	}
-
-	@Override
-	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) {
-		_writeLog(getLevel(sev), getEventFormatter().format(msg, args));
-	}
-
-	@Override
-	public void flush() {
-		fhandler.flush();
-	}
-
-	@Override
-	public String toString() {
-		return super.toString() //
-				+ "{logCount: " + logCount //
-				+ ", byteLimit: " + byteLimit //
-				+ ", append: " + append //
-				+ ", level: " + level //
-				+ ", handler: " + fhandler //
-				+ "}";
-	}
-
-	protected synchronized void _writeLog(Level level, String msg) {
+	protected void writeLine(OpLevel sev, LogEntry entry, Throwable t) {
 		_checkState();
+
+		Level level = getLevel(sev);
+		if (!logger.isLoggable(level)) {
+			return;
+		}
+
+		String msg = entry.getString();
 		incrementBytesSent(msg.length());
-		logger.log(level, msg);
+		logger.log(level, msg, t);
 	}
 
 	/**
@@ -203,5 +169,21 @@ public class JULEventSink extends AbstractEventSink {
 		default:
 			return Level.INFO;
 		}
+	}
+
+	@Override
+	public void flush() {
+		fhandler.flush();
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() //
+				+ "{logCount: " + logCount //
+				+ ", byteLimit: " + byteLimit //
+				+ ", append: " + append //
+				+ ", level: " + level //
+				+ ", handler: " + fhandler //
+				+ "}";
 	}
 }
