@@ -16,12 +16,13 @@
 package com.jkoolcloud.tnt4j.utils;
 
 /**
- * This class generates microsecond precision current timestamp based on
- * NTP.
+ * This class generates microsecond precision current timestamp based on NTP.
+ * <p>
  * Example: {@code Useconds.CURRENT.get();}
  */
 public enum Useconds {
 	CURRENT;
+
 	private long startUsecs;
 	private long startNanos;
 
@@ -30,7 +31,7 @@ public enum Useconds {
 	}
 
 	/**
-	 * Obtain NTP synchronized timestamp with microsecond precision and accuracy
+	 * Obtain NTP synchronized timestamp with microsecond precision and accuracy.
 	 *
 	 * @return synchronized microsecond timestamp
 	 */
@@ -40,9 +41,7 @@ public enum Useconds {
 	}
 
 	/**
-	 * Synchronized NTP millisecond clock and nanosecond/usec clocks to reduce
-	 * clock drift and improve accuracy.
-	 *
+	 * Synchronized NTP millisecond clock and nanosecond/usec clocks to reduce clock drift and improve accuracy.
 	 */
 	public void sync() {
 		this.startUsecs = TimeService.currentTimeUsecs();

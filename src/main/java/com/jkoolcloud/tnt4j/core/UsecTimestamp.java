@@ -26,7 +26,6 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.jkoolcloud.tnt4j.utils.TimeService;
 import com.jkoolcloud.tnt4j.utils.Useconds;
 import com.jkoolcloud.tnt4j.utils.Utils;
 
@@ -375,7 +374,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		Date date = dateFormat.parse(timeStampStr);
 
 		setTimestampValues(date.getTime(), 0, 0);
-		add(0, usecs);
+		add(usecs);
 	}
 
 	/**
@@ -435,9 +434,17 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 			throw new IllegalArgumentException("usecTime must be non-negative");
 		}
 
-		this.msecs = usecTime / 1000L;
-		this.usecs = (int) (usecTime - (this.msecs * 1000));
+		this.msecs = upscale(usecTime);
+		this.usecs = (int) (usecTime - downscale(this.msecs));
 		return this;
+	}
+
+	private static long upscale(long timeUnitValue) {
+		return timeUnitValue / 1000L;
+	}
+
+	private static long downscale(long timeUnitValue) {
+		return timeUnitValue * 1000;
 	}
 
 	/**
@@ -454,9 +461,9 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		this.msecs = timestamp.getTime();
 		if (usecs > 999) {
 			// extract milliseconds portion from usecs and add to msecs
-			long msecs = usecs / 1000;
+			long msecs = upscale(usecs);
 			this.msecs += msecs;
-			usecs -= msecs * 1000;
+			usecs -= downscale(msecs);
 		}
 		this.usecs = usecs;
 	}
@@ -509,7 +516,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return timestamp, in seconds.
 	 */
 	public long getTimeSec() {
-		return msecs / 1000;
+		return upscale(msecs);
 	}
 
 	/**
@@ -527,7 +534,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return timestamp, in microseconds.
 	 */
 	public long getTimeUsec() {
-		return msecs * 1000 + usecs;
+		return downscale(msecs) + usecs;
 	}
 
 	/**
@@ -596,12 +603,22 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return fractional microseconds
 	 */
 	public long getSecUsecPart() {
-		int msec = (int) (msecs - (msecs / 1000) * 1000);
-		return (msec * 1000) + usecs;
+		int msec = (int) (msecs - downscale(upscale(msecs)));
+		return downscale(msec) + usecs;
 	}
 
 	/**
-	 * Adds the specified UsecTimestamp to this one.
+	 * Adds/subtracts the specified time value {@code usecs} to this one.
+	 * 
+	 * @param usecs
+	 *            time value in microseconds to add/subtract
+	 */
+	public void add(long usecs) {
+		add(0L, usecs);
+	}
+
+	/**
+	 * Adds the time value from specified UsecTimestamp {@code other} to this one.
 	 *
 	 * @param other
 	 *            timestamp to add to current one
@@ -611,84 +628,87 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Adds the specified time values to this UsecTimestamp.
+	 * Adds/subtracts the specified time values {@code msecs} and {@code usecs} to this one.
 	 *
 	 * @param msecs
-	 *            milliseconds value to add
+	 *            milliseconds value to add/subtract
 	 * @param usecs
-	 *            microseconds value to add
-	 * @throws IllegalArgumentException
-	 *             if any arguments are negative
+	 *            microseconds value to add/subtracts
 	 */
 	public void add(long msecs, long usecs) {
-		if (msecs < 0) {
-			throw new IllegalArgumentException("msecs must be non-negative");
-		}
-		if (usecs < 0) {
-			throw new IllegalArgumentException("usecs must be non-negative");
-		}
-
-		if (usecs > 999) {
-			long ms = usecs / 1000;
-			msecs += ms;
-			usecs -= ms * 1000;
-		}
-
-		this.msecs += msecs;
-		this.usecs += usecs;
-
-		if (this.usecs > 999) {
-			long ms = (this.usecs / 1000);
-
-			this.msecs += ms;
-			this.usecs -= ms * 1000;
-		}
+		add_(this, msecs, usecs);
 	}
 
 	/**
-	 * Subtracts the specified UsecTimestamp from this one (e.g. {@code x.subtract(y)} means {@code x - y}).
+	 * Creates new UsecTimestamp instance by adding/subtracting specified time value {@code usecs} to value of this
+	 * UsecTimestamp.
+	 *
+	 * @param usecs
+	 *            time value in microseconds to add/subtract
+	 * @return new UsecTimestamp instance
+	 */
+	public UsecTimestamp addNew(long usecs) {
+		return addNew(0L, usecs);
+	}
+
+	/**
+	 * Creates new UsecTimestamp instance by adding time value from specified UsecTimestamp {@code other} to value of
+	 * this one.
 	 *
 	 * @param other
-	 *            timestamp to subtract from current one
+	 *            timestamp to add
+	 * @return new UsecTimestamp instance
 	 */
-	public void subtract(UsecTimestamp other) {
-		subtract(other.msecs, other.usecs);
+	public UsecTimestamp addNew(UsecTimestamp other) {
+		return addNew(other.msecs, other.usecs);
 	}
 
 	/**
-	 * Subtracts the specified time values from this UsecTimestamp.
+	 * Creates new UsecTimestamp instance by adding/subtracting specified time values {@code msecs} and {@code usecs} to
+	 * value of this one.
 	 *
 	 * @param msecs
-	 *            milliseconds value to subtract
+	 *            milliseconds value to add/subtract
 	 * @param usecs
-	 *            microseconds value to subtract
-	 * @throws IllegalArgumentException
-	 *             if any arguments are negative
+	 *            microseconds value to add/subtract
+	 * @return new UsecTimestamp instance
 	 */
-	public void subtract(long msecs, long usecs) {
-		if (msecs < 0) {
-			throw new IllegalArgumentException("msecs must be non-negative");
-		}
-		if (usecs < 0) {
-			throw new IllegalArgumentException("usecs must be non-negative");
-		}
+	public UsecTimestamp addNew(long msecs, long usecs) {
+		UsecTimestamp newTS = new UsecTimestamp(this);
+		add_(newTS, msecs, usecs);
 
-		if (usecs > 999) {
-			long ms = usecs / 1000;
+		return newTS;
+	}
+
+	/**
+	 * Adds/subtracts the specified time values values {@code msecs} and {@code usecs} to timestamp {@code ts}.
+	 * 
+	 * @param ts
+	 *            timestamp instance to add/subtract value
+	 * @param msecs
+	 *            milliseconds value to add/subtract
+	 * @param usecs
+	 *            microseconds value to add/subtract
+	 */
+	protected static void add_(UsecTimestamp ts, long msecs, long usecs) {
+		if (usecs > 999 || usecs < -999) {
+			long ms = upscale(usecs);
 			msecs += ms;
-			usecs -= ms * 1000;
+			usecs -= downscale(ms);
 		}
 
-		long thisMsecs = this.msecs;
-		long thisUsecs = this.usecs;
+		ts.usecs += usecs;
 
-		if (thisUsecs < usecs) {
-			thisMsecs--;
-			thisUsecs += 1000;
+		if (ts.usecs > 999) {
+			long ms = upscale(ts.usecs);
+			msecs += ms;
+			ts.usecs -= downscale(ms);
+		} else if (ts.usecs < 0) {
+			msecs--;
+			ts.usecs += 1000;
 		}
 
-		this.msecs = thisMsecs - msecs;
-		this.usecs = thisUsecs - (int) usecs;
+		ts.msecs += msecs;
 	}
 
 	/**
@@ -702,7 +722,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return difference, in microseconds, between two timestamps
 	 */
 	public long difference(UsecTimestamp other) {
-
 		long thisMsecs = this.msecs;
 		long thisUsecs = this.usecs;
 		long otherMsecs = other.msecs;
@@ -713,7 +732,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 			thisUsecs += 1000;
 		}
 
-		return ((thisMsecs - otherMsecs) * 1000) + (thisUsecs - otherUsecs);
+		return downscale(thisMsecs - otherMsecs) + (thisUsecs - otherUsecs);
 	}
 
 	/**
@@ -724,7 +743,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return formatted date/time string based on default pattern and given timezone
 	 */
 	public static String getTimeStamp(TimeZone tz) {
-		return getTimeStamp(null, tz, TimeService.currentTimeMillis(), 0);
+		return getTimeStamp(tz, null);
 	}
 
 	/**
@@ -737,7 +756,32 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return formatted date/time string based on default pattern and given timezone
 	 */
 	public static String getTimeStamp(TimeZone tz, Locale locale) {
-		return getTimeStamp(null, tz, locale, TimeService.currentTimeMillis(), 0);
+		return getTimeStamp(null, tz, locale, Useconds.CURRENT.get());
+	}
+
+	/**
+	 * Returns the string representation of the timestamp based on the default format pattern, microseconds.
+	 *
+	 * @param usecs
+	 *            timestamp in microseconds
+	 * @return formatted date/time string based on pattern
+	 */
+	public static String getTimeStamp(long usecs) {
+		return getTimeStamp(null, usecs);
+	}
+
+	/**
+	 * Returns the string representation of the timestamp based on the default format pattern, milliseconds and
+	 * microseconds.
+	 *
+	 * @param msecs
+	 *            milliseconds fraction of timestamp
+	 * @param usecs
+	 *            microseconds fraction of timestamp
+	 * @return formatted date/time string based on pattern
+	 */
+	public static String getTimeStamp(long msecs, long usecs) {
+		return getTimeStamp(null, msecs, usecs);
 	}
 
 	/**
@@ -746,7 +790,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return formatted date/time string based on default pattern
 	 */
 	public static String getTimeStamp() {
-		return getTimeStamp(null, TimeService.currentTimeMillis(), 0);
+		return getTimeStamp((String) null);
 	}
 
 	/**
@@ -757,7 +801,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(String pattern) {
-		return getTimeStamp(pattern, TimeService.currentTimeMillis(), 0);
+		return getTimeStamp(pattern, Useconds.CURRENT.get());
 	}
 
 	/**
@@ -766,38 +810,11 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @param pattern
 	 *            format pattern
 	 * @param usecs
-	 *            milliseconds
+	 *            timestamp in microseconds
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(String pattern, long usecs) {
-		long msecs = usecs / 1000L;
-		return getTimeStamp(pattern, msecs, (usecs - msecs * 1000));
-	}
-
-	/**
-	 * Returns the string representation of the timestamp based on the default format pattern, microseconds.
-	 *
-	 * @param usecs
-	 *            microseconds
-	 * @return formatted date/time string based on pattern
-	 */
-	public static String getTimeStamp(long usecs) {
-		long msecs = usecs / 1000L;
-		return getTimeStamp(null, msecs, (usecs - msecs * 1000));
-	}
-
-	/**
-	 * Returns the string representation of the timestamp based on the default format pattern, milliseconds and
-	 * microseconds.
-	 *
-	 * @param msecs
-	 *            milliseconds
-	 * @param usecs
-	 *            microseconds
-	 * @return formatted date/time string based on pattern
-	 */
-	public static String getTimeStamp(long msecs, long usecs) {
-		return getTimeStamp(null, msecs, usecs);
+		return getTimeStamp(pattern, DEFAULT_TZ, null, usecs);
 	}
 
 	/**
@@ -807,13 +824,29 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @param pattern
 	 *            format pattern
 	 * @param msecs
-	 *            milliseconds
+	 *            milliseconds fraction of timestamp
 	 * @param usecs
-	 *            microseconds
+	 *            microseconds fraction of timestamp
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(String pattern, long msecs, long usecs) {
 		return getTimeStamp(pattern, DEFAULT_TZ, msecs, usecs);
+	}
+
+	/**
+	 * Returns the string representation of the timestamp based on the specified format pattern, and microseconds scaled
+	 * timestamp value.
+	 *
+	 * @param pattern
+	 *            format pattern
+	 * @param tz
+	 *            time zone
+	 * @param usecs
+	 *            timestamp in microseconds
+	 * @return formatted date/time string based on pattern
+	 */
+	public static String getTimeStamp(String pattern, TimeZone tz, long usecs) {
+		return getTimeStamp(pattern, tz, null, usecs);
 	}
 
 	/**
@@ -825,13 +858,32 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @param tz
 	 *            time zone
 	 * @param msecs
-	 *            milliseconds
+	 *            milliseconds fraction of timestamp
 	 * @param usecs
-	 *            microseconds
+	 *            microseconds fraction of timestamp
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(String pattern, TimeZone tz, long msecs, long usecs) {
 		return getTimeStamp(pattern, tz, null, msecs, usecs);
+	}
+
+	/**
+	 * Returns the string representation of the timestamp based on the specified format pattern, and microseconds scaled
+	 * timestamp value.
+	 *
+	 * @param pattern
+	 *            format pattern
+	 * @param tz
+	 *            time zone
+	 * @param locale
+	 *            locale
+	 * @param usecs
+	 *            timestamp in microseconds
+	 * @return formatted date/time string based on pattern
+	 */
+	public static String getTimeStamp(String pattern, TimeZone tz, Locale locale, long usecs) {
+		long msecs = upscale(usecs);
+		return getTimeStamp(pattern, tz, locale, msecs, (usecs - downscale(msecs)));
 	}
 
 	/**
@@ -845,9 +897,9 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @param locale
 	 *            locale
 	 * @param msecs
-	 *            milliseconds
+	 *            milliseconds fraction of timestamp
 	 * @param usecs
-	 *            microseconds
+	 *            microseconds fraction of timestamp
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(String pattern, TimeZone tz, Locale locale, long msecs, long usecs) {
@@ -994,9 +1046,9 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 */
 	public String toString(String pattern, String tz, String locale) {
 		return getTimeStamp(pattern, //
-							StringUtils.isEmpty(tz) ? DEFAULT_TZ : TimeZone.getTimeZone(tz), //
-							StringUtils.isEmpty(locale) ? null : Utils.getLocale(locale), //
-							msecs, usecs);
+				StringUtils.isEmpty(tz) ? DEFAULT_TZ : TimeZone.getTimeZone(tz), //
+				StringUtils.isEmpty(locale) ? null : Utils.getLocale(locale), //
+				msecs, usecs);
 	}
 
 	/**
