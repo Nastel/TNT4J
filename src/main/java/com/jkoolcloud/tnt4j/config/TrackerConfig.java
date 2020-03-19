@@ -684,23 +684,22 @@ public class TrackerConfig {
 
 	@Override
 	public String toString() {
-		return super.toString()
-			+ "{"
-			+ "built: " + built
-			+ ", source: " + sourceHandle
-			+ ", event.factory: " + evFactory
-			+ ", source.factory: " + sourceFactory
-			+ ", uuid.factory: " + uuidFactory
-			+ ", sign.factory: " + signFactory
-			+ ", geo.locator: " + geoLocator
-			+ ", default.event.factory: " + defEvFactory
-			+ ", event.formatter: " + evFormatter
-			+ ", tracker.factory: " + trFactory
-			+ ", dump.factory: " + dpFactory
-			+ ", selector: " + tSelector
-			+ ", activity.listener: " + activityListener
-			+ ", sink.log.listener: " + sinkLogEventListener
-			+ ", sink.event.filter: " + sinkFilter
-			+ "}";
+		return super.toString() + "{" //
+				+ "built: " + built //
+				+ ", source: " + sourceHandle //
+				+ ", event.factory: " + evFactory //
+				+ ", source.factory: " + sourceFactory //
+				+ ", uuid.factory: " + uuidFactory //
+				+ ", sign.factory: " + signFactory //
+				+ ", geo.locator: " + geoLocator //
+				+ ", default.event.factory: " + defEvFactory //
+				+ ", event.formatter: " + evFormatter //
+				+ ", tracker.factory: " + trFactory //
+				+ ", dump.factory: " + dpFactory //
+				+ ", selector: " + tSelector //
+				+ ", activity.listener: " + activityListener //
+				+ ", sink.log.listener: " + sinkLogEventListener //
+				+ ", sink.event.filter: " + sinkFilter //
+				+ "}";
 	}
 }

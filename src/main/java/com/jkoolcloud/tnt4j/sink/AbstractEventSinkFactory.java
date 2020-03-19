@@ -97,12 +97,16 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 	}
 
 	/**
-	 * Obtain the default instance of {@link EventFormatter} configured for this factory.
+	 * Obtain the instance of {@link EventFormatter} configured for this factory or fallback to default one provided by
+	 * {@code dFormatter} parameter.
+	 * 
+	 * @param dFormatter
+	 *            default formatter instance
 	 *
-	 * @return default sink event formatter instance
+	 * @return formatter instance to be used by this factory
 	 */
-	public EventFormatter getDefaultEventFormatter() {
-		return evFormatter;
+	public EventFormatter getDefaultEventFormatter(EventFormatter dFormatter) {
+		return evFormatter == null ? dFormatter : evFormatter;
 	}
 
 	/**

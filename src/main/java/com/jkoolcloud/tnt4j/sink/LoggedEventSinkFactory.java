@@ -19,13 +19,14 @@ package com.jkoolcloud.tnt4j.sink;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.sink.impl.FileEventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.impl.NullEventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory;
 import com.jkoolcloud.tnt4j.utils.Utils;
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * Abstract logged event sink factory class. Derived classes should call
@@ -77,7 +78,8 @@ public abstract class LoggedEventSinkFactory extends AbstractEventSinkFactory {
 	 *      com.jkoolcloud.tnt4j.format.EventFormatter)
 	 */
 	protected EventSink getLogSink(String name, Properties props, EventFormatter frmt) {
-		return eventSinkFactory == null ? null : eventSinkFactory.getEventSink(name, props, frmt);
+		return eventSinkFactory == null ? null
+				: eventSinkFactory.getEventSink(name, props, getDefaultEventFormatter(frmt));
 	}
 
 	@Override
