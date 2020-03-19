@@ -16,7 +16,6 @@
 package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Map;
@@ -128,11 +127,7 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 	@Override
 	protected EventSink configureSink(EventSink sink) {
 		super.configureSink(sink);
-		try {
-			sink.open();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+
 		return sink;
 	}
 
