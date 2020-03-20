@@ -571,7 +571,6 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	 *
 	 * @param event
 	 *            event instance
-	 * @throws IOException
 	 */
 	private void sendEvent(SinkLogEvent event) {
 		Object sinkObject = event.getSinkObject();

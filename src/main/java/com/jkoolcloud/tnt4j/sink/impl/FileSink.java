@@ -111,6 +111,7 @@ public class FileSink implements Sink {
 	@Override
 	public synchronized void close() {
 		if (printer != null) {
+			printer.flush();
 			printer.close();
 		}
 		printer = null;

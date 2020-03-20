@@ -29,8 +29,7 @@ import java.io.IOException;
 public interface Handle extends java.io.Closeable {
 
 	/**
-	 * This method determines of the message destination is in open state
-	 * and ready for writing.
+	 * This method determines of the message destination is in open state and ready for writing.
 	 *
 	 * @return true if open, false otherwise.
 	 */
@@ -39,10 +38,11 @@ public interface Handle extends java.io.Closeable {
 	/**
 	 * This method opens and prepares message destination for writing.
 	 *
-	 * @throws IOException if error opening handle
+	 * @throws IOException
+	 *             if error opening handle
 	 */
 	void open() throws IOException;
-	
+
 	/**
 	 * This method reopens the handle by closing and opening it again.
 	 *
@@ -52,5 +52,5 @@ public interface Handle extends java.io.Closeable {
 	 * @see #close()
 	 * @see #open()
 	 */
-	void reopen() throws IOException;	
+	void reopen() throws IOException;
 }
