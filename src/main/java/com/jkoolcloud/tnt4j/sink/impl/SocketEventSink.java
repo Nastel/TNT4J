@@ -121,26 +121,29 @@ public class SocketEventSink extends LoggedEventSink {
 
 	@Override
 	protected synchronized void _open() throws IOException {
-		_close();
+		try {
+			if (isOpen()) {
+				_close();
+			}
+			socketSink = new Socket(proxy);
+			socketSink.connect(new InetSocketAddress(hostName, portNo));
+			outStream = new DataOutputStream(socketSink.getOutputStream());
 
-		socketSink = new Socket(proxy);
-		socketSink.connect(new InetSocketAddress(hostName, portNo));
-		outStream = new DataOutputStream(socketSink.getOutputStream());
-		super._open();
+			super._open();
+		} catch (Throwable e) {
+			_close();
+			throw new IOException(e.getMessage(), e);
+		}
 	}
 
 	@Override
 	protected synchronized void _close() throws IOException {
-		try {
-			if (isOpen()) {
-				outStream.close();
-				socketSink.close();
-			}
-		} finally {
-			outStream = null;
-			socketSink = null;
-			super._close();
-		}
+		Utils.close(outStream);
+		Utils.close(socketSink);
+		outStream = null;
+		socketSink = null;
+
+		super._close();
 	}
 
 	@Override

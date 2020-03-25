@@ -42,7 +42,6 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	public static final String KEY_SINK_SIZE = "broadcast-sink-count";
 	public static final String KEY_OPEN_COUNT = "broadcast-open-sinks";
 
-	BroadcastingEventSinkFactory brFactory;
 	final Collection<EventSink> eventSinks = Collections.synchronizedList(new ArrayList<>(3));
 
 	/**
@@ -56,7 +55,6 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	 */
 	public BroadcastingEventSink(BroadcastingEventSinkFactory brdFactory, String name) {
 		super(name);
-		brFactory = brdFactory;
 		for (EventSinkFactory fc : brdFactory.getEventSinkFactories()) {
 			eventSinks.add(fc.getEventSink(name));
 		}
@@ -75,7 +73,6 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	 */
 	public BroadcastingEventSink(BroadcastingEventSinkFactory brdFactory, String name, Properties props) {
 		super(name);
-		brFactory = brdFactory;
 		for (EventSinkFactory fc : brdFactory.getEventSinkFactories()) {
 			eventSinks.add(fc.getEventSink(name, props));
 		}
@@ -97,7 +94,6 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	public BroadcastingEventSink(BroadcastingEventSinkFactory brdFactory, String name, Properties props,
 			EventFormatter frmt) {
 		super(name, frmt);
-		this.brFactory = brdFactory;
 		for (EventSinkFactory fc : brdFactory.getEventSinkFactories()) {
 			eventSinks.add(fc.getEventSink(name, props, frmt));
 		}
@@ -144,7 +140,9 @@ public class BroadcastingEventSink extends AbstractEventSink {
 		IOException lastE = null;
 		for (EventSink sink : eventSinks) {
 			try {
-				sink.open();
+				if (!sink.isOpen()) {
+					sink.open();
+				}
 				openCount++;
 			} catch (IOException e) {
 				lastE = e;
