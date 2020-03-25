@@ -43,6 +43,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	public static final String KEY_OPEN_COUNT = "broadcast-open-sinks";
 
 	final Collection<EventSink> eventSinks = Collections.synchronizedList(new ArrayList<>(3));
+	OpenSinksPolicy openSinksPolicy = OpenSinksPolicy.ANY;
 
 	/**
 	 * Create broadcasting event sink factory
@@ -99,6 +100,35 @@ public class BroadcastingEventSink extends AbstractEventSink {
 		}
 	}
 
+	/**
+	 * Sets opens sinks policy, how to treat this sink is open if subset of broadcasting sinks are open.
+	 * 
+	 * @param ospName
+	 *            open sinks policy name
+	 * @return instance of this sink
+	 * @throws IllegalArgumentException
+	 *             if provided open sinks policy name is not recognized
+	 */
+	public BroadcastingEventSink setOpenSinksPolicy(String ospName) throws IllegalArgumentException {
+		this.openSinksPolicy = Utils.isEmpty(ospName) ? OpenSinksPolicy.ANY
+				: OpenSinksPolicy.valueOf(ospName.toUpperCase());
+
+		return this;
+	}
+
+	/**
+	 * Sets opens sinks policy, how to treat this sink is open if subset of broadcasting sinks are open.
+	 * 
+	 * @param osp
+	 *            open sinks policy
+	 * @return instance of this sink
+	 */
+	public BroadcastingEventSink setOpenSinksPolicy(OpenSinksPolicy osp) {
+		this.openSinksPolicy = osp == null ? OpenSinksPolicy.ANY : osp;
+
+		return this;
+	}
+
 	@Override
 	public Map<String, Object> getStats() {
 		LinkedHashMap<String, Object> stats = new LinkedHashMap<>(32);
@@ -124,14 +154,22 @@ public class BroadcastingEventSink extends AbstractEventSink {
 
 	@Override
 	public boolean isOpen() {
-		boolean flag = false;
+		if (eventSinks.isEmpty()) {
+			return false;
+		}
+
 		for (EventSink sink : eventSinks) {
 			if (sink.isOpen()) {
-				flag = true;
-				break;
+				if (openSinksPolicy == OpenSinksPolicy.ANY) {
+					return true;
+				}
+			} else {
+				if (openSinksPolicy == OpenSinksPolicy.ALL) {
+					return false;
+				}
 			}
 		}
-		return flag;
+		return openSinksPolicy == OpenSinksPolicy.ALL ? true : false;
 	}
 
 	@Override
@@ -211,5 +249,19 @@ public class BroadcastingEventSink extends AbstractEventSink {
 			}
 		}
 		return openCount;
+	}
+
+	/**
+	 * Enumerates policies of broadcast sinks open state for {@link BroadcastingEventSink} to be treated as open.
+	 */
+	enum OpenSinksPolicy {
+		/**
+		 * Require all broadcast sinks to be open.
+		 */
+		ALL,
+		/**
+		 * Require just any one broadcast sink to be open.
+		 */
+		ANY
 	}
 }

@@ -35,6 +35,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 
 	String broadcastSeq;
+	BroadcastingEventSink.OpenSinksPolicy openSinksPolicy;
 	final Collection<EventSinkFactory> sinkFactories = Collections.synchronizedList(new ArrayList<>(3));
 
 	/**
@@ -85,14 +86,28 @@ public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 	}
 
 	@Override
+	protected EventSink configureSink(EventSink sink) {
+		BroadcastingEventSink bsSink = (BroadcastingEventSink) super.configureSink(sink);
+		bsSink.setOpenSinksPolicy(openSinksPolicy);
+
+		return bsSink;
+	}
+
+	@Override
 	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		super.setConfiguration(props);
 
 		broadcastSeq = Utils.getString("BroadcastSequence", props, null);
-		if (broadcastSeq == null) {
+		if (Utils.isEmpty(broadcastSeq)) {
 			initBroadcastSequence(props);
 		} else {
 			initBroadcastSequence(broadcastSeq.split(","), props);
+		}
+		String ospName = Utils.getString("OpenSinksPolicy", props, "ANY");
+		try {
+			openSinksPolicy = BroadcastingEventSink.OpenSinksPolicy.valueOf(ospName.toUpperCase());
+		} catch (IllegalArgumentException exc) {
+			throw new ConfigException(exc.getLocalizedMessage(), props);
 		}
 	}
 
@@ -103,8 +118,9 @@ public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 
 	private void initBroadcastSequence(String[] seq, Map<String, ?> props) throws ConfigException {
 		for (String s : seq) {
-			if (loadEventSinkFactory(s, props) == null) {
-				throw new ConfigException("Could not find broadcast factory sequence=" + s, props);
+			String fcName = s.trim();
+			if (loadEventSinkFactory(fcName, props) == null) {
+				throw new ConfigException("Could not find broadcast factory sequence=" + fcName, props);
 			}
 		}
 	}
