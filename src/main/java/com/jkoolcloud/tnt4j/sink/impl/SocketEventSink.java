@@ -125,6 +125,7 @@ public class SocketEventSink extends LoggedEventSink {
 			if (isOpen()) {
 				_close();
 			}
+			setErrorState(null);
 			socketSink = new Socket(proxy);
 			socketSink.connect(new InetSocketAddress(hostName, portNo));
 			outStream = new DataOutputStream(socketSink.getOutputStream());
@@ -132,7 +133,12 @@ public class SocketEventSink extends LoggedEventSink {
 			super._open();
 		} catch (Throwable e) {
 			_close();
-			throw new IOException(e.getMessage(), e);
+
+			if (e instanceof IOException) {
+				throw e;
+			} else {
+				throw new IOException(e.getMessage(), e);
+			}
 		}
 	}
 
