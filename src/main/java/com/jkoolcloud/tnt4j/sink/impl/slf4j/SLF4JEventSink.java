@@ -59,6 +59,8 @@ public class SLF4JEventSink extends LoggerEventSink {
 
 	@Override
 	public boolean isSet(OpLevel sev) {
+		_checkState();
+
 		switch (sev) {
 		case HALT:
 		case FATAL:
