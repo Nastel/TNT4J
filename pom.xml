@@ -71,7 +71,7 @@
 
         <build.assemblies.attach>false</build.assemblies.attach>
 
-        <commons.lang.version>3.9</commons.lang.version>
+        <commons.lang.version>3.10</commons.lang.version>
         <commons.text.version>1.8</commons.text.version>
         <commons.codec.version>1.14</commons.codec.version>
         <commons.configuration.version>2.7</commons.configuration.version>
