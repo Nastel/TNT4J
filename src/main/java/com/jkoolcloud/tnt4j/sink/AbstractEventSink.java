@@ -557,6 +557,7 @@ public abstract class AbstractEventSink extends TagsSet implements EventSink, Ev
 
 	@Override
 	public void write(Object msg, Object... args) throws IOException, InterruptedException {
+		_checkState();
 		try {
 			if (!_limiter(msg)) {
 				return;
@@ -629,10 +630,18 @@ public abstract class AbstractEventSink extends TagsSet implements EventSink, Ev
 	 * Override this method to check state of the sink before logging occurs.
 	 *
 	 * @throws IllegalStateException
-	 *             if sink is in wrong state
+	 *             if sink is in wrong state and can't be opened
 	 */
 	protected void _checkState() throws IllegalStateException {
-		checkState(this);
+		try {
+			checkState(this);
+		} catch (IllegalStateException exc) {
+			try {
+				reopen();
+			} catch (IOException ioe) {
+				throw new IllegalStateException(exc.getMessage(), ioe);
+			}
+		}
 	}
 
 	/**

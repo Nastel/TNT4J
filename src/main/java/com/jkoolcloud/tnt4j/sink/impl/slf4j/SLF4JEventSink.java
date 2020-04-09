@@ -55,7 +55,6 @@ public class SLF4JEventSink extends LoggerEventSink {
 	 */
 	public SLF4JEventSink(String name, Properties props, EventFormatter frmt) {
 		super(name, frmt);
-		_open();
 	}
 
 	@Override
