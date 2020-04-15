@@ -19,6 +19,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -123,11 +124,11 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Creates UsecTimestamp based on specified Timestamp, providing time in seconds resolution, and fractional
-	 * microsecond.
+	 * Creates UsecTimestamp based on specified {@code timestamp}, providing time in milliseconds resolution, and
+	 * fractional microsecond {@code usecs}.
 	 *
 	 * @param timestamp
-	 *            database timestamp, seconds resolution
+	 *            database timestamp, milliseconds resolution
 	 * @param usecs
 	 *            fraction microseconds
 	 * @throws NullPointerException
@@ -137,6 +138,23 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 */
 	public UsecTimestamp(Timestamp timestamp, long usecs) {
 		initFromTimestamp(timestamp, usecs);
+	}
+
+	/**
+	 * Creates UsecTimestamp based on specified {@code instant}, providing time in milliseconds resolution, and
+	 * fractional microsecond {@code usecs}.
+	 *
+	 * @param instant
+	 *            instant time, milliseconds resolution
+	 * @param usecs
+	 *            fraction microseconds
+	 * @throws NullPointerException
+	 *             if timestamp is {@code null}
+	 * @throws IllegalArgumentException
+	 *             if usecs is greater than 999999
+	 */
+	public UsecTimestamp(Instant instant, long usecs) {
+		this(instant.toEpochMilli(), usecs);
 	}
 
 	/**
