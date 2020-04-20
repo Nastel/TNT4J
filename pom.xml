@@ -77,11 +77,11 @@
         <commons.configuration.version>2.7</commons.configuration.version>
         <commons.net.version>3.6</commons.net.version>
 
-        <guava.version>28.2-jre</guava.version>
+        <guava.version>29.0-jre</guava.version>
         <uuid.generator.version>4.0.1</uuid.generator.version>
         <slf4j.version>1.7.30</slf4j.version>
-        <eclipse.paho.version>1.2.2</eclipse.paho.version>
-        <kafka.clients.version>2.4.1</kafka.clients.version>
+        <eclipse.paho.version>1.2.3</eclipse.paho.version>
+        <kafka.clients.version>2.5.0</kafka.clients.version>
     </properties>
 
     <dependencies>
