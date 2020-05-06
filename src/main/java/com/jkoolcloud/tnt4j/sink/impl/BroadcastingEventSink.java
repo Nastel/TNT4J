@@ -18,6 +18,7 @@ package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
 
 import com.jkoolcloud.tnt4j.core.KeyValueStats;
 import com.jkoolcloud.tnt4j.core.OpLevel;
@@ -208,37 +209,104 @@ public class BroadcastingEventSink extends AbstractEventSink {
 
 	@Override
 	protected void _log(TrackingEvent event) throws IOException {
+		CountDownLatch waitLatch = new CountDownLatch(eventSinks.size());
 		for (EventSink sink : eventSinks) {
-			sink.log(event);
+			Thread lt = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					sink.log(event);
+					waitLatch.countDown();
+				}
+			});
+			lt.start();
+		}
+		try {
+			waitLatch.await();
+		} catch (InterruptedException ie) {
+			// setErrorState (ie);
 		}
 	}
 
 	@Override
 	protected void _log(TrackingActivity activity) throws IOException {
+		CountDownLatch waitLatch = new CountDownLatch(eventSinks.size());
 		for (EventSink sink : eventSinks) {
-			sink.log(activity);
+			Thread lt = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					sink.log(activity);
+					waitLatch.countDown();
+				}
+			});
+			lt.start();
+		}
+		try {
+			waitLatch.await();
+		} catch (InterruptedException ie) {
+			// setErrorState (ie);
 		}
 	}
 
 	@Override
 	protected void _log(Snapshot snapshot) throws IOException {
+		CountDownLatch waitLatch = new CountDownLatch(eventSinks.size());
 		for (EventSink sink : eventSinks) {
-			sink.log(snapshot);
+			Thread lt = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					sink.log(snapshot);
+					waitLatch.countDown();
+				}
+			});
+			lt.start();
+		}
+		try {
+			waitLatch.await();
+		} catch (InterruptedException ie) {
+			// setErrorState (ie);
 		}
 	}
 
 	@Override
 	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws IOException {
+		CountDownLatch waitLatch = new CountDownLatch(eventSinks.size());
 		for (EventSink sink : eventSinks) {
-			sink.log(ttl, src, sev, msg, args);
+			Thread lt = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					sink.log(ttl, src, sev, msg, args);
+					waitLatch.countDown();
+				}
+			});
+			lt.start();
+		}
+		try {
+			waitLatch.await();
+		} catch (InterruptedException ie) {
+			// setErrorState (ie);
 		}
 	}
 
 	@Override
 	protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
+		CountDownLatch waitLatch = new CountDownLatch(eventSinks.size());
 		for (EventSink sink : eventSinks) {
-			sink.write(msg, args);
+			Thread lt = new Thread(new Runnable() {
+				@Override
+				public void run() {
+					try {
+						sink.write(msg, args);
+					} catch (IOException ioe) {
+						sink.setErrorState(ioe);
+					} catch (InterruptedException ie) {
+						sink.setErrorState(ie);
+					}
+					waitLatch.countDown();
+				}
+			});
+			lt.start();
 		}
+		waitLatch.await();
 	}
 
 	private int openCount() {
