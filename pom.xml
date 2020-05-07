@@ -76,6 +76,7 @@
         <commons.codec.version>1.14</commons.codec.version>
         <commons.configuration.version>2.7</commons.configuration.version>
         <commons.net.version>3.6</commons.net.version>
+        <commons.beanutils.version>1.9.4</commons.beanutils.version>
 
         <guava.version>29.0-jre</guava.version>
         <uuid.generator.version>4.0.1</uuid.generator.version>
@@ -109,6 +110,12 @@
             <groupId>commons-net</groupId>
             <artifactId>commons-net</artifactId>
             <version>${commons.net.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-beanutils</groupId>
+            <artifactId>commons-beanutils</artifactId>
+            <version>${commons.beanutils.version}</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
