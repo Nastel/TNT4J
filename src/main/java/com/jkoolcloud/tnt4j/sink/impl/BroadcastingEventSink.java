@@ -209,104 +209,82 @@ public class BroadcastingEventSink extends AbstractEventSink {
 
 	@Override
 	protected void _log(TrackingEvent event) throws IOException {
-		CountDownLatch waitLatch = new CountDownLatch(eventSinks.size());
-		for (EventSink sink : eventSinks) {
-			Thread lt = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					sink.log(event);
-					waitLatch.countDown();
-				}
-			});
-			lt.start();
-		}
-		try {
-			waitLatch.await();
-		} catch (InterruptedException ie) {
-			// setErrorState (ie);
-		}
+		logSinkEntry(new SinkEntry() {
+			@Override
+			public void logEntry(EventSink sink) throws Throwable {
+				sink.log(event);
+			}
+		});
 	}
 
 	@Override
 	protected void _log(TrackingActivity activity) throws IOException {
-		CountDownLatch waitLatch = new CountDownLatch(eventSinks.size());
-		for (EventSink sink : eventSinks) {
-			Thread lt = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					sink.log(activity);
-					waitLatch.countDown();
-				}
-			});
-			lt.start();
-		}
-		try {
-			waitLatch.await();
-		} catch (InterruptedException ie) {
-			// setErrorState (ie);
-		}
+		logSinkEntry(new SinkEntry() {
+			@Override
+			public void logEntry(EventSink sink) throws Throwable {
+				sink.log(activity);
+			}
+		});
 	}
 
 	@Override
 	protected void _log(Snapshot snapshot) throws IOException {
-		CountDownLatch waitLatch = new CountDownLatch(eventSinks.size());
-		for (EventSink sink : eventSinks) {
-			Thread lt = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					sink.log(snapshot);
-					waitLatch.countDown();
-				}
-			});
-			lt.start();
-		}
-		try {
-			waitLatch.await();
-		} catch (InterruptedException ie) {
-			// setErrorState (ie);
-		}
+		logSinkEntry(new SinkEntry() {
+			@Override
+			public void logEntry(EventSink sink) throws Throwable {
+				sink.log(snapshot);
+			}
+		});
 	}
 
 	@Override
 	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) throws IOException {
-		CountDownLatch waitLatch = new CountDownLatch(eventSinks.size());
-		for (EventSink sink : eventSinks) {
-			Thread lt = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					sink.log(ttl, src, sev, msg, args);
-					waitLatch.countDown();
-				}
-			});
-			lt.start();
-		}
-		try {
-			waitLatch.await();
-		} catch (InterruptedException ie) {
-			// setErrorState (ie);
-		}
+		logSinkEntry(new SinkEntry() {
+			@Override
+			public void logEntry(EventSink sink) throws Throwable {
+				sink.log(ttl, src, sev, msg, args);
+			}
+		});
 	}
 
 	@Override
 	protected void _write(Object msg, Object... args) throws IOException, InterruptedException {
+		logSinkEntry(new SinkEntry() {
+			@Override
+			public void logEntry(EventSink sink) throws IOException, InterruptedException {
+				sink.write(msg, args);
+			}
+		});
+	}
+
+	/**
+	 * Writes sink entry to all broadcasting sinks.
+	 * 
+	 * @param entry
+	 *            sink entry to log
+	 */
+	protected void logSinkEntry(SinkEntry entry) {
 		CountDownLatch waitLatch = new CountDownLatch(eventSinks.size());
 		for (EventSink sink : eventSinks) {
 			Thread lt = new Thread(new Runnable() {
 				@Override
 				public void run() {
 					try {
-						sink.write(msg, args);
-					} catch (IOException ioe) {
-						sink.setErrorState(ioe);
-					} catch (InterruptedException ie) {
-						sink.setErrorState(ie);
+						entry.logEntry(sink);
+					} catch (Throwable t) {
+						sink.setErrorState(t);
+					} finally {
+						waitLatch.countDown();
 					}
-					waitLatch.countDown();
 				}
 			});
 			lt.start();
 		}
-		waitLatch.await();
+		try {
+			waitLatch.await();
+		} catch (InterruptedException ie) {
+			// setErrorState (ie);
+		}
 	}
 
 	private int openCount() {
@@ -331,5 +309,21 @@ public class BroadcastingEventSink extends AbstractEventSink {
 		 * Require just any one broadcast sink to be open.
 		 */
 		ANY
+	}
+
+	/**
+	 * Interface defining generic sink entry logging function.
+	 */
+	private static interface SinkEntry {
+		/**
+		 * Performs actual sink entry logging.
+		 * 
+		 * @param sink
+		 *            sink to log entry
+		 * 
+		 * @throws Throwable
+		 *             if entry logging fails, e.g. sink is closed or not writable
+		 */
+		void logEntry(EventSink sink) throws Throwable;
 	}
 }
