@@ -16,7 +16,10 @@
 
 package com.jkoolcloud.tnt4j.opentelemetry.exporters;
 
+import java.io.IOException;
 import java.util.Collection;
+
+import com.jkoolcloud.tnt4j.TrackingLogger;
 
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.metrics.data.MetricData;
@@ -24,28 +27,47 @@ import io.opentelemetry.sdk.metrics.export.MetricExporter;
 
 public class TNTMetricExporter implements MetricExporter {
 
-	private TNTMetricExporter(String appName) {
-		// TODO Auto-generated constructor stub
+	/*
+	 * Tracking logger instance where all messages are logged
+	 */
+	private TrackingLogger logger;
+
+
+	private TNTMetricExporter(String source) {
+		this.logger = TrackingLogger.getInstance(source);
 	}
 
 	@Override
 	public CompletableResultCode export(Collection<MetricData> metrics) {
-		// TODO Auto-generated method stub
-		return null;
+		for (MetricData metric: metrics) {
+			export(metric);
+		}
+		return CompletableResultCode.ofSuccess();
+	}
+
+	private void export(MetricData metric) {
 	}
 
 	@Override
 	public CompletableResultCode flush() {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			logger.getEventSink().flush();
+		} catch (IOException e) {
+			return CompletableResultCode.ofFailure();
+		}
+		return CompletableResultCode.ofSuccess();
 	}
 
 	@Override
 	public void shutdown() {
-		// TODO Auto-generated method stub
-		
+		logger.close();
 	}
 	
+	public TNTMetricExporter open() throws IOException {
+		logger.open();
+		return this;
+	}
+
 	public static class Builder {
 		String appName;
 		
@@ -53,8 +75,9 @@ public class TNTMetricExporter implements MetricExporter {
 			this.appName = appName;
 		}
 		
-		public TNTMetricExporter build() {
-			return new TNTMetricExporter(appName);
+		public TNTMetricExporter build() throws IOException {
+			TNTMetricExporter exporter = new TNTMetricExporter(appName);
+			return exporter.open();
 		}
 	}
 }

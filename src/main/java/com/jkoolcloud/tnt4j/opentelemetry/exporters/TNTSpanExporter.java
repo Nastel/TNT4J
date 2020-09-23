@@ -16,36 +16,70 @@
 
 package com.jkoolcloud.tnt4j.opentelemetry.exporters;
 
+import java.io.IOException;
 import java.util.Collection;
+import java.util.List;
+
+import com.jkoolcloud.tnt4j.TrackingLogger;
 
 import io.opentelemetry.sdk.common.CompletableResultCode;
 import io.opentelemetry.sdk.trace.data.SpanData;
+import io.opentelemetry.sdk.trace.data.SpanData.Event;
+import io.opentelemetry.sdk.trace.data.SpanData.Link;
 import io.opentelemetry.sdk.trace.export.SpanExporter;
 
 public class TNTSpanExporter implements SpanExporter {
+	/*
+	 * Tracking logger instance where all messages are logged
+	 */
+	private TrackingLogger logger;
 
-	private TNTSpanExporter(String appName) {
-		// TODO Auto-generated constructor stub
+	private TNTSpanExporter(String source) {
+		this.logger = TrackingLogger.getInstance(source);
 	}
 
 	@Override
 	public CompletableResultCode export(Collection<SpanData> spans) {
-		// TODO Auto-generated method stub
-		return null;
+		for (SpanData span: spans) {
+			exportEvents(span.getEvents());
+			exportLinks(span.getLinks());
+		}
+		return CompletableResultCode.ofSuccess();
+	}
+
+	private void exportLinks(List<Link> links) {
+		for (Link link: links) {
+			link.getAttributes();
+		}
+	}
+
+	private void exportEvents(List<Event> events) {
+		for (Event event: events) {
+			event.getAttributes();
+		}
 	}
 
 	@Override
 	public CompletableResultCode flush() {
-		// TODO Auto-generated method stub
-		return null;
+		try {
+			logger.getEventSink().flush();
+		} catch (IOException e) {
+			return CompletableResultCode.ofFailure();
+		}
+		return CompletableResultCode.ofSuccess();
 	}
 
 	@Override
 	public CompletableResultCode shutdown() {
-		// TODO Auto-generated method stub
-		return null;
+		logger.close();
+		return CompletableResultCode.ofSuccess();
 	}
 	
+	public TNTSpanExporter open() throws IOException {
+		logger.open();
+		return this;
+	}
+
 	public static class Builder {
 		String appName;
 		
@@ -53,8 +87,9 @@ public class TNTSpanExporter implements SpanExporter {
 			this.appName = appName;
 		}
 		
-		public TNTSpanExporter build() {
-			return new TNTSpanExporter(appName);
+		public TNTSpanExporter build() throws IOException {
+			TNTSpanExporter exporter = new TNTSpanExporter(appName);
+			return exporter.open();
 		}
 	}
 }
