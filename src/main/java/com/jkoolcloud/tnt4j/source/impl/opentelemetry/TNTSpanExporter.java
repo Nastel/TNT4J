@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.jkoolcloud.tnt4j.opentelemetry.exporters;
+package com.jkoolcloud.tnt4j.source.impl.opentelemetry;
 
 import java.io.IOException;
 import java.util.Collection;

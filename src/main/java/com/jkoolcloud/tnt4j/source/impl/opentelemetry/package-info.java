@@ -20,4 +20,4 @@
  * @author albert
  * @version 1.0
  */
-package com.jkoolcloud.tnt4j.opentelemetry.exporters;
+package com.jkoolcloud.tnt4j.source.impl.opentelemetry;
