@@ -61,12 +61,14 @@ public class TNTSpanExporter implements SpanExporter {
 
 	@Override
 	public CompletableResultCode flush() {
+		CompletableResultCode resultCode = new CompletableResultCode();
 		try {
 			logger.getEventSink().flush();
+			resultCode.succeed();
 		} catch (IOException e) {
-			return CompletableResultCode.ofFailure();
+			resultCode.fail();
 		}
-		return CompletableResultCode.ofSuccess();
+		return resultCode;
 	}
 
 	@Override
