@@ -1645,7 +1645,8 @@ public class Utils {
 
 		Class<?> lClass = clazz == null ? Thread.currentThread().getClass() : clazz;
 		ClassLoader cl = clazz == null ? Thread.currentThread().getContextClassLoader() : clazz.getClassLoader();
-
+		cl = (cl == null)? Object.class.getClassLoader(): cl;
+		
 		InputStream ins = cl.getResourceAsStream(resourceName);
 		if (ins == null && StringUtils.isNotEmpty(aResourceName)) {
 			ins = cl.getResourceAsStream(aResourceName);
