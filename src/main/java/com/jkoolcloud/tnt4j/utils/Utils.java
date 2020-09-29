@@ -1644,7 +1644,7 @@ public class Utils {
 		}
 
 		Class<?> lClass = clazz == null ? Thread.currentThread().getClass() : clazz;
-		ClassLoader cl = clazz.getClassLoader();
+		ClassLoader cl = lClass.getClassLoader();
 		cl = cl == null ? Thread.currentThread().getContextClassLoader() : cl;
 		cl = cl == null ? ClassLoader.getSystemClassLoader() : cl;
 
