@@ -1644,11 +1644,16 @@ public class Utils {
 		}
 
 		Class<?> lClass = clazz == null ? Thread.currentThread().getClass() : clazz;
-		ClassLoader cl = clazz == null ? Thread.currentThread().getContextClassLoader() : clazz.getClassLoader();
+		ClassLoader cl = clazz.getClassLoader();
+		cl = cl == null ? Thread.currentThread().getContextClassLoader() : cl;
+		cl = cl == null ? ClassLoader.getSystemClassLoader() : cl;
 
-		InputStream ins = cl.getResourceAsStream(resourceName);
-		if (ins == null && StringUtils.isNotEmpty(aResourceName)) {
-			ins = cl.getResourceAsStream(aResourceName);
+		InputStream ins = null;
+		if (cl != null) {
+			ins = cl.getResourceAsStream(resourceName);
+			if (ins == null && StringUtils.isNotEmpty(aResourceName)) {
+				ins = cl.getResourceAsStream(aResourceName);
+			}
 		}
 		if (ins == null) {
 			ins = lClass.getResourceAsStream(resourceName);
