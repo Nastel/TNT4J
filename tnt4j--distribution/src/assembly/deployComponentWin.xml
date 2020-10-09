@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component xmlns="http://maven.apache.org/ASSEMBLY-COMPONENT/2.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://maven.apache.org/ASSEMBLY-COMPONENT/2.0.0 http://maven.apache.org/xsd/assembly-component-2.0.0.xsd">
+    <moduleSets>
+        <moduleSet>
+            <useAllReactorProjects>true</useAllReactorProjects>
+            <binaries>
+                <outputDirectory></outputDirectory>
+                <unpack>false</unpack>
+                <!--outputFileNameMapping>${module.artifactId}.${module.extension}</outputFileNameMapping-->
+                <dependencySets>
+                    <dependencySet>
+                        <useProjectArtifact>false</useProjectArtifact>
+                        <useTransitiveDependencies>true</useTransitiveDependencies>
+                        <outputDirectory>lib</outputDirectory>
+                        <unpack>false</unpack>
+                        <excludes>
+                            <exclude>${project.groupId}:*:*</exclude>
+                        </excludes>
+                    </dependencySet>
+                </dependencySets>
+            </binaries>
+            <!-- NOTE: <sources> allows to copy anything from module dir to assembly -->
+            <!-- module contents: samples, source/test/javadoc jars -->
+            <sources>
+                <includeModuleDirectory>false</includeModuleDirectory>
+                <fileSets>
+                    <!-- produced jars -->
+                    <fileSet>
+                        <outputDirectory></outputDirectory>
+                        <directory>${project.build.directory}</directory>
+                        <includes>
+                            <include>*.jar</include>
+                            <include>*.war</include>
+                            <include>*.ear</include>
+                            <include>*-sources.jar</include>
+                            <include>*-tests.jar</include>
+                            <include>*-javadoc.jar</include>
+                        </includes>
+                        <excludes>
+                            <exclude>*-classes.jar</exclude>
+                            <exclude>original-*.jar</exclude>
+                        </excludes>
+                    </fileSet>
+                    <!-- configuration -->
+                    <fileSet>
+                        <outputDirectory>config</outputDirectory>
+                        <directory>/config</directory>
+                        <includes>
+                            <include>**/*.*</include>
+                        </includes>
+                        <lineEnding>crlf</lineEnding>
+                    </fileSet>
+                </fileSets>
+            </sources>
+        </moduleSet>
+    </moduleSets>
+
+    <fileSets>
+        <!-- run scripts -->
+        <fileSet>
+            <directory>../bin</directory>
+            <includes>
+                <include>**/*.*</include>
+            </includes>
+            <excludes>
+                <exclude>**/*.bat</exclude>
+                <exclude>**/*.sh</exclude>
+            </excludes>
+            <outputDirectory>bin</outputDirectory>
+            <lineEnding>crlf</lineEnding>
+        </fileSet>
+        <fileSet>
+            <directory>../bin</directory>
+            <includes>
+                <include>**/*.bat</include>
+            </includes>
+            <outputDirectory>bin</outputDirectory>
+            <lineEnding>crlf</lineEnding>
+        </fileSet>
+        <fileSet>
+            <directory>../bin</directory>
+            <includes>
+                <include>**/*.sh</include>
+            </includes>
+            <outputDirectory>bin</outputDirectory>
+            <fileMode>0777</fileMode>
+            <lineEnding>unix</lineEnding>
+        </fileSet>
+        <!-- user defined property files -->
+        <fileSet>
+            <directory>../config</directory>
+            <includes>
+                <include>**/*.*</include>
+            </includes>
+            <outputDirectory>config</outputDirectory>
+            <lineEnding>crlf</lineEnding>
+        </fileSet>
+        <!-- static content -->
+        <fileSet>
+            <directory>../</directory>
+            <includes>
+                <include>README*</include>
+                <include>LICENSE*</include>
+                <include>NOTICE*</include>
+                <include>overview.html</include>
+            </includes>
+            <outputDirectory></outputDirectory>
+            <lineEnding>crlf</lineEnding>
+        </fileSet>
+
+        <!-- JavaDocs -->
+        <!--<fileSet>-->
+        <!--<directory>../${project.build.directory}</directory>-->
+        <!--<includes>-->
+        <!--<include>*-javadoc.*</include>-->
+        <!--</includes>-->
+        <!--<outputDirectory>docs</outputDirectory>-->
+        <!--<lineEnding>crlf</lineEnding>-->
+        <!--</fileSet>-->
+    </fileSets>
+</component>

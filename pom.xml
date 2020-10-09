@@ -1,11 +1,12 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.jkoolcloud</groupId>
     <artifactId>tnt4j</artifactId>
     <version>2.14-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>pom</packaging>
 
     <name>tnt4j</name>
     <url>https://github.com/Nastel/TNT4J</url>
@@ -44,7 +45,13 @@
     <properties>
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <product.vendor>jKool, LLC</product.vendor>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.resources.encoding>UTF-8</project.resources.encoding>
+        <product.vendor>${project.organization.name}</product.vendor>
+        <product.name>${project.name}</product.name>
+        <product.name.hr>TNT4J</product.name.hr>
+        <product.copyright.html>
+            <![CDATA[<font size="-1">Copyright &#169; 2014-2020 ${project.organization.name}. All Rights Reserved.</font>]]></product.copyright.html>
 
         <project.java.version>1.8</project.java.version>
         <java.source.version>${project.java.version}</java.source.version>
@@ -54,139 +61,13 @@
         <java.compiler.verbose>false</java.compiler.verbose>
         <java.compiler.fork>false</java.compiler.fork>
 
-        <release.deploy.name>${project.artifactId}</release.deploy.name>
-        <release.deploy.dir>../build/${release.deploy.name}</release.deploy.dir>
-        <release.deploy.finalName>${release.deploy.name}-${project.version}</release.deploy.finalName>
-        <release.deploy.zip.assembly>src/assembly/zipDeployAssembly.xml</release.deploy.zip.assembly>
-        <release.deploy.gz.assembly>src/assembly/gzDeployAssembly.xml</release.deploy.gz.assembly>
-        <release.deploy.dir.assembly>src/assembly/dirDeployAssembly.xml</release.deploy.dir.assembly>
-
-        <assembly.line.endings>unix</assembly.line.endings>
-
         <skip.source.pack>true</skip.source.pack>
         <skip.javadoc.pack>true</skip.javadoc.pack>
         <skip.assembly.pack>true</skip.assembly.pack>
-        <skip.tests>true</skip.tests>
         <skip.gpg.sign>true</skip.gpg.sign>
-
-        <build.assemblies.attach>false</build.assemblies.attach>
-
-        <commons.lang.version>3.10</commons.lang.version>
-        <commons.text.version>1.8</commons.text.version>
-        <commons.codec.version>1.14</commons.codec.version>
-        <commons.configuration.version>2.7</commons.configuration.version>
-        <commons.net.version>3.6</commons.net.version>
-        <commons.beanutils.version>1.9.4</commons.beanutils.version>
-
-        <guava.version>29.0-jre</guava.version>
-        <uuid.generator.version>4.0.1</uuid.generator.version>
-        <slf4j.version>1.7.30</slf4j.version>
-        <eclipse.paho.version>1.2.4</eclipse.paho.version>
-        <kafka.clients.version>2.5.0</kafka.clients.version>
     </properties>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-            <version>${commons.lang.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-text</artifactId>
-            <version>${commons.text.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-lang3</artifactId>
-                    <groupId>org.apache.commons</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>commons-codec</groupId>
-            <artifactId>commons-codec</artifactId>
-            <version>${commons.codec.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-configuration2</artifactId>
-            <version>${commons.configuration.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>commons-lang3</artifactId>
-                    <groupId>org.apache.commons</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>commons-net</groupId>
-            <artifactId>commons-net</artifactId>
-            <version>${commons.net.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>commons-beanutils</groupId>
-            <artifactId>commons-beanutils</artifactId>
-            <version>${commons.beanutils.version}</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>listenablefuture</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.uuid</groupId>
-            <artifactId>java-uuid-generator</artifactId>
-            <version>${uuid.generator.version}</version>
-            <exclusions>
-                <exclusion>
-                    <artifactId>slf4j-api</artifactId>
-                    <groupId>org.slf4j</groupId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.eclipse.paho</groupId>
-            <artifactId>org.eclipse.paho.client.mqttv3</artifactId>
-            <version>${eclipse.paho.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <version>${kafka.clients.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-    </dependencies>
-
     <profiles>
-        <profile>
-            <id>win-ln</id>
-            <activation>
-                <os>
-                    <family>windows</family>
-                </os>
-            </activation>
-            <properties>
-                <assembly.line.endings>crlf</assembly.line.endings>
-            </properties>
-        </profile>
-
         <profile>
             <id>pack-bin</id>
             <properties>
@@ -201,114 +82,11 @@
                 <skip.assembly.pack>false</skip.assembly.pack>
             </properties>
         </profile>
-        <profile>
-            <id>run-tests</id>
-            <properties>
-                <skip.tests>false</skip.tests>
-            </properties>
-        </profile>
     </profiles>
 
     <build>
         <defaultGoal>clean install</defaultGoal>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
-                <configuration>
-                    <verbose>${java.compiler.verbose}</verbose>
-                    <compilerVersion>${java.compiler.version}</compilerVersion>
-                    <source>${java.source.version}</source>
-                    <target>${java.target.version}</target>
-                    <debuglevel>${java.compiler.debuglevel}</debuglevel>
-                    <fork>${java.compiler.fork}</fork>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <skipSource>${skip.source.pack}</skipSource>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.0.1</version>
-                <configuration>
-                    <failOnError>false</failOnError>
-                    <doclint>all</doclint>
-                    <skip>${skip.javadoc.pack}</skip>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>build-javadocs-module</id>
-                        <goals>
-                            <goal>jar</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <skipAssembly>${skip.assembly.pack}</skipAssembly>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>deploy-assembly</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>single</goal>
-                        </goals>
-                        <configuration>
-                            <appendAssemblyId>false</appendAssemblyId>
-                            <descriptors>
-                                <descriptor>${release.deploy.dir.assembly}</descriptor>
-                                <descriptor>${release.deploy.zip.assembly}</descriptor>
-                                <descriptor>${release.deploy.gz.assembly}</descriptor>
-                            </descriptors>
-                            <attach>${build.assemblies.attach}</attach>
-                            <outputDirectory>${release.deploy.dir}</outputDirectory>
-                            <finalName>${release.deploy.finalName}</finalName>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-clean-plugin</artifactId>
-                <version>3.1.0</version>
-                <inherited>false</inherited>
-                <configuration>
-                    <filesets>
-                        <fileset>
-                            <directory>${release.deploy.dir}</directory>
-                        </fileset>
-                    </filesets>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.22.2</version>
-                <inherited>true</inherited>
-                <configuration>
-                    <skipTests>${skip.tests}</skipTests>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
@@ -332,21 +110,70 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.apache.felix</groupId>
-                <artifactId>maven-bundle-plugin</artifactId>
-                <version>3.5.1</version>
-                <extensions>true</extensions>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
                 <configuration>
-                    <instructions>
-                        <Export-Package>com.jkoolcloud.tnt4j.*</Export-Package>
-                    </instructions>
+                    <verbose>${java.compiler.verbose}</verbose>
+                    <compilerVersion>${java.compiler.version}</compilerVersion>
+                    <source>${java.source.version}</source>
+                    <target>${java.target.version}</target>
+                    <debuglevel>${java.compiler.debuglevel}</debuglevel>
+                    <fork>${java.compiler.fork}</fork>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <encoding>${project.resources.encoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.1.0</version>
+                <configuration>
+                    <skipSource>${skip.source.pack}</skipSource>
                 </configuration>
                 <executions>
                     <execution>
-                        <id>bundle-manifest</id>
-                        <phase>process-classes</phase>
+                        <id>attach-sources</id>
                         <goals>
-                            <goal>manifest</goal>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.0.1</version>
+                <configuration>
+                    <doctitle>${product.name.hr}</doctitle>
+                    <windowtitle>${product.name.hr}</windowtitle>
+                    <header>Version ${project.version}</header>
+                    <bottom>${product.copyright.html}</bottom>
+                    <show>protected</show>
+                    <use>true</use>
+                    <notree>false</notree>
+                    <nonavbar>false</nonavbar>
+                    <noindex>false</noindex>
+                    <splitindex>true</splitindex>
+                    <author>true</author>
+                    <version>true</version>
+                    <nodeprecatedlist>false</nodeprecatedlist>
+                    <nodeprecated>false</nodeprecated>
+                    <failOnError>false</failOnError>
+                    <doclint>all</doclint>
+                    <skip>${skip.javadoc.pack}</skip>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>build-javadocs-module</id>
+                        <goals>
+                            <goal>jar</goal>
                         </goals>
                     </execution>
                 </executions>
@@ -375,4 +202,11 @@
             </plugin>
         </plugins>
     </build>
+
+    <modules>
+        <module>tnt4j-core</module>
+        <module>tnt4j-kafka-sink</module>
+        <module>tnt4j-mqtt-sink</module>
+        <module>tnt4j--distribution</module>
+    </modules>
 </project>

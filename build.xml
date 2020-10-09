@@ -2,6 +2,8 @@
 
     <echo message="Processing ${ant.project.name}${line.separator}" level="info"/>
 
+    <property name="modules" value="tnt4j-core,tnt4j-kafka-sink,tnt4j-mqtt-sink,tnt4j--distribution"/>
+
     <condition property="isWindows">
         <os family="windows"/>
     </condition>
@@ -22,49 +24,49 @@
 
     <target name="mvn_windows_clean" if="isWindows">
         <exec dir="." executable="cmd">
-            <arg line="/c mvn clean"/>
+            <arg line="/c mvn clean -pl ${modules}"/>
         </exec>
     </target>
 
     <target name="mvn_unix_clean" if="isUnix">
         <exec dir="." executable="sh">
-            <arg line="-c 'mvn clean'"/>
+            <arg line="-c 'mvn clean -pl ${modules}'"/>
         </exec>
     </target>
 
     <target name="mvn_windows_build" if="isWindows">
         <exec dir="." executable="cmd">
-            <arg line="/c mvn clean install"/>
+            <arg line="/c mvn clean install -pl ${modules} -am"/>
         </exec>
     </target>
 
     <target name="mvn_unix_build" if="isUnix">
         <exec dir="." executable="sh">
-            <arg line="-c 'mvn clean install'"/>
+            <arg line="-c 'mvn clean install -pl ${modules} -am'"/>
         </exec>
     </target>
 
     <target name="mvn_windows_pack" if="isWindows">
         <exec dir="." executable="cmd">
-            <arg line="/c mvn clean install -P pack-bin"/>
+            <arg line="/c mvn clean install -pl ${modules} -am -P pack-bin"/>
         </exec>
     </target>
 
     <target name="mvn_unix_pack" if="isUnix">
         <exec dir="." executable="sh">
-            <arg line="-c 'mvn clean install -P pack-bin'"/>
+            <arg line="-c 'mvn clean install -pl ${modules} -am -P pack-bin'"/>
         </exec>
     </target>
 
     <target name="mvn_windows_deploy" if="isWindows">
         <exec dir="." executable="cmd">
-            <arg line="/c mvn deploy -P pack-all"/>
+            <arg line="/c mvn deploy -pl ${modules} -am -P pack-all"/>
         </exec>
     </target>
 
     <target name="mvn_unix_deploy" if="isUnix">
         <exec dir="." executable="sh">
-            <arg line="-c 'mvn deploy -P pack-all'"/>
+            <arg line="-c 'mvn deploy -pl ${modules} -am -P pack-all'"/>
         </exec>
     </target>
 
