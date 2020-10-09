@@ -76,6 +76,8 @@ public class JULEventSink extends LoggerEventSink {
 	 *            number of logs before rotation
 	 * @param append
 	 *            append to file or not
+	 * @param level
+	 *            logging level
 	 * @param frmt
 	 *            message formatter
 	 * @param jfmt
