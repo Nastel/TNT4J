@@ -30,15 +30,13 @@
                         <outputDirectory></outputDirectory>
                         <directory>${project.build.directory}</directory>
                         <includes>
-                            <include>*.jar</include>
-                            <include>*.war</include>
-                            <include>*.ear</include>
+                            <!--<include>*.jar</include>-->
                             <include>*-sources.jar</include>
                             <include>*-tests.jar</include>
                             <include>*-javadoc.jar</include>
+                            <include>*-all.jar</include>
                         </includes>
                         <excludes>
-                            <exclude>*-classes.jar</exclude>
                             <exclude>original-*.jar</exclude>
                         </excludes>
                     </fileSet>
@@ -65,6 +63,7 @@
             </includes>
             <excludes>
                 <exclude>**/*.bat</exclude>
+                <exclude>**/*.cmd</exclude>
                 <exclude>**/*.sh</exclude>
             </excludes>
             <outputDirectory>bin</outputDirectory>
@@ -74,6 +73,7 @@
             <directory>../bin</directory>
             <includes>
                 <include>**/*.bat</include>
+                <include>**/*.cmd</include>
             </includes>
             <outputDirectory>bin</outputDirectory>
             <lineEnding>crlf</lineEnding>
