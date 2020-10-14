@@ -620,6 +620,7 @@ Requirements
 
 TNT4J depends on the following external packages:
 * [Apache commons configuration](http://commons.apache.org/proper/commons-configuration/)
+    * [Apache commons beanutils](http://commons.apache.org/proper/commons-beanutils/) (runtime dependency for `commons-configuration`)
 * [Apache commons lang3](http://commons.apache.org/proper/commons-lang/)
 * [Apache commons net](http://commons.apache.org/proper/commons-net/)
 * [Apache commons text](http://commons.apache.org/proper/commons-text/)
@@ -627,7 +628,6 @@ TNT4J depends on the following external packages:
 * [Google Guava Libraries](https://github.com/google/guava)
 * [Java UUID Generator (JUG)](https://github.com/cowtowncoder/java-uuid-generator)
 * [SLF4J](http://www.slf4j.org/)
-* [Apache commons beanutils](http://commons.apache.org/proper/commons-beanutils/) (runtime dependency)
 
 MQTT sink [module](tnt4j-mqtt-sink) additionally depends on:
 * [Eclipse Paho MQTTv3](http://www.eclipse.org/paho/)
