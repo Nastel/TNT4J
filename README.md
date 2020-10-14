@@ -625,15 +625,15 @@ TNT4J depends on the following external packages:
 * [Apache commons net](http://commons.apache.org/proper/commons-net/)
 * [Apache commons text](http://commons.apache.org/proper/commons-text/)
 * [Apache commons codec](http://commons.apache.org/proper/commons-codec/)
-* [Google Guava Libraries](https://github.com/google/guava)
-* [Java UUID Generator (JUG)](https://github.com/cowtowncoder/java-uuid-generator)
+* [Google Guava Libraries](https://github.com/google/guava/)
+* [Java UUID Generator (JUG)](https://github.com/cowtowncoder/java-uuid-generator/)
 * [SLF4J](http://www.slf4j.org/)
 
 MQTT sink [module](tnt4j-mqtt-sink) additionally depends on:
 * [Eclipse Paho MQTTv3](http://www.eclipse.org/paho/)
 
 Kafka sink [module](tnt4j-kafka-sink) additionally depends on:
-* [Kafka Clients](https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients)
+* [Kafka Clients](https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients/)
 
 To build TNT4J:
 *  Please use JCenter or Maven and these dependencies will be downloaded automatically.
@@ -647,14 +647,14 @@ the `/config` directory. If using JCenter or Maven, it can be found in the zip a
 
 Known Projects Using TNT4J
 ===============================================
-* jKool Event Streaming Library - [JESL](https://github.com/Nastel/JESL)
-* [TNT4J/Servlet-Filter](https://github.com/Nastel/tnt4j-servlet-filter)
-* [TNT4J/Stream-GC](https://github.com/Nastel/tnt4j-stream-gc)
-* [TNT4J/Stream-JMX](https://github.com/Nastel/tnt4j-stream-jmx)
-* [TNT4J/Syslogd](https://github.com/Nastel/tnt4j-syslogd)
-* [TNT4J/Log4J12](https://github.com/Nastel/tnt4j-log4j12)
-* [TNT4J/Logback](https://github.com/Nastel/tnt4j-logback)
-* [TNT4J/Spark](https://github.com/Nastel/tnt4j-spark)
-* [TNT4J/Examples](https://github.com/Nastel/tnt4j-examples)
-* Log & Metric Analytics Service - [jkoolcloud.com](https://www.jkoolcloud.com)
+* jKool Event Streaming Library - [JESL](https://github.com/Nastel/JESL/)
+* [TNT4J/Servlet-Filter](https://github.com/Nastel/tnt4j-servlet-filter/)
+* [TNT4J/Stream-GC](https://github.com/Nastel/tnt4j-stream-gc/)
+* [TNT4J/Stream-JMX](https://github.com/Nastel/tnt4j-stream-jmx/)
+* [TNT4J/Syslogd](https://github.com/Nastel/tnt4j-syslogd/)
+* [TNT4J/Log4J12](https://github.com/Nastel/tnt4j-log4j12/)
+* [TNT4J/Logback](https://github.com/Nastel/tnt4j-logback/)
+* [TNT4J/Spark](https://github.com/Nastel/tnt4j-spark/)
+* [TNT4J/Examples](https://github.com/Nastel/tnt4j-examples/)
+* Log & Metric Analytics Service - [jkoolcloud.com](https://www.jkoolcloud.com/)
 * Application Performance Monitoring - [AutoPilot M6](http://www.nastel.com/products/autopilot-m6.html)
