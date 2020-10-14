@@ -498,7 +498,7 @@ servers, geo locations.
 TNT4J allows developers to track associations between sources. Source is a logical definition of an entity such as application, server, 
 network, geo location. 
 Here is an example of a source: `APP=WebAppl#SERVER=MYSERVER#DATACENTER=DC1#GEOADDR=New York`, which means application `WebAppl` deployed on 
-server `MYSERVER`, located on datacenter `DC1`, located in `New York`. Say you want track an association between 2 applications that 
+server `MYSERVER`, located on data center `DC1`, located in `New York`. Say you want track an association between 2 applications that 
 exchange data, where one application sends data to another:
 ```java
 // post processing of activity: enrich activity with application metrics
@@ -619,14 +619,21 @@ Requirements
 * JDK 1.8+
 
 TNT4J depends on the following external packages:
-* [Apache commons configuration 1.10](http://commons.apache.org/proper/commons-configuration/)
-* [Apache commons lang3 3.5](http://commons.apache.org/proper/commons-lang/)
-* [Apache commons net 3.6](http://commons.apache.org/proper/commons-net/)
-* [Apache commons codec 1.11](http://commons.apache.org/proper/commons-codec/)
-* [Google Guava Libraries](https://code.google.com/p/guava-libraries/)
-* [SLF4J 1.7.25](http://www.slf4j.org/)
-* [Eclipse Paho MQTTv3 1.2.0](http://www.eclipse.org/paho/)
-* [Java UUID Generator (JUG) 3.1.4](http://wiki.fasterxml.com/JugHome/)
+* [Apache commons configuration](http://commons.apache.org/proper/commons-configuration/)
+* [Apache commons lang3](http://commons.apache.org/proper/commons-lang/)
+* [Apache commons net](http://commons.apache.org/proper/commons-net/)
+* [Apache commons text](http://commons.apache.org/proper/commons-text/)
+* [Apache commons codec](http://commons.apache.org/proper/commons-codec/)
+* [Google Guava Libraries](https://github.com/google/guava)
+* [Java UUID Generator (JUG)](https://github.com/cowtowncoder/java-uuid-generator)
+* [SLF4J](http://www.slf4j.org/)
+* [Apache commons beanutils](http://commons.apache.org/proper/commons-beanutils/) (runtime dependency)
+
+MQTT sink [module](tnt4j-mqtt-sink) additionally depends on:
+* [Eclipse Paho MQTTv3](http://www.eclipse.org/paho/)
+
+Kafka sink [module](tnt4j-kafka-sink) additionally depends on:
+* [Kafka Clients](https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients)
 
 To build TNT4J:
 *  Please use JCenter or Maven and these dependencies will be downloaded automatically.
