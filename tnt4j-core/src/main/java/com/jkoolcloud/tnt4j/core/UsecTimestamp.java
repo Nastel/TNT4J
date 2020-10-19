@@ -343,7 +343,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 				}
 
 				StringBuilder sb = new StringBuilder();
-				int usecPos = timeStampStr.lastIndexOf('.') + 1;
+				int usecPos = fmtPos;
 				int usecEndPos;
 				if (usecPos > 2) {
 					for (usecEndPos = usecPos; usecEndPos < timeStampStr.length(); usecEndPos++) {
