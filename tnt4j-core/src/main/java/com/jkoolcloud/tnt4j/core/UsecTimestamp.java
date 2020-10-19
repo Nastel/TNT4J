@@ -364,12 +364,12 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 
 						// trim off fractional part < microseconds from both timestamp and format strings
 						sb.append(timeStampStr);
-						sb.delete(usecPos - 1, usecEndPos);
+						sb.delete(usecPos, usecEndPos);
 						timeStampStr = sb.toString();
 
 						sb.setLength(0);
 						sb.append(formatStr);
-						sb.delete(fmtPos - 1, endFmtPos + 1);
+						sb.delete(fmtPos, endFmtPos + 1);
 						formatStr = sb.toString();
 					} else if ((usecEndPos - usecPos) < 3) {
 						// pad msec value in date string with 0's so that it is 3 digits long
