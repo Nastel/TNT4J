@@ -354,24 +354,28 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 
 					if (fmtFracSecLen > 3) {
 						// format specification represents more than milliseconds, assume microseconds
-						String usecStr = String.format("%s", timeStampStr.substring(usecPos, usecEndPos));
-						if (usecStr.length() < fmtFracSecLen) {
-							usecStr = StringUtils.rightPad(usecStr, fmtFracSecLen, '0');
-						} else if (usecStr.length() > fmtFracSecLen) {
-							usecStr = usecStr.substring(0, fmtFracSecLen);
-						}
-						usecs = Integer.parseInt(usecStr);
+						try {
+							String usecStr = timeStampStr.substring(usecPos, usecEndPos);
 
-						// trim off fractional part < microseconds from both timestamp and format strings
-						sb.append(timeStampStr);
-						sb.delete(usecPos, usecEndPos);
-						timeStampStr = sb.toString();
+							if (usecStr.length() < fmtFracSecLen) {
+								usecStr = StringUtils.rightPad(usecStr, fmtFracSecLen, '0');
+							} else if (usecStr.length() > fmtFracSecLen) {
+								usecStr = usecStr.substring(0, fmtFracSecLen);
+							}
+							usecs = Integer.parseInt(usecStr);
+
+							// trim off fractional part < microseconds from both timestamp and format strings
+							sb.append(timeStampStr);
+							sb.delete(usecPos, usecEndPos);
+							timeStampStr = sb.toString();
+						} catch (IndexOutOfBoundsException exc) {
+						}
 
 						sb.setLength(0);
 						sb.append(formatStr);
 						sb.delete(fmtPos, endFmtPos + 1);
 						formatStr = sb.toString();
-					} else if ((usecEndPos - usecPos) < 3) {
+					} else if ((usecEndPos - usecPos) < 3 && (usecEndPos <= timeStampStr.length())) {
 						// pad msec value in date string with 0's so that it is 3 digits long
 						sb.append(timeStampStr);
 						while ((usecEndPos - usecPos) < 3) {
@@ -392,10 +396,14 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 			dateFormat.setTimeZone(timeZone);
 		}
 
-		Date date = dateFormat.parse(timeStampStr);
+		try {
+			Date date = dateFormat.parse(timeStampStr);
 
-		setTimestampValues(date.getTime(), 0, 0);
-		add(usecs);
+			setTimestampValues(date.getTime(), 0, 0);
+			add(usecs);
+		} catch (ParseException pe) {
+			throw new ParseException(pe.getMessage() + " using pattern '" + formatStr + "'", pe.getErrorOffset());
+		}
 	}
 
 	/**
