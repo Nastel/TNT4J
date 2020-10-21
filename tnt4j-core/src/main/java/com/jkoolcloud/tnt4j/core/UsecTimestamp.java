@@ -324,63 +324,63 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		}
 
 		int usecs = 0;
-
 		SimpleDateFormat dateFormat;
 
 		if (StringUtils.isEmpty(formatStr)) {
 			dateFormat = new SimpleDateFormat();
 		} else {
 			// Java date formatter cannot deal with usecs, so we need to extract those ourselves
-			int fmtPos = formatStr.indexOf('S');
-			if (fmtPos > 0) {
-				int endFmtPos = formatStr.lastIndexOf('S');
-				int fmtFracSecLen = endFmtPos - fmtPos + 1;
+			int fFsecPos = formatStr.indexOf('S');
+			if (fFsecPos > 0) {
+				int fFsecEndPos = formatStr.lastIndexOf('S');
+				int fFsecLen = fFsecEndPos - fFsecPos + 1;
 
-				if (fmtFracSecLen > 6) {
+				if (fFsecLen > 6) {
 					throw new ParseException(
 							"Date format containing more than 6 significant digits for fractional seconds is not supported",
 							0);
 				}
 
-				StringBuilder sb = new StringBuilder();
-				int usecPos = fmtPos;
-				int usecEndPos;
-				if (usecPos > 2) {
-					for (usecEndPos = usecPos; usecEndPos < timeStampStr.length(); usecEndPos++) {
-						if (!StringUtils.containsAny("0123456789", timeStampStr.charAt(usecEndPos))) {
+				int dFsecPos = adjustFsecPosition(fFsecPos, formatStr);
+				if (dFsecPos > 2) {
+					int dFsecEndPos;
+					for (dFsecEndPos = dFsecPos; dFsecEndPos < timeStampStr.length(); dFsecEndPos++) {
+						if (!StringUtils.containsAny("0123456789", timeStampStr.charAt(dFsecEndPos))) {
 							break;
 						}
 					}
 
-					if (fmtFracSecLen > 3) {
+					StringBuilder sb = new StringBuilder();
+
+					if (fFsecLen > 3) {
 						// format specification represents more than milliseconds, assume microseconds
 						try {
-							String usecStr = timeStampStr.substring(usecPos, usecEndPos);
+							String dUsecStr = timeStampStr.substring(dFsecPos, dFsecEndPos);
 
-							if (usecStr.length() < fmtFracSecLen) {
-								usecStr = StringUtils.rightPad(usecStr, fmtFracSecLen, '0');
-							} else if (usecStr.length() > fmtFracSecLen) {
-								usecStr = usecStr.substring(0, fmtFracSecLen);
+							if (dUsecStr.length() < fFsecLen) {
+								dUsecStr = StringUtils.rightPad(dUsecStr, fFsecLen, '0');
+							} else if (dUsecStr.length() > fFsecLen) {
+								dUsecStr = dUsecStr.substring(0, fFsecLen);
 							}
-							usecs = Integer.parseInt(usecStr);
+							usecs = Integer.parseInt(dUsecStr);
 
 							// trim off fractional part < microseconds from both timestamp and format strings
 							sb.append(timeStampStr);
-							sb.delete(usecPos, usecEndPos);
+							sb.delete(dFsecPos, dFsecEndPos);
 							timeStampStr = sb.toString();
 						} catch (IndexOutOfBoundsException exc) {
 						}
 
 						sb.setLength(0);
 						sb.append(formatStr);
-						sb.delete(fmtPos, endFmtPos + 1);
+						sb.delete(fFsecPos, fFsecEndPos + 1);
 						formatStr = sb.toString();
-					} else if ((usecEndPos - usecPos) < 3 && (usecEndPos <= timeStampStr.length())) {
+					} else if ((dFsecEndPos - dFsecPos) < 3 && (dFsecEndPos <= timeStampStr.length())) {
 						// pad msec value in date string with 0's so that it is 3 digits long
 						sb.append(timeStampStr);
-						while ((usecEndPos - usecPos) < 3) {
-							sb.insert(usecEndPos, '0');
-							usecEndPos++;
+						while ((dFsecEndPos - dFsecPos) < 3) {
+							sb.insert(dFsecEndPos, '0');
+							dFsecEndPos++;
 						}
 						timeStampStr = sb.toString();
 					}
@@ -404,6 +404,26 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		} catch (ParseException pe) {
 			throw new ParseException(pe.getMessage() + " using pattern '" + formatStr + "'", pe.getErrorOffset());
 		}
+	}
+
+	/**
+	 * Adjusts fractional sections start position in datetime string according to provided format pattern.
+	 * <p>
+	 * Pattern used quote symbols does not map to datetime string value 1:1, so position must be adjusted.
+	 * 
+	 * @param fFsecPos
+	 *            format pattern string fractional seconds section start position
+	 * @param formatStr
+	 *            format pattern string
+	 * @return adjusted fractional seconds section start position in datetime string
+	 */
+	protected static int adjustFsecPosition(int fFsecPos, String formatStr) {
+		String dtFormatStr = formatStr.substring(0, fFsecPos);
+		int dqCount = StringUtils.countMatches(dtFormatStr, "''");
+		int sqCount = StringUtils.countMatches(dtFormatStr, '\'');
+		int qCount = sqCount - dqCount;
+
+		return fFsecPos - qCount;
 	}
 
 	/**
