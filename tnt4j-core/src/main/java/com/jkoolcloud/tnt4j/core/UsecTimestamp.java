@@ -407,17 +407,20 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	}
 
 	/**
-	 * Adjusts fractional sections start position in datetime string according to provided format pattern.
+	 * Adjusts fractional seconds section start position in datetime string according to provided format pattern.
 	 * <p>
 	 * Pattern used quote symbols does not map to datetime string value 1:1, so position must be adjusted.
 	 * 
 	 * @param fFsecPos
-	 *            format pattern string fractional seconds section start position
+	 *            format pattern string fractional seconds section start position, or negative value to find it
 	 * @param formatStr
 	 *            format pattern string
 	 * @return adjusted fractional seconds section start position in datetime string
 	 */
 	protected static int adjustFsecPosition(int fFsecPos, String formatStr) {
+		if (fFsecPos < 0) {
+			fFsecPos = formatStr.indexOf('S');
+		}
 		String dtFormatStr = formatStr.substring(0, fFsecPos);
 		int dqCount = StringUtils.countMatches(dtFormatStr, "''");
 		int sqCount = StringUtils.countMatches(dtFormatStr, '\'');
