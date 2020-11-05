@@ -37,10 +37,11 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.2</version>
+                <version>3.2.0</version>
                 <configuration>
                     <archive>
                         <!--<index>true</index>-->
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
                         <manifest>
                             <addClasspath>true</addClasspath>
                         </manifest>
@@ -48,6 +49,8 @@
                             <Implementation-Vendor>${product.vendor}</Implementation-Vendor>
                             <Implementation-Title>${product.name}</Implementation-Title>
                             <Implementation-Version>${project.version}-${maven.build.timestamp}</Implementation-Version>
+                            <X-Compile-Source-JDK>${java.source.version}</X-Compile-Source-JDK>
+                            <X-Compile-Target-JDK>${java.target.version}</X-Compile-Target-JDK>
                         </manifestEntries>
                     </archive>
                 </configuration>
@@ -55,10 +58,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-source-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <skipSource>${skip.source.pack}</skipSource>
-                </configuration>
+                <version>3.2.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -71,7 +71,7 @@
             <plugin>
                 <groupId>org.apache.felix</groupId>
                 <artifactId>maven-bundle-plugin</artifactId>
-                <version>3.5.1</version>
+                <version>5.1.1</version>
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>

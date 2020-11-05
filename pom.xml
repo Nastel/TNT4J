@@ -61,25 +61,26 @@
         <java.compiler.verbose>false</java.compiler.verbose>
         <java.compiler.fork>false</java.compiler.fork>
 
-        <skip.source.pack>true</skip.source.pack>
-        <skip.javadoc.pack>true</skip.javadoc.pack>
-        <skip.assembly.pack>true</skip.assembly.pack>
-        <skip.gpg.sign>true</skip.gpg.sign>
+        <maven.source.skip>true</maven.source.skip>
+        <maven.javadoc.skip>true</maven.javadoc.skip>
+        <assembly.skipAssembly>true</assembly.skipAssembly>
+        <gpg.skip>true</gpg.skip>
+        <maven.deploy.skip>false</maven.deploy.skip>
     </properties>
 
     <profiles>
         <profile>
             <id>pack-bin</id>
             <properties>
-                <skip.assembly.pack>false</skip.assembly.pack>
+                <assembly.skipAssembly>false</assembly.skipAssembly>
             </properties>
         </profile>
         <profile>
             <id>pack-all</id>
             <properties>
-                <skip.source.pack>false</skip.source.pack>
-                <skip.javadoc.pack>false</skip.javadoc.pack>
-                <skip.assembly.pack>false</skip.assembly.pack>
+                <maven.source.skip>false</maven.source.skip>
+                <maven.javadoc.skip>false</maven.javadoc.skip>
+                <assembly.skipAssembly>false</assembly.skipAssembly>
             </properties>
         </profile>
     </profiles>
@@ -87,28 +88,6 @@
     <build>
         <defaultGoal>clean install</defaultGoal>
         <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.1.2</version>
-                <configuration>
-                    <archive>
-                        <!--<index>true</index>-->
-                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
-                        <manifest>
-                            <addClasspath>true</addClasspath>
-                        </manifest>
-                        <manifestEntries>
-                            <Implementation-Vendor>${product.vendor}</Implementation-Vendor>
-                            <Implementation-Title>${project.name}</Implementation-Title>
-                            <Implementation-Version>${project.version}-${maven.build.timestamp}</Implementation-Version>
-                            <Premain-Class>com.jkoolcloud.tnt4j.utils.SizeOf</Premain-Class>
-                            <X-Compile-Source-JDK>${java.source.version}</X-Compile-Source-JDK>
-                            <X-Compile-Target-JDK>${java.target.version}</X-Compile-Target-JDK>
-                        </manifestEntries>
-                    </archive>
-                </configuration>
-            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
@@ -132,22 +111,6 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-source-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <skipSource>${skip.source.pack}</skipSource>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>attach-sources</id>
-                        <goals>
-                            <goal>jar-no-fork</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>3.0.1</version>
                 <configuration>
@@ -167,7 +130,6 @@
                     <nodeprecated>false</nodeprecated>
                     <failOnError>false</failOnError>
                     <doclint>all</doclint>
-                    <skip>${skip.javadoc.pack}</skip>
                 </configuration>
                 <executions>
                     <execution>
@@ -182,9 +144,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
                 <version>1.6</version>
-                <configuration>
-                    <skip>${skip.gpg.sign}</skip>
-                </configuration>
                 <executions>
                     <execution>
                         <id>sign-artifacts</id>

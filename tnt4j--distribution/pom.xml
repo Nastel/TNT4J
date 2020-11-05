@@ -23,6 +23,8 @@
         <build.assemblies.attach>false</build.assemblies.attach>
 
         <assembly.line.endings>unix</assembly.line.endings>
+
+        <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
     <profiles>
@@ -62,10 +64,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.1.0</version>
-                <configuration>
-                    <skipAssembly>${skip.assembly.pack}</skipAssembly>
-                </configuration>
+                <version>3.3.0</version>
                 <executions>
                     <execution>
                         <id>make-deploy-assembly</id>
