@@ -1644,9 +1644,7 @@ public class Utils {
 		}
 
 		Class<?> lClass = clazz == null ? Thread.currentThread().getClass() : clazz;
-		ClassLoader cl = lClass.getClassLoader();
-		cl = cl == null ? Thread.currentThread().getContextClassLoader() : cl;
-		cl = cl == null ? ClassLoader.getSystemClassLoader() : cl;
+		ClassLoader cl = getClassLoader(lClass);
 
 		InputStream ins = null;
 		if (cl != null) {
@@ -1666,6 +1664,44 @@ public class Utils {
 		}
 
 		return ins;
+	}
+
+	/**
+	 * Returns a class loader for provided class.
+	 * <p>
+	 * This method tries to resolve class loader in such a sequence:
+	 * <ul>
+	 * <li>get {@link Class#getClassLoader()} is provided {@code clazz} is not {@code null}</li>
+	 * <li>get {@link Thread#getContextClassLoader()} for {@link Thread#currentThread()} if class loader for provided
+	 * {@code clazz} was not resolved</li>
+	 * <li>get {@link ClassLoader#getSystemClassLoader()} if non of above resolved any class loader instance</li>
+	 * </ul>
+	 * 
+	 * @param clazz
+	 *            class to get class loader for, may be {@code null}
+	 * @return class loader resolved for provided class
+	 * 
+	 * @see Class#getClassLoader()
+	 * @see Thread#getContextClassLoader()
+	 * @see ClassLoader#getSystemClassLoader()
+	 */
+	public static ClassLoader getClassLoader(Class<?> clazz) {
+		ClassLoader loader = clazz == null ? null : clazz.getClassLoader();
+		loader = loader == null ? Thread.currentThread().getContextClassLoader() : loader;
+		loader = loader == null ? ClassLoader.getSystemClassLoader() : loader;
+
+		return loader;
+	}
+
+	/**
+	 * Resolves class loader for current thread. It does same as {@code getClassLoader(null)}.
+	 * 
+	 * @return class loader of current tread
+	 * 
+	 * @see #getClassLoader(Class)
+	 */
+	public static ClassLoader getClassLoader() {
+		return getClassLoader(null);
 	}
 
 	/**
