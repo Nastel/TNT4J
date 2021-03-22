@@ -145,11 +145,12 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 		config = props;
 		setTTL(Utils.getLong("TTL", props, getTTL()));
 		setTags(Utils.getString("Tag", props, null));
-		double maxmps = Utils.getDouble("RateMaxMPS", props, Limiter.MAX_RATE);
-		double maxbps = Utils.getDouble("RateMaxBPS", props, Limiter.MAX_RATE);
-		long timeout = Utils.getLong("RateTimeout", props, EventLimiter.BLOCK_UNTIL_GRANTED);
 		boolean enabled = Utils.getBoolean("RateLimit", props, false);
 		if (enabled) {
+			double maxmps = Utils.getDouble("RateMaxMPS", props, Limiter.MAX_RATE);
+			double maxbps = Utils.getDouble("RateMaxBPS", props, Limiter.MAX_RATE);
+			long timeout = Utils.getLong("RateTimeout", props, EventLimiter.BLOCK_UNTIL_GRANTED);
+
 			limiter = newEventLimiterImpl(maxmps, maxbps, enabled, timeout);
 		}
 
