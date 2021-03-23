@@ -34,19 +34,16 @@
         <developerConnection>scm:git:git//github.com/Nastel/TNT4J</developerConnection>
         <url>https://github.com/Nastel/TNT4j</url>
     </scm>
-    <!--<distributionManagement>-->
-    <!--<repository>-->
-    <!--<id>bintray-amavashev2-jkoolcloud</id>-->
-    <!--<name>amavashev2-jkoolcloud</name>-->
-    <!--<url>https://api.bintray.com/maven/amavashev2/jkoolcloud/tnt4j/;publish=1;override=1</url>-->
-    <!--</repository>-->
-    <!--</distributionManagement>-->
     <distributionManagement>
         <repository>
+            <id>oss.sonatype.org</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
             <id>github</id>
             <name>GitHub Nastel Apache Maven Packages</name>
             <url>https://maven.pkg.github.com/Nastel/TNT4J</url>
-        </repository>
+        </snapshotRepository>
     </distributionManagement>
 
     <properties>
@@ -173,7 +170,7 @@
         <module>tnt4j-core</module>
         <module>tnt4j-kafka-sink</module>
         <module>tnt4j-mqtt-sink</module>
-        <module>tnt4j-opentelemetry</module>
+        <!--<module>tnt4j-opentelemetry</module>-->
         <module>tnt4j--distribution</module>
     </modules>
 </project>
