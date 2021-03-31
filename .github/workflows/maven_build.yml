@@ -34,19 +34,31 @@ jobs:
       - name: Remove tnt4j assets
         uses: actions/delete-package-versions@v1
         with:
+          owner: 'Nastel'
+          repo: 'TNT4J'
           package-name: 'tnt4j'
+          token: ${{ secrets.GITHUB_PAT }}
       - name: Remove tnt4j-core assets
         uses: actions/delete-package-versions@v1
         with:
+          owner: 'Nastel'
+          repo: 'TNT4J'
           package-name: 'tnt4j-core'
+          token: ${{ secrets.GITHUB_PAT }}
       - name: Remove tnt4j-kafka-sink assets
         uses: actions/delete-package-versions@v1
         with:
+          owner: 'Nastel'
+          repo: 'TNT4J'
           package-name: 'tnt4j-kafka-sink'
+          token: ${{ secrets.GITHUB_PAT }}
       - name: Remove tnt4j-mqtt-sink assets
         uses: actions/delete-package-versions@v1
         with:
+          owner: 'Nastel'
+          repo: 'TNT4J'
           package-name: 'tnt4j-mqtt-sink'
+          token: ${{ secrets.GITHUB_PAT }}
 
   publish-snapshot:
     needs: build
