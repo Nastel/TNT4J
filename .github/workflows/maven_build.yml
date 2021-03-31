@@ -31,11 +31,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Remove package versions
-        id: remove-package-versions
-        uses: epitomeglobal/remove-package-versions@master
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Remove old TNT4J assets
+        uses: abrkn/delete-old-github-package-versions@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          packageName: tnt4j
+          minAge: 1w
+      - name: Remove old TNT4J-core assets
+        uses: abrkn/delete-old-github-package-versions@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          packageName: tnt4j-core
+          minAge: 1w
+      - name: Remove old TNT4J-kafka-sink assets
+        uses: abrkn/delete-old-github-package-versions@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          packageName: tnt4j-kafka-sink
+          minAge: 1w
+      - name: Remove old TNT4J-mqtt-sink assets
+        uses: abrkn/delete-old-github-package-versions@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          packageName: tnt4j-mqtt-sink
+          minAge: 1w
 
   publish-snapshot:
     needs: build
