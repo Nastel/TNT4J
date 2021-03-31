@@ -35,24 +35,28 @@ jobs:
         uses: abrkn/delete-old-github-package-versions@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          owner: Nastel
           packageName: com.jkoolcloud.tnt4j
           minAge: 1w
       - name: Remove old TNT4J-core assets
         uses: abrkn/delete-old-github-package-versions@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          owner: Nastel
           packageName: com.jkoolcloud.tnt4j-core
           minAge: 1w
       - name: Remove old TNT4J-kafka-sink assets
         uses: abrkn/delete-old-github-package-versions@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          owner: Nastel
           packageName: com.jkoolcloud.tnt4j-kafka-sink
           minAge: 1w
       - name: Remove old TNT4J-mqtt-sink assets
         uses: abrkn/delete-old-github-package-versions@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          owner: Nastel
           packageName: com.jkoolcloud.tnt4j-mqtt-sink
           minAge: 1w
 
