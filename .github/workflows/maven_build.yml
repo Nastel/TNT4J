@@ -31,34 +31,34 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Remove tnt4j assets
-        uses: actions/delete-package-versions@v1
+      - name: Remove tnt4j package assets
+        uses: abrkn/delete-old-github-package-versions@v1
         with:
-          owner: 'Nastel'
-          repo: 'TNT4J'
-          package-name: 'tnt4j'
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Remove tnt4j-core assets
-        uses: actions/delete-package-versions@v1
+          owner: Nastel
+          packageName: com.jkoolcloud.tnt4j
+          minAge: 30s
+      - name: Remove tnt4j-core package assets
+        uses: abrkn/delete-old-github-package-versions@v1
         with:
-          owner: 'Nastel'
-          repo: 'TNT4J'
-          package-name: 'tnt4j-core'
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Remove tnt4j-kafka-sink assets
-        uses: actions/delete-package-versions@v1
+          owner: Nastel
+          packageName: com.jkoolcloud.tnt4j-core
+          minAge: 30s
+      - name: Remove tnt4j-kafka-sink package assets
+        uses: abrkn/delete-old-github-package-versions@v1
         with:
-          owner: 'Nastel'
-          repo: 'TNT4J'
-          package-name: 'tnt4j-kafka-sink'
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Remove tnt4j-mqtt-sink assets
-        uses: actions/delete-package-versions@v1
+          owner: Nastel
+          packageName: com.jkoolcloud.tnt4j-kafka-sink
+          minAge: 30s
+      - name: Remove tnt4j-mqtt-sink package assets
+        uses: abrkn/delete-old-github-package-versions@v1
         with:
-          owner: 'Nastel'
-          repo: 'TNT4J'
-          package-name: 'tnt4j-mqtt-sink'
           token: ${{ secrets.GITHUB_TOKEN }}
+          owner: Nastel
+          packageName: com.jkoolcloud.tnt4j-mqtt-sink
+          minAge: 30s
 
   publish-snapshot:
     needs: build
