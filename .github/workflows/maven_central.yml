@@ -1,0 +1,55 @@
+name: release-to-maven-central
+on:
+  workflow_dispatch:
+    inputs:
+      releaseversion:
+        description: 'Release version'
+        required: true
+        default: '2.15'
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Will start a Maven Central upload with version ${{ github.event.inputs.releaseversion }}"
+      - uses: actions/checkout@v2
+
+      - name: Set up settings.xml for Maven Central Repository
+        uses: actions/setup-java@v1
+        with:
+          java-version: 8
+          server-id: oss.sonatype.org
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Set projects Maven version to GitHub Action GUI set version
+        run: mvn versions:set "-DnewVersion=${{ github.event.inputs.releaseversion }}" --no-transfer-progress
+
+      - name: Publish package
+        run: mvn --batch-mode clean deploy --no-transfer-progress -P pack-all -DskipTests=true
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USER }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASS }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+
+      - name: Generate changelog
+        id: changelog
+        uses: metcalfc/changelog-generator@v1.0.0
+        with:
+          myToken: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.event.inputs.releaseversion }}
+          release_name: ${{ github.event.inputs.releaseversion }}
+          body: |
+            Stable Release v${{ github.event.inputs.releaseversion }}
+
+            ${{ steps.changelog.outputs.changelog }}
+          draft: true
+          prerelease: false
