@@ -27,7 +27,7 @@ jobs:
         run: mvn versions:set "-DnewVersion=${{ github.event.inputs.releaseversion }}" --no-transfer-progress
 
       - name: Publish package
-        run: mvn --batch-mode clean deploy --no-transfer-progress -P pack-all -DskipTests=true
+        run: mvn --batch-mode clean deploy --no-transfer-progress -P pack-all maven-release -DskipTests=true
         env:
           MAVEN_USERNAME: ${{ secrets.MAVEN_USER }}
           MAVEN_PASSWORD: ${{ secrets.MAVEN_PASS }}
