@@ -178,7 +178,7 @@
                 <configuration>
                     <serverId>oss.sonatype.org</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <description>${project.version}</description>
+                    <!--<description>${project.version}</description>-->
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
                 <executions>
@@ -187,7 +187,7 @@
                         <phase>deploy</phase>
                         <goals>
                             <goal>deploy</goal>
-                            <goal>release</goal>
+                            <!--<goal>release</goal>-->
                         </goals>
                     </execution>
                 </executions>
