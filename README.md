@@ -17,6 +17,15 @@ Why track and trace your applications?
 **Several key features make TNT4J a prime choice for your java application:**
 
 ## Quick Examples
+Use maven dependency:
+```xml
+        <dependency>
+            <groupId>com.jkoolcloud</groupId>
+            <artifactId>tnt4j-core</artifactId>
+            <version>2.14.1</version>
+        </dependency>
+```
+
 Here is a simple example of using TNT4J:
 
 ```java
@@ -149,7 +158,7 @@ Configure event sink in `tnt4j.properties` as follows:
 
 ```properties
 ...
-; Use buffered event sink around Kafka event sink factory
+; Use buffered event sink around Socket event sink factory
 event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.BufferedEventSinkFactory
 event.sink.factory.PooledLoggerFactory: com.jkoolcloud.tnt4j.sink.impl.PooledLoggerFactoryImpl
 
@@ -165,7 +174,7 @@ Configure event sink in `tnt4j.properties` to use proxy as follows:
 
 ```properties
 ...
-; Use buffered event sink around Kafka event sink factory
+; Use buffered event sink around Socket event sink factory
 event.sink.factory: com.jkoolcloud.tnt4j.sink.impl.BufferedEventSinkFactory
 event.sink.factory.PooledLoggerFactory: com.jkoolcloud.tnt4j.sink.impl.PooledLoggerFactoryImpl
 
@@ -189,6 +198,15 @@ Also see [Java SE documentation](https://docs.oracle.com/javase/7/docs/api/java/
 proxy configuration details using JVM system properties.
 
 ### Stream over Kafka
+Use Maven dependency:
+```xml
+        <dependency>
+            <groupId>com.jkoolcloud</groupId>
+            <artifactId>tnt4j-kafka-sink</artifactId>
+            <version>2.14.1</version>
+        </dependency>
+```
+
 Stream your events over Apache Kafka using `com.jkoolcloud.tnt4j.sink.impl.kafka.KafkaEventSinkFactory` event sink factory.
 Configure event sink in `tnt4j.properties` as follows:
 
@@ -216,6 +234,15 @@ value.serializer=org.apache.kafka.common.serialization.StringSerializer
 ```
 
 ### Stream over MQTT
+Use Maven dependency:
+```xml
+        <dependency>
+            <groupId>com.jkoolcloud</groupId>
+            <artifactId>tnt4j-mqtt-sink</artifactId>
+            <version>2.14.1</version>
+        </dependency>
+```
+
 Stream your events over MQTT using `com.jkoolcloud.tnt4j.sink.impl.mqtt.MqttEventSinkFactory` event sink factory.
 Configure event sink in `tnt4j.properties` as follows:
 ```properties
