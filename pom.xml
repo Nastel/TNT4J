@@ -176,15 +176,37 @@
                 <version>1.6.8</version>
                 <extensions>true</extensions>
                 <configuration>
-                    <serverId>ossrh</serverId>
-                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                    <serverId>oss.sonatype.org</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <description>${project.version}</description>
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
                 </configuration>
+                <executions>
+                    <execution>
+                        <id>deploy-to-sonatype</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>deploy</goal>
+                            <goal>release</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.8.2</version>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>versions-maven-plugin</artifactId>
+                <version>2.8.1</version>
+                <configuration>
+                    <generateBackupPoms>false</generateBackupPoms>
+                </configuration>
             </plugin>
         </plugins>
     </build>
