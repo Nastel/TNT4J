@@ -30,6 +30,9 @@ jobs:
       matrix:
         java-version: [ 8, 11, 15 ]
 
+    outputs:
+      pom-version: ${{ steps.get-pom-version.outputs.pom-version }}
+
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK
@@ -38,29 +41,18 @@ jobs:
           java-version: ${{ matrix.java-version }}
       - name: Build with Maven
         run: mvn -B clean package --file pom.xml --no-transfer-progress
-
-  snapshot-check:
-    needs: build
-    runs-on: ubuntu-latest
-
-    outputs:
-      pom-version: ${{ steps.get-pom-version.outputs.pom-version }}
-    steps:
-      - uses: actions/checkout@v2
       - name: Get POM version
         id: get-pom-version
         run: |
           VERSION=$( mvn -B org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -q -Dexpression=project.version -DforceStdout --file pom.xml --no-transfer-progress )
           echo "$VERSION"
           echo "::set-output name=pom-version::$VERSION"
-      - name: Print POM version
-        run: echo "${{ steps.get-pom-version.outputs.pom-version }}"
 
   cleanup:
-    needs: snapshot-check
+    needs: build
     runs-on: ubuntu-latest
     continue-on-error: true
-    if: ${{ contains(needs.snapshot-check.outputs.pom-version, 'SNAPSHOT') }}
+    if: ${{ contains(needs.build.outputs.pom-version, 'SNAPSHOT') }}
 
     steps:
       - name: Remove tnt4j package assets
@@ -97,9 +89,9 @@ jobs:
         continue-on-error: true
 
   publish-snapshot:
-    needs: snapshot-check
+    needs: build
     runs-on: ubuntu-latest
-    if: ${{ contains(needs.snapshot-check.outputs.pom-version, 'SNAPSHOT') }}
+    if: ${{ contains(needs.build.outputs.pom-version, 'SNAPSHOT') }}
 
     steps:
       - uses: actions/checkout@v2
