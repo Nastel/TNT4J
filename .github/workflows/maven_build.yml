@@ -15,6 +15,13 @@ on:
       - '**/src/**'
       - '**/pom.xml'
 
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Run reason'
+        required: true
+        default: 'Simple UI trigger'
+
 jobs:
   build:
     runs-on: ubuntu-latest
