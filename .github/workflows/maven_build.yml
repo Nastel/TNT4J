@@ -50,6 +50,7 @@ jobs:
         id: get-pom-version
         run: |
           VERSION=$( mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout )
+          echo "$VERSION"
           echo "::set-output name=pom-version::$VERSION"
       - name: Print POM version
         run: echo "${{ steps.get-pom-version.outputs.pom-version }}"
