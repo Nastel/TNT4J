@@ -46,7 +46,7 @@ jobs:
     steps:
       - name: Get POM version
         id: get-pom-version
-        run: echo "::set-output name=pom-version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --offline)"
+        run: echo "::set-output name=pom-version::$(mvn org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version -q -DforceStdout --offline)"
 
   cleanup:
     needs: snapshot-check
