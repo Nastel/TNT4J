@@ -44,13 +44,15 @@ jobs:
     runs-on: ubuntu-latest
 
     outputs:
-      pom-version: ${{ steps.snapshot-check.outputs.pom-version }}
+      pom-version: ${{ steps.get-pom-version.outputs.pom-version }}
     steps:
       - name: Get POM version
         id: get-pom-version
-        run: echo "::set-output name=pom-version::$(mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout)"
+        run: |
+          VERSION=$( mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -q -DforceStdout )
+          echo "::set-output name=pom-version::$VERSION"
       - name: Print POM version
-        run: echo "${{ steps.snapshot-check.outputs.pom-version }}"
+        run: echo "${{ steps.get-pom-version.outputs.pom-version }}"
 
   cleanup:
     needs: snapshot-check
