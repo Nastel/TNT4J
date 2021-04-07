@@ -44,8 +44,8 @@ jobs:
       - name: Get POM version
         id: get-pom-version
         run: |
-          VERSION=$( mvn -B org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -q -Dexpression=project.version -DforceStdout --file pom.xml --no-transfer-progress )
-          echo "$VERSION"
+          VERSION=$( mvn -B help:evaluate -Dexpression=project.version -q -DforceStdout --file pom.xml --no-transfer-progress )
+          echo "Found project version: $VERSION"
           echo "::set-output name=pom-version::$VERSION"
 
   cleanup:
