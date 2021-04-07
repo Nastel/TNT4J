@@ -49,7 +49,7 @@ jobs:
       - name: Get POM version
         id: get-pom-version
         run: |
-          VERSION=$( mvn org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout )
+          VERSION=$( mvn -B org.apache.maven.plugins:maven-help-plugin:3.2.0:evaluate -Dexpression=project.version -DforceStdout --file pom.xml --no-transfer-progress )
           echo "$VERSION"
           echo "::set-output name=pom-version::$VERSION"
       - name: Print POM version
