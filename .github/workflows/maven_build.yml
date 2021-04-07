@@ -6,8 +6,14 @@ name: Java CI with Maven
 on:
   push:
     branches: [ master ]
+    paths:
+      - '**/src/**'
+      - '**/pom.xml'
   pull_request:
     branches: [ master ]
+    paths:
+      - '**/src/**'
+      - '**/pom.xml'
 
 jobs:
   build:
@@ -26,9 +32,20 @@ jobs:
       - name: Build with Maven
         run: mvn -B clean package --file pom.xml --no-transfer-progress
 
-  cleanup:
+  snapshot-check:
     needs: build
     runs-on: ubuntu-latest
+
+    steps:
+      - name: Get POM version
+        id: get-pom-version
+        run: echo "::set-output name=pom-version::$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout --offline)"
+
+  cleanup:
+    needs: snapshot-check
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    if: ${{ contains(needs.snapshot-check.outputs.pom-version, 'SNAPSHOT') }}
 
     steps:
       - name: Remove tnt4j package assets
@@ -38,6 +55,7 @@ jobs:
           owner: Nastel
           packageName: com.jkoolcloud.tnt4j
           minAge: 30s
+        continue-on-error: true
       - name: Remove tnt4j-core package assets
         uses: abrkn/delete-old-github-package-versions@v1
         with:
@@ -45,6 +63,7 @@ jobs:
           owner: Nastel
           packageName: com.jkoolcloud.tnt4j-core
           minAge: 30s
+        continue-on-error: true
       - name: Remove tnt4j-kafka-sink package assets
         uses: abrkn/delete-old-github-package-versions@v1
         with:
@@ -52,6 +71,7 @@ jobs:
           owner: Nastel
           packageName: com.jkoolcloud.tnt4j-kafka-sink
           minAge: 30s
+        continue-on-error: true
       - name: Remove tnt4j-mqtt-sink package assets
         uses: abrkn/delete-old-github-package-versions@v1
         with:
@@ -59,10 +79,12 @@ jobs:
           owner: Nastel
           packageName: com.jkoolcloud.tnt4j-mqtt-sink
           minAge: 30s
+        continue-on-error: true
 
   publish-snapshot:
-    needs: build
+    needs: snapshot-check
     runs-on: ubuntu-latest
+    if: ${{ contains(needs.snapshot-check.outputs.pom-version, 'SNAPSHOT') }}
 
     steps:
       - uses: actions/checkout@v2
