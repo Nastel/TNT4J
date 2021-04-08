@@ -188,7 +188,7 @@
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
                     <!--<description>${project.version}</description>-->
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                    <skipNexusStagingDeployMojo>${skipStaging}</skipNexusStagingDeployMojo>
+                    <skipRemoteStaging>${skipStaging}</skipRemoteStaging>
                 </configuration>
                 <executions>
                     <execution>
