@@ -15,7 +15,7 @@
 
     <properties>
         <release.deploy.name>${project.parent.artifactId}</release.deploy.name>
-        <release.deploy.dir>../../build/${release.deploy.name}</release.deploy.dir>
+        <release.deploy.dir>../build/</release.deploy.dir>
         <release.deploy.finalName>${release.deploy.name}-${project.version}</release.deploy.finalName>
         <release.deploy.zip.assembly>src/assembly/zipDeployAssembly.xml</release.deploy.zip.assembly>
         <release.deploy.gz.assembly>src/assembly/gzDeployAssembly.xml</release.deploy.gz.assembly>
