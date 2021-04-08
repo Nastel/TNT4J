@@ -24,7 +24,7 @@
 
         <assembly.line.endings>unix</assembly.line.endings>
 
-        <maven.deploy.skip>true</maven.deploy.skip>
+        <skipStaging>true</skipStaging>
         <maven.javadoc.skip>true</maven.javadoc.skip>
     </properties>
 
