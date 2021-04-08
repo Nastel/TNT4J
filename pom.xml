@@ -32,7 +32,7 @@
     <scm>
         <connection>scm:git:git://github.com/Nastel/TNT4J</connection>
         <developerConnection>scm:git:git//github.com/Nastel/TNT4J</developerConnection>
-        <url>https://github.com/Nastel/TNT4j</url>
+        <url>https://github.com/Nastel/TNT4J</url>
     </scm>
     <distributionManagement>
         <repository>
