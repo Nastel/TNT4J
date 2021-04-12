@@ -40,9 +40,8 @@
             <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
         </repository>
         <snapshotRepository>
-            <id>github</id>
-            <name>GitHub Nastel Apache Maven Packages</name>
-            <url>https://maven.pkg.github.com/Nastel/TNT4J</url>
+            <id>oss.sonatype.org</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
