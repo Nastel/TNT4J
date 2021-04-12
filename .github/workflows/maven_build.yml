@@ -98,13 +98,13 @@ jobs:
 
       - name: Set up settings.xml for OSS
         uses: actions/setup-java@v1
-          with:
-            java-version: 8
-            server-id: oss.sonatype.org
-            server-username: MAVEN_USERNAME
-            server-password: MAVEN_PASSWORD
-            gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
-            gpg-passphrase: MAVEN_GPG_PASSPHRASE
+        with:
+          java-version: 8
+          server-id: oss.sonatype.org
+          server-username: MAVEN_USERNAME
+          server-password: MAVEN_PASSWORD
+          gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+          gpg-passphrase: MAVEN_GPG_PASSPHRASE
 
       - name: Publish SNAPSHOT version to OSS
         run: mvn -B clean deploy --no-transfer-progress -DskipTests --file pom.xml
