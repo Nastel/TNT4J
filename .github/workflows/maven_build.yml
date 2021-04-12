@@ -95,11 +95,20 @@ jobs:
 
     steps:
       - uses: actions/checkout@v2
-      - name: Set up settings.xml for GitHub Packages
+
+      - name: Set up settings.xml for OSS
         uses: actions/setup-java@v1
-        with:
-          java-version: 1.8
-      - name: Publish SNAPSHOT version to GitHub Packages
-        run: mvn -B deploy -DskipTests --file pom.xml --no-transfer-progress
+          with:
+            java-version: 8
+            server-id: oss.sonatype.org
+            server-username: MAVEN_USERNAME
+            server-password: MAVEN_PASSWORD
+            gpg-private-key: ${{ secrets.MAVEN_GPG_PRIVATE_KEY }}
+            gpg-passphrase: MAVEN_GPG_PASSPHRASE
+
+      - name: Publish SNAPSHOT version to OSS
+        run: mvn -B clean deploy --no-transfer-progress -DskipTests --file pom.xml
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USER }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASS }}
+          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
