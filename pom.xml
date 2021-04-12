@@ -68,7 +68,6 @@
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <assembly.skipAssembly>true</assembly.skipAssembly>
         <gpg.skip>true</gpg.skip>
-        <skipStaging>false</skipStaging>
     </properties>
 
     <profiles>
@@ -189,9 +188,7 @@
                 <configuration>
                     <serverId>oss.sonatype.org</serverId>
                     <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                    <!--<description>${project.version}</description>-->
                     <autoReleaseAfterClose>true</autoReleaseAfterClose>
-                    <skipRemoteStaging>${skipStaging}</skipRemoteStaging>
                 </configuration>
                 <executions>
                     <execution>
@@ -199,7 +196,6 @@
                         <phase>deploy</phase>
                         <goals>
                             <goal>deploy</goal>
-                            <!--<goal>release</goal>-->
                         </goals>
                     </execution>
                 </executions>
