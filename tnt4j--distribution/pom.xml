@@ -24,8 +24,9 @@
 
         <assembly.line.endings>unix</assembly.line.endings>
 
-        <skipStaging>true</skipStaging>
         <maven.javadoc.skip>true</maven.javadoc.skip>
+        <!-- TODO: skip this module from deployment staging -->
+        <!--<skipStaging>true</skipStaging>-->
     </properties>
 
     <profiles>

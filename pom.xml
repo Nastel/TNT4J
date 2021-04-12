@@ -86,6 +86,13 @@
             </properties>
         </profile>
         <profile>
+            <id>pack-maven</id>
+            <properties>
+                <maven.source.skip>false</maven.source.skip>
+                <maven.javadoc.skip>false</maven.javadoc.skip>
+            </properties>
+        </profile>
+        <profile>
             <id>maven-release</id>
             <properties>
                 <maven.source.skip>false</maven.source.skip>
