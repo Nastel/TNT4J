@@ -17,7 +17,7 @@ Why track and trace your applications?
 **Several key features make TNT4J a prime choice for your java application:**
 
 ## Quick Examples
-Use maven dependency:
+Use Maven dependency:
 ```xml
         <dependency>
             <groupId>com.jkoolcloud</groupId>
@@ -664,13 +664,13 @@ Kafka sink [module](tnt4j-kafka-sink) additionally depends on:
 
 To build TNT4J:
 *  Please use JCenter or Maven and these dependencies will be downloaded automatically.
-    * To build the project, run maven goals `clean package`
-    * To build the project and install to local repo, run maven goals `clean install`
+    * To build the project, run Maven goals `clean package`
+    * To build the project and install to local repo, run Maven goals `clean install`
     * To make distributable release assemblies use one of profiles: `pack-bin` or `pack-all`:
         * containing only binary (including `test` package) distribution: run `mvn -P pack-bin`
         * containing binary (including `test` package), `source` and `javadoc` distribution: run `mvn -P pack-all`
-    * To make maven required `source` and `javadoc` packages, use profile `pack-maven`
-    * To make maven central compliant release having `source`, `javadoc` and all signed packages, use `maven-release` profile
+    * To make Maven required `source` and `javadoc` packages, use profile `pack-maven`
+    * To make Maven central compliant release having `source`, `javadoc` and all signed packages, use `maven-release` profile
 *  You will need to point TNT4J to it's property file via the `-Dtnt4j.config` argument. This property file is located here in GitHub under 
 the `/config` directory. If using JCenter or Maven, it can be found in the zip assembly along with the source code and javadoc.
 
