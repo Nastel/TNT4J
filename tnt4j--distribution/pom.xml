@@ -84,6 +84,7 @@
                             <outputDirectory>${release.deploy.dir}</outputDirectory>
                             <attach>${build.assemblies.attach}</attach>
                             <finalName>${release.deploy.finalName}</finalName>
+                            <tarLongFileMode>gnu</tarLongFileMode>
                         </configuration>
                     </execution>
                 </executions>
