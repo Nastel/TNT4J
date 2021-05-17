@@ -77,7 +77,6 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 
 	/**
 	 * Create JSON formatter without newlines during formatting
-	 *
 	 */
 	public JSONFormatter() {
 		this(NEWLINE_FORMAT);
@@ -101,6 +100,139 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		ARRAY_START_JSON = newLineFormat ? ARRAY_START_LINE : ARRAY_START;
 	}
 
+	/**
+	 * Adds JSON string entry to provided JSON string builder.
+	 * 
+	 * @param jsonString
+	 *            builder building JSON string
+	 * @param label
+	 *            entry label
+	 * @param value
+	 *            entry value
+	 * 
+	 * @see #addJsonEntry(StringBuilder, String, String, boolean)
+	 */
+	protected void addJsonEntry(StringBuilder jsonString, String label, String value) {
+		addJsonEntry(jsonString, label, value, false);
+	}
+
+	/**
+	 * Adds JSON string entry to provided JSON string builder.
+	 * 
+	 * @param jsonString
+	 *            builder building JSON string
+	 * @param label
+	 *            entry label
+	 * @param value
+	 *            entry value
+	 * @param escape
+	 *            flag indicating to escape value to be compliant with JSON standard
+	 */
+	protected void addJsonEntry(StringBuilder jsonString, String label, String value, boolean escape) {
+		if (Utils.isEmpty(value)) {
+			return;
+		}
+
+		Utils.quote(escape ? StringEscapeUtils.escapeJson(value) : value, addJsonEntryLabel(jsonString, label));
+	}
+
+	/**
+	 * Adds JSON numeric entry to provided JSON string builder.
+	 * 
+	 * @param jsonString
+	 *            builder building JSON string
+	 * @param label
+	 *            entry label
+	 * @param value
+	 *            entry value
+	 */
+	protected void addJsonEntry(StringBuilder jsonString, String label, long value) {
+		addJsonEntryLabel(jsonString, label).append(value);
+	}
+
+	/**
+	 * Adds JSON enum entry to provided JSON string builder.
+	 * 
+	 * @param jsonString
+	 *            builder building JSON string
+	 * @param label
+	 *            entry label
+	 * @param value
+	 *            entry value
+	 */
+	protected void addJsonEntry(StringBuilder jsonString, String label, Enum<?> value) {
+		Utils.quote(value, addJsonEntryLabel(jsonString, label));
+	}
+
+	/**
+	 * Adds JSON collection entry to provided JSON string builder.
+	 * 
+	 * @param jsonString
+	 *            builder building JSON string
+	 * @param label
+	 *            entry label
+	 * @param value
+	 *            entry value
+	 */
+	protected void addJsonEntry(StringBuilder jsonString, String label, Collection<?> value) {
+		if (Utils.isEmpty(value)) {
+			return;
+		}
+
+		addJsonEntryLabel(jsonString, label).append(ARRAY_START_JSON).append(itemsToJSON(value)).append(ARRAY_END);
+	}
+
+	/**
+	 * Adds JSON object entry to provided JSON string builder.
+	 * 
+	 * @param jsonString
+	 *            builder building JSON string
+	 * @param label
+	 *            entry label
+	 * @param value
+	 *            entry value
+	 */
+	protected void addJsonEntry(StringBuilder jsonString, String label, Object value) {
+		String pValue = propValueToString(value);
+		if (isNoNeedToQuote(value)) {
+			addJsonEntryLabel(jsonString, label).append(pValue);
+		} else {
+			Utils.quote(StringEscapeUtils.escapeJson(pValue), addJsonEntryLabel(jsonString, label));
+		}
+	}
+
+	/**
+	 * Adds JSON delimiter token to provided JSON string builder.
+	 * 
+	 * @param jsonString
+	 *            builder building JSON string
+	 * @return JSON string builder instance
+	 */
+	protected StringBuilder addJsonDelimToken(StringBuilder jsonString) {
+		if (jsonString.length() == 0) {
+			jsonString.append(START_JSON);
+		} else {
+			jsonString.append(ATTR_JSON);
+		}
+
+		return jsonString;
+	}
+
+	/**
+	 * Adds JSON entry label to provided JSON string builder.
+	 * 
+	 * @param jsonString
+	 *            builder building JSON string
+	 * @param label
+	 *            entry label
+	 * @return JSON string builder instance
+	 */
+	protected StringBuilder addJsonEntryLabel(StringBuilder jsonString, String label) {
+		addJsonDelimToken(jsonString).append(label).append(ATTR_SEP);
+
+		return jsonString;
+	}
+
 	@Override
 	public String format(Object obj, Object... args) {
 		if (obj instanceof TrackingActivity) {
@@ -113,15 +245,10 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 			return format((Property) obj);
 		} else {
 			StringBuilder jsonString = new StringBuilder(1024);
-			jsonString.append(START_JSON);
-			jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
+			addJsonEntry(jsonString, JSON_TIME_USEC_LABEL, Useconds.CURRENT.get());
+			addJsonEntry(jsonString, JSON_MSG_TEXT_LABEL, Utils.format(Utils.toString(obj), args), true);
 
-			String msgText = StringEscapeUtils.escapeJson(Utils.format(Utils.toString(obj), args)); // escape double
-																									// quote chars
-			jsonString.append(JSON_MSG_TEXT_LABEL).append(ATTR_SEP);
-			Utils.quote(msgText, jsonString);
-			jsonString.append(END_JSON);
-			return jsonString.toString();
+			return jsonString.append(END_JSON).toString();
 		}
 	}
 
@@ -136,155 +263,64 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	public String format(TrackingEvent event) {
 		StringBuilder jsonString = new StringBuilder(1024);
 
-		jsonString.append(START_JSON);
-		if (!Utils.isEmpty(event.getGUID())) {
-			jsonString.append(JSON_GUID_LABEL).append(ATTR_SEP);
-			Utils.quote(event.getGUID(), jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(event.getTrackingId())) {
-			jsonString.append(JSON_TRACK_ID_LABEL).append(ATTR_SEP);
-			Utils.quote(event.getTrackingId(), jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(event.getSignature())) {
-			jsonString.append(JSON_TRACK_SIGN_LABEL).append(ATTR_SEP);
-			Utils.quote(event.getSignature(), jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(event.getParentId())) {
-			jsonString.append(JSON_PARENT_TRACK_ID_LABEL).append(ATTR_SEP);
-			Utils.quote(event.getParentId(), jsonString).append(ATTR_JSON);
-		}
-		jsonString.append(JSON_SOURCE_LABEL).append(ATTR_SEP);
-		Utils.quote(StringEscapeUtils.escapeJson(event.getSource().getName()), jsonString).append(ATTR_JSON);
-		String ssn = getSSN(event.getSource());
-		if (!Utils.isEmpty(ssn)) {
-			String escaped = StringEscapeUtils.escapeJson(ssn); // escape double quote chars
-			jsonString.append(JSON_SOURCE_SSN_LABEL).append(ATTR_SEP);
-			Utils.quote(escaped, jsonString).append(ATTR_JSON);
-		}
-		jsonString.append(JSON_SOURCE_FQN_LABEL).append(ATTR_SEP);
-		Utils.quote(StringEscapeUtils.escapeJson(event.getSource().getFQName()), jsonString).append(ATTR_JSON);
-		if (!Utils.isEmpty(event.getSource().getUrl())) {
-			String escaped = StringEscapeUtils.escapeJson(event.getSource().getUrl()); // escape double quote chars
-			jsonString.append(JSON_SOURCE_URL_LABEL).append(ATTR_SEP);
-			Utils.quote(escaped, jsonString).append(ATTR_JSON);
-		}
+		addJsonEntry(jsonString, JSON_GUID_LABEL, event.getGUID());
+		addJsonEntry(jsonString, JSON_TRACK_ID_LABEL, event.getTrackingId());
+		addJsonEntry(jsonString, JSON_TRACK_SIGN_LABEL, event.getSignature());
+		addJsonEntry(jsonString, JSON_PARENT_TRACK_ID_LABEL, event.getParentId());
+		addJsonEntry(jsonString, JSON_SOURCE_LABEL, event.getSource().getName(), true);
+		addJsonEntry(jsonString, JSON_SOURCE_SSN_LABEL, getSSN(event.getSource()), true);
+		addJsonEntry(jsonString, JSON_SOURCE_FQN_LABEL, event.getSource().getFQName(), true);
+		addJsonEntry(jsonString, JSON_SOURCE_URL_LABEL, event.getSource().getUrl(), true);
+
 		if (event.get2(TrackingEvent.OBJ_ONE) != null) {
 			// we have a relation
-			jsonString.append(JSON_RELATE_TYPE_LABEL).append(ATTR_SEP);
-			Utils.quote(event.get2Type(), jsonString).append(ATTR_JSON);
-			jsonString.append(JSON_RELATE_FQN_A_LABEL).append(ATTR_SEP);
-			Utils.quote(event.get2(TrackingEvent.OBJ_ONE).getFQName(), jsonString).append(ATTR_JSON);
-			jsonString.append(JSON_RELATE_FQN_B_LABEL).append(ATTR_SEP);
-			Utils.quote(event.get2(TrackingEvent.OBJ_TWO).getFQName(), jsonString).append(ATTR_JSON);
+			addJsonEntry(jsonString, JSON_RELATE_TYPE_LABEL, event.get2Type());
+			addJsonEntry(jsonString, JSON_RELATE_FQN_A_LABEL, event.get2(TrackingEvent.OBJ_ONE).getFQName());
+			addJsonEntry(jsonString, JSON_RELATE_FQN_B_LABEL, event.get2(TrackingEvent.OBJ_TWO).getFQName());
 		}
-		jsonString.append(JSON_SEVERITY_LABEL).append(ATTR_SEP);
-		Utils.quote(event.getSeverity(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(event.getSeverity().ordinal())
-				.append(ATTR_JSON);
-		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP);
-		Utils.quote(event.getOperation().getType(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_TYPE_NO_LABEL).append(ATTR_SEP).append(event.getOperation().getType().ordinal())
-				.append(ATTR_JSON);
-		jsonString.append(JSON_PID_LABEL).append(ATTR_SEP).append(event.getOperation().getPID()).append(ATTR_JSON);
-		jsonString.append(JSON_TID_LABEL).append(ATTR_SEP).append(event.getOperation().getTID()).append(ATTR_JSON);
-		jsonString.append(JSON_COMP_CODE_LABEL).append(ATTR_SEP);
-		Utils.quote(event.getOperation().getCompCode(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_COMP_CODE_NO_LABEL).append(ATTR_SEP).append(event.getOperation().getCompCode().ordinal())
-				.append(ATTR_JSON);
-		jsonString.append(JSON_REASON_CODE_LABEL).append(ATTR_SEP).append(event.getOperation().getReasonCode())
-				.append(ATTR_JSON);
-		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(event.getTTL()).append(ATTR_JSON);
 
-		if (!Utils.isEmpty(event.getLocation())) {
-			String escaped = StringEscapeUtils.escapeJson(event.getLocation()); // escape double quote chars
-			jsonString.append(JSON_LOCATION_LABEL).append(ATTR_SEP);
-			Utils.quote(escaped, jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(event.getOperation().getResolvedName())) {
-			String escaped = StringEscapeUtils.escapeJson(event.getOperation().getResolvedName()); // escape double
-																									// quote chars
-			jsonString.append(JSON_OPERATION_LABEL).append(ATTR_SEP);
-			Utils.quote(escaped, jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(event.getOperation().getResource())) {
-			String escaped = StringEscapeUtils.escapeJson(event.getOperation().getResource()); // escape double quote
-																								// chars
-			jsonString.append(JSON_RESOURCE_LABEL).append(ATTR_SEP);
-			Utils.quote(escaped, jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(event.getOperation().getUser())) {
-			String escaped = StringEscapeUtils.escapeJson(event.getOperation().getUser()); // escape double quote chars
-			jsonString.append(JSON_USER_LABEL).append(ATTR_SEP);
-			Utils.quote(escaped, jsonString).append(ATTR_JSON);
-		}
-		jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
+		addJsonEntry(jsonString, JSON_SEVERITY_LABEL, event.getSeverity());
+		addJsonEntry(jsonString, JSON_SEVERITY_NO_LABEL, event.getSeverity().ordinal());
+		addJsonEntry(jsonString, JSON_TYPE_LABEL, event.getOperation().getType());
+		addJsonEntry(jsonString, JSON_TYPE_NO_LABEL, event.getOperation().getType().ordinal());
+		addJsonEntry(jsonString, JSON_PID_LABEL, event.getOperation().getPID());
+		addJsonEntry(jsonString, JSON_TID_LABEL, event.getOperation().getTID());
+		addJsonEntry(jsonString, JSON_COMP_CODE_LABEL, event.getOperation().getCompCode());
+		addJsonEntry(jsonString, JSON_COMP_CODE_NO_LABEL, event.getOperation().getCompCode().ordinal());
+		addJsonEntry(jsonString, JSON_REASON_CODE_LABEL, event.getOperation().getReasonCode());
+		addJsonEntry(jsonString, JSON_TTL_SEC_LABEL, event.getTTL());
+		addJsonEntry(jsonString, JSON_LOCATION_LABEL, event.getLocation(), true);
+		addJsonEntry(jsonString, JSON_OPERATION_LABEL, event.getOperation().getResolvedName(), true);
+		addJsonEntry(jsonString, JSON_RESOURCE_LABEL, event.getOperation().getResource(), true);
+		addJsonEntry(jsonString, JSON_USER_LABEL, event.getOperation().getUser(), true);
+		addJsonEntry(jsonString, JSON_TIME_USEC_LABEL, Useconds.CURRENT.get());
 		if (event.getOperation().getStartTime() != null) {
-			jsonString.append(JSON_START_TIME_USEC_LABEL).append(ATTR_SEP)
-					.append(event.getOperation().getStartTime().getTimeUsec()).append(ATTR_JSON);
+			addJsonEntry(jsonString, JSON_START_TIME_USEC_LABEL, event.getOperation().getStartTime().getTimeUsec());
 		}
 		if (event.getOperation().getEndTime() != null) {
-			jsonString.append(JSON_END_TIME_USEC_LABEL).append(ATTR_SEP)
-					.append(event.getOperation().getEndTime().getTimeUsec()).append(ATTR_JSON);
-			jsonString.append(JSON_ELAPSED_TIME_USEC_LABEL).append(ATTR_SEP)
-					.append(event.getOperation().getElapsedTimeUsec()).append(ATTR_JSON);
+			addJsonEntry(jsonString, JSON_END_TIME_USEC_LABEL, event.getOperation().getEndTime().getTimeUsec());
+			addJsonEntry(jsonString, JSON_ELAPSED_TIME_USEC_LABEL, event.getOperation().getElapsedTimeUsec());
 			if (event.getOperation().getWaitTimeUsec() > 0) {
-				jsonString.append(JSON_WAIT_TIME_USEC_LABEL).append(ATTR_SEP)
-						.append(event.getOperation().getWaitTimeUsec()).append(ATTR_JSON);
+				addJsonEntry(jsonString, JSON_WAIT_TIME_USEC_LABEL, event.getOperation().getWaitTimeUsec());
 			}
 			if (event.getMessageAge() > 0) {
-				jsonString.append(JSON_MSG_AGE_USEC_LABEL).append(ATTR_SEP).append(event.getMessageAge())
-						.append(ATTR_JSON);
+				addJsonEntry(jsonString, JSON_MSG_AGE_USEC_LABEL, event.getMessageAge());
 			}
 		}
-		int snapCount = event.getOperation().getSnapshotCount();
-		int propCount = event.getOperation().getPropertyCount();
-		jsonString.append(JSON_SNAPSHOT_COUNT_LABEL).append(ATTR_SEP).append(snapCount).append(ATTR_JSON);
-		jsonString.append(JSON_PROPERTY_COUNT_LABEL).append(ATTR_SEP).append(propCount).append(ATTR_JSON);
-		jsonString.append(JSON_MSG_SIZE_LABEL).append(ATTR_SEP).append(event.getSize()).append(ATTR_JSON);
-		jsonString.append(JSON_MSG_MIME_LABEL).append(ATTR_SEP);
-		Utils.quote(event.getMimeType(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_MSG_ENC_LABEL).append(ATTR_SEP);
-		Utils.quote(event.getEncoding(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_MSG_CHARSET_LABEL).append(ATTR_SEP);
-		Utils.quote(event.getCharset(), jsonString);
+		addJsonEntry(jsonString, JSON_SNAPSHOT_COUNT_LABEL, event.getOperation().getSnapshotCount());
+		addJsonEntry(jsonString, JSON_PROPERTY_COUNT_LABEL, event.getOperation().getPropertyCount());
+		addJsonEntry(jsonString, JSON_MSG_SIZE_LABEL, event.getSize());
+		addJsonEntry(jsonString, JSON_MSG_MIME_LABEL, event.getMimeType());
+		addJsonEntry(jsonString, JSON_MSG_ENC_LABEL, event.getEncoding());
+		addJsonEntry(jsonString, JSON_MSG_CHARSET_LABEL, event.getCharset());
+		addJsonEntry(jsonString, JSON_MSG_TEXT_LABEL, event.getMessage(), true);
+		addJsonEntry(jsonString, JSON_EXCEPTION_LABEL, event.getOperation().getExceptionString(), true);
+		addJsonEntry(jsonString, JSON_CORR_ID_LABEL, event.getCorrelator());
+		addJsonEntry(jsonString, JSON_MSG_TAG_LABEL, event.getTag());
+		addJsonEntry(jsonString, JSON_PROPERTIES_LABEL, event.getOperation().getProperties());
+		addJsonEntry(jsonString, JSON_SNAPSHOTS_LABEL, event.getOperation().getSnapshots());
 
-		String msgText = event.getMessage();
-		if (!Utils.isEmpty(msgText)) {
-			jsonString.append(ATTR_JSON);
-			msgText = StringEscapeUtils.escapeJson(msgText); // escape double quote chars
-			jsonString.append(JSON_MSG_TEXT_LABEL).append(ATTR_SEP);
-			Utils.quote(msgText, jsonString);
-		}
-
-		String exStr = event.getOperation().getExceptionString();
-		if (!Utils.isEmpty(exStr)) {
-			jsonString.append(ATTR_JSON);
-			String excText = StringEscapeUtils.escapeJson(exStr); // escape double quote chars
-			jsonString.append(JSON_EXCEPTION_LABEL).append(ATTR_SEP);
-			Utils.quote(excText, jsonString);
-		}
-		if (!Utils.isEmpty(event.getCorrelator())) {
-			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_CORR_ID_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
-					.append(itemsToJSON(event.getCorrelator())).append(ARRAY_END);
-		}
-		if (!Utils.isEmpty(event.getTag())) {
-			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_MSG_TAG_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
-					.append(itemsToJSON(event.getTag())).append(ARRAY_END);
-		}
-		if (propCount > 0) {
-			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_PROPERTIES_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
-					.append(itemsToJSON(event.getOperation().getProperties())).append(ARRAY_END);
-		}
-		if (snapCount > 0) {
-			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_SNAPSHOTS_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
-					.append(itemsToJSON(event.getOperation().getSnapshots())).append(ARRAY_END);
-		}
-		jsonString.append(END_JSON);
-		return jsonString.toString();
+		return jsonString.append(END_JSON).toString();
 	}
 
 	/**
@@ -298,126 +334,51 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	public String format(TrackingActivity activity) {
 		StringBuilder jsonString = new StringBuilder(1024);
 
-		jsonString.append(START_JSON);
-		if (!Utils.isEmpty(activity.getGUID())) {
-			jsonString.append(JSON_GUID_LABEL).append(ATTR_SEP);
-			Utils.quote(activity.getGUID(), jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(activity.getTrackingId())) {
-			jsonString.append(JSON_TRACK_ID_LABEL).append(ATTR_SEP);
-			Utils.quote(activity.getTrackingId(), jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(activity.getSignature())) {
-			jsonString.append(JSON_TRACK_SIGN_LABEL).append(ATTR_SEP);
-			Utils.quote(activity.getSignature(), jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(activity.getParentId())) {
-			jsonString.append(JSON_PARENT_TRACK_ID_LABEL).append(ATTR_SEP);
-			Utils.quote(activity.getParentId(), jsonString).append(ATTR_JSON);
-		}
-		jsonString.append(JSON_SOURCE_LABEL).append(ATTR_SEP);
-		Utils.quote(StringEscapeUtils.escapeJson(activity.getSource().getName()), jsonString).append(ATTR_JSON);
-		String ssn = getSSN(activity.getSource());
-		if (!Utils.isEmpty(ssn)) {
-			String escaped = StringEscapeUtils.escapeJson(ssn); // escape double quote chars
-			jsonString.append(JSON_SOURCE_SSN_LABEL).append(ATTR_SEP);
-			Utils.quote(escaped, jsonString).append(ATTR_JSON);
-		}
-		jsonString.append(JSON_SOURCE_FQN_LABEL).append(ATTR_SEP);
-		Utils.quote(StringEscapeUtils.escapeJson(activity.getSource().getFQName()), jsonString).append(ATTR_JSON);
-
-		if (!Utils.isEmpty(activity.getSource().getUrl())) {
-			String escaped = StringEscapeUtils.escapeJson(activity.getSource().getUrl()); // escape double quote chars
-			jsonString.append(JSON_SOURCE_URL_LABEL).append(ATTR_SEP);
-			Utils.quote(escaped, jsonString).append(ATTR_JSON);
-		}
-		jsonString.append(JSON_STATUS_LABEL).append(ATTR_SEP);
-		Utils.quote(activity.getStatus(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_SEVERITY_LABEL).append(ATTR_SEP);
-		Utils.quote(activity.getSeverity(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(activity.getSeverity().ordinal())
-				.append(ATTR_JSON);
-		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP);
-		Utils.quote(activity.getType(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_TYPE_NO_LABEL).append(ATTR_SEP).append(activity.getType().ordinal()).append(ATTR_JSON);
-		jsonString.append(JSON_PID_LABEL).append(ATTR_SEP).append(activity.getPID()).append(ATTR_JSON);
-		jsonString.append(JSON_TID_LABEL).append(ATTR_SEP).append(activity.getTID()).append(ATTR_JSON);
-		jsonString.append(JSON_COMP_CODE_LABEL).append(ATTR_SEP);
-		Utils.quote(activity.getCompCode(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_COMP_CODE_NO_LABEL).append(ATTR_SEP).append(activity.getCompCode().ordinal())
-				.append(ATTR_JSON);
-		jsonString.append(JSON_REASON_CODE_LABEL).append(ATTR_SEP).append(activity.getReasonCode()).append(ATTR_JSON);
-		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(activity.getTTL()).append(ATTR_JSON);
-		if (!Utils.isEmpty(activity.getLocation())) {
-			String escaped = StringEscapeUtils.escapeJson(activity.getLocation()); // escape double quote chars
-			jsonString.append(JSON_LOCATION_LABEL).append(ATTR_SEP);
-			Utils.quote(escaped, jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(activity.getResolvedName())) {
-			String escaped = StringEscapeUtils.escapeJson(activity.getResolvedName()); // escape double quote chars
-			jsonString.append(JSON_OPERATION_LABEL).append(ATTR_SEP);
-			Utils.quote(escaped, jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(activity.getResource())) {
-			String escaped = StringEscapeUtils.escapeJson(activity.getResource()); // escape double quote chars
-			jsonString.append(JSON_RESOURCE_LABEL).append(ATTR_SEP);
-			Utils.quote(escaped, jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(activity.getSource().getUser())) {
-			String escaped = StringEscapeUtils.escapeJson(activity.getSource().getUser()); // escape double quote chars
-			jsonString.append(JSON_USER_LABEL).append(ATTR_SEP);
-			Utils.quote(escaped, jsonString).append(ATTR_JSON);
-		}
-
-		jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
+		addJsonEntry(jsonString, JSON_GUID_LABEL, activity.getGUID());
+		addJsonEntry(jsonString, JSON_TRACK_ID_LABEL, activity.getTrackingId());
+		addJsonEntry(jsonString, JSON_TRACK_SIGN_LABEL, activity.getSignature());
+		addJsonEntry(jsonString, JSON_PARENT_TRACK_ID_LABEL, activity.getParentId());
+		addJsonEntry(jsonString, JSON_SOURCE_LABEL, activity.getSource().getName(), true);
+		addJsonEntry(jsonString, JSON_SOURCE_SSN_LABEL, getSSN(activity.getSource()), true);
+		addJsonEntry(jsonString, JSON_SOURCE_FQN_LABEL, activity.getSource().getFQName(), true);
+		addJsonEntry(jsonString, JSON_SOURCE_URL_LABEL, activity.getSource().getUrl(), true);
+		addJsonEntry(jsonString, JSON_STATUS_LABEL, activity.getStatus());
+		addJsonEntry(jsonString, JSON_SEVERITY_LABEL, activity.getSeverity());
+		addJsonEntry(jsonString, JSON_SEVERITY_NO_LABEL, activity.getSeverity().ordinal());
+		addJsonEntry(jsonString, JSON_TYPE_LABEL, activity.getType());
+		addJsonEntry(jsonString, JSON_TYPE_NO_LABEL, activity.getType().ordinal());
+		addJsonEntry(jsonString, JSON_PID_LABEL, activity.getPID());
+		addJsonEntry(jsonString, JSON_TID_LABEL, activity.getTID());
+		addJsonEntry(jsonString, JSON_COMP_CODE_LABEL, activity.getCompCode());
+		addJsonEntry(jsonString, JSON_COMP_CODE_NO_LABEL, activity.getCompCode().ordinal());
+		addJsonEntry(jsonString, JSON_REASON_CODE_LABEL, activity.getReasonCode());
+		addJsonEntry(jsonString, JSON_TTL_SEC_LABEL, activity.getTTL());
+		addJsonEntry(jsonString, JSON_LOCATION_LABEL, activity.getLocation(), true);
+		addJsonEntry(jsonString, JSON_OPERATION_LABEL, activity.getResolvedName(), true);
+		addJsonEntry(jsonString, JSON_RESOURCE_LABEL, activity.getResource(), true);
+		addJsonEntry(jsonString, JSON_USER_LABEL, activity.getSource().getUser(), true);
+		addJsonEntry(jsonString, JSON_TIME_USEC_LABEL, Useconds.CURRENT.get());
 		if (activity.getStartTime() != null) {
-			jsonString.append(JSON_START_TIME_USEC_LABEL).append(ATTR_SEP).append(activity.getStartTime().getTimeUsec())
-					.append(ATTR_JSON);
+			addJsonEntry(jsonString, JSON_START_TIME_USEC_LABEL, activity.getStartTime().getTimeUsec());
 		}
 		if (activity.getEndTime() != null) {
-			jsonString.append(JSON_END_TIME_USEC_LABEL).append(ATTR_SEP).append(activity.getEndTime().getTimeUsec())
-					.append(ATTR_JSON);
-			jsonString.append(JSON_ELAPSED_TIME_USEC_LABEL).append(ATTR_SEP).append(activity.getElapsedTimeUsec())
-					.append(ATTR_JSON);
+			addJsonEntry(jsonString, JSON_END_TIME_USEC_LABEL, activity.getEndTime().getTimeUsec());
+			addJsonEntry(jsonString, JSON_ELAPSED_TIME_USEC_LABEL, activity.getElapsedTimeUsec());
 			if (activity.getWaitTimeUsec() > 0) {
-				jsonString.append(JSON_WAIT_TIME_USEC_LABEL).append(ATTR_SEP).append(activity.getWaitTimeUsec())
-						.append(ATTR_JSON);
+				addJsonEntry(jsonString, JSON_WAIT_TIME_USEC_LABEL, activity.getWaitTimeUsec());
 			}
 		}
-		jsonString.append(JSON_ID_COUNT_LABEL).append(ATTR_SEP).append(activity.getIdCount()).append(ATTR_JSON);
-		jsonString.append(JSON_SNAPSHOT_COUNT_LABEL).append(ATTR_SEP).append(activity.getSnapshotCount())
-				.append(ATTR_JSON);
-		jsonString.append(JSON_PROPERTY_COUNT_LABEL).append(ATTR_SEP).append(activity.getPropertyCount());
+		addJsonEntry(jsonString, JSON_ID_COUNT_LABEL, activity.getIdCount());
+		addJsonEntry(jsonString, JSON_SNAPSHOT_COUNT_LABEL, activity.getSnapshotCount());
+		addJsonEntry(jsonString, JSON_PROPERTY_COUNT_LABEL, activity.getPropertyCount());
 
-		String exStr = activity.getExceptionString();
-		if (!Utils.isEmpty(exStr)) {
-			jsonString.append(ATTR_JSON);
-			String excText = StringEscapeUtils.escapeJson(exStr); // escape double quote chars
-			jsonString.append(JSON_EXCEPTION_LABEL).append(ATTR_SEP);
-			Utils.quote(excText, jsonString);
-		}
-		if (!Utils.isEmpty(activity.getCorrelator())) {
-			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_CORR_ID_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
-					.append(itemsToJSON(activity.getCorrelator())).append(ARRAY_END);
-		}
-		if (activity.getIdCount() > 0) {
-			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_ID_SET_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
-					.append(itemsToJSON(activity.getIds())).append(ARRAY_END);
-		}
-		if (activity.getPropertyCount() > 0) {
-			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_PROPERTIES_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
-					.append(itemsToJSON(activity.getProperties())).append(ARRAY_END);
-		}
-		if (activity.getSnapshotCount() > 0) {
-			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_SNAPSHOTS_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
-					.append(itemsToJSON(activity.getSnapshots())).append(ARRAY_END);
-		}
-		jsonString.append(END_JSON);
-		return jsonString.toString();
+		addJsonEntry(jsonString, JSON_EXCEPTION_LABEL, activity.getExceptionString(), true);
+		addJsonEntry(jsonString, JSON_CORR_ID_LABEL, activity.getCorrelator());
+		addJsonEntry(jsonString, JSON_ID_SET_LABEL, activity.getIds());
+		addJsonEntry(jsonString, JSON_PROPERTIES_LABEL, activity.getProperties());
+		addJsonEntry(jsonString, JSON_SNAPSHOTS_LABEL, activity.getSnapshots());
+
+		return jsonString.append(END_JSON).toString();
 	}
 
 	/**
@@ -430,75 +391,34 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	@Override
 	public String format(Snapshot snap) {
 		StringBuilder jsonString = new StringBuilder(1024);
-		jsonString.append(START_JSON);
 
-		if (!Utils.isEmpty(snap.getGUID())) {
-			jsonString.append(JSON_GUID_LABEL).append(ATTR_SEP);
-			Utils.quote(snap.getGUID(), jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(snap.getTrackingId())) {
-			jsonString.append(JSON_TRACK_ID_LABEL).append(ATTR_SEP);
-			Utils.quote(snap.getTrackingId(), jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(snap.getSignature())) {
-			jsonString.append(JSON_TRACK_SIGN_LABEL).append(ATTR_SEP);
-			Utils.quote(snap.getSignature(), jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(snap.getParentId())) {
-			jsonString.append(JSON_PARENT_TRACK_ID_LABEL).append(ATTR_SEP);
-			Utils.quote(snap.getParentId(), jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(snap.getId())) {
-			String escaped = StringEscapeUtils.escapeJson(snap.getId()); // escape double quote chars
-			jsonString.append(JSON_FQN_LABEL).append(ATTR_SEP);
-			Utils.quote(escaped, jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(snap.getCategory())) {
-			jsonString.append(JSON_CATEGORY_LABEL).append(ATTR_SEP);
-			Utils.quote(snap.getCategory(), jsonString).append(ATTR_JSON);
-		}
-		if (!Utils.isEmpty(snap.getName())) {
-			String escaped = StringEscapeUtils.escapeJson(snap.getName()); // escape double quote chars
-			jsonString.append(JSON_NAME_LABEL).append(ATTR_SEP);
-			Utils.quote(escaped, jsonString).append(ATTR_JSON);
-		}
-		jsonString.append(JSON_COUNT_LABEL).append(ATTR_SEP).append(snap.size()).append(ATTR_JSON);
-		jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(snap.getTimeStamp().getTimeUsec()).append(ATTR_JSON);
-		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(snap.getTTL()).append(ATTR_JSON);
+		addJsonEntry(jsonString, JSON_GUID_LABEL, snap.getGUID());
+		addJsonEntry(jsonString, JSON_TRACK_ID_LABEL, snap.getTrackingId());
+		addJsonEntry(jsonString, JSON_TRACK_SIGN_LABEL, snap.getSignature());
+		addJsonEntry(jsonString, JSON_PARENT_TRACK_ID_LABEL, snap.getParentId());
+		addJsonEntry(jsonString, JSON_FQN_LABEL, snap.getId(), true);
+		addJsonEntry(jsonString, JSON_CATEGORY_LABEL, snap.getCategory());
+		addJsonEntry(jsonString, JSON_NAME_LABEL, snap.getName(), true);
+		addJsonEntry(jsonString, JSON_COUNT_LABEL, snap.size());
+		addJsonEntry(jsonString, JSON_TIME_USEC_LABEL, snap.getTimeStamp().getTimeUsec());
+		addJsonEntry(jsonString, JSON_TTL_SEC_LABEL, snap.getTTL());
 
 		Source source = snap.getSource();
 		if (source != null) {
-			jsonString.append(JSON_SOURCE_LABEL).append(ATTR_SEP);
-			Utils.quote(StringEscapeUtils.escapeJson(source.getName()), jsonString).append(ATTR_JSON);
-			String ssn = getSSN(source);
-			if (!Utils.isEmpty(ssn)) {
-				String escaped = StringEscapeUtils.escapeJson(ssn); // escape double quote chars
-				jsonString.append(JSON_SOURCE_SSN_LABEL).append(ATTR_SEP);
-				Utils.quote(escaped, jsonString).append(ATTR_JSON);
-			}
-			jsonString.append(JSON_SOURCE_FQN_LABEL).append(ATTR_SEP);
-			Utils.quote(StringEscapeUtils.escapeJson(source.getFQName()), jsonString).append(ATTR_JSON);
-			if (!Utils.isEmpty(source.getUrl())) {
-				String escaped = StringEscapeUtils.escapeJson(source.getUrl()); // escape double quote chars
-				jsonString.append(JSON_SOURCE_URL_LABEL).append(ATTR_SEP);
-				Utils.quote(escaped, jsonString).append(ATTR_JSON);
-			}
+			addJsonEntry(jsonString, JSON_SOURCE_LABEL, source.getName(), true);
+			addJsonEntry(jsonString, JSON_SOURCE_SSN_LABEL, getSSN(source), true);
+			addJsonEntry(jsonString, JSON_SOURCE_FQN_LABEL, source.getFQName(), true);
+			addJsonEntry(jsonString, JSON_SOURCE_URL_LABEL, source.getUrl(), true);
 		}
 		if (snap.getSeverity().ordinal() > OpLevel.NONE.ordinal()) {
-			jsonString.append(JSON_SEVERITY_LABEL).append(ATTR_SEP);
-			Utils.quote(snap.getSeverity(), jsonString).append(ATTR_JSON);
-			jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(snap.getSeverity().ordinal()).append(ATTR_JSON);
+			addJsonEntry(jsonString, JSON_SEVERITY_LABEL, snap.getSeverity());
+			addJsonEntry(jsonString, JSON_SEVERITY_NO_LABEL, snap.getSeverity().ordinal());
 		}
-		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP);
-		Utils.quote(snap.getType(), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_TYPE_NO_LABEL).append(ATTR_SEP).append(snap.getType().ordinal());
-		if (snap.size() > 0) {
-			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_PROPERTIES_LABEL).append(ATTR_SEP).append(ARRAY_START_JSON)
-					.append(itemsToJSON(snap.getProperties())).append(ARRAY_END);
-		}
-		jsonString.append(END_JSON);
-		return jsonString.toString();
+		addJsonEntry(jsonString, JSON_TYPE_LABEL, snap.getType());
+		addJsonEntry(jsonString, JSON_TYPE_NO_LABEL, snap.getType().ordinal());
+		addJsonEntry(jsonString, JSON_PROPERTIES_LABEL, snap.getProperties());
+
+		return jsonString.append(END_JSON).toString();
 	}
 
 	/**
@@ -529,23 +449,14 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		}
 
 		StringBuilder jsonString = new StringBuilder(256);
-		jsonString.append(START_JSON);
-		jsonString.append(JSON_NAME_LABEL).append(ATTR_SEP);
-		Utils.quote(StringEscapeUtils.escapeJson(prop.getKey()), jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP);
-		Utils.quote(prop.getDataType(), jsonString).append(ATTR_JSON);
+		addJsonEntry(jsonString, JSON_NAME_LABEL, prop.getKey(), true);
+		addJsonEntry(jsonString, JSON_TYPE_LABEL, prop.getDataType());
 		if (prop.getValueType() != null && !prop.getValueType().equalsIgnoreCase(ValueTypes.VALUE_TYPE_NONE)) {
-			jsonString.append(JSON_VALUE_TYPE_LABEL).append(ATTR_SEP);
-			Utils.quote(prop.getValueType(), jsonString).append(ATTR_JSON);
+			addJsonEntry(jsonString, JSON_VALUE_TYPE_LABEL, prop.getValueType());
 		}
-		jsonString.append(JSON_VALUE_LABEL).append(ATTR_SEP);
-		if (isNoNeedToQuote(value)) {
-			jsonString.append(propValueToString(value));
-		} else {
-			Utils.quote(StringEscapeUtils.escapeJson(propValueToString(value)), jsonString);
-		}
-		jsonString.append(END_JSON);
-		return jsonString.toString();
+		addJsonEntry(jsonString, JSON_VALUE_LABEL, value);
+
+		return jsonString.append(END_JSON).toString();
 	}
 
 	/**
@@ -627,66 +538,41 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	@Override
 	public String format(long ttl, Source source, OpLevel level, String msg, Object... args) {
 		StringBuilder jsonString = new StringBuilder(1024);
-		jsonString.append(START_JSON);
-		jsonString.append(JSON_SEVERITY_LABEL).append(ATTR_SEP);
-		Utils.quote(level, jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_SEVERITY_NO_LABEL).append(ATTR_SEP).append(level.ordinal()).append(ATTR_JSON);
-		jsonString.append(JSON_TYPE_LABEL).append(ATTR_SEP);
-		Utils.quote(OpType.LOG, jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_TYPE_NO_LABEL).append(ATTR_SEP).append(OpType.LOG.ordinal()).append(ATTR_JSON);
 
-		jsonString.append(JSON_PID_LABEL).append(ATTR_SEP).append(Utils.getVMPID()).append(ATTR_JSON);
-		jsonString.append(JSON_TID_LABEL).append(ATTR_SEP).append(Thread.currentThread().getId()).append(ATTR_JSON);
+		addJsonEntry(jsonString, JSON_SEVERITY_LABEL, level);
+		addJsonEntry(jsonString, JSON_SEVERITY_NO_LABEL, level.ordinal());
+		addJsonEntry(jsonString, JSON_TYPE_LABEL, OpType.LOG);
+		addJsonEntry(jsonString, JSON_TYPE_NO_LABEL, OpType.LOG.ordinal());
 
-		String usrName = StringEscapeUtils.escapeJson(
-				source == null ? DefaultSourceFactory.getInstance().getRootSource().getUser() : source.getUser());
-		jsonString.append(JSON_USER_LABEL).append(ATTR_SEP);
-		Utils.quote(usrName, jsonString).append(ATTR_JSON);
-		jsonString.append(JSON_TTL_SEC_LABEL).append(ATTR_SEP).append(ttl).append(ATTR_JSON);
-		jsonString.append(JSON_TIME_USEC_LABEL).append(ATTR_SEP).append(Useconds.CURRENT.get()).append(ATTR_JSON);
-		jsonString.append(JSON_OPERATION_LABEL).append(ATTR_SEP);
-		Utils.quote(defOpName, jsonString).append(ATTR_JSON);
+		addJsonEntry(jsonString, JSON_PID_LABEL, Utils.getVMPID());
+		addJsonEntry(jsonString, JSON_TID_LABEL, Thread.currentThread().getId());
+
+		String usrName = source == null ? DefaultSourceFactory.getInstance().getRootSource().getUser()
+				: source.getUser();
+		addJsonEntry(jsonString, JSON_USER_LABEL, usrName, true);
+		addJsonEntry(jsonString, JSON_TTL_SEC_LABEL, ttl);
+		addJsonEntry(jsonString, JSON_TIME_USEC_LABEL, Useconds.CURRENT.get());
+		addJsonEntry(jsonString, JSON_OPERATION_LABEL, defOpName);
 
 		if (source != null) {
-			jsonString.append(JSON_SOURCE_LABEL).append(ATTR_SEP);
-			Utils.quote(StringEscapeUtils.escapeJson(source.getName()), jsonString).append(ATTR_JSON);
-			String ssn = getSSN(source);
-			if (!Utils.isEmpty(ssn)) {
-				String escaped = StringEscapeUtils.escapeJson(ssn); // escape double quote chars
-				jsonString.append(JSON_SOURCE_SSN_LABEL).append(ATTR_SEP);
-				Utils.quote(escaped, jsonString).append(ATTR_JSON);
-			}
-			jsonString.append(JSON_SOURCE_FQN_LABEL).append(ATTR_SEP);
-			Utils.quote(StringEscapeUtils.escapeJson(source.getFQName()), jsonString);
-			if (!Utils.isEmpty(source.getUrl())) {
-				jsonString.append(ATTR_JSON);
-				String escaped = StringEscapeUtils.escapeJson(source.getUrl()); // escape double quote chars
-				jsonString.append(JSON_SOURCE_URL_LABEL).append(ATTR_SEP);
-				Utils.quote(escaped, jsonString);
-			}
+			addJsonEntry(jsonString, JSON_SOURCE_LABEL, source.getName(), true);
+			addJsonEntry(jsonString, JSON_SOURCE_SSN_LABEL, getSSN(source), true);
+			addJsonEntry(jsonString, JSON_SOURCE_FQN_LABEL, source.getFQName(), true);
+			addJsonEntry(jsonString, JSON_SOURCE_URL_LABEL, source.getUrl(), true);
 			Source geoloc = source.getSource(SourceType.GEOADDR);
 			if (geoloc != null) {
-				jsonString.append(ATTR_JSON);
-				jsonString.append(JSON_LOCATION_LABEL).append(ATTR_SEP);
-				Utils.quote(geoloc.getName(), jsonString);
+				addJsonEntry(jsonString, JSON_LOCATION_LABEL, geoloc.getName());
 			}
 		}
 		if (!Utils.isEmpty(msg)) {
-			String msgText = Utils.format(msg, args);
-			msgText = StringEscapeUtils.escapeJson(msgText); // escape double quote chars
-			jsonString.append(ATTR_JSON);
-			jsonString.append(JSON_MSG_TEXT_LABEL).append(ATTR_SEP);
-			Utils.quote(msgText, jsonString);
+			addJsonEntry(jsonString, JSON_MSG_TEXT_LABEL, Utils.format(msg, args), true);
 		}
 		Throwable ex = Utils.getThrowable(args);
 		if (ex != null) {
-			jsonString.append(ATTR_JSON);
-			String excText = StringEscapeUtils.escapeJson(ex.toString()); // escape double quote chars
-			jsonString.append(JSON_EXCEPTION_LABEL).append(ATTR_SEP);
-			Utils.quote(excText, jsonString);
+			addJsonEntry(jsonString, JSON_EXCEPTION_LABEL, ex.toString(), true);
 		}
-		jsonString.append(END_JSON);
-		return jsonString.toString();
+
+		return jsonString.append(END_JSON).toString();
 	}
 
 	/**
@@ -697,7 +583,7 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 	 * @return string representation of activity enmity items collection
 	 */
 	protected String itemsToJSON(Collection<?> items) {
-		if (items == null) {
+		if (Utils.isEmpty(items)) {
 			return EMPTY_STR;
 		}
 		StringBuilder jsonString = new StringBuilder(2048);
