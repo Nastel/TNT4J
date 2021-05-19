@@ -17,6 +17,7 @@ package com.jkoolcloud.tnt4j.sink.impl.kafka;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
@@ -70,7 +71,11 @@ public class KafkaEventSinkFactory extends AbstractEventSinkFactory {
 		if (kafkaPropFile != null) {
 			loadKafkaProps(kafkaPropFile, settings);
 		} else {
-			kafkaProps.putAll(settings);
+			Map<String, Object> pProps = new HashMap<>(settings);
+			pProps.remove("topic");
+			pProps.remove("propFile");
+
+			kafkaProps.putAll(pProps);
 		}
 	}
 
