@@ -50,7 +50,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	protected static final int MAX_USEC = SECS_SCALE - 1;
 
 	private static final String DFLT_JAVA_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
-	public static final String DEFAULT_FORMAT = DFLT_JAVA_FORMAT + "SSS z";
+	public static final String DEFAULT_FORMAT = DFLT_JAVA_FORMAT + "SSS Z";
 	private static final TimeZone DEFAULT_TZ = TimeZone.getDefault();// TimeZone.getTimeZone("UTC");
 
 	protected static AtomicLong LamportCounter = new AtomicLong(System.currentTimeMillis());
@@ -958,7 +958,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		String tsStr = null;
 
 		if (pattern == null) {
-			pattern = DFLT_JAVA_FORMAT + String.format("%03d", usecs) + " z";
+			pattern = DFLT_JAVA_FORMAT + String.format("%03d", usecs) + " Z";
 		} else {
 			int fracSecPos = pattern.indexOf('S');
 			if (fracSecPos >= 0) {
