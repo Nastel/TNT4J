@@ -254,7 +254,6 @@
         <module>tnt4j-core</module>
         <module>tnt4j-kafka-sink</module>
         <module>tnt4j-mqtt-sink</module>
-        <module>tnt4j-all</module>
         <module>tnt4j--distribution</module>
     </modules>
 </project>
