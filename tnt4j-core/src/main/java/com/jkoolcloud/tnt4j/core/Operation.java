@@ -1041,7 +1041,7 @@ public class Operation implements TTL, GlobalID {
 	 * @see Snapshot
 	 */
 	public void addSnapshot(Snapshot snapshot) {
-		snapshots.put(snapshot.getId(), snapshot);
+		snapshots.put(snapshot.getSnapKey(), snapshot);
 		snapshot.setTTL(getTTL());
 	}
 

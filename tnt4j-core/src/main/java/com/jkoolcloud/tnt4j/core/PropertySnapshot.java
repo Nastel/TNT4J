@@ -35,13 +35,12 @@ public class PropertySnapshot implements Snapshot {
 	private long ttl = TTL.TTL_DEFAULT;
 	private OpLevel level;
 	private OpType opType = OpType.SNAPSHOT;
-	private String id = null;
-	private String category = null;
-	private String snapName = null;
-	private String tracking_id;
+	private String id;
+	private String category;
+	private String snapName;
 	private String parent_id;
 	private String sign;
-	private UsecTimestamp timeStamp = null;
+	private UsecTimestamp timeStamp;
 	private Source source;
 	private HashSet<String> correlators = new HashSet<>(89);
 	private Map<Object, Property> propSet = new LinkedHashMap<>();
@@ -280,11 +279,11 @@ public class PropertySnapshot implements Snapshot {
 	public String toString() {
 		StringBuilder str = new StringBuilder(512);
 		str.append(this.getClass().getSimpleName()) //
-				.append("{Category: " + category) //
+				.append("{Category: ").append(category) //
 				.append(", Name: ").append(snapName) //
 				.append(", Guid: ").append(guid) //
 				.append(", TimeStamp: ").append(timeStamp) //
-				.append(", Count: " + this.size()) //
+				.append(", Count: ").append(this.size()) //
 				.append(", List: [");
 		for (Property item : propSet.values()) {
 			str.append(item);
@@ -336,7 +335,7 @@ public class PropertySnapshot implements Snapshot {
 
 	@Override
 	public String getTrackingId() {
-		return tracking_id;
+		return getGUID();
 	}
 
 	@Override
@@ -356,7 +355,7 @@ public class PropertySnapshot implements Snapshot {
 
 	@Override
 	public void setTrackingId(String signature) {
-		tracking_id = signature;
+		setGUID(signature);
 	}
 
 	@Override
@@ -390,15 +389,20 @@ public class PropertySnapshot implements Snapshot {
 
 	@Override
 	public int hashCode() {
-		return id.hashCode();
+		return getSnapKey().hashCode();
 	}
 
 	@Override
 	public boolean equals(Object obj) {
 		if (obj instanceof Snapshot) {
-			return ((Snapshot) obj).getId().equals(id);
+			return ((Snapshot) obj).getSnapKey().equals(getSnapKey());
 		}
 		return false;
+	}
+
+	@Override
+	public String getSnapKey() {
+		return guid == null ? id : guid;
 	}
 
 	@Override
@@ -457,7 +461,7 @@ public class PropertySnapshot implements Snapshot {
 			return parent_id;
 		}
 		if ("TrackingId".equalsIgnoreCase(fieldName)) {
-			return tracking_id;
+			return getTrackingId();
 		}
 		if ("Type".equalsIgnoreCase(fieldName)) {
 			return opType;

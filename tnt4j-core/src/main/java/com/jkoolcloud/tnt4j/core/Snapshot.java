@@ -148,4 +148,14 @@ public interface Snapshot extends Trackable {
 	 * @return Property associated with the key, null if does not exist
 	 */
 	Property get(Object key);
+
+	/**
+	 * Obtain snapshot key, which is the GUID of this snapshot if present, otherwise - this snapshot id.
+	 * 
+	 * @return snapshot key
+	 * 
+	 * @see #getId()
+	 * @see #getGUID()
+	 */
+	String getSnapKey();
 }
