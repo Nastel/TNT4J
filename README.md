@@ -681,7 +681,7 @@ Known Projects Using TNT4J
 * [TNT4J/Stream-GC](https://github.com/Nastel/tnt4j-stream-gc/)
 * [TNT4J/Stream-JMX](https://github.com/Nastel/tnt4j-stream-jmx/)
 * [TNT4J/Syslogd](https://github.com/Nastel/tnt4j-syslogd/)
-* [TNT4J/Log4J12](https://github.com/Nastel/tnt4j-log4j12/)
+* [TNT4J/Log4j](https://github.com/Nastel/tnt4j-log4j/)
 * [TNT4J/Logback](https://github.com/Nastel/tnt4j-logback/)
 * [TNT4J/Spark](https://github.com/Nastel/tnt4j-spark/)
 * [TNT4J/Examples](https://github.com/Nastel/tnt4j-examples/)
