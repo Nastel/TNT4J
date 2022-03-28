@@ -33,7 +33,6 @@ import com.jkoolcloud.tnt4j.sink.impl.LoggerEventSink;
  * 
  * @version $Revision: 12 $
  *
- * @see com.jkoolcloud.tnt4j.tracker.TrackingEvent
  * @see com.jkoolcloud.tnt4j.format.EventFormatter
  * @see com.jkoolcloud.tnt4j.core.OpLevel
  * @see com.jkoolcloud.tnt4j.sink.impl.slf4j.SLF4JEventSinkFactory

@@ -27,7 +27,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * Abstract {@link com.jkoolcloud.tnt4j.sink.EventSink} implementation that routes log messages to underlying logger,
- * e.g. JUL, LOG4, SLF4J.
+ * e.g. JUL, LOG4J, SLF4J.
  * 
  * @version $Revision: 1 $
  */

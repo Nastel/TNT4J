@@ -33,7 +33,6 @@ import com.jkoolcloud.tnt4j.sink.impl.LoggerEventSink;
  *
  * @version $Revision: 2 $
  *
- * @see com.jkoolcloud.tnt4j.tracker.TrackingEvent
  * @see com.jkoolcloud.tnt4j.format.EventFormatter
  * @see com.jkoolcloud.tnt4j.core.OpLevel
  * @see com.jkoolcloud.tnt4j.sink.impl.jul.JULEventSinkFactory
@@ -96,6 +95,8 @@ public class JULEventSink extends LoggerEventSink {
 
 	@Override
 	public boolean isSet(OpLevel sev) {
+		_checkState();
+
 		return logger.isLoggable(getLevel(sev));
 	}
 
