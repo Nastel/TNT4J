@@ -23,11 +23,7 @@ import org.apache.commons.codec.language.Soundex;
 
 import com.jkoolcloud.tnt4j.TrackingLogger;
 import com.jkoolcloud.tnt4j.config.Configurable;
-import com.jkoolcloud.tnt4j.core.OpLevel;
-import com.jkoolcloud.tnt4j.core.Property;
-import com.jkoolcloud.tnt4j.core.Snapshot;
-import com.jkoolcloud.tnt4j.core.TTL;
-import com.jkoolcloud.tnt4j.core.ValueTypes;
+import com.jkoolcloud.tnt4j.core.*;
 import com.jkoolcloud.tnt4j.dump.TimeTrackerDumpProvider;
 import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.sink.SinkEventFilter;
@@ -78,7 +74,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	long dupTimeoutSec = 30;
 	int dupCacheSize = 100;
 	Soundex soundex = new Soundex();
-	
+
 	Pattern msgPattern;
 	String msgRegx = null;
 	long ttl = TTL.TTL_CONTEXT;
@@ -149,7 +145,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 		}
 		if (isDuplicate(event, event.getMessage())) {
 			return false;
-		} 
+		}
 		if (ttl != TTL.TTL_CONTEXT) {
 			event.setTTL(ttl);
 		}
@@ -183,10 +179,10 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 
 	@Override
 	public boolean filter(EventSink sink, long ttl, Source source, OpLevel level, String msg, Object... args) {
-		if (isDuplicate(null, sink.getEventFormatter().format(ttl, source, level, msg, args))) {
+		String formattedMsg = sink.getEventFormatter().format(ttl, source, level, msg, args);
+		if (isDuplicate(null, formattedMsg)) {
 			return false;
-		} else if (msgPattern != null && 
-				!msgPattern.matcher(sink.getEventFormatter().format(ttl, source, level, msg, args)).matches()) {
+		} else if (msgPattern != null && !msgPattern.matcher(formattedMsg).matches()) {
 			return false;
 		}
 		return passLevel(level, sink);
@@ -216,8 +212,9 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 		dupAppendStats = Utils.getBoolean(DUPS_APPEND_STATS, settings, dupAppendStats);
 		dupsSuppress = Utils.getBoolean(DUPS_SUPPRESS, settings, dupsSuppress);
 		if (dupsSuppress) {
-			msgTracker = TimeTracker.newTracker(dupCacheSize, dupTimeoutSec*2, TimeUnit.SECONDS);
-			TrackingLogger.addDumpProvider(new TimeTrackerDumpProvider(EventLevelTimeFilter.class.getName(), "DupMsgHits", msgTracker));
+			msgTracker = TimeTracker.newTracker(dupCacheSize, dupTimeoutSec * 2, TimeUnit.SECONDS);
+			TrackingLogger.addDumpProvider(
+					new TimeTrackerDumpProvider(EventLevelTimeFilter.class.getName(), "DupMsgHits", msgTracker));
 		}
 		msgRegx = Utils.getString(MSG_PATTERN, settings, null);
 		if (msgRegx != null) {
@@ -242,7 +239,7 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 
 	private boolean isDuplicate(TrackingEvent event, String msg) {
 		if (msgTracker != null) {
-			String key = dupUseSoundex? soundex.soundex(msg): msg;
+			String key = dupUseSoundex ? soundex.soundex(msg) : msg;
 			long hitCount = msgTracker.hitAndGetCount(key);
 			if ((hitCount > 1) && (msgTracker.getHitAge(msg, TimeUnit.SECONDS) < dupTimeoutSec)) {
 				msgTracker.missAndGetCount(key);
