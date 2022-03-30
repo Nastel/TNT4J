@@ -49,7 +49,7 @@ public class NullEvent extends TrackingEvent {
 	}
 
 	@Override
-	public void stop(long endTimeUsec) {
+	public void stop(long elapsedTime) {
 	}
 
 	@Override

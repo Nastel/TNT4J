@@ -625,11 +625,11 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	 *            timer in nanoseconds
 	 */
 	private long eventComplete(long start, SinkLogEvent event) {
-		long elaspedUsec = (System.nanoTime() - start) / 1000;
+		long elapsedUsec = (System.nanoTime() - start) / 1000;
 		totalServiceUsec.addAndGet(event.complete() / 1000);
-		lastServiceUsec.set(elaspedUsec);
-		totalUsec.addAndGet(elaspedUsec);
-		return elaspedUsec;
+		lastServiceUsec.set(elapsedUsec);
+		totalUsec.addAndGet(elapsedUsec);
+		return elapsedUsec;
 	}
 
 	/**
@@ -650,7 +650,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	}
 
 	/**
-	 * Start the the thread pool and all threads in this pooled logger.
+	 * Start the thread pool and all threads in this pooled logger.
 	 */
 	protected synchronized void start() {
 		if (started) {
@@ -667,7 +667,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	}
 
 	/**
-	 * Stop the the thread pool and all threads in this pooled logger.
+	 * Stop the thread pool and all threads in this pooled logger.
 	 */
 	protected synchronized void stop() {
 		if (threadPool == null) {

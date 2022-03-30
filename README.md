@@ -497,7 +497,7 @@ TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
 
 // report sending an order with a specific correlator (order_id)
 logger.tnt(OpLevel.INFO, OpType.SEND, "SendOrder", order_id, 
-	elasped_time, "Sending order to={0}", destination);
+	elapsed_time, "Sending order to={0}", destination);
 // sending logic
 ....
 ....
@@ -509,7 +509,7 @@ TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
 ...
 // report received an order with a specific correlator (order_id)
 logger.tnt(OpLevel.INFO, OpType.RECEIVE, "ReceiveOrder", order_id,
-	elasped_time, "Received order from={0}", source);
+	elapsed_time, "Received order from={0}", source);
 ```
 
 **NOTE:** TNT4J uses NTP natively to synchronize times across servers to enable cross server event correlation in time. To enable NTP time 

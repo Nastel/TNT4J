@@ -543,11 +543,11 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	/**
 	 * Indicates that application tracking event has ended.
 	 *
-	 * @param elaspedTime
+	 * @param elapsedTime
 	 *            elapsed time of this event in (usec)
 	 */
-	public void stop(long elaspedTime) {
-		operation.stop(Useconds.CURRENT.get(), elaspedTime);
+	public void stop(long elapsedTime) {
+		operation.stop(Useconds.CURRENT.get(), elapsedTime);
 	}
 
 	/**
@@ -853,7 +853,9 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 		return super.getFieldValue(fieldName);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.jkoolcloud.tnt4j.core.Trackable#getGUID()
 	 */
 	@Override
@@ -861,7 +863,9 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 		return operation.getGUID();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see com.jkoolcloud.tnt4j.core.Trackable#setGUID(java.lang.String)
 	 */
 	@Override

@@ -683,18 +683,18 @@ public class Operation implements TTL, GlobalID {
 	 *
 	 * @param stopTimeUsec
 	 *            stop time, in microseconds
-	 * @param elaspedUsec
+	 * @param elapsedUsec
 	 *            elapsed time in microseconds
 	 * @throws IllegalArgumentException
 	 *             if stopTime or stopTimeUsec is negative, or if the stop time is less than the previously specified
 	 *             start time
 	 */
-	public void stop(long stopTimeUsec, long elaspedUsec) {
+	public void stop(long stopTimeUsec, long elapsedUsec) {
 		long start = System.nanoTime();
 		endTimeUs = stopTimeUsec;
 
-		if (startTimeUs <= 0 || startTimeUs > (stopTimeUsec - elaspedUsec)) {
-			long startUsec = stopTimeUsec - elaspedUsec;
+		if (startTimeUs <= 0 || startTimeUs > (stopTimeUsec - elapsedUsec)) {
+			long startUsec = stopTimeUsec - elapsedUsec;
 			startTimeUs = startUsec;
 		}
 
@@ -712,7 +712,7 @@ public class Operation implements TTL, GlobalID {
 			}
 		}
 
-		elapsedTimeUsec = elaspedUsec > 0 ? elaspedUsec : endTimeUs - startTimeUs;
+		elapsedTimeUsec = elapsedUsec > 0 ? elapsedUsec : endTimeUs - startTimeUs;
 		_stop(start);
 	}
 
@@ -733,18 +733,18 @@ public class Operation implements TTL, GlobalID {
 	 *
 	 * @param stopTimestamp
 	 *            stop time
-	 * @param elaspedUsec
+	 * @param elapsedUsec
 	 *            elapsed time in microseconds
 	 * @throws NullPointerException
 	 *             if stopTimestamp is {@code null}
 	 * @throws IllegalArgumentException
 	 *             if stopTimestamp is invalid
 	 */
-	public void stop(UsecTimestamp stopTimestamp, long elaspedUsec) {
+	public void stop(UsecTimestamp stopTimestamp, long elapsedUsec) {
 		if (stopTimestamp == null) {
 			throw new NullPointerException("stopTimestamp must be non-null");
 		}
-		stop(stopTimestamp.getTimeUsec(), elaspedUsec);
+		stop(stopTimestamp.getTimeUsec(), elapsedUsec);
 	}
 
 	/**

@@ -17,179 +17,235 @@
 <html>
 
 <head>
-<meta http-equiv=Content-Type content="text/html; charset=us-ascii">
-<meta name=Generator content="Microsoft Word 14 (filtered)">
-<title>Track and Trace 4J API (TNT4J) JavaDoc</title>
-<style>
-<!--
- /* Font Definitions */
- @font-face
-	{font-family:Cambria;
-	panose-1:2 4 5 3 5 4 6 3 2 4;}
-@font-face
-	{font-family:Tahoma;
-	panose-1:2 11 6 4 3 5 4 4 2 4;}
- /* Style Definitions */
- p.MsoNormal, li.MsoNormal, div.MsoNormal
-	{margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman","serif";}
-h1
-	{mso-style-link:"Heading 1 Char";
-	margin-top:24.0pt;
-	margin-right:0in;
-	margin-bottom:0in;
-	margin-left:0in;
-	margin-bottom:.0001pt;
-	page-break-after:avoid;
-	font-size:14.0pt;
-	font-family:"Cambria","serif";
-	color:#365F91;
-	font-weight:bold;}
-h2
-	{mso-style-link:"Heading 2 Char";
-	margin-top:10.0pt;
-	margin-right:0in;
-	margin-bottom:0in;
-	margin-left:0in;
-	margin-bottom:.0001pt;
-	page-break-after:avoid;
-	font-size:13.0pt;
-	font-family:"Cambria","serif";
-	color:#4F81BD;
-	font-weight:bold;}
-h3
-	{mso-style-link:"Heading 3 Char";
-	margin-top:10.0pt;
-	margin-right:0in;
-	margin-bottom:0in;
-	margin-left:0in;
-	margin-bottom:.0001pt;
-	page-break-after:avoid;
-	font-size:12.0pt;
-	font-family:"Cambria","serif";
-	color:#4F81BD;
-	font-weight:bold;}
-p.MsoSubtitle, li.MsoSubtitle, div.MsoSubtitle
-	{mso-style-link:"Subtitle Char";
-	margin:0in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Cambria","serif";
-	color:#4F81BD;
-	letter-spacing:.75pt;
-	font-style:italic;}
-a:link, span.MsoHyperlink
-	{color:blue;
-	text-decoration:underline;}
-a:visited, span.MsoHyperlinkFollowed
-	{color:purple;
-	text-decoration:underline;}
-p
-	{margin-right:0in;
-	margin-left:0in;
-	font-size:12.0pt;
-	font-family:"Times New Roman","serif";}
-code
-	{font-family:"Courier New";}
-pre
-	{mso-style-link:"HTML Preformatted Char";
-	margin:0in;
-	margin-bottom:.0001pt;
-	font-size:10.0pt;
-	font-family:"Courier New";}
-p.MsoAcetate, li.MsoAcetate, div.MsoAcetate
-	{mso-style-link:"Balloon Text Char";
-	margin:0in;
-	margin-bottom:.0001pt;
-	font-size:8.0pt;
-	font-family:"Tahoma","sans-serif";}
-p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph
-	{margin-top:0in;
-	margin-right:0in;
-	margin-bottom:0in;
-	margin-left:.5in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman","serif";}
-span.Heading1Char
-	{mso-style-name:"Heading 1 Char";
-	mso-style-link:"Heading 1";
-	font-family:"Cambria","serif";
-	color:#365F91;
-	font-weight:bold;}
-span.Heading2Char
-	{mso-style-name:"Heading 2 Char";
-	mso-style-link:"Heading 2";
-	font-family:"Cambria","serif";
-	color:#4F81BD;
-	font-weight:bold;}
-span.Heading3Char
-	{mso-style-name:"Heading 3 Char";
-	mso-style-link:"Heading 3";
-	font-family:"Cambria","serif";
-	color:#4F81BD;
-	font-weight:bold;}
-span.HTMLPreformattedChar
-	{mso-style-name:"HTML Preformatted Char";
-	mso-style-link:"HTML Preformatted";
-	font-family:"Courier New";}
-span.SubtitleChar
-	{mso-style-name:"Subtitle Char";
-	mso-style-link:Subtitle;
-	font-family:"Cambria","serif";
-	color:#4F81BD;
-	letter-spacing:.75pt;
-	font-style:italic;}
-span.BalloonTextChar
-	{mso-style-name:"Balloon Text Char";
-	mso-style-link:"Balloon Text";
-	font-family:"Tahoma","sans-serif";}
-p.msolistparagraphcxspfirst, li.msolistparagraphcxspfirst, div.msolistparagraphcxspfirst
-	{mso-style-name:msolistparagraphcxspfirst;
-	margin-top:0in;
-	margin-right:0in;
-	margin-bottom:0in;
-	margin-left:.5in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman","serif";}
-p.msolistparagraphcxspmiddle, li.msolistparagraphcxspmiddle, div.msolistparagraphcxspmiddle
-	{mso-style-name:msolistparagraphcxspmiddle;
-	margin-top:0in;
-	margin-right:0in;
-	margin-bottom:0in;
-	margin-left:.5in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman","serif";}
-p.msolistparagraphcxsplast, li.msolistparagraphcxsplast, div.msolistparagraphcxsplast
-	{mso-style-name:msolistparagraphcxsplast;
-	margin-top:0in;
-	margin-right:0in;
-	margin-bottom:0in;
-	margin-left:.5in;
-	margin-bottom:.0001pt;
-	font-size:12.0pt;
-	font-family:"Times New Roman","serif";}
-p.msochpdefault, li.msochpdefault, div.msochpdefault
-	{mso-style-name:msochpdefault;
-	margin-right:0in;
-	margin-left:0in;
-	font-size:10.0pt;
-	font-family:"Times New Roman","serif";}
-span.apple-converted-space
-	{mso-style-name:apple-converted-space;}
-.MsoChpDefault
-	{font-size:10.0pt;}
-@page WordSection1
-	{size:8.5in 11.0in;
-	margin:1.0in 1.0in 1.0in 1.0in;}
-div.WordSection1
-	{page:WordSection1;}
--->
-</style>
+    <meta http-equiv=Content-Type content="text/html; charset=us-ascii">
+    <meta name=Generator content="Microsoft Word 14 (filtered)">
+    <title>Track and Trace 4J API (TNT4J) JavaDoc</title>
+    <style>
+        <!--
+        /* Font Definitions */
+        @font-face {
+            font-family: Cambria;
+            panose-1: 2 4 5 3 5 4 6 3 2 4;
+        }
+
+        @font-face {
+            font-family: Tahoma;
+            panose-1: 2 11 6 4 3 5 4 4 2 4;
+        }
+
+        /* Style Definitions */
+        p.MsoNormal, li.MsoNormal, div.MsoNormal {
+            margin: 0in;
+            margin-bottom: .0001pt;
+            font-size: 12.0pt;
+            font-family: "Times New Roman", "serif";
+        }
+
+        h1 {
+            mso-style-link: "Heading 1 Char";
+            margin-top: 24.0pt;
+            margin-right: 0in;
+            margin-bottom: 0in;
+            margin-left: 0in;
+            margin-bottom: .0001pt;
+            page-break-after: avoid;
+            font-size: 14.0pt;
+            font-family: "Cambria", "serif";
+            color: #365F91;
+            font-weight: bold;
+        }
+
+        h2 {
+            mso-style-link: "Heading 2 Char";
+            margin-top: 10.0pt;
+            margin-right: 0in;
+            margin-bottom: 0in;
+            margin-left: 0in;
+            margin-bottom: .0001pt;
+            page-break-after: avoid;
+            font-size: 13.0pt;
+            font-family: "Cambria", "serif";
+            color: #4F81BD;
+            font-weight: bold;
+        }
+
+        h3 {
+            mso-style-link: "Heading 3 Char";
+            margin-top: 10.0pt;
+            margin-right: 0in;
+            margin-bottom: 0in;
+            margin-left: 0in;
+            margin-bottom: .0001pt;
+            page-break-after: avoid;
+            font-size: 12.0pt;
+            font-family: "Cambria", "serif";
+            color: #4F81BD;
+            font-weight: bold;
+        }
+
+        p.MsoSubtitle, li.MsoSubtitle, div.MsoSubtitle {
+            mso-style-link: "Subtitle Char";
+            margin: 0in;
+            margin-bottom: .0001pt;
+            font-size: 12.0pt;
+            font-family: "Cambria", "serif";
+            color: #4F81BD;
+            letter-spacing: .75pt;
+            font-style: italic;
+        }
+
+        a:link, span.MsoHyperlink {
+            color: blue;
+            text-decoration: underline;
+        }
+
+        a:visited, span.MsoHyperlinkFollowed {
+            color: purple;
+            text-decoration: underline;
+        }
+
+        p {
+            margin-right: 0in;
+            margin-left: 0in;
+            font-size: 12.0pt;
+            font-family: "Times New Roman", "serif";
+        }
+
+        code {
+            font-family: "Courier New";
+        }
+
+        pre {
+            mso-style-link: "HTML Preformatted Char";
+            margin: 0in;
+            margin-bottom: .0001pt;
+            font-size: 10.0pt;
+            font-family: "Courier New";
+        }
+
+        p.MsoAcetate, li.MsoAcetate, div.MsoAcetate {
+            mso-style-link: "Balloon Text Char";
+            margin: 0in;
+            margin-bottom: .0001pt;
+            font-size: 8.0pt;
+            font-family: "Tahoma", "sans-serif";
+        }
+
+        p.MsoListParagraph, li.MsoListParagraph, div.MsoListParagraph {
+            margin-top: 0in;
+            margin-right: 0in;
+            margin-bottom: 0in;
+            margin-left: .5in;
+            margin-bottom: .0001pt;
+            font-size: 12.0pt;
+            font-family: "Times New Roman", "serif";
+        }
+
+        span.Heading1Char {
+            mso-style-name: "Heading 1 Char";
+            mso-style-link: "Heading 1";
+            font-family: "Cambria", "serif";
+            color: #365F91;
+            font-weight: bold;
+        }
+
+        span.Heading2Char {
+            mso-style-name: "Heading 2 Char";
+            mso-style-link: "Heading 2";
+            font-family: "Cambria", "serif";
+            color: #4F81BD;
+            font-weight: bold;
+        }
+
+        span.Heading3Char {
+            mso-style-name: "Heading 3 Char";
+            mso-style-link: "Heading 3";
+            font-family: "Cambria", "serif";
+            color: #4F81BD;
+            font-weight: bold;
+        }
+
+        span.HTMLPreformattedChar {
+            mso-style-name: "HTML Preformatted Char";
+            mso-style-link: "HTML Preformatted";
+            font-family: "Courier New";
+        }
+
+        span.SubtitleChar {
+            mso-style-name: "Subtitle Char";
+            mso-style-link: Subtitle;
+            font-family: "Cambria", "serif";
+            color: #4F81BD;
+            letter-spacing: .75pt;
+            font-style: italic;
+        }
+
+        span.BalloonTextChar {
+            mso-style-name: "Balloon Text Char";
+            mso-style-link: "Balloon Text";
+            font-family: "Tahoma", "sans-serif";
+        }
+
+        p.msolistparagraphcxspfirst, li.msolistparagraphcxspfirst, div.msolistparagraphcxspfirst {
+            mso-style-name: msolistparagraphcxspfirst;
+            margin-top: 0in;
+            margin-right: 0in;
+            margin-bottom: 0in;
+            margin-left: .5in;
+            margin-bottom: .0001pt;
+            font-size: 12.0pt;
+            font-family: "Times New Roman", "serif";
+        }
+
+        p.msolistparagraphcxspmiddle, li.msolistparagraphcxspmiddle, div.msolistparagraphcxspmiddle {
+            mso-style-name: msolistparagraphcxspmiddle;
+            margin-top: 0in;
+            margin-right: 0in;
+            margin-bottom: 0in;
+            margin-left: .5in;
+            margin-bottom: .0001pt;
+            font-size: 12.0pt;
+            font-family: "Times New Roman", "serif";
+        }
+
+        p.msolistparagraphcxsplast, li.msolistparagraphcxsplast, div.msolistparagraphcxsplast {
+            mso-style-name: msolistparagraphcxsplast;
+            margin-top: 0in;
+            margin-right: 0in;
+            margin-bottom: 0in;
+            margin-left: .5in;
+            margin-bottom: .0001pt;
+            font-size: 12.0pt;
+            font-family: "Times New Roman", "serif";
+        }
+
+        p.msochpdefault, li.msochpdefault, div.msochpdefault {
+            mso-style-name: msochpdefault;
+            margin-right: 0in;
+            margin-left: 0in;
+            font-size: 10.0pt;
+            font-family: "Times New Roman", "serif";
+        }
+
+        span.apple-converted-space {
+            mso-style-name: apple-converted-space;
+        }
+
+        .MsoChpDefault {
+            font-size: 10.0pt;
+        }
+
+        @page WordSection1 {
+            size: 8.5in 11.0in;
+            margin: 1.0in 1.0in 1.0in 1.0in;
+        }
+
+        div.WordSection1 {
+            page: WordSection1;
+        }
+
+        -->
+    </style>
 
 </head>
 
@@ -197,1240 +253,1241 @@ div.WordSection1
 
 <div class=WordSection1>
 
-<h1>API Overview</h1>
+    <h1>API Overview</h1>
 
-<p class=MsoNormal>This document describes <b>jKool Track &amp; Trace API
-(TNT4J)</b> specification for tracking and tracing application activities and
-behavior for rapid diagnostics and root cause analysis. The framework
-encapsulates the following key elements essential during diagnostics:</p>
+    <p class=MsoNormal>This document describes <b>jKool Track &amp; Trace API
+        (TNT4J)</b> specification for tracking and tracing application activities and
+        behavior for rapid diagnostics and root cause analysis. The framework
+        encapsulates the following key elements essential during diagnostics:</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span>Performance, response time</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span>Exceptions, faults</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span>Application state, dumps</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span>Message flow (send-&gt;receive)</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span>Granular conditional logging based on application specific tokens/keys</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span>Correlation within and across multiple application components, runtime
-environments</p>
+        environments</p>
 
-<h2>Track &amp; Trace 4J (TNT4J) API</h2>
+    <h2>Track &amp; Trace 4J (TNT4J) API</h2>
 
-<p class=MsoNormal><b>TNT4J</b> allows developers to imbed custom tracking and
-tracing code very quickly into java applications. It is recommended that
-developers use this API when instrumenting Java applications with track and
-trace instrumentation. <b>TNT4J</b> delivers the following features aimed at
-delivering fast diagnostics and root-cause analysis:</p>
+    <p class=MsoNormal><b>TNT4J</b> allows developers to imbed custom tracking and
+        tracing code very quickly into java applications. It is recommended that
+        developers use this API when instrumenting Java applications with track and
+        trace instrumentation. <b>TNT4J</b> delivers the following features aimed at
+        delivering fast diagnostics and root-cause analysis:</p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span>Simple programming model to facilitate fast root-cause, log analysis</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><b>Automated timing</b> of application activities and sub-activities
-(elapsed, idle time, message age)</p>
+        (elapsed, idle time, message age)</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><b>Application state dump</b> framework for reporting internal
-variables, data structures</p>
+        variables, data structures</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><b>Conditional logging</b> based on application tokens, patterns</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span>Inter-log correlation of log entries (correlators and tags) between
-multiple related applications</p>
+        multiple related applications</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span>Intra-log correlation of related activities and sub-activities between
-multiple applications and threads</p>
+        multiple applications and threads</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span>Event location tags such as GPS, server etc.</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span>Message flow direction for composite applications that exchange messages
-(e.g. SOAP, JMS, and SQL etc.)</p>
+        (e.g. SOAP, JMS, and SQL etc.)</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span>User defined properties such as CPU, memory logging, thread statistics
-per process/thread</p>
+        per process/thread</p>
 
-<p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
-style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoListParagraph style='margin-left:39.0pt;text-indent:-21.0pt'><span
+            style='font-family:Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span>Granular context such as thread id, process id, server, application name</p>
 
-<p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New";
+    <p class=MsoNormal><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'>&nbsp;</span></p>
 
-<p class=MsoNormal><b>TNT4J</b> introduces the following constructs:</p>
+    <p class=MsoNormal><b>TNT4J</b> introduces the following constructs:</p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+    <p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
 Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><b>Application Activity</b> (<span style='font-size:10.0pt;font-family:
 "Courier New"'>TrackingActivity</span>) &#8211; a logical grouping of related
-events and messages, which has start/end time</p>
+        events and messages, which has start/end time</p>
 
-<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+    <p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
 Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><b>Tracking Event</b> (<span style='font-size:10.0pt;font-family:"Courier New"'>TrackingEvent</span>)
-&#8211; an event emitted about a step in processing or execution, which has
-severity, start/stop time, location, correlator as well as message payload
-(text)</p>
+        &#8211; an event emitted about a step in processing or execution, which has
+        severity, start/stop time, location, correlator as well as message payload
+        (text)</p>
 
-<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+    <p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
 Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><b>Event Sink</b> (<span style='font-size:10.0pt;font-family:"Courier New"'>EventSink</span>)
-&#8211; a generic destination where activities and events are routed for
-recording such as event log, or central service that analyzes log entries.</p>
+        &#8211; a generic destination where activities and events are routed for
+        recording such as event log, or central service that analyzes log entries.</p>
 
-<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+    <p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
 Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><b>Dump Provider </b><span style='font-family:"Courier New"'>(</span><span
-style='font-size:10.0pt;font-family:"Courier New"'>DumpProvider) </span>&#8211;
-application supplied dump handlers that generate collections of key/value pairs
-describing application&#8217;s state, internal variables, data structures.</p>
+            style='font-size:10.0pt;font-family:"Courier New"'>DumpProvider) </span>&#8211;
+        application supplied dump handlers that generate collections of key/value pairs
+        describing application&#8217;s state, internal variables, data structures.</p>
 
-<p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
+    <p class=MsoListParagraph style='text-indent:-.25in'><span style='font-family:
 Symbol'>&middot;</span><span style='font-size:7.0pt'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><b>Snapshot </b><span style='font-family:"Courier New"'>(</span><span
-style='font-size:10.0pt;font-family:"Courier New"'>Snapshot)</span> &#8211; a
-collection of items such as properties, metrics. Snapshots are used to report
-user defined properties associated with events.</p>
+            style='font-size:10.0pt;font-family:"Courier New"'>Snapshot)</span> &#8211; a
+        collection of items such as properties, metrics. Snapshots are used to report
+        user defined properties associated with events.</p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoNormal>Use <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingLogger</span><span
-style='background:white'>&nbsp;</span>to interface with all Tracker logging
-features. <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingLogger</span>&nbsp;is
-a helper class with static calls to&nbsp;<span style='font-size:10.0pt;
+    <p class=MsoNormal>Use <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingLogger</span><span
+            style='background:white'>&nbsp;</span>to interface with all Tracker logging
+        features. <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingLogger</span>&nbsp;is
+        a helper class with static calls to&nbsp;<span style='font-size:10.0pt;
 font-family:"Courier New"'>Tracker</span>&nbsp;logging interface. <span
-style='background:white'>Application should use this helper class instead of
+                style='background:white'>Application should use this helper class instead of
 obtaining a&nbsp;</span><span style='font-size:10.0pt;font-family:"Courier New"'>Tracker</span><span
-style='background:white'>&nbsp;logger instance per thread using </span><span
-style='font-size:10.0pt;font-family:"Courier New"'>TrackerFactory</span><span
-style='background:white'>.&nbsp;</span><span style='font-size:10.0pt;
+                style='background:white'>&nbsp;logger instance per thread using </span><span
+                style='font-size:10.0pt;font-family:"Courier New"'>TrackerFactory</span><span
+                style='background:white'>.&nbsp;</span><span style='font-size:10.0pt;
 font-family:"Courier New"'>TrackingLogger</span><span style='background:white'>&nbsp;obtains
 the&nbsp;</span><span style='font-size:10.0pt;font-family:"Courier New"'>Tracker</span><span
-style='background:white'>&nbsp;logger instance and stores it in thread local
+                style='background:white'>&nbsp;logger instance and stores it in thread local
 associated for each thread. </span>A&nbsp;<span style='font-size:10.0pt;
 font-family:"Courier New"'>TrackingEvent</span>&nbsp;represents a specific
-tracking event that application creates for every discrete event such as JDBC,
-JMS, SOAP or any other relevant application logic. Application developers must
-obtain a&nbsp;<span style='font-size:10.0pt;font-family:"Courier New"'>Tracker</span>&nbsp;instance
-via&nbsp;<span style='font-size:10.0pt;font-family:"Courier New"'>TrackerFactory</span>,
-create instances of&nbsp;<span style='font-size:10.0pt;font-family:"Courier New"'>TrackingEvent</span>&nbsp;and
-use <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingLogger.tnt()</span>
-to report tracking activities. Alternatively use <span style='font-size:10.0pt;
+        tracking event that application creates for every discrete event such as JDBC,
+        JMS, SOAP or any other relevant application logic. Application developers must
+        obtain a&nbsp;<span style='font-size:10.0pt;font-family:"Courier New"'>Tracker</span>&nbsp;instance
+        via&nbsp;<span style='font-size:10.0pt;font-family:"Courier New"'>TrackerFactory</span>,
+        create instances of&nbsp;<span style='font-size:10.0pt;font-family:"Courier New"'>TrackingEvent</span>&nbsp;and
+        use <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingLogger.tnt()</span>
+        to report tracking activities. Alternatively use <span style='font-size:10.0pt;
 font-family:"Courier New"'>TrackerFactory </span>directly to interface with
-logging facilities without the need to obtain a logger instance. Simply
-register application thread using <span style='font-size:10.0pt;font-family:
+        logging facilities without the need to obtain a logger instance. Simply
+        register application thread using <span style='font-size:10.0pt;font-family:
 "Courier New"'>TrackingLogger.register()</span> call and report tracking events
-as shown in the example below.</p>
+        as shown in the example below.</p>
 
-<p class=MsoNormal><b><span style='font-size:13.5pt;color:black'>&nbsp;</span></b></p>
+    <p class=MsoNormal><b><span style='font-size:13.5pt;color:black'>&nbsp;</span></b></p>
 
-<p class=MsoNormal><b>NOTE</b>: Inter-thread or inter-application/process
-activities are tied via <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingEvent</span>&nbsp;correlators.
-Make sure to use <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingEvent</span>&nbsp;correlators
-as a way to interconnect related inter-application activities.</p>
+    <p class=MsoNormal><b>NOTE</b>: Inter-thread or inter-application/process
+        activities are tied via <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingEvent</span>&nbsp;correlators.
+        Make sure to use <span style='font-size:10.0pt;font-family:"Courier New"'>TrackingEvent</span>&nbsp;correlators
+        as a way to interconnect related inter-application activities.</p>
 
-<p class=MsoNormal><span style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+    <p class=MsoNormal><span style='font-size:13.5pt;color:black'>&nbsp;</span></p>
 
-<p class=MsoNormal>A&nbsp;<span style='font-size:10.0pt;font-family:"Courier New"'>TrackingActivity</span>&nbsp;<span
-style='font-size:10.0pt;font-family:"Courier New"'>start()/stop()</span>
-methods calls used to mark application activity boundaries. Application may
-create instances of&nbsp;<span style='font-size:10.0pt;font-family:"Courier New"'>TrackingEvent</span>&nbsp;to
-time individual sub-activities and report them using <span style='font-size:
+    <p class=MsoNormal>A&nbsp;<span style='font-size:10.0pt;font-family:"Courier New"'>TrackingActivity</span>&nbsp;<span
+            style='font-size:10.0pt;font-family:"Courier New"'>start()/stop()</span>
+        methods calls used to mark application activity boundaries. Application may
+        create instances of&nbsp;<span style='font-size:10.0pt;font-family:"Courier New"'>TrackingEvent</span>&nbsp;to
+        time individual sub-activities and report them using <span style='font-size:
 10.0pt;font-family:"Courier New"'>TrackingActivity.tnt()</span>method call.</p>
 
-<p class=MsoNormal><span style='font-size:13.5pt;color:black'>&nbsp;</span></p>
+    <p class=MsoNormal><span style='font-size:13.5pt;color:black'>&nbsp;</span></p>
 
-<p class=MsoNormal>Typical application logic:</p>
+    <p class=MsoNormal>Typical application logic:</p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackerConfig config =
 DefaultConfigFactory.getInstance().getConfig(&quot;com.nastel.appl.name&quot;).build();</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingLogger tracker = TrackingLogger.getInstance(config);
 // register and obtain Tracker logger instance</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingActivity activity = tracker.newActivity();
 // create a new application activity</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>activity.start();</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingEvent event = tracker.newEvent(OpLevel.SUCCESS,
 &quot;SQL-SELECT&quot;, &quot;SQL customer lookup&quot;); // create a tracking
 event</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>event.start(); // start timing a
 tracking event </span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>try {</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ...</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ...</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.stop(); // stop timing tracking event </span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>} catch (SQLException e) {</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.stop(e); // stop timing tracking event and associate an exception</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ...</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>} finally {</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 activity.stop(); // stop application activity, timing</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 activity.tnt(event); // track and trace tracking event, associate tracking
 event with the given activity </span></b></p>
 
-<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span></b><span style='font-size:10.0pt;font-family:"Courier New";color:black'>tracker<b>.tnt(activity);
 // track and trace application activity</b></span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>}</span></p>
 
-<p class=MsoNormal><code><span style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
-class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>implements
-tracking for a specific application sub-activity. Applications create instances
-of<span class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
-style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
-class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>after
-creating and starting an application activity using <code><span
-style='font-size:10.0pt;color:black'>TrackingLogger.newActivity()</span></code><span
-class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>and
-<code><span style='font-size:10.0pt;color:black'>TrackingActivity.start()</span></code>.
-Each<span class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
-style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
-class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>can
-be timed independently using <span style='font-size:10.0pt;font-family:"Courier New"'>start()/stop()</span>
-method calls and reported and logged using <code><span style='font-size:10.0pt;
+    <p class=MsoNormal><code><span style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
+            class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>implements
+        tracking for a specific application sub-activity. Applications create instances
+        of<span class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
+                style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
+                class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>after
+        creating and starting an application activity using <code><span
+                style='font-size:10.0pt;color:black'>TrackingLogger.newActivity()</span></code><span
+                class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>and
+        <code><span style='font-size:10.0pt;color:black'>TrackingActivity.start()</span></code>.
+        Each<span class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
+                style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
+                class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>can
+        be timed independently using <span style='font-size:10.0pt;font-family:"Courier New"'>start()/stop()</span>
+        method calls and reported and logged using <code><span style='font-size:10.0pt;
 color:black'>TrackingActivity.tnt()</span></code><span
-class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>method
-call.</p>
+                class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>method
+        call.</p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<h3>Event Correlators and Locators</h3>
+    <h3>Event Correlators and Locators</h3>
 
-<p class=MsoNormal>Any pair of<span class=apple-converted-space><span
-style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
-style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
-class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>instances
-is related when event correlators match.<span class=apple-converted-space><span
-style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
-style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
-class=apple-converted-space><span style='font-size:10.0pt;font-family:"Courier New";
+    <p class=MsoNormal>Any pair of<span class=apple-converted-space><span
+            style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
+            style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
+            class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>instances
+        is related when event correlators match.<span class=apple-converted-space><span
+                style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
+                style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
+                class=apple-converted-space><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'>&nbsp;</span></span><span style='font-size:10.0pt;font-family:
 "Courier New"'>A</span> is related to<span class=apple-converted-space><span
-style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
-style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
-class=apple-converted-space><span style='font-size:10.0pt;font-family:"Courier New";
+                style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
+                style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
+                class=apple-converted-space><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'>&nbsp;</span></span><span style='font-size:10.0pt;font-family:
 "Courier New"'>B</span> when<span class=apple-converted-space><span
-style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
-style='font-size:10.0pt;color:black'>A.getCorrelator() == B.getCorrelator()</span></code>.
-Developers may use signatures and or correlators to correlate tracking events
-across application/server boundaries.<span class=apple-converted-space><span
-style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
-style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
-class=apple-converted-space><span style='font-size:10.0pt;font-family:"Courier New";
+                style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
+                style='font-size:10.0pt;color:black'>A.getCorrelator() == B.getCorrelator()</span></code>.
+        Developers may use signatures and or correlators to correlate tracking events
+        across application/server boundaries.<span class=apple-converted-space><span
+                style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
+                style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
+                class=apple-converted-space><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'>&nbsp;</span></span><span style='font-size:10.0pt;font-family:
 "Courier New"'>A</span> is the same as<span class=apple-converted-space><span
-style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
-style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
-class=apple-converted-space><span style='font-size:10.0pt;font-family:"Courier New";
+                style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
+                style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
+                class=apple-converted-space><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'>&nbsp;</span></span><span style='font-size:10.0pt;font-family:
 "Courier New"'>B</span> if the corresponding event signature are identical:
-meaning<span class=apple-converted-space><span style='font-size:13.5pt;
+        meaning<span class=apple-converted-space><span style='font-size:13.5pt;
 color:black'>&nbsp;</span></span><code><span style='font-size:10.0pt;
 color:black'>A.getSignature() == B.getSignature()</span></code>. Currently each<span
-class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
-style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
-class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>gets
-assigned a unique event signature using <code><span style='font-size:10.0pt;
+                class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
+                style='font-size:10.0pt;color:black'>TrackingEvent</span></code><span
+                class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>gets
+        assigned a unique event signature using <code><span style='font-size:10.0pt;
 color:black'>TrackingEvent.newUUID()</span></code><span
-class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>call.
-Signatures can be changed using<span class=apple-converted-space><span
-style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
-style='font-size:10.0pt;color:black'>TrackingEvent.setSiganture()</span></code><span
-class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>method
-call. Signatures and correlators must be set before making<span
-class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
-style='font-size:10.0pt;color:black'>Tracker.tnt()</span></code>call. Event
-location can be any string that identifies location of the tracking event such
-as GPS, server or any other useful locator.</p>
+                class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>call.
+        Signatures can be changed using<span class=apple-converted-space><span
+                style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
+                style='font-size:10.0pt;color:black'>TrackingEvent.setSiganture()</span></code><span
+                class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span>method
+        call. Signatures and correlators must be set before making<span
+                class=apple-converted-space><span style='font-size:13.5pt;color:black'>&nbsp;</span></span><code><span
+                style='font-size:10.0pt;color:black'>Tracker.tnt()</span></code>call. Event
+        location can be any string that identifies location of the tracking event such
+        as GPS, server or any other useful locator.</p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoNormal>Below is an example of how to set an event correlator and
-event location to GPS coordinates (<span style='font-size:10.0pt;font-family:
+    <p class=MsoNormal>Below is an example of how to set an event correlator and
+        event location to GPS coordinates (<span style='font-size:10.0pt;font-family:
 "Courier New"'>getGPS()</span> is a hypothetical call to obtain GPS
-coordinates):</p>
+        coordinates):</p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackerConfig config =
 DefaultConfigFactory.getInstance().getConfig(&quot;com.nastel.appl.name&quot;).build();</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingLogger tracker = TrackingLogger.getInstance(config);
 // register and obtain Tracker logger instance</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingActivity activity = tracker.newActivity();
 // create a new application activity</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>activity.start();</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingEvent event = tracker.newEvent(OpLevel.SUCCESS,
 &quot;SQL-SELECT&quot;, &quot;SQL customer lookup&quot;); // create a tracking
 event</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:#0070C0'>event.setCorrelator(&#8220;7271292&#8221;);
 //set event correlator to some token that should be used across thread and
 application boundaries</span></b></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>event.start(); // start timing a
 tracking event </span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>try {</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ...</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ...</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:#0070C0'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.setLocation(getGPS()); // obtain GPS location and set event location </span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.stop(); // stop timing tracking event </span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>} catch (SQLException e) {</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.stop(e); // stop timing tracking event and associate an exception</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ...</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>} finally {</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 activity.stop(); // stop application activity, timing</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 activity.tnt(event); // track and trace tracking event, associate tracking
 event with the given activity </span></b></p>
 
-<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span></b><span style='font-size:10.0pt;font-family:"Courier New";color:black'>tracker<b>.tnt(activity);
 // track and trace application activity</b></span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>}</span></p>
 
-<h3>Correlating Sender/Receiver Activities&nbsp;</h3>
+    <h3>Correlating Sender/Receiver Activities&nbsp;</h3>
 
-<p class=MsoNormal>Applications may also indicate whether the tracking event
-signifies SEND/RECV/INQUIRE or other types of exchange by using <span
-style='font-size:10.0pt;font-family:"Courier New"'>OpType</span> when creating <code><span
-style='font-size:10.0pt;color:black'>TrackingEvent</span></code> instances.</p>
+    <p class=MsoNormal>Applications may also indicate whether the tracking event
+        signifies SEND/RECV/INQUIRE or other types of exchange by using <span
+                style='font-size:10.0pt;font-family:"Courier New"'>OpType</span> when creating <code><span
+                style='font-size:10.0pt;color:black'>TrackingEvent</span></code> instances.</p>
 
-<p class=MsoNormal>Below is an example of specifying operation types associated
-with the tracking event:</p>
+    <p class=MsoNormal>Below is an example of specifying operation types associated
+        with the tracking event:</p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoNormal>Sender application code (SENDER):</p>
+    <p class=MsoNormal>Sender application code (SENDER):</p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackerConfig config =
 DefaultConfigFactory.getInstance().getConfig(&quot;com.nastel.appl.Sender&quot;).build();</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingLogger tracker = TrackingLogger.getInstance(config);
 // register and obtain Tracker logger instance</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingActivity activity = tracker.newActivity();
 // create a new application activity</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>activity.start();&nbsp;</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingEvent event = tracker<b>.newEvent(</b>OpLevel.INFO,
 OpType.SEND, &quot;SendOrder&#8221;, </span><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:#0070C0'>&#8220;7271292&#8221;</span></b><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>,</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> &quot;Sending
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>,</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'> &quot;Sending
 Purchase Order&quot;); // create a tracking event with a correlator and an associated
 operation type</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>event.start(); // start timing a
 tracking event </span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>try {</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ...</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ...</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:#0070C0'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.setLocation(getGPS()); // obtain GPS location and set event location </span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.stop(); // stop timing tracking event </span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>} catch (SQLException e) {</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.stop(e); // stop timing tracking event and associate an exception</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ...</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>} finally {</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 activity.stop(); // stop application activity, timing</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 activity.tnt(event); // track and trace tracking event, associate tracking
 event with the given activity </span></b></p>
 
-<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span></b><span style='font-size:10.0pt;font-family:"Courier New";color:black'>tracker<b>.tnt(activity);
 // track and trace application activity</b></span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>}</span></p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoNormal>Receiver application code (RECEIVER):</p>
+    <p class=MsoNormal>Receiver application code (RECEIVER):</p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>String order_id = <b>&#8220;7271292&#8221;;</b></span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>Throwable error = null;</span></b></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackerConfig config =
 DefaultConfigFactory.getInstance().getConfig(&quot;com.nastel.appl.Receiver&quot;).build();</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingLogger tracker = TrackingLogger.getInstance(config);
 // register and obtain Tracker logger instance</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingActivity activity = tracker.newActivity();
 // create a new application activity</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>activity.start();&nbsp;</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingEvent event = tracker<b>.newEvent(</b>OpLevel.INFO,
 OpType.RECEIVE, &quot;RecvOrder&quot;, </span><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:#0070C0'>order_id</span></b><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>,</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> &quot;Receiving
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>,</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'> &quot;Receiving
 order&quot;); // create a tracking event with a correlator and an associated
 operation type</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>event.start(); // start timing a
 tracking event </span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>try {</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ...</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ...</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 order_id = response.getOrderId(); // sample code to obtain order id from the
 received response message</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New"'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.setLocation(getGPS()); // obtain GPS location and set event location </span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:#0070C0'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.setCorrelator(order_id); // assign a correlator from order_id </span></b></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.stop(); // stop timing tracking event </span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>} catch (SQLException e) {</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 error = e;</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.stop(e); // stop timing tracking event and associate an exception</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ...</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>} finally {</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 activity.stop(ActivityStatus.EXCEPTION, e); // stop application activity,
 timing, associate an exception</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 activity.tnt(event); // track and trace tracking event, associate tracking
 event with the given activity </span></b></p>
 
-<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span></b><span style='font-size:10.0pt;font-family:"Courier New";color:black'>tracker<b>.tnt(activity);
 // track and trace application activity</b></span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>}</span></p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoNormal>Both sender and receiver are not only correlated via a
-correlator <b><span style='font-size:10.0pt;font-family:"Courier New";
+    <p class=MsoNormal>Both sender and receiver are not only correlated via a
+        correlator <b><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'>&#8220;7271292&#8221; </span></b>but the direction of
-communication is established as well from <i>SENDER-&gt;RECEIVER</i>. This
-level of logging allows log analysis tools to show related activities as well
-as graph of activity flow from sender to receiver. It is very useful for
-applications that actually exchange information or messages in one or both
-directions. </p>
+        communication is established as well from <i>SENDER-&gt;RECEIVER</i>. This
+        level of logging allows log analysis tools to show related activities as well
+        as graph of activity flow from sender to receiver. It is very useful for
+        applications that actually exchange information or messages in one or both
+        directions. </p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<h3>Event Tags&nbsp;vs. Correlators</h3>
+    <h3>Event Tags&nbsp;vs. Correlators</h3>
 
-<p class=MsoNormal>Applications may also set message tags that could be used to
-find related activities. Message tags are user defined string labels that can
-be used in addition to correlators. The difference between tags and correlator
-is that that tags are not used to tie <code><span style='font-size:10.0pt;
+    <p class=MsoNormal>Applications may also set message tags that could be used to
+        find related activities. Message tags are user defined string labels that can
+        be used in addition to correlators. The difference between tags and correlator
+        is that that tags are not used to tie <code><span style='font-size:10.0pt;
 color:black'>TrackingEvent</span></code> instances together. Tags are used just
-as string labels associated with a particular <code><span style='font-size:
+        as string labels associated with a particular <code><span style='font-size:
 10.0pt;color:black'>TrackingEvent</span></code> instance. Below is an example
-of the code to set a message tag:</p>
+        of the code to set a message tag:</p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>String order_id = <b>&#8220;7271292&#8221;;</b></span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>Throwable error = null;</span></b></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackerConfig config =
 DefaultConfigFactory.getInstance().getConfig(&quot;com.nastel.appl.Receiver&quot;).build();</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingLogger tracker = TrackingLogger.getInstance(config);
 // register and obtain Tracker logger instance</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingActivity activity = tracker.newActivity();
 // create a new application activity</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>activity.start();&nbsp;</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>TrackingEvent event = tracker<b>.newEvent(</b>OpLevel.INFO,
 OpType.RECEIVE, &quot;RecvOrder&quot;, <b>order_id,</b> &quot;Receiving
 order&quot;); // create a tracking event with a correlator and an associated
 operation type</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>event.start(); // start timing a
 tracking event </span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>try {</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ...</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ...</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 order_id = response.getOrderId(); // sample code to obtain order id from the
 received response message</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.setCorrelator(order_id); // assign a correlator from order_id </span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:#0070C0'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.setLocation(getGPS()); // obtain GPS location and set event location </span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:#0070C0'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.setTag(response.getOrderInfo()); // assign message tag</span></b></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.stop(); // stop timing tracking event </span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>} catch (SQLException e) {</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 error = e;</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 event.stop(e); // stop timing tracking event and associate an exception</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 ...</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>} finally {</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 activity.stop(ActivityStatus.EXCEPTION, e); // stop application activity,
 timing, associate an exception</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 activity.tnt(event); // track and trace tracking event, associate tracking
 event with the given activity </span></b></p>
 
-<p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span></b><span style='font-size:10.0pt;font-family:"Courier New";color:black'>tracker<b>.tnt(activity);
 // track and trace application activity</b></span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>}</span></p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<h3>Activity Listeners</h3>
+    <h3>Activity Listeners</h3>
 
-<p class=MsoNormal>Developers can use activity listeners <code><span
-style='font-size:10.0pt;color:black'>ActivityListener </span></code>to be
-notified when activities are started and stopped. Below is an example of an <code><span
-style='font-size:10.0pt;color:black'>ActivityListener </span></code>implementation.
-These listeners can be used for pre and post processing of tracking activities
-before they are actually reported.</p>
+    <p class=MsoNormal>Developers can use activity listeners <code><span
+            style='font-size:10.0pt;color:black'>ActivityListener </span></code>to be
+        notified when activities are started and stopped. Below is an example of an <code><span
+                style='font-size:10.0pt;color:black'>ActivityListener </span></code>implementation.
+        These listeners can be used for pre and post processing of tracking activities
+        before they are actually reported.</p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>class</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> <span
-style='background:silver'>MyActivityHandler</span> </span><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>implements</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>class</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'> <span
+            style='background:silver'>MyActivityHandler</span> </span><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>implements</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>
 ActivityListener {</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><span style='font-size:10.0pt;font-family:"Courier New";color:#646464'>@Override</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;
 </span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>void</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
+            style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>void</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>
 started(Activity activity) {</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 System.</span><i><span style='font-size:10.0pt;font-family:"Courier New";
 color:#0000C0'>out</span></i><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'>.println(</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:#2A00FF'>&quot;activity.id=&quot;</span><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'> + activity.getTrackingId() </span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 + </span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
 activity.name=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> + activity.getName() </span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 + </span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
 started=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> + activity.getStartTime());</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 }</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><span style='font-size:10.0pt;font-family:"Courier New";color:#646464'>@Override</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;
 </span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>void</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> stopped(Activity
+            style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>void</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'> stopped(Activity
 activity) {</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><span style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>//
 post processing of activity: enrich activity with application metrics</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 PropertySnapshot snapshot = </span><b><span style='font-size:10.0pt;font-family:
 "Courier New";color:#7F0055'>new</span></b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'> PropertySnapshot(</span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;APPL_METRICS&quot;</span><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>);</span></p>
+            style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;APPL_METRICS&quot;</span><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>);</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 snapshot.add(</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:#2A00FF'>&quot;appl.activity.count&quot;</span><span style='font-size:
 10.0pt;font-family:"Courier New";color:black'>, </span><i><span
-style='font-size:10.0pt;font-family:"Courier New";color:#0000C0'>activityCount</span></i><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>);</span></p>
+            style='font-size:10.0pt;font-family:"Courier New";color:#0000C0'>activityCount</span></i><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>);</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 snapshot.add(</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:#2A00FF'>&quot;appl.event.count&quot;</span><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>, </span><i><span style='font-size:10.0pt;
 font-family:"Courier New";color:#0000C0'>eventCount</span></i><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>);</span></p>
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>);</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 activity.add(snapshot); </span><span style='font-size:10.0pt;font-family:"Courier New";
 color:#3F7F5F'>// add property snapshot to activity</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 System.</span><i><span style='font-size:10.0pt;font-family:"Courier New";
 color:#0000C0'>out</span></i><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'>.println(</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:#2A00FF'>&quot;activity.id=&quot;</span><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'> + activity.getTrackingId() </span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 + </span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
 activity.name=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> + activity.getName() </span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 + </span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
-elasped.usec=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
+elapsed.usec=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> + activity.getElapsedTime() </span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 + </span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
 snap.count=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> + activity.getSnapshotCount() </span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 + </span><span style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
 item.count=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> + activity.getItemCount());</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;
 }</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>}</span></p>
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>}</span></p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoNormal>Activity listeners can be registered using the following
-example:</p>
+    <p class=MsoNormal>Activity listeners can be registered using the following
+        example:</p>
 
-<p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><span style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>//
 register with the TNT4J framework</span></p>
 
-<p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 TrackerConfig config = DefaultConfigFactory.<i>getInstance</i>().getConfig(args[0]);</span></p>
 
-<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 config.setActivityListener(</span></b><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:#7F0055'>new</span></b><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>
 MyActivityHandler());</span></b></p>
 
-<p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 TrackingLogger tracker = TrackingLogger.<i>getInstance</i>(config.build()); </span></p>
 
-<p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New"'>&nbsp;</span></p>
 
-<p class=MsoNormal>Activity listener will be called for every activity instance
-on start and stop.</p>
+    <p class=MsoNormal>Activity listener will be called for every activity instance
+        on start and stop.</p>
 
-<h3>Sink Listeners</h3>
+    <h3>Sink Listeners</h3>
 
-<p class=MsoNormal>Sink listeners can be used to intercept sink errors (<span
-style='font-size:10.0pt;font-family:"Courier New";color:black;background:silver'>SinkErrorListener</span>),
-events (<span style='font-size:10.0pt;font-family:"Courier New";color:black;
+    <p class=MsoNormal>Sink listeners can be used to intercept sink errors (<span
+            style='font-size:10.0pt;font-family:"Courier New";color:black;background:silver'>SinkErrorListener</span>),
+        events (<span style='font-size:10.0pt;font-family:"Courier New";color:black;
 background:silver'>SinkLogEventListener</span><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>)</span> and filter out events (<span
-style='font-size:10.0pt;font-family:"Courier New";color:black;background:silver'>SinkEventFilter</span>)
-written to the underlying event sink. Each of the listener instances can be
-registered using the following methods.</p>
+                style='font-size:10.0pt;font-family:"Courier New";color:black;background:silver'>SinkEventFilter</span>)
+        written to the underlying event sink. Each of the listener instances can be
+        registered using the following methods.</p>
 
-<p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><span style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>//
 register with the TNT4J framework</span></p>
 
-<p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <span style='background:silver'>TrackerConfig</span> config = DefaultConfigFactory.<i>getInstance</i>().getConfig(args[0]);</span></p>
 
-<p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 config.setActivityListener(</span><b><span style='font-size:10.0pt;font-family:
 "Courier New";color:#7F0055'>new</span></b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'> MyActivityHandler());</span></p>
 
-<p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 TrackingLogger tracker = TrackingLogger.getInstance(config); &nbsp;</span></p>
 
-<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 TrackingLogger.<i>addSinkErrorListener</i>(</span></b><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>new</span></b><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>new</span></b><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>
 MySinkErrorHandler());</span></b></p>
 
-<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 TrackingLogger.<i>addSinkLogEventListener</i>(</span></b><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>new</span></b><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>new</span></b><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>
 MySinkLogHandler());</span></b></p>
 
-<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 TrackingLogger.<i>addSinkEventFilter</i>(</span></b><b><span style='font-size:
 10.0pt;font-family:"Courier New";color:#7F0055'>new</span></b><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>
 MySinkEventFilter());</span></b></p>
 
-<p class=MsoNormal style='text-autospace:none'><b><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;</span></b></p>
 
-<p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><span style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>//
 SinkErrorListener is called when a failure writing to the sink occurs</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>class</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>class</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>
 MySinkErrorHandler </span><b><span style='font-size:10.0pt;font-family:"Courier New";
 color:#7F0055'>implements</span></b><span style='font-size:10.0pt;font-family:
 "Courier New";color:black'> SinkErrorListener {</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>void</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
+            style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>void</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>
 sinkError(SinkError <span style='background:yellow'>event</span>) {</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp; System.</span><i><span style='font-size:10.0pt;font-family:
 "Courier New";color:#0000C0'>out</span></i><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>.println(</span><span style='font-size:
 10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;onSinkError: &quot;</span><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> + <span
-style='background:silver'>event</span>);</span></p>
+            style='font-size:10.0pt;font-family:"Courier New";color:black'> + <span
+            style='background:silver'>event</span>);</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp; </span><b><span style='font-size:10.0pt;font-family:"Courier New";
 color:#7F0055'>if</span></b><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> (<span style='background:silver'>event</span>.getCause() != </span><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>null</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>) <span
-style='background:silver'>event</span>.getCause().printStackTrace();&nbsp;&nbsp;
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>null</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>) <span
+            style='background:silver'>event</span>.getCause().printStackTrace();&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 }</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>}</span></p>
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>}</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></p>
 
-<p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><span style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>//
 SinkLogEventListener is called on every event that is actually written to the
 sink</span></p>
 
-<p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New";color:#3F7F5F'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 // won&#8217;t be called if filtered out using SinkEventFilter</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>class</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>class</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>
 MySinkLogHandler </span><b><span style='font-size:10.0pt;font-family:"Courier New";
 color:#7F0055'>implements</span></b><span style='font-size:10.0pt;font-family:
 "Courier New";color:black'> SinkLogEventListener {</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>void</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
+            style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>void</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>
 sinkLogEvent(SinkLogEvent event) {</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp; System.</span><i><span style='font-size:10.0pt;font-family:
 "Courier New";color:#0000C0'>out</span></i><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>.println(</span><span style='font-size:
 10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;sink.LOG: sev=&quot;</span><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> +
+            style='font-size:10.0pt;font-family:"Courier New";color:black'> +
 event.getSeverity() + </span><span style='font-size:10.0pt;font-family:"Courier New";
 color:#2A00FF'>&quot;, source=&quot;</span><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'> + event.getSource() + </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
+            style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
 msg=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> + event.getLogObject());</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 }</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>}</span></p>
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>}</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></p>
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New"'>&nbsp;</span></p>
 
-<p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
+    <p class=MsoNormal style='text-autospace:none'><span style='font-size:10.0pt;
 font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><span style='font-size:10.0pt;font-family:"Courier New";color:#3F7F5F'>//
 SinkEventFilter is called on every event. The filter determines if the event is
 accepted or not by the sink</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>class</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>class</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>
 MySinkEventFilter </span><b><span style='font-size:10.0pt;font-family:"Courier New";
 color:#7F0055'>implements</span></b><span style='font-size:10.0pt;font-family:
 "Courier New";color:black'> SinkEventFilter {</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>boolean</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
+            style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>boolean</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>
 filter(EventSink sink, TrackingEvent event) {</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp; </span><b><span style='font-size:10.0pt;font-family:"Courier New";
 color:#7F0055'>boolean</span></b><span style='font-size:10.0pt;font-family:
 "Courier New";color:black'> pass = event.getSeverity().ordinal() &gt; OpLevel.</span><i><span
-style='font-size:10.0pt;font-family:"Courier New";color:#0000C0'>INFO</span></i><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>.ordinal()? </span><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>true</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>: </span><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>false</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>;</span></p>
+            style='font-size:10.0pt;font-family:"Courier New";color:#0000C0'>INFO</span></i><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>.ordinal()? </span><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>true</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>: </span><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>false</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>;</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp; System.</span><i><span style='font-size:10.0pt;font-family:"Courier New";
 color:#0000C0'>out</span></i><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'>.println(</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:#2A00FF'>&quot;sink.FILTER: accept=&quot;</span><span style='font-size:
 10.0pt;font-family:"Courier New";color:black'> + pass + </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
+            style='font-size:10.0pt;font-family:"Courier New";color:#2A00FF'>&quot;,
 sev=&quot;</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> + event.getSeverity() + </span><span style='font-size:10.0pt;
 font-family:"Courier New";color:#2A00FF'>&quot;, sink=&quot;</span><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> + sink);</span></p>
+            style='font-size:10.0pt;font-family:"Courier New";color:black'> + sink);</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp; </span><b><span style='font-size:10.0pt;font-family:"Courier New";
 color:#7F0055'>return</span></b><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> pass;</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 }</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>boolean</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
+            style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>boolean</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>
 filter(EventSink sink, TrackingActivity event) {</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 }</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 </span><b><span style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>public</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
-style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>boolean</span></b><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>
+            style='font-size:10.0pt;font-family:"Courier New";color:black'> </span><b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:#7F0055'>boolean</span></b><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>
 filter(EventSink sink, OpLevel level, String msg, Object&#8230;args) {</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 }</span></p>
 
-<p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>}</span></p>
+    <p class=MsoNormal style='margin-left:1.0in;text-autospace:none'><span
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>}</span></p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<h3>LOG4J Log File Structure and Analysis&nbsp;</h3>
+    <h3>LOG4J Log File Structure and Analysis&nbsp;</h3>
 
-<p class=MsoNormal>Below is an example of what actually ends up in log4j log
-file. All related activities are correlated via the activity signature (<span
-style='font-size:8.0pt;font-family:"Courier New"'>Signature:<span
-style='color:red'>87a5c1ce-f46c-4932-aa68-ce026cae07c7</span></span>). Activity
-starts with a message having (<b><span style='font-size:8.0pt;font-family:"Courier New";
+    <p class=MsoNormal>Below is an example of what actually ends up in log4j log
+        file. All related activities are correlated via the activity signature (<span
+                style='font-size:8.0pt;font-family:"Courier New"'>Signature:<span
+                style='color:red'>87a5c1ce-f46c-4932-aa68-ce026cae07c7</span></span>). Activity
+        starts with a message having (<b><span style='font-size:8.0pt;font-family:"Courier New";
 color:#00B050'>Status:BEGIN</span></b>) and ends with (<b><span
-style='font-size:8.0pt;font-family:"Courier New";color:#00B050'>Status:END</span></b>)
-with the same process and thread ID (<b><span style='font-size:8.0pt;
+                style='font-size:8.0pt;font-family:"Courier New";color:#00B050'>Status:END</span></b>)
+        with the same process and thread ID (<b><span style='font-size:8.0pt;
 font-family:"Courier New";color:#0070C0'>PID:17584,TID:22</span></b>) . Each
-activity end message will also include a set of properties measured between
-activity <span style='font-size:10.0pt;font-family:"Courier New"'>start/stop()</span>
-calls such as (<span style='font-size:8.0pt;font-family:"Courier New";
+        activity end message will also include a set of properties measured between
+        activity <span style='font-size:10.0pt;font-family:"Courier New"'>start/stop()</span>
+        calls such as (<span style='font-size:8.0pt;font-family:"Courier New";
 color:#E46C0A'>Property(Type:6,Name:CPU_USAGE_USEC,Value:3400821.8,SampleTime:[10:25:34.767000])</span>),
-which shows&nbsp; the number of CPU microseconds used during execution of the
-given activity as well as the time the measurement was sampled (<span
-style='font-size:8.0pt;font-family:"Courier New";color:#E46C0A'>SampleTime:[10:25:34.767000]</span>).
-These properties are measured per thread per activity and can be used to
-identify activities with high CPU/memory utilization. <b>TNT4J</b> will also
-measure cumulative thread block and wait statistics at the end of each activity
-using (<span style='font-size:8.0pt;font-family:"Courier New";color:#E46C0A'>Property(Type:XX,Name:BLOCKED_XXX,
+        which shows&nbsp; the number of CPU microseconds used during execution of the
+        given activity as well as the time the measurement was sampled (<span
+                style='font-size:8.0pt;font-family:"Courier New";color:#E46C0A'>SampleTime:[10:25:34.767000]</span>).
+        These properties are measured per thread per activity and can be used to
+        identify activities with high CPU/memory utilization. <b>TNT4J</b> will also
+        measure cumulative thread block and wait statistics at the end of each activity
+        using (<span style='font-size:8.0pt;font-family:"Courier New";color:#E46C0A'>Property(Type:XX,Name:BLOCKED_XXX,
 Property(Type:XX,Name:WAITED_XXX</span>) properties. Both sender and receiver
-logs can be correlated via <span style='font-size:8.0pt;font-family:"Courier New";
+        logs can be correlated via <span style='font-size:8.0pt;font-family:"Courier New";
 color:red'>Correlator:</span><b><span style='font-size:10.0pt;font-family:"Courier New";
 color:red'>7271292</span></b> field search. Related tracking events within each
-log can be correlated via grouped <span style='font-size:8.0pt;font-family:
+        log can be correlated via grouped <span style='font-size:8.0pt;font-family:
 "Courier New"'>Signature:<span style='color:red'>XXXXX</span></span> searches
-(e.g. all tracking events with <span style='font-size:8.0pt;font-family:"Courier New"'>Signature:<span
-style='color:red'>87a5c1ce-f46c-4932-aa68-ce026cae07c7)</span></span>. All
-activities by process/thread-id can be related by (<b><span style='font-size:
+        (e.g. all tracking events with <span style='font-size:8.0pt;font-family:"Courier New"'>Signature:<span
+                style='color:red'>87a5c1ce-f46c-4932-aa68-ce026cae07c7)</span></span>. All
+        activities by process/thread-id can be related by (<b><span style='font-size:
 8.0pt;font-family:"Courier New";color:#0070C0'>PID:XXXXX,TID:XX</span></b>)
-search. Each application activity <span style='font-size:8.0pt;font-family:
+        search. Each application activity <span style='font-size:8.0pt;font-family:
 "Courier New"'>TrackActivity</span> and sub-activity <span style='font-size:
 8.0pt;font-family:"Courier New"'>TrackingEvent</span> elapsed times are
-identified by (<b><span style='font-size:8.0pt;font-family:"Courier New";
+        identified by (<b><span style='font-size:8.0pt;font-family:"Courier New";
 color:#C00000'>ElapsedUsec:XXX</span></b><span style='font-size:8.0pt;
 font-family:"Courier New"'>)</span>field. Applications that exchange messages
-as in this example, SENDER-&gt;RECEIVER activities which designate SEND and
-RECEIVE can be marked using <span style='font-size:10.0pt;font-family:"Courier New";
+        as in this example, SENDER-&gt;RECEIVER activities which designate SEND and
+        RECEIVE can be marked using <span style='font-size:10.0pt;font-family:"Courier New";
 color:black'>OpType</span> when creating <code><span style='font-size:10.0pt;
 color:black'>TrackingEvent</span></code> instances. Such markers are shown in
-the log as (<b><span style='font-size:8.0pt;font-family:"Courier New";
+        the log as (<b><span style='font-size:8.0pt;font-family:"Courier New";
 color:red'>Type:SEND or Type:RECEIVE</span></b>). Event location markers are
-identified by (<b><span style='font-size:8.0pt;font-family:"Courier New";
+        identified by (<b><span style='font-size:8.0pt;font-family:"Courier New";
 color:#0070C0'>Location:XXX</span></b>) field and can be any string locator
-associated by the application.</p>
+        associated by the application.</p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoNormal>Sample Sender application log4j file:</p>
+    <p class=MsoNormal>Sample Sender application log4j file:</p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
 font-family:"Courier New"'>10:25:34,719 INFO&nbsp; [http-8080-2] </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>appl.Sender</span><span
-style='font-size:8.0pt;font-family:"Courier New"'> &#8211; <b><span
-style='color:#00B050'>BEGIN</span></b>-<b>TrackActivity</b>(Signature:<span
-style='color:red'>87a5c1ce-f46c-4932-aa68-ce026cae07c7</span>,Type:PROCESSOR,<b><span
-style='color:#00B050'>Status:BEGIN</span></b>,<b><span style='color:#0070C0'>PID:17584,TID:22</span></b>,StartTime:[10:25:34.719000],EndTime:[10:25:34.719000],<span
-style='color:#C00000'>ElapsedUsec:0</span>,OpsCount=0,MsgCount=0,PropCount=0)</span></p>
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>appl.Sender</span><span
+            style='font-size:8.0pt;font-family:"Courier New"'> &#8211; <b><span
+            style='color:#00B050'>BEGIN</span></b>-<b>TrackActivity</b>(Signature:<span
+            style='color:red'>87a5c1ce-f46c-4932-aa68-ce026cae07c7</span>,Type:PROCESSOR,<b><span
+            style='color:#00B050'>Status:BEGIN</span></b>,<b><span style='color:#0070C0'>PID:17584,TID:22</span></b>,StartTime:[10:25:34.719000],EndTime:[10:25:34.719000],<span
+            style='color:#C00000'>ElapsedUsec:0</span>,OpsCount=0,MsgCount=0,PropCount=0)</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
 font-family:"Courier New"'>10:25:34,736 INFO&nbsp; [http-8080-2] </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>appl.Sender</span><span
-style='font-size:8.0pt;font-family:"Courier New"'> - <span style='color:red'>87a5c1ce-f46c-4932-aa68-ce026cae07c7</span>{INFO,
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>appl.Sender</span><span
+            style='font-size:8.0pt;font-family:"Courier New"'> - <span style='color:red'>87a5c1ce-f46c-4932-aa68-ce026cae07c7</span>{INFO,
 [</span><b><span style='font-size:10.0pt;font-family:"Courier New";color:black'>Sending
 Purchase Order</span></b><span style='font-size:8.0pt;font-family:"Courier New"'>],
 <b>TrackingEvent</b>(Signature:f5ab002d-86d2-4980-84e3-a82d1bba1023,Tag:null,<span
-style='color:red'>Correlator:</span></span><b><span style='font-size:10.0pt;
+                style='color:red'>Correlator:</span></span><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:red'>7271292</span></b><span style='font-size:
 8.0pt;font-family:"Courier New"'>,Size:0,Format:MSG_TEXT,Type:REPORT,Transport:FILE),
 Operation(Function:</span><span style='font-size:10.0pt;font-family:"Courier New";
 color:black'> SendOrder</span><span style='font-size:8.0pt;font-family:"Courier New"'>,<b><span
-style='color:red'>Type:SEND</span></b>,<b><span style='color:#0070C0'>Location:26
+            style='color:red'>Type:SEND</span></b>,<b><span style='color:#0070C0'>Location:26
 16.18N</span></b>,CC:SUCCESS,RC:100,StartTime:[10:25:34.736000],EndTime:[10:25:34.736000],<b><span
-style='color:#C00000'>ElapsedUsec:0</span></b>,MsgAgeUsec:0,IdleTime:0,Resource:[null],User:null,Step:0,Level:0,Exception:null)}</span></p>
+            style='color:#C00000'>ElapsedUsec:0</span></b>,MsgAgeUsec:0,IdleTime:0,Resource:[null],User:null,Step:0,Level:0,Exception:null)}</span>
+    </p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
 font-family:"Courier New"'>10:25:34,769 INFO&nbsp; [http-8080-2] </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>appl.Sender</span><span
-style='font-size:8.0pt;font-family:"Courier New"'> &#8211; <b><span
-style='color:#00B050'>END</span></b>-<b>TrackActivity</b>(Signature:<span
-style='color:red'>87a5c1ce-f46c-4932-aa68-ce026cae07c7</span>,Type:PROCESSOR,<b><span
-style='color:#00B050'>Status:END</span></b>,<b><span style='color:#0070C0'>PID:17584,TID:22</span></b>,StartTime:[10:25:34.719000],EndTime:[10:25:34.767000],<b><span
-style='color:#C00000'>ElapsedUsec:48000</span></b>,OpsCount=0,MsgCount=45,PropCount=9),<span
-style='color:#E46C0A'>[Property(Type:6,Name:CPU_USAGE_USEC,Value:3400821.8,SampleTime:[10:25:34.767000]),
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>appl.Sender</span><span
+            style='font-size:8.0pt;font-family:"Courier New"'> &#8211; <b><span
+            style='color:#00B050'>END</span></b>-<b>TrackActivity</b>(Signature:<span
+            style='color:red'>87a5c1ce-f46c-4932-aa68-ce026cae07c7</span>,Type:PROCESSOR,<b><span
+            style='color:#00B050'>Status:END</span></b>,<b><span style='color:#0070C0'>PID:17584,TID:22</span></b>,StartTime:[10:25:34.719000],EndTime:[10:25:34.767000],<b><span
+            style='color:#C00000'>ElapsedUsec:48000</span></b>,OpsCount=0,MsgCount=45,PropCount=9),<span
+            style='color:#E46C0A'>[Property(Type:6,Name:CPU_USAGE_USEC,Value:3400821.8,SampleTime:[10:25:34.767000]),
 Property(Type:4,Name:CPU_PERCENT_USAGE,Value:9.7500625E-5,SampleTime:[10:25:34.767000]),
 Property(Type:12,Name:BLOCKED_COUNT,Value:0,SampleTime:[10:25:34.767000]),
 Property(Type:14,Name:WAITED_COUNT,Value:0,SampleTime:[10:25:34.767000]), Property(Type:13,Name:BLOCKED_TIME_MSEC,Value:0,SampleTime:[10:25:34.767000]),
@@ -1439,41 +1496,42 @@ Property(Type:1,Name:TOTAL_MEMORY,Value:513933312,SampleTime:[10:25:34.767000]),
 Property(Type:3,Name:USED_MEMORY,Value:104798608,SampleTime:[10:25:34.767000]),
 Property(Type:5,Name:MEM_PERCENT_USAGE,Value:20,SampleTime:[10:25:34.767000])]</span></span></p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
-<p class=MsoNormal>Sample Receiver application log4j file:</p>
+    <p class=MsoNormal>Sample Receiver application log4j file:</p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
 font-family:"Courier New"'>16:35:48,032 INFO&nbsp; [http-8080-4] </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>appl.Receiver</span><span
-style='font-size:8.0pt;font-family:"Courier New"'> &#8211; <b><span
-style='color:#00B050'>BEGIN</span></b>-<b>TrackActivity</b>(Signature:<span
-style='color:red'>b16f81f0-6132-45ac-93af-79910295a41d</span>,Type:PROCESSOR,<b><span
-style='color:#00B050'>Status:BEGIN</span></b>,<b><span style='color:#0070C0'>PID:34234,TID:10</span></b>,StartTime:[16:35:48.032000],EndTime:[16:35:48.032000],<span
-style='color:#C00000'>ElapsedUsec:0</span>,OpsCount=0,MsgCount=0,PropCount=0)</span></p>
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>appl.Receiver</span><span
+            style='font-size:8.0pt;font-family:"Courier New"'> &#8211; <b><span
+            style='color:#00B050'>BEGIN</span></b>-<b>TrackActivity</b>(Signature:<span
+            style='color:red'>b16f81f0-6132-45ac-93af-79910295a41d</span>,Type:PROCESSOR,<b><span
+            style='color:#00B050'>Status:BEGIN</span></b>,<b><span style='color:#0070C0'>PID:34234,TID:10</span></b>,StartTime:[16:35:48.032000],EndTime:[16:35:48.032000],<span
+            style='color:#C00000'>ElapsedUsec:0</span>,OpsCount=0,MsgCount=0,PropCount=0)</span></p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
 font-family:"Courier New"'>16:35:48,045 INFO&nbsp; [http-8080-4] </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>appl.Receiver</span><span
-style='font-size:8.0pt;font-family:"Courier New"'> - <span style='color:red'>b16f81f0-6132-45ac-93af-79910295a41d</span>{INFO,
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>appl.Receiver</span><span
+            style='font-size:8.0pt;font-family:"Courier New"'> - <span style='color:red'>b16f81f0-6132-45ac-93af-79910295a41d</span>{INFO,
 [</span><b><span style='font-size:10.0pt;font-family:"Courier New";color:black'>Receiving
 order</span></b><span style='font-size:8.0pt;font-family:"Courier New"'>], <b>TrackingEvent</b>(Signature:a479bae3-64bb-437e-a9e1-efa1457546df,Tag:null,<span
-style='color:red'>Correlator:</span></span><b><span style='font-size:10.0pt;
+            style='color:red'>Correlator:</span></span><b><span style='font-size:10.0pt;
 font-family:"Courier New";color:red'>7271292</span></b><span style='font-size:
 8.0pt;font-family:"Courier New"'>,Size:0,Format:MSG_TEXT,Type:REPORT,Transport:FILE),
 Operation(Function:RecvOrder,<b><span style='color:red'>Type:RECEIVE</span></b>,<b><span
-style='color:#0070C0'>Location:25 17.12N</span></b>,CC:SUCCESS,RC:100,StartTime:[16:35:48.045000],EndTime:[16:35:48.045000],<span
-style='color:#C00000'>ElapsedUsec:0</span>,MsgAgeUsec:0,IdleTime:0,Resource:[null],User:null,Step:0,Level:0,Exception:null)}</span></p>
+                style='color:#0070C0'>Location:25 17.12N</span></b>,CC:SUCCESS,RC:100,StartTime:[16:35:48.045000],EndTime:[16:35:48.045000],<span
+                style='color:#C00000'>ElapsedUsec:0</span>,MsgAgeUsec:0,IdleTime:0,Resource:[null],User:null,Step:0,Level:0,Exception:null)}</span>
+    </p>
 
-<p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
+    <p class=MsoNormal style='margin-left:.5in'><span style='font-size:8.0pt;
 font-family:"Courier New"'>16:35:48,070 INFO&nbsp; [http-8080-4] </span><span
-style='font-size:10.0pt;font-family:"Courier New";color:black'>appl.Receiver</span><span
-style='font-size:8.0pt;font-family:"Courier New"'> &#8211; <b><span
-style='color:#00B050'>END</span></b>-<b>TrackActivity</b>(Signature:<span
-style='color:red'>b16f81f0-6132-45ac-93af-79910295a41d</span>,Type:PROCESSOR,<b><span
-style='color:#00B050'>Status:END</span></b>,<b><span style='color:#0070C0'>PID:34234,TID:10</span></b>,StartTime:[16:35:48.032000],EndTime:[16:35:48.069000],<span
-style='color:#C00000'>ElapsedUsec:37000</span>,OpsCount=0,MsgCount=44,PropCount=9),<span
-style='color:#E46C0A'>[Property(Type:6,Name:CPU_USAGE_USEC,Value:3478822.5,SampleTime:[16:35:48.069000]),
+            style='font-size:10.0pt;font-family:"Courier New";color:black'>appl.Receiver</span><span
+            style='font-size:8.0pt;font-family:"Courier New"'> &#8211; <b><span
+            style='color:#00B050'>END</span></b>-<b>TrackActivity</b>(Signature:<span
+            style='color:red'>b16f81f0-6132-45ac-93af-79910295a41d</span>,Type:PROCESSOR,<b><span
+            style='color:#00B050'>Status:END</span></b>,<b><span style='color:#0070C0'>PID:34234,TID:10</span></b>,StartTime:[16:35:48.032000],EndTime:[16:35:48.069000],<span
+            style='color:#C00000'>ElapsedUsec:37000</span>,OpsCount=0,MsgCount=44,PropCount=9),<span
+            style='color:#E46C0A'>[Property(Type:6,Name:CPU_USAGE_USEC,Value:3478822.5,SampleTime:[16:35:48.069000]),
 Property(Type:4,Name:CPU_PERCENT_USAGE,Value:4.216243243243243E-5,SampleTime:[16:35:48.069000]),
 Property(Type:12,Name:BLOCKED_COUNT,Value:0,SampleTime:[16:35:48.069000]),
 Property(Type:14,Name:WAITED_COUNT,Value:0,SampleTime:[16:35:48.069000]), Property(Type:13,Name:BLOCKED_TIME_MSEC,Value:0,SampleTime:[16:35:48.069000]),
@@ -1482,7 +1540,7 @@ Property(Type:1,Name:TOTAL_MEMORY,Value:513933312,SampleTime:[16:35:48.069000]),
 Property(Type:3,Name:USED_MEMORY,Value:107463800,SampleTime:[16:35:48.069000]),
 Property(Type:5,Name:MEM_PERCENT_USAGE,Value:20,SampleTime:[16:35:48.069000])]</span></span></p>
 
-<p class=MsoNormal>&nbsp;</p>
+    <p class=MsoNormal>&nbsp;</p>
 
 </div>
 
