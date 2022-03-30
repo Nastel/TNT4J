@@ -16,6 +16,7 @@
 package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.util.Map;
@@ -135,7 +136,7 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		super.setConfiguration(props);
 
-		String fName = Utils.getString("FileName", props, fileName);
+		String fName = Utils.getString("FileName", props, null);
 		String folder = Utils.getString("Folder", props, null);
 		if (fName != null) {
 			File f = new File(fName);
@@ -144,15 +145,16 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 				folder = f.getParent();
 			} else {
 				if (folder == null) {
-					folder = f.getParent();
-					if (!folder.startsWith(WORK_DIR)) {
-						folder = FileSystems.getDefault().getPath(logFolder, folder).toString();
+					try {
+						folder = f.getCanonicalFile().getAbsoluteFile().getParent();
+					} catch (IOException | SecurityException exc) {
+						folder = f.getAbsoluteFile().getParent();
 					}
 				}
 			}
 		}
 
-		setFileName(fName);
+		setFileName(fName == null ? fileName : fName);
 		setFolder(folder == null ? logFolder : folder);
 		setAppend(Utils.getBoolean("Append", props, append));
 	}
