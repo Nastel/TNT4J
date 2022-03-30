@@ -535,14 +535,15 @@ public abstract class AbstractEventSink extends TagsSet implements EventSink, Ev
 	@Override
 	public void log(long ttl_sec, Source src, OpLevel sev, ResourceBundle bundle, String key, Object... args) {
 		_checkState();
-		boolean doLog = filterCheck ? isLoggable(ttl_sec, source, sev, Utils.getString(bundle, key), args) : true;
+		String msg = Utils.getString(bundle, key);
+		boolean doLog = filterCheck ? isLoggable(ttl_sec, source, sev, msg, args) : true;
 		if (doLog) {
 			long nttl = defaultTTL(ttl_sec);
 			try {
 				if (!_limiter(1, key.length())) {
 					return;
 				}
-				_log(nttl, src, sev, Utils.getString(bundle, key), args);
+				_log(nttl, src, sev, msg, args);
 				loggedMsgs.incrementAndGet();
 				lastTime.set(System.currentTimeMillis());
 				errorState = false;

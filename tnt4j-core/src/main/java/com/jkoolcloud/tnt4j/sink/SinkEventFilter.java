@@ -15,10 +15,10 @@
  */
 package com.jkoolcloud.tnt4j.sink;
 
+import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.core.TTL;
 import com.jkoolcloud.tnt4j.source.Source;
-import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 
@@ -89,7 +89,7 @@ public interface SinkEventFilter {
 	 * @param msg
 	 *            event message
 	 * @param args
-	 *            arguments passed along side event message
+	 *            arguments passed alongside event message
 	 * @return true if event passed all filters, false otherwise
 	 * @see OpLevel
 	 * @see EventSink
