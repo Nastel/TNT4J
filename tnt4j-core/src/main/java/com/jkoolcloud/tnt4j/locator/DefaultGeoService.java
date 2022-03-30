@@ -19,8 +19,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
  * <p>
- * Default geo locator helper class used for obtaining default/global GEO
- * locator implementation instance.
+ * Default geo locator helper class used for obtaining default/global GEO locator implementation instance.
  * </p>
  * 
  * 
@@ -30,6 +29,13 @@ public class DefaultGeoService {
 	private static GeoLocator geoLocator;
 
 	static {
+		initDefaultGeoLocator();
+	}
+
+	private DefaultGeoService() {
+	}
+
+	private static void initDefaultGeoLocator() {
 		String geoLocatorClass = System.getProperty("tnt4j.default.geo.locator");
 		try {
 			if (geoLocatorClass != null) {
@@ -41,9 +47,6 @@ public class DefaultGeoService {
 			setDefaultGeoLocator(new PropertyGeoLocator("tnt4j.geo.location"));
 			e.printStackTrace();
 		}
-	}
-
-	private DefaultGeoService() {
 	}
 
 	/**

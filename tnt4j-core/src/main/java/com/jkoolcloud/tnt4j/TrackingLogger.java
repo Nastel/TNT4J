@@ -185,6 +185,16 @@ public class TrackingLogger implements Tracker {
 	static {
 		// load configuration and initialize default factories
 		initJavaTiming();
+		initConfigurationAndFactories();
+	}
+
+	/** Cannot instantiate. */
+	private TrackingLogger(Tracker trg) {
+		logger = trg;
+		selector = logger.getTrackingSelector();
+	}
+
+	private static void initConfigurationAndFactories() {
 		TrackerConfig config = DefaultConfigFactory.getInstance()
 				.getConfig(TRACKER_SOURCE, SourceType.APPL, TRACKER_CONFIG).build();
 		DefaultEventSinkFactory.setDefaultEventSinkFactory(config.getDefaultEvenSinkFactory());
@@ -192,6 +202,10 @@ public class TrackingLogger implements Tracker {
 		dumpFactory = config.getDumpSinkFactory();
 		defaultDumpSink = dumpFactory.getInstance();
 
+		initDumps(config, defaultDumpSink);
+	}
+
+	private static void initDumps(TrackerConfig config, DumpSink dumpSink) {
 		boolean enableDefaultDumpProviders = config.getBoolean("tracker.dump.provider.default",
 				Boolean.getBoolean("tnt4j.dump.provider.default"));
 		boolean dumpOnVmHook = config.getBoolean("tracker.dump.on.vm.shutdown",
@@ -202,11 +216,11 @@ public class TrackingLogger implements Tracker {
 				Boolean.getBoolean("tnt4j.flush.on.vm.shutdown"));
 
 		if (enableDefaultDumpProviders) {
-			addDumpProvider(defaultDumpSink, new PropertiesDumpProvider(Utils.VM_NAME));
-			addDumpProvider(defaultDumpSink, new MXBeanDumpProvider(Utils.VM_NAME));
-			addDumpProvider(defaultDumpSink, new ThreadDumpProvider(Utils.VM_NAME));
-			addDumpProvider(defaultDumpSink, new ThreadDeadlockDumpProvider(Utils.VM_NAME));
-			addDumpProvider(defaultDumpSink, new LoggerDumpProvider(Utils.VM_NAME));
+			addDumpProvider(dumpSink, new PropertiesDumpProvider(Utils.VM_NAME));
+			addDumpProvider(dumpSink, new MXBeanDumpProvider(Utils.VM_NAME));
+			addDumpProvider(dumpSink, new ThreadDumpProvider(Utils.VM_NAME));
+			addDumpProvider(dumpSink, new ThreadDeadlockDumpProvider(Utils.VM_NAME));
+			addDumpProvider(dumpSink, new LoggerDumpProvider(Utils.VM_NAME));
 		}
 		if (dumpOnVmHook) {
 			dumpOnShutdown(dumpOnVmHook);
@@ -219,25 +233,22 @@ public class TrackingLogger implements Tracker {
 		}
 	}
 
-	/** Cannot instantiate. */
-	private TrackingLogger(Tracker trg) {
-		logger = trg;
-		selector = logger.getTrackingSelector();
-	}
-
 	/**
 	 * Check and enable java timing for use by activities
-	 *
 	 */
 	private static void initJavaTiming() {
-		ThreadMXBean tmbean = ManagementFactory.getThreadMXBean();
-		boolean cpuTimingSupported = tmbean.isCurrentThreadCpuTimeSupported();
-		if (cpuTimingSupported) {
-			tmbean.setThreadCpuTimeEnabled(cpuTimingSupported);
-		}
-		boolean contTimingSupported = tmbean.isThreadContentionMonitoringSupported();
-		if (contTimingSupported) {
-			tmbean.setThreadContentionMonitoringEnabled(contTimingSupported);
+		try {
+			ThreadMXBean tmBean = ManagementFactory.getThreadMXBean();
+			boolean cpuTimingSupported = tmBean.isCurrentThreadCpuTimeSupported();
+			if (cpuTimingSupported) {
+				tmBean.setThreadCpuTimeEnabled(cpuTimingSupported);
+			}
+			boolean contTimingSupported = tmBean.isThreadContentionMonitoringSupported();
+			if (contTimingSupported) {
+				tmBean.setThreadContentionMonitoringEnabled(contTimingSupported);
+			}
+		} catch (Throwable exc) {
+			exc.printStackTrace();
 		}
 	}
 
@@ -273,7 +284,7 @@ public class TrackingLogger implements Tracker {
 	}
 
 	/**
-	 * Obtain an a list of all registered/active logger instances.
+	 * Obtain a list of all registered/active logger instances.
 	 *
 	 * @return a list of all active tracking logger instances
 	 */
@@ -516,7 +527,7 @@ public class TrackingLogger implements Tracker {
 	 * @param value
 	 *            associated value with a given key
 	 *
-	 * @return true of combination is set, false otherwise
+	 * @return {@code true} of combination is set, {@code false} otherwise
 	 * @see OpLevel
 	 */
 	public boolean isSet(OpLevel sev, Object key, Object value) {
@@ -536,7 +547,7 @@ public class TrackingLogger implements Tracker {
 	 * @param key
 	 *            key to be checked for being trackable
 	 *
-	 * @return true of combination is set, false otherwise
+	 * @return {@code true} of combination is set, {@code false} otherwise
 	 * @see OpLevel
 	 */
 	public boolean isSet(OpLevel sev, Object key) {
@@ -554,7 +565,7 @@ public class TrackingLogger implements Tracker {
 	 * @param sev
 	 *            severity of to be checked
 	 *
-	 * @return true of combination is set, false otherwise
+	 * @return {@code true} of combination is set, {@code false} otherwise
 	 * @see OpLevel
 	 */
 	public boolean isSet(OpLevel sev) {
@@ -584,7 +595,7 @@ public class TrackingLogger implements Tracker {
 
 	/**
 	 * Set sev/key combination for tracking. This is the same as calling {@code set(sev, key, null)}, where value is
-	 * null.
+	 * {@code null}.
 	 *
 	 * @param sev
 	 *            severity of to be checked
@@ -904,7 +915,7 @@ public class TrackingLogger implements Tracker {
 	 * @param msg
 	 *            event text message
 	 * @param args
-	 *            argument list, exception passed along side given message
+	 *            argument list, exception passed alongside given message
 	 * @throws IllegalStateException
 	 *             when tracker is not initialized
 	 * @see TrackingActivity
@@ -930,7 +941,7 @@ public class TrackingLogger implements Tracker {
 	 * @param msg
 	 *            event text message
 	 * @param args
-	 *            argument list, exception passed along side given message
+	 *            argument list, exception passed alongside given message
 	 * @throws IllegalStateException
 	 *             when tracker is not initialized
 	 * @see TrackingActivity
@@ -959,7 +970,7 @@ public class TrackingLogger implements Tracker {
 	 * @param msg
 	 *            event text message
 	 * @param args
-	 *            argument list, exception passed along side given message
+	 *            argument list, exception passed alongside given message
 	 * @throws IllegalStateException
 	 *             when tracker is not initialized
 	 * @see TrackingActivity
@@ -986,7 +997,7 @@ public class TrackingLogger implements Tracker {
 	 * @param msg
 	 *            event binary message
 	 * @param args
-	 *            argument list, exception passed along side given message
+	 *            argument list, exception passed alongside given message
 	 * @throws IllegalStateException
 	 *             when tracker is not initialized
 	 * @see TrackingActivity
@@ -1012,7 +1023,7 @@ public class TrackingLogger implements Tracker {
 	 * @param msg
 	 *            event binary message
 	 * @param args
-	 *            argument list, exception passed along side given message
+	 *            argument list, exception passed alongside given message
 	 * @throws IllegalStateException
 	 *             when tracker is not initialized
 	 * @see TrackingActivity
@@ -1041,7 +1052,7 @@ public class TrackingLogger implements Tracker {
 	 * @param msg
 	 *            event binary message
 	 * @param args
-	 *            argument list, exception passed along side given message
+	 *            argument list, exception passed alongside given message
 	 * @throws IllegalStateException
 	 *             when tracker is not initialized
 	 * @see TrackingActivity
@@ -1186,7 +1197,7 @@ public class TrackingLogger implements Tracker {
 	 * Returns currently registered {@link Tracker} logger associated with the current thread. {@link Tracker} logger is
 	 * associated with the current thread after the register() call. {@link Tracker} logger instance is not thread safe.
 	 *
-	 * @return {@link Tracker} logger associated with the current thread or null of non available.
+	 * @return {@link Tracker} logger associated with the current thread or {@code null} of non-available.
 	 * @see Tracker
 	 */
 	public Tracker getTracker() {
@@ -1314,7 +1325,7 @@ public class TrackingLogger implements Tracker {
 
 	/**
 	 * Add and register a dump provider. Instances of {@code DumpProvider} provide implementation for underlying classes
-	 * that generate application specific dumps. By default supplied dump provider is associated with a default
+	 * that generate application specific dumps. By default, supplied dump provider is associated with a default
 	 * {@code DumpSink}.
 	 *
 	 * @param dp
@@ -1331,7 +1342,7 @@ public class TrackingLogger implements Tracker {
 	 * Add and register a dump provider with a user specified {@code DumpSink}. Instances of {@code DumpProvider}
 	 * interface provide implementation for underlying classes that generate application specific dumps. This dump
 	 * provider will be triggered for the specified {@code DumpSink} only. Instance of {@code DumpSink} can be created
-	 * by {@code DumpDestinatonFactory}. By default {@code PropertiesDumpProvider}, {@code MXBeanDumpProvider},
+	 * by {@code DumpDestinationFactory}. By default {@code PropertiesDumpProvider}, {@code MXBeanDumpProvider},
 	 * {@code ThreadDumpProvider}, {@code ThreadDeadlockDumpProvider} are auto registered with {@code FileDumpSink}
 	 * during initialization of {@code TrackingLogger} class.
 	 *
@@ -1401,7 +1412,7 @@ public class TrackingLogger implements Tracker {
 		try {
 			openDumpSinks();
 			for (DumpProvider dumpProvider : DUMP_PROVIDERS) {
-				List<DumpSink> dlist = DUMP_DEST_TABLE.get(dumpProvider);
+				List<DumpSink> dList = DUMP_DEST_TABLE.get(dumpProvider);
 				DumpCollection dump = null;
 				Throwable error = reason;
 				try {
@@ -1409,9 +1420,9 @@ public class TrackingLogger implements Tracker {
 					if (dump != null && reason != null) {
 						dump.setReason(reason);
 					}
-					notifyDumpListeners(DumpProvider.DUMP_BEFORE, dumpProvider, dump, dlist, reason);
+					notifyDumpListeners(DumpProvider.DUMP_BEFORE, dumpProvider, dump, dList, reason);
 					if (dump != null) {
-						for (DumpSink dest : dlist) {
+						for (DumpSink dest : dList) {
 							dest.write(dump);
 						}
 					}
@@ -1419,7 +1430,7 @@ public class TrackingLogger implements Tracker {
 					ex.initCause(reason);
 					error = ex;
 				} finally {
-					notifyDumpListeners(DumpProvider.DUMP_AFTER, dumpProvider, dump, dlist, error);
+					notifyDumpListeners(DumpProvider.DUMP_AFTER, dumpProvider, dump, dList, error);
 				}
 			}
 		} finally {
@@ -1490,15 +1501,15 @@ public class TrackingLogger implements Tracker {
 		}
 	}
 
-	private static void notifyDumpListeners(int type, Object source, DumpCollection dump, List<DumpSink> dlist) {
-		notifyDumpListeners(type, source, dump, dlist, null);
+	private static void notifyDumpListeners(int type, Object source, DumpCollection dump, List<DumpSink> dList) {
+		notifyDumpListeners(type, source, dump, dList, null);
 	}
 
-	private static void notifyDumpListeners(int type, Object source, DumpCollection dump, List<DumpSink> dlist,
+	private static void notifyDumpListeners(int type, Object source, DumpCollection dump, List<DumpSink> dList,
 			Throwable ex) {
 		synchronized (DUMP_LISTENERS) {
 			for (DumpListener dls : DUMP_LISTENERS) {
-				dls.onDumpEvent(new DumpEvent(source, type, dump, dlist, ex));
+				dls.onDumpEvent(new DumpEvent(source, type, dump, dList, ex));
 			}
 		}
 	}

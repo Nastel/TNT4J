@@ -59,6 +59,13 @@ public class TimeService {
 	static TimeInfo timeInfo;
 
 	static {
+		initScheduleUpdates();
+	}
+
+	private TimeService() {
+	}
+
+	private static void initScheduleUpdates() {
 		try {
 			timeOverheadNanos = calculateOverhead(ONE_M);
 			timeOverheadMillis = (timeOverheadNanos / ONE_M);
@@ -69,9 +76,6 @@ public class TimeService {
 		} finally {
 			scheduleUpdates();
 		}
-	}
-
-	private TimeService() {
 	}
 
 	/**

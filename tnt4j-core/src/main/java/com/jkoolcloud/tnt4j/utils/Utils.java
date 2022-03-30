@@ -108,7 +108,7 @@ public class Utils {
 	 */
 	public static final Object[] NO_PARAMS_O = {};
 
-	public static final int CLIENT_CODE_STACK_INDEX;
+	public static final int CLIENT_CODE_STACK_INDEX = initClientCodeStackIndex();
 
 	/**
 	 * Replacements configuration RegEx pattern.
@@ -116,7 +116,7 @@ public class Utils {
 	public static final Pattern REP_CFG_PATTERN = Pattern
 			.compile("\"(\\s*([^\"\\\\]|\\\\.)+\\s*)\"->\"(\\s*([^\"\\\\]|\\\\.)+\\s*)\"");
 
-	static {
+	private static int initClientCodeStackIndex() {
 		int index = 0;
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
 		for (StackTraceElement frame : stack) {
@@ -125,7 +125,8 @@ public class Utils {
 				break;
 			}
 		}
-		CLIENT_CODE_STACK_INDEX = index;
+
+		return index;
 	}
 
 	private static long initVMID() {

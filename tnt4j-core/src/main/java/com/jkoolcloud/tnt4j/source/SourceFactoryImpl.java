@@ -54,16 +54,32 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	private static final String[] DEFAULT_SOURCES;
 
 	static {
-		int i = 0;
 		DEFAULT_SOURCES = new String[SourceType.length()];
+		initDefaultSources(DEFAULT_SOURCES);
+	}
+
+	private String rootFqn = DEFAULT_SOURCE_ROOT_FQN;
+	private String rootSSN = DEFAULT_SOURCE_ROOT_SSN;
+	private String[] defaultSources = DEFAULT_SOURCES.clone();
+
+	private Map<String, ?> config;
+	private Source rootSource;
+	private GeoLocator geoLocator = DefaultGeoService.getInstance();
+
+	public SourceFactoryImpl() {
+		rootSource = newFromFQN(rootFqn);
+		geoLocator = DefaultGeoService.getInstance();
+	}
+
+	private static void initDefaultSources(String[] defaultSources) {
+		int i = 0;
 		String location = DefaultGeoService.getInstance().getCurrentCoords();
 		if (location != null) {
-			DEFAULT_SOURCES[SourceType.GEOADDR.ordinal()] = location;
+			defaultSources[SourceType.GEOADDR.ordinal()] = location;
 		}
 		for (SourceType type : SourceType.values()) {
-			String typeValue = UNKNOWN_SOURCE;
 			String typeString = type.toString().toUpperCase();
-			typeValue = System.getProperty(TNT4J_SOURCE_PFIX + typeString);
+			String typeValue = typeValue = System.getProperty(TNT4J_SOURCE_PFIX + typeString);
 
 			if (typeValue == null) {
 				if (typeString.equalsIgnoreCase(SourceType.SERVER.name())) {
@@ -82,21 +98,8 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 				// points to another environment variable
 				typeValue = System.getProperty(typeValue.substring(Utils.SYS_PROP_PREFIX.length()), UNKNOWN_SOURCE);
 			}
-			DEFAULT_SOURCES[i++] = typeValue;
+			defaultSources[i++] = typeValue;
 		}
-	}
-
-	private String rootFqn = DEFAULT_SOURCE_ROOT_FQN;
-	private String rootSSN = DEFAULT_SOURCE_ROOT_SSN;
-	private String[] defaultSources = DEFAULT_SOURCES.clone();
-
-	private Map<String, ?> config;
-	private Source rootSource;
-	private GeoLocator geoLocator = DefaultGeoService.getInstance();
-
-	public SourceFactoryImpl() {
-		rootSource = newFromFQN(rootFqn);
-		geoLocator = DefaultGeoService.getInstance();
 	}
 
 	@Override
