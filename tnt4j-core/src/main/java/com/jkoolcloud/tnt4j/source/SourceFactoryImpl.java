@@ -79,7 +79,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 		}
 		for (SourceType type : SourceType.values()) {
 			String typeString = type.toString().toUpperCase();
-			String typeValue = typeValue = System.getProperty(TNT4J_SOURCE_PFIX + typeString);
+			String typeValue = System.getProperty(TNT4J_SOURCE_PFIX + typeString);
 
 			if (typeValue == null) {
 				if (typeString.equalsIgnoreCase(SourceType.SERVER.name())) {
