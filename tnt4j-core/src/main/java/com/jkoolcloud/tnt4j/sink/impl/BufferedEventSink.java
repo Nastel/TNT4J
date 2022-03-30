@@ -62,12 +62,12 @@ public class BufferedEventSink extends TagsSet implements EventSink, IOShutdown 
 	private BufferedEventSinkFactory factory;
 
 	// sink stat counters
-	private AtomicLong totalCount = new AtomicLong(0);
-	private AtomicLong signalCount = new AtomicLong(0);
-	private AtomicLong skipCount = new AtomicLong(0);
-	private AtomicLong dropCount = new AtomicLong(0);
-	private AtomicLong rqCount = new AtomicLong(0);
-	private AtomicLong errorCount = new AtomicLong(0);
+	private final AtomicLong totalCount = new AtomicLong(0);
+	private final AtomicLong signalCount = new AtomicLong(0);
+	private final AtomicLong skipCount = new AtomicLong(0);
+	private final AtomicLong dropCount = new AtomicLong(0);
+	private final AtomicLong rqCount = new AtomicLong(0);
+	private final AtomicLong errorCount = new AtomicLong(0);
 
 	/**
 	 * Create a buffered sink instance with a specified out sink maximum capacity. Event will be dropped if capacity is
@@ -517,7 +517,7 @@ public class BufferedEventSink extends TagsSet implements EventSink, IOShutdown 
 	 *            type of signal to send
 	 * @param wait
 	 *            max time to wait
-	 * @param tunit
+	 * @param tUnit
 	 *            time unit for wait
 	 * @return sink factory instance
 	 *
@@ -526,8 +526,8 @@ public class BufferedEventSink extends TagsSet implements EventSink, IOShutdown 
 	 *
 	 * @see #signal(com.jkoolcloud.tnt4j.sink.SinkLogEvent, long, java.util.concurrent.TimeUnit)
 	 */
-	protected BufferedEventSink signal(int signalType, long wait, TimeUnit tunit) throws IOException {
-		return signal(new SinkLogEvent(outSink, Thread.currentThread(), signalType), wait, tunit);
+	protected BufferedEventSink signal(int signalType, long wait, TimeUnit tUnit) throws IOException {
+		return signal(new SinkLogEvent(outSink, Thread.currentThread(), signalType), wait, tUnit);
 	}
 
 	/**
@@ -537,18 +537,18 @@ public class BufferedEventSink extends TagsSet implements EventSink, IOShutdown 
 	 *            signal event to send
 	 * @param wait
 	 *            max time to wait
-	 * @param tunit
+	 * @param tUnit
 	 *            time unit for wait
 	 * @return sink factory instance
 	 *
 	 * @throws IOException
 	 *             if IO error occurs when writing sink log event
 	 */
-	protected BufferedEventSink signal(SinkLogEvent evt, long wait, TimeUnit tunit) throws IOException {
+	protected BufferedEventSink signal(SinkLogEvent evt, long wait, TimeUnit tUnit) throws IOException {
 		_checkState();
 		signalCount.incrementAndGet();
 		_writeEvent(evt, true);
-		LockSupport.parkNanos(this, tunit.toNanos(wait));
+		LockSupport.parkNanos(this, tUnit.toNanos(wait));
 		return this;
 	}
 
