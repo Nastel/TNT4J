@@ -15,6 +15,7 @@
  */
 package com.jkoolcloud.tnt4j.sink.impl;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.TimeUnit;
@@ -110,7 +111,10 @@ public class BufferedEventSinkFactory extends AbstractEventSinkFactory {
 			throw new ConfigException("Missing EventSinkFactory implementation", props);
 		}
 		if (pooledFactory == null) {
-			pooledFactory = new PooledLoggerFactoryImpl();
+			PooledLoggerFactoryImpl pf = new PooledLoggerFactoryImpl();
+			pf.setConfiguration(new HashMap<>());
+
+			pooledFactory = pf;
 		}
 	}
 }
