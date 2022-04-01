@@ -1,6 +1,6 @@
 TNT4J -- Track and Trace API for Java
 =======================================
-TNT4J is about tracking and tracing applications, activities, transactions, behavior and performance via an easy to use API that behaves 
+TNT4J is about tracking and tracing applications, activities, transactions, behavior and performance via an easy-to-use API that behaves 
 much like a logging framework.
 
 Why track and trace your applications?
@@ -89,8 +89,8 @@ class MyEventFilter implements SinkEventFilter {
 }
 ```
 Embed TNT4J into your application and realize the benefits in a matter if minutes. 
-TNT4J can take advantage of other lower level logging frameworks such as slf4j, log4j.
-Default TNT4J binding is based on slf4j.
+TNT4J can take advantage of other lower level logging frameworks such as `slf4j`, `log4j` and `JUL`.
+Default TNT4J binding is based on `JUL`.
 
 ### TNT4J Stream Configuration
 TNT4J stream configuration is defined in `tnt4j.properties` which is located by specifying `tnt4j.config` java property (example 
@@ -101,12 +101,12 @@ common for all these files (e.g. `-Dtnt4j.config.path=./config/`). Then `tnt4j.p
 relative paths to java property `tnt4j.config.path` defined path (e.g. `import: tnt4j-common.properties` will be like 
 `./config/tnt4j-common.properties`).
 
-By default common configuration files root path is resolved in following sequence:
+By default, common configuration files root path is resolved in following sequence:
 * defined using system property `tnt4j.config.path`
 * parent path of system property `tnt4j.config` defined configuration file
 * path defined by `./config` value
 
-This configuration file defines all event sources, target event sink bindings such as file, MQTT, Kafka, HTTPS etc as well stream specific 
+This configuration file defines all event sources, target event sink bindings such as file, MQTT, Kafka, HTTPS etc. as well stream specific 
 attributes. Here is example of a sample stream configuration:
 ```properties
 ; TNT4J Common Definitions
@@ -139,7 +139,7 @@ attributes. Here is example of a sample stream configuration:
 	like: com.myappl
 }
 ```
-**NOTE:** `import` property allows to define *absolute file path* or file path *relative to common configuration files root path*. If some 
+**NOTE:** `import` property allows defining *absolute file path* or file path *relative to common configuration files root path*. If some 
 files are out of common configuration files root path scope, use configuration property `import.path`, allowing to define individual path 
 for `import` defined file within same stanza, e.g.:
 ```properties
@@ -267,9 +267,9 @@ Other logging frameworks can be supported by implementing `EventSinkFactory` & `
 All TNT4J messages can be routed via a SLF4J event sink and therefore can take advantage of the underlying logging frameworks supported by 
 SLF4J.
 
-Developers may also enrich event messages and pass context to TNT4J using hash tag enrichment scheme.
-Hash tags are used to decorate event messages with important meta data about each log message. 
-This meta data is used to generate TNT4J tracking events:
+Developers may also enrich event messages and pass context to TNT4J using hashtag enrichment scheme.
+Hashtags are used to decorate event messages with important metadata about each log message. 
+This metadata is used to generate TNT4J tracking events:
 ```java
 logger.info("Starting a tnt4j activity #beg=Test, #app=" + Log4JTest.class.getName());
 logger.warn("First log message #app=" + Log4JTest.class.getName() + ", #msg='1 Test warning message'");
@@ -277,7 +277,7 @@ logger.error("Second log message #app=" + Log4JTest.class.getName() + ", #msg='2
 logger.info("Ending a tnt4j activity #end=Test, #app=" + Log4JTest.class.getName() + " #%i/order-no=" + orderNo  + " #%d:currency/amount=" + amount);
 ```
 Above example groups messages between first and last into a related logical collection called `Activity`. Activity is a collection of 
-logically related events/messages. Hash tags `#beg`, `#end` are used to demarcate activity boundaries. This method also supports nested 
+logically related events/messages. Hashtags `#beg`, `#end` are used to demarcate activity boundaries. This method also supports nested 
 activities.
 
 User defined fields can be reported using `#[data-type][:value-type]/your-metric-name=your-value` convention (e.g. `#%i/order-no=62627` or 
@@ -305,7 +305,7 @@ All `value-type` qualifiers are defined in `com.jkoolcloud.tnt4j.core.ValueTypes
 	timestamp	-- timestamp
 	addr 		-- generic address
 ```
-Not specifying a qualifier defaults to auto detection of type by `TNT4JAppender`. 
+Not specifying a qualifier defaults to auto-detection of type by `TNT4JAppender`. 
 First `number` qualifier is tested and defaults to `string` if the test fails (e.g. `#order-no=62627`).
 
 ### JUL (java.util.logging) Event Sink integration
@@ -444,7 +444,7 @@ TNT4J is not just about logging messages, it is also about measurements and metr
 well as user defined metrics. TNT4J lets you report metrics at the time of the logged event. Below is an example of creating a snapshot 
 (collection of metrics) and attaching it to an activity:
 ```java
-// post processing of activity: enrich activity with application metrics
+// post-processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
 TrackingActivity activity = logger.newActivity(OpLevel.INFO, "Order");
 ...
@@ -460,7 +460,7 @@ A `Snapshot` is a collection of name, value pairs called `Property`. Each `Prope
 
 Below is an example of reporting a snapshot:
 ```java
-// post processing of activity: enrich activity with application metrics
+// post-processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
 TrackingActivity activity = logger.newActivity(OpLevel.INFO, "Order");
 ...
@@ -471,7 +471,7 @@ activity.tnt(snapshot); // add and report property snapshot associated with this
 ```
 Below is an example of reporting standalone snapshot:
 ```java
-// post processing of activity: enrich activity with application metrics
+// post-processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
 ...
 PropertySnapshot snapshot = logger.newSnapshot("Order", "Payment");
@@ -492,7 +492,7 @@ for root cause analysis as well as visualization of message flow.
 
 Below is an example of a sender application:
 ```java
-// post processing of activity: enrich activity with application metrics
+// post-processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
 
 // report sending an order with a specific correlator (order_id)
@@ -504,7 +504,7 @@ logger.tnt(OpLevel.INFO, OpType.SEND, "SendOrder", order_id,
 ```
 Here is an example of a receiver application:
 ```java
-// post processing of activity: enrich activity with application metrics
+// post-processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
 ...
 // report received an order with a specific correlator (order_id)
@@ -517,18 +517,18 @@ synchronization define java property `-Dtnt4j.time.server=ntp-server:123`.
 
 **TIP:** Developers should use `TimeServer.currentTimeMillis()` instead of `System.currentTimeMillis()` to obtain time adjusted to NTP time. 
 TNT4J also maintains a microsecond resolution clock using `Useconds.CURRENT.get()` which returns the number of microseconds between the 
-current time and midnight, January 1, 1970 UTC (NTP adjusted). TNT4J automatically measures and adjusts clock drift between NTP, 
+current time and midnight, January 1, 1970, UTC (NTP adjusted). TNT4J automatically measures and adjusts clock drift between NTP, 
 `System.currentTimeMillis()` and `System.nanoTime()` clocks to ensure accurate microsecond precision/accuracy timing spanning VMs, devices, 
-servers, geo locations.
+servers, geo-locations.
 
 ### Tracking Associations
 TNT4J allows developers to track associations between sources. Source is a logical definition of an entity such as application, server, 
-network, geo location. 
+network, geo-location. 
 Here is an example of a source: `APP=WebAppl#SERVER=MYSERVER#DATACENTER=DC1#GEOADDR=New York`, which means application `WebAppl` deployed on 
 server `MYSERVER`, located on data center `DC1`, located in `New York`. Say you want track an association between 2 applications that 
 exchange data, where one application sends data to another:
 ```java
-// post processing of activity: enrich activity with application metrics
+// post-processing of activity: enrich activity with application metrics
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
 ...
 TrackingEvent event = logger.newEvent(...);
@@ -577,7 +577,7 @@ for (TrackingLogger lg: loggers) {
 About TNT4J
 ======================================
 Track and Trace 4 Java API, Application logging framework for correlation, diagnostics and tracking of application activities within and 
-across **multiple applications, runtime, servers, geo locations. This API is specifically designed to troubleshoot distributed, concurrent, 
+across **multiple applications, runtime, servers, geo-locations. This API is specifically designed to troubleshoot distributed, concurrent, 
 multi-threaded, composite applications** and includes activity correlation, application state dumps, performance and user defined metrics.
 
 Here is short list of TNT4J features:
@@ -618,7 +618,7 @@ TNT4J is fully plug-in and play tracking, tracing and logging framework that con
 specified by a developer or set of correlators (across thread, application boundaries). Activities may have a set of under defined 
 properties which are grouped into property snapshots (PropertySnapshot).
 * **Tracking Event** -- a message with associated start/stop time stamps, severity, user defined message, correlator, tag, location (such as 
-GPS, server etc) and other event properties.
+GPS, server etc.) and other event properties.
 * **Property** -- a single user defined key, value, type pair for reporting custom metric or attribute. Properties can be packed into event, 
 activity or snapshot.
 * **Property snapshot** -- a collection of properties with category, name and a time stamp associated with when snapshot is taken. 
@@ -630,9 +630,9 @@ formatted string. It can be defined globally for a `source` using `event.formatt
 severity, key, value combination. Such combinations are stored in token repository.
 * **Token Repository** -- an underlying storage used by tracking selector that actually stores and maintains severity, key, value 
 combinations. Such repository can be backed by a file, cache, memory or any other desired medium. Token repositories can be shared across 
-application boundaries and therefore conditional logging can span multiple applications, runtimes, geo locations.
-* **Sink** -- sink is a basic destination where objects can be written (e.g file, socket, http, etc.)
-* **Event Sink** -- destination where events, activities and messages are recorded. Such destination can be file, socket. Sinks are 
+application boundaries and therefore conditional logging can span multiple applications, runtimes, geo-locations.
+* **Sink** -- sink is a basic destination where objects can be written (e.g. file, socket, http, etc.)
+* **Event Sink** -- destination where events, activities and messages are recorded. Such destination can be a file, socket. Sinks are 
 associated with formatters which are called to format objects before writing to the sink.
 * **Dump Sink** -- sink where application dumps are recorded.
 * **Dump** -- a property snapshot that deals with application state (name, value pairs). Application can generate user defined dumps to 
@@ -663,7 +663,7 @@ Kafka sink [module](tnt4j-kafka-sink) additionally depends on:
 * [Kafka Clients](https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients/)
 
 To build TNT4J:
-*  Please use JCenter or Maven and these dependencies will be downloaded automatically.
+* Please use JCenter or Maven and these dependencies will be downloaded automatically.
     * To build the project, run Maven goals `clean package`
     * To build the project and install to local repo, run Maven goals `clean install`
     * To make distributable release assemblies use one of profiles: `pack-bin` or `pack-all`:
@@ -671,8 +671,9 @@ To build TNT4J:
         * containing binary (including `test` package), `source` and `javadoc` distribution: run `mvn -P pack-all`
     * To make Maven required `source` and `javadoc` packages, use profile `pack-maven`
     * To make Maven central compliant release having `source`, `javadoc` and all signed packages, use `maven-release` profile
-*  You will need to point TNT4J to it's property file via the `-Dtnt4j.config` argument. This property file is located here in GitHub under 
-the `/config` directory. If using JCenter or Maven, it can be found in the zip assembly along with the source code and javadoc.
+* You will need to bind TNT4J to configuration properties file (usually `tnt4j.properties`) via the Java system property `tnt4j.config` (as
+  `java` CLI argument `-Dtnt4j.config`). This property file is located here in GitHub under the `/config` directory. If using JCenter or
+  Maven, it can be found in the zip assembly along with the source code and javadoc.
 
 Known Projects Using TNT4J
 ===============================================
