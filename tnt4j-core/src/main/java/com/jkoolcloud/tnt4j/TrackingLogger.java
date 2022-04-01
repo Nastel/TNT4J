@@ -158,7 +158,6 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @see SinkErrorListener
  *
  * @version $Revision: 21 $
- *
  */
 public class TrackingLogger implements Tracker {
 	private static final String TRACKER_CONFIG = System.getProperty("tnt4j.tracking.logger.config");
@@ -172,6 +171,8 @@ public class TrackingLogger implements Tracker {
 	private static final List<DumpProvider> DUMP_PROVIDERS = new ArrayList<>(10);
 	private static final List<DumpSink> DUMP_DESTINATIONS = new ArrayList<>(10);
 	private static final List<DumpListener> DUMP_LISTENERS = new ArrayList<>(10);
+
+	private static final TrackerFactory defaultTrackerFactory = new DefaultTrackerFactory();
 
 	private static final DumpHook dumpHook = new DumpHook();
 	private static final FlushShutdown flushShutdown = new FlushShutdown();
@@ -355,10 +356,12 @@ public class TrackingLogger implements Tracker {
 	 * @param config
 	 *            tracking configuration to be used to create a tracker instance
 	 * @return tracking logger instance
+	 *
 	 * @see TrackerConfig
 	 */
 	public static TrackingLogger getInstance(TrackerConfig config) {
-		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config));
+		TrackingLogger tracker = new TrackingLogger(
+				(factory == null ? defaultTrackerFactory : factory).getInstance(config));
 		registerTracker(tracker);
 		return tracker;
 	}
@@ -369,13 +372,13 @@ public class TrackingLogger implements Tracker {
 	 * @param sourceName
 	 *            application source name associated with this logger
 	 * @return tracking logger instance
+	 *
 	 * @see TrackerConfig
+	 * @see #getInstance(com.jkoolcloud.tnt4j.config.TrackerConfig)
 	 */
 	public static TrackingLogger getInstance(String sourceName) {
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName);
-		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
-		registerTracker(tracker);
-		return tracker;
+		return getInstance(config.build());
 	}
 
 	/**
@@ -386,13 +389,13 @@ public class TrackingLogger implements Tracker {
 	 * @param configMap
 	 *            configuration map containing source/properties configuration
 	 * @return tracking logger instance
+	 *
 	 * @see TrackerConfig
+	 * @see #getInstance(com.jkoolcloud.tnt4j.config.TrackerConfig)
 	 */
 	public static TrackingLogger getInstance(String sourceName, Map<String, Properties> configMap) {
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName, SourceType.APPL, configMap);
-		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
-		registerTracker(tracker);
-		return tracker;
+		return getInstance(config.build());
 	}
 
 	/**
@@ -403,13 +406,13 @@ public class TrackingLogger implements Tracker {
 	 * @param type
 	 *            application source type associated with this logger
 	 * @return tracking logger instance
+	 *
 	 * @see TrackerConfig
+	 * @see #getInstance(com.jkoolcloud.tnt4j.config.TrackerConfig)
 	 */
 	public static TrackingLogger getInstance(String sourceName, SourceType type) {
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName, type);
-		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
-		registerTracker(tracker);
-		return tracker;
+		return getInstance(config.build());
 	}
 
 	/**
@@ -422,13 +425,13 @@ public class TrackingLogger implements Tracker {
 	 * @param configMap
 	 *            configuration map containing source/properties configuration
 	 * @return tracking logger instance
+	 *
 	 * @see TrackerConfig
+	 * @see #getInstance(com.jkoolcloud.tnt4j.config.TrackerConfig)
 	 */
 	public static TrackingLogger getInstance(String sourceName, SourceType type, Map<String, Properties> configMap) {
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName, type, configMap);
-		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
-		registerTracker(tracker);
-		return tracker;
+		return getInstance(config.build());
 	}
 
 	/**
@@ -437,13 +440,13 @@ public class TrackingLogger implements Tracker {
 	 * @param clazz
 	 *            application class used as source name
 	 * @return tracking logger instance
+	 *
 	 * @see TrackerConfig
+	 * @see #getInstance(com.jkoolcloud.tnt4j.config.TrackerConfig)
 	 */
 	public static TrackingLogger getInstance(Class<?> clazz) {
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(clazz);
-		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
-		registerTracker(tracker);
-		return tracker;
+		return getInstance(config.build());
 	}
 
 	/**
@@ -454,13 +457,13 @@ public class TrackingLogger implements Tracker {
 	 * @param configMap
 	 *            configuration map containing source/properties configuration
 	 * @return tracking logger instance
+	 *
 	 * @see TrackerConfig
+	 * @see #getInstance(com.jkoolcloud.tnt4j.config.TrackerConfig)
 	 */
 	public static TrackingLogger getInstance(Class<?> clazz, Map<String, Properties> configMap) {
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(clazz, SourceType.APPL, configMap);
-		TrackingLogger tracker = new TrackingLogger(factory.getInstance(config.build()));
-		registerTracker(tracker);
-		return tracker;
+		return getInstance(config.build());
 	}
 
 	/**
