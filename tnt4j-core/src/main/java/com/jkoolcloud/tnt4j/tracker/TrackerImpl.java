@@ -33,6 +33,7 @@ import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
 import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.utils.LightStack;
 import com.jkoolcloud.tnt4j.utils.Utils;
+import com.jkoolcloud.tnt4j.uuid.DefaultUUIDFactory;
 
 /**
  * <p>
@@ -92,7 +93,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 		}
 		this.keepContext = keepContext;
 		this.tConfig = config;
-		this.id = newUUID();
+		this.id = newUUID(config);
 		this.selector = tConfig.getTrackingSelector();
 		this.eventSink = tConfig.getEventSink();
 		open();
@@ -812,11 +813,19 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 	}
 
 	public String newUUID(TrackerConfig tConfig) {
-		return tConfig.getUUIDFactory().newUUID();
+		if (tConfig.getUUIDFactory() == null) {
+			tConfig.build();
+		}
+		return tConfig.getUUIDFactory() == null ? DefaultUUIDFactory.getFallbackUUID()
+				: tConfig.getUUIDFactory().newUUID();
 	}
 
 	public String newUUID(TrackerConfig tConfig, Object obj) {
-		return tConfig.getUUIDFactory().newUUID();
+		if (tConfig.getUUIDFactory() == null) {
+			tConfig.build();
+		}
+		return tConfig.getUUIDFactory() == null ? DefaultUUIDFactory.getFallbackUUID()
+				: tConfig.getUUIDFactory().newUUID(obj);
 	}
 
 }
