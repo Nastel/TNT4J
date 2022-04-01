@@ -32,10 +32,10 @@ import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
  * @see OpLevel
  */
 public class ActivityTask implements Runnable {
-	String activityName;
-	TrackingLogger logger;
-	TrackingActivity activity;
-	OpLevel level;
+	protected String activityName;
+	protected TrackingLogger logger;
+	protected TrackingActivity activity;
+	protected OpLevel level;
 
 	/**
 	 * Create a task for a specific logger, default activity name and {@link OpLevel#INFO} severity

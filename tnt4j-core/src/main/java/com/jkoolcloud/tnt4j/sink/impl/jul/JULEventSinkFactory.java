@@ -18,7 +18,7 @@ package com.jkoolcloud.tnt4j.sink.impl.jul;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.nio.file.FileSystems;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Formatter;
@@ -58,7 +58,8 @@ public class JULEventSinkFactory extends FileEventSinkFactory {
 	static {
 		String simpleFormat = System.getProperty("java.util.logging.SimpleFormatter.format");
 		if (simpleFormat == null) {
-			System.setProperty("java.util.logging.SimpleFormatter.format", "%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %5$s%6$s%n");
+			System.setProperty("java.util.logging.SimpleFormatter.format",
+					"%1$tY-%1$tm-%1$td %1$tH:%1$tM:%1$tS.%1$tL %4$s %5$s%6$s%n");
 		}
 		_loadConfig(System.getProperty("tnt4j.jul.config"));
 	}
@@ -105,11 +106,11 @@ public class JULEventSinkFactory extends FileEventSinkFactory {
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
 		String pattern = (fileName != null) ? fileName : (name + DEF_PATTERN + FILE_SINK_FACTORY_LOG_EXT);
-		File logDir = FileSystems.getDefault().getPath(logFolder).toFile();
+		File logDir = Paths.get(logFolder).toFile();
 		if (!logDir.exists()) {
 			logDir.mkdirs();
 		}
-		pattern = FileSystems.getDefault().getPath(logFolder, pattern).toString();
+		pattern = Paths.get(logFolder, pattern).toString();
 		return configureSink(new JULEventSink(name, pattern, byteLimit, logCount, append, level, frmt, julFmt));
 	}
 

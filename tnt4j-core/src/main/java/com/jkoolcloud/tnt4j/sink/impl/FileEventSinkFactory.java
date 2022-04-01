@@ -17,8 +17,8 @@ package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
 
@@ -55,7 +55,7 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 	public static final String FILE_SINK_FACTORY_DEF_FOLDER;
 
 	static {
-		Path defLogPath = FileSystems.getDefault().getPath(TMP_DIR, Utils.getVMName());
+		Path defLogPath = Paths.get(TMP_DIR, Utils.getVMName());
 		FILE_SINK_FACTORY_DEF_FOLDER = System.getProperty("tnt4j.file.event.sink.factory.folder",
 				defLogPath.toString());
 	}
@@ -121,7 +121,7 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
 		String fname = (fileName != null) ? fileName : (name + FILE_SINK_FACTORY_LOG_EXT);
-		fname = FileSystems.getDefault().getPath(logFolder, fname).toString();
+		fname = Paths.get(logFolder, fname).toString();
 		return configureSink(new FileEventSink(name, fname, append, frmt));
 	}
 
