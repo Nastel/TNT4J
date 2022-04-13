@@ -64,7 +64,6 @@ public class JULEventSinkFactory extends FileEventSinkFactory {
 		_loadConfig(System.getProperty("tnt4j.jul.config"));
 	}
 
-	String logConfigFile;
 	int logCount = DEF_LOG_COUNT;
 	int byteLimit = DEF_LOG_SIZE_BYTES;
 	Level level = Level.parse(DEF_LEVEL);
@@ -105,6 +104,8 @@ public class JULEventSinkFactory extends FileEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
+		_applyConfig();
+
 		String pattern = (fileName != null) ? fileName : (name + DEF_PATTERN + FILE_SINK_FACTORY_LOG_EXT);
 		File logDir = Paths.get(logFolder).toFile();
 		if (!logDir.exists()) {
@@ -117,6 +118,7 @@ public class JULEventSinkFactory extends FileEventSinkFactory {
 	@Override
 	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		super.setConfiguration(props);
+
 		logCount = Utils.getInt("LogCount", props, logCount);
 		byteLimit = Utils.getInt("ByteLimit", props, byteLimit);
 		level = Level.parse(Utils.getString("Level", props, level.getName()));

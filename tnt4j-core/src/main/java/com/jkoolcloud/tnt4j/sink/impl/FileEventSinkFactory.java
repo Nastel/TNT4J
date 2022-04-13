@@ -22,6 +22,8 @@ import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.format.SimpleFormatter;
@@ -120,6 +122,8 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
+		_applyConfig();
+
 		String fname = (fileName != null) ? fileName : (name + FILE_SINK_FACTORY_LOG_EXT);
 		fname = Paths.get(logFolder, fname).toString();
 		return configureSink(new FileEventSink(name, fname, append, frmt));
@@ -127,35 +131,33 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
 	protected EventSink configureSink(EventSink sink) {
-		super.configureSink(sink);
-
-		return sink;
+		return super.configureSink(sink);
 	}
 
 	@Override
 	public void setConfiguration(Map<String, ?> props) throws ConfigException {
 		super.setConfiguration(props);
 
-		String fName = Utils.getString("FileName", props, null);
-		String folder = Utils.getString("Folder", props, null);
-		if (fName != null) {
-			File f = new File(fName);
-			fName = f.getName();
+		setFileName(Utils.getString("FileName", props, fileName));
+		setFolder(Utils.getString("Folder", props, logFolder));
+		setAppend(Utils.getBoolean("Append", props, append));
+	}
+
+	private void _applyConfig() {
+		if (!StringUtils.equals(FILE_SINK_FACTORY_DEF_FILE, fileName)) {
+			File f = new File(fileName);
+			setFileName(f.getName());
 			if (f.isAbsolute()) {
-				folder = f.getParent();
+				setFolder(f.getParent());
 			} else {
-				if (folder == null) {
+				if (FILE_SINK_FACTORY_DEF_FOLDER.equals(logFolder)) {
 					try {
-						folder = f.getCanonicalFile().getAbsoluteFile().getParent();
+						setFolder(f.getCanonicalFile().getAbsoluteFile().getParent());
 					} catch (IOException | SecurityException exc) {
-						folder = f.getAbsoluteFile().getParent();
+						setFolder(f.getAbsoluteFile().getParent());
 					}
 				}
 			}
 		}
-
-		setFileName(fName == null ? fileName : fName);
-		setFolder(folder == null ? logFolder : folder);
-		setAppend(Utils.getBoolean("Append", props, append));
 	}
 }
