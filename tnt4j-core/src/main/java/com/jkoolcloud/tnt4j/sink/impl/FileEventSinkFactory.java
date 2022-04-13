@@ -143,7 +143,10 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 		setAppend(Utils.getBoolean("Append", props, append));
 	}
 
-	private void _applyConfig() {
+	/**
+	 * Applies configuration or setters defined file path and name.
+	 */
+	protected void _applyConfig() {
 		if (!StringUtils.equals(FILE_SINK_FACTORY_DEF_FILE, fileName)) {
 			File f = new File(fileName);
 			setFileName(f.getName());
