@@ -95,7 +95,7 @@ public class Utils {
 	/**
 	 * Random number generator
 	 */
-	private static Random rand = new Random();
+	private static final Random rand = new Random();
 
 	/**
 	 * Class method search empty parameters array.
@@ -297,7 +297,7 @@ public class Utils {
 	 *
 	 * @return return current stack frame
 	 */
-	public int getClientCodeStackIndex() {
+	public static int getClientCodeStackIndex() {
 		return CLIENT_CODE_STACK_INDEX;
 	}
 
@@ -530,15 +530,11 @@ public class Utils {
 	 * @return MD5 message digester
 	 */
 	public static MessageDigest getMD5Digester() {
-		MessageDigest msgDigest = null;
-
 		try {
-			msgDigest = MessageDigest.getInstance("MD5");
+			return MessageDigest.getInstance("MD5");
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}
-
-		return msgDigest;
 	}
 
 	/**
@@ -966,7 +962,7 @@ public class Utils {
 		Throwable root = ExceptionUtils.getRootCause(ex);
 		String msgsStr = ex == null ? "" : ex.toString();
 		if (root != null && !root.equals(ex)) {
-			msgsStr += ", root cause: " + root.toString();
+			msgsStr += ", root cause: " + root;
 		}
 
 		return msgsStr;
