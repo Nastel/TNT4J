@@ -176,7 +176,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 *             if failed to parse string based on specified format
 	 */
 	public UsecTimestamp(String timeStampStr) throws ParseException {
-		this(timeStampStr, DEFAULT_FORMAT, DEFAULT_TZ);
+		this(timeStampStr, DEFAULT_FORMAT);
 	}
 
 	/**
@@ -327,7 +327,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		SimpleDateFormat dateFormat;
 
 		if (StringUtils.isEmpty(formatStr)) {
-			dateFormat = new SimpleDateFormat();
+			dateFormat = new SimpleDateFormat(DFLT_JAVA_FORMAT);
 		} else {
 			// Java date formatter cannot deal with usecs, so we need to extract those ourselves
 			int fFsecPos = formatStr.indexOf('S');
@@ -971,7 +971,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		df.setTimeZone(tz == null ? DEFAULT_TZ : tz);
 		tsStr = df.format(new Date(msecs));
 
-		return tsStr.replace(" Z", " 00:00");
+		return tsStr.replace("Z", "+00:00");
 	}
 
 	@Override

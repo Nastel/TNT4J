@@ -16,7 +16,7 @@
 package com.jkoolcloud.tnt4j.source;
 
 /**
- * Provides list of valid source types. Source is a logical nested entity that expresses container of application,
+ * Provides list of valid source types. Source is a logically nested entity that expresses container of application,
  * server, application server, run-time, etc.
  *
  * @see Source
@@ -24,8 +24,8 @@ package com.jkoolcloud.tnt4j.source;
  */
 public enum SourceType {
 	// Resource types
-	GENERIC, USER, APPL, PROCESS, APPSERVER, SERVER, RUNTIME, VIRTUAL,
-	NETWORK, DEVICE, NETADDR, GEOADDR, DATACENTER, DATASTORE, CACHE,
+	GENERIC, USER, APPL, PROCESS, APPSERVER, SERVER, RUNTIME, VIRTUAL, //
+	NETWORK, DEVICE, NETADDR, GEOADDR, DATACENTER, DATASTORE, CACHE, //
 	SERVICE, QUEUE, FILE, TOPIC;
 
 	private static SourceType[] enumList = SourceType.values();
