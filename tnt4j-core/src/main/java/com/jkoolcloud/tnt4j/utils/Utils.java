@@ -18,6 +18,7 @@ package com.jkoolcloud.tnt4j.utils;
 import java.io.*;
 import java.lang.management.ManagementFactory;
 import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.CharsetEncoder;
@@ -1351,14 +1352,23 @@ public class Utils {
 	 *             nullary constructor; or if the instantiation fails for some other reason
 	 * @throws ClassNotFoundException
 	 *             if the class cannot be located
+	 * @throws SecurityException 
+	 * @throws NoSuchMethodException 
+	 * @throws InvocationTargetException 
+	 * @throws IllegalArgumentException 
+	 * @throws InvocationTargetException 
+	 * @throws NoSuchMethodException 
+	 * @throws SecurityException 
 	 */
 	public static Object createInstance(String className)
-			throws InstantiationException, IllegalAccessException, ClassNotFoundException {
+			throws InstantiationException, IllegalAccessException, 
+			ClassNotFoundException, IllegalArgumentException, 
+			InvocationTargetException, NoSuchMethodException, SecurityException {
 		if (className == null) {
 			return null;
 		}
 		Class<?> classObj = Class.forName(className);
-		return classObj.newInstance();
+		return classObj.getClass().getDeclaredConstructor().newInstance();
 	}
 
 	/**

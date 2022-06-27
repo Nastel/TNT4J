@@ -159,7 +159,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *
  * @version $Revision: 21 $
  */
-public class TrackingLogger implements Tracker {
+public class TrackingLogger implements Tracker, AutoCloseable {
 	private static final String TRACKER_CONFIG = System.getProperty("tnt4j.tracking.logger.config");
 	private static final String TRACKER_SOURCE = System.getProperty("tnt4j.tracking.logger.source",
 			TrackingLogger.class.getName());
@@ -250,15 +250,6 @@ public class TrackingLogger implements Tracker {
 			}
 		} catch (Throwable exc) {
 			exc.printStackTrace();
-		}
-	}
-
-	@Override
-	protected void finalize() throws Throwable {
-		try {
-			close();
-		} finally {
-			super.finalize();
 		}
 	}
 

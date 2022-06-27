@@ -60,13 +60,14 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class FileTokenRepository implements TokenRepository, Configurable {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(FileTokenRepository.class);
 	private static ConcurrentHashMap<TokenRepositoryListener, EventListener<?>[]> LISTEN_MAP = new ConcurrentHashMap<>(49);
-	private static long DEFAULT_REFRESH_DELAY = TimeUnit.SECONDS.toMillis(20);
+	private static long DEFAULT_REFRESH_DELAY = TimeUnit.SECONDS.toMillis(0);
 
 	private String configName = null;
 	private BasicConfigurationBuilder<PropertiesConfiguration> config = null;
 	private PeriodicReloadingTrigger cfgReloadTrigger = null;
 	protected Map<String, ?> settings = null;
-	private long refDelay;
+	
+	private long refDelay = DEFAULT_REFRESH_DELAY;
 
 	/**
 	 * Create file/property based token repository instance based on default file name or url specified by
@@ -183,13 +184,13 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	}
 
 	@Override
-	public void open() throws IOException {
+	public synchronized void open() throws IOException {
 		if (isOpen() || (configName == null)) {
 			return;
 		}
 		try {
 			initConfig();
-			if (cfgReloadTrigger != null) {
+			if (cfgReloadTrigger != null && !cfgReloadTrigger.isRunning()) {
 				cfgReloadTrigger.start();
 			}
 		} catch (Throwable e) {
@@ -204,7 +205,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	 * @throws MalformedURLException
 	 *             if malformed configuration file name
 	 */
-	protected void initConfig() throws MalformedURLException {
+	protected synchronized void initConfig() throws MalformedURLException {
 		int urlIndex = configName.indexOf("://");
 
 		PropertiesBuilderParameters params = new Parameters().properties();
@@ -220,6 +221,10 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 			}
 		}
 
+		if (cfgReloadTrigger != null) {
+			cfgReloadTrigger.stop();
+			cfgReloadTrigger = null;
+		}
 		if (refDelay > 0) {
 			params.setReloadingRefreshDelay(refDelay);
 			ReloadingFileBasedConfigurationBuilder<PropertiesConfiguration> builder = new ReloadingFileBasedConfigurationBuilder<>(PropertiesConfiguration.class);
@@ -230,13 +235,12 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 			config = new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class);
 			config.configure(params);
 		}
-
 	}
 
 	@Override
-	public void close() throws IOException {
+	public synchronized void close() throws IOException {
 		if (cfgReloadTrigger != null) {
-			cfgReloadTrigger.shutdown();
+			cfgReloadTrigger.stop();
 		}
 	}
 

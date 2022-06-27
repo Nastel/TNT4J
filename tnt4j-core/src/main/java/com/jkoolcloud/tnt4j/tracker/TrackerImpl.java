@@ -53,7 +53,7 @@ import com.jkoolcloud.tnt4j.uuid.DefaultUUIDFactory;
  * @version $Revision: 21 $
  *
  */
-public class TrackerImpl implements Tracker, SinkErrorListener {
+public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(TrackerImpl.class);
 	private static ThreadLocal<LightStack<TrackingActivity>> ACTIVITY_STACK = new ThreadLocal<>();
 
@@ -677,15 +677,6 @@ public class TrackerImpl implements Tracker, SinkErrorListener {
 			return event;
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
-		}
-	}
-
-	@Override
-	protected void finalize() throws Throwable {
-		try {
-			close();
-		} finally {
-			super.finalize();
 		}
 	}
 
