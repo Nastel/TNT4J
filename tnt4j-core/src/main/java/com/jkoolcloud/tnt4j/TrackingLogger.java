@@ -180,8 +180,8 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	private static DumpSink defaultDumpSink = null;
 	private static TrackerFactory factory = null;
 
-	private Tracker logger;
-	private TrackingSelector selector;
+	private final Tracker logger;
+	private final TrackingSelector selector;
 
 	static {
 		// load configuration and initialize default factories
@@ -229,9 +229,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 		if (dumpOnException) {
 			dumpOnUncaughtException();
 		}
-		if (flushOnVmHook) {
-			flushOnShutdown(flushOnVmHook);
-		}
+		flushOnShutdown(flushOnVmHook);
 	}
 
 	/**
@@ -326,11 +324,14 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	public static void shutdown(TrackingLogger logger) {
 		try {
 			EventSink sink = logger.getEventSink();
+			Utils.close(sink);
 			if (sink instanceof IOShutdown) {
 				IOShutdown shut = (IOShutdown) sink;
 				shut.shutdown(null);
 			}
 		} catch (IOException e) {
+		} finally {
+			Utils.close(logger);
 		}
 	}
 
@@ -1447,17 +1448,14 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	}
 
 	/**
-	 * Enable/disable VM shutdown hook that will automatically flush all registered trackers.
+	 * Adds VM shutdown hook that will automatically flush and shutdown all registered trackers.
 	 *
 	 * @param flag
-	 *            enable/disable VM shutdown hook that triggers a flush
+	 *            enable/disable flush triggering
 	 */
 	public static void flushOnShutdown(boolean flag) {
-		if (flag) {
-			Runtime.getRuntime().addShutdownHook(flushShutdown);
-		} else {
-			Runtime.getRuntime().removeShutdownHook(flushShutdown);
-		}
+		flushShutdown.setFlush(flag);
+		Runtime.getRuntime().addShutdownHook(flushShutdown);
 	}
 
 	/**

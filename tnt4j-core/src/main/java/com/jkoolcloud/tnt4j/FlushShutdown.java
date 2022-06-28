@@ -17,18 +17,37 @@ package com.jkoolcloud.tnt4j;
 
 /**
  * <p>
- * This class implements a shutdown hook that automatically flushes all registered trackers/sinks.
+ * This class implements a shutdown hook that automatically flushes and shuts down all registered trackers/sinks.
  * </p>
  * 
- * 
- * @version $Revision: 1 $
- * 
+ * @version $Revision: 2 $
  */
 public class FlushShutdown extends Thread {
+
+	private boolean flush = false;
+
+	/**
+	 * Constructs a new instance of FlushShutdown hook thread.
+	 */
+	public FlushShutdown() {
+		setName("TrackingLogger/FlushShutdownHook");
+	}
+
+	/**
+	 * Sets flag indicating whether to run tracking loggers flush on JVM shutdown.
+	 * 
+	 * @param flush
+	 *            flag indicating whether to run tracking loggers flush on JVM shutdown
+	 */
+	public void setFlush(boolean flush) {
+		this.flush = flush;
+	}
+
 	@Override
 	public void run() {
-		setName("TrackingLogger/FlushShutdownHook");
-		TrackingLogger.flushAll();
+		if (flush) {
+			TrackingLogger.flushAll();
+		}
 		TrackingLogger.shutdownAll();
 	}
 }
