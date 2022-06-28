@@ -43,10 +43,11 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * 
  */
 public class DefaultTrackingSelector implements TrackingSelector, Configurable {
-	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(DefaultTrackingSelector.class);
+	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(DefaultTrackingSelector.class);
 	private static final boolean DEFAULT_RETURN_UNDEFINED = Utils.getBoolean("tnt4j.selector.undefined.isset",
 			System.getProperties(), true);
-	private HashMap<Object, PropertyToken> tokenMap = new HashMap<>(89);
+
+	private final HashMap<Object, PropertyToken> tokenMap = new HashMap<>(89);
 	private Map<String, ?> config = null;
 	private TokenRepository tokenRepository = null;
 	private PropertyListenerImpl listener = null;
@@ -137,7 +138,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 				}
 			}
 			if (propertyToken != null) {
-				logger.log(OpLevel.DEBUG, "putkey: repository={0}, token={1}", tokenRepository, propertyToken);
+				logger.log(OpLevel.DEBUG, "putKey: repository={0}, token={1}", tokenRepository, propertyToken);
 				tokenMap.put(key, propertyToken);
 			}
 		} catch (Throwable ex) {
@@ -157,7 +158,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 			return DEFAULT_RETURN_UNDEFINED;
 		}
 		PropertyToken token = tokenMap.get(key);
-		return (token != null ? token.isMatch(sev, key, value) : false);
+		return token != null && token.isMatch(sev, key, value);
 	}
 
 	@Override

@@ -58,7 +58,7 @@ public class SinkLogEvent extends EventObject implements TTL {
 	private Object[] argList = null;
 	private int signalType = SIGNAL_PROCESS;
 	private long ttl;
-	private long startTimeNanos = System.nanoTime();
+	private final long startTimeNanos = System.nanoTime();
 	private long stopTimeNanos = 0;
 
 	/**
@@ -77,15 +77,15 @@ public class SinkLogEvent extends EventObject implements TTL {
 	/**
 	 * Create a new log event instance designed as a signal
 	 * 
-	 * @param sink
-	 *            sink associated with the event
+	 * @param source
+	 *            source object associated with the event
 	 * @param th
 	 *            thread associated with this event
 	 * @param signalType
 	 *            signal type
 	 */
-	public SinkLogEvent(EventSink sink, Thread th, int signalType) {
-		this(sink, signalType);
+	public SinkLogEvent(Object source, Thread th, int signalType) {
+		this(source, signalType);
 		this.logObj = th;
 	}
 
@@ -201,9 +201,9 @@ public class SinkLogEvent extends EventObject implements TTL {
 	}
 
 	/**
-	 * Return Thread associated with event producer, null if not available
+	 * Return thread associated with event producer, {@code null} if not available
 	 * 
-	 * @return Thread associated with event producer, null if not available
+	 * @return thread associated with event producer, {@code null} if not available
 	 */
 	public Thread getSignal() {
 		return logObj instanceof Thread ? (Thread) logObj : null;
@@ -230,7 +230,7 @@ public class SinkLogEvent extends EventObject implements TTL {
 	/**
 	 * Returns resource bundle associated with this event
 	 * 
-	 * @return resource bundle or null of none
+	 * @return resource bundle or {@code null} of none
 	 */
 	public ResourceBundle getResourceBundle() {
 		return bundle != null ? bundle : ((EventSink) getSource()).getResourceBundle();
@@ -323,7 +323,8 @@ public class SinkLogEvent extends EventObject implements TTL {
 	public String toString() {
 		return super.toString() //
 				+ "{ source: " + getSource() //
-				+ ", signal: " + getSignalType() + ", sev: " + level //
+				+ ", signal.type: " + signalType //
+				+ ", sev: " + level //
 				+ ", ttl: " + ttl //
 				+ ", log.obj: " + Utils.quote(logObj) //
 				+ ", ev.source: " + Utils.quote(evSrc) //

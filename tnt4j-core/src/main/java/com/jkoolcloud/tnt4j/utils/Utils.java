@@ -1339,7 +1339,8 @@ public class Utils {
 	}
 
 	/**
-	 * Create object instance based on specific class name
+	 * Create object instance based on specific class name. Nullary (no-arg) constructor is used to instantiate object
+	 * instance.
 	 *
 	 * @param className
 	 *            name of the class
@@ -1352,23 +1353,25 @@ public class Utils {
 	 *             nullary constructor; or if the instantiation fails for some other reason
 	 * @throws ClassNotFoundException
 	 *             if the class cannot be located
-	 * @throws SecurityException 
-	 * @throws NoSuchMethodException 
-	 * @throws InvocationTargetException 
-	 * @throws IllegalArgumentException 
-	 * @throws InvocationTargetException 
-	 * @throws NoSuchMethodException 
-	 * @throws SecurityException 
+	 * @throws IllegalArgumentException
+	 *             if class has no nullary constructor defined
+	 * @throws InvocationTargetException
+	 *             if the underlying constructor throws an exception
+	 * @throws NoSuchMethodException
+	 *             if class has no nullary constructor defined
+	 * @throws SecurityException
+	 *             if security manager prohibits access or use of class constructor
 	 */
 	public static Object createInstance(String className)
-			throws InstantiationException, IllegalAccessException, 
-			ClassNotFoundException, IllegalArgumentException, 
+			throws InstantiationException, IllegalAccessException, ClassNotFoundException, IllegalArgumentException,
 			InvocationTargetException, NoSuchMethodException, SecurityException {
 		if (className == null) {
 			return null;
 		}
 		Class<?> classObj = Class.forName(className);
-		return classObj.getClass().getDeclaredConstructor().newInstance();
+		Constructor<?> constructor = classObj.getDeclaredConstructor();
+		constructor.setAccessible(true);
+		return constructor.newInstance();
 	}
 
 	/**

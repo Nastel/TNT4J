@@ -27,8 +27,8 @@ import org.apache.commons.configuration2.PropertiesConfiguration;
 import org.apache.commons.configuration2.builder.BasicConfigurationBuilder;
 import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
 import org.apache.commons.configuration2.builder.ReloadingFileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.FileBasedBuilderParameters;
 import org.apache.commons.configuration2.builder.fluent.Parameters;
-import org.apache.commons.configuration2.builder.fluent.PropertiesBuilderParameters;
 import org.apache.commons.configuration2.event.ConfigurationErrorEvent;
 import org.apache.commons.configuration2.event.ConfigurationEvent;
 import org.apache.commons.configuration2.event.EventListener;
@@ -58,15 +58,15 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 
 public class FileTokenRepository implements TokenRepository, Configurable {
-	private static EventSink logger = DefaultEventSinkFactory.defaultEventSink(FileTokenRepository.class);
-	private static ConcurrentHashMap<TokenRepositoryListener, EventListener<?>[]> LISTEN_MAP = new ConcurrentHashMap<>(49);
+	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(FileTokenRepository.class);
+	private static final ConcurrentHashMap<TokenRepositoryListener, EventListener<?>[]> LISTEN_MAP = new ConcurrentHashMap<>(49);
 	private static long DEFAULT_REFRESH_DELAY = TimeUnit.SECONDS.toMillis(0);
 
 	private String configName = null;
 	private BasicConfigurationBuilder<PropertiesConfiguration> config = null;
 	private PeriodicReloadingTrigger cfgReloadTrigger = null;
 	protected Map<String, ?> settings = null;
-	
+
 	private long refDelay = DEFAULT_REFRESH_DELAY;
 
 	/**
@@ -175,7 +175,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 			}
 		} catch (ConfigurationException exc) {
 		}
-		return super.toString() + "{url: " + getName() + ", delay: " + refDelay + ", config: " + cfg + "}";
+		return super.toString() + "{url: " + configName + ", delay: " + refDelay + ", config: " + cfg + "}";
 	}
 
 	@Override
@@ -208,7 +208,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	protected synchronized void initConfig() throws MalformedURLException {
 		int urlIndex = configName.indexOf("://");
 
-		PropertiesBuilderParameters params = new Parameters().properties();
+		FileBasedBuilderParameters params = new Parameters().fileBased();
 
 		if (urlIndex > 0) {
 			params.setURL(new URL(configName));
@@ -221,26 +221,24 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 			}
 		}
 
-		if (cfgReloadTrigger != null) {
-			cfgReloadTrigger.stop();
-			cfgReloadTrigger = null;
-		}
+		close();
+
 		if (refDelay > 0) {
-			params.setReloadingRefreshDelay(refDelay);
-			ReloadingFileBasedConfigurationBuilder<PropertiesConfiguration> builder = new ReloadingFileBasedConfigurationBuilder<>(PropertiesConfiguration.class);
-			builder.configure(params);
-			cfgReloadTrigger = new PeriodicReloadingTrigger(builder.getReloadingController(), null, refDelay, TimeUnit.MILLISECONDS);
+			ReloadingFileBasedConfigurationBuilder<PropertiesConfiguration> builder = new ReloadingFileBasedConfigurationBuilder<>(
+					PropertiesConfiguration.class).configure(params);
+			cfgReloadTrigger = new PeriodicReloadingTrigger(builder.getReloadingController(), null, refDelay,
+					TimeUnit.MILLISECONDS);
 			config = builder;
 		} else {
-			config = new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class);
-			config.configure(params);
+			config = new FileBasedConfigurationBuilder<>(PropertiesConfiguration.class).configure(params);
 		}
 	}
 
 	@Override
-	public synchronized void close() throws IOException {
+	public synchronized void close() {
 		if (cfgReloadTrigger != null) {
 			cfgReloadTrigger.stop();
+			cfgReloadTrigger = null;
 		}
 	}
 
@@ -298,8 +296,8 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 }
 
 class TokenConfigurationListener implements EventListener<ConfigurationEvent> {
-	TokenRepositoryListener repListener = null;
-	EventSink logger = null;
+	final TokenRepositoryListener repListener;
+	final EventSink logger;
 
 	public TokenConfigurationListener(TokenRepositoryListener listener, EventSink log) {
 		repListener = listener;
@@ -333,8 +331,8 @@ class TokenConfigurationListener implements EventListener<ConfigurationEvent> {
 }
 
 class TokenConfigurationErrorListener implements EventListener<ConfigurationErrorEvent> {
-	TokenRepositoryListener repListener = null;
-	EventSink logger = null;
+	final TokenRepositoryListener repListener;
+	final EventSink logger;
 
 	public TokenConfigurationErrorListener(TokenRepositoryListener listener, EventSink log) {
 		repListener = listener;
