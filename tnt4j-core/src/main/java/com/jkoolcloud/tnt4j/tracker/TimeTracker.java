@@ -26,7 +26,7 @@ import com.google.common.cache.CacheBuilder;
  * This class implements time tracker for a set of keys. The class maintains a cache of time stamp hits and measures
  * time since the last hit on a set of keys or by thread.
  *
- * @version $Revision: 1$
+ * @version $Revision: 1 $
  */
 public class TimeTracker {
 
@@ -234,7 +234,7 @@ public class TimeTracker {
 	 */
 	public long getHitAge(String key, TimeUnit tunit) {
 		TimeStats last = EVENT_MAP.get(key);
-		return last != null ? last.getHitAge(tunit): 0;
+		return last != null ? last.getHitAge(tunit) : 0;
 	}
 
 	/**
@@ -248,7 +248,7 @@ public class TimeTracker {
 	 */
 	public long getMissAge(String key, TimeUnit tunit) {
 		TimeStats last = EVENT_MAP.get(key);
-		return last != null ? last.getMissAge(tunit): 0;
+		return last != null ? last.getMissAge(tunit) : 0;
 	}
 
 	/**
