@@ -646,8 +646,8 @@ Requirements
 * JDK 1.8+
 
 TNT4J depends on the following external packages:
-* [Apache commons configuration](http://commons.apache.org/proper/commons-configuration/)
-    * [Apache commons beanutils](http://commons.apache.org/proper/commons-beanutils/) (runtime dependency for `commons-configuration`)
+* [Apache commons configuration2](http://commons.apache.org/proper/commons-configuration2/)
+* [Apache commons beanutils](http://commons.apache.org/proper/commons-beanutils/)
 * [Apache commons lang3](http://commons.apache.org/proper/commons-lang/)
 * [Apache commons net](http://commons.apache.org/proper/commons-net/)
 * [Apache commons text](http://commons.apache.org/proper/commons-text/)

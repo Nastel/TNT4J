@@ -30,7 +30,7 @@
     <artifactId>tnt4j-kafka-sink</artifactId>
 
     <properties>
-        <kafka.clients.version>3.1.0</kafka.clients.version>
+        <kafka.clients.version>3.2.0</kafka.clients.version>
     </properties>
 
     <build>
@@ -53,7 +53,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.2.2</version>
                 <configuration>
                     <archive>
                         <!--<index>true</index>-->
