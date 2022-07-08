@@ -50,11 +50,19 @@
                             <include>*-sources.jar</include>
                             <include>*-tests.jar</include>
                             <include>*-javadoc.jar</include>
-                            <include>*-all.jar</include>
+                            <!--include>*-all.jar</include-->
                         </includes>
                         <excludes>
                             <exclude>original-*.jar</exclude>
                         </excludes>
+                    </fileSet>
+                    <!-- produced optional jars -->
+                    <fileSet>
+                        <outputDirectory>opt</outputDirectory>
+                        <directory>${project.build.directory}</directory>
+                        <includes>
+                            <include>*-all.jar</include>
+                        </includes>
                     </fileSet>
                     <!-- configuration -->
                     <fileSet>
