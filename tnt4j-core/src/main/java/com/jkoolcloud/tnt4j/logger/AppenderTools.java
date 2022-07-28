@@ -17,6 +17,7 @@ package com.jkoolcloud.tnt4j.logger;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringEscapeUtils;
 
 import com.jkoolcloud.tnt4j.TrackingLogger;
@@ -169,8 +170,7 @@ public class AppenderTools implements AppenderConstants {
 				activity.setSeverity(OpLevel.valueOf(value));
 			} else if (key.equalsIgnoreCase(PARAM_EXCEPTION_LABEL)) {
 				activity.setException(value);
-			} else if (key.equalsIgnoreCase(PARAM_BEGIN_LABEL) || key.equals(PARAM_END_LABEL)
-					|| key.equals(PARAM_APPL_LABEL)) {
+			} else if (StringUtils.equalsAnyIgnoreCase(key, PARAM_BEGIN_LABEL, PARAM_END_LABEL, PARAM_APPL_LABEL)) {
 				// skip and process later
 			} else if ((activity != null) && !Utils.isEmpty(key) && !Utils.isEmpty(value)) {
 				// add unknown attribute into snapshot

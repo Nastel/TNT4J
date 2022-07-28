@@ -22,6 +22,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.jkoolcloud.tnt4j.TrackingLogger;
 import com.jkoolcloud.tnt4j.core.OpLevel;
 
@@ -175,8 +177,7 @@ public class TLog implements Closeable {
 		synchronized (scanner) {
 			while (scanner.hasNext()) {
 				String line = scanner.nextLine();
-				if (stopKey != null && line.startsWith(stopKey))
-				{
+				if (stopKey != null && line.startsWith(stopKey)) {
 					break;
 				}
 				logger.log(level, line);
@@ -188,11 +189,11 @@ public class TLog implements Closeable {
 		HashMap<String, String> options = new HashMap<>();
 		options.put("stopkey", "end");
 		for (int i = 0; i < args.length; i++) {
-			if (args[i].equals("--source") || (args[i].equals("-s"))) {
+			if (StringUtils.equalsAny(args[i], "--source", "-s")) {
 				options.put("source", args[++i]);
-			} else if (args[i].equals("--level") || (args[i].equals("-l"))) {
+			} else if (StringUtils.equalsAny(args[i], "--level", "-l")) {
 				options.put("level", args[++i]);
-			} else if (args[i].equals("--stopkey") || (args[i].equals("-k"))) {
+			} else if (StringUtils.equalsAny(args[i], "--stopkey", "-k")) {
 				options.put("stopkey", args[++i]);
 			} else {
 				throw new IllegalArgumentException("Unknown option: " + args[i]);

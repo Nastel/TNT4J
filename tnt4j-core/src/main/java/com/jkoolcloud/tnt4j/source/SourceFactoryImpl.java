@@ -18,6 +18,8 @@ package com.jkoolcloud.tnt4j.source;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
 import com.jkoolcloud.tnt4j.locator.DefaultGeoService;
@@ -237,7 +239,7 @@ public class SourceFactoryImpl implements SourceFactory, Configurable {
 	 * @return source name based on given name and type
 	 */
 	protected String getNameFromType(String name, SourceType type) {
-		if (name == null || name.equals("?")) {
+		if (StringUtils.equalsAny(name, null, "?")) {
 			String srcValue = defaultSources[type.ordinal()];
 			if (srcValue == null && type == SourceType.GEOADDR) {
 				srcValue = geoLocator.getCurrentCoords();
