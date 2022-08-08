@@ -1003,12 +1003,11 @@ public class Utils {
 	 * Returns the current time in microseconds.
 	 * </p>
 	 * <p>
-	 * This is a wrapper around {@link com.jkoolcloud.tnt4j.utils.Useconds#get()}, returning the value in microsecond
-	 * resolution.
+	 * This is a wrapper around {@link Useconds#get()}, returning the value in microsecond resolution.
 	 * </p>
 	 *
 	 * @return the difference, measured in microseconds, between the current time and midnight, January 1, 1970 UTC
-	 * @see com.jkoolcloud.tnt4j.utils.Useconds#get()
+	 * @see Useconds#get()
 	 */
 	public static long currentTimeUsec() {
 		return Useconds.CURRENT.get();
