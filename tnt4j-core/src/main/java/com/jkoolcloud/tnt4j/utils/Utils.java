@@ -117,6 +117,8 @@ public class Utils {
 	public static final Pattern REP_CFG_PATTERN = Pattern
 			.compile("\"(\\s*([^\"\\\\]|\\\\.)+\\s*)\"->\"(\\s*([^\"\\\\]|\\\\.)+\\s*)\"");
 
+	private static final Pattern MSG_FORMAT_ELEMENT_PATTERN = Pattern.compile("\\{\\d+");
+
 	private static int initClientCodeStackIndex() {
 		int index = 0;
 		StackTraceElement[] stack = Thread.currentThread().getStackTrace();
@@ -439,11 +441,15 @@ public class Utils {
 	 * @return formatted string
 	 */
 	public static String format(String pattern, Object... args) {
-		if (pattern != null && ArrayUtils.isNotEmpty(args)) {
+		if (ArrayUtils.isNotEmpty(args) && isMsgPattern(pattern)) {
 			return MessageFormat.format(pattern, args);
 		} else {
 			return pattern;
 		}
+	}
+
+	private static boolean isMsgPattern(String pattern) {
+		return pattern != null && MSG_FORMAT_ELEMENT_PATTERN.matcher(pattern).find();
 	}
 
 	/**
@@ -737,7 +743,7 @@ public class Utils {
 			String marker = opName.substring(1);
 			String[] pair = marker.split(":");
 			int offset = pair.length == 2 ? Integer.parseInt(pair[1]) : 0;
-			StackTraceElement item = Utils.getStackFrame(pair[0], offset);
+			StackTraceElement item = getStackFrame(pair[0], offset);
 			return item.toString();
 		}
 	}
@@ -752,7 +758,7 @@ public class Utils {
 	 * @return name triggering operation
 	 */
 	public static String getMethodNameFromStack(String marker, int offset) {
-		StackTraceElement item = Utils.getStackFrame(marker, offset);
+		StackTraceElement item = getStackFrame(marker, offset);
 		return item.toString();
 	}
 
@@ -764,7 +770,7 @@ public class Utils {
 	 * @return name triggering operation
 	 */
 	public static String getMethodNameFromStack(Class<?> classMarker) {
-		StackTraceElement item = Utils.getStackFrame(classMarker.getName(), 0);
+		StackTraceElement item = getStackFrame(classMarker.getName(), 0);
 		return item.toString();
 	}
 
@@ -778,7 +784,7 @@ public class Utils {
 	 * @return name triggering operation
 	 */
 	public static String getMethodNameFromStack(Class<?> classMarker, int offset) {
-		StackTraceElement item = Utils.getStackFrame(classMarker.getName(), offset);
+		StackTraceElement item = getStackFrame(classMarker.getName(), offset);
 		return item.toString();
 	}
 
@@ -1176,8 +1182,8 @@ public class Utils {
 			return null;
 		}
 		try {
-			Object obj = Utils.createInstance(className.toString());
-			return Utils.applyConfiguration(prefix, config, obj);
+			Object obj = createInstance(className.toString());
+			return applyConfiguration(prefix, config, obj);
 		} catch (ConfigException ce) {
 			throw ce;
 		} catch (Throwable e) {
@@ -1207,8 +1213,8 @@ public class Utils {
 			return null;
 		}
 		try {
-			Object obj = Utils.createInstance(className.toString());
-			return Utils.applyConfiguration(prefix, config, obj);
+			Object obj = createInstance(className.toString());
+			return applyConfiguration(prefix, config, obj);
 		} catch (ConfigException ce) {
 			throw ce;
 		} catch (Throwable e) {
@@ -1557,7 +1563,7 @@ public class Utils {
 				j = i;
 			}
 			buf.append(sourceArray, j, sourceArray.length - j);
-			source = Utils.getString(buf);
+			source = getString(buf);
 		}
 		return source;
 	}
@@ -1575,7 +1581,7 @@ public class Utils {
 	 */
 	public static String replace(String str, Map<String, String> replacements) {
 		if (StringUtils.isNotEmpty(str)) {
-			for (Map.Entry<String, String> kre : replacements.entrySet()) {
+			for (Entry<String, String> kre : replacements.entrySet()) {
 				str = replace(str, kre.getKey(), kre.getValue());
 			}
 		}
@@ -1592,7 +1598,7 @@ public class Utils {
 	 *            replacements map to alter
 	 */
 	public static void parseReplacements(String repCfgStr, Map<String, String> replacementsMap) {
-		Matcher m = Utils.REP_CFG_PATTERN.matcher(repCfgStr);
+		Matcher m = REP_CFG_PATTERN.matcher(repCfgStr);
 
 		while (m.find()) {
 			replacementsMap.put(StringEscapeUtils.unescapeJava(m.group(1)), StringEscapeUtils.unescapeJava(m.group(3)));
@@ -1621,11 +1627,11 @@ public class Utils {
 	 * This method takes provided {@code resourceName} builds two additional resource paths: absolute and relative. Then
 	 * tries to load resource using this sequence:
 	 * <ul>
-	 * <li>over {@link java.lang.ClassLoader} using provided resource name (path)</li>
-	 * <li>over {@link java.lang.ClassLoader} using absolute resource path</li>
-	 * <li>over {@link java.lang.Class} using provided resource name (path)</li>
-	 * <li>over {@link java.lang.Class} using absolute resource path</li>
-	 * <li>over {@link java.lang.Class} using relative resource path</li>
+	 * <li>over {@link ClassLoader} using provided resource name (path)</li>
+	 * <li>over {@link ClassLoader} using absolute resource path</li>
+	 * <li>over {@link Class} using provided resource name (path)</li>
+	 * <li>over {@link Class} using absolute resource path</li>
+	 * <li>over {@link Class} using relative resource path</li>
 	 * </ul>
 	 *
 	 * @param clazz
@@ -1634,7 +1640,7 @@ public class Utils {
 	 *            name (path) of the desired resource
 	 * @return input stream to read the resource, or {@code null} if the resource could not be found
 	 *
-	 * @see java.lang.ClassLoader#getResourceAsStream(String)
+	 * @see ClassLoader#getResourceAsStream(String)
 	 * @see Class#getResourceAsStream(String)
 	 * @see Thread#getContextClassLoader()
 	 */
