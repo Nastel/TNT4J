@@ -19,11 +19,11 @@ Why track and trace your applications?
 ## Quick Examples
 Use Maven dependency:
 ```xml
-        <dependency>
-            <groupId>com.jkoolcloud</groupId>
-            <artifactId>tnt4j-core</artifactId>
-            <version>2.15.0</version>
-        </dependency>
+    <dependency>
+        <groupId>com.jkoolcloud</groupId>
+        <artifactId>tnt4j-core</artifactId>
+        <version>2.15.1</version>
+    </dependency>
 ```
 
 Here is a simple example of using TNT4J:
@@ -200,11 +200,11 @@ proxy configuration details using JVM system properties.
 ### Stream over Kafka
 Use Maven dependency:
 ```xml
-        <dependency>
-            <groupId>com.jkoolcloud</groupId>
-            <artifactId>tnt4j-kafka-sink</artifactId>
-            <version>2.15.0</version>
-        </dependency>
+    <dependency>
+        <groupId>com.jkoolcloud</groupId>
+        <artifactId>tnt4j-kafka-sink</artifactId>
+        <version>2.15.1</version>
+    </dependency>
 ```
 
 Stream your events over Apache Kafka using `com.jkoolcloud.tnt4j.sink.impl.kafka.KafkaEventSinkFactory` event sink factory.
@@ -236,11 +236,11 @@ value.serializer=org.apache.kafka.common.serialization.StringSerializer
 ### Stream over MQTT
 Use Maven dependency:
 ```xml
-        <dependency>
-            <groupId>com.jkoolcloud</groupId>
-            <artifactId>tnt4j-mqtt-sink</artifactId>
-            <version>2.15.0</version>
-        </dependency>
+    <dependency>
+        <groupId>com.jkoolcloud</groupId>
+        <artifactId>tnt4j-mqtt-sink</artifactId>
+        <version>2.15.1</version>
+    </dependency>
 ```
 
 Stream your events over MQTT using `com.jkoolcloud.tnt4j.sink.impl.mqtt.MqttEventSinkFactory` event sink factory.
