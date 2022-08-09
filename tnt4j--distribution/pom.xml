@@ -68,6 +68,7 @@
                 <version>3.2.0</version>
                 <inherited>false</inherited>
                 <configuration>
+                    <skip>${assembly.skipAssembly}</skip>
                     <filesets>
                         <fileset>
                             <directory>${release.deploy.dir}</directory>
