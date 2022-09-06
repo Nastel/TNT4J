@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,7 @@ package com.jkoolcloud.tnt4j.source;
 import com.jkoolcloud.tnt4j.locator.GeoLocator;
 
 /**
- * This interface defines a source factory which creates instances of sources.
- * Source may contain other sources.
+ * This interface defines a source factory which creates instances of sources. Source may contain other sources.
  * 
  * 
  * @version $Revision: 1 $
@@ -44,7 +43,8 @@ public interface SourceFactory {
 	/**
 	 * Create a new source
 	 * 
-	 * @param name source name
+	 * @param name
+	 *            source name
 	 * @return source handle
 	 */
 	Source newSource(String name);
@@ -52,8 +52,10 @@ public interface SourceFactory {
 	/**
 	 * Create a new source given name and type
 	 * 
-	 * @param name source name
-	 * @param type source type
+	 * @param name
+	 *            source name
+	 * @param type
+	 *            source type
 	 * @return source handle
 	 */
 	Source newSource(String name, SourceType type);
@@ -61,9 +63,12 @@ public interface SourceFactory {
 	/**
 	 * Create a new source given name and type
 	 * 
-	 * @param name source name
-	 * @param type source type
-	 * @param parent source
+	 * @param name
+	 *            source name
+	 * @param type
+	 *            source type
+	 * @param parent
+	 *            source
 	 * @return source handle
 	 */
 	Source newSource(String name, SourceType type, Source parent);
@@ -71,48 +76,51 @@ public interface SourceFactory {
 	/**
 	 * Create a new source given name and type
 	 * 
-	 * @param name source name
-	 * @param type source type
-	 * @param parent source
-	 * @param user user name associated with the source
+	 * @param name
+	 *            source name
+	 * @param type
+	 *            source type
+	 * @param parent
+	 *            source
+	 * @param user
+	 *            user name associated with the source
 	 * @return source handle
 	 */
 	Source newSource(String name, SourceType type, Source parent, String user);
 
 	/**
-	 * Create a new source based on a given fully qualified path. Format:
-	 * type=name|?#type=name...
-	 * Example: RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?
+	 * Create a new source based on a given fully qualified path. Format: type=name|?#type=name... Example:
+	 * RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?
 	 * 
-	 * @param fqn fully qualified path for the source
+	 * @param fqn
+	 *            fully qualified path for the source
 	 * @return source handle representing the path.
 	 */
 	Source newFromFQN(String fqn);
-	
+
 	/**
-	 * Create a derived source based on a given fully qualified path and a
-	 * a default parent source. Same as {@code fromFQN(fqn, getRootSource())}
-	 * Format:
-	 * type=name|?#type=name...
-	 * Example: RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?
+	 * Create a derived source based on a given fully qualified path and a a default parent source. Same as
+	 * {@code fromFQN(fqn, getRootSource())} Format: type=name|?#type=name... Example:
+	 * RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?
 	 * 
-	 * @param fqn fully qualified path for the source
+	 * @param fqn
+	 *            fully qualified path for the source
 	 * @return source handle representing the path.
 	 */
 	Source fromFQN(String fqn);
-	
+
 	/**
-	 * Create a derived source based on a given fully qualified path and a
-	 * given parent source. Format:
-	 * type=name|?#type=name...
-	 * Example: RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?
+	 * Create a derived source based on a given fully qualified path and a given parent source. Format:
+	 * type=name|?#type=name... Example: RUNTIME=?#SERVER=?#NETADDR=?#DATACENTER=?#GEOADDR=?
 	 * 
-	 * @param fqn fully qualified path for the source
-	 * @param parent source
+	 * @param fqn
+	 *            fully qualified path for the source
+	 * @param parent
+	 *            source
 	 * @return source handle representing the path.
 	 */
 	Source fromFQN(String fqn, Source parent);
-	
+
 	/**
 	 * Gets streaming source name (sender name)
 	 * 

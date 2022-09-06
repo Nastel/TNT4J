@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,12 @@
  */
 package com.jkoolcloud.tnt4j.repository;
 
-
 /**
- * <p>A simple event listener interface for configuration observers.
- * This interface can be implemented by classes that are interested in "raw" events caused by repository objects. 
- * Each manipulation on a token repository object will generate such an event. 
- * There is only a single method that is invoked when an event occurs..</p>
+ * <p>
+ * A simple event listener interface for configuration observers. This interface can be implemented by classes that are
+ * interested in "raw" events caused by repository objects. Each manipulation on a token repository object will generate
+ * such an event. There is only a single method that is invoked when an event occurs..
+ * </p>
  *
  * @see TokenRepositoryEvent
  *
@@ -31,19 +31,21 @@ public interface TokenRepositoryListener {
 	/**
 	 * Notifies this listener about a manipulation on a monitored repository object.
 	 * 
-	 * @param event the event describing the manipulation
+	 * @param event
+	 *            the event describing the manipulation
 	 * 
 	 * @see TokenRepositoryEvent
 	 */
 	void repositoryChanged(TokenRepositoryEvent event);
-	
+
 	/**
 	 * Notifies this listener about an error on a monitored repository object.
 	 * 
-	 * @param event the event describing the error
+	 * @param event
+	 *            the event describing the error
 	 * 
 	 * @see TokenRepositoryEvent
 	 */
 	void repositoryError(TokenRepositoryEvent event);
-	
+
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,8 @@ public class MathUtils {
 	/**
 	 * Compute low Bollinger band value. Same as {@code getBBLow(List, 2, 20)}
 	 *
-	 * @param harray of numbers (measurements) sorted by time
+	 * @param harray
+	 *            of numbers (measurements) sorted by time
 	 * @return low Bollinger band value
 	 */
 	public static double getBBLow(List<Number> harray) {
@@ -41,7 +42,8 @@ public class MathUtils {
 	/**
 	 * Compute high Bollinger band value. Same as {@code getBoHigh(List, 2, 20)}
 	 *
-	 * @param harray of numbers (measurements) sorted by time
+	 * @param harray
+	 *            of numbers (measurements) sorted by time
 	 * @return high Bollinger band value
 	 */
 	public static double getBBHigh(List<Number> harray) {
@@ -51,9 +53,12 @@ public class MathUtils {
 	/**
 	 * Compute low Bollinger band value. Typical values for N and K are 20 and 2, respectively.
 	 *
-	 * @param harray of numbers (measurements) sorted by time
-	 * @param kTimes K times an N-period standard deviation above the EMA(nPeriod)
-	 * @param nPeriod an N-period moving average (EMA)
+	 * @param harray
+	 *            of numbers (measurements) sorted by time
+	 * @param kTimes
+	 *            K times an N-period standard deviation above the EMA(nPeriod)
+	 * @param nPeriod
+	 *            an N-period moving average (EMA)
 	 * @return low Bollinger band value
 	 */
 	public static double getBBLow(List<Number> harray, int kTimes, int nPeriod) {
@@ -69,9 +74,12 @@ public class MathUtils {
 	/**
 	 * Compute high Bollinger band value. Typical values for N and K are 20 and 2, respectively.
 	 *
-	 * @param harray of numbers (measurements) sorted by time
-	 * @param kTimes K times an N-period standard deviation above the EMA(nPeriod)
-	 * @param nPeriod an N-period exponentially moving average (EMA)
+	 * @param harray
+	 *            of numbers (measurements) sorted by time
+	 * @param kTimes
+	 *            K times an N-period standard deviation above the EMA(nPeriod)
+	 * @param nPeriod
+	 *            an N-period exponentially moving average (EMA)
 	 * @return high Bollinger band value
 	 */
 	public static double getBBHigh(List<Number> harray, int kTimes, int nPeriod) {
@@ -87,7 +95,8 @@ public class MathUtils {
 	/**
 	 * Compute historical variance for a given set of measurements
 	 *
-	 * @param harray of numbers (measurements)
+	 * @param harray
+	 *            of numbers (measurements)
 	 * @return variance
 	 */
 	public static double getHVariance(List<Number> harray) {
@@ -97,8 +106,10 @@ public class MathUtils {
 	/**
 	 * Compute historical variance given a mean
 	 *
-	 * @param harray of numbers (measurements)
-	 * @param mean computed for the given array of numbers
+	 * @param harray
+	 *            of numbers (measurements)
+	 * @param mean
+	 *            computed for the given array of numbers
 	 * @return variance
 	 */
 	public static double getHVariance(List<Number> harray, double mean) {
@@ -118,7 +129,8 @@ public class MathUtils {
 	/**
 	 * Compute mean for a given set of numbers
 	 *
-	 * @param harray of numbers (measurements)
+	 * @param harray
+	 *            of numbers (measurements)
 	 * @return mean
 	 */
 	public static double getHMean(List<Number> harray) {
@@ -138,8 +150,10 @@ public class MathUtils {
 	/**
 	 * Compute mean for a given set of numbers and number of elements
 	 *
-	 * @param harray of numbers (measurements)
-	 * @param nPeriod an N-period for which to compute the mean
+	 * @param harray
+	 *            of numbers (measurements)
+	 * @param nPeriod
+	 *            an N-period for which to compute the mean
 	 * @return mean
 	 */
 	public static double getHMean(List<Number> harray, int nPeriod) {
@@ -157,10 +171,10 @@ public class MathUtils {
 	}
 
 	/**
-	 * Compute EMA for a given set of numbers 
-	 * and 20 N period moving average. 
+	 * Compute EMA for a given set of numbers and 20 N period moving average.
 	 *
-	 * @param harray of numbers (measurements)
+	 * @param harray
+	 *            of numbers (measurements)
 	 * @return N-period exponentially moving average
 	 */
 	public static double getEMA(List<Number> harray) {
@@ -168,11 +182,12 @@ public class MathUtils {
 	}
 
 	/**
-	 * Compute EMA for a given set of numbers 
-	 * and a given N-period moving average
+	 * Compute EMA for a given set of numbers and a given N-period moving average
 	 *
-	 * @param harray of numbers (measurements)
-	 * @param nPeriod an N-period for which to compute the EMA
+	 * @param harray
+	 *            of numbers (measurements)
+	 * @param nPeriod
+	 *            an N-period for which to compute the EMA
 	 * @return N-period exponentially moving average
 	 */
 	public static double getEMA(List<Number> harray, int nPeriod) {
@@ -191,12 +206,14 @@ public class MathUtils {
 	}
 
 	/**
-	 * Compute EMA for a given number 
-	 * and a previous N-period moving average
+	 * Compute EMA for a given number and a previous N-period moving average
 	 *
-	 * @param cVal measured number
-	 * @param nPeriod an N-period for which to compute the EMA
-	 * @param pEMA previous computed EMA
+	 * @param cVal
+	 *            measured number
+	 * @param nPeriod
+	 *            an N-period for which to compute the EMA
+	 * @param pEMA
+	 *            previous computed EMA
 	 * @return N-period exponentially moving average
 	 */
 	public static double getEMA(double cVal, int nPeriod, double pEMA) {
@@ -205,12 +222,14 @@ public class MathUtils {
 	}
 
 	/**
-	 * Compute EMA for a given number, k 
-	 * and a given N-period moving average
+	 * Compute EMA for a given number, k and a given N-period moving average
 	 *
-	 * @param cVal measured number
-	 * @param k weighting coefficient 
-	 * @param pEMA previous computed EMA
+	 * @param cVal
+	 *            measured number
+	 * @param k
+	 *            weighting coefficient
+	 * @param pEMA
+	 *            previous computed EMA
 	 * @return N-period exponentially moving average
 	 */
 	public static double getKoEMA(double cVal, float k, double pEMA) {

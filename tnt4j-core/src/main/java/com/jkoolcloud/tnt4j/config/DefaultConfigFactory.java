@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 package com.jkoolcloud.tnt4j.config;
-
 
 /**
  * <p>
@@ -35,7 +34,7 @@ package com.jkoolcloud.tnt4j.config;
  * @version $Revision: 5 $
  *
  */
-public class DefaultConfigFactory  {
+public class DefaultConfigFactory {
 	private static ConfigFactory factory = new ConfigFactoryStoreImpl();
 
 	private DefaultConfigFactory() {
@@ -43,7 +42,9 @@ public class DefaultConfigFactory  {
 
 	/**
 	 * Set a default configuration factory implementation
-	 * @param fac configuration factory
+	 * 
+	 * @param fac
+	 *            configuration factory
 	 *
 	 * @return {@link ConfigFactory} instance
 	 */

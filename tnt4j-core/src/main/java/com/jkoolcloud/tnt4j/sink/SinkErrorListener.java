@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,11 @@
  */
 package com.jkoolcloud.tnt4j.sink;
 
-
-
 /**
- * <p>A simple event listener interface for event sink observers.
- * This interface can be implemented by classes that are interested in "error" events
- * caused when exceptions occur when writing to an event sink.</p>
+ * <p>
+ * A simple event listener interface for event sink observers. This interface can be implemented by classes that are
+ * interested in "error" events caused when exceptions occur when writing to an event sink.
+ * </p>
  *
  * @see SinkError
  * @see EventSink
@@ -30,10 +29,10 @@ package com.jkoolcloud.tnt4j.sink;
  */
 public interface SinkErrorListener {
 	/**
-	 * Notifies this listener about an error when writing 
-	 * to an event sink.
+	 * Notifies this listener about an error when writing to an event sink.
 	 * 
-	 * @param ev the event describing the error
+	 * @param ev
+	 *            the event describing the error
 	 * 
 	 * @see SinkError
 	 */

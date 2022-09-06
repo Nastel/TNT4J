@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,8 @@
  */
 package com.jkoolcloud.tnt4j.dump;
 
-import java.util.Properties;
 import java.util.Map.Entry;
+import java.util.Properties;
 
 /**
  * <p>
@@ -35,7 +35,7 @@ public class PropertiesDumpProvider extends DefaultDumpProvider {
 	/**
 	 * Create a new java properties dump provider with a given name and System.getProperties().
 	 * 
-	 *@param name
+	 * @param name
 	 *            provider name
 	 */
 	public PropertiesDumpProvider(String name) {
@@ -45,9 +45,9 @@ public class PropertiesDumpProvider extends DefaultDumpProvider {
 	/**
 	 * Create a new java properties dump provider with a given name and user specified properties.
 	 * 
-	 *@param name
+	 * @param name
 	 *            provider name
-	 *@param pr
+	 * @param pr
 	 *            properties
 	 */
 	public PropertiesDumpProvider(String name, Properties pr) {

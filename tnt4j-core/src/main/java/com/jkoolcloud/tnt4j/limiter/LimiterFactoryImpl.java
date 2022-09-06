@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,12 +24,12 @@ package com.jkoolcloud.tnt4j.limiter;
 public class LimiterFactoryImpl implements LimiterFactory {
 
 	@Override
-    public Limiter newLimiter(double maxMps, double maxBps) {
-	    return new LimiterImpl(maxMps, maxBps, true);
-    }
-	
+	public Limiter newLimiter(double maxMps, double maxBps) {
+		return new LimiterImpl(maxMps, maxBps, true);
+	}
+
 	@Override
-    public Limiter newLimiter(double maxMps, double maxBps, boolean enabled) {
-	    return new LimiterImpl(maxMps, maxBps, enabled);
-    }
+	public Limiter newLimiter(double maxMps, double maxBps, boolean enabled) {
+		return new LimiterImpl(maxMps, maxBps, enabled);
+	}
 }

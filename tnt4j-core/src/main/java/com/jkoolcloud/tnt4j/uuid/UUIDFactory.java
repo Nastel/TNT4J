@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,7 @@
 package com.jkoolcloud.tnt4j.uuid;
 
 /**
- * Implementations of this interface provide implementation for 
- * generating globally unique IDs.
+ * Implementations of this interface provide implementation for generating globally unique IDs.
  *
  * @version $Revision: 1 $
  */
@@ -28,11 +27,12 @@ public interface UUIDFactory {
 	 * @return string value of UUID
 	 */
 	String newUUID();
-	
+
 	/**
 	 * Return a new UUID based on a given object
 	 * 
-	 * @param obj handle for which to generate UUID
+	 * @param obj
+	 *            handle for which to generate UUID
 	 * @return string value of UUID
 	 */
 	String newUUID(Object obj);

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,8 +68,9 @@ public class ActivityScheduler {
 	public ActivityScheduler(String name, ActivityListener listener) {
 		this.name = name;
 		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(name);
-		if (listener != null)
+		if (listener != null) {
 			config.setActivityListener(listener);
+		}
 		this.logger = TrackingLogger.getInstance(config.build());
 		this.logger.setKeepThreadContext(false);
 	}

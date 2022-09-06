@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,8 @@
 package com.jkoolcloud.tnt4j;
 
 /**
- * <p> 
- * This class implements a shutdown hook that automatically
- * dumps internal state of all registered dump providers.
+ * <p>
+ * This class implements a shutdown hook that automatically dumps internal state of all registered dump providers.
  * </p>
  * 
  * 

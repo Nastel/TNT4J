@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,12 +26,14 @@ import java.util.EventObject;
  * {@link com.jkoolcloud.tnt4j.repository.TokenRepository}):
  * </p>
  * 
- * <p>EVENT_ADD_KEY -- repository added a new key/value pair</p> 
- * <p>EVENT_SET_KEY -- repository set an existing key/value pair</p> 
- * <p>EVENT_CLEAR_KEY -- repository cleared/removed a specific key</p> 
- * <p>EVENT_CLEAR -- repository has been cleared of all keys</p> 
- * <p>EVENT_RELOAD -- repository has been reloaded</p> 
- * <p>EVENT_EXCEPTION -- an error has been encountered in the repository</p> 
+ * <ul>
+ * <li>EVENT_ADD_KEY -- repository added a new key/value pair</li>
+ * <li>EVENT_SET_KEY -- repository set an existing key/value pair</li>
+ * <li>EVENT_CLEAR_KEY -- repository cleared/removed a specific key</li>
+ * <li>EVENT_CLEAR -- repository has been cleared of all keys</li>
+ * <li>EVENT_RELOAD -- repository has been reloaded</li>
+ * <li>EVENT_EXCEPTION -- an error has been encountered in the repository</li>
+ * </ul>
  * 
  * @see TokenRepository
  *

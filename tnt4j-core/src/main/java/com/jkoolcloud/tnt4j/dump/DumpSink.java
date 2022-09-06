@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,11 +21,9 @@ import com.jkoolcloud.tnt4j.sink.Sink;
 
 /**
  * <p>
- * This interface defines a dump destination end point. Dump destination
- * allows writing of {@link DumpCollection} instances. Classes that implement
- * this interface should handle formatting and forwarding to the actual destination that
- * can handle dump collections such as cloud services, analyzer service, central logging
- * services, files, etc.
+ * This interface defines a dump destination end point. Dump destination allows writing of {@link DumpCollection}
+ * instances. Classes that implement this interface should handle formatting and forwarding to the actual destination
+ * that can handle dump collections such as cloud services, analyzer service, central logging services, files, etc.
  * </p>
  *
  * @version $Revision: 1 $
@@ -35,12 +33,13 @@ import com.jkoolcloud.tnt4j.sink.Sink;
 
 public interface DumpSink extends Sink {
 	/**
-	 * This method allows writing of {@link DumpCollection} objects
-	 * to the underlying destination.
+	 * This method allows writing of {@link DumpCollection} objects to the underlying destination.
 	 *
-	 * @param dump dump collection
+	 * @param dump
+	 *            dump collection
 	 * @see DumpCollection
-	 * @throws IOException if error writing to sink
+	 * @throws IOException
+	 *             if error writing to sink
 	 */
 	void write(DumpCollection dump) throws IOException;
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,8 +18,7 @@ package com.jkoolcloud.tnt4j.dump;
 import java.io.PrintStream;
 
 /**
- * Simple dump provider implementation that prints out dump events to 
- * a specified stream.
+ * Simple dump provider implementation that prints out dump events to a specified stream.
  *
  * @version $Revision: 1 $
  *
@@ -29,16 +28,16 @@ import java.io.PrintStream;
 public class SimpleDumpListener implements DumpListener {
 
 	PrintStream printer;
-	
+
 	public SimpleDumpListener(PrintStream print) {
 		printer = print;
 	}
-	
+
 	@Override
-    public void onDumpEvent(DumpEvent event) {
+	public void onDumpEvent(DumpEvent event) {
 		printer.println("DumpEvent: " + event);
 		if (event.getCause() != null) {
 			event.getCause().printStackTrace(printer);
 		}
-    }	
+	}
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,8 +19,8 @@ import com.jkoolcloud.tnt4j.format.Formatter;
 
 /**
  * <p>
- * Classes that implement this interface provide implementation for the {@link DumpFormatter} interface.
- * Dump formatters are used to format dumps: {@link DumpCollection} instances.
+ * Classes that implement this interface provide implementation for the {@link DumpFormatter} interface. Dump formatters
+ * are used to format dumps: {@link DumpCollection} instances.
  * </p>
  *
  *
@@ -33,7 +33,8 @@ interface DumpFormatter extends Formatter {
 	/**
 	 * Obtain a formatted opening stanza
 	 *
-	 * @param sink dump sink
+	 * @param sink
+	 *            dump sink
 	 * @return opening stanza
 	 */
 	String getOpenStanza(DumpSink sink);
@@ -41,7 +42,8 @@ interface DumpFormatter extends Formatter {
 	/**
 	 * Obtain a formatted closing stanza
 	 *
-	 * @param sink dump sink
+	 * @param sink
+	 *            dump sink
 	 * @return closing stanza
 	 */
 	String getCloseStanza(DumpSink sink);
@@ -49,7 +51,8 @@ interface DumpFormatter extends Formatter {
 	/**
 	 * Obtain a formatted header associated with the given dump collection
 	 *
-	 * @param dump user specified dump collection
+	 * @param dump
+	 *            user specified dump collection
 	 * @return formatted header
 	 */
 	String getHeader(DumpCollection dump);
@@ -57,7 +60,8 @@ interface DumpFormatter extends Formatter {
 	/**
 	 * Obtain a formatted footer associated with the given dump collection
 	 *
-	 * @param dump user specified dump collection
+	 * @param dump
+	 *            user specified dump collection
 	 * @return formatted footer
 	 */
 	String getFooter(DumpCollection dump);
@@ -65,7 +69,8 @@ interface DumpFormatter extends Formatter {
 	/**
 	 * Format a given dump collection and return a string
 	 *
-	 * @param dump user specified dump collection
+	 * @param dump
+	 *            user specified dump collection
 	 * @return formatted dump
 	 */
 	String format(DumpCollection dump);

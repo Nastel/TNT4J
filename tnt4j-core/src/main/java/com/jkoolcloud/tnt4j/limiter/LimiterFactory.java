@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,11 +22,12 @@ package com.jkoolcloud.tnt4j.limiter;
  */
 public interface LimiterFactory {
 	/**
-	 * Create a new limiter. 
-	 * (equivalent to {@code newLimiter(maxMps, maxBps, true)})
+	 * Create a new limiter. (equivalent to {@code newLimiter(maxMps, maxBps, true)})
 	 * 
-	 * @param maxMps maximum message/second rate (0 means unlimited)
-	 * @param maxBps maximum bytes/second rate (0 means unlimited)
+	 * @param maxMps
+	 *            maximum message/second rate (0 means unlimited)
+	 * @param maxBps
+	 *            maximum bytes/second rate (0 means unlimited)
 	 * @return new limiter instance
 	 */
 	Limiter newLimiter(double maxMps, double maxBps);
@@ -34,9 +35,12 @@ public interface LimiterFactory {
 	/**
 	 * Create a new limiter
 	 * 
-	 * @param maxMps maximum message/second rate (0 means unlimited)
-	 * @param maxBps maximum bytes/second rate (0 means unlimited)
-	 * @param enabled true to enable limiter, false otherwise
+	 * @param maxMps
+	 *            maximum message/second rate (0 means unlimited)
+	 * @param maxBps
+	 *            maximum bytes/second rate (0 means unlimited)
+	 * @param enabled
+	 *            true to enable limiter, false otherwise
 	 * @return new limiter instance
 	 */
 	Limiter newLimiter(double maxMps, double maxBps, boolean enabled);

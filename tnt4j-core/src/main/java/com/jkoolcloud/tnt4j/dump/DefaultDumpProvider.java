@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@ package com.jkoolcloud.tnt4j.dump;
 
 /**
  * <p>
- * This class implements a default dump provider. This is an abstract class and
- * designed to be used for creating extension sub classes.
+ * This class implements a default dump provider. This is an abstract class and designed to be used for creating
+ * extension sub classes.
  * </p>
  *
  * @see DumpProvider
@@ -33,8 +33,10 @@ public abstract class DefaultDumpProvider implements DumpProvider {
 	/**
 	 * Create a new default dump provider with given name and category
 	 *
-	 *@param name provider name
-	 *@param cat provider category
+	 * @param name
+	 *            provider name
+	 * @param cat
+	 *            provider category
 	 */
 	public DefaultDumpProvider(String name, String cat) {
 		pname = name;
@@ -42,12 +44,12 @@ public abstract class DefaultDumpProvider implements DumpProvider {
 	}
 
 	@Override
-    public String getCategoryName() {
-	    return category;
-    }
+	public String getCategoryName() {
+		return category;
+	}
 
 	@Override
-    public String getProviderName() {
-	    return pname;
-    }
+	public String getProviderName() {
+		return pname;
+	}
 }

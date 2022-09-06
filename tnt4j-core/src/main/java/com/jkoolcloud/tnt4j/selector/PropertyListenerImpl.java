@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,8 +22,9 @@ import com.jkoolcloud.tnt4j.repository.TokenRepositoryListener;
 import com.jkoolcloud.tnt4j.sink.EventSink;
 
 /**
- * <p>Classes that implement this interface provide implementation for
- * the {@link TokenRepositoryListener} which handles token repository changes
+ * <p>
+ * Classes that implement this interface provide implementation for the {@link TokenRepositoryListener} which handles
+ * token repository changes
  * </p>
  * 
  * @see OpLevel
@@ -48,8 +49,8 @@ class PropertyListenerImpl implements TokenRepositoryListener {
 
 	@Override
 	public void repositoryChanged(TokenRepositoryEvent event) {
-		logger.log(OpLevel.DEBUG, "repositoryChanged source={0}, type={1}, {2}={3}",
-					event.getSource(), event.getType(), event.getKey(), event.getValue());
+		logger.log(OpLevel.DEBUG, "repositoryChanged source={0}, type={1}, {2}={3}", event.getSource(), event.getType(),
+				event.getKey(), event.getValue());
 		switch (event.getType()) {
 		case TokenRepository.EVENT_ADD_KEY:
 		case TokenRepository.EVENT_SET_KEY:

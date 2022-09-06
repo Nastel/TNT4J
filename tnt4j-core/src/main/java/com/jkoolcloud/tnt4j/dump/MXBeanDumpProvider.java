@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,7 @@
  */
 package com.jkoolcloud.tnt4j.dump;
 
-import java.lang.management.ClassLoadingMXBean;
-import java.lang.management.CompilationMXBean;
-import java.lang.management.GarbageCollectorMXBean;
-import java.lang.management.ManagementFactory;
-import java.lang.management.MemoryMXBean;
-import java.lang.management.MemoryPoolMXBean;
-import java.lang.management.OperatingSystemMXBean;
-import java.lang.management.ThreadMXBean;
+import java.lang.management.*;
 import java.util.List;
 
 /**
@@ -43,7 +36,7 @@ public class MXBeanDumpProvider extends DefaultDumpProvider {
 	/**
 	 * Create a new java statistics dump provider with a given name.
 	 * 
-	 *@param name
+	 * @param name
 	 *            provider name
 	 */
 	public MXBeanDumpProvider(String name) {

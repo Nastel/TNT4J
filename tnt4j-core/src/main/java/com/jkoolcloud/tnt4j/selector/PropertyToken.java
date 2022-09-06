@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,9 +21,8 @@ import com.jkoolcloud.tnt4j.core.OpLevel;
 
 /**
  * <p>
- * This class implements a property token that associates severity, key, value
- * and a matching pattern. Property tokens are used to match key/value/sev pairs with
- * a regexp pattern.
+ * This class implements a property token that associates severity, key, value and a matching pattern. Property tokens
+ * are used to match key/value/sev pairs with a regexp pattern.
  * </p>
  * 
  * @see OpLevel
@@ -41,10 +40,14 @@ class PropertyToken {
 	/**
 	 * Create a property token
 	 *
-	 * @param sev severity of to be checked
-	 * @param k key associated with the token
-	 * @param v value associated with the token
-	 * @param vPtn value regexp pattern
+	 * @param sev
+	 *            severity of to be checked
+	 * @param k
+	 *            key associated with the token
+	 * @param v
+	 *            value associated with the token
+	 * @param vPtn
+	 *            value regexp pattern
 	 * @see OpLevel
 	 */
 	public PropertyToken(OpLevel sev, Object k, String v, String vPtn) {
@@ -93,7 +96,7 @@ class PropertyToken {
 		boolean match;
 		boolean sevMatch = (sev.ordinal() >= sevLimit.ordinal());
 		match = sevMatch
-		        && ((value != null && valuePatten != null)? valuePatten.matcher(value.toString()).matches(): true);		
+				&& ((value != null && valuePatten != null) ? valuePatten.matcher(value.toString()).matches() : true);
 		return match;
 	}
 

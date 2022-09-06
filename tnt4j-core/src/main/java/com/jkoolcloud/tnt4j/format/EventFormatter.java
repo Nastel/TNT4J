@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,16 @@
  */
 package com.jkoolcloud.tnt4j.format;
 
+import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.source.Source;
-import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 
 /**
  * <p>
- * Classes that implement this interface provide implementation for the {@link EventFormatter} interface.
- * This interface allows formatting of any object, tracking objects as well as log messages
- * to a string format.
+ * Classes that implement this interface provide implementation for the {@link EventFormatter} interface. This interface
+ * allows formatting of any object, tracking objects as well as log messages to a string format.
  * </p>
  *
  *
@@ -37,7 +36,8 @@ public interface EventFormatter extends Formatter {
 	/**
 	 * Format a given {@link TrackingEvent} and return a string
 	 *
-	 * @param event tracking event instance to be formatted
+	 * @param event
+	 *            tracking event instance to be formatted
 	 * @return formatted tracking event
 	 * @see TrackingEvent
 	 */
@@ -46,7 +46,8 @@ public interface EventFormatter extends Formatter {
 	/**
 	 * Format a given {@link TrackingActivity} and return a string
 	 *
-	 * @param activity tracking activity instance to be formatted
+	 * @param activity
+	 *            tracking activity instance to be formatted
 	 * @return formatted tracking event
 	 * @see TrackingActivity
 	 */
@@ -55,7 +56,8 @@ public interface EventFormatter extends Formatter {
 	/**
 	 * Format a given {@link Snapshot} and return a string
 	 *
-	 * @param snapshot snapshot object to be formatted
+	 * @param snapshot
+	 *            snapshot object to be formatted
 	 * @return formatted snapshot
 	 * @see Snapshot
 	 */
@@ -64,13 +66,18 @@ public interface EventFormatter extends Formatter {
 	/**
 	 * Format a given message and severity level combo
 	 *
-	 * @param ttl time to live in seconds
-	 * @param src event source
-	 * @param level severity level
-	 * @param msg message to be formatted
-	 * @param args arguments associated with the object
+	 * @param ttl
+	 *            time to live in seconds
+	 * @param src
+	 *            event source
+	 * @param level
+	 *            severity level
+	 * @param msg
+	 *            message to be formatted
+	 * @param args
+	 *            arguments associated with the object
 	 * @return formatted message and severity
 	 * @see OpLevel
 	 */
-	String format(long ttl, Source src, OpLevel level, String msg, Object...args);
+	String format(long ttl, Source src, OpLevel level, String msg, Object... args);
 }

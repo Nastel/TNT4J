@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,44 +34,44 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class LoggerDumpProvider extends DefaultDumpProvider {
 	public static final String DUMP_LOGGER_SOURCE = "source";
+
 	/**
 	 * Create a new logger dump provider with a given name
 	 * 
-	 *@param name
+	 * @param name
 	 *            provider name
 	 */
 	public LoggerDumpProvider(String name) {
-	    super(name, "Logger");
-    }
+		super(name, "Logger");
+	}
 
 	/**
-	 * Create a new logger dump provider with a given name
-	 * and category
+	 * Create a new logger dump provider with a given name and category
 	 * 
-	 *@param name
+	 * @param name
 	 *            provider name
-	 *@param cat
+	 * @param cat
 	 *            category name
 	 */
 	public LoggerDumpProvider(String name, String cat) {
-	    super(name, cat);
-    }
+		super(name, cat);
+	}
 
 	@Override
 	public DumpCollection getDump() {
-		Dump rootDump = new Dump("LoggerStats", this);		
+		Dump rootDump = new Dump("LoggerStats", this);
 		List<TrackingLogger> list = TrackingLogger.getAllTrackers();
-		for (TrackingLogger logger: list) {
+		for (TrackingLogger logger : list) {
 			Dump dump = new Dump(logger.getId(), this);
 			Map<String, Object> stats = logger.getStats();
 			dump.addAll(stats);
-			
+
 			String config = String.valueOf(logger.getConfiguration().getProperty("source"));
 			dump.add(Utils.qualify(logger, DUMP_LOGGER_SOURCE), logger.getSource().getFQName());
-			
-			Dump propDump = new Dump("LoggerConfig", config, this);	
+
+			Dump propDump = new Dump("LoggerConfig", config, this);
 			propDump.addAll(logger.getConfiguration().getProperties());
-			
+
 			dump.add(config, propDump);
 			rootDump.add(logger.getId(), dump);
 		}

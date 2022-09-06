@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2021 JKOOL, LLC.
+ * Copyright 2014-2022 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ public interface ValueTypes {
 	String VALUE_TYPE_CURRENCY_EUR = "currency.eur";
 	String VALUE_TYPE_CURRENCY_UK = "currency.uk";
 
-	String VALUE_TYPE_CRYPTO     = "crypto";
+	String VALUE_TYPE_CRYPTO = "crypto";
 	String VALUE_TYPE_CRYPTO_BTC = "crypto.btc";
 	String VALUE_TYPE_CRYPTO_ETH = "crypto.eth";
 	String VALUE_TYPE_CRYPTO_WEI = "crypto.eth.wei";

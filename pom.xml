@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2014-2021 JKOOL, LLC.
+  ~ Copyright 2014-2022 JKOOL, LLC.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -70,7 +70,7 @@
         <product.name>${project.name}</product.name>
         <product.name.hr>TNT4J</product.name.hr>
         <product.copyright.html>
-            <![CDATA[<font size="-1">Copyright &#169; 2014-2020 ${project.organization.name}. All Rights Reserved.</font>]]></product.copyright.html>
+            <![CDATA[<font size="-1">Copyright &#169; 2014-2022 ${project.organization.name}. All Rights Reserved.</font>]]></product.copyright.html>
 
         <project.java.version>1.8</project.java.version>
         <java.source.version>${project.java.version}</java.source.version>
@@ -254,6 +254,7 @@
         <module>tnt4j-core</module>
         <module>tnt4j-kafka-sink</module>
         <module>tnt4j-mqtt-sink</module>
+        <module>tnt4j-all</module>
         <module>tnt4j--distribution</module>
     </modules>
 </project>
