@@ -16,6 +16,8 @@
 
 package com.jkoolcloud.tnt4j.sink.impl;
 
+import java.util.function.Supplier;
+
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
@@ -74,52 +76,27 @@ public abstract class LoggerEventSink extends AbstractEventSink {
 
 	@Override
 	protected void _log(TrackingEvent event) {
-		writeLine(event.getSeverity(), new LogEntry() {
-			@Override
-			public String getString() {
-				return getEventFormatter().format(event);
-			}
-		}, event.getOperation().getThrowable());
+		writeLine(event.getSeverity(), () -> getEventFormatter().format(event), event.getOperation().getThrowable());
 	}
 
 	@Override
 	protected void _log(TrackingActivity activity) {
-		writeLine(activity.getSeverity(), new LogEntry() {
-			@Override
-			public String getString() {
-				return getEventFormatter().format(activity);
-			}
-		}, activity.getThrowable());
+		writeLine(activity.getSeverity(), () -> getEventFormatter().format(activity), activity.getThrowable());
 	}
 
 	@Override
 	protected void _log(Snapshot snapshot) {
-		writeLine(snapshot.getSeverity(), new LogEntry() {
-			@Override
-			public String getString() {
-				return getEventFormatter().format(snapshot);
-			}
-		}, null);
+		writeLine(snapshot.getSeverity(), () -> getEventFormatter().format(snapshot), null);
 	}
 
 	@Override
 	protected void _log(long ttl, Source src, OpLevel sev, String msg, Object... args) {
-		writeLine(sev, new LogEntry() {
-			@Override
-			public String getString() {
-				return getEventFormatter().format(ttl, src, sev, msg, args);
-			}
-		}, Utils.getThrowable(args));
+		writeLine(sev, () -> getEventFormatter().format(ttl, src, sev, msg, args), Utils.getThrowable(args));
 	}
 
 	@Override
 	protected void _write(Object msg, Object... args) {
-		writeLine(OpLevel.INFO, new LogEntry() {
-			@Override
-			public String getString() {
-				return getEventFormatter().format(msg, args);
-			}
-		}, Utils.getThrowable(args));
+		writeLine(OpLevel.INFO, () -> getEventFormatter().format(msg, args), Utils.getThrowable(args));
 	}
 
 	/**
@@ -132,17 +109,5 @@ public abstract class LoggerEventSink extends AbstractEventSink {
 	 * @param t
 	 *            throwable bound to entry
 	 */
-	protected abstract void writeLine(OpLevel sev, LogEntry entry, Throwable t);
-
-	/**
-	 * Interface for log entry.
-	 */
-	protected interface LogEntry {
-		/**
-		 * Returns log entry as string.
-		 * 
-		 * @return log entry string
-		 */
-		String getString();
-	}
+	protected abstract void writeLine(OpLevel sev, Supplier<String> entry, Throwable t);
 }

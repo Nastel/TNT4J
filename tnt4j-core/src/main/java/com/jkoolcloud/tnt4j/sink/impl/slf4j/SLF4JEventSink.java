@@ -17,6 +17,7 @@ package com.jkoolcloud.tnt4j.sink.impl.slf4j;
 
 import java.io.IOException;
 import java.util.Properties;
+import java.util.function.Supplier;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -104,7 +105,7 @@ public class SLF4JEventSink extends LoggerEventSink {
 	}
 
 	@Override
-	protected void writeLine(OpLevel sev, LogEntry entry, Throwable t) {
+	protected void writeLine(OpLevel sev, Supplier<String> entry, Throwable t) {
 		if (!isSet(sev)) {
 			return;
 		}
@@ -115,23 +116,23 @@ public class SLF4JEventSink extends LoggerEventSink {
 		case CRITICAL:
 		case FAILURE:
 		case ERROR:
-			String msg = entry.getString();
+			String msg = entry.get();
 			incrementBytesSent(msg.length());
 			logger.error(msg, t);
 			break;
 		case DEBUG:
-			msg = entry.getString();
+			msg = entry.get();
 			incrementBytesSent(msg.length());
 			logger.debug(msg, t);
 			break;
 		case TRACE:
-			msg = entry.getString();
+			msg = entry.get();
 			incrementBytesSent(msg.length());
 			logger.trace(msg, t);
 			break;
 		case NOTICE:
 		case WARNING:
-			msg = entry.getString();
+			msg = entry.get();
 			incrementBytesSent(msg.length());
 			logger.warn(msg, t);
 			break;
@@ -139,7 +140,7 @@ public class SLF4JEventSink extends LoggerEventSink {
 			break;
 		case INFO:
 		default:
-			msg = entry.getString();
+			msg = entry.get();
 			incrementBytesSent(msg.length());
 			logger.info(msg, t);
 			break;

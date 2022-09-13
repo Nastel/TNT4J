@@ -16,6 +16,7 @@
 package com.jkoolcloud.tnt4j.sink.impl.jul;
 
 import java.io.IOException;
+import java.util.function.Supplier;
 import java.util.logging.FileHandler;
 import java.util.logging.Formatter;
 import java.util.logging.Level;
@@ -130,7 +131,7 @@ public class JULEventSink extends LoggerEventSink {
 	}
 
 	@Override
-	protected void writeLine(OpLevel sev, LogEntry entry, Throwable t) {
+	protected void writeLine(OpLevel sev, Supplier<String> entry, Throwable t) {
 		_checkState();
 
 		Level level = getLevel(sev);
@@ -138,7 +139,7 @@ public class JULEventSink extends LoggerEventSink {
 			return;
 		}
 
-		String msg = entry.getString();
+		String msg = entry.get();
 		incrementBytesSent(msg.length());
 		logger.log(level, msg, t);
 	}
