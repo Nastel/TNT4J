@@ -16,7 +16,7 @@
 package com.jkoolcloud.tnt4j.sink.impl.kafka;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.nio.file.Files;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -81,7 +81,7 @@ public class KafkaEventSinkFactory extends AbstractEventSinkFactory {
 
 	protected void loadKafkaProps(String fname, Map<String, ?> settings) throws ConfigException {
 		try {
-			kafkaProps.load(new FileInputStream(new File(fname)));
+			kafkaProps.load(Files.newInputStream(new File(fname).toPath()));
 		} catch (Throwable e) {
 			ConfigException error = new ConfigException(e.toString(), settings);
 			error.initCause(e);

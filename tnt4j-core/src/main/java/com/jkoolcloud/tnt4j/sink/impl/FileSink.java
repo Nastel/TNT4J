@@ -16,9 +16,10 @@
 package com.jkoolcloud.tnt4j.sink.impl;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -131,7 +132,8 @@ public class FileSink implements Sink {
 		}
 
 		if (printer == null) {
-			printer = new PrintStream(new FileOutputStream(file, append));
+			printer = new PrintStream(Files.newOutputStream(file.toPath(),
+					append ? StandardOpenOption.APPEND : StandardOpenOption.TRUNCATE_EXISTING));
 		}
 	}
 

@@ -17,7 +17,7 @@
 package com.jkoolcloud.tnt4j.sink.impl.jul;
 
 import java.io.File;
-import java.io.FileInputStream;
+import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Map;
 import java.util.Properties;
@@ -127,7 +127,7 @@ public class JULEventSinkFactory extends FileEventSinkFactory {
 	private static void _loadConfig(String cfgFile) {
 		if (!Utils.isEmpty(cfgFile)) {
 			try {
-				LogManager.getLogManager().readConfiguration(new FileInputStream(cfgFile));
+				LogManager.getLogManager().readConfiguration(Files.newInputStream(Paths.get(cfgFile)));
 			} catch (Throwable e) {
 				e.printStackTrace();
 			}
