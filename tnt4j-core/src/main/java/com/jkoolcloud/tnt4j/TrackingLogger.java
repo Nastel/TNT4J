@@ -324,14 +324,18 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	public static void shutdown(TrackingLogger logger) {
 		try {
 			EventSink sink = logger.getEventSink();
-			Utils.close(sink);
+			if (sink != null && sink.isOpen()) {
+				Utils.close(sink);
+			}
 			if (sink instanceof IOShutdown) {
 				IOShutdown shut = (IOShutdown) sink;
 				shut.shutdown(null);
 			}
 		} catch (IOException e) {
 		} finally {
-			Utils.close(logger);
+			if (logger != null && logger.isOpen()) {
+				Utils.close(logger);
+			}
 		}
 	}
 
