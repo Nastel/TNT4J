@@ -72,13 +72,13 @@
         <product.copyright.html>
             <![CDATA[<font size="-1">Copyright &#169; 2014-2022 ${project.organization.name}. All Rights Reserved.</font>]]></product.copyright.html>
 
-        <project.java.version>1.8</project.java.version>
-        <java.source.version>${project.java.version}</java.source.version>
-        <java.target.version>${project.java.version}</java.target.version>
-        <java.compiler.version>${project.java.version}</java.compiler.version>
-        <java.compiler.debuglevel>source,lines,vars</java.compiler.debuglevel>
-        <java.compiler.verbose>false</java.compiler.verbose>
-        <java.compiler.fork>false</java.compiler.fork>
+        <project.java.version>8</project.java.version>
+        <maven.compiler.source>${project.java.version}</maven.compiler.source>
+        <maven.compiler.target>${project.java.version}</maven.compiler.target>
+        <maven.compiler.version>${project.java.version}</maven.compiler.version>
+        <maven.compiler.debuglevel>source,lines,vars</maven.compiler.debuglevel>
+        <maven.compiler.verbose>false</maven.compiler.verbose>
+        <maven.compiler.fork>false</maven.compiler.fork>
 
         <maven.source.skip>true</maven.source.skip>
         <maven.javadoc.skip>true</maven.javadoc.skip>
@@ -87,6 +87,15 @@
     </properties>
 
     <profiles>
+        <profile>
+            <id>java9-plus</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <properties>
+                <maven.compiler.release>${project.java.version}</maven.compiler.release>
+            </properties>
+        </profile>
         <profile>
             <id>pack-bin</id>
             <properties>
@@ -131,12 +140,12 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <verbose>${java.compiler.verbose}</verbose>
-                    <compilerVersion>${java.compiler.version}</compilerVersion>
-                    <source>${java.source.version}</source>
-                    <target>${java.target.version}</target>
-                    <debuglevel>${java.compiler.debuglevel}</debuglevel>
-                    <fork>${java.compiler.fork}</fork>
+                    <verbose>${maven.compiler.verbose}</verbose>
+                    <compilerVersion>${maven.compiler.version}</compilerVersion>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
+                    <debuglevel>${maven.compiler.debuglevel}</debuglevel>
+                    <fork>${maven.compiler.fork}</fork>
                 </configuration>
             </plugin>
             <plugin>

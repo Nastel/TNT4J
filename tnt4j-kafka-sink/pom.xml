@@ -30,7 +30,7 @@
     <artifactId>tnt4j-kafka-sink</artifactId>
 
     <properties>
-        <kafka.clients.version>3.2.1</kafka.clients.version>
+        <kafka.clients.version>3.2.3</kafka.clients.version>
     </properties>
 
     <build>
@@ -65,8 +65,8 @@
                             <Implementation-Vendor>${product.vendor}</Implementation-Vendor>
                             <Implementation-Title>${product.name}</Implementation-Title>
                             <Implementation-Version>${project.version}-${maven.build.timestamp}</Implementation-Version>
-                            <X-Compile-Source-JDK>${java.source.version}</X-Compile-Source-JDK>
-                            <X-Compile-Target-JDK>${java.target.version}</X-Compile-Target-JDK>
+                            <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
+                            <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
                         </manifestEntries>
                     </archive>
                 </configuration>
