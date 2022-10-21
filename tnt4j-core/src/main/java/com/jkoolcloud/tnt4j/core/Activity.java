@@ -17,6 +17,7 @@ package com.jkoolcloud.tnt4j.core;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import com.jkoolcloud.tnt4j.source.Source;
@@ -51,8 +52,8 @@ public class Activity extends Operation implements Trackable {
 	private String sign;
 	private ActivityStatus status = ActivityStatus.BEGIN;
 
-	private HashSet<String> idset = new HashSet<>(89);
-	private ArrayList<ActivityListener> activityListeners = null;
+	private Set<String> idset = new HashSet<>(89);
+	private List<ActivityListener> activityListeners = null;
 
 	/**
 	 * Creates a Activity object with the specified tracking id.

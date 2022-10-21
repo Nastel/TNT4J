@@ -42,7 +42,7 @@ public class PropertySnapshot implements Snapshot {
 	private String sign;
 	private UsecTimestamp timeStamp;
 	private Source source;
-	private HashSet<String> correlators = new HashSet<>(89);
+	private Set<String> correlators = new HashSet<>(89);
 	private Map<Object, Property> propSet = new LinkedHashMap<>();
 
 	/**
