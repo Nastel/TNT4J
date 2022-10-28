@@ -132,7 +132,7 @@ public class FileSink implements Sink {
 		}
 
 		if (printer == null) {
-			printer = new PrintStream(Files.newOutputStream(file.toPath(),
+			printer = new PrintStream(Files.newOutputStream(file.toPath(), StandardOpenOption.CREATE,
 					append ? StandardOpenOption.APPEND : StandardOpenOption.TRUNCATE_EXISTING));
 		}
 	}
