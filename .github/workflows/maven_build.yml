@@ -46,7 +46,7 @@ jobs:
         run: |
           VERSION=$( mvn -B help:evaluate -Dexpression=project.version -q -DforceStdout --file pom.xml --no-transfer-progress )
           echo "Found project version: $VERSION"
-          echo "::set-output name=pom-version::$VERSION"
+          echo "pom-version=$VERSION" >> $GITHUB_OUTPUT
 
   #  cleanup:
   #    needs: build
