@@ -34,15 +34,15 @@
         </license>
     </licenses>
     <organization>
-        <name>jKool, LLC</name>
-        <url>https://www.jkoolcloud.com/</url>
+        <name>${project.organization.name}</name>
+        <url>${project.organization.url}</url>
     </organization>
     <developers>
         <developer>
             <name>jKool Team</name>
             <email>support@jkoolcloud.com</email>
             <organization>jKool</organization>
-            <organizationUrl>http://www.jkoolcloud.com</organizationUrl>
+            <organizationUrl>${project.organization.url}</organizationUrl>
         </developer>
     </developers>
     <scm>
@@ -66,6 +66,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.resources.encoding>UTF-8</project.resources.encoding>
+        <project.organization.name>jKool, LLC</project.organization.name>
+        <project.organization.url>https://www.jkoolcloud.com/</project.organization.url>
         <product.vendor>${project.organization.name}</product.vendor>
         <product.name>${project.name}</product.name>
         <product.name.hr>TNT4J</product.name.hr>
@@ -88,11 +90,20 @@
 
     <profiles>
         <profile>
+            <id>java9-plus-target</id>
+            <properties>
+                <project.java.version>${java.specification.version}</project.java.version>
+            </properties>
+        </profile>
+        <profile>
             <id>java9-plus</id>
             <activation>
                 <jdk>[9,)</jdk>
             </activation>
             <properties>
+                <java.source.version>${project.java.version}</java.source.version>
+                <java.target.version>${project.java.version}</java.target.version>
+                <java.compiler.version>${project.java.version}</java.compiler.version>
                 <maven.compiler.release>${project.java.version}</maven.compiler.release>
             </properties>
         </profile>
