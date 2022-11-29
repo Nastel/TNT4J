@@ -4,7 +4,10 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
-    open-pull-requests-limit: 10  
+    open-pull-requests-limit: 10
+    ignore:
+      - dependency-name: "org.slf4j:slf4j*"
+        versions: "[2.x,)"
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
