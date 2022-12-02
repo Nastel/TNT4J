@@ -34,7 +34,7 @@
         <commons.text.version>1.10.0</commons.text.version>
         <commons.codec.version>1.15</commons.codec.version>
         <commons.configuration.version>2.8.0</commons.configuration.version>
-        <commons.net.version>3.8.0</commons.net.version>
+        <commons.net.version>3.9.0</commons.net.version>
         <commons.beanutils.version>1.9.4</commons.beanutils.version>
 
         <guava.version>31.1-jre</guava.version>
