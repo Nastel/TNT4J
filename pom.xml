@@ -1,5 +1,5 @@
 <!--
-  ~ Copyright 2014-2022 JKOOL, LLC.
+  ~ Copyright 2014-2023 JKOOL, LLC.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -72,7 +72,7 @@
         <product.name>${project.name}</product.name>
         <product.name.hr>TNT4J</product.name.hr>
         <product.copyright.html>
-            <![CDATA[<font size="-1">Copyright &#169; 2014-2022 ${project.organization.name}. All Rights Reserved.</font>]]></product.copyright.html>
+            <![CDATA[<font size="-1">Copyright &#169; 2014-2023 ${project.organization.name}. All Rights Reserved.</font>]]></product.copyright.html>
 
         <project.java.version>8</project.java.version>
         <maven.compiler.source>${project.java.version}</maven.compiler.source>

@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2022 JKOOL, LLC.
+ * Copyright 2014-2023 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package com.jkoolcloud.tnt4j.core;
 
 /**
  * Data set defines a named list of properties
- *  
+ * 
  * @author albert
  */
 public class Dataset extends PropertySnapshot {
@@ -26,28 +26,35 @@ public class Dataset extends PropertySnapshot {
 
 	/**
 	 * Create a data set instance
-	 * @param name dataset name
+	 * 
+	 * @param name
+	 *            dataset name
 	 */
 	public Dataset(String name) {
 		super(CATEGORY_DATASET, name, OpLevel.NONE, OpType.DATASET, UsecTimestamp.now());
 	}
-	
+
 	/**
 	 * Create a data set instance
 	 * 
-	 * @param cat dataset category
-	 * @param name dataset name
+	 * @param cat
+	 *            dataset category
+	 * @param name
+	 *            dataset name
 	 */
 	public Dataset(String cat, String name) {
 		super(cat, name, OpLevel.NONE, OpType.DATASET, UsecTimestamp.now());
 	}
-	
+
 	/**
 	 * Create a data set instance
 	 * 
-	 * @param cat dataset category
-	 * @param name dataset name
-	 * @param time timestamp
+	 * @param cat
+	 *            dataset category
+	 * @param name
+	 *            dataset name
+	 * @param time
+	 *            timestamp
 	 */
 	public Dataset(String cat, String name, UsecTimestamp time) {
 		super(cat, name, OpLevel.NONE, OpType.DATASET, time);
