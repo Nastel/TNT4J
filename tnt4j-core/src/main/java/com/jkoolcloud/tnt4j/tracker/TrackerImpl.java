@@ -162,6 +162,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 					eventSink.close();
 				}
 			}
+		} catch (IllegalStateException exc) { // NOTE: sink is closed
 		} catch (IOException ioe) {
 			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR,

@@ -331,7 +331,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 				IOShutdown shut = (IOShutdown) sink;
 				shut.shutdown(null);
 			}
-		} catch (IOException e) {
+		} catch (IOException | IllegalStateException e) {
 		} finally {
 			if (logger != null && logger.isOpen()) {
 				Utils.close(logger);
@@ -1444,10 +1444,13 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 *            enable/disable VM shutdown hook that triggers a dump
 	 */
 	public static void dumpOnShutdown(boolean flag) {
-		if (flag) {
-			Runtime.getRuntime().addShutdownHook(dumpHook);
-		} else {
-			Runtime.getRuntime().removeShutdownHook(dumpHook);
+		try {
+			if (flag) {
+				Runtime.getRuntime().addShutdownHook(dumpHook);
+			} else {
+				Runtime.getRuntime().removeShutdownHook(dumpHook);
+			}
+		} catch (IllegalStateException exc) { // NOTE: already shutting down
 		}
 	}
 
@@ -1459,7 +1462,10 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 */
 	public static void flushOnShutdown(boolean flag) {
 		flushShutdown.setFlush(flag);
-		Runtime.getRuntime().addShutdownHook(flushShutdown);
+		try {
+			Runtime.getRuntime().addShutdownHook(flushShutdown);
+		} catch (IllegalStateException exc) { // NOTE: already shutting down
+		}
 	}
 
 	/**
