@@ -211,7 +211,10 @@ public class ActivityScheduler {
 	public void schedule(String name, long initialDelay, long period, TimeUnit tunit, OpLevel severity) {
 		if (future == null || future.isCancelled()) {
 			activityTask = newActivityTask(logger, name, severity);
-			future = scheduler.scheduleAtFixedRate(activityTask, initialDelay, period, tunit);
+			try {
+				future = scheduler.scheduleAtFixedRate(activityTask, initialDelay, period, tunit);
+			} catch (RejectedExecutionException exc) {
+			}
 		} else {
 			throw new IllegalStateException("Already scheduled");
 		}
