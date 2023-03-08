@@ -316,7 +316,7 @@ public class BufferedEventSink extends TagsSet implements EventSink, IOShutdown 
 
 	@Override
 	public boolean isOpen() {
-		return factory != null && factory.getPooledLogger() != null;
+		return factory.getPooledLogger() != null && !factory.getPooledLogger().isShut();
 	}
 
 	@Override
@@ -345,7 +345,7 @@ public class BufferedEventSink extends TagsSet implements EventSink, IOShutdown 
 		stats.put(Utils.qualify(this, KEY_OBJECTS_REQUEUED), rqCount.get());
 		stats.put(Utils.qualify(this, KEY_FLUSH_COUNT), signalCount.get());
 		stats.put(Utils.qualify(this, KEY_TOTAL_ERRORS), errorCount.get());
-		if (isOpen()) {
+		if (factory.getPooledLogger() != null) {
 			factory.getPooledLogger().getStats(stats);
 		}
 		return outSink.getStats(stats);
@@ -504,7 +504,7 @@ public class BufferedEventSink extends TagsSet implements EventSink, IOShutdown 
 		SinkLogEvent shutdownEvt = new SinkLogEvent(outSink, Thread.currentThread(), SinkLogEvent.SIGNAL_SHUTDOWN);
 		shutdownEvt.setException(ex);
 		signal(shutdownEvt, signalTimeout, TimeUnit.MILLISECONDS);
-		if (isOpen()) {
+		if (factory.getPooledLogger() != null) {
 			// also issue immediate logger shutdown in case signal times out
 			factory.getPooledLogger().shutdown(ex);
 		}

@@ -80,7 +80,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	BlockingQueue<SinkLogEvent> eventQ;
 	DelayQueue<DelayedElement<SinkLogEvent>> delayQ;
 
-	volatile boolean started = false, shutdown = false;
+	volatile boolean started = false, shutdown = false, terminated = false;
 
 	AtomicLong dropCount = new AtomicLong(0);
 	AtomicLong skipCount = new AtomicLong(0);
@@ -123,17 +123,33 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 
 		// when ex is null it must be immediate shutdown request
 		if (ex == null) {
-			SinkLogEvent dieEvent = new SinkLogEvent(this, SinkLogEvent.SIGNAL_TERMINATE);
+			SinkLogEvent dieEvent = new SinkLogEvent(this, Thread.currentThread(), SinkLogEvent.SIGNAL_TERMINATE);
 			for (int i = 0; i < poolSize; i++) {
 				eventQ.offer(dieEvent);
 			}
 			delayQ.offer(new DelayedElement<>(dieEvent, 0));
-
-			stop();
-
-			eventQ.clear();
-			delayQ.clear();
 		}
+
+		Thread termThread = new Thread(() -> terminate(), "PooledLogger-termination-thread");
+		termThread.start();
+	}
+
+	/**
+	 * Terminates logger activities: stops thead pool and clears logger queues.
+	 *
+	 * @see #stop()
+	 */
+	protected void terminate() {
+		if (terminated) {
+			return;
+		}
+
+		terminated = true;
+
+		eventQ.clear();
+		delayQ.clear();
+
+		stop();
 	}
 
 	/**
