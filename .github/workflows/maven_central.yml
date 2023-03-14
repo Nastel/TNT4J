@@ -37,18 +37,17 @@ jobs:
 
       - name: Generate changelog
         id: changelog
-        uses: metcalfc/changelog-generator@v4.0.1
+        uses: metcalfc/changelog-generator@v4.1.0
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create GitHub Release
         id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: ncipollo/release-action@v1
         with:
-          tag_name: v${{ github.event.inputs.releaseversion }}
-          release_name: Stable Release v${{ github.event.inputs.releaseversion }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: v${{ github.event.inputs.releaseversion }}
+          name: Stable Release v${{ github.event.inputs.releaseversion }}
           body: |
             Stable Release v${{ github.event.inputs.releaseversion }}
 
