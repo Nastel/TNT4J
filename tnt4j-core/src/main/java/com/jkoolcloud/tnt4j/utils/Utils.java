@@ -21,8 +21,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.*;
+import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.nio.charset.StandardCharsets;
+import java.nio.charset.UnsupportedCharsetException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.MessageDigest;
@@ -33,6 +35,7 @@ import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.SerializationUtils;
@@ -1780,5 +1783,176 @@ public class Utils {
 
 		p = p.getParent();
 		return p == null ? null : p.normalize().toString();
+	}
+
+	/**
+	 * Base64 encodes the specified sequence of bytes.
+	 *
+	 * @param src
+	 *            byte sequence to encode
+	 * @return encoded byte sequence
+	 */
+	public static byte[] base64Encode(byte[] src) {
+		return org.apache.commons.codec.binary.Base64.encodeBase64(src);
+	}
+
+	/**
+	 * Base64 encodes the specified sequence of bytes as string.
+	 *
+	 * @param src
+	 *            byte sequence to encode
+	 * @return encoded string
+	 */
+	public static String base64EncodeStr(byte[] src) {
+		return org.apache.commons.codec.binary.Base64.encodeBase64String(src);
+	}
+
+	/**
+	 * Base64 decodes the specified sequence of bytes.
+	 *
+	 * @param src
+	 *            byte sequence to decode
+	 * @return decoded byte sequence
+	 */
+	public static byte[] base64Decode(byte[] src) {
+		return org.apache.commons.codec.binary.Base64.decodeBase64(src);
+	}
+
+	/**
+	 * Base64 decodes the specified encoded data string.
+	 *
+	 * @param src
+	 *            base64 encoded string to decode
+	 * @return decoded byte sequence
+	 */
+	public static byte[] base64Decode(String src) {
+		return Base64.decodeBase64(src);
+	}
+
+	/**
+	 * Base64 decodes into {@link String} using defined {@link java.nio.charset.Charset}.
+	 *
+	 * @param src
+	 *            byte sequence to decode
+	 * @param charset
+	 *            charset instance to use for decoding, or {@code null} to use system default charset
+	 * @return string constructed from decoded bytes array
+	 *
+	 * @see #base64Decode(byte[])
+	 * @see #getString(byte[], java.nio.charset.Charset)
+	 */
+	public static String base64Decode(byte[] src, Charset charset) {
+		byte[] payload = base64Decode(src);
+		return getString(payload, charset);
+	}
+
+	/**
+	 * Base64 decodes into {@link String} using defined {@link java.nio.charset.Charset}.
+	 *
+	 * @param src
+	 *            base64 encoded string to decode
+	 * @param charset
+	 *            charset instance to use for decoding, or {@code null} to use system default charset
+	 * @return string constructed from decoded bytes array
+	 *
+	 * @see #base64Decode(String)
+	 * @see #getString(byte[], java.nio.charset.Charset)
+	 */
+	public static String base64Decode(String src, Charset charset) {
+		byte[] payload = base64Decode(src);
+		return getString(payload, charset);
+	}
+
+	/**
+	 * Base64 decodes into {@link String} using defined {@code charsetName}.
+	 *
+	 * @param src
+	 *            byte sequence to decode
+	 * @param charsetName
+	 *            the name of a supported {@linkplain java.nio.charset.Charset charset}, or {@code null} to use system
+	 *            default charset
+	 * @return string constructed from decoded bytes array
+	 *
+	 * @see #base64Decode(byte[])
+	 * @see #getString(byte[], String)
+	 */
+	public static String base64Decode(byte[] src, String charsetName) {
+		byte[] payload = base64Decode(src);
+		return getString(payload, charsetName);
+	}
+
+	/**
+	 * Base64 decodes into {@link String} using defined {@code charsetName}.
+	 *
+	 * @param src
+	 *            base64 encoded string to decode
+	 * @param charsetName
+	 *            the name of a supported {@linkplain java.nio.charset.Charset charset}, or {@code null} to use system
+	 *            default charset
+	 * @return string constructed from decoded bytes array
+	 *
+	 * @see #base64Decode(String)
+	 * @see #getString(byte[], String)
+	 */
+	public static String base64Decode(String src, String charsetName) {
+		byte[] payload = base64Decode(src);
+		return getString(payload, charsetName);
+	}
+
+	/**
+	 * Makes a new {@link String} by decoding the specified array of bytes using system default
+	 * {@link java.nio.charset.Charset#defaultCharset()} charset.
+	 *
+	 * @param strBytes
+	 *            the bytes to be decoded into characters
+	 * @return string constructed from specified byte array, or {@code null} if {@code strBytes} is {@code null}
+	 *
+	 * @see #getString(byte[], java.nio.charset.Charset)
+	 */
+	public static String getString(byte[] strBytes) {
+		return getString(strBytes, (Charset) null);
+	}
+
+	/**
+	 * Makes a new {@link String} by decoding the specified array of bytes using {@code charsetName} defined charset. If
+	 * {@link String} can't be constructed using defined charset, then system default
+	 * {@link java.nio.charset.Charset#defaultCharset()} charset is used.
+	 *
+	 * @param strBytes
+	 *            the bytes to be decoded into characters
+	 * @param charsetName
+	 *            the name of a supported {@linkplain java.nio.charset.Charset charset}, or {@code null} to use system
+	 *            default charset
+	 * @return string constructed from specified byte array, or {@code null} if {@code strBytes} is {@code null}
+	 *
+	 * @throws java.nio.charset.UnsupportedCharsetException
+	 *             if no support for the named charset is available in this instance of the JVM
+	 *
+	 * @see String#String(byte[], java.nio.charset.Charset)
+	 */
+	public static String getString(byte[] strBytes, String charsetName) throws UnsupportedCharsetException {
+		if (strBytes == null) {
+			return null;
+		}
+
+		return getString(strBytes,
+				StringUtils.isEmpty(charsetName) ? Charset.defaultCharset() : Charset.forName(charsetName));
+	}
+
+	/**
+	 * Makes a new {@link String} by decoding specified array of bytes using {@code charset} defined charset. If
+	 * {@link String} can't be constructed using defined charset, then system default
+	 * {@link java.nio.charset.Charset#defaultCharset()} charset is used.
+	 *
+	 * @param strBytes
+	 *            the bytes to be decoded into characters
+	 * @param charset
+	 *            charset instance to use for decoding, or {@code null} to use system default charset
+	 * @return string constructed from specified byte array, or {@code null} if {@code strBytes} is {@code null}
+	 *
+	 * @see org.apache.commons.lang3.StringUtils#toEncodedString(byte[], java.nio.charset.Charset)
+	 */
+	public static String getString(byte[] strBytes, Charset charset) {
+		return strBytes == null ? null : StringUtils.toEncodedString(strBytes, charset);
 	}
 }
