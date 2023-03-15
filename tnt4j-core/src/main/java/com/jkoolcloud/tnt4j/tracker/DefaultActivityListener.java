@@ -84,8 +84,8 @@ public class DefaultActivityListener implements ActivityListener {
 
 	/**
 	 * This method appends a default set of properties when activity timing stops. Developers should override this
-	 * method to add user defined set of properties. By default this method appends default set of properties defined by
-	 * {@code DEFAULT_PROPERTY_XXX} property values. Example: {@code DEFAULT_PROPERTY_CPU_TOTAL_TIME}.
+	 * method to add user defined set of properties. By default, this method appends default set of properties defined
+	 * by {@code DEFAULT_PROPERTY_XXX} property values. Example: {@code DEFAULT_PROPERTY_CPU_TOTAL_TIME}.
 	 */
 	@Override
 	public void stopped(Activity activity) {

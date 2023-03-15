@@ -1341,7 +1341,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * Add and register a dump provider with a user specified {@code DumpSink}. Instances of {@code DumpProvider}
 	 * interface provide implementation for underlying classes that generate application specific dumps. This dump
 	 * provider will be triggered for the specified {@code DumpSink} only. Instance of {@code DumpSink} can be created
-	 * by {@code DumpDestinationFactory}. By default {@code PropertiesDumpProvider}, {@code MXBeanDumpProvider},
+	 * by {@code DumpDestinationFactory}. By default, {@code PropertiesDumpProvider}, {@code MXBeanDumpProvider},
 	 * {@code ThreadDumpProvider}, {@code ThreadDeadlockDumpProvider} are auto registered with {@code FileDumpSink}
 	 * during initialization of {@code TrackingLogger} class.
 	 *

@@ -26,7 +26,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 /**
  * <p>
  * This class implements a default dump destination factory based on file based dump destination backed by
- * {@link com.jkoolcloud.tnt4j.dump.FileDumpSink} implementation. By default dump destinations are name using this
+ * {@link com.jkoolcloud.tnt4j.dump.FileDumpSink} implementation. By default, dump destinations are name using this
  * convention: {@code DEFAULT_DUMP_FOLDER + Utils.VM_NAME + ".dump"}. Default dump directory location can be specified
  * using {@code DumpLocation} configuration attribute or java property {@code tnt4j.dump.folder=./}.
  * </p>
