@@ -67,6 +67,6 @@ public enum OpType {
 			return valueOf(value.toString());
 		}
 		throw new IllegalArgumentException(
-				"Cannot convert object of type '" + value.getClass().getName() + "' enum OpType");
+				"Cannot convert object of type '" + value.getClass().getName() + "' to enum OpType");
 	}
 }

@@ -64,6 +64,6 @@ public enum ActivityStatus {
 			return valueOf(value.toString());
 		}
 		throw new IllegalArgumentException(
-				"Cannot convert object of type '" + value.getClass().getName() + "' enum ActivityStatus");
+				"Cannot convert object of type '" + value.getClass().getName() + "' to enum ActivityStatus");
 	}
 }

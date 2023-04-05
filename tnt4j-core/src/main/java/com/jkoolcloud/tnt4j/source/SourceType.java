@@ -77,6 +77,6 @@ public enum SourceType {
 			return valueOf(value.toString());
 		}
 		throw new IllegalArgumentException(
-				"Cannot convert object of type '" + value.getClass().getName() + "' enum SourceType");
+				"Cannot convert object of type '" + value.getClass().getName() + "' to enum SourceType");
 	}
 }

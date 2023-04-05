@@ -97,6 +97,6 @@ public enum OpLevel {
 			return valueOf(value.toString());
 		}
 		throw new IllegalArgumentException(
-				"Cannot convert object of type '" + value.getClass().getName() + "' enum OpLevel");
+				"Cannot convert object of type '" + value.getClass().getName() + "' to enum OpLevel");
 	}
 }

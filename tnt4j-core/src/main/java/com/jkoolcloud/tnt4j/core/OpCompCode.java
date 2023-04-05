@@ -64,6 +64,6 @@ public enum OpCompCode {
 			return valueOf(value.toString());
 		}
 		throw new IllegalArgumentException(
-				"Cannot convert object of type '" + value.getClass().getName() + "' enum OpCompCode");
+				"Cannot convert object of type '" + value.getClass().getName() + "' to enum OpCompCode");
 	}
 }
