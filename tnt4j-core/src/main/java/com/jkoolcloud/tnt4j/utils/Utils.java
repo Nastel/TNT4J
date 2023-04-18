@@ -118,7 +118,7 @@ public class Utils {
 	 * Replacements configuration RegEx pattern.
 	 */
 	public static final Pattern REP_CFG_PATTERN = Pattern
-			.compile("\"(\\s*([^\"\\\\]|\\\\.)+\\s*)\"->\"(\\s*([^\"\\\\]|\\\\.)+\\s*)\"");
+			.compile("\"(\\s*(?:[^\"\\\\]|\\\\.)+\\s*)\"->\"(\\s*(?:[^\"\\\\]|\\\\.)*\\s*)\"");
 
 	private static final Pattern MSG_FORMAT_ELEMENT_PATTERN = Pattern.compile("\\{\\d+");
 
@@ -1603,7 +1603,7 @@ public class Utils {
 		Matcher m = REP_CFG_PATTERN.matcher(repCfgStr);
 
 		while (m.find()) {
-			replacementsMap.put(StringEscapeUtils.unescapeJava(m.group(1)), StringEscapeUtils.unescapeJava(m.group(3)));
+			replacementsMap.put(StringEscapeUtils.unescapeJava(m.group(1)), StringEscapeUtils.unescapeJava(m.group(2)));
 		}
 	}
 
