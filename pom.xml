@@ -74,10 +74,11 @@
         <product.copyright.html>
             <![CDATA[<font size="-1">Copyright &#169; 2014-2023 ${project.organization.name}. All Rights Reserved.</font>]]></product.copyright.html>
 
-        <project.java.version>8</project.java.version>
+        <project.java.version>11</project.java.version>
         <maven.compiler.source>${project.java.version}</maven.compiler.source>
         <maven.compiler.target>${project.java.version}</maven.compiler.target>
         <maven.compiler.version>${project.java.version}</maven.compiler.version>
+        <maven.compiler.release>${project.java.version}</maven.compiler.release>
         <maven.compiler.debuglevel>source,lines,vars</maven.compiler.debuglevel>
         <maven.compiler.verbose>false</maven.compiler.verbose>
         <maven.compiler.fork>false</maven.compiler.fork>
@@ -89,24 +90,6 @@
     </properties>
 
     <profiles>
-        <profile>
-            <id>java9-plus-target</id>
-            <properties>
-                <project.java.version>${java.specification.version}</project.java.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>java9-plus</id>
-            <activation>
-                <jdk>[9,)</jdk>
-            </activation>
-            <properties>
-                <java.source.version>${project.java.version}</java.source.version>
-                <java.target.version>${project.java.version}</java.target.version>
-                <java.compiler.version>${project.java.version}</java.compiler.version>
-                <maven.compiler.release>${project.java.version}</maven.compiler.release>
-            </properties>
-        </profile>
         <profile>
             <id>pack-bin</id>
             <properties>
