@@ -6,8 +6,6 @@ updates:
       interval: "daily"
     open-pull-requests-limit: 10
     ignore:
-      - dependency-name: "org.slf4j:slf4j*"
-        versions: "[2.x,)"
       # Maven plugins
       - dependency-name: "org.apache.maven.plugins:maven-assembly-plugin"
         versions: "[3.1.1,)"  
