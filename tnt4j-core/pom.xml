@@ -30,7 +30,7 @@
     <artifactId>tnt4j-core</artifactId>
 
     <properties>
-        <commons.lang.version>3.12.0</commons.lang.version>
+        <commons.lang.version>3.13.0</commons.lang.version>
         <commons.text.version>1.10.0</commons.text.version>
         <commons.codec.version>1.16.0</commons.codec.version>
         <commons.configuration.version>2.9.0</commons.configuration.version>
