@@ -34,7 +34,7 @@ jobs:
       pom-version: ${{ steps.get-pom-version.outputs.pom-version }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up JDK
         uses: actions/setup-java@v3
         with:
@@ -56,7 +56,7 @@ jobs:
     if: ${{ contains(needs.build.outputs.pom-version, 'SNAPSHOT') && github.event_name != 'pull_request' }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Set up settings.xml for OSS
         uses: actions/setup-java@v3
