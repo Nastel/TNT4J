@@ -32,7 +32,6 @@ import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.dump.DumpSinkFactory;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
 import com.jkoolcloud.tnt4j.locator.GeoLocator;
-import com.jkoolcloud.tnt4j.repository.TokenRepository;
 import com.jkoolcloud.tnt4j.selector.TrackingSelector;
 import com.jkoolcloud.tnt4j.sink.*;
 import com.jkoolcloud.tnt4j.source.Source;
@@ -104,7 +103,7 @@ import com.jkoolcloud.tnt4j.uuid.UUIDFactory;
  * }
  * </pre>
  *
- * @see TokenRepository
+ * @see com.jkoolcloud.tnt4j.repository.TokenRepository
  * @see TrackingSelector
  * @see EventFormatter
  * @see EventSinkFactory

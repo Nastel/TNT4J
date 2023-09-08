@@ -720,7 +720,7 @@ public abstract class AbstractEventSink extends TagsSet implements EventSink, Ev
 	 *            string message to be logged
 	 * @throws IOException
 	 *             if error logging snapshot
-	 * @see OpLevel
+	 * @see Snapshot
 	 */
 	protected abstract void _log(Snapshot snapshot) throws IOException;
 
