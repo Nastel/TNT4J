@@ -26,6 +26,7 @@ import java.util.TimeZone;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.time.FastDateFormat;
 
 import com.jkoolcloud.tnt4j.utils.Useconds;
 import com.jkoolcloud.tnt4j.utils.Utils;
@@ -62,7 +63,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * Creates UsecTimestamp based on current time with microsecond precision/accuracy
 	 *
-	 * @see com.jkoolcloud.tnt4j.utils.Utils#currentTimeUsec
+	 * @see com.jkoolcloud.tnt4j.utils.Utils#currentTimeUsec()
 	 */
 	public UsecTimestamp() {
 		this(Useconds.CURRENT.get());
@@ -324,10 +325,10 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 		}
 
 		int usecs = 0;
-		SimpleDateFormat dateFormat;
+		FastDateFormat dateFormat;
 
 		if (StringUtils.isEmpty(formatStr)) {
-			dateFormat = new SimpleDateFormat(DFLT_JAVA_FORMAT);
+			dateFormat = FastDateFormat.getInstance(DFLT_JAVA_FORMAT);
 		} else {
 			// Java date formatter cannot deal with usecs, so we need to extract those ourselves
 			int fFsecPos = formatStr.indexOf('S');
@@ -387,13 +388,8 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 				}
 			}
 
-			dateFormat = StringUtils.isEmpty(locale) ? new SimpleDateFormat(formatStr)
-					: new SimpleDateFormat(formatStr, Utils.getLocale(locale));
-		}
-
-		dateFormat.setLenient(true);
-		if (timeZone != null) {
-			dateFormat.setTimeZone(timeZone);
+			dateFormat = FastDateFormat.getInstance(formatStr, timeZone,
+					StringUtils.isEmpty(locale) ? null : Utils.getLocale(locale));
 		}
 
 		try {
@@ -466,7 +462,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * Returns UsecTimestamp based on current time with microsecond precision/accuracy
 	 *
 	 * @return UsecTimestamp for current time
-	 * @see com.jkoolcloud.tnt4j.utils.Utils#currentTimeUsec
+	 * @see com.jkoolcloud.tnt4j.utils.Utils#currentTimeUsec()
 	 */
 	public static UsecTimestamp now() {
 		return new UsecTimestamp();
@@ -967,8 +963,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 			}
 		}
 
-		SimpleDateFormat df = (locale == null ? new SimpleDateFormat(pattern) : new SimpleDateFormat(pattern, locale));
-		df.setTimeZone(tz == null ? DEFAULT_TZ : tz);
+		FastDateFormat df = FastDateFormat.getInstance(pattern, tz == null ? DEFAULT_TZ : tz, locale);
 		tsStr = df.format(new Date(msecs));
 
 		return tsStr.replace("Z", "+00:00");
