@@ -81,8 +81,10 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 		}
 		if (isDefined()) {
 			tokenRepository.open();
-			listener = new PropertyListenerImpl(this, logger);
-			tokenRepository.addRepositoryListener(listener);
+			if (listener == null) {
+				listener = new PropertyListenerImpl(this, logger);
+				tokenRepository.addRepositoryListener(listener);
+			}
 			reloadConfig();
 		} else {
 			logger.log(OpLevel.DEBUG, "Undefined token repository={0}: default isSet()={1}", tokenRepository,
