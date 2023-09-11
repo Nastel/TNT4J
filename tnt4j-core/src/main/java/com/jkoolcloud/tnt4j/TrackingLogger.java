@@ -1583,12 +1583,6 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	}
 
 	@Override
-	public void reopen() throws IOException {
-		close();
-		open();
-	}
-
-	@Override
 	public Map<String, Object> getStats() {
 		checkState();
 		return logger.getStats();

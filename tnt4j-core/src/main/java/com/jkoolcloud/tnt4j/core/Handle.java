@@ -52,5 +52,8 @@ public interface Handle extends java.io.Closeable {
 	 * @see #close()
 	 * @see #open()
 	 */
-	void reopen() throws IOException;
+	default void reopen() throws IOException {
+		close();
+		open();
+	}
 }

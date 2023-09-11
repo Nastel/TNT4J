@@ -102,25 +102,19 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 		}
 	}
 
-	@Override
-	public synchronized void reopen() throws IOException {
-		close();
-		open();
-	}
-
 	protected void reloadConfig() {
 		clear();
 		if (isOpen()) {
-		Iterator<? extends Object> keys = tokenRepository.getKeys();
-		if (keys == null) {
-			return;
-		}
+			Iterator<? extends Object> keys = tokenRepository.getKeys();
+			if (keys == null) {
+				return;
+			}
 
-		while (keys.hasNext()) {
-			String key = String.valueOf(keys.next());
-			putKey(key, tokenRepository.get(key).toString());
+			while (keys.hasNext()) {
+				String key = String.valueOf(keys.next());
+				putKey(key, tokenRepository.get(key).toString());
+			}
 		}
-	}
 	}
 
 	protected void putKey(Object key, Object val) {

@@ -721,12 +721,6 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 	}
 
 	@Override
-	public void reopen() throws IOException {
-		close();
-		open();
-	}
-
-	@Override
 	public void sinkError(SinkError ev) {
 		errorCount.incrementAndGet();
 		if (logger.isSet(OpLevel.DEBUG)) {
