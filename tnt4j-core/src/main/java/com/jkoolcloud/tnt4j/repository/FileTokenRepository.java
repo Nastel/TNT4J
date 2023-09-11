@@ -53,14 +53,15 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  *
  * @see TokenRepository
  *
- * @version $Revision: 6 $
+ * @version $Revision: 7 $
  *
  */
 
 public class FileTokenRepository implements TokenRepository, Configurable {
 	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(FileTokenRepository.class);
-	private static final ConcurrentHashMap<TokenRepositoryListener, EventListener<?>[]> LISTEN_MAP = new ConcurrentHashMap<>(49);
 	private static long DEFAULT_REFRESH_DELAY = TimeUnit.SECONDS.toMillis(0);
+
+	private final ConcurrentHashMap<TokenRepositoryListener, EventListener<?>[]> LISTEN_MAP = new ConcurrentHashMap<>(49);
 
 	private String configName = null;
 	private BasicConfigurationBuilder<PropertiesConfiguration> config = null;
@@ -95,29 +96,41 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
 	public void addRepositoryListener(TokenRepositoryListener listener) {
-		if (configName == null || !isOpen()) {
+		if (!isOpen()) {
+			return;
+		}
+		if (LISTEN_MAP.containsKey(listener)) {
 			return;
 		}
 		TokenConfigurationListener cfListener = new TokenConfigurationListener(listener, logger);
+		TokenReloadListener cfReloadListener = new TokenReloadListener(listener, logger);
 		TokenConfigurationErrorListener cfErrListener = new TokenConfigurationErrorListener(listener, logger);
-		EventListener<?>[] pListeners = new EventListener[2];
-		pListeners[0] = cfListener;
-		pListeners[1] = cfErrListener;
+		EventListener<?>[] pListeners = new EventListener[] { cfListener, cfReloadListener, cfErrListener };
 		LISTEN_MAP.put(listener, pListeners);
-		config.addEventListener(ConfigurationEvent.ANY, cfListener);
-		config.addEventListener(ConfigurationErrorEvent.ANY, cfErrListener);
+		addConfigListeners(pListeners);
 	}
 
 	@Override
 	public void removeRepositoryListener(TokenRepositoryListener listener) {
-		if (configName == null || !isOpen()) {
+		if (!isOpen()) {
 			return;
 		}
-		EventListener<?>[] pListeners = LISTEN_MAP.get(listener);
+		removeConfigListeners(LISTEN_MAP.remove(listener));
+	}
+
+	private void addConfigListeners(EventListener<?>[] pListeners) {
 		if (pListeners != null) {
-			LISTEN_MAP.remove(listener);
+			config.addEventListener(ConfigurationEvent.ANY, (TokenConfigurationListener) pListeners[0]);
+			config.addEventListener(ReloadingEvent.ANY, (TokenReloadListener) pListeners[1]);
+			config.addEventListener(ConfigurationErrorEvent.ANY, (TokenConfigurationErrorListener) pListeners[2]);
+		}
+	}
+
+	private void removeConfigListeners(EventListener<?>[] pListeners) {
+		if (pListeners != null) {
 			config.removeEventListener(ConfigurationEvent.ANY, (TokenConfigurationListener) pListeners[0]);
-			config.removeEventListener(ConfigurationErrorEvent.ANY, (TokenConfigurationErrorListener) pListeners[1]);
+			config.removeEventListener(ReloadingEvent.ANY, (TokenReloadListener) pListeners[1]);
+			config.removeEventListener(ConfigurationErrorEvent.ANY, (TokenConfigurationErrorListener) pListeners[2]);
 		}
 	}
 
@@ -185,7 +198,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
 	public synchronized void open() throws IOException {
-		if (isOpen() || (configName == null)) {
+		if (isOpen() || !isDefined()) {
 			return;
 		}
 		try {
@@ -221,7 +234,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 			}
 		}
 
-		close();
+		_close();
 
 		if (refDelay > 0) {
 			ReloadingFileBasedConfigurationBuilder<PropertiesConfiguration> builder = new ReloadingFileBasedConfigurationBuilder<>(
@@ -236,16 +249,22 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 
 	@Override
 	public synchronized void close() {
+		_close();
+		LISTEN_MAP.clear();
+	}
+
+	private synchronized void _close() {
 		if (cfgReloadTrigger != null) {
 			cfgReloadTrigger.stop();
 			cfgReloadTrigger = null;
 		}
+		removeListenersFromClosed();
+		config = null;
 	}
 
 	@Override
 	public void reopen() throws IOException {
-		close();
-		removeListenersFromClosed();
+		_close();
 
 		open();
 		addListenersToOpened();
@@ -254,12 +273,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	private void removeListenersFromClosed() {
 		if (isOpen()) {
 			for (Map.Entry<TokenRepositoryListener, EventListener<?>[]> le : LISTEN_MAP.entrySet()) {
-				EventListener<?>[] pListeners = le.getValue();
-				if (pListeners != null) {
-					config.removeEventListener(ConfigurationEvent.ANY, (TokenConfigurationListener) pListeners[0]);
-					config.removeEventListener(ConfigurationErrorEvent.ANY,
-							(TokenConfigurationErrorListener) pListeners[1]);
-				}
+				removeConfigListeners(le.getValue());
 			}
 		}
 	}
@@ -267,12 +281,7 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	private void addListenersToOpened() {
 		if (isOpen()) {
 			for (Map.Entry<TokenRepositoryListener, EventListener<?>[]> le : LISTEN_MAP.entrySet()) {
-				EventListener<?>[] pListeners = le.getValue();
-				if (pListeners != null) {
-					config.addEventListener(ConfigurationEvent.ANY, (TokenConfigurationListener) pListeners[0]);
-					config.addEventListener(ConfigurationErrorEvent.ANY,
-							(TokenConfigurationErrorListener) pListeners[1]);
-				}
+				addConfigListeners(le.getValue());
 			}
 		}
 	}
@@ -323,10 +332,24 @@ class TokenConfigurationListener implements EventListener<ConfigurationEvent> {
 		} else if (event.getEventType() == ConfigurationEvent.CLEAR) {
 			repListener.repositoryChanged(new TokenRepositoryEvent(event.getSource(), TokenRepository.EVENT_CLEAR,
 					event.getPropertyName(), event.getPropertyValue(), null));
-		} else if (event.getEventType() == ReloadingEvent.ANY) {
-			repListener.repositoryChanged(new TokenRepositoryEvent(event.getSource(), TokenRepository.EVENT_RELOAD,
-					event.getPropertyName(), event.getPropertyValue(), null));
 		}
+	}
+}
+
+class TokenReloadListener implements EventListener<ReloadingEvent> {
+	final TokenRepositoryListener repListener;
+	final EventSink logger;
+
+	public TokenReloadListener(TokenRepositoryListener listener, EventSink log) {
+		repListener = listener;
+		logger = log;
+	}
+
+	@Override
+	public void onEvent(ReloadingEvent event) {
+		logger.log(OpLevel.DEBUG, "configurationReloading: type={0}, data={1}", event.getEventType(), event.getData());
+		repListener.repositoryChanged(new TokenRepositoryEvent(event.getSource(), TokenRepository.EVENT_RELOAD, "data",
+				event.getData(), null));
 	}
 }
 
@@ -345,5 +368,4 @@ class TokenConfigurationErrorListener implements EventListener<ConfigurationErro
 		repListener.repositoryError(new TokenRepositoryEvent(event.getSource(), TokenRepository.EVENT_EXCEPTION,
 				event.getPropertyName(), event.getPropertyValue(), event.getCause()));
 	}
-
 }
