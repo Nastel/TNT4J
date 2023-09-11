@@ -599,12 +599,6 @@ public abstract class AbstractEventSink extends TagsSet implements EventSink, Ev
 	public void flush() throws IOException {
 	}
 
-	@Override
-	public void reopen() throws IOException {
-		this.close();
-		this.open();
-	}
-
 	public long defaultTTL() {
 		return (ttl != TTL.TTL_CONTEXT) ? ttl : TTL.TTL_DEFAULT;
 	}

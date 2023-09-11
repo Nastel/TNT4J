@@ -572,12 +572,6 @@ public class BufferedEventSink extends TagsSet implements EventSink, IOShutdown 
 	}
 
 	@Override
-	public void reopen() throws IOException {
-		close();
-		open();
-	}
-
-	@Override
 	public String getString(Object key) {
 		return outSink.getString(key);
 	}

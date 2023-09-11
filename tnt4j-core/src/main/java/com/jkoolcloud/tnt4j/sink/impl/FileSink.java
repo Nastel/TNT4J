@@ -163,12 +163,6 @@ public class FileSink implements Sink {
 		}
 	}
 
-	@Override
-	public void reopen() throws IOException {
-		this.close();
-		this.open();
-	}
-
 	private static Lock lock = new ReentrantLock();
 
 	void print_(String msg) {
