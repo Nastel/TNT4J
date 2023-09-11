@@ -20,7 +20,6 @@ import com.jkoolcloud.tnt4j.locator.GeoLocator;
 /**
  * This interface defines a source factory which creates instances of sources. Source may contain other sources.
  * 
- * 
  * @version $Revision: 1 $
  * 
  */

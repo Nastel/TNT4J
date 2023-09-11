@@ -39,7 +39,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * 
  * @see OpLevel
  * 
- * @version $Revision: 7 $
+ * @version $Revision: 8 $
  * 
  */
 public class DefaultTrackingSelector implements TrackingSelector, Configurable {
@@ -50,13 +50,14 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	private final HashMap<Object, PropertyToken> tokenMap = new HashMap<>(89);
 	private Map<String, ?> config = null;
 	private TokenRepository tokenRepository = null;
-	private PropertyListenerImpl listener = null;
+	private final PropertyListenerImpl listener;
 
 	/**
 	 * Create a default tracking selector. Each selector needs to be backed by a repository {@link TokenRepository} .
 	 * 
 	 */
 	public DefaultTrackingSelector() {
+		listener = new PropertyListenerImpl(this, logger);
 	}
 
 	/**
@@ -66,6 +67,8 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 	 *            token repository implementation
 	 */
 	public DefaultTrackingSelector(TokenRepository repository) {
+		this();
+
 		setRepository(repository);
 	}
 
@@ -81,7 +84,6 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 		}
 		if (isDefined()) {
 			tokenRepository.open();
-			listener = new PropertyListenerImpl(this, logger);
 			tokenRepository.addRepositoryListener(listener);
 			reloadConfig();
 		} else {
@@ -96,6 +98,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 		if (tokenRepository != null) {
 			tokenRepository.removeRepositoryListener(listener);
 			Utils.close(tokenRepository);
+			tokenRepository = null;
 		}
 	}
 
@@ -107,6 +110,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 
 	protected void reloadConfig() {
 		clear();
+		if (isOpen()) {
 		Iterator<? extends Object> keys = tokenRepository.getKeys();
 		if (keys == null) {
 			return;
@@ -116,6 +120,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 			String key = String.valueOf(keys.next());
 			putKey(key, tokenRepository.get(key).toString());
 		}
+	}
 	}
 
 	protected void putKey(Object key, Object val) {
@@ -222,6 +227,6 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 
 	@Override
 	public boolean isDefined() {
-		return (tokenRepository != null && tokenRepository.isDefined());
+		return tokenRepository != null && tokenRepository.isDefined();
 	}
 }
