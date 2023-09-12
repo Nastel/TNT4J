@@ -18,7 +18,6 @@ package com.jkoolcloud.tnt4j.core;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Locale;
@@ -163,9 +162,9 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * Creates UsecTimestamp from string representation of timestamp in the specified format.
 	 * </p>
 	 * <p>
-	 * This is based on {@link SimpleDateFormat}, but extends its support to recognize microsecond fractional seconds.
-	 * If number of fractional second characters is greater than 3, then it's assumed to be microseconds. Otherwise,
-	 * it's assumed to be milliseconds (as this is the behavior of {@link SimpleDateFormat}.
+	 * This is based on {@link java.text.SimpleDateFormat}, but extends its support to recognize microsecond fractional
+	 * seconds. If number of fractional second characters is greater than 3, then it's assumed to be microseconds.
+	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of {@link java.text.SimpleDateFormat}.
 	 *
 	 * @param timeStampStr
 	 *            timestamp string
@@ -185,9 +184,9 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * Creates UsecTimestamp from string representation of timestamp in the default format.
 	 * </p>
 	 * <p>
-	 * This is based on {@link SimpleDateFormat}, but extends its support to recognize microsecond fractional seconds.
-	 * If number of fractional second characters is greater than 3, then it's assumed to be microseconds. Otherwise,
-	 * it's assumed to be milliseconds (as this is the behavior of {@link SimpleDateFormat}.
+	 * This is based on {@link java.text.SimpleDateFormat}, but extends its support to recognize microsecond fractional
+	 * seconds. If number of fractional second characters is greater than 3, then it's assumed to be microseconds.
+	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of {@link java.text.SimpleDateFormat}.
 	 *
 	 * @param timeStampStr
 	 *            timestamp string
@@ -209,9 +208,9 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * Creates UsecTimestamp from string representation of timestamp in the specified format.
 	 * </p>
 	 * <p>
-	 * This is based on {@link SimpleDateFormat}, but extends its support to recognize microsecond fractional seconds.
-	 * If number of fractional second characters is greater than 3, then it's assumed to be microseconds. Otherwise,
-	 * it's assumed to be milliseconds (as this is the behavior of {@link SimpleDateFormat}.
+	 * This is based on {@link java.text.SimpleDateFormat}, but extends its support to recognize microsecond fractional
+	 * seconds. If number of fractional second characters is greater than 3, then it's assumed to be microseconds.
+	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of {@link java.text.SimpleDateFormat}.
 	 *
 	 * @param timeStampStr
 	 *            timestamp string
@@ -237,9 +236,9 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * Creates UsecTimestamp from string representation of timestamp in the specified format.
 	 * </p>
 	 * <p>
-	 * This is based on {@link SimpleDateFormat}, but extends its support to recognize microsecond fractional seconds.
-	 * If number of fractional second characters is greater than 3, then it's assumed to be microseconds. Otherwise,
-	 * it's assumed to be milliseconds (as this is the behavior of {@link SimpleDateFormat}.
+	 * This is based on {@link java.text.SimpleDateFormat}, but extends its support to recognize microsecond fractional
+	 * seconds. If number of fractional second characters is greater than 3, then it's assumed to be microseconds.
+	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of {@link java.text.SimpleDateFormat}.
 	 *
 	 * @param timeStampStr
 	 *            timestamp string
@@ -269,9 +268,9 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * Creates UsecTimestamp from string representation of timestamp in the specified format.
 	 * </p>
 	 * <p>
-	 * This is based on {@link SimpleDateFormat}, but extends its support to recognize microsecond fractional seconds.
-	 * If number of fractional second characters is greater than 3, then it's assumed to be microseconds. Otherwise,
-	 * it's assumed to be milliseconds (as this is the behavior of {@link SimpleDateFormat}.
+	 * This is based on {@link java.text.SimpleDateFormat}, but extends its support to recognize microsecond fractional
+	 * seconds. If number of fractional second characters is greater than 3, then it's assumed to be microseconds.
+	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of {@link java.text.SimpleDateFormat}.
 	 *
 	 * @param timeStampStr
 	 *            timestamp string
@@ -297,9 +296,9 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * Creates UsecTimestamp from string representation of timestamp in the specified format.
 	 * </p>
 	 * <p>
-	 * This is based on {@link SimpleDateFormat}, but extends its support to recognize microsecond fractional seconds.
-	 * If number of fractional second characters is greater than 3, then it's assumed to be microseconds. Otherwise,
-	 * it's assumed to be milliseconds (as this is the behavior of {@link SimpleDateFormat}.
+	 * This is based on {@link java.text.SimpleDateFormat}, but extends its support to recognize microsecond fractional
+	 * seconds. If number of fractional second characters is greater than 3, then it's assumed to be microseconds.
+	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of {@link java.text.SimpleDateFormat}.
 	 *
 	 * @param timeStampStr
 	 *            timestamp string
