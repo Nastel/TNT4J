@@ -38,7 +38,7 @@
         <commons.beanutils.version>1.9.4</commons.beanutils.version>
 
         <guava.version>32.1.2-jre</guava.version>
-        <uuid.generator.version>4.2.0</uuid.generator.version>
+        <uuid.generator.version>4.3.0</uuid.generator.version>
         <slf4j.version>2.0.9</slf4j.version>
     </properties>
 
