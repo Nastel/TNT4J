@@ -433,7 +433,7 @@ public abstract class AbstractEventSink extends TagsSet implements EventSink, Ev
 	@Override
 	public void log(TrackingActivity activity) {
 		_checkState();
-		boolean doLog = filterCheck ? isLoggable(activity) : true;
+		boolean doLog = !filterCheck || isLoggable(activity);
 		if (doLog) {
 			try {
 				if (!_limiter(1, 512)) {
@@ -459,7 +459,7 @@ public abstract class AbstractEventSink extends TagsSet implements EventSink, Ev
 	@Override
 	public void log(TrackingEvent event) {
 		_checkState();
-		boolean doLog = filterCheck ? isLoggable(event) : true;
+		boolean doLog = !filterCheck || isLoggable(event);
 		if (doLog) {
 			try {
 				if (!_limiter(1, event.getSize())) {
@@ -485,7 +485,7 @@ public abstract class AbstractEventSink extends TagsSet implements EventSink, Ev
 	@Override
 	public void log(Snapshot snapshot) {
 		_checkState();
-		boolean doLog = filterCheck ? isLoggable(snapshot) : true;
+		boolean doLog = !filterCheck || isLoggable(snapshot);
 		if (doLog) {
 			try {
 				if (!_limiter(1, 128)) {
@@ -536,7 +536,7 @@ public abstract class AbstractEventSink extends TagsSet implements EventSink, Ev
 	public void log(long ttl_sec, Source src, OpLevel sev, ResourceBundle bundle, String key, Object... args) {
 		_checkState();
 		String msg = Utils.getString(bundle, key);
-		boolean doLog = filterCheck ? isLoggable(ttl_sec, source, sev, msg, args) : true;
+		boolean doLog = !filterCheck || isLoggable(ttl_sec, source, sev, msg, args);
 		if (doLog) {
 			long nttl = defaultTTL(ttl_sec);
 			try {

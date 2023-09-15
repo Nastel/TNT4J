@@ -134,58 +134,68 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 
 	@Override
 	public boolean filter(EventSink sink, TrackingEvent event) {
-		if (elapsedUsec >= 0 && event.getOperation().getElapsedTimeUsec() < elapsedUsec) {
+		if (!passLevel(event.getSeverity(), sink)) {
 			return false;
 		}
-		if (waitUsec >= 0 && event.getOperation().getWaitTimeUsec() < waitUsec) {
+		if (!filterOperation(event.getOperation())) {
 			return false;
 		}
-		if (msgPattern != null && !msgPattern.matcher(event.getMessagePattern()).matches()) {
-			return false;
-		}
-		if (isDuplicate(event, event.getMessage())) {
-			return false;
-		}
-		if (ttl != TTL.TTL_CONTEXT) {
-			event.setTTL(ttl);
-		}
-		return passLevel(event.getSeverity(), sink);
+		setTTL(event);
+		return filterMessage(event, event.getMessage());
 	}
 
 	@Override
 	public boolean filter(EventSink sink, TrackingActivity activity) {
-		if (elapsedUsec >= 0 && activity.getElapsedTimeUsec() < elapsedUsec) {
+		if (!passLevel(activity.getSeverity(), sink)) {
 			return false;
 		}
-		if (waitUsec >= 0 && activity.getWaitTimeUsec() < waitUsec) {
+		if (!filterOperation(activity)) {
 			return false;
 		}
-		if (wallUsec >= 0 && activity.getWallTimeUsec() < wallUsec) {
-			return false;
-		}
-		if (ttl != TTL.TTL_CONTEXT) {
-			activity.setTTL(ttl);
-		}
-		return passLevel(activity.getSeverity(), sink);
+		setTTL(activity);
+		return true;
 	}
 
 	@Override
 	public boolean filter(EventSink sink, Snapshot snapshot) {
-		if (ttl != TTL.TTL_CONTEXT) {
-			snapshot.setTTL(ttl);
-		}
+		setTTL(snapshot);
 		return passLevel(snapshot.getSeverity(), sink);
 	}
 
 	@Override
 	public boolean filter(EventSink sink, long ttl, Source source, OpLevel level, String msg, Object... args) {
-		String formattedMsg = sink.getEventFormatter().format(ttl, source, level, msg, args);
-		if (isDuplicate(null, formattedMsg)) {
-			return false;
-		} else if (msgPattern != null && !msgPattern.matcher(formattedMsg).matches()) {
+		if (!passLevel(level, sink)) {
 			return false;
 		}
-		return passLevel(level, sink);
+		String formattedMsg = sink.getEventFormatter().format(ttl, source, level, msg, args);
+		return filterMessage(null, formattedMsg);
+	}
+
+	private boolean filterOperation(Operation operation) {
+		if (elapsedUsec >= 0 && operation.getElapsedTimeUsec() < elapsedUsec) {
+			return false;
+		}
+		if (waitUsec >= 0 && operation.getWaitTimeUsec() < waitUsec) {
+			return false;
+		}
+		if (wallUsec >= 0 && operation.getWallTimeUsec() < wallUsec) {
+			return false;
+		}
+
+		return true;
+	}
+
+	private boolean filterMessage(TrackingEvent event, String formattedMsg) {
+		if (msgPattern != null && !msgPattern.matcher(formattedMsg).matches()) {
+			return false;
+		}
+		return !isDuplicate(event, formattedMsg);
+	}
+
+	private void setTTL(TTL ttlObj) {
+		if (ttl != TTL.TTL_CONTEXT) {
+			ttlObj.setTTL(ttl);
+		}
 	}
 
 	@Override

@@ -38,45 +38,45 @@ import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
  */
 public interface SinkEventFilter {
 	/**
-	 * Returns true if a given logging event passes the filter, false otherwise
+	 * Returns {@code true} if a given logging event passes the filter, {@code false} otherwise
 	 * 
 	 * @param sink
 	 *            event sink where filter request is coming from
 	 * @param event
 	 *            tracking event
-	 * @return true if event passed all filters, false otherwise
+	 * @return {@code true} if event passed all filters, {@code false} - otherwise
 	 * @see OpLevel
 	 * @see EventSink
 	 */
 	boolean filter(EventSink sink, TrackingEvent event);
 
 	/**
-	 * Returns true if a given logging event passes the filter, false otherwise
+	 * Returns {@code true} if a given logging event passes the filter, {@code false} otherwise
 	 * 
 	 * @param sink
 	 *            event sink where filter request is coming from
 	 * @param activity
 	 *            tracking activity
-	 * @return true if event passed all filters, false otherwise
+	 * @return {@code true} if event passed all filters, {@code false} - otherwise
 	 * @see EventSink
 	 * @see TrackingActivity
 	 */
 	boolean filter(EventSink sink, TrackingActivity activity);
 
 	/**
-	 * Returns true if a given logging event passes the filter, false otherwise
+	 * Returns {@code true} if a given logging event passes the filter, {@code false} otherwise
 	 * 
 	 * @param sink
 	 *            event sink where filter request is coming from
 	 * @param snapshot
 	 *            a set of properties
-	 * @return true if event passed all filters, false otherwise
+	 * @return {@code true} if event passed all filters, {@code false} - otherwise
 	 * @see EventSink
 	 */
 	boolean filter(EventSink sink, Snapshot snapshot);
 
 	/**
-	 * Returns true if a given logging event passes the filter, false otherwise
+	 * Returns {@code true} if a given logging event passes the filter, {@code false} otherwise
 	 * 
 	 * @param sink
 	 *            event sink where filter request is coming from
@@ -90,7 +90,7 @@ public interface SinkEventFilter {
 	 *            event message
 	 * @param args
 	 *            arguments passed alongside event message
-	 * @return true if event passed all filters, false otherwise
+	 * @return {@code true} if event passed all filters, {@code false} - otherwise
 	 * @see OpLevel
 	 * @see EventSink
 	 */
