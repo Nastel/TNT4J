@@ -157,15 +157,7 @@ public class SinkLogEvent extends EventObject implements TTL {
 	 *            argument list associated with the message
 	 */
 	public SinkLogEvent(EventSink sink, Source evSource, OpLevel sev, long ttl, Object msg, Object... args) {
-		super(sink);
-		logObj = msg;
-		if (args != null && args.length > 0) {
-			argList = args;
-			error = Utils.getThrowable(args);
-		}
-		level = sev;
-		evSrc = evSource;
-		this.ttl = ttl;
+		this(sink, evSource, sev, ttl, null, msg, args);
 	}
 
 	/**
