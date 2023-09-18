@@ -86,7 +86,6 @@ public class BufferedEventSink extends TagsSet implements EventSink, IOShutdown 
 		outSink = sink;
 		block = blocking;
 		outSink.addSinkErrorListener(new BufferedSinkErrorListener(this));
-		outSink.filterOnLog(false); // disable filtering on the underlying sink (prevent double filters)
 	}
 
 	/**
@@ -455,7 +454,7 @@ public class BufferedEventSink extends TagsSet implements EventSink, IOShutdown 
 
 	@Override
 	public EventSink filterOnLog(boolean flag) {
-		return outSink.filterOnLog(false);
+		return outSink.filterOnLog(flag);
 	}
 
 	@Override

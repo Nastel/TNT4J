@@ -50,6 +50,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public abstract class AbstractEventSinkFactory implements EventSinkFactory, Configurable {
 	private long ttl = TTL.TTL_CONTEXT;
+	private boolean filterCheck = true;
 	private SinkEventFilter eventFilter = null;
 	private SinkErrorListener errorListener = null;
 	private SinkLogEventListener eventListener = null;
@@ -136,6 +137,7 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 			sink.setEventFormatter(evFormatter);
 		}
 		sink.setTTL(ttl);
+		sink.filterOnLog(filterCheck);
 		sink.setTag(tags);
 		return sink;
 	}
@@ -145,6 +147,7 @@ public abstract class AbstractEventSinkFactory implements EventSinkFactory, Conf
 		config = props;
 		setTTL(Utils.getLong("TTL", props, getTTL()));
 		setTags(Utils.getString("Tag", props, null));
+		filterCheck = Utils.getBoolean("FilterCheck", props, filterCheck);
 		boolean enabled = Utils.getBoolean("RateLimit", props, false);
 		if (enabled) {
 			double maxmps = Utils.getDouble("RateMaxMPS", props, Limiter.MAX_RATE);
