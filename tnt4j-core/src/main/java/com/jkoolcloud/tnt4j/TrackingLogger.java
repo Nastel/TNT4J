@@ -161,12 +161,11 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class TrackingLogger implements Tracker, AutoCloseable {
 	private static final String TRACKER_CONFIG = System.getProperty("tnt4j.tracking.logger.config");
-	private static final String TRACKER_SOURCE = System.getProperty("tnt4j.tracking.logger.source",
-			TrackingLogger.class.getName());
+	private static final String TRACKER_SOURCE = System.getProperty("tnt4j.tracking.logger.source", TrackingLogger.class.getName());
+	private static final boolean INIT_STACK_TRACE = Boolean.getBoolean("tnt4.tracking.logger.init.stacktrace");
 
 	private static final ConcurrentHashMap<DumpProvider, List<DumpSink>> DUMP_DEST_TABLE = new ConcurrentHashMap<>(49);
-	private static final Map<TrackingLogger, StackTraceElement[]> TRACKERS = Collections
-			.synchronizedMap(new WeakHashMap<>(89));
+	private static final Set<TrackingLogger> TRACKERS = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<TrackingLogger, Boolean>(1451)));
 
 	private static final List<DumpProvider> DUMP_PROVIDERS = new ArrayList<>(10);
 	private static final List<DumpSink> DUMP_DESTINATIONS = new ArrayList<>(10);
@@ -182,6 +181,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 
 	private final Tracker logger;
 	private final TrackingSelector selector;
+	private final StackTraceElement[] initStackTrace;
 
 	static {
 		// load configuration and initialize default factories
@@ -193,11 +193,11 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	private TrackingLogger(Tracker trg) {
 		logger = trg;
 		selector = logger.getTrackingSelector();
+		initStackTrace = INIT_STACK_TRACE? Thread.currentThread().getStackTrace(): null;
 	}
 
 	private static void initConfigurationAndFactories() {
-		TrackerConfig config = DefaultConfigFactory.getInstance()
-				.getConfig(TRACKER_SOURCE, SourceType.APPL, TRACKER_CONFIG).build();
+		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(TRACKER_SOURCE, SourceType.APPL, TRACKER_CONFIG).build();
 		DefaultEventSinkFactory.setDefaultEventSinkFactory(config.getDefaultEvenSinkFactory());
 		factory = config.getTrackerFactory();
 		dumpFactory = config.getDumpSinkFactory();
@@ -258,7 +258,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	}
 
 	private static void registerTracker(TrackingLogger tracker) {
-		TRACKERS.put(tracker, Thread.currentThread().getStackTrace());
+		TRACKERS.add(tracker);
 	}
 
 	/**
@@ -270,7 +270,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * @return an allocation stack trace for the logger instance
 	 */
 	public static StackTraceElement[] getTrackerStackTrace(TrackingLogger logger) {
-		return TRACKERS.get(logger);
+		return logger.getInitStackTrace();
 	}
 
 	/**
@@ -280,12 +280,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 */
 	public static List<TrackingLogger> getAllTrackers() {
 		synchronized (TRACKERS) {
-			ArrayList<TrackingLogger> copy = new ArrayList<>(TRACKERS.size());
-			for (TrackingLogger logger : TRACKERS.keySet()) {
-				if (logger != null) {
-					copy.add(logger);
-				}
-			}
+			ArrayList<TrackingLogger> copy = new ArrayList<>(TRACKERS);
 			return copy;
 		}
 	}
@@ -348,9 +343,9 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	public static List<StackTraceElement[]> getAllTrackerStackTrace() {
 		synchronized (TRACKERS) {
 			ArrayList<StackTraceElement[]> copy = new ArrayList<>(TRACKERS.size());
-			for (StackTraceElement[] trace : TRACKERS.values()) {
-				if (trace != null) {
-					copy.add(trace);
+			for (TrackingLogger logger : TRACKERS) {
+				if (logger.getInitStackTrace() != null) {
+					copy.add(logger.getInitStackTrace());
 				}
 			}
 			return copy;
@@ -367,8 +362,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * @see TrackerConfig
 	 */
 	public static TrackingLogger getInstance(TrackerConfig config) {
-		TrackingLogger tracker = new TrackingLogger(
-				(factory == null ? defaultTrackerFactory : factory).getInstance(config));
+		TrackingLogger tracker = new TrackingLogger((factory == null ? defaultTrackerFactory : factory).getInstance(config));
 		registerTracker(tracker);
 		return tracker;
 	}
@@ -511,6 +505,15 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 */
 	public static DumpSinkFactory getDumpSinkFactory() {
 		return dumpFactory;
+	}
+
+	/**
+	 * Obtain an allocation stack trace for the logger instance
+	 *
+	 * @return an allocation stack trace for the logger instance
+	 */
+	public StackTraceElement[] getInitStackTrace() {
+		return initStackTrace;
 	}
 
 	/**
