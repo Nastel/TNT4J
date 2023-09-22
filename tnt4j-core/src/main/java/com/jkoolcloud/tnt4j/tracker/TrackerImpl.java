@@ -60,14 +60,13 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 	public static final String DEFAULT_SNAPSHOT_CAT_KEY = "tracker.default.snapshot.category";
 	public static final String DEFAULT_SNAPSHOT_CATEGORY = "None";
 
-	public static final String KEY_CONFIG_SOURCE = "config";
 	public static final NullActivity NULL_ACTIVITY = new NullActivity();
 	public static final NullEvent NULL_EVENT = new NullEvent(null);
 
-	private String id;
-	private EventSink eventSink;
-	private TrackerConfig tConfig;
-	private TrackingSelector selector;
+	private final String id;
+	private final EventSink eventSink;
+	private final TrackerConfig tConfig;
+	private final TrackingSelector selector;
 	private TrackingFilter filter;
 
 	// tracker statistics
