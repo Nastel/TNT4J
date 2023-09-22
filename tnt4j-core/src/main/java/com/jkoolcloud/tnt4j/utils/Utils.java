@@ -1955,4 +1955,42 @@ public class Utils {
 	public static String getString(byte[] strBytes, Charset charset) {
 		return strBytes == null ? null : StringUtils.toEncodedString(strBytes, charset);
 	}
+
+	/**
+	 * Returns the last element of the iterator.
+	 * 
+	 * @param iterator
+	 *            {@link java.util.Iterator} instance to obtain last element
+	 * @param <T>
+	 *            the type of elements returned by provided iterator
+	 * @return the last iterator element, or {@code null} if provided {@code iterator} is {@code  null}
+	 */
+	public static <T> T getLast(Iterator<T> iterator) {
+		if (iterator == null) {
+			return null;
+		}
+
+		T current;
+		do {
+			current = iterator.next();
+		} while (iterator.hasNext());
+
+		return current;
+	}
+
+	/**
+	 * Returns the last element of the iterable.
+	 * 
+	 * @param iterable
+	 *            {@link java.lang.Iterable} instance to obtain last element
+	 * @param <T>
+	 *            the type of elements returned by provided iterable
+	 * @return the last iterable element, or {@code null} if provided {@code iterable} is {@code  null}
+	 */
+	public static <T> T getLast(Iterable<T> iterable) {
+		if (iterable == null) {
+			return null;
+		}
+		return getLast(iterable.iterator());
+	}
 }
