@@ -56,7 +56,6 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @version $Revision: 7 $
  *
  */
-
 public class FileTokenRepository implements TokenRepository, Configurable {
 	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(FileTokenRepository.class);
 	private static long DEFAULT_REFRESH_DELAY = TimeUnit.SECONDS.toMillis(0);
