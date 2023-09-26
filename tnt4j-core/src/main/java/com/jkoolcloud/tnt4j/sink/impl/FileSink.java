@@ -170,8 +170,8 @@ public class FileSink implements Sink {
 		try {
 			printer.println(msg);
 		} finally {
+			printer.flush();
 			lock.unlock();
 		}
-		printer.flush();
 	}
 }
