@@ -26,10 +26,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.jkoolcloud.tnt4j.config.TrackerConfig;
 import com.jkoolcloud.tnt4j.core.*;
 import com.jkoolcloud.tnt4j.selector.TrackingSelector;
-import com.jkoolcloud.tnt4j.sink.DefaultEventSinkFactory;
-import com.jkoolcloud.tnt4j.sink.EventSink;
-import com.jkoolcloud.tnt4j.sink.SinkError;
-import com.jkoolcloud.tnt4j.sink.SinkErrorListener;
+import com.jkoolcloud.tnt4j.sink.*;
 import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.utils.LightStack;
 import com.jkoolcloud.tnt4j.utils.Utils;
@@ -471,11 +468,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 			}
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
-			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.ERROR,
-						"Failed to track activity: signature={0}, tid={1}, event.sink={2}, source={3}",
-						activity.getTrackingId(), Thread.currentThread().getId(), eventSink, getSource(), ex);
-			}
+			trackerError(new SinkLogEvent(eventSink, activity), ex);
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
 		}
@@ -492,10 +485,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 			}
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
-			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.ERROR, "Failed to track event: signature={0}, tid={1}, event.sink={2}, source={3}",
-						event.getTrackingId(), Thread.currentThread().getId(), eventSink, getSource(), ex);
-			}
+			trackerError(new SinkLogEvent(eventSink, event), ex);
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
 		}
@@ -508,11 +498,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 			_reportItem(snapshot);
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
-			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.ERROR,
-						"Failed to track snapshot: signature={0}, tid={1}, event.sink={2}, snapshot={3}",
-						snapshot.getTrackingId(), Thread.currentThread().getId(), eventSink, snapshot, ex);
-			}
+			trackerError(new SinkLogEvent(eventSink, snapshot), ex);
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
 		}
@@ -527,9 +513,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 			msgCount.incrementAndGet();
 		} catch (Throwable ex) {
 			dropCount.incrementAndGet();
-			if (logger.isSet(OpLevel.DEBUG)) {
-				logger.log(OpLevel.ERROR, "Failed to log message: severity={0}, msg={1}", sev, msg, ex);
-			}
+			trackerError(new SinkLogEvent(eventSink, getSource(), sev, eventSink.getTTL(), msg, args), ex);
 		} finally {
 			countOverheadNanos(System.nanoTime() - start);
 		}
@@ -724,10 +708,37 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 		errorCount.incrementAndGet();
 		if (logger.isSet(OpLevel.DEBUG)) {
 			logger.log(OpLevel.ERROR, "Sink write error: count={4}, vm.name={0}, tid={1}, event.sink={2}, source={3}",
-					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), errorCount.get(),
-					ev.getCause());
+					Utils.getVMName(), Thread.currentThread().getId(), ev.getSink(), ev.getSinkEvent().getEventSource(),
+					errorCount.get(), ev.getCause());
 		}
 		resetEventSink();
+	}
+
+	/**
+	 * Notifies this tracker about an error when writing to an event sink.
+	 * 
+	 * @param ev
+	 *            sink event associated with the error
+	 * @param ex
+	 *            exception associated with the event
+	 */
+	protected void trackerError(SinkLogEvent ev, Throwable ex) {
+		errorCount.incrementAndGet();
+		if (logger.isSet(OpLevel.DEBUG)) {
+			if (ev.getSinkObject() instanceof Trackable) {
+				logger.log(OpLevel.ERROR,
+						"Failed to track: count={4}, signature={0}, tid={1}, event.sink={2}, source={3}",
+						((Trackable) ev.getSinkObject()).getTrackingId(), Thread.currentThread().getId(),
+						ev.getEventSink(), ev.getEventSource(), errorCount.get(), ex);
+
+			} else {
+				logger.log(OpLevel.ERROR,
+						"Failed to log message: count={5}, severity={0}, msg={1}, tid={2}, event.sink={3}, source={4}",
+						ev.getSeverity(), ev.getSinkObject(), Thread.currentThread().getId(), ev.getEventSink(),
+						ev.getEventSource(), errorCount.get(), ex);
+
+			}
+		}
 	}
 
 	@Override
