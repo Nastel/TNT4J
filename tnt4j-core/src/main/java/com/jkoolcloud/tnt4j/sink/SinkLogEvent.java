@@ -50,7 +50,6 @@ public class SinkLogEvent extends EventObject implements TTL {
 	public static final int SIGNAL_TERMINATE = 11;
 
 	private Object logObj = null;
-	private Snapshot snapshot = null;
 	private Throwable error = null;
 	private ResourceBundle bundle;
 	private Source evSrc = null;
@@ -133,9 +132,8 @@ public class SinkLogEvent extends EventObject implements TTL {
 	 */
 	public SinkLogEvent(EventSink sink, Snapshot snap) {
 		super(sink);
-		level = snap.getSeverity();
 		logObj = snap;
-		snapshot = snap;
+		level = snap.getSeverity();
 		evSrc = snap.getSource();
 		ttl = snap.getTTL();
 	}
@@ -281,15 +279,6 @@ public class SinkLogEvent extends EventObject implements TTL {
 	 */
 	public Object getSinkObject() {
 		return logObj;
-	}
-
-	/**
-	 * Return log object
-	 * 
-	 * @return log object
-	 */
-	public Snapshot getSnapshot() {
-		return snapshot;
 	}
 
 	/**
