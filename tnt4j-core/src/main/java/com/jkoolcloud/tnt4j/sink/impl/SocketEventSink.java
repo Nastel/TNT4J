@@ -25,7 +25,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
-import com.jkoolcloud.tnt4j.sink.DefaultEventSinkFactory;
 import com.jkoolcloud.tnt4j.sink.EventSink;
 import com.jkoolcloud.tnt4j.sink.LoggedEventSink;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
@@ -52,7 +51,6 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @see EventFormatter
  */
 public class SocketEventSink extends LoggedEventSink {
-	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(SocketEventSink.class);
 
 	private Socket socketSink = null;
 	private DataOutputStream outStream = null;
@@ -135,8 +133,6 @@ public class SocketEventSink extends LoggedEventSink {
 
 			super._open();
 		} catch (Throwable e) {
-			logger.log(OpLevel.ERROR, "Failed to open sink name={3}, host={0}, port={1}, proxy.address={2}", hostName,
-					String.valueOf(portNo), proxyAddr, getName(), e);
 			_close();
 
 			if (e instanceof IOException) {
