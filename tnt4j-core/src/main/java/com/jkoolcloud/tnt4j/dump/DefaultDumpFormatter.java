@@ -71,9 +71,9 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class DefaultDumpFormatter implements DumpFormatter {
 	private static ThreadLocal<Long> TIME_TABLE = new ThreadLocal<>();
 
-	private static final String INDENT = "\t";
-	private static final String NEWLINE = "\n";
-	private static final String END_ATTR = ",\n";
+	public static final String INDENT = "\t";
+	public static final String NEWLINE = "\n";
+	public static final String END_ATTR = ",\n";
 
 	private String _format(DumpCollection dump, String padding) {
 		StringBuilder buffer = new StringBuilder(1024);
