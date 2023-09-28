@@ -157,15 +157,15 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * @see DumpListener
  * @see SinkErrorListener
  *
- * @version $Revision: 21 $
+ * @version $Revision: 22 $
  */
 public class TrackingLogger implements Tracker, AutoCloseable {
 	private static final String TRACKER_CONFIG = System.getProperty("tnt4j.tracking.logger.config");
-	private static final String TRACKER_SOURCE = System.getProperty("tnt4j.tracking.logger.source", TrackingLogger.class.getName());
-	private static final boolean INIT_STACK_TRACE = Boolean.getBoolean("tnt4.tracking.logger.init.stacktrace");
+	private static final String TRACKER_SOURCE = System.getProperty("tnt4j.tracking.logger.source",
+			TrackingLogger.class.getName());
 
-	private static final ConcurrentHashMap<DumpProvider, List<DumpSink>> DUMP_DEST_TABLE = new ConcurrentHashMap<>(49);
-	private static final Set<TrackingLogger> TRACKERS = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<TrackingLogger, Boolean>(1451)));
+	private static final Map<DumpProvider, List<DumpSink>> DUMP_DEST_TABLE = new ConcurrentHashMap<>(49);
+	private static final Map<String, TrackingLogger> TRACKERS = new ConcurrentHashMap<>(128);
 
 	private static final List<DumpProvider> DUMP_PROVIDERS = new ArrayList<>(10);
 	private static final List<DumpSink> DUMP_DESTINATIONS = new ArrayList<>(10);
@@ -181,7 +181,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 
 	private final Tracker logger;
 	private final TrackingSelector selector;
-	private final StackTraceElement[] initStackTrace;
+	private final String trackerKey;
 
 	static {
 		// load configuration and initialize default factories
@@ -190,14 +190,15 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	}
 
 	/** Cannot instantiate. */
-	private TrackingLogger(Tracker trg) {
+	private TrackingLogger(Tracker trg, String trackeKey) {
 		logger = trg;
 		selector = logger.getTrackingSelector();
-		initStackTrace = INIT_STACK_TRACE? Thread.currentThread().getStackTrace(): null;
+		this.trackerKey = trackeKey;
 	}
 
 	private static void initConfigurationAndFactories() {
-		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(TRACKER_SOURCE, SourceType.APPL, TRACKER_CONFIG).build();
+		TrackerConfig config = DefaultConfigFactory.getInstance()
+				.getConfig(TRACKER_SOURCE, SourceType.APPL, TRACKER_CONFIG).build();
 		DefaultEventSinkFactory.setDefaultEventSinkFactory(config.getDefaultEvenSinkFactory());
 		factory = config.getTrackerFactory();
 		dumpFactory = config.getDumpSinkFactory();
@@ -258,19 +259,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	}
 
 	private static void registerTracker(TrackingLogger tracker) {
-		TRACKERS.add(tracker);
-	}
-
-	/**
-	 * Obtain an allocation stack trace for the specified logger instance
-	 *
-	 * @param logger
-	 *            instance
-	 *
-	 * @return an allocation stack trace for the logger instance
-	 */
-	public static StackTraceElement[] getTrackerStackTrace(TrackingLogger logger) {
-		return logger.getInitStackTrace();
+		TRACKERS.put(tracker.trackerKey, tracker);
 	}
 
 	/**
@@ -279,10 +268,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * @return a list of all active tracking logger instances
 	 */
 	public static List<TrackingLogger> getAllTrackers() {
-		synchronized (TRACKERS) {
-			ArrayList<TrackingLogger> copy = new ArrayList<>(TRACKERS);
-			return copy;
-		}
+		return new ArrayList<>(TRACKERS.values());
 	}
 
 	/**
@@ -335,21 +321,19 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	}
 
 	/**
-	 * Obtain a stack trace list for all tracker allocations to determine where the tracker instances have been
-	 * instantiated
+	 * Create an instance of {@code TrackingLogger} logger.
 	 *
-	 * @return a list of stack traces for each allocated tracker
+	 * @param config
+	 *            tracking configuration to be used to create a tracker instance
+	 * @return tracking logger instance
+	 *
+	 * @see TrackerConfig
 	 */
-	public static List<StackTraceElement[]> getAllTrackerStackTrace() {
-		synchronized (TRACKERS) {
-			ArrayList<StackTraceElement[]> copy = new ArrayList<>(TRACKERS.size());
-			for (TrackingLogger logger : TRACKERS) {
-				if (logger.getInitStackTrace() != null) {
-					copy.add(logger.getInitStackTrace());
-				}
-			}
-			return copy;
-		}
+	protected static TrackingLogger createInstance(TrackerConfig config, String trackerKey) {
+		TrackingLogger tracker = new TrackingLogger(
+				(factory == null ? defaultTrackerFactory : factory).getInstance(config), trackerKey);
+		registerTracker(tracker);
+		return tracker;
 	}
 
 	/**
@@ -360,30 +344,43 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * @return tracking logger instance
 	 *
 	 * @see TrackerConfig
+	 * @see #createInstance(com.jkoolcloud.tnt4j.config.TrackerConfig, String)
+	 * @see #buildTrackerKey(com.jkoolcloud.tnt4j.config.TrackerConfig)
 	 */
 	public static TrackingLogger getInstance(TrackerConfig config) {
-		TrackingLogger tracker = new TrackingLogger((factory == null ? defaultTrackerFactory : factory).getInstance(config));
-		registerTracker(tracker);
-		return tracker;
+		String trackerKey = buildTrackerKey(config);
+		TrackingLogger tLogger = findInstance(trackerKey);
+		if (tLogger == null) {
+			return createInstance(config, trackerKey);
+		} else {
+			return tLogger;
+		}
 	}
 
 	/**
-	 * Obtain an instance of {@code TrackingLogger} logger.
+	 * Obtain an instance of {@code TrackingLogger} logger based on source name.
 	 *
 	 * @param sourceName
 	 *            application source name associated with this logger
 	 * @return tracking logger instance
 	 *
 	 * @see TrackerConfig
-	 * @see #getInstance(com.jkoolcloud.tnt4j.config.TrackerConfig)
+	 * @see #createInstance(com.jkoolcloud.tnt4j.config.TrackerConfig, String)
+	 * @see #buildTrackerKey(String, com.jkoolcloud.tnt4j.source.SourceType, java.util.Map)
 	 */
 	public static TrackingLogger getInstance(String sourceName) {
-		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName);
-		return getInstance(config.build());
+		String trackerKey = buildTrackerKey(sourceName, null, null);
+		TrackingLogger tLogger = findInstance(trackerKey);
+		if (tLogger == null) {
+			TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName);
+			return createInstance(config.build(), trackerKey);
+		} else {
+			return tLogger;
+		}
 	}
 
 	/**
-	 * Obtain an instance of {@code TrackingLogger} logger.
+	 * Obtain an instance of {@code TrackingLogger} logger based on source name and config map.
 	 *
 	 * @param sourceName
 	 *            application source name associated with this logger
@@ -392,15 +389,14 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * @return tracking logger instance
 	 *
 	 * @see TrackerConfig
-	 * @see #getInstance(com.jkoolcloud.tnt4j.config.TrackerConfig)
+	 * @see #getInstance(String, com.jkoolcloud.tnt4j.source.SourceType, java.util.Map)
 	 */
 	public static TrackingLogger getInstance(String sourceName, Map<String, Properties> configMap) {
-		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName, SourceType.APPL, configMap);
-		return getInstance(config.build());
+		return getInstance(sourceName, SourceType.APPL, configMap);
 	}
 
 	/**
-	 * Obtain an instance of {@code TrackingLogger} logger.
+	 * Obtain an instance of {@code TrackingLogger} logger based on source name and type.
 	 *
 	 * @param sourceName
 	 *            application source name associated with this logger
@@ -409,15 +405,22 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * @return tracking logger instance
 	 *
 	 * @see TrackerConfig
-	 * @see #getInstance(com.jkoolcloud.tnt4j.config.TrackerConfig)
+	 * @see #createInstance(com.jkoolcloud.tnt4j.config.TrackerConfig, String)
+	 * @see #buildTrackerKey(String, com.jkoolcloud.tnt4j.source.SourceType, java.util.Map)
 	 */
 	public static TrackingLogger getInstance(String sourceName, SourceType type) {
-		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName, type);
-		return getInstance(config.build());
+		String trackerKey = buildTrackerKey(sourceName, type, null);
+		TrackingLogger tLogger = findInstance(trackerKey);
+		if (tLogger == null) {
+			TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName, type);
+			return createInstance(config.build(), trackerKey);
+		} else {
+			return tLogger;
+		}
 	}
 
 	/**
-	 * Obtain an instance of {@code TrackingLogger} logger.
+	 * Obtain an instance of {@code TrackingLogger} logger based on source name, type and config map.
 	 *
 	 * @param sourceName
 	 *            application source name associated with this logger
@@ -428,11 +431,18 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * @return tracking logger instance
 	 *
 	 * @see TrackerConfig
-	 * @see #getInstance(com.jkoolcloud.tnt4j.config.TrackerConfig)
+	 * @see #createInstance(com.jkoolcloud.tnt4j.config.TrackerConfig, String)
+	 * @see #buildTrackerKey(String, com.jkoolcloud.tnt4j.source.SourceType, java.util.Map)
 	 */
 	public static TrackingLogger getInstance(String sourceName, SourceType type, Map<String, Properties> configMap) {
-		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName, type, configMap);
-		return getInstance(config.build());
+		String trackerKey = buildTrackerKey(sourceName, type, configMap);
+		TrackingLogger tLogger = findInstance(trackerKey);
+		if (tLogger == null) {
+			TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(sourceName, type, configMap);
+			return createInstance(config.build(), trackerKey);
+		} else {
+			return tLogger;
+		}
 	}
 
 	/**
@@ -443,15 +453,22 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * @return tracking logger instance
 	 *
 	 * @see TrackerConfig
-	 * @see #getInstance(com.jkoolcloud.tnt4j.config.TrackerConfig)
+	 * @see #createInstance(com.jkoolcloud.tnt4j.config.TrackerConfig, String)
+	 * @see #buildTrackerKey(String, com.jkoolcloud.tnt4j.source.SourceType, java.util.Map)
 	 */
 	public static TrackingLogger getInstance(Class<?> clazz) {
-		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(clazz);
-		return getInstance(config.build());
+		String trackerKey = buildTrackerKey(clazz.getName(), null, null);
+		TrackingLogger tLogger = findInstance(trackerKey);
+		if (tLogger == null) {
+			TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(clazz);
+			return createInstance(config.build(), trackerKey);
+		} else {
+			return tLogger;
+		}
 	}
 
 	/**
-	 * Obtain an instance of {@code TrackingLogger} logger based on a given class.
+	 * Obtain an instance of {@code TrackingLogger} logger based on a given class and config map.
 	 *
 	 * @param clazz
 	 *            application class used as source name
@@ -460,11 +477,75 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * @return tracking logger instance
 	 *
 	 * @see TrackerConfig
-	 * @see #getInstance(com.jkoolcloud.tnt4j.config.TrackerConfig)
+	 * @see #getInstance(Class, com.jkoolcloud.tnt4j.source.SourceType, java.util.Map)
 	 */
 	public static TrackingLogger getInstance(Class<?> clazz, Map<String, Properties> configMap) {
-		TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(clazz, SourceType.APPL, configMap);
-		return getInstance(config.build());
+		return getInstance(clazz, SourceType.APPL, configMap);
+	}
+
+	/**
+	 * Obtain an instance of {@code TrackingLogger} logger based on a given class, source type and config map.
+	 *
+	 * @param clazz
+	 *            application class used as source name
+	 * @param type
+	 *            application source type associated with this logger
+	 * @param configMap
+	 *            configuration map containing source/properties configuration
+	 * @return tracking logger instance
+	 *
+	 * @see TrackerConfig
+	 * @see #createInstance(com.jkoolcloud.tnt4j.config.TrackerConfig, String)
+	 * @see #buildTrackerKey(String, com.jkoolcloud.tnt4j.source.SourceType, java.util.Map)
+	 */
+	public static TrackingLogger getInstance(Class<?> clazz, SourceType type, Map<String, Properties> configMap) {
+		String trackerKey = buildTrackerKey(clazz.getName(), type, configMap);
+		TrackingLogger tLogger = findInstance(trackerKey);
+		if (tLogger == null) {
+			TrackerConfig config = DefaultConfigFactory.getInstance().getConfig(clazz, type, configMap);
+			return createInstance(config.build(), trackerKey);
+		} else {
+			return tLogger;
+		}
+	}
+
+	/**
+	 * Finds registered/active logger instance by provided tracker key.
+	 * 
+	 * @param trackerKey
+	 *            tracker key string
+	 * @return tracking logger instance
+	 */
+	protected static TrackingLogger findInstance(String trackerKey) {
+		return TRACKERS.get(trackerKey);
+	}
+
+	/**
+	 * Builds tracker key string from provided application source name, type and tracker configuration.
+	 * 
+	 * @param sourceName
+	 *            application source name associated with this logger
+	 * @param type
+	 *            application source type associated with this logger
+	 * @param configMap
+	 *            configuration map containing source/properties configuration
+	 * @return tracker key string
+	 */
+	protected static String buildTrackerKey(String sourceName, SourceType type, Map<String, Properties> configMap) {
+		return sourceName + "<>?:L" + (type == null ? SourceType.APPL : type) + "?>><"
+				+ (configMap == null ? "no_config_map" : String.valueOf(configMap.hashCode()));
+	}
+
+	/**
+	 * Builds tracker key string from provided tracker configuration instance.
+	 * 
+	 * @param config
+	 *            tracking configuration to be used to create a tracker instance
+	 * @return tracker key string
+	 */
+	protected static String buildTrackerKey(TrackerConfig config) {
+		return "<>?:L" + SourceType.VIRTUAL + "?>><"
+				+ (config == null ? "no_config_map" : String.valueOf(config.hashCode()));
 	}
 
 	/**
@@ -505,15 +586,6 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 */
 	public static DumpSinkFactory getDumpSinkFactory() {
 		return dumpFactory;
-	}
-
-	/**
-	 * Obtain an allocation stack trace for the logger instance
-	 *
-	 * @return an allocation stack trace for the logger instance
-	 */
-	public StackTraceElement[] getInitStackTrace() {
-		return initStackTrace;
 	}
 
 	/**
@@ -648,7 +720,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	public void close() {
 		if (logger != null) {
 			factory.close(logger);
-			TRACKERS.remove(this);
+			TRACKERS.remove(this.trackerKey);
 		}
 	}
 

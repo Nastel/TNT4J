@@ -73,20 +73,8 @@ public class LoggerDumpProvider extends DefaultDumpProvider {
 			propDump.addAll(logger.getConfiguration().getProperties());
 
 			dump.add(config, propDump);
-			StackTraceElement [] stackTrace = logger.getInitStackTrace();
-			if (stackTrace != null) {
-				Dump stackDump = new Dump("LoggerStackTrace", config, this);
-				dump.add(config, dumpStackTrace(stackDump, stackTrace));				
-			}
 			rootDump.add(logger.getId(), dump);
 		}
 		return rootDump;
-	}
-	
-	protected Dump dumpStackTrace(Dump stackDump, StackTraceElement[] stack) {
-		for (int i = 0; i < stack.length; i++) {
-			stackDump.add("stack.frame[" + i + "]", stack[i]);
-		}		
-		return stackDump;
 	}
 }
