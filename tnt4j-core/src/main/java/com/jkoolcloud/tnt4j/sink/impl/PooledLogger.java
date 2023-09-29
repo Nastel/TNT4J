@@ -597,7 +597,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 		} else if (sinkObject instanceof TrackingActivity) {
 			outSink.log((TrackingActivity) sinkObject);
 		} else if (sinkObject instanceof Snapshot) {
-			outSink.log(event.getSnapshot());
+			outSink.log((Snapshot) sinkObject);
 		} else if (event.getEventSource() != null) {
 			outSink.log(event.getTTL(), event.getEventSource(), event.getSeverity(), event.getResourceBundle(),
 					String.valueOf(sinkObject), event.getArguments());
