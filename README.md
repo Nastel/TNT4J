@@ -1,5 +1,14 @@
 TNT4J -- Track and Trace API for Java
 =======================================
+
+-----------------------
+
+**NOTE:** `tnt4j` version `3.0.0` migrated to Java 11. It also migrated SLF4J from `1.7.x` to `2.x`.
+
+Latest Java 8 compliant `tnt4j` version is `2.16.2`.
+
+-----------------------
+
 TNT4J is about tracking and tracing applications, activities, transactions, behavior and performance via an easy-to-use API that behaves 
 much like a logging framework.
 
