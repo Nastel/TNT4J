@@ -3,7 +3,7 @@ TNT4J -- Track and Trace API for Java
 
 -----------------------
 
-**NOTE:** `tnt4j` version `3.0.0` migrated to Java 11 and SLF4J from `1.7.x` to `2.x`.
+**NOTE:** `tnt4j` version `3.0.0` migrated to Java 11 and bumped SLF4J from `1.7.x` to `2.x`.
 
 Latest Java 8 compliant `tnt4j` version is `2.16.2`.
 
