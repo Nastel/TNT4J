@@ -28,7 +28,7 @@ jobs:
 
     strategy:
       matrix:
-        java-version: [ 11, 17 ]
+        java-version: [ 11, 17, 21 ]
 
     outputs:
       pom-version: ${{ steps.get-pom-version.outputs.pom-version }}
