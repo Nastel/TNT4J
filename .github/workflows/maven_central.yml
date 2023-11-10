@@ -40,6 +40,7 @@ jobs:
         uses: metcalfc/changelog-generator@v4.1.0
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
+          fetch: false
 
       - name: Create GitHub Release
         id: create_release
