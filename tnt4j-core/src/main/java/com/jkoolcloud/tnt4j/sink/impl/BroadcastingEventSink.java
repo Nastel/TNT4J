@@ -43,7 +43,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	public static final String KEY_SINK_SIZE = "broadcast-sink-count";
 	public static final String KEY_OPEN_COUNT = "broadcast-open-sinks";
 
-	final Collection<EventSink> eventSinks = Collections.synchronizedList(new ArrayList<>(3));
+	final Map<String, EventSink> eventSinks = Collections.synchronizedMap(new HashMap<>(3));
 	OpenSinksPolicy openSinksPolicy = OpenSinksPolicy.ANY;
 
 	/**
@@ -57,8 +57,8 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	 */
 	public BroadcastingEventSink(BroadcastingEventSinkFactory brdFactory, String name) {
 		super(name);
-		for (EventSinkFactory fc : brdFactory.getEventSinkFactories()) {
-			eventSinks.add(fc.getEventSink(name));
+		for (Map.Entry<String, EventSinkFactory> sfe : brdFactory.getEventSinkFactories().entrySet()) {
+			eventSinks.put(sfe.getKey(), sfe.getValue().getEventSink(name));
 		}
 	}
 
@@ -75,8 +75,8 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	 */
 	public BroadcastingEventSink(BroadcastingEventSinkFactory brdFactory, String name, Properties props) {
 		super(name);
-		for (EventSinkFactory fc : brdFactory.getEventSinkFactories()) {
-			eventSinks.add(fc.getEventSink(name, props));
+		for (Map.Entry<String, EventSinkFactory> sfe : brdFactory.getEventSinkFactories().entrySet()) {
+			eventSinks.put(sfe.getKey(), sfe.getValue().getEventSink(name, props));
 		}
 	}
 
@@ -96,8 +96,8 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	public BroadcastingEventSink(BroadcastingEventSinkFactory brdFactory, String name, Properties props,
 			EventFormatter frmt) {
 		super(name, frmt);
-		for (EventSinkFactory fc : brdFactory.getEventSinkFactories()) {
-			eventSinks.add(fc.getEventSink(name, props, frmt));
+		for (Map.Entry<String, EventSinkFactory> sfe : brdFactory.getEventSinkFactories().entrySet()) {
+			eventSinks.put(sfe.getKey(), sfe.getValue().getEventSink(name, props, frmt));
 		}
 	}
 
@@ -142,7 +142,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 		super.getStats(stats);
 		stats.put(Utils.qualify(this, KEY_SINK_SIZE), eventSinks.size());
 		stats.put(Utils.qualify(this, KEY_OPEN_COUNT), openCount());
-		for (EventSink sink : eventSinks) {
+		for (EventSink sink : eventSinks.values()) {
 			sink.getStats(stats);
 		}
 		return this;
@@ -159,7 +159,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 			return false;
 		}
 
-		for (EventSink sink : eventSinks) {
+		for (EventSink sink : eventSinks.values()) {
 			if (sink.isOpen()) {
 				if (openSinksPolicy == OpenSinksPolicy.ANY) {
 					return true;
@@ -177,7 +177,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	protected void _open() throws IOException {
 		int openCount = 0;
 		IOException lastE = null;
-		for (EventSink sink : eventSinks) {
+		for (EventSink sink : eventSinks.values()) {
 			try {
 				if (!sink.isOpen()) {
 					sink.open();
@@ -195,7 +195,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	@Override
 	protected void _close() throws IOException {
 		IOException lastE = null;
-		for (EventSink sink : eventSinks) {
+		for (EventSink sink : eventSinks.values()) {
 			try {
 				sink.close();
 			} catch (IOException e) {
@@ -265,7 +265,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	 */
 	protected void logSinkEntry(SinkEntry entry) {
 		CountDownLatch waitLatch = new CountDownLatch(eventSinks.size());
-		for (EventSink sink : eventSinks) {
+		for (EventSink sink : eventSinks.values()) {
 			Thread lt = new Thread(new Runnable() {
 				@Override
 				public void run() {
@@ -289,12 +289,24 @@ public class BroadcastingEventSink extends AbstractEventSink {
 
 	private int openCount() {
 		int openCount = 0;
-		for (EventSink sink : eventSinks) {
+		for (EventSink sink : eventSinks.values()) {
 			if (sink.isOpen()) {
 				openCount++;
 			}
 		}
 		return openCount;
+	}
+
+	/**
+	 * Checks if this broadcasting event sink has sink reference by provided sink identifier.
+	 * 
+	 * @param sinkId
+	 *            sink identifier
+	 * @return {@code true} if this broadcasting event sink has sink reference by provided sink identifier,
+	 *         {@code false} - otherwise
+	 */
+	public boolean hasSink(String sinkId) {
+		return eventSinks.containsKey(sinkId);
 	}
 
 	/**
