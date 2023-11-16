@@ -16,7 +16,10 @@
 
 package com.jkoolcloud.tnt4j.sink.impl;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.format.EventFormatter;
@@ -36,24 +39,24 @@ public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 
 	String broadcastSeq;
 	BroadcastingEventSink.OpenSinksPolicy openSinksPolicy;
-	final Collection<EventSinkFactory> sinkFactories = Collections.synchronizedList(new ArrayList<>(3));
+	final Map<String, EventSinkFactory> sinkFactories = Collections.synchronizedMap(new HashMap<>(3));
 
 	/**
-	 * Create a default broadcasting sink factory
+	 * Create a default broadcasting sink factory.
 	 *
 	 */
 	public BroadcastingEventSinkFactory() {
 	}
 
 	/**
-	 * Create a default broadcasting sink factory
+	 * Create a default broadcasting sink factory.
 	 * 
 	 * @param sf
-	 *            list of event sink factories
+	 *            map of event sink factories
 	 *
 	 */
-	public BroadcastingEventSinkFactory(List<EventSinkFactory> sf) {
-		sinkFactories.addAll(sf);
+	public BroadcastingEventSinkFactory(Map<String, EventSinkFactory> sf) {
+		sinkFactories.putAll(sf);
 	}
 
 	/**
@@ -66,7 +69,7 @@ public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 		return broadcastSeq;
 	}
 
-	protected Collection<EventSinkFactory> getEventSinkFactories() {
+	protected Map<String, EventSinkFactory> getEventSinkFactories() {
 		return sinkFactories;
 	}
 
@@ -129,7 +132,7 @@ public class BroadcastingEventSinkFactory extends AbstractEventSinkFactory {
 		EventSinkFactory sinkFactory = (EventSinkFactory) Utils.createConfigurableObject("EventSinkFactory." + fcName,
 				"EventSinkFactory." + fcName + ".", props);
 		if (sinkFactory != null) {
-			sinkFactories.add(sinkFactory);
+			sinkFactories.put(fcName, sinkFactory);
 		}
 		return sinkFactory;
 	}
