@@ -28,20 +28,12 @@ jobs:
       - name: Set projects Maven version to GitHub Action GUI set version
         run: mvn versions:set "-DnewVersion=${{ github.event.inputs.releaseversion }}" --no-transfer-progress
 
-      - name: Publish package
-        run: mvn -B clean deploy --no-transfer-progress -P maven-release -DskipTests=true
-        env:
-          MAVEN_USERNAME: ${{ secrets.MAVEN_USER }}
-          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASS }}
-          MAVEN_GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
-
       - name: Generate changelog
         id: changelog
         uses: metcalfc/changelog-generator@v4.2.0
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
-          fetch: false
-
+          
       - name: Create GitHub Release
         id: create_release
         uses: ncipollo/release-action@v1
