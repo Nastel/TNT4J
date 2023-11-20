@@ -23,7 +23,7 @@
     <parent>
         <groupId>com.jkoolcloud</groupId>
         <artifactId>tnt4j</artifactId>
-        <version>3.0.0</version>
+        <version>3.0.1</version>
     </parent>
     <packaging>pom</packaging>
 
