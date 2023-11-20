@@ -3,9 +3,9 @@ TNT4J -- Track and Trace API for Java
 
 -----------------------
 
-**NOTE:** `tnt4j` version `3.0.0` migrated to Java 11 and bumped SLF4J from `1.7.x` to `2.x`.
+**NOTE:** `tnt4j` version `3.x` migrated to Java 11 and bumped SLF4J from `1.7.x` to `2.x`.
 
-Latest Java 8 compliant `tnt4j` version is `2.16.2`.
+Latest Java 8 compliant `tnt4j` version is `2.x`.
 
 -----------------------
 
@@ -31,7 +31,7 @@ Use Maven dependency:
     <dependency>
         <groupId>com.jkoolcloud</groupId>
         <artifactId>tnt4j-core</artifactId>
-        <version>3.0.0</version>
+        <version>3.0.1</version>
     </dependency>
 ```
 
@@ -212,7 +212,7 @@ Use Maven dependency:
     <dependency>
         <groupId>com.jkoolcloud</groupId>
         <artifactId>tnt4j-kafka-sink</artifactId>
-        <version>3.0.0</version>
+        <version>3.0.1</version>
     </dependency>
 ```
 
@@ -248,7 +248,7 @@ Use Maven dependency:
     <dependency>
         <groupId>com.jkoolcloud</groupId>
         <artifactId>tnt4j-mqtt-sink</artifactId>
-        <version>3.0.0</version>
+        <version>3.0.1</version>
     </dependency>
 ```
 

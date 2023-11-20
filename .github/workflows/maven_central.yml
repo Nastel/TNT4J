@@ -6,7 +6,7 @@ on:
       releaseversion:
         description: 'Release version'
         required: true
-        default: '3.0.0'
+        default: '3.0.1'
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -40,7 +40,6 @@ jobs:
         uses: metcalfc/changelog-generator@v4.2.0
         with:
           myToken: ${{ secrets.GITHUB_TOKEN }}
-          fetch: false
 
       - name: Create GitHub Release
         id: create_release
