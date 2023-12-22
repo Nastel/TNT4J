@@ -67,7 +67,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.resources.encoding>UTF-8</project.resources.encoding>
         <project.organization.name>jKool, LLC</project.organization.name>
-        <project.organization.url>https://www.jkoolcloud.com/</project.organization.url>
+        <project.organization.url>https://www.meshiq.com/</project.organization.url>
         <product.vendor>${project.organization.name}</product.vendor>
         <product.name>${project.name}</product.name>
         <product.name.hr>TNT4J</product.name.hr>
