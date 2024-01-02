@@ -309,6 +309,26 @@ public class BroadcastingEventSink extends AbstractEventSink {
 		return eventSinks.containsKey(sinkId);
 	}
 
+	@Override
+	public String toString() {
+		return super.toString() //
+				+ "{eventSinks: " + sinksToString() //
+				+ "}";
+	}
+
+	private String sinksToString() {
+		StringBuilder sb = new StringBuilder();
+
+		for (Map.Entry<String, EventSink> eventSinkEntry : eventSinks.entrySet()) {
+			if (sb.length() > 0) {
+				sb.append("; ");
+			}
+			sb.append(eventSinkEntry.getKey()).append("=").append(eventSinkEntry.getValue());
+		}
+
+		return sb.toString();
+	}
+
 	/**
 	 * Enumerates policies of broadcast sinks open state for {@link BroadcastingEventSink} to be treated as open.
 	 */
