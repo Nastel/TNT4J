@@ -1154,6 +1154,18 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	}
 
 	@Override
+	public LogEntry newLogEntry(String name) {
+		checkState();
+		return logger.newLogEntry(name);
+	}
+
+	@Override
+	public LogEntry newLogEntry(String cat, String name) {
+		checkState();
+		return logger.newLogEntry(cat, name);
+	}
+
+	@Override
 	public Snapshot newSnapshot(String name) {
 		checkState();
 		return logger.newSnapshot(name);

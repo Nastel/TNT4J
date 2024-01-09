@@ -268,6 +268,28 @@ public interface Tracker extends Handle, KeyValueStats, UUIDFactory {
 	Dataset newDataset(String cat, String name);
 
 	/**
+	 * Create a new application log entry via {@link LogEntry} object instance.
+	 *
+	 * @param name
+	 *            log entry name
+	 * @return a new log entry instance
+	 * @see LogEntry
+	 */
+	LogEntry newLogEntry(String name);
+
+	/**
+	 * Create a new application log entry via {@link LogEntry} object instance.
+	 *
+	 * @param cat
+	 *            category name
+	 * @param name
+	 *            log entry name
+	 * @return a new log entry instance
+	 * @see LogEntry
+	 */
+	LogEntry newLogEntry(String cat, String name);
+
+	/**
 	 * Create a new property via {@link Property} instance.
 	 *
 	 * @param key

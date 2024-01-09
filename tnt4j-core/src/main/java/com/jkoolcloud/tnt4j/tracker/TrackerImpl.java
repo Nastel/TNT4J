@@ -743,7 +743,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 
 	@Override
 	public Dataset newDataset(String name) {
-		return newDataset(Dataset.CATEGORY_DATASET, name);
+		return newDataset(OpType.DATASET.name(), name);
 	}
 
 	@Override
@@ -751,6 +751,18 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 		Dataset ds = new Dataset(cat, name);
 		ds.setSource(getSource());
 		return ds;
+	}
+
+	@Override
+	public LogEntry newLogEntry(String name) {
+		return newLogEntry(OpType.LOG.name(), name);
+	}
+
+	@Override
+	public LogEntry newLogEntry(String cat, String name) {
+		LogEntry le = new LogEntry(cat, name);
+		le.setSource(getSource());
+		return le;
 	}
 
 	@Override

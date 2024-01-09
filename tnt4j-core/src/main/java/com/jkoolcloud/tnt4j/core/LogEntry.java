@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2023 JKOOL, LLC.
+ * Copyright 2014-2024 JKOOL, LLC.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,45 +17,45 @@
 package com.jkoolcloud.tnt4j.core;
 
 /**
- * Data set defines a named list of properties.
+ * Log entry defines a named list of properties.
  * 
  * @version $Revision: 1 $
  */
-public class Dataset extends PropertySnapshot {
+public class LogEntry extends PropertySnapshot {
 
 	/**
-	 * Create a data set instance.
+	 * Create a log entry instance.
 	 * 
 	 * @param name
-	 *            dataset name
+	 *            log entry name
 	 */
-	public Dataset(String name) {
-		this(OpType.DATASET.name(), name);
+	public LogEntry(String name) {
+		this(OpType.LOG.name(), name);
 	}
 
 	/**
-	 * Create a data set instance.
+	 * Create a log entry instance.
 	 * 
 	 * @param cat
-	 *            dataset category
+	 *            log entry category
 	 * @param name
-	 *            dataset name
+	 *            log entry name
 	 */
-	public Dataset(String cat, String name) {
+	public LogEntry(String cat, String name) {
 		this(cat, name, UsecTimestamp.now());
 	}
 
 	/**
-	 * Create a data set instance.
+	 * Create a log entry instance.
 	 * 
 	 * @param cat
-	 *            dataset category
+	 *            log entry category
 	 * @param name
-	 *            dataset name
+	 *            log entry name
 	 * @param time
 	 *            timestamp
 	 */
-	public Dataset(String cat, String name, UsecTimestamp time) {
-		super(cat, name, OpLevel.NONE, OpType.DATASET, time);
+	public LogEntry(String cat, String name, UsecTimestamp time) {
+		super(cat, name, OpLevel.NONE, OpType.LOG, time);
 	}
 }
