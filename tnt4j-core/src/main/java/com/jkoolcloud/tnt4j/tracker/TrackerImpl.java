@@ -754,18 +754,6 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 	}
 
 	@Override
-	public LogEntry newLogEntry(String name) {
-		return newLogEntry(OpType.LOG.name(), name);
-	}
-
-	@Override
-	public LogEntry newLogEntry(String cat, String name) {
-		LogEntry le = new LogEntry(cat, name);
-		le.setSource(getSource());
-		return le;
-	}
-
-	@Override
 	public Snapshot newSnapshot(String name) {
 		return newSnapshot(tConfig.getProperty(DEFAULT_SNAPSHOT_CAT_KEY, DEFAULT_SNAPSHOT_CATEGORY), name);
 	}
@@ -834,6 +822,78 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 		}
 		return tConfig.getUUIDFactory() == null ? DefaultUUIDFactory.getFallbackUUID()
 				: tConfig.getUUIDFactory().newUUID(obj);
+	}
+
+	@Override
+	public LogEntry newLogEntry(OpLevel severity, String opName, String msg, Object... args) {
+		long start = System.nanoTime();
+		try {
+			LogEntry entry = new LogEntry(this, getSource(), severity, opName, msg, args);
+			entry.getOperation().setUser(tConfig.getSource().getUser());
+			return entry;
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
+		}
+	}
+
+	@Override
+	public LogEntry newLogEntry(OpLevel severity, String opName, byte[] msg, Object... args) {
+		long start = System.nanoTime();
+		try {
+			LogEntry entry = new LogEntry(this, getSource(), severity, opName, msg, args);
+			entry.getOperation().setUser(tConfig.getSource().getUser());
+			return entry;
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
+		}
+	}
+
+	@Override
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, String tag, String msg, Object... args) {
+		long start = System.nanoTime();
+		try {
+			LogEntry entry = new LogEntry(this, getSource(), severity, opType, opName, tag, msg, args);
+			entry.getOperation().setUser(tConfig.getSource().getUser());
+			return entry;
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
+		}
+	}
+
+	@Override
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, Collection<String> tags, String msg, Object... args) {
+		long start = System.nanoTime();
+		try {
+			LogEntry entry = new LogEntry(this, getSource(), severity, opType, opName, tags, msg, args);
+			entry.getOperation().setUser(tConfig.getSource().getUser());
+			return entry;
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
+		}
+	}
+
+	@Override
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, Collection<String> tags, byte[] msg, Object... args) {
+		long start = System.nanoTime();
+		try {
+			LogEntry entry = new LogEntry(this, getSource(), severity, opType, opName, tags, msg, args);
+			entry.getOperation().setUser(tConfig.getSource().getUser());
+			return entry;
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
+		}
+	}
+
+	@Override
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, String tag, byte[] msg, Object... args) {
+		long start = System.nanoTime();
+		try {
+			LogEntry entry = new LogEntry(this, getSource(), severity, opType, opName, tag, msg, args);
+			entry.getOperation().setUser(tConfig.getSource().getUser());
+			return entry;
+		} finally {
+			countOverheadNanos(System.nanoTime() - start);
+		}
 	}
 
 }

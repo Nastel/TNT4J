@@ -1154,18 +1154,6 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	}
 
 	@Override
-	public LogEntry newLogEntry(String name) {
-		checkState();
-		return logger.newLogEntry(name);
-	}
-
-	@Override
-	public LogEntry newLogEntry(String cat, String name) {
-		checkState();
-		return logger.newLogEntry(cat, name);
-	}
-
-	@Override
 	public Snapshot newSnapshot(String name) {
 		checkState();
 		return logger.newSnapshot(name);
@@ -1277,6 +1265,41 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 			Collection<String> tags, byte[] msg, Object... args) {
 		checkState();
 		return logger.newEvent(severity, opType, opName, correlators, tags, msg, args);
+	}
+	@Override
+	public LogEntry newLogEntry(OpLevel severity, String opName, String msg, Object... args) {
+		checkState();
+		return logger.newLogEntry(severity, opName, msg, args);
+	}
+
+	@Override
+	public LogEntry newLogEntry(OpLevel severity, String opName, byte[] msg, Object... args) {
+		checkState();
+		return logger.newLogEntry(severity, opName, msg, args);
+	}
+
+	@Override
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, String tag, String msg, Object... args) {
+		checkState();
+		return logger.newLogEntry(severity, opType, opName, tag, msg, args);
+	}
+
+	@Override
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, Collection<String> tags, String msg, Object... args) {
+		checkState();
+		return logger.newLogEntry(severity, opType, opName, tags, msg, args);
+	}
+
+	@Override
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, Collection<String> tags, byte[] msg, Object... args) {
+		checkState();
+		return logger.newLogEntry(severity, opType, opName, tags, msg, args);
+	}
+
+	@Override
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, String tag, byte[] msg, Object... args) {
+		checkState();
+		return logger.newLogEntry(severity, opType, opName, tag, msg, args);
 	}
 
 	/**
