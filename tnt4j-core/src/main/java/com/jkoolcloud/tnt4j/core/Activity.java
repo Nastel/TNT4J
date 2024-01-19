@@ -297,6 +297,10 @@ public class Activity extends Operation implements Trackable {
 			throw new NullPointerException("trackable item must be non-null");
 		}
 
+		if (item.getType() == OpType.LOG) {
+			throw new IllegalArgumentException("Logs can't have parent relation");
+		}
+
 		String tid = item.getTrackingId();
 		if (tid != null) {
 			idset.add(tid);

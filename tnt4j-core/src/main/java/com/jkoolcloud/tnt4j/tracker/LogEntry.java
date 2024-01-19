@@ -16,13 +16,12 @@
 
 package com.jkoolcloud.tnt4j.tracker;
 
+import java.util.Collection;
+
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.OpType;
-import com.jkoolcloud.tnt4j.core.PropertySnapshot;
-import com.jkoolcloud.tnt4j.core.UsecTimestamp;
+import com.jkoolcloud.tnt4j.core.Trackable;
 import com.jkoolcloud.tnt4j.source.Source;
-
-import java.util.Collection;
 
 /**
  * Log entry defines a named list of properties.
@@ -30,10 +29,6 @@ import java.util.Collection;
  * @version $Revision: 1 $
  */
 public class LogEntry extends TrackingEvent {
-
-	public LogEntry(TrackerImpl tr) {
-		super(tr);
-	}
 
 	public LogEntry(TrackerImpl tr, Source src, OpLevel severity, String opName, String msg, Object... args) {
 		super(tr, src, severity, opName, (String) null, msg, args);
@@ -43,19 +38,43 @@ public class LogEntry extends TrackingEvent {
 		super(tr, src, severity, opName, (String) null, msg, args);
 	}
 
-	public LogEntry(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, String tag, String msg, Object... args) {
-		super(tr, src, severity, opType, opName, (String) null, tag, msg, args);
+	public LogEntry(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, String tag, String msg,
+			Object... args) {
+		super(tr, src, severity, opType, opName, null, tag, msg, args);
 	}
 
-	public LogEntry(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, Collection<String> tags, String msg, Object... args) {
-		super(tr, src, severity, opType, opName, (Collection<String>) null, tags, msg, args);
+	public LogEntry(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, String tag, byte[] msg,
+			Object... args) {
+		super(tr, src, severity, opType, opName, null, tag, msg, args);
 	}
 
-	public LogEntry(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, Collection<String> tags, byte[] msg, Object... args) {
-		super(tr, src, severity, opType, opName, (Collection<String>) null, tags, msg, args);
+	public LogEntry(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, Collection<String> tags,
+			String msg, Object... args) {
+		super(tr, src, severity, opType, opName, null, tags, msg, args);
 	}
 
-	public LogEntry(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, String tag, byte[] msg, Object... args) {
-		super(tr, src, severity, opType, opName, (String) null, tag, msg, args);
+	public LogEntry(TrackerImpl tr, Source src, OpLevel severity, OpType opType, String opName, Collection<String> tags,
+			byte[] msg, Object... args) {
+		super(tr, src, severity, opType, opName, null, tags, msg, args);
+	}
+
+	@Override
+	public void setParentId(Trackable parentObject) {
+		throw new UnsupportedOperationException("Logs can't have parent relation");
+	}
+
+	@Override
+	public void setParentId(String parentId) {
+		throw new UnsupportedOperationException("Logs can't have parent relation");
+	}
+
+	@Override
+	public void setCorrelator(String... cid) {
+		throw new UnsupportedOperationException("Logs can't have correlators");
+	}
+
+	@Override
+	public void setCorrelator(Collection<String> cids) {
+		throw new UnsupportedOperationException("Logs can't have correlators");
 	}
 }
