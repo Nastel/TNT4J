@@ -389,6 +389,11 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 				+ super.toString() + "," + operation + "}";
 	}
 
+	@Override
+	public void addProperty(Property property) {
+		operation.addProperty(property);
+	}
+
 	/**
 	 * Returns true of operation is a NOOP
 	 *
@@ -811,7 +816,6 @@ public class TrackingEvent extends Message implements Trackable, Relate2<Source>
 	 * @return field/property contained value
 	 *
 	 * @see com.jkoolcloud.tnt4j.core.Operation#getFieldValue(String)
-	 * @see com.jkoolcloud.tnt4j.core.Message#getFieldValue(String)
 	 */
 	@Override
 	public Object getFieldValue(String fieldName) {

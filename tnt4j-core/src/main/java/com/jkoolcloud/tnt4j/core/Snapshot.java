@@ -88,6 +88,17 @@ public interface Snapshot extends Trackable {
 	/**
 	 * Adds a property to the snapshot
 	 *
+	 * @param property
+	 *            instance to be added to the snapshot
+	 */
+	@Override
+	default void addProperty(Property property) {
+		add(property);
+	}
+
+	/**
+	 * Adds a property to the snapshot
+	 *
 	 * @param key
 	 *            object to be removed
 	 * @param value
