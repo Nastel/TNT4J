@@ -27,6 +27,7 @@ import com.jkoolcloud.tnt4j.core.*;
 import com.jkoolcloud.tnt4j.source.DefaultSourceFactory;
 import com.jkoolcloud.tnt4j.source.Source;
 import com.jkoolcloud.tnt4j.source.SourceType;
+import com.jkoolcloud.tnt4j.tracker.LogEntry;
 import com.jkoolcloud.tnt4j.tracker.TrackingActivity;
 import com.jkoolcloud.tnt4j.tracker.TrackingEvent;
 import com.jkoolcloud.tnt4j.utils.Useconds;
@@ -319,6 +320,13 @@ public class JSONFormatter implements EventFormatter, Configurable, JSONLabels {
 		addJsonEntry(jsonString, JSON_MSG_TAG_LABEL, event.getTag());
 		addJsonEntry(jsonString, JSON_PROPERTIES_LABEL, event.getOperation().getProperties());
 		addJsonEntry(jsonString, JSON_SNAPSHOTS_LABEL, event.getOperation().getSnapshots());
+
+		// for LOG type entries
+		if (event instanceof LogEntry) {
+			LogEntry logEntry = (LogEntry) event;
+
+			addJsonEntry(jsonString, JSON_LOG_TYPE_LABEL, logEntry.getLogType());
+		}
 
 		return jsonString.append(END_JSON).toString();
 	}

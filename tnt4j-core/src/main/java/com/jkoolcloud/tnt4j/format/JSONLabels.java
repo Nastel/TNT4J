@@ -80,6 +80,7 @@ interface JSONLabels {
 	String JSON_SNAPSHOTS_FIELD = "snapshots";
 	String JSON_ID_SET_FIELD = "id-set";
 	String JSON_TTL_SEC_FIELD = "ttl-sec";
+	String JSON_LOG_TYPE_FIELD = "log-type";
 
 	// JSON quoted fields
 	String JSON_NAME_LABEL = Utils.quote(JSON_NAME_FIELD);
@@ -134,4 +135,5 @@ interface JSONLabels {
 	String JSON_SNAPSHOTS_LABEL = Utils.quote(JSON_SNAPSHOTS_FIELD);
 	String JSON_ID_SET_LABEL = Utils.quote(JSON_ID_SET_FIELD);
 	String JSON_TTL_SEC_LABEL = Utils.quote(JSON_TTL_SEC_FIELD);
+	String JSON_LOG_TYPE_LABEL = Utils.quote(JSON_LOG_TYPE_FIELD);
 }

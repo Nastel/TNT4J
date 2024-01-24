@@ -30,6 +30,8 @@ import com.jkoolcloud.tnt4j.source.Source;
  */
 public class LogEntry extends TrackingEvent {
 
+	private LogType logType = LogType.GENERAL;
+
 	public LogEntry(TrackerImpl tr, Source src, OpLevel severity, String opName, String msg, Object... args) {
 		super(tr, src, severity, opName, (String) null, msg, args);
 	}
@@ -76,5 +78,46 @@ public class LogEntry extends TrackingEvent {
 	@Override
 	public void setCorrelator(Collection<String> cids) {
 		throw new UnsupportedOperationException("Logs can't have correlators");
+	}
+
+	/**
+	 * Gets log type.
+	 * 
+	 * @return message type
+	 */
+	public LogType getLogType() {
+		return logType;
+	}
+
+	/**
+	 * Sets log type.
+	 * 
+	 * @param logType
+	 *            log type
+	 */
+	public void setLogType(LogType logType) {
+		this.logType = logType;
+	}
+
+	/**
+	 * Returns value of {@code fieldName} defined field/property for this tracking event.
+	 * <p>
+	 * List of supported field names (in common with
+	 * {@link com.jkoolcloud.tnt4j.tracker.TrackingEvent#getFieldValue(String)}):
+	 * <ul>
+	 * <li>LogType</li>
+	 * </ul>
+	 *
+	 * @param fieldName
+	 *            event field or property name
+	 * @return field/property contained value
+	 */
+	@Override
+	public Object getFieldValue(String fieldName) {
+		if ("LogType".equalsIgnoreCase(fieldName)) {
+			return logType;
+		}
+
+		return super.getFieldValue(fieldName);
 	}
 }
