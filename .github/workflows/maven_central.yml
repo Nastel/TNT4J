@@ -6,7 +6,7 @@ on:
       releaseversion:
         description: 'Release version'
         required: true
-        default: '3.0.1'
+        default: '3.1.0'
 jobs:
   publish:
     runs-on: ubuntu-latest
