@@ -68,7 +68,7 @@
                     <!-- configuration -->
                     <fileSet>
                         <outputDirectory>config</outputDirectory>
-                        <directory>/config</directory>
+                        <directory>config</directory>
                         <includes>
                             <include>**/*.*</include>
                         </includes>
