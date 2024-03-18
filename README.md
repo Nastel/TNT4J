@@ -31,7 +31,7 @@ Use Maven dependency:
     <dependency>
         <groupId>com.jkoolcloud</groupId>
         <artifactId>tnt4j-core</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1</version>
     </dependency>
 ```
 
@@ -212,7 +212,7 @@ Use Maven dependency:
     <dependency>
         <groupId>com.jkoolcloud</groupId>
         <artifactId>tnt4j-kafka-sink</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1</version>
     </dependency>
 ```
 
@@ -248,7 +248,7 @@ Use Maven dependency:
     <dependency>
         <groupId>com.jkoolcloud</groupId>
         <artifactId>tnt4j-mqtt-sink</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.1</version>
     </dependency>
 ```
 
