@@ -686,5 +686,5 @@ Known Projects Using TNT4J
 * [TNT4J/Logback](https://github.com/Nastel/tnt4j-logback/)
 * [TNT4J/Spark](https://github.com/Nastel/tnt4j-spark/)
 * [TNT4J/Examples](https://github.com/Nastel/tnt4j-examples/)
-* Log & Metric Analytics Service - [jkoolcloud.com](https://www.jkoolcloud.com/)
+* Log & Metric Analytics Service - [meshiq.com](https://www.meshiq.com/)
 * Application Performance Monitoring - [AutoPilot M6](http://www.nastel.com/products/autopilot-m6.html)
