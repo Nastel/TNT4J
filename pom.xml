@@ -260,15 +260,14 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-gpg-plugin</artifactId>
-                <version>3.2.2</version>
+                <version>3.1.0</version>
                 <configuration>
                     <gpgArguments>
                         <arg>--pinentry-mode</arg>
                         <arg>loopback</arg>
                     </gpgArguments>
                     <keyname>${gpg.keyname}</keyname>
-                    <passphraseEnvName>MAVEN_GPG_PASSPHRASE</passphraseEnvName>
-                    <bestPractices>true</bestPractices>
+                    <passphraseServerId>${gpg.keyname}</passphraseServerId>
                 </configuration>
                 <executions>
                     <execution>
