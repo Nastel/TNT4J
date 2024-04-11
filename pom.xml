@@ -250,7 +250,7 @@
                     </gpgArguments>
                     <keyname>${gpg.keyname}</keyname>
                     <passphraseEnvName>MAVEN_GPG_PASSPHRASE</passphraseEnvName>
-                    <bestPractices>true</bestPractices>
+                    <bestPractices>false</bestPractices>
                 </configuration>
                 <executions>
                     <execution>
