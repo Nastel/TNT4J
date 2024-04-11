@@ -77,7 +77,6 @@
         <project.java.version>11</project.java.version>
         <maven.compiler.source>${project.java.version}</maven.compiler.source>
         <maven.compiler.target>${project.java.version}</maven.compiler.target>
-        <maven.compiler.version>${project.java.version}</maven.compiler.version>
         <maven.compiler.release>${project.java.version}</maven.compiler.release>
         <maven.compiler.debuglevel>source,lines,vars</maven.compiler.debuglevel>
         <maven.compiler.verbose>false</maven.compiler.verbose>
@@ -195,7 +194,6 @@
                 <version>3.13.0</version>
                 <configuration>
                     <verbose>${maven.compiler.verbose}</verbose>
-                    <compilerVersion>${maven.compiler.version}</compilerVersion>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                     <debuglevel>${maven.compiler.debuglevel}</debuglevel>
