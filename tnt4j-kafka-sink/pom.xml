@@ -30,7 +30,7 @@
     <artifactId>tnt4j-kafka-sink</artifactId>
 
     <properties>
-        <kafka.clients.version>3.6.0</kafka.clients.version>
+        <kafka.clients.version>3.7.0</kafka.clients.version>
     </properties>
 
     <build>

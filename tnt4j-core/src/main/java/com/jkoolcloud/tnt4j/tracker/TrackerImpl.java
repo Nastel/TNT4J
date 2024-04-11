@@ -743,7 +743,7 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 
 	@Override
 	public Dataset newDataset(String name) {
-		return newDataset(Dataset.CATEGORY_DATASET, name);
+		return newDataset(OpType.DATASET.name(), name);
 	}
 
 	@Override

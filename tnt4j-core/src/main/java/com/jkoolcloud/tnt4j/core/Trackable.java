@@ -148,4 +148,13 @@ public interface Trackable extends TTL, GlobalID {
 	 * @return field/property contained value
 	 */
 	Object getFieldValue(String fieldName);
+
+	/**
+	 * Add a user defined property
+	 *
+	 * @param prop
+	 *            property to be added
+	 * @see Property
+	 */
+	void addProperty(Property prop);
 }

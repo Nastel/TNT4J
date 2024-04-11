@@ -94,7 +94,7 @@
                         <configuration>
                             <appendAssemblyId>false</appendAssemblyId>
                             <descriptors>
-                                <descriptor>${release.deploy.dir.assembly}</descriptor>
+                                <!--<descriptor>${release.deploy.dir.assembly}</descriptor>-->
                                 <descriptor>${release.deploy.zip.assembly}</descriptor>
                                 <descriptor>${release.deploy.gz.assembly}</descriptor>
                             </descriptors>

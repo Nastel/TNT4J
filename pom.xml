@@ -67,7 +67,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.resources.encoding>UTF-8</project.resources.encoding>
         <project.organization.name>jKool, LLC</project.organization.name>
-        <project.organization.url>https://www.jkoolcloud.com/</project.organization.url>
+        <project.organization.url>https://www.meshiq.com/</project.organization.url>
         <product.vendor>${project.organization.name}</product.vendor>
         <product.name>${project.name}</product.name>
         <product.name.hr>TNT4J</product.name.hr>
@@ -77,7 +77,7 @@
         <project.java.version>8</project.java.version>
         <maven.compiler.source>${project.java.version}</maven.compiler.source>
         <maven.compiler.target>${project.java.version}</maven.compiler.target>
-        <maven.compiler.version>${project.java.version}</maven.compiler.version>
+        <maven.compiler.release>${project.java.version}</maven.compiler.release>
         <maven.compiler.debuglevel>source,lines,vars</maven.compiler.debuglevel>
         <maven.compiler.verbose>false</maven.compiler.verbose>
         <maven.compiler.fork>false</maven.compiler.fork>
@@ -167,7 +167,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-source-plugin</artifactId>
-                    <version>3.3.0</version>
+                    <version>3.3.1</version>
                     <executions>
                         <execution>
                             <id>attach-sources</id>
@@ -209,10 +209,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.11.0</version>
+                <version>3.13.0</version>
                 <configuration>
                     <verbose>${maven.compiler.verbose}</verbose>
-                    <compilerVersion>${maven.compiler.version}</compilerVersion>
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                     <debuglevel>${maven.compiler.debuglevel}</debuglevel>
@@ -230,7 +229,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>3.6.2</version>
+                <version>3.6.3</version>
                 <configuration>
                     <doctitle>${product.name.hr}</doctitle>
                     <windowtitle>${product.name.hr}</windowtitle>
@@ -311,7 +310,7 @@
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>versions-maven-plugin</artifactId>
-                <version>2.16.1</version>
+                <version>2.16.2</version>
                 <configuration>
                     <generateBackupPoms>false</generateBackupPoms>
                 </configuration>

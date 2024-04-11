@@ -17,25 +17,24 @@
 package com.jkoolcloud.tnt4j.core;
 
 /**
- * Data set defines a named list of properties
+ * Data set defines a named list of properties.
  * 
- * @author albert
+ * @version $Revision: 1 $
  */
 public class Dataset extends PropertySnapshot {
-	public static final String CATEGORY_DATASET = "DATASET";
 
 	/**
-	 * Create a data set instance
+	 * Create a data set instance.
 	 * 
 	 * @param name
 	 *            dataset name
 	 */
 	public Dataset(String name) {
-		super(CATEGORY_DATASET, name, OpLevel.NONE, OpType.DATASET, UsecTimestamp.now());
+		this(OpType.DATASET.name(), name);
 	}
 
 	/**
-	 * Create a data set instance
+	 * Create a data set instance.
 	 * 
 	 * @param cat
 	 *            dataset category
@@ -43,11 +42,11 @@ public class Dataset extends PropertySnapshot {
 	 *            dataset name
 	 */
 	public Dataset(String cat, String name) {
-		super(cat, name, OpLevel.NONE, OpType.DATASET, UsecTimestamp.now());
+		this(cat, name, UsecTimestamp.now());
 	}
 
 	/**
-	 * Create a data set instance
+	 * Create a data set instance.
 	 * 
 	 * @param cat
 	 *            dataset category

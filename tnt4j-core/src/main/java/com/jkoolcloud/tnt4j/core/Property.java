@@ -18,6 +18,7 @@ package com.jkoolcloud.tnt4j.core;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Date;
+import java.util.Objects;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -181,7 +182,34 @@ public class Property {
 		}
 
 		Property other = (Property) obj;
-		return key.equals(other.key);
+		return Objects.equals(key, other.key);
+	}
+
+	/**
+	 * Checks if this property is the same as the provided {@code obj} argument.
+	 * <p>
+	 * Properties are considered as same if they both have the same values for key, value, value type and transiency
+	 * flag.
+	 * 
+	 * @param obj
+	 *            the reference object with which to compare
+	 * @return {@code true} if this property has the same key, value, valueType and transiency values as the obj
+	 *         argument, {@code false} - otherwise
+	 */
+	public boolean same(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (!(obj instanceof Property)) {
+			return false;
+		}
+
+		Property other = (Property) obj;
+		return Objects.equals(key, other.key) && Objects.equals(value, other.value)
+				&& Objects.equals(valueType, other.valueType) && transient_ == other.transient_;
 	}
 
 	/**
