@@ -255,10 +255,10 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 				msgTracker.missAndGetCount(key);
 				return true;
 			} else if (dupAppendStats && (event != null && hitCount > 1)) {
-				event.getOperation().addProperty(new Property("_hitCount", hitCount, ValueTypes.VALUE_TYPE_COUNTER));
-				event.getOperation().addProperty(new Property("_missCount", msgTracker.getMissCount(key), ValueTypes.VALUE_TYPE_COUNTER));
-				event.getOperation().addProperty(new Property("_hit_last_age_ms", msgTracker.getHitAge(msg, TimeUnit.MILLISECONDS), ValueTypes.VALUE_TYPE_AGE_MSEC));
-				event.getOperation().addProperty(new Property("_miss_last_age_ms", msgTracker.getMissAge(msg, TimeUnit.MILLISECONDS), ValueTypes.VALUE_TYPE_AGE_MSEC));
+				event.addProperty(new Property("_hitCount", hitCount, ValueTypes.VALUE_TYPE_COUNTER));
+				event.addProperty(new Property("_missCount", msgTracker.getMissCount(key), ValueTypes.VALUE_TYPE_COUNTER));
+				event.addProperty(new Property("_hit_last_age_ms", msgTracker.getHitAge(msg, TimeUnit.MILLISECONDS), ValueTypes.VALUE_TYPE_AGE_MSEC));
+				event.addProperty(new Property("_miss_last_age_ms", msgTracker.getMissAge(msg, TimeUnit.MILLISECONDS), ValueTypes.VALUE_TYPE_AGE_MSEC));
 			}
 		}
 		return false;

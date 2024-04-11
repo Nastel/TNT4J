@@ -1466,6 +1466,9 @@ public class Utils {
 	 * @return string representation of object
 	 */
 	public static String toString(Object value) {
+		if (value instanceof String) {
+			return (String) value;
+		}
 		if (value instanceof int[]) {
 			return Arrays.toString((int[]) value);
 		}
