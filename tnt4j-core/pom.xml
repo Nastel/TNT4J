@@ -31,7 +31,7 @@
 
     <properties>
         <commons.lang.version>3.14.0</commons.lang.version>
-        <commons.text.version>1.11.0</commons.text.version>
+        <commons.text.version>1.12.0</commons.text.version>
         <commons.codec.version>1.16.1</commons.codec.version>
         <commons.configuration.version>2.10.1</commons.configuration.version>
         <commons.net.version>3.10.0</commons.net.version>
