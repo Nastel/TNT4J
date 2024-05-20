@@ -44,7 +44,7 @@ public interface EventSink extends Sink, TTL, KeyValueStats, Tagged {
 	/**
 	 * Determine of sink is in error state -- meaning no successful write/log since last error;
 	 *
-	 * @return last error occurred when writing to sink, null if none
+	 * @return last error occurred when writing to sink, {@code null} if none
 	 */
 	boolean errorState();
 
@@ -53,7 +53,7 @@ public interface EventSink extends Sink, TTL, KeyValueStats, Tagged {
 	 *
 	 * @param key
 	 *            key to resolve to message
-	 * @return message string resolved from bundle by <tt>key</tt>
+	 * @return message string resolved from bundle by {@code key}
 	 */
 	String getString(Object key);
 

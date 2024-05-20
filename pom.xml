@@ -227,7 +227,7 @@
                     <version>true</version>
                     <nodeprecatedlist>false</nodeprecatedlist>
                     <nodeprecated>false</nodeprecated>
-                    <failOnError>false</failOnError>
+                    <failOnError>true</failOnError>
                     <doclint>all</doclint>
                 </configuration>
                 <executions>

@@ -190,10 +190,10 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	}
 
 	/** Cannot instantiate. */
-	private TrackingLogger(Tracker trg, String trackeKey) {
+	private TrackingLogger(Tracker trg, String trackerKey) {
 		logger = trg;
 		selector = logger.getTrackingSelector();
-		this.trackerKey = trackeKey;
+		this.trackerKey = trackerKey;
 	}
 
 	private static void initConfigurationAndFactories() {
@@ -325,6 +325,8 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 *
 	 * @param config
 	 *            tracking configuration to be used to create a tracker instance
+	 * @param trackerKey
+	 *            tracker key string
 	 * @return tracking logger instance
 	 *
 	 * @see TrackerConfig
@@ -728,12 +730,8 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * Log a single message with a given severity level and a number of user supplied arguments. Message pattern is
 	 * based on the format defined by {@code MessageFormat}. This logging type is more efficient than string
 	 * concatenation.
-	 * 
-	 * <pre>
-	 * {@code 
-	 * logger.log(OpLevel.DEBUG, "My message arg={0}, arg={1}", parm1, parm2);
-	 * }
-	 * </pre>
+	 * <p>
+	 * {@code logger.log(OpLevel.DEBUG, "My message arg={0}, arg={1}", parm1, parm2);}
 	 * 
 	 * @param level
 	 *            severity level
@@ -755,12 +753,8 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	/**
 	 * Log a single DEBUG message and a number of user supplied arguments. Message pattern is based on the format
 	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
-	 * 
-	 * <pre>
-	 * {@code 
-	 * logger.debug("My message arg={0}, arg={1}", parm1, parm2);
-	 * }
-	 * </pre>
+	 * <p>
+	 * {@code logger.debug("My message arg={0}, arg={1}", parm1, parm2);}
 	 * 
 	 * @param msg
 	 *            message or message pattern
@@ -776,13 +770,9 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	/**
 	 * Log a single TRACE message and a number of user supplied arguments. Message pattern is based on the format
 	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
-	 * 
-	 * <pre>
-	 * {@code 
-	 * logger.trace("My message arg={0}, arg={1}", parm1, parm2);
-	 * }
-	 * </pre>
-	 * 
+	 * <p>
+	 * {@code logger.trace("My message arg={0}, arg={1}", parm1, parm2);}
+	 *
 	 * @param msg
 	 *            message or message pattern
 	 * @param args
@@ -797,12 +787,8 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	/**
 	 * Log a single ERROR message and a number of user supplied arguments. Message pattern is based on the format
 	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
-	 * 
-	 * <pre>
-	 * {@code 
-	 * logger.error("My error message arg={0}, arg={1}", parm1, parm2);
-	 * }
-	 * </pre>
+	 * <p>
+	 * {@code logger.error("My error message arg={0}, arg={1}", parm1, parm2);}
 	 * 
 	 * @param msg
 	 *            message or message pattern
@@ -818,12 +804,8 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	/**
 	 * Log a single FATAL message and a number of user supplied arguments. Message pattern is based on the format
 	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
-	 * 
-	 * <pre>
-	 * {@code 
-	 * logger.fatal("My error message arg={0}, arg={1}", parm1, parm2);
-	 * }
-	 * </pre>
+	 * <p>
+	 * {@code logger.fatal("My error message arg={0}, arg={1}", parm1, parm2);}
 	 * 
 	 * @param msg
 	 *            message or message pattern
@@ -839,12 +821,8 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	/**
 	 * Log a single HALT message and a number of user supplied arguments. Message pattern is based on the format defined
 	 * by {@code MessageFormat}. This logging type is more efficient than string concatenation.
-	 * 
-	 * <pre>
-	 * {@code 
-	 * logger.halt("My error message arg={0}, arg={1}", parm1, parm2);
-	 * }
-	 * </pre>
+	 * <p>
+	 * {@code logger.halt("My error message arg={0}, arg={1}", parm1, parm2);}
 	 * 
 	 * @param msg
 	 *            message or message pattern
@@ -860,13 +838,9 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	/**
 	 * Log a single WARNING message and a number of user supplied arguments. Message pattern is based on the format
 	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
-	 * 
-	 * <pre>
-	 * {@code 
-	 * logger.warn("My message arg={0}, arg={1}", parm1, parm2);
-	 * }
-	 * </pre>
-	 * 
+	 * <p>
+	 * {@code logger.warn("My message arg={0}, arg={1}", parm1, parm2);}
+	 *
 	 * @param msg
 	 *            message or message pattern
 	 * @param args
@@ -881,13 +855,9 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	/**
 	 * Log a single INFO message and a number of user supplied arguments. Message pattern is based on the format defined
 	 * by {@code MessageFormat}. This logging type is more efficient than string concatenation.
-	 * 
-	 * <pre>
-	 * {@code 
-	 * logger.info("My message arg={0}, arg={1}", parm1, parm2);
-	 * }
-	 * </pre>
-	 * 
+	 * <p>
+	 * {@code logger.info("My message arg={0}, arg={1}", parm1, parm2);}
+	 *
 	 * @param msg
 	 *            message or message pattern
 	 * @param args
@@ -902,12 +872,8 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	/**
 	 * Log a single NOTICE message and a number of user supplied arguments. Message pattern is based on the format
 	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
-	 * 
-	 * <pre>
-	 * {@code 
-	 * logger.notice("My message arg={0}, arg={1}", parm1, parm2);
-	 * }
-	 * </pre>
+	 * <p>
+	 * {@code logger.notice("My message arg={0}, arg={1}", parm1, parm2);}
 	 * 
 	 * @param msg
 	 *            message or message pattern
@@ -1266,6 +1232,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 		checkState();
 		return logger.newEvent(severity, opType, opName, correlators, tags, msg, args);
 	}
+
 	@Override
 	public LogEntry newLogEntry(OpLevel severity, String opName, String msg, Object... args) {
 		checkState();
@@ -1279,25 +1246,29 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	}
 
 	@Override
-	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, String tag, String msg, Object... args) {
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, String tag, String msg,
+			Object... args) {
 		checkState();
 		return logger.newLogEntry(severity, opType, opName, tag, msg, args);
 	}
 
 	@Override
-	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, Collection<String> tags, String msg, Object... args) {
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, Collection<String> tags, String msg,
+			Object... args) {
 		checkState();
 		return logger.newLogEntry(severity, opType, opName, tags, msg, args);
 	}
 
 	@Override
-	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, Collection<String> tags, byte[] msg, Object... args) {
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, Collection<String> tags, byte[] msg,
+			Object... args) {
 		checkState();
 		return logger.newLogEntry(severity, opType, opName, tags, msg, args);
 	}
 
 	@Override
-	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, String tag, byte[] msg, Object... args) {
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, String tag, byte[] msg,
+			Object... args) {
 		checkState();
 		return logger.newLogEntry(severity, opType, opName, tag, msg, args);
 	}

@@ -168,7 +168,7 @@ public class Utils {
 	 *            resource bundle
 	 * @param key
 	 *            message key
-	 * @return message associated with a given <tt>key</tt>, or <tt>key</tt> if message is not resolved
+	 * @return message associated with a given {@code key}, or {@code key} if message is not resolved
 	 */
 	public static String getString(ResourceBundle bundle, String key) {
 		String resolved = null;
@@ -1538,7 +1538,7 @@ public class Utils {
 	}
 
 	/**
-	 * Performs <tt>source</tt> string contents <tt>os</tt> replacement with provided new fragment <tt>ns</tt>.
+	 * Performs {@code source} string contents {@code os} replacement with provided new fragment {@code ns}.
 	 *
 	 * @param source
 	 *            source string

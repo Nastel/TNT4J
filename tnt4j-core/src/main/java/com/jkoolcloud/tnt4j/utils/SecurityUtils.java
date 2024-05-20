@@ -161,7 +161,8 @@ public class SecurityUtils {
 	 *
 	 * @param args
 	 *            command-line arguments. Supported arguments:
-	 *            <table summary="TNT4J Security utils command line arguments">
+	 *            <table>
+	 *            <caption>TNT4J Security utils command line arguments</caption>
 	 *            <tr>
 	 *            <td>&nbsp;&nbsp;</td>
 	 *            <td>&nbsp;-e | -encrypt &lt;plain_text_password&gt;</td>

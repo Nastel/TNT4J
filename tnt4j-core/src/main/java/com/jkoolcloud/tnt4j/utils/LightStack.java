@@ -105,7 +105,7 @@ public class LightStack<T> extends ArrayList<T> {
 	/**
 	 * Looks at the object at the top of this stack without removing it from the stack.
 	 *
-	 * @return the object at the top of this stack (the last item of the <tt>ArrayList</tt> object).
+	 * @return the object at the top of this stack (the last item of the {@link ArrayList} object).
 	 * @exception EmptyStackException
 	 *                if this stack is empty.
 	 */
