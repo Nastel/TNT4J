@@ -17,7 +17,6 @@
 package com.jkoolcloud.tnt4j.utils;
 
 import java.security.GeneralSecurityException;
-import java.text.MessageFormat;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
@@ -235,10 +234,9 @@ public class SecurityUtils {
 			try {
 				String encryptedPass = encryptPass(param);
 
-				System.out.println(MessageFormat.format("ENCRYPTED PASSWORD: {0}", encryptedPass));
+				System.out.println(Utils.format("ENCRYPTED PASSWORD: {0}", encryptedPass));
 			} catch (Exception exc) {
-				System.out.println(
-						MessageFormat.format("Password encryption failed: plain_text_pass={0}, exception:", param));
+				System.out.println(Utils.format("Password encryption failed: plain_text_pass={0}, exception:", param));
 				exc.printStackTrace();
 			}
 			break;
@@ -247,10 +245,9 @@ public class SecurityUtils {
 			try {
 				String decryptedPass = decryptPass(param);
 
-				System.out.println(MessageFormat.format("DECRYPTED PASSWORD: {0}", decryptedPass));
+				System.out.println(Utils.format("DECRYPTED PASSWORD: {0}", decryptedPass));
 			} catch (Exception exc) {
-				System.out.println(
-						MessageFormat.format("Password decryption failed: encrypted_pass={0}, exception:", param));
+				System.out.println(Utils.format("Password decryption failed: encrypted_pass={0}, exception:", param));
 				exc.printStackTrace();
 			}
 			break;

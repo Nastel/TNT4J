@@ -42,6 +42,7 @@ import org.apache.commons.lang3.SerializationUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.text.StringEscapeUtils;
+import org.slf4j.helpers.MessageFormatter;
 
 import com.jkoolcloud.tnt4j.config.ConfigException;
 import com.jkoolcloud.tnt4j.config.Configurable;
@@ -120,7 +121,8 @@ public class Utils {
 	public static final Pattern REP_CFG_PATTERN = Pattern
 			.compile("\"(\\s*(?:[^\"\\\\]|\\\\.)+\\s*)\"->\"(\\s*(?:[^\"\\\\]|\\\\.)*\\s*)\"");
 
-	private static final Pattern MSG_FORMAT_ELEMENT_PATTERN = Pattern.compile("\\{\\d+");
+	private static final Pattern MSG_FORMAT_ELEMENT_JAVA_PATTERN = Pattern.compile("\\{\\d+");
+	private static final Pattern MSG_FORMAT_ELEMENT_LOGGER_PATTERN = Pattern.compile("(?<!\\\\\\\\)\\{\\}");
 
 	private static int initClientCodeStackIndex() {
 		int index = 0;
@@ -435,7 +437,11 @@ public class Utils {
 	}
 
 	/**
-	 * Format a given string pattern and a list of arguments as defined by {@link MessageFormat}
+	 * Format a given string {@code pattern} and a list of arguments as defined by {@link MessageFormat} or
+	 * {@link MessageFormatter} depending on format elements pattern provided within {@code pattern} string.
+	 * <p>
+	 * Java default {@link MessageFormat} uses format elements matching pattern {@code "{n}"},where {@code n} is
+	 * argument index.
 	 *
 	 * @param pattern
 	 *            format string
@@ -444,15 +450,23 @@ public class Utils {
 	 * @return formatted string
 	 */
 	public static String format(String pattern, Object... args) {
-		if (ArrayUtils.isNotEmpty(args) && isMsgPattern(pattern)) {
-			return MessageFormat.format(pattern, args);
-		} else {
-			return pattern;
+		if (ArrayUtils.isNotEmpty(args)) {
+			if (isJavaMsgPattern(pattern)) {
+				return MessageFormat.format(pattern, args);
+			} else if (isLoggerMsgPattern(pattern)) {
+				return MessageFormatter.arrayFormat(pattern, args).getMessage();
+			}
 		}
+
+		return pattern;
 	}
 
-	private static boolean isMsgPattern(String pattern) {
-		return pattern != null && MSG_FORMAT_ELEMENT_PATTERN.matcher(pattern).find();
+	private static boolean isJavaMsgPattern(String pattern) {
+		return pattern != null && MSG_FORMAT_ELEMENT_JAVA_PATTERN.matcher(pattern).find();
+	}
+
+	private static boolean isLoggerMsgPattern(String pattern) {
+		return pattern != null && MSG_FORMAT_ELEMENT_LOGGER_PATTERN.matcher(pattern).find();
 	}
 
 	/**
