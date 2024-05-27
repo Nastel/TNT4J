@@ -121,8 +121,7 @@ public class Utils {
 	public static final Pattern REP_CFG_PATTERN = Pattern
 			.compile("\"(\\s*(?:[^\"\\\\]|\\\\.)+\\s*)\"->\"(\\s*(?:[^\"\\\\]|\\\\.)*\\s*)\"");
 
-	private static final Pattern MSG_FORMAT_ELEMENT_JAVA_PATTERN = Pattern.compile("\\{\\d+");
-	private static final Pattern MSG_FORMAT_ELEMENT_LOGGER_PATTERN = Pattern.compile("(?<!\\\\\\\\)\\{\\}");
+	private static final Pattern MSG_FORMAT_ELEMENT_PATTERN = Pattern.compile("\\{\\d+|(?<!\\\\\\\\)\\{\\}");
 
 	private static int initClientCodeStackIndex() {
 		int index = 0;
@@ -447,22 +446,29 @@ public class Utils {
 	 */
 	public static String format(String pattern, Object... args) {
 		if (ArrayUtils.isNotEmpty(args)) {
-			if (isJavaMsgPattern(pattern)) {
-				return MessageFormat.format(pattern, args);
-			} else if (isLoggerMsgPattern(pattern)) {
-				return MessageFormatter.arrayFormat(pattern, args).getMessage();
+			String anchor = getMsgPatternAnchor(pattern);
+			if (anchor != null) {
+				if ("{}".equals(anchor)) { // NON-NLS
+					return MessageFormatter.basicArrayFormat(pattern, args);
+				} else if (Character.isDigit(anchor.charAt(1))) {
+					return MessageFormat.format(pattern, args);
+				}
 			}
 		}
 
 		return pattern;
 	}
 
-	private static boolean isJavaMsgPattern(String pattern) {
-		return pattern != null && MSG_FORMAT_ELEMENT_JAVA_PATTERN.matcher(pattern).find();
-	}
+	private static String getMsgPatternAnchor(String pattern) {
+		if (StringUtils.isNotEmpty(pattern)) {
+			Matcher m = MSG_FORMAT_ELEMENT_PATTERN.matcher(pattern);
+			boolean found = m.find();
+			if (found) {
+				return m.group();
+			}
+		}
 
-	private static boolean isLoggerMsgPattern(String pattern) {
-		return pattern != null && MSG_FORMAT_ELEMENT_LOGGER_PATTERN.matcher(pattern).find();
+		return null;
 	}
 
 	/**
