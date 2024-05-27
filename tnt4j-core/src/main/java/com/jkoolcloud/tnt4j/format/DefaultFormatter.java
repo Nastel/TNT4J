@@ -32,10 +32,16 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * <p>
  * Default implementation of {@link Formatter} interface provides default formatting of {@link TrackingActivity} and
  * {@link TrackingEvent} as well as any object passed to {@code format()} method call.
- * </p>
- * 
- * 
- * @version $Revision: 4 $
+ * <p>
+ * List of formatting tokens:
+ * <ul>
+ * <li>0 - event timestamp</li>
+ * <li>1 - event severity level</li>
+ * <li>2 - event message</li>
+ * <li>3 - event source name</li>
+ * </ul>
+ *
+ * @version $Revision: 5 $
  * 
  * @see Formatter
  * @see TrackingActivity
