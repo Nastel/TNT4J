@@ -38,12 +38,7 @@ public class ContextTracker {
 
 	private static final ConcurrentMap<String, ContextRef> REF_MAP = new ConcurrentHashMap<>();
 
-	private static ThreadLocal<ConcurrentMap<String, String>> CONTEXT = new ThreadLocal<ConcurrentMap<String, String>>() {
-		@Override
-		public ConcurrentMap<String, String> initialValue() {
-			return new ConcurrentHashMap<>();
-		}
-	};
+	private static ThreadLocal<ConcurrentMap<String, String>> CONTEXT = ThreadLocal.withInitial(ConcurrentHashMap::new);
 
 	/**
 	 * Obtain a context reference {@link ContextRef} for a specific object. Tracking reference is cached until
@@ -83,8 +78,8 @@ public class ContextTracker {
 
 	/**
 	 * Discard a context reference {@link ContextRef} associated with a given object. Context references are created and
-	 * cached using {@link #getRef(Object)} and discarded using {@link #clearRef(Object)}. Use this method to track
-	 * object references across threads within the same JVM.
+	 * cached using {@link #getRef(Object)}. Use this method to track object references across threads within the same
+	 * JVM.
 	 * 
 	 * @param obj
 	 *            object whose reference is discarded

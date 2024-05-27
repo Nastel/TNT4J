@@ -317,17 +317,13 @@ public class Utils {
 	 * @return string representation including stack trace
 	 */
 	public static String printThrowable(Throwable ex) {
-		try {
-			if (ex == null) {
-				return null;
-			}
-			ByteArrayOutputStream os = new ByteArrayOutputStream();
-			PrintStream ps = new PrintStream(os);
-			ex.printStackTrace(ps);
-			return os.toString(UTF8);
-		} catch (UnsupportedEncodingException e) {
-			return ex.toString();
+		if (ex == null) {
+			return null;
 		}
+		ByteArrayOutputStream os = new ByteArrayOutputStream();
+		PrintStream ps = new PrintStream(os);
+		ex.printStackTrace(ps);
+		return os.toString(StandardCharsets.UTF_8);
 	}
 
 	/**
@@ -522,11 +518,7 @@ public class Utils {
 		if (url == null) {
 			return null;
 		}
-		try {
-			return URLEncoder.encode(url, UTF8);
-		} catch (UnsupportedEncodingException ex) {
-			throw new RuntimeException(ex);
-		}
+		return URLEncoder.encode(url, StandardCharsets.UTF_8);
 	}
 
 	/**
@@ -541,11 +533,7 @@ public class Utils {
 		if (url == null) {
 			return null;
 		}
-		try {
-			return URLDecoder.decode(url, UTF8);
-		} catch (UnsupportedEncodingException ex) {
-			throw new RuntimeException(ex);
-		}
+		return URLDecoder.decode(url, StandardCharsets.UTF_8);
 	}
 
 	/**

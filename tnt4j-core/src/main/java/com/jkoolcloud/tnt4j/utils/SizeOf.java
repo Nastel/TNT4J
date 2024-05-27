@@ -183,15 +183,15 @@ public class SizeOf {
 			} else if (obj instanceof Boolean) {
 				return (obj == Boolean.TRUE || obj == Boolean.FALSE);
 			} else if (obj instanceof Integer) {
-				return (obj == (Integer) obj);
+				return (obj == obj);
 			} else if (obj instanceof Short) {
-				return (obj == (Short) obj);
+				return (obj == obj);
 			} else if (obj instanceof Byte) {
-				return (obj == (Byte) obj);
+				return (obj == obj);
 			} else if (obj instanceof Long) {
-				return (obj == (Long) obj);
+				return (obj == obj);
 			} else if (obj instanceof Character) {
-				return (obj == (Character) obj);
+				return (obj == obj);
 			}
 		}
 		return false;

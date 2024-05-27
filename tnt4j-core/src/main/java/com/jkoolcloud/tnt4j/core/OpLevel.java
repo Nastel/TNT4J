@@ -28,7 +28,7 @@ public enum OpLevel {
 
 	public static final String ANY_LEVEL = "ANY";
 
-	private static OpLevel[] enumList = OpLevel.values();
+	private static final OpLevel[] enumList = OpLevel.values();
 
 	/**
 	 * Converts the specified value to a member of the enumeration.

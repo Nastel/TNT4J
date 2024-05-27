@@ -33,7 +33,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * <p>
  * {@link DefaultTrackingSelector} implements {@link TrackingSelector} interface and provides default file based
  * implementation for a tracking selector. Selector file should contain entries as follows:
- * 
+ *
  * {@code key=SEV:value-regexp} Example (trace all severities, all orders):
  * {@code OrderApp.purchasing.order.id=DEBUG:.*}
  * 

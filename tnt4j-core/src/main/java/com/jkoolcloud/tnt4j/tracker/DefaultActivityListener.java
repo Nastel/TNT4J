@@ -135,7 +135,7 @@ public class DefaultActivityListener implements ActivityListener {
 
 		PropertySnapshot mem = new PropertySnapshot(DEFAULT_SNAPSHOT_CATEGORY, SNAPSHOT_MEMORY, activity.getSeverity());
 		long usedMem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-		double memPct = (double) ((double) usedMem / (double) Runtime.getRuntime().totalMemory());
+		double memPct = (double) usedMem / (double) Runtime.getRuntime().totalMemory();
 		mem.add(new Property(DEFAULT_PROPERTY_MAX_BYTES, Runtime.getRuntime().maxMemory(),
 				ValueTypes.VALUE_TYPE_SIZE_BYTE));
 		mem.add(new Property(DEFAULT_PROPERTY_TOTAL_BYTES, Runtime.getRuntime().totalMemory(),

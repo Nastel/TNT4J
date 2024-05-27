@@ -20,8 +20,7 @@ import com.fasterxml.uuid.Generators;
 import com.fasterxml.uuid.impl.TimeBasedGenerator;
 
 /**
- * Default UUID factory based on FasterXML UUID generator.
- * See: http://wiki.fasterxml.com/JugHome
+ * Default UUID factory based on FasterXML UUID generator. See: <a href="http://wiki.fasterxml.com/JugHome">JUG Wiki</a>
  *
  * @version $Revision: 1 $
  */

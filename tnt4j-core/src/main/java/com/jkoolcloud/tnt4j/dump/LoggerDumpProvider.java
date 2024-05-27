@@ -24,7 +24,6 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 /**
  * <p>
  * This class is a dump provider for TNT4J registered loggers
- * 
  * </p>
  * 
  * @see DumpCollection

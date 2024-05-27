@@ -158,7 +158,7 @@ public interface Limiter {
 	 *
 	 * @return idle reset period, in milliseconds (0 implies no idle reset)
 	 */
-	public long getIdleReset();
+	long getIdleReset();
 
 	/**
 	 * <p>
@@ -176,7 +176,7 @@ public interface Limiter {
 	 *            idle reset period, in milliseconds
 	 * @return same limiter instance
 	 */
-	public Limiter setIdleReset(long idleReset);
+	Limiter setIdleReset(long idleReset);
 
 	/**
 	 * Obtain permit for message/byte chunk. This call may block to satisfy max limits.

@@ -24,7 +24,7 @@ package com.jkoolcloud.tnt4j.core;
 public enum OpCompCode {
 	SUCCESS, WARNING, ERROR;
 
-	private static OpCompCode[] enumList = OpCompCode.values();
+	private static final OpCompCode[] enumList = OpCompCode.values();
 
 	/**
 	 * Converts the specified value to a member of the enumeration.

@@ -23,7 +23,6 @@ import java.util.List;
  * This class is a dump provider for dumping java statistics based on ManagementFactory and includes:
  * OperatingSystemMXBean, MemoryMXBean, MemoryPoolMXBean, GarbageCollectorMXBean, ClassLoadingMXBean, ThreadMXBean,
  * CompilationMXBean
- * 
  * </p>
  * 
  * @see DumpCollection

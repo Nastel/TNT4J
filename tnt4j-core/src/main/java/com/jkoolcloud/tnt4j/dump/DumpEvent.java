@@ -52,7 +52,7 @@ public class DumpEvent extends EventObject {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private static final String TYPE_STRING[] = { "DUMP_BEFORE", "DUMP_AFTER", "DUMP_COMPLETE", "DUMP_ERROR",
+	private static final String[] TYPE_STRING = { "DUMP_BEFORE", "DUMP_AFTER", "DUMP_COMPLETE", "DUMP_ERROR",
 			"DUMP_UNKNOWN" };
 	private static final int LAST_EVENT_INDEX = (TYPE_STRING.length - 1);
 

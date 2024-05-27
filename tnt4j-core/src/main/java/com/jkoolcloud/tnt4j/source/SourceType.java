@@ -28,7 +28,7 @@ public enum SourceType {
 	NETWORK, DEVICE, NETADDR, GEOADDR, DATACENTER, DATASTORE, CACHE, //
 	SERVICE, QUEUE, FILE, TOPIC;
 
-	private static SourceType[] enumList = SourceType.values();
+	private static final SourceType[] enumList = SourceType.values();
 
 	/**
 	 * Returns the number of source types defined

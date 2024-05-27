@@ -110,23 +110,15 @@ public class TNT4JLoggingHandler extends Handler {
 		switch (level.intValue()) {
 		case 1000:
 			return OpLevel.CRITICAL;
-
 		case 900:
 			return OpLevel.WARNING;
-
-		case 800:
-			return OpLevel.INFO;
-
-		case 700:
-			return OpLevel.INFO;
-
 		case 500:
 			return OpLevel.DEBUG;
-
 		case 400:
 		case 300:
 			return OpLevel.TRACE;
-
+		case 800:
+		case 700:
 		default:
 			return OpLevel.INFO;
 

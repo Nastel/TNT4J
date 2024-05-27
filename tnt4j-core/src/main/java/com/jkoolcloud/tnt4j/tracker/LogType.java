@@ -29,7 +29,7 @@ public enum LogType {
 	TRACE, //
 	AUDIT, ML, SCRIPT;
 
-	private static LogType[] enumList = LogType.values();
+	private static final LogType[] enumList = LogType.values();
 
 	/**
 	 * Converts the specified value to a member of the enumeration.

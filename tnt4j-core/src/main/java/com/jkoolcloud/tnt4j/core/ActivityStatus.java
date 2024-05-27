@@ -24,7 +24,7 @@ package com.jkoolcloud.tnt4j.core;
 public enum ActivityStatus {
 	UNKNOWN, BEGIN, END, EXCEPTION;
 
-	private static ActivityStatus[] enumList = ActivityStatus.values();
+	private static final ActivityStatus[] enumList = ActivityStatus.values();
 
 	/**
 	 * Converts the specified value to a member of the enumeration.

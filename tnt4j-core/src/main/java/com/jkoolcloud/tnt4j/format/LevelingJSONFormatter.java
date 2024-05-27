@@ -249,7 +249,7 @@ public class LevelingJSONFormatter extends JSONFormatter {
 
 	private Comparator<Snapshot> getSnapshotComparator() {
 		if (snapshotComparator == null) {
-			snapshotComparator = new Comparator<Snapshot>() {
+			snapshotComparator = new Comparator<>() {
 				@Override
 				public int compare(Snapshot s1, Snapshot s2) {
 					String s1Path = getSnapName(s1);
@@ -289,7 +289,7 @@ public class LevelingJSONFormatter extends JSONFormatter {
 
 	private Comparator<Property> getPropertyComparator() {
 		if (propertyComparator == null) {
-			propertyComparator = new Comparator<Property>() {
+			propertyComparator = new Comparator<>() {
 				@Override
 				public int compare(Property p1, Property p2) {
 					return p1.getKey().compareTo(p2.getKey());

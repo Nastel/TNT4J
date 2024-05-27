@@ -22,12 +22,9 @@ package com.jkoolcloud.tnt4j.core;
  * @version $Revision: 5 $
  */
 public enum OpType {
-	OTHER, NOOP, CALL, ACTIVITY, EVENT, SNAPSHOT,
-	START, STOP, OPEN, CLOSE, SEND, RECEIVE,
-	INQUIRE, SET, BROWSE, ADD, UPDATE,
-	REMOVE, CLEAR, LOG, DATASET;
+	OTHER, NOOP, CALL, ACTIVITY, EVENT, SNAPSHOT, START, STOP, OPEN, CLOSE, SEND, RECEIVE, INQUIRE, SET, BROWSE, ADD, UPDATE, REMOVE, CLEAR, LOG, DATASET;
 
-	private static OpType[] enumList = OpType.values();
+	private static final OpType[] enumList = OpType.values();
 
 	/**
 	 * Converts the specified value to a member of the enumeration.

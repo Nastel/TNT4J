@@ -95,8 +95,7 @@ class PropertyToken {
 	public boolean isMatch(OpLevel sev, Object key, Object value) {
 		boolean match;
 		boolean sevMatch = (sev.ordinal() >= sevLimit.ordinal());
-		match = sevMatch
-				&& ((value != null && valuePatten != null) ? valuePatten.matcher(value.toString()).matches() : true);
+		match = sevMatch && (value == null || valuePatten == null || valuePatten.matcher(value.toString()).matches());
 		return match;
 	}
 

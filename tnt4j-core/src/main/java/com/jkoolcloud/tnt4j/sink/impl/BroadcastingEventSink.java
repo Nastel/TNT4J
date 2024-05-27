@@ -170,7 +170,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 				}
 			}
 		}
-		return openSinksPolicy == OpenSinksPolicy.ALL ? true : false;
+		return openSinksPolicy == OpenSinksPolicy.ALL;
 	}
 
 	@Override
@@ -346,7 +346,7 @@ public class BroadcastingEventSink extends AbstractEventSink {
 	/**
 	 * Interface defining generic sink entry logging function.
 	 */
-	private static interface SinkEntry {
+	private interface SinkEntry {
 		/**
 		 * Performs actual sink entry logging.
 		 * 

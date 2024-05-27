@@ -26,7 +26,7 @@ public enum Useconds {
 	private long startUsecs;
 	private long startNanos;
 
-	private Useconds() {
+	Useconds() {
 		sync();
 	}
 

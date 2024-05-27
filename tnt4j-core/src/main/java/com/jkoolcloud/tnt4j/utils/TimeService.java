@@ -17,6 +17,8 @@ package com.jkoolcloud.tnt4j.utils;
 
 import java.io.IOException;
 import java.net.InetAddress;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -130,11 +132,11 @@ public class TimeService {
 	 * Obtain NTP time and synchronize with NTP server.
 	 *
 	 * @throws IOException
-	 *             if error accessing time server
+	 *             if error accessing time-server
 	 */
 	public static void updateTime() throws IOException {
 		if (TIME_SERVER != null) {
-			timeServer.setDefaultTimeout((int) TIME_SERVER_TIMEOUT);
+			timeServer.setDefaultTimeout(Duration.of(TIME_SERVER_TIMEOUT, ChronoUnit.MILLIS));
 			String[] pair = TIME_SERVER.split(":");
 			InetAddress hostAddr = InetAddress.getByName(pair[0]);
 			timeInfo = pair.length < 2 ? timeServer.getTime(hostAddr)

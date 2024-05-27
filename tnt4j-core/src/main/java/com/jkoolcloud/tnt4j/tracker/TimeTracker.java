@@ -33,12 +33,7 @@ public class TimeTracker {
 	/*
 	 * Timing thread local maintains timing since last hit for specific thread
 	 */
-	private static final ThreadLocal<TimeStats> THREAD_TIMER = new ThreadLocal<TimeStats>() {
-		@Override
-		protected TimeStats initialValue() {
-			return new TimeStats();
-		}
-	};
+	private static final ThreadLocal<TimeStats> THREAD_TIMER = ThreadLocal.withInitial(TimeStats::new);
 
 	/*
 	 * Timing map maintains timing since last hit for a specific key

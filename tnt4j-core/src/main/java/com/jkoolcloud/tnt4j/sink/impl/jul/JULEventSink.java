@@ -153,8 +153,6 @@ public class JULEventSink extends LoggerEventSink {
 	 */
 	private Level getLevel(OpLevel sev) {
 		switch (sev) {
-		case INFO:
-			return Level.INFO;
 		case DEBUG:
 			return Level.FINE;
 		case TRACE:
@@ -170,6 +168,7 @@ public class JULEventSink extends LoggerEventSink {
 			return Level.SEVERE;
 		case NONE:
 			return Level.OFF;
+		case INFO:
 		default:
 			return Level.INFO;
 		}

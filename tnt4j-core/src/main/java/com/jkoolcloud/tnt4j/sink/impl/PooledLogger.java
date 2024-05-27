@@ -130,7 +130,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 			delayQ.offer(new DelayedElement<>(dieEvent, 0));
 		}
 
-		Thread termThread = new Thread(() -> terminate(), "PooledLogger-termination-thread");
+		Thread termThread = new Thread(this::terminate, "PooledLogger-termination-thread");
 		termThread.start();
 	}
 
@@ -310,7 +310,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	 * @return {@code true} if event queue is full, {@code false} otherwise
 	 */
 	public boolean isQFull() {
-		return eventQ.size() >= getCapacity();
+		return eventQ.size() >= capacity;
 	}
 
 	/**
@@ -319,7 +319,7 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	 * @return {@code true} if event queue is empty, {@code false} otherwise
 	 */
 	public boolean isEmpty() {
-		return eventQ.size() <= 0;
+		return eventQ.isEmpty();
 	}
 
 	/**
@@ -557,10 +557,8 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 	}
 
 	private static void close(EventSink eSink) throws IOException {
-		try {
+		try (eSink) {
 			eSink.flush();
-		} finally {
-			eSink.close();
 		}
 	}
 
