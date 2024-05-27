@@ -43,10 +43,11 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class DefaultFormatter implements EventFormatter, Configurable {
 	public static final String SEPARATOR = System.getProperty("tnt4j.formatter.default.separator", " | ");
+	public static final String DEFAULT_FORMAT_PATTERN = "{2} | {1} | {0} | {3}";
 
 	protected String separator = SEPARATOR;
 	protected TimeZone timeZone = TimeZone.getDefault();
-	protected String formatString = "{2} | {1} | {0} | {3}";
+	protected String formatString = DEFAULT_FORMAT_PATTERN;
 
 	private Map<String, ?> config = null;
 
@@ -61,7 +62,7 @@ public class DefaultFormatter implements EventFormatter, Configurable {
 	 * Create a default event formatter
 	 *
 	 * @param format
-	 *            string (e.g. "{2} | {1} | {0} | {3}")
+	 *            string (e.g. {@value #DEFAULT_FORMAT_PATTERN})
 	 */
 	public DefaultFormatter(String format) {
 		formatString = format;
@@ -71,7 +72,7 @@ public class DefaultFormatter implements EventFormatter, Configurable {
 	 * Create a default event formatter
 	 *
 	 * @param format
-	 *            string (e.g. "{2} | {1} | {0} | {3}")
+	 *            string (e.g. {@value #DEFAULT_FORMAT_PATTERN})
 	 * @param tz
 	 *            time zone
 	 */
@@ -84,7 +85,7 @@ public class DefaultFormatter implements EventFormatter, Configurable {
 	 * Create a default event formatter
 	 *
 	 * @param format
-	 *            string (e.g. "{2} | {1} | {0} | {3}")
+	 *            string (e.g. {@value #DEFAULT_FORMAT_PATTERN})
 	 * @param tzid
 	 *            time zone id
 	 */

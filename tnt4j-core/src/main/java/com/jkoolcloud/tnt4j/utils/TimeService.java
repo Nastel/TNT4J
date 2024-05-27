@@ -73,7 +73,7 @@ public class TimeService {
 			timeOverheadMillis = (timeOverheadNanos / ONE_M);
 			updateTime();
 		} catch (Throwable e) {
-			logger.log(OpLevel.ERROR, "Unable to obtain NTP time: time.server={0}, timeout={1}", TIME_SERVER,
+			logger.log(OpLevel.ERROR, "Unable to obtain NTP time: time.server={}, timeout={}", TIME_SERVER,
 					TIME_SERVER_TIMEOUT, e);
 		} finally {
 			scheduleUpdates();
@@ -146,7 +146,7 @@ public class TimeService {
 			updatedTime = currentTimeMillis();
 			if (verbose) {
 				logger.log(OpLevel.DEBUG,
-						"Time server={0}, timeout.ms={1}, offset.ms={2}, delay.ms={3}, clock.adjust.ms={4}, overhead.nsec={5}",
+						"Time server={}, timeout.ms={}, offset.ms={}, delay.ms={}, clock.adjust.ms={}, overhead.nsec={}",
 						TIME_SERVER, TIME_SERVER_TIMEOUT, timeInfo.getOffset(), timeInfo.getDelay(), adjustment,
 						timeOverheadNanos);
 			}
@@ -297,12 +297,11 @@ class ClockDriftMonitorTask implements Runnable {
 			Useconds.CURRENT.sync();
 			updateCount++;
 			if (TimeService.verbose) {
-				logger.log(OpLevel.DEBUG,
-						"Updated clocks: drift.ms={0}, interval.ms={1}, total.drift.ms={2}, updates={3}", drift,
-						interval, totalDrift, updateCount);
+				logger.log(OpLevel.DEBUG, "Updated clocks: drift.ms={}, interval.ms={}, total.drift.ms={}, updates={}",
+						drift, interval, totalDrift, updateCount);
 			}
 		} catch (Throwable ex) {
-			logger.log(OpLevel.ERROR, "Failed to update clocks: last.updated={0}, age.ms={1}",
+			logger.log(OpLevel.ERROR, "Failed to update clocks: last.updated={}, age.ms={}",
 					new Date(TimeService.getLastUpdatedMillis()), TimeService.getUpdateAgeMillis(), ex);
 		}
 	}

@@ -60,7 +60,8 @@ public class FileTokenRepository implements TokenRepository, Configurable {
 	private static final EventSink logger = DefaultEventSinkFactory.defaultEventSink(FileTokenRepository.class);
 	private static long DEFAULT_REFRESH_DELAY = TimeUnit.SECONDS.toMillis(0);
 
-	private final ConcurrentHashMap<TokenRepositoryListener, EventListener<?>[]> LISTEN_MAP = new ConcurrentHashMap<>(49);
+	private final ConcurrentHashMap<TokenRepositoryListener, EventListener<?>[]> LISTEN_MAP = new ConcurrentHashMap<>(
+			49);
 
 	private String configName = null;
 	private BasicConfigurationBuilder<PropertiesConfiguration> config = null;
@@ -317,8 +318,8 @@ class TokenConfigurationListener implements EventListener<ConfigurationEvent> {
 		if (event.isBeforeUpdate()) {
 			return;
 		}
-		logger.log(OpLevel.DEBUG, "configurationChanged: type={0}, {1}:{2}", event.getEventType(),
-				event.getPropertyName(), event.getPropertyValue());
+		logger.log(OpLevel.DEBUG, "configurationChanged: type={}, {}:{}", event.getEventType(), event.getPropertyName(),
+				event.getPropertyValue());
 		if (event.getEventType() == ConfigurationEvent.ADD_PROPERTY) {
 			repListener.repositoryChanged(new TokenRepositoryEvent(event.getSource(), TokenRepository.EVENT_ADD_KEY,
 					event.getPropertyName(), event.getPropertyValue(), null));
@@ -346,7 +347,7 @@ class TokenReloadListener implements EventListener<ReloadingEvent> {
 
 	@Override
 	public void onEvent(ReloadingEvent event) {
-		logger.log(OpLevel.DEBUG, "configurationReloading: type={0}, data={1}", event.getEventType(), event.getData());
+		logger.log(OpLevel.DEBUG, "configurationReloading: type={}, data={}", event.getEventType(), event.getData());
 		repListener.repositoryChanged(new TokenRepositoryEvent(event.getSource(), TokenRepository.EVENT_RELOAD, "data",
 				event.getData(), null));
 	}
@@ -363,7 +364,7 @@ class TokenConfigurationErrorListener implements EventListener<ConfigurationErro
 
 	@Override
 	public void onEvent(ConfigurationErrorEvent event) {
-		logger.log(OpLevel.ERROR, "Configuration error detected, event={0}", event, event.getCause());
+		logger.log(OpLevel.ERROR, "Configuration error detected, event={}", event, event.getCause());
 		repListener.repositoryError(new TokenRepositoryEvent(event.getSource(), TokenRepository.EVENT_EXCEPTION,
 				event.getPropertyName(), event.getPropertyValue(), event.getCause()));
 	}

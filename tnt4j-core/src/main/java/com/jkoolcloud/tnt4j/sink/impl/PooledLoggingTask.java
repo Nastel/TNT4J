@@ -43,7 +43,7 @@ class PooledLoggingTask extends AbstractPoolLoggingTask {
 				}
 			}
 		} catch (Throwable e) {
-			PooledLogger.logger.log(OpLevel.WARNING, "Interrupted during processing: shutting down: error.count={0}",
+			PooledLogger.logger.log(OpLevel.WARNING, "Interrupted during processing: shutting down: error.count={}",
 					pooledLogger.exceptionCount.get(), e);
 		}
 	}

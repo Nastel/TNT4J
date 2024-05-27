@@ -42,7 +42,7 @@ TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
 try {
    ...
 } catch (Exception e) {
-   logger.error("Failed to process request={0}", request_id, ex);
+   logger.error("Failed to process request={}", request_id, ex);
 }
 ```
 Below is an example of using correlator and a relative class marker to locate caller's method call on the stack -- `$my.package.myclass:0`. 
@@ -54,7 +54,7 @@ try {
    ...
 } catch (Exception e) {
    logger.tnt(OpLevel.ERROR, "$my.package.myclass:0", myCorrelator, 
-   	"Failed to process request={0}", request_id, ex);
+   	"Failed to process request={}", request_id, ex);
 }
 ```
 Consolidate all conditional logging checks into a single listener. Why call `isDebugEnabled()` before each log entry?
@@ -63,10 +63,10 @@ Consolidate all conditional logging checks into a single listener. Why call `isD
 TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
 logger.addSinkEventFilter(new MyEventFilter(logger));
 try {
-   logger.debug("My debug message {0}, {1}", arg0, arg1); // no need to gate this call
+   logger.debug("My debug message {}, {}", arg0, arg1); // no need to gate this call
    ...
 } catch (Exception e) {
-   logger.error("Failed to process request={0}", request_id, ex);
+   logger.error("Failed to process request={}", request_id, ex);
 }
 
 class MyEventFilter implements SinkEventFilter {
@@ -328,7 +328,7 @@ Use JVM system property `java.util.logging.config.file` to define JUL configurat
 No need to concatenate messages before logging. String concatenation is expensive especially in loops. Simply log using message patterns as 
 follows and TNT4J will resolve the message only if it actually gets logged:
 ```java
-logger.debug("My message {0}, {1}, {2}", arg0, arg1, arg3);
+logger.debug("My message {}, {}, {}", arg0, arg1, arg3);
 ```
 TNT4J enhances logging performance by supporting asynchronous pooled logging, which delegates logging to a dedicated thread pool. Use 
 `BufferedEventSinkFactory` in your `tnt4.properties` configuration to enable this feature. See example below: 
@@ -345,7 +345,7 @@ a single listener.
 ```java	
 logger.addSinkEventFilter(new MyLogFilter()); 
 ...
-logger.debug("My message {0}, {1}, {2}", arg0, arg1, arg2);
+logger.debug("My message {}, {}, {}", arg0, arg1, arg2);
 ```
 
 All conditional logging can be consolidated into a single listener object.
@@ -399,10 +399,10 @@ increasing the relevance and quality of the output.
 
 ```java
 if (logger.isSet(OpLevel.DEBUG)) {
-	logger.debug("My message {0}, {1}, {2}", arg0, arg1, arg2);
+	logger.debug("My message {}, {}, {}", arg0, arg1, arg2);
 }
 if (logger.isSet(OpLevel.DEBUG, "myapp.mykey", myvalue)) {
-	logger.debug("My message {0}, {1}, my.value={2}", arg0, arg1, myvalue);
+	logger.debug("My message {}, {}, my.value={}", arg0, arg1, myvalue);
 }
 ```
 
@@ -506,7 +506,7 @@ TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
 
 // report sending an order with a specific correlator (order_id)
 logger.tnt(OpLevel.INFO, OpType.SEND, "SendOrder", order_id, 
-	elapsed_time, "Sending order to={0}", destination);
+	elapsed_time, "Sending order to={}", destination);
 // sending logic
 ....
 ....
@@ -518,7 +518,7 @@ TrackingLogger logger = TrackingLogger.getInstance(this.getClass());
 ...
 // report received an order with a specific correlator (order_id)
 logger.tnt(OpLevel.INFO, OpType.RECEIVE, "ReceiveOrder", order_id,
-	elapsed_time, "Received order from={0}", source);
+	elapsed_time, "Received order from={}", source);
 ```
 
 **NOTE:** TNT4J uses NTP natively to synchronize times across servers to enable cross server event correlation in time. To enable NTP time 

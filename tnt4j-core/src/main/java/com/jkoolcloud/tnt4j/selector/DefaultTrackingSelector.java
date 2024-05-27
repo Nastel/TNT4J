@@ -87,7 +87,7 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 			tokenRepository.addRepositoryListener(listener);
 			reloadConfig();
 		} else {
-			logger.log(OpLevel.DEBUG, "Undefined token repository={0}: default isSet()={1}", tokenRepository,
+			logger.log(OpLevel.DEBUG, "Undefined token repository={}: default isSet()={}", tokenRepository,
 					DEFAULT_RETURN_UNDEFINED);
 		}
 	}
@@ -137,12 +137,12 @@ public class DefaultTrackingSelector implements TrackingSelector, Configurable {
 				}
 			}
 			if (propertyToken != null) {
-				logger.log(OpLevel.DEBUG, "putKey: repository={0}, token={1}", tokenRepository, propertyToken);
+				logger.log(OpLevel.DEBUG, "putKey: repository={}, token={}", tokenRepository, propertyToken);
 				tokenMap.put(key, propertyToken);
 			}
 		} catch (Throwable ex) {
-			logger.log(OpLevel.ERROR, "Failed to process key={0}, value={1}, repository={2}", key, value,
-					tokenRepository, ex);
+			logger.log(OpLevel.ERROR, "Failed to process key={}, value={}, repository={}", key, value, tokenRepository,
+					ex);
 		}
 	}
 

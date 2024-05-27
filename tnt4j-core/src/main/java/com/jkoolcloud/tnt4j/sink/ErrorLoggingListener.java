@@ -32,8 +32,8 @@ public class ErrorLoggingListener implements SinkErrorListener {
 	public void sinkError(SinkError ev) {
 		SinkLogEvent sEvent = ev.getSinkEvent();
 		EventSink sink = sEvent.getEventSink();
-		logger.log(OpLevel.ERROR, "Sink error: count={4}, vm.name={0}, tid={1}, out.sink={2}, source={3}",
-				Utils.getVMName(), Thread.currentThread().getId(), sink, sink.getSource(), sink.getErrorCount(),
+		logger.log(OpLevel.ERROR, "Sink error: count={}, vm.name={}, tid={}, out.sink={}, source={}",
+				sink.getErrorCount(), Utils.getVMName(), Thread.currentThread().getId(), sink, sink.getSource(),
 				ev.getCause());
 	}
 }

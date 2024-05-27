@@ -101,13 +101,13 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 		} catch (IOException ioe) {
 			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR,
-					"Failed to open handle={4}, vm.name={0}, tid={1}, event.sink={2}, source={3}, reason={5}",
-					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), handle,
+					"Failed to open handle={}, vm.name={}, tid={}, event.sink={}, source={}, reason={}", handle,
+					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(),
 					Utils.getExceptionMessages(ioe), ioe);
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
-			logger.log(OpLevel.ERROR, "Failed to open handle={4}, vm.name={0}, tid={1}, event.sink={2}, source={3}",
-					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), handle, e);
+			logger.log(OpLevel.ERROR, "Failed to open handle={}, vm.name={}, tid={}, event.sink={}, source={}", handle,
+					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
 		}
 	}
 
@@ -129,12 +129,12 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 		} catch (IOException ioe) {
 			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR,
-					"Failed to open event sink vm.name={0}, tid={1}, event.sink={2}, source={3}, reason={4}",
+					"Failed to open event sink vm.name={}, tid={}, event.sink={}, source={}, reason={}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(),
 					Utils.getExceptionMessages(ioe), ioe);
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
-			logger.log(OpLevel.ERROR, "Failed to open event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
+			logger.log(OpLevel.ERROR, "Failed to open event sink vm.name={}, tid={}, event.sink={}, source={}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
 		}
 	}
@@ -162,12 +162,12 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 		} catch (IOException ioe) {
 			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR,
-					"Failed to close event sink vm.name={0}, tid={1}, event.sink={2}, source={3}, reason={4}",
+					"Failed to close event sink vm.name={}, tid={}, event.sink={}, source={}, reason={}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(),
 					Utils.getExceptionMessages(ioe), ioe);
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
-			logger.log(OpLevel.ERROR, "Failed to close event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
+			logger.log(OpLevel.ERROR, "Failed to close event sink vm.name={}, tid={}, event.sink={}, source={}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
 		}
 	}
@@ -181,12 +181,12 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 		} catch (IOException ioe) {
 			errorCount.incrementAndGet();
 			logger.log(OpLevel.ERROR,
-					"Failed to reset event sink vm.name={0}, tid={1}, event.sink={2}, source={3}, reason={4}",
+					"Failed to reset event sink vm.name={}, tid={}, event.sink={}, source={}, reason={}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(),
 					Utils.getExceptionMessages(ioe), ioe);
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
-			logger.log(OpLevel.ERROR, "Failed to reset event sink vm.name={0}, tid={1}, event.sink={2}, source={3}",
+			logger.log(OpLevel.ERROR, "Failed to reset event sink vm.name={}, tid={}, event.sink={}, source={}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
 		}
 	}
@@ -684,8 +684,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 		if (!isOpen()) {
 			openIOHandle(selector);
 			openEventSink();
-			logger.log(OpLevel.DEBUG, "Tracker opened vm.name={0}, tid={1}, event.sink={2}, source={3}",
-					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource());
+			logger.log(OpLevel.DEBUG, "Tracker opened vm.name={}, tid={}, event.sink={}, source={}", Utils.getVMName(),
+					Thread.currentThread().getId(), eventSink, getSource());
 		}
 	}
 
@@ -694,11 +694,11 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 		try {
 			closeEventSink();
 			Utils.close(selector);
-			logger.log(OpLevel.DEBUG, "Tracker closed vm.name={0}, tid={1}, event.sink={2}, source={3}",
-					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource());
+			logger.log(OpLevel.DEBUG, "Tracker closed vm.name={}, tid={}, event.sink={}, source={}", Utils.getVMName(),
+					Thread.currentThread().getId(), eventSink, getSource());
 		} catch (Throwable e) {
 			errorCount.incrementAndGet();
-			logger.log(OpLevel.ERROR, "Failed to close tracker vm.name={0}, tid={1}, event.sink={2}, source={3}",
+			logger.log(OpLevel.ERROR, "Failed to close tracker vm.name={}, tid={}, event.sink={}, source={}",
 					Utils.getVMName(), Thread.currentThread().getId(), eventSink, getSource(), e);
 		}
 	}
@@ -707,9 +707,9 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 	public void sinkError(SinkError ev) {
 		errorCount.incrementAndGet();
 		if (logger.isSet(OpLevel.DEBUG)) {
-			logger.log(OpLevel.ERROR, "Sink write error: count={4}, vm.name={0}, tid={1}, event.sink={2}, source={3}",
-					Utils.getVMName(), Thread.currentThread().getId(), ev.getSink(), ev.getSinkEvent().getEventSource(),
-					errorCount.get(), ev.getCause());
+			logger.log(OpLevel.ERROR, "Sink write error: count={}, vm.name={}, tid={}, event.sink={}, source={}",
+					errorCount.get(), Utils.getVMName(), Thread.currentThread().getId(), ev.getSink(),
+					ev.getSinkEvent().getEventSource(), ev.getCause());
 		}
 		resetEventSink();
 	}
@@ -726,16 +726,15 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 		errorCount.incrementAndGet();
 		if (logger.isSet(OpLevel.DEBUG)) {
 			if (ev.getSinkObject() instanceof Trackable) {
-				logger.log(OpLevel.ERROR,
-						"Failed to track: count={4}, signature={0}, tid={1}, event.sink={2}, source={3}",
-						((Trackable) ev.getSinkObject()).getTrackingId(), Thread.currentThread().getId(),
-						ev.getEventSink(), ev.getEventSource(), errorCount.get(), ex);
+				logger.log(OpLevel.ERROR, "Failed to track: count={}, signature={}, tid={}, event.sink={}, source={}",
+						errorCount.get(), ((Trackable) ev.getSinkObject()).getTrackingId(),
+						Thread.currentThread().getId(), ev.getEventSink(), ev.getEventSource(), ex);
 
 			} else {
 				logger.log(OpLevel.ERROR,
-						"Failed to log message: count={5}, severity={0}, msg={1}, tid={2}, event.sink={3}, source={4}",
-						ev.getSeverity(), ev.getSinkObject(), Thread.currentThread().getId(), ev.getEventSink(),
-						ev.getEventSource(), errorCount.get(), ex);
+						"Failed to log message: count={}, severity={}, msg={}, tid={}, event.sink={}, source={}",
+						errorCount.get(), ev.getSeverity(), ev.getSinkObject(), Thread.currentThread().getId(),
+						ev.getEventSink(), ev.getEventSource(), ex);
 
 			}
 		}
@@ -849,7 +848,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 	}
 
 	@Override
-	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, String tag, String msg, Object... args) {
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, String tag, String msg,
+			Object... args) {
 		long start = System.nanoTime();
 		try {
 			LogEntry entry = new LogEntry(this, getSource(), severity, opType, opName, tag, msg, args);
@@ -861,7 +861,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 	}
 
 	@Override
-	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, Collection<String> tags, String msg, Object... args) {
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, Collection<String> tags, String msg,
+			Object... args) {
 		long start = System.nanoTime();
 		try {
 			LogEntry entry = new LogEntry(this, getSource(), severity, opType, opName, tags, msg, args);
@@ -873,7 +874,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 	}
 
 	@Override
-	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, Collection<String> tags, byte[] msg, Object... args) {
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, Collection<String> tags, byte[] msg,
+			Object... args) {
 		long start = System.nanoTime();
 		try {
 			LogEntry entry = new LogEntry(this, getSource(), severity, opType, opName, tags, msg, args);
@@ -885,7 +887,8 @@ public class TrackerImpl implements Tracker, SinkErrorListener, AutoCloseable {
 	}
 
 	@Override
-	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, String tag, byte[] msg, Object... args) {
+	public LogEntry newLogEntry(OpLevel severity, OpType opType, String opName, String tag, byte[] msg,
+			Object... args) {
 		long start = System.nanoTime();
 		try {
 			LogEntry entry = new LogEntry(this, getSource(), severity, opType, opName, tag, msg, args);

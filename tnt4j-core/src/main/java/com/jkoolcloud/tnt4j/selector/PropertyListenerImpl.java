@@ -44,12 +44,12 @@ class PropertyListenerImpl implements TokenRepositoryListener {
 
 	@Override
 	public void repositoryError(TokenRepositoryEvent event) {
-		logger.log(OpLevel.ERROR, "Repository error detected, event={0}", event, event.getCause());
+		logger.log(OpLevel.ERROR, "Repository error detected, event={}", event, event.getCause());
 	}
 
 	@Override
 	public void repositoryChanged(TokenRepositoryEvent event) {
-		logger.log(OpLevel.DEBUG, "repositoryChanged source={0}, type={1}, {2}={3}", event.getSource(), event.getType(),
+		logger.log(OpLevel.DEBUG, "repositoryChanged source={}, type={}, {}={}", event.getSource(), event.getType(),
 				event.getKey(), event.getValue());
 		switch (event.getType()) {
 		case TokenRepository.EVENT_ADD_KEY:
@@ -66,7 +66,7 @@ class PropertyListenerImpl implements TokenRepositoryListener {
 			selector.reloadConfig();
 			break;
 		case TokenRepository.EVENT_EXCEPTION:
-			logger.log(OpLevel.ERROR, "Repository error detected, event={0}", event, event.getCause());
+			logger.log(OpLevel.ERROR, "Repository error detected, event={}", event, event.getCause());
 			break;
 		}
 	}

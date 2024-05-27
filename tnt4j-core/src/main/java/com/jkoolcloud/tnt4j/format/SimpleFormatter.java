@@ -47,7 +47,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
 public class SimpleFormatter extends DefaultFormatter {
 
 	/**
-	 * Create a simple event formatter with default setting. Format: "{2} | {1} | {0}", TimeZone: UTC.
+	 * Create a simple event formatter with default setting. Format: {@value #DEFAULT_FORMAT_PATTERN}, TimeZone: UTC.
 	 *
 	 */
 	public SimpleFormatter() {
@@ -57,7 +57,7 @@ public class SimpleFormatter extends DefaultFormatter {
 	 * Create a simple event formatter instance with a given format
 	 *
 	 * @param format
-	 *            string (e.g. "{2} | {1} | {0}")
+	 *            string (e.g. {@value #DEFAULT_FORMAT_PATTERN})
 	 */
 	public SimpleFormatter(String format) {
 		super(format);
@@ -67,7 +67,7 @@ public class SimpleFormatter extends DefaultFormatter {
 	 * Create a simple event formatter instance with a given format, timezone
 	 *
 	 * @param format
-	 *            string (e.g. "{2} | {1} | {0}")
+	 *            string (e.g. {@value #DEFAULT_FORMAT_PATTERN})
 	 * @param tz
 	 *            time zone
 	 */

@@ -731,7 +731,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * based on the format defined by {@code MessageFormat}. This logging type is more efficient than string
 	 * concatenation.
 	 * <p>
-	 * {@code logger.log(OpLevel.DEBUG, "My message arg={0}, arg={1}", parm1, parm2);}
+	 * {@code logger.log(OpLevel.DEBUG, "My message arg={}, arg={}", parm1, parm2);}
 	 * 
 	 * @param level
 	 *            severity level
@@ -754,7 +754,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * Log a single DEBUG message and a number of user supplied arguments. Message pattern is based on the format
 	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
 	 * <p>
-	 * {@code logger.debug("My message arg={0}, arg={1}", parm1, parm2);}
+	 * {@code logger.debug("My message arg={}, arg={}", parm1, parm2);}
 	 * 
 	 * @param msg
 	 *            message or message pattern
@@ -771,7 +771,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * Log a single TRACE message and a number of user supplied arguments. Message pattern is based on the format
 	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
 	 * <p>
-	 * {@code logger.trace("My message arg={0}, arg={1}", parm1, parm2);}
+	 * {@code logger.trace("My message arg={}, arg={}", parm1, parm2);}
 	 *
 	 * @param msg
 	 *            message or message pattern
@@ -788,7 +788,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * Log a single ERROR message and a number of user supplied arguments. Message pattern is based on the format
 	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
 	 * <p>
-	 * {@code logger.error("My error message arg={0}, arg={1}", parm1, parm2);}
+	 * {@code logger.error("My error message arg={}, arg={}", parm1, parm2);}
 	 * 
 	 * @param msg
 	 *            message or message pattern
@@ -805,7 +805,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * Log a single FATAL message and a number of user supplied arguments. Message pattern is based on the format
 	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
 	 * <p>
-	 * {@code logger.fatal("My error message arg={0}, arg={1}", parm1, parm2);}
+	 * {@code logger.fatal("My error message arg={}, arg={}", parm1, parm2);}
 	 * 
 	 * @param msg
 	 *            message or message pattern
@@ -822,7 +822,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * Log a single HALT message and a number of user supplied arguments. Message pattern is based on the format defined
 	 * by {@code MessageFormat}. This logging type is more efficient than string concatenation.
 	 * <p>
-	 * {@code logger.halt("My error message arg={0}, arg={1}", parm1, parm2);}
+	 * {@code logger.halt("My error message arg={}, arg={}", parm1, parm2);}
 	 * 
 	 * @param msg
 	 *            message or message pattern
@@ -839,7 +839,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * Log a single WARNING message and a number of user supplied arguments. Message pattern is based on the format
 	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
 	 * <p>
-	 * {@code logger.warn("My message arg={0}, arg={1}", parm1, parm2);}
+	 * {@code logger.warn("My message arg={}, arg={}", parm1, parm2);}
 	 *
 	 * @param msg
 	 *            message or message pattern
@@ -856,7 +856,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * Log a single INFO message and a number of user supplied arguments. Message pattern is based on the format defined
 	 * by {@code MessageFormat}. This logging type is more efficient than string concatenation.
 	 * <p>
-	 * {@code logger.info("My message arg={0}, arg={1}", parm1, parm2);}
+	 * {@code logger.info("My message arg={}, arg={}", parm1, parm2);}
 	 *
 	 * @param msg
 	 *            message or message pattern
@@ -873,7 +873,7 @@ public class TrackingLogger implements Tracker, AutoCloseable {
 	 * Log a single NOTICE message and a number of user supplied arguments. Message pattern is based on the format
 	 * defined by {@code MessageFormat}. This logging type is more efficient than string concatenation.
 	 * <p>
-	 * {@code logger.notice("My message arg={0}, arg={1}", parm1, parm2);}
+	 * {@code logger.notice("My message arg={}, arg={}", parm1, parm2);}
 	 * 
 	 * @param msg
 	 *            message or message pattern

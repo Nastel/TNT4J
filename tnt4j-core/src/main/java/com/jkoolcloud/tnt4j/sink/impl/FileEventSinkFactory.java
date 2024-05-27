@@ -49,6 +49,7 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  */
 public class FileEventSinkFactory extends AbstractEventSinkFactory {
 	private static final String WORK_DIR = "." + File.separator;
+	private static final String FILE_FORMAT_PATTERN = "{0} | {1} | {2}";
 
 	public static final String TMP_DIR = System.getProperty("java.io.tmpdir", WORK_DIR);
 	public static final String FILE_SINK_FACTORY_DEF_FILE = System.getProperty("tnt4j.file.event.sink.factory.file");
@@ -75,11 +76,11 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 	/**
 	 * Create a sink factory with a given file name.
 	 * 
-	 * @param fname
+	 * @param fName
 	 *            file name
 	 */
-	public FileEventSinkFactory(String fname) {
-		fileName = fname;
+	public FileEventSinkFactory(String fName) {
+		fileName = fName;
 	}
 
 	/**
@@ -87,11 +88,11 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 	 * 
 	 * @param folder
 	 *            directory where all files are created
-	 * @param fname
+	 * @param fName
 	 *            file name
 	 */
-	public FileEventSinkFactory(String folder, String fname) {
-		fileName = fname;
+	public FileEventSinkFactory(String folder, String fName) {
+		fileName = fName;
 		setFolder(folder);
 	}
 
@@ -117,16 +118,16 @@ public class FileEventSinkFactory extends AbstractEventSinkFactory {
 
 	@Override
 	public EventSink getEventSink(String name, Properties props) {
-		return getEventSink(name, props, new SimpleFormatter("{0} | {1} | {2}"));
+		return getEventSink(name, props, new SimpleFormatter(FILE_FORMAT_PATTERN));
 	}
 
 	@Override
 	public EventSink getEventSink(String name, Properties props, EventFormatter frmt) {
 		_applyConfig();
 
-		String fname = (fileName != null) ? fileName : (name + FILE_SINK_FACTORY_LOG_EXT);
-		fname = Paths.get(logFolder, fname).toString();
-		return configureSink(new FileEventSink(name, fname, append, frmt));
+		String fName = (fileName != null) ? fileName : (name + FILE_SINK_FACTORY_LOG_EXT);
+		fName = Paths.get(logFolder, fName).toString();
+		return configureSink(new FileEventSink(name, fName, append, frmt));
 	}
 
 	@Override

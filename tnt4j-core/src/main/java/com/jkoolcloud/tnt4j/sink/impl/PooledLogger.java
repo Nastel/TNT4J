@@ -495,13 +495,13 @@ public class PooledLogger implements KeyValueStats, IOShutdown {
 			boolean errorPermit = errorLimiter.tryObtain(1, 0);
 			if (errorPermit) {
 				logger.log(OpLevel.ERROR,
-						"Error during processing: total.error.count={0}, sink.error.count={1}, queue.size={2}, delay.size={3}, skip.count={4}, req.count={5}, event.source={6}, event.sink={7}",
+						"Error during processing: total.error.count={}, sink.error.count={}, queue.size={}, delay.size={}, skip.count={}, req.count={}, event.source={}, event.sink={}",
 						exceptionCount.get(), event.getEventSink().getErrorCount(), getQSize(), getDQSize(),
 						skipCount.get(), reQCount.get(), event.getEventSource(), event.getEventSink(), err);
 			}
 		} catch (Throwable ex) {
 			logger.log(OpLevel.FAILURE,
-					"Oops, error during error handling? total.error.count={0}, sink.error.count={1}, queue.size={2}, skip.count={3}, requeue.count={4}, event={5}",
+					"Oops, error during error handling? total.error.count={}, sink.error.count={}, queue.size={}, skip.count={}, requeue.count={}, event={}",
 					exceptionCount.get(), event.getEventSink().getErrorCount(), getQSize(), skipCount.get(),
 					reQCount.get(), event, ex);
 		}

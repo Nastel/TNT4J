@@ -234,9 +234,9 @@ public class SecurityUtils {
 			try {
 				String encryptedPass = encryptPass(param);
 
-				System.out.println(Utils.format("ENCRYPTED PASSWORD: {0}", encryptedPass));
+				System.out.println(Utils.format("ENCRYPTED PASSWORD: {}", encryptedPass));
 			} catch (Exception exc) {
-				System.out.println(Utils.format("Password encryption failed: plain_text_pass={0}, exception:", param));
+				System.out.println(Utils.format("Password encryption failed: plain_text_pass={}, exception:", param));
 				exc.printStackTrace();
 			}
 			break;
@@ -245,9 +245,9 @@ public class SecurityUtils {
 			try {
 				String decryptedPass = decryptPass(param);
 
-				System.out.println(Utils.format("DECRYPTED PASSWORD: {0}", decryptedPass));
+				System.out.println(Utils.format("DECRYPTED PASSWORD: {}", decryptedPass));
 			} catch (Exception exc) {
-				System.out.println(Utils.format("Password decryption failed: encrypted_pass={0}, exception:", param));
+				System.out.println(Utils.format("Password decryption failed: encrypted_pass={}, exception:", param));
 				exc.printStackTrace();
 			}
 			break;

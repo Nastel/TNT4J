@@ -45,7 +45,7 @@ class DelayedLoggingTask extends AbstractPoolLoggingTask {
 			}
 		} catch (Throwable e) {
 			PooledLogger.logger.log(OpLevel.WARNING,
-					"Interrupted during delayed processing: shutting down: error.count={0}",
+					"Interrupted during delayed processing: shutting down: error.count={}",
 					pooledLogger.exceptionCount.get(), e);
 		}
 	}
