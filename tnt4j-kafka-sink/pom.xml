@@ -30,6 +30,8 @@
     <artifactId>tnt4j-kafka-sink</artifactId>
 
     <properties>
+        <jpms.module.name>com.jkoolcloud.tnt4j.sink.kafka</jpms.module.name>
+
         <kafka.clients.version>3.7.0</kafka.clients.version>
     </properties>
 

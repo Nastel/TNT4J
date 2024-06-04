@@ -30,6 +30,8 @@
     <artifactId>tnt4j-mqtt-sink</artifactId>
 
     <properties>
+        <jpms.module.name>com.jkoolcloud.tnt4j.sink.mqtt</jpms.module.name>
+
         <eclipse.paho.version>1.2.5</eclipse.paho.version>
     </properties>
 

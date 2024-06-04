@@ -82,6 +82,8 @@
         <maven.compiler.verbose>false</maven.compiler.verbose>
         <maven.compiler.fork>false</maven.compiler.fork>
 
+        <jpms.module.name>com.jkoolcloud.tnt4j</jpms.module.name>
+
         <maven.source.skip>true</maven.source.skip>
         <maven.javadoc.skip>true</maven.javadoc.skip>
         <assembly.skipAssembly>true</assembly.skipAssembly>
@@ -142,6 +144,7 @@
                                 <Implementation-Version>${project.version}-${maven.build.timestamp}</Implementation-Version>
                                 <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
                                 <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
+                                <Automatic-Module-Name>${jpms.module.name}</Automatic-Module-Name>
                             </manifestEntries>
                         </archive>
                     </configuration>
@@ -192,13 +195,35 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
-                <configuration>
-                    <verbose>${maven.compiler.verbose}</verbose>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                    <debuglevel>${maven.compiler.debuglevel}</debuglevel>
-                    <fork>${maven.compiler.fork}</fork>
-                </configuration>
+                <executions>
+                    <execution>
+                        <id>default-compile</id>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <verbose>${maven.compiler.verbose}</verbose>
+                            <source>${maven.compiler.source}</source>
+                            <target>${maven.compiler.target}</target>
+                            <debuglevel>${maven.compiler.debuglevel}</debuglevel>
+                            <fork>${maven.compiler.fork}</fork>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>module-compile</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
+                        <configuration>
+                            <release>9</release>
+                            <compileSourceRoots>
+                                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+                            </compileSourceRoots>
+                            <multiReleaseOutput>true</multiReleaseOutput>
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -229,6 +254,9 @@
                     <nodeprecated>false</nodeprecated>
                     <failOnError>true</failOnError>
                     <doclint>all</doclint>
+                    <sourceFileExcludes>
+                        <sourceFileExclude>**/module-info.java</sourceFileExclude>
+                    </sourceFileExcludes>
                 </configuration>
                 <executions>
                     <execution>
