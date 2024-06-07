@@ -205,6 +205,7 @@
                             <verbose>${maven.compiler.verbose}</verbose>
                             <source>${maven.compiler.source}</source>
                             <target>${maven.compiler.target}</target>
+                            <release>${maven.compiler.target}</release>
                             <debuglevel>${maven.compiler.debuglevel}</debuglevel>
                             <fork>${maven.compiler.fork}</fork>
                         </configuration>
@@ -216,7 +217,7 @@
                             <goal>compile</goal>
                         </goals>
                         <configuration>
-                            <release>9</release>
+                            <release>${maven.compiler.target}</release>
                             <compileSourceRoots>
                                 <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
                             </compileSourceRoots>
