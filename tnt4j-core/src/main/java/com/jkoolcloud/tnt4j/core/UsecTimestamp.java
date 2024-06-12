@@ -18,14 +18,16 @@ package com.jkoolcloud.tnt4j.core;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.ParseException;
-import java.time.Instant;
-import java.util.Date;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.TemporalAccessor;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.apache.commons.lang3.LocaleUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.time.FastDateFormat;
 
 import com.jkoolcloud.tnt4j.utils.Useconds;
 import com.jkoolcloud.tnt4j.utils.Utils;
@@ -34,26 +36,25 @@ import com.jkoolcloud.tnt4j.utils.Utils;
  * <p>
  * Represents a timestamp that has microsecond accuracy. This timestamp also implements Lamport clock synchronization
  * algorithm see {@link UsecTimestamp#getLamportClock()} and {@link UsecTimestamp#UsecTimestamp(long, long, long)}.
- * </p>
- *
  * <p>
  * Stores timestamp as <i>mmmmmmmmmm.uuu</i>, where <i>mmmmmmmmmm</i> is the timestamp in milliseconds, and <i>uuu</i>
  * is the fractional microseconds.
- * </p>
  *
  * @version $Revision: 6 $
  */
 public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, Cloneable, Serializable {
 	private static final long serialVersionUID = 3658590467907047916L;
 
-	protected static final int SECS_SCALE = 1000;
+	protected static final int SECS_SCALE = 1_000;
 	protected static final int MAX_USEC = SECS_SCALE - 1;
 
 	private static final String DFLT_JAVA_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 	public static final String DEFAULT_FORMAT = DFLT_JAVA_FORMAT + "SSS Z";
 	private static final TimeZone DEFAULT_TZ = TimeZone.getDefault();// TimeZone.getTimeZone("UTC");
 
-	protected static AtomicLong LamportCounter = new AtomicLong(System.currentTimeMillis());
+	protected static final AtomicLong LamportCounter = new AtomicLong(System.currentTimeMillis());
+
+	protected static final Map<String, DateTimeFormatter> FORMATS_MAP = new HashMap<>(5);
 
 	private long msecs;
 	private long usecs;
@@ -160,11 +161,10 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * <p>
 	 * Creates UsecTimestamp from string representation of timestamp in the specified format.
-	 * </p>
 	 * <p>
-	 * This is based on {@link java.text.SimpleDateFormat}, but extends its support to recognize microsecond fractional
-	 * seconds. If number of fractional second characters is greater than 3, then it's assumed to be microseconds.
-	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of {@link java.text.SimpleDateFormat}.
+	 * This is based on {@link DateTimeFormatter}. If number of fractional second characters is greater than 3, then
+	 * it's assumed to be microseconds. Otherwise, it's assumed to be milliseconds (as this is the behavior of
+	 * {@link Timestamp}).
 	 *
 	 * @param timeStampStr
 	 *            timestamp string
@@ -182,11 +182,10 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * <p>
 	 * Creates UsecTimestamp from string representation of timestamp in the default format.
-	 * </p>
 	 * <p>
-	 * This is based on {@link java.text.SimpleDateFormat}, but extends its support to recognize microsecond fractional
-	 * seconds. If number of fractional second characters is greater than 3, then it's assumed to be microseconds.
-	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of {@link java.text.SimpleDateFormat}.
+	 * This is based on {@link DateTimeFormatter}. If number of fractional second characters is greater than 3, then
+	 * it's assumed to be microseconds. Otherwise, it's assumed to be milliseconds (as this is the behavior of
+	 * {@link Timestamp}).
 	 *
 	 * @param timeStampStr
 	 *            timestamp string
@@ -206,11 +205,10 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * <p>
 	 * Creates UsecTimestamp from string representation of timestamp in the specified format.
-	 * </p>
 	 * <p>
-	 * This is based on {@link java.text.SimpleDateFormat}, but extends its support to recognize microsecond fractional
-	 * seconds. If number of fractional second characters is greater than 3, then it's assumed to be microseconds.
-	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of {@link java.text.SimpleDateFormat}.
+	 * This is based on {@link DateTimeFormatter}. If number of fractional second characters is greater than 3, then
+	 * it's assumed to be microseconds. Otherwise, it's assumed to be milliseconds (as this is the behavior of
+	 * {@link Timestamp}).
 	 *
 	 * @param timeStampStr
 	 *            timestamp string
@@ -234,11 +232,10 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * <p>
 	 * Creates UsecTimestamp from string representation of timestamp in the specified format.
-	 * </p>
 	 * <p>
-	 * This is based on {@link java.text.SimpleDateFormat}, but extends its support to recognize microsecond fractional
-	 * seconds. If number of fractional second characters is greater than 3, then it's assumed to be microseconds.
-	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of {@link java.text.SimpleDateFormat}.
+	 * This is based on {@link DateTimeFormatter}. If number of fractional second characters is greater than 3, then
+	 * it's assumed to be microseconds. Otherwise, it's assumed to be milliseconds (as this is the behavior of
+	 * {@link Timestamp}).
 	 *
 	 * @param timeStampStr
 	 *            timestamp string
@@ -266,11 +263,10 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * <p>
 	 * Creates UsecTimestamp from string representation of timestamp in the specified format.
-	 * </p>
 	 * <p>
-	 * This is based on {@link java.text.SimpleDateFormat}, but extends its support to recognize microsecond fractional
-	 * seconds. If number of fractional second characters is greater than 3, then it's assumed to be microseconds.
-	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of {@link java.text.SimpleDateFormat}.
+	 * This is based on {@link DateTimeFormatter}. If number of fractional second characters is greater than 3, then
+	 * it's assumed to be microseconds. Otherwise, it's assumed to be milliseconds (as this is the behavior of
+	 * {@link Timestamp}).
 	 *
 	 * @param timeStampStr
 	 *            timestamp string
@@ -294,11 +290,10 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	/**
 	 * <p>
 	 * Creates UsecTimestamp from string representation of timestamp in the specified format.
-	 * </p>
 	 * <p>
-	 * This is based on {@link java.text.SimpleDateFormat}, but extends its support to recognize microsecond fractional
-	 * seconds. If number of fractional second characters is greater than 3, then it's assumed to be microseconds.
-	 * Otherwise, it's assumed to be milliseconds (as this is the behavior of {@link java.text.SimpleDateFormat}.
+	 * This is based on {@link DateTimeFormatter}. If number of fractional second characters is greater than 3, then
+	 * it's assumed to be microseconds. Otherwise, it's assumed to be milliseconds (as this is the behavior of
+	 * {@link Timestamp}).
 	 *
 	 * @param timeStampStr
 	 *            timestamp string
@@ -323,105 +318,61 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 			throw new NullPointerException("timeStampStr must be non-null");
 		}
 
-		int usecs = 0;
-		FastDateFormat dateFormat;
+		DateTimeFormatter dateFormat = FORMATS_MAP.computeIfAbsent(
+				StringUtils.isEmpty(formatStr) ? DFLT_JAVA_FORMAT : formatStr, DateTimeFormatter::ofPattern);
 
-		if (StringUtils.isEmpty(formatStr)) {
-			dateFormat = FastDateFormat.getInstance(DFLT_JAVA_FORMAT);
-		} else {
-			// Java date formatter cannot deal with usecs, so we need to extract those ourselves
-			int fFsecPos = formatStr.indexOf('S');
-			if (fFsecPos > 0) {
-				int fFsecEndPos = formatStr.lastIndexOf('S');
-				int fFsecLen = fFsecEndPos - fFsecPos + 1;
-
-				if (fFsecLen > 6) {
-					throw new ParseException(
-							"Date format containing more than 6 significant digits for fractional seconds is not supported",
-							0);
-				}
-
-				int dFsecPos = adjustFsecPosition(fFsecPos, formatStr);
-				if (dFsecPos > 2) {
-					int dFsecEndPos;
-					for (dFsecEndPos = dFsecPos; dFsecEndPos < timeStampStr.length(); dFsecEndPos++) {
-						if (!StringUtils.containsAny("0123456789", timeStampStr.charAt(dFsecEndPos))) {
-							break;
-						}
-					}
-
-					StringBuilder sb = new StringBuilder();
-
-					if (fFsecLen > 3) {
-						// format specification represents more than milliseconds, assume microseconds
-						try {
-							String dUsecStr = timeStampStr.substring(dFsecPos, dFsecEndPos);
-
-							if (dUsecStr.length() < fFsecLen) {
-								dUsecStr = StringUtils.rightPad(dUsecStr, fFsecLen, '0');
-							} else if (dUsecStr.length() > fFsecLen) {
-								dUsecStr = dUsecStr.substring(0, fFsecLen);
-							}
-							usecs = Integer.parseInt(dUsecStr);
-
-							// trim off fractional part < microseconds from both timestamp and format strings
-							sb.append(timeStampStr);
-							sb.delete(dFsecPos, dFsecEndPos);
-							timeStampStr = sb.toString();
-						} catch (IndexOutOfBoundsException exc) {
-						}
-
-						sb.setLength(0);
-						sb.append(formatStr);
-						sb.delete(fFsecPos, fFsecEndPos + 1);
-						formatStr = sb.toString();
-					} else if ((dFsecEndPos - dFsecPos) < 3 && (dFsecEndPos <= timeStampStr.length())) {
-						// pad msec value in date string with 0's so that it is 3 digits long
-						sb.append(timeStampStr);
-						while ((dFsecEndPos - dFsecPos) < 3) {
-							sb.insert(dFsecEndPos, '0');
-							dFsecEndPos++;
-						}
-						timeStampStr = sb.toString();
-					}
-				}
-			}
-
-			dateFormat = FastDateFormat.getInstance(formatStr, timeZone,
-					StringUtils.isEmpty(locale) ? null : Utils.getLocale(locale));
+		if (timeZone != null) {
+			dateFormat = dateFormat.withZone(timeZone.toZoneId());
+		}
+		if (StringUtils.isNotEmpty(locale)) {
+			dateFormat = dateFormat.withLocale(Utils.getLocale(locale));
 		}
 
+		TemporalAccessor dTime;
 		try {
-			Date date = dateFormat.parse(timeStampStr);
+			dTime = dateFormat.parse(timeStampStr);
+		} catch (DateTimeParseException dte) {
+			throw new ParseException(dte.getMessage() + " using pattern '" + formatStr + "'", dte.getErrorIndex());
+		}
 
-			setTimestampValues(date.getTime(), 0, 0);
-			add(usecs);
-		} catch (ParseException pe) {
-			throw new ParseException(pe.getMessage() + " using pattern '" + formatStr + "'", pe.getErrorOffset());
+		Instant instantTime = teporalToInstant(dTime, timeZone == null ? ZoneId.systemDefault() : timeZone.toZoneId());
+		long[] fractions = splitFractions(instantToNanos(instantTime));
+
+		setTimestampValues(fractions[0], fractions[1], 0);
+	}
+
+	private static Instant teporalToInstant(TemporalAccessor temporal, ZoneId zoneId) {
+		try {
+			return Instant.from(temporal);
+		} catch (Exception exc) {
+			LocalDate ld;
+			try {
+				ld = LocalDate.from(temporal);
+			} catch (Exception dExc) {
+				ld = LocalDate.EPOCH;
+			}
+			LocalTime lt = null;
+			try {
+				lt = LocalTime.from(temporal);
+			} catch (Exception tExc) {
+			}
+
+			LocalDateTime ldt = lt == null ? ld.atStartOfDay() : ld.atTime(lt);
+
+			return ldt.atZone(zoneId).toInstant();
 		}
 	}
 
-	/**
-	 * Adjusts fractional seconds section start position in datetime string according to provided format pattern.
-	 * <p>
-	 * Pattern used quote symbols does not map to datetime string value 1:1, so position must be adjusted.
-	 * 
-	 * @param fFsecPos
-	 *            format pattern string fractional seconds section start position, or negative value to find it
-	 * @param formatStr
-	 *            format pattern string
-	 * @return adjusted fractional seconds section start position in datetime string
-	 */
-	protected static int adjustFsecPosition(int fFsecPos, String formatStr) {
-		if (fFsecPos < 0) {
-			fFsecPos = formatStr.indexOf('S');
-		}
-		String dtFormatStr = formatStr.substring(0, fFsecPos);
-		int dqCount = StringUtils.countMatches(dtFormatStr, "''");
-		int sqCount = StringUtils.countMatches(dtFormatStr, '\'');
-		int qCount = sqCount - dqCount;
+	private static long instantToNanos(Instant instant) {
+		return instant.getEpochSecond() * 1_000_000_000L + instant.getNano();
+	}
 
-		return fFsecPos - qCount;
+	private static long[] splitFractions(long timeNanos) {
+		long[] secs = new long[2];
+		secs[0] = TimeUnit.NANOSECONDS.toMillis(timeNanos);// nSec / 1_000_000L;
+		secs[1] = TimeUnit.NANOSECONDS.toMicros(timeNanos % 1_000_000L);// / 1_000L;
+
+		return secs;
 	}
 
 	/**
@@ -589,7 +540,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 *
 	 * <p>
 	 * Returns {@link #longValue()} as an int, possibly truncated.
-	 * </p>
 	 */
 	@Override
 	public int intValue() {
@@ -601,7 +551,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 *
 	 * <p>
 	 * Returns {@link #getTimeUsec()}.
-	 * </p>
 	 */
 	@Override
 	public long longValue() {
@@ -613,7 +562,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 *
 	 * <p>
 	 * Returns {@link #longValue()} as a float, possibly truncated.
-	 * </p>
 	 */
 	@Override
 	public float floatValue() {
@@ -625,7 +573,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 *
 	 * <p>
 	 * Returns {@link #longValue()} as a double.
-	 * </p>
 	 */
 	@Override
 	public double doubleValue() {
@@ -950,22 +897,17 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @return formatted date/time string based on pattern
 	 */
 	public static String getTimeStamp(String pattern, TimeZone tz, Locale locale, long msecs, long usecs) {
-		String tsStr = null;
-
-		if (pattern == null) {
-			pattern = DFLT_JAVA_FORMAT + String.format("%03d", usecs) + " Z";
-		} else {
-			int fracSecPos = pattern.indexOf('S');
-			if (fracSecPos >= 0) {
-				String usecStr = String.format("%03d", usecs);
-				pattern = pattern.replaceFirst("SS*", "SSS" + usecStr);
-			}
+		DateTimeFormatter dateFormat = FORMATS_MAP.computeIfAbsent(
+				StringUtils.isEmpty(pattern) ? DFLT_JAVA_FORMAT : pattern, DateTimeFormatter::ofPattern);
+		dateFormat = dateFormat.withZone((tz == null ? DEFAULT_TZ : tz).toZoneId())
+				.withLocale(LocaleUtils.toLocale(locale));
+		if (usecs < 1_000) {
+			usecs *= 1_000; // expand microseconds to nanoseconds
 		}
 
-		FastDateFormat df = FastDateFormat.getInstance(pattern, tz == null ? DEFAULT_TZ : tz, locale);
-		tsStr = df.format(new Date(msecs));
+		String tsStr = dateFormat.format(Instant.ofEpochMilli(msecs).plusNanos(usecs));
 
-		return tsStr.replace("Z", "+00:00");
+		return tsStr;
 	}
 
 	@Override
@@ -1021,7 +963,6 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * {@inheritDoc}
 	 * <p>
 	 * Returns the string representation of this timestamp in the default timezone.
-	 * </p>
 	 */
 	@Override
 	public String toString() {
