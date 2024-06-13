@@ -20,8 +20,6 @@ import java.math.BigInteger;
 import java.util.Date;
 import java.util.Objects;
 
-import org.apache.commons.lang3.StringUtils;
-
 /**
  * <p>
  * Implements a Property entity.
@@ -121,8 +119,11 @@ public class Property {
 	public void set(String key, Object val, String valType) {
 		this.key = key;
 		this.value = val;
-		this.valueType = ((StringUtils.equalsAnyIgnoreCase(valType, null, ValueTypes.VALUE_TYPE_NONE)
-				&& (val instanceof Boolean)) ? ValueTypes.VALUE_TYPE_FLAG : valType);
+		this.valueType = val instanceof Boolean //
+				? ValueTypes.VALUE_TYPE_FLAG //
+				: valType == null //
+						? ValueTypes.VALUE_TYPE_NONE //
+						: valType;
 	}
 
 	/**
