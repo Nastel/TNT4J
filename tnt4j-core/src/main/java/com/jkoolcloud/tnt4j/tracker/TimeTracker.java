@@ -30,17 +30,17 @@ import com.google.common.cache.CacheBuilder;
  */
 public class TimeTracker {
 
-	/*
+	/**
 	 * Timing thread local maintains timing since last hit for specific thread
 	 */
 	private static final ThreadLocal<TimeStats> THREAD_TIMER = ThreadLocal.withInitial(TimeStats::new);
 
-	/*
+	/**
 	 * Timing map maintains timing since last hit for a specific key
 	 */
 	final ConcurrentMap<String, TimeStats> EVENT_MAP;
 
-	/*
+	/**
 	 * Timing cache maintains timing since last hit for a specific key
 	 */
 	final Cache<String, TimeStats> EVENT_CACHE;
@@ -52,12 +52,12 @@ public class TimeTracker {
 	 *            maximum capacity
 	 * @param lifeSpan
 	 *            life span in specified time unit
-	 * @param tunit
+	 * @param tUnit
 	 *            time unit
 	 */
-	private TimeTracker(int capacity, long lifeSpan, TimeUnit tunit) {
+	private TimeTracker(int capacity, long lifeSpan, TimeUnit tUnit) {
 		EVENT_CACHE = CacheBuilder.newBuilder().concurrencyLevel(Runtime.getRuntime().availableProcessors())
-				.recordStats().maximumSize(capacity).expireAfterWrite(lifeSpan, tunit).build();
+				.recordStats().maximumSize(capacity).expireAfterWrite(lifeSpan, tUnit).build();
 		EVENT_MAP = EVENT_CACHE.asMap();
 	}
 
@@ -81,12 +81,12 @@ public class TimeTracker {
 	 *            maximum capacity
 	 * @param lifeSpan
 	 *            life span in specified time unit
-	 * @param tunit
+	 * @param tUnit
 	 *            time unit
 	 * @return a new time tracker instance
 	 */
-	public static TimeTracker newTracker(int capacity, long lifeSpan, TimeUnit tunit) {
-		return new TimeTracker(capacity, lifeSpan, tunit);
+	public static TimeTracker newTracker(int capacity, long lifeSpan, TimeUnit tUnit) {
+		return new TimeTracker(capacity, lifeSpan, tUnit);
 	}
 
 	/**
@@ -116,6 +116,15 @@ public class TimeTracker {
 		return THREAD_TIMER.get();
 	}
 
+	private TimeStats findStats(String key) {
+		TimeStats timeStats = EVENT_MAP.computeIfAbsent(key, s -> new TimeStats());
+		if (timeStats == null) {
+			timeStats = EVENT_MAP.get(key);
+		}
+
+		return timeStats;
+	}
+
 	/**
 	 * Hit and obtain elapsed nanoseconds since last hit
 	 * 
@@ -124,11 +133,7 @@ public class TimeTracker {
 	 * @return elapsed nanoseconds since last hit
 	 */
 	public long hitAndGet(String key) {
-		TimeStats timeStats = EVENT_MAP.get(key);
-		if (timeStats == null) {
-			timeStats = EVENT_MAP.putIfAbsent(key, new TimeStats());
-			timeStats = timeStats == null ? EVENT_MAP.get(key) : timeStats;
-		}
+		TimeStats timeStats = findStats(key);
 		return timeStats.hit();
 	}
 
@@ -140,11 +145,7 @@ public class TimeTracker {
 	 * @return elapsed nanoseconds since last miss
 	 */
 	public long missAndGet(String key) {
-		TimeStats timeStats = EVENT_MAP.get(key);
-		if (timeStats == null) {
-			timeStats = EVENT_MAP.putIfAbsent(key, new TimeStats());
-			timeStats = timeStats == null ? EVENT_MAP.get(key) : timeStats;
-		}
+		TimeStats timeStats = findStats(key);
 		return timeStats.miss();
 	}
 
@@ -156,11 +157,7 @@ public class TimeTracker {
 	 * @return hit count
 	 */
 	public long hitAndGetCount(String key) {
-		TimeStats timeStats = EVENT_MAP.get(key);
-		if (timeStats == null) {
-			timeStats = EVENT_MAP.putIfAbsent(key, new TimeStats());
-			timeStats = timeStats == null ? EVENT_MAP.get(key) : timeStats;
-		}
+		TimeStats timeStats = findStats(key);
 		timeStats.hit();
 		return timeStats.getHitCount();
 	}
@@ -173,17 +170,13 @@ public class TimeTracker {
 	 * @return miss count
 	 */
 	public long missAndGetCount(String key) {
-		TimeStats timeStats = EVENT_MAP.get(key);
-		if (timeStats == null) {
-			timeStats = EVENT_MAP.putIfAbsent(key, new TimeStats());
-			timeStats = timeStats == null ? EVENT_MAP.get(key) : timeStats;
-		}
+		TimeStats timeStats = findStats(key);
 		timeStats.miss();
 		return timeStats.getMissCount();
 	}
 
 	/**
-	 * obtain hit count for a specific key
+	 * Obtain hit count for a specific key
 	 * 
 	 * @param key
 	 *            timer key
@@ -195,7 +188,7 @@ public class TimeTracker {
 	}
 
 	/**
-	 * obtain miss count for a specific key
+	 * Obtain miss count for a specific key
 	 * 
 	 * @param key
 	 *            timer key
@@ -207,43 +200,43 @@ public class TimeTracker {
 	}
 
 	/**
-	 * obtain elapsed nanoseconds for a specific key
+	 * Obtain hit elapsed nanoseconds for a specific key
 	 * 
 	 * @param key
 	 *            timer key
 	 * @return hit count for a specific key
 	 */
-	public long getAgeNanos(String key) {
+	public long getHitAgeNanos(String key) {
 		TimeStats last = EVENT_MAP.get(key);
-		return last != null ? last.getAgeNanos() : 0;
+		return last != null ? last.getHitAgeNanos() : 0;
 	}
 
 	/**
-	 * obtain hit elapsed time for a specific key in specified time units
+	 * Obtain hit elapsed time for a specific key in specified time units
 	 * 
 	 * @param key
 	 *            timer key
-	 * @param tunit
+	 * @param tUnit
 	 *            time unit
 	 * @return hit count for a specific key
 	 */
-	public long getHitAge(String key, TimeUnit tunit) {
+	public long getHitAge(String key, TimeUnit tUnit) {
 		TimeStats last = EVENT_MAP.get(key);
-		return last != null ? last.getHitAge(tunit) : 0;
+		return last != null ? last.getHitAge(tUnit) : 0;
 	}
 
 	/**
-	 * obtain miss elapsed time for a specific key in specified time units
+	 * Obtain miss elapsed time for a specific key in specified time units
 	 * 
 	 * @param key
 	 *            timer key
-	 * @param tunit
+	 * @param tUnit
 	 *            time unit
 	 * @return miss count for a specific key
 	 */
-	public long getMissAge(String key, TimeUnit tunit) {
+	public long getMissAge(String key, TimeUnit tUnit) {
 		TimeStats last = EVENT_MAP.get(key);
-		return last != null ? last.getMissAge(tunit) : 0;
+		return last != null ? last.getMissAge(tUnit) : 0;
 	}
 
 	/**

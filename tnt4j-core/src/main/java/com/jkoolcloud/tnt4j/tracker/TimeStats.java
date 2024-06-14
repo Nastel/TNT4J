@@ -53,30 +53,34 @@ public class TimeStats {
 	 * 
 	 * @return hit age in nanoseconds since the last hit
 	 */
-	public long getAgeNanos() {
-		return (System.nanoTime() - hitStamp.get());
+	public long getHitAgeNanos() {
+		return getAgeNanos(hitStamp);
 	}
 
 	/**
 	 * Obtain age in nanoseconds since the last hit
 	 * 
-	 * @param tunit
+	 * @param tUnit
 	 *            target time unit
 	 * @return age in specified time units
 	 */
-	public long getHitAge(TimeUnit tunit) {
-		return tunit.convert(System.nanoTime() - hitStamp.get(), TimeUnit.NANOSECONDS);
+	public long getHitAge(TimeUnit tUnit) {
+		return tUnit.convert(getAgeNanos(hitStamp), TimeUnit.NANOSECONDS);
 	}
 
 	/**
 	 * Obtain age in nanoseconds since the last miss
 	 * 
-	 * @param tunit
+	 * @param tUnit
 	 *            target time unit
 	 * @return age in specified time units
 	 */
-	public long getMissAge(TimeUnit tunit) {
-		return missStamp.get() > 0 ? tunit.convert(System.nanoTime() - missStamp.get(), TimeUnit.NANOSECONDS) : 0;
+	public long getMissAge(TimeUnit tUnit) {
+		return missStamp.get() > 0 ? tUnit.convert(getAgeNanos(missStamp), TimeUnit.NANOSECONDS) : 0;
+	}
+
+	private static long getAgeNanos(AtomicLong stamp) {
+		return System.nanoTime() - stamp.get();
 	}
 
 	/**
@@ -117,6 +121,15 @@ public class TimeStats {
 		return miss(+1);
 	}
 
+	private static long hitStamp(long delta, AtomicLong stamp, AtomicLong count) {
+		long lastStamp = stamp.get();
+		long now = System.nanoTime();
+		stamp.set(now);
+		count.addAndGet(delta);
+		long age = now - lastStamp;
+		return age < 0 ? 0 : age;
+	}
+
 	/**
 	 * Hit this entry, time stamp it and count the number of hits
 	 * 
@@ -126,12 +139,7 @@ public class TimeStats {
 	 * @return elapsed nanoseconds since the last hit
 	 */
 	public long hit(long delta) {
-		long lastStamp = hitStamp.get();
-		long now = System.nanoTime();
-		hitStamp.compareAndSet(lastStamp, now);
-		long age = now - lastStamp;
-		hitCount.addAndGet(delta);
-		return age < 0 ? 0 : age;
+		return hitStamp(delta, hitStamp, hitCount);
 	}
 
 	/**
@@ -143,12 +151,7 @@ public class TimeStats {
 	 * @return elapsed nanoseconds since the last miss
 	 */
 	public long miss(long delta) {
-		long lastStamp = missStamp.get();
-		long now = System.nanoTime();
-		missStamp.compareAndSet(lastStamp, now);
-		long age = now - lastStamp;
-		missCount.addAndGet(delta);
-		return age < 0 ? 0 : age;
+		return hitStamp(delta, missStamp, missCount);
 	}
 
 	/**
