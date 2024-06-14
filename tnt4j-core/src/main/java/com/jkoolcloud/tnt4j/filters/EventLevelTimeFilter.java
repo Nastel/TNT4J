@@ -85,7 +85,6 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 
 	/**
 	 * Create a default filter with {@link OpLevel#INFO} as default threshold.
-	 * 
 	 */
 	public EventLevelTimeFilter() {
 		minLevel = OpLevel.INFO.ordinal();
@@ -250,15 +249,16 @@ public class EventLevelTimeFilter implements SinkEventFilter, Configurable {
 	private boolean isDuplicate(TrackingEvent event, String msg) {
 		if (msgTracker != null) {
 			String key = dupUseSoundex ? soundex.soundex(msg) : msg;
-			long hitCount = msgTracker.hitAndGetCount(key);
-			if ((hitCount > 1) && (msgTracker.getHitAge(msg, TimeUnit.SECONDS) < dupTimeoutSec)) {
+			long hitAge = TimeUnit.NANOSECONDS.toSeconds(msgTracker.hitAndGet(key));
+			long hitCount = msgTracker.getHitCount(key);
+			if ((hitCount > 1) && (hitAge < dupTimeoutSec)) {
 				msgTracker.missAndGetCount(key);
 				return true;
 			} else if (dupAppendStats && (event != null && hitCount > 1)) {
 				event.addProperty(new Property("_hitCount", hitCount, ValueTypes.VALUE_TYPE_COUNTER));
 				event.addProperty(new Property("_missCount", msgTracker.getMissCount(key), ValueTypes.VALUE_TYPE_COUNTER));
-				event.addProperty(new Property("_hit_last_age_ms", msgTracker.getHitAge(msg, TimeUnit.MILLISECONDS), ValueTypes.VALUE_TYPE_AGE_MSEC));
-				event.addProperty(new Property("_miss_last_age_ms", msgTracker.getMissAge(msg, TimeUnit.MILLISECONDS), ValueTypes.VALUE_TYPE_AGE_MSEC));
+				event.addProperty(new Property("_hit_last_age_ms", msgTracker.getHitAge(key, TimeUnit.MILLISECONDS), ValueTypes.VALUE_TYPE_AGE_MSEC));
+				event.addProperty(new Property("_miss_last_age_ms", msgTracker.getMissAge(key, TimeUnit.MILLISECONDS), ValueTypes.VALUE_TYPE_AGE_MSEC));
 			}
 		}
 		return false;
