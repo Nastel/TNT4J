@@ -75,8 +75,6 @@
             <![CDATA[<font size="-1">Copyright &#169; 2014-2023 ${project.organization.name}. All Rights Reserved.</font>]]></product.copyright.html>
 
         <project.java.version>11</project.java.version>
-        <maven.compiler.source>${project.java.version}</maven.compiler.source>
-        <maven.compiler.target>${project.java.version}</maven.compiler.target>
         <maven.compiler.release>${project.java.version}</maven.compiler.release>
         <maven.compiler.debuglevel>source,lines,vars</maven.compiler.debuglevel>
         <maven.compiler.verbose>false</maven.compiler.verbose>
@@ -142,8 +140,6 @@
                                 <Implementation-Vendor>${product.vendor}</Implementation-Vendor>
                                 <Implementation-Title>${product.name}</Implementation-Title>
                                 <Implementation-Version>${project.version}-${maven.build.timestamp}</Implementation-Version>
-                                <X-Compile-Source-JDK>${maven.compiler.source}</X-Compile-Source-JDK>
-                                <X-Compile-Target-JDK>${maven.compiler.target}</X-Compile-Target-JDK>
                                 <Automatic-Module-Name>${jpms.module.name}</Automatic-Module-Name>
                             </manifestEntries>
                         </archive>
@@ -195,36 +191,12 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.13.0</version>
-                <executions>
-                    <execution>
-                        <id>default-compile</id>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <verbose>${maven.compiler.verbose}</verbose>
-                            <source>${maven.compiler.source}</source>
-                            <target>${maven.compiler.target}</target>
-                            <release>${maven.compiler.target}</release>
-                            <debuglevel>${maven.compiler.debuglevel}</debuglevel>
-                            <fork>${maven.compiler.fork}</fork>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>module-compile</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <release>${maven.compiler.target}</release>
-                            <compileSourceRoots>
-                                <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
-                            </compileSourceRoots>
-                            <multiReleaseOutput>true</multiReleaseOutput>
-                        </configuration>
-                    </execution>
-                </executions>
+                <configuration>
+                    <verbose>${maven.compiler.verbose}</verbose>
+                    <release>${maven.compiler.release}</release>
+                    <debuglevel>${maven.compiler.debuglevel}</debuglevel>
+                    <fork>${maven.compiler.fork}</fork>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -255,9 +227,7 @@
                     <nodeprecated>false</nodeprecated>
                     <failOnError>true</failOnError>
                     <doclint>all</doclint>
-                    <sourceFileExcludes>
-                        <sourceFileExclude>**/module-info.java</sourceFileExclude>
-                    </sourceFileExcludes>
+                    <release>${maven.compiler.release}</release>
                 </configuration>
                 <executions>
                     <execution>
