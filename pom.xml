@@ -21,7 +21,7 @@
 
     <groupId>com.jkoolcloud</groupId>
     <artifactId>tnt4j</artifactId>
-    <version>3.2.0</version>
+    <version>3.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>tnt4j</name>
