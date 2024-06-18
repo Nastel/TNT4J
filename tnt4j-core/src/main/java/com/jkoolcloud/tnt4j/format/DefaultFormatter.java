@@ -18,6 +18,8 @@ package com.jkoolcloud.tnt4j.format;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.jkoolcloud.tnt4j.config.Configurable;
 import com.jkoolcloud.tnt4j.core.OpLevel;
 import com.jkoolcloud.tnt4j.core.Snapshot;
@@ -92,12 +94,12 @@ public class DefaultFormatter implements EventFormatter, Configurable {
 	 *
 	 * @param format
 	 *            string (e.g. {@value #DEFAULT_FORMAT_PATTERN})
-	 * @param tzid
+	 * @param tzId
 	 *            time zone id
 	 */
-	public DefaultFormatter(String format, String tzid) {
+	public DefaultFormatter(String format, String tzId) {
 		formatString = format;
-		timeZone = TimeZone.getTimeZone(tzid);
+		timeZone = TimeZone.getTimeZone(tzId);
 	}
 
 	@Override
@@ -130,9 +132,20 @@ public class DefaultFormatter implements EventFormatter, Configurable {
 
 	@Override
 	public String format(long ttl, Source src, OpLevel level, String msg, Object... args) {
-		String srcName = src != null ? src.getFQName() : DefaultSourceFactory.getInstance().getRootSource().getFQName();
-		return Utils.format(formatString, UsecTimestamp.getTimeStamp(timeZone), level, Utils.format(msg, args),
-				srcName);
+		String srcName = "";
+		if (StringUtils.contains(formatString, "{3}")) {
+			srcName = src != null ? src.getFQName() : DefaultSourceFactory.getInstance().getRootSource().getFQName();
+		}
+		String timeStr = "";
+		if (StringUtils.contains(formatString, "{0}")) {
+			timeStr = UsecTimestamp.getTimeStamp(timeZone);
+		}
+		String msgStr = "";
+		if (StringUtils.contains(formatString, "{2}")) {
+			msgStr = Utils.format(msg, args);
+		}
+
+		return Utils.format(formatString, timeStr, level, msgStr, srcName);
 	}
 
 	@Override
