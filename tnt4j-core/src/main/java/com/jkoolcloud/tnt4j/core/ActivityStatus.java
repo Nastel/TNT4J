@@ -15,6 +15,8 @@
  */
 package com.jkoolcloud.tnt4j.core;
 
+import java.util.Objects;
+
 /**
  * Provides list of valid Logical Unit of Work (Activity) statuses.
  *
@@ -55,9 +57,7 @@ public enum ActivityStatus {
 	 *             if object cannot be matched to a member of the enumeration
 	 */
 	public static ActivityStatus valueOf(Object value) {
-		if (value == null) {
-			throw new NullPointerException("object must be non-null");
-		}
+		Objects.requireNonNull(value, "object must be non-null");
 		if (value instanceof Number) {
 			return valueOf(((Number) value).intValue());
 		} else if (value instanceof String) {

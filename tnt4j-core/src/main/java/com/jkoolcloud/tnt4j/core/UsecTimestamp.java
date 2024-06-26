@@ -314,9 +314,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 */
 	public UsecTimestamp(String timeStampStr, String formatStr, TimeZone timeZone, String locale)
 			throws ParseException {
-		if (timeStampStr == null) {
-			throw new NullPointerException("timeStampStr must be non-null");
-		}
+		Objects.requireNonNull(timeStampStr, "timeStampStr must be non-null");
 
 		DateTimeFormatter dateFormat = FORMATS_MAP.computeIfAbsent(
 				StringUtils.isEmpty(formatStr) ? DFLT_JAVA_FORMAT : formatStr, DateTimeFormatter::ofPattern);
@@ -449,9 +447,7 @@ public class UsecTimestamp extends Number implements Comparable<UsecTimestamp>, 
 	 * @see #UsecTimestamp(Timestamp, long)
 	 */
 	private void initFromTimestamp(Timestamp timestamp, long usecs) {
-		if (timestamp == null) {
-			throw new NullPointerException("timestamp must be non-null");
-		}
+		Objects.requireNonNull(timestamp, "timestamp must be non-null");
 		if (usecs < 0 || usecs > 999999) {
 			throw new IllegalArgumentException("usecs must be in the range [0,999999], inclusive");
 		}

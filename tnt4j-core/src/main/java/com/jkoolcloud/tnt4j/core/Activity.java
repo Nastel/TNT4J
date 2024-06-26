@@ -15,10 +15,7 @@
  */
 package com.jkoolcloud.tnt4j.core;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import com.jkoolcloud.tnt4j.source.Source;
 
@@ -252,9 +249,7 @@ public class Activity extends Operation implements Trackable {
 	 *             if status is {@code null}y
 	 */
 	public void setStatus(ActivityStatus status) {
-		if (status == null) {
-			throw new NullPointerException("status must be a non-null");
-		}
+		Objects.requireNonNull(status, "status must be a non-null");
 		this.status = status;
 	}
 
@@ -293,9 +288,7 @@ public class Activity extends Operation implements Trackable {
 	 * @see #containsId(String)
 	 */
 	public void add(Trackable item) {
-		if (item == null) {
-			throw new NullPointerException("trackable item must be non-null");
-		}
+		Objects.requireNonNull(item, "trackable item must be non-null");
 
 		if (item.getType() == OpType.LOG) {
 			throw new IllegalArgumentException("Logs can't have parent relation");

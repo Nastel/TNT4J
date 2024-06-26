@@ -18,10 +18,7 @@ package com.jkoolcloud.tnt4j.core;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.lang.management.ThreadMXBean;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import com.jkoolcloud.tnt4j.source.DefaultSourceFactory;
 import com.jkoolcloud.tnt4j.source.Source;
@@ -256,9 +253,7 @@ public class Operation implements TTL, GlobalID {
 	 *             if opType is {@code null}
 	 */
 	public void setType(OpType opType) {
-		if (opType == null) {
-			throw new NullPointerException("opType must be non-null");
-		}
+		Objects.requireNonNull(opType, "opType must be non-null");
 		this.opType = opType;
 	}
 
@@ -310,9 +305,7 @@ public class Operation implements TTL, GlobalID {
 	 * @see #setException(String)
 	 */
 	public void setCompCode(OpCompCode opCC) {
-		if (opCC == null) {
-			throw new NullPointerException("opCC must be non-null");
-		}
+		Objects.requireNonNull(opCC, "opCC must be non-null");
 		this.opCC = opCC;
 	}
 
@@ -655,9 +648,7 @@ public class Operation implements TTL, GlobalID {
 	 *             if startTimestamp is invalid
 	 */
 	public void start(UsecTimestamp startTimestamp) {
-		if (startTimestamp == null) {
-			throw new NullPointerException("startTimestamp must be non-null");
-		}
+		Objects.requireNonNull(startTimestamp, "startTimestamp must be non-null");
 		start(startTimestamp.getTimeUsec());
 	}
 
@@ -741,9 +732,7 @@ public class Operation implements TTL, GlobalID {
 	 *             if stopTimestamp is invalid
 	 */
 	public void stop(UsecTimestamp stopTimestamp, long elapsedUsec) {
-		if (stopTimestamp == null) {
-			throw new NullPointerException("stopTimestamp must be non-null");
-		}
+		Objects.requireNonNull(stopTimestamp, "stopTimestamp must be non-null");
 		stop(stopTimestamp.getTimeUsec(), elapsedUsec);
 	}
 

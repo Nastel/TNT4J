@@ -15,6 +15,8 @@
  */
 package com.jkoolcloud.tnt4j.core;
 
+import java.util.Objects;
+
 import com.jkoolcloud.tnt4j.utils.Utils;
 
 /**
@@ -85,16 +87,17 @@ public enum OpLevel {
 	 *             if object cannot be matched to a member of the enumeration
 	 */
 	public static OpLevel valueOf(Object value) {
-		if (value == null) {
-			throw new NullPointerException("object must be non-null");
-		}
+		Objects.requireNonNull(value, "object must be non-null");
 		if (value instanceof Number) {
 			return valueOf(((Number) value).intValue());
 		} else if (value instanceof String) {
-			if (value.toString().equalsIgnoreCase(ANY_LEVEL)) {
+			String nameValue = ((String) value).toUpperCase();
+			switch (nameValue) {
+			case ANY_LEVEL:
 				return anyLevel();
+			default:
+				return valueOf(nameValue);
 			}
-			return valueOf(value.toString());
 		}
 		throw new IllegalArgumentException(
 				"Cannot convert object of type '" + value.getClass().getName() + "' to enum OpLevel");

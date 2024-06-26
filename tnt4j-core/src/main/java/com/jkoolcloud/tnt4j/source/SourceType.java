@@ -15,6 +15,8 @@
  */
 package com.jkoolcloud.tnt4j.source;
 
+import java.util.Objects;
+
 /**
  * Provides list of valid source types. Source is a logically nested entity that expresses container of application,
  * server, application server, run-time, etc.
@@ -68,9 +70,7 @@ public enum SourceType {
 	 *             if object cannot be matched to a member of the enumeration
 	 */
 	public static SourceType valueOf(Object value) {
-		if (value == null) {
-			throw new NullPointerException("object must be non-null");
-		}
+		Objects.requireNonNull(value, "object must be non-null");
 		if (value instanceof Number) {
 			return valueOf(((Number) value).intValue());
 		} else if (value instanceof String) {
