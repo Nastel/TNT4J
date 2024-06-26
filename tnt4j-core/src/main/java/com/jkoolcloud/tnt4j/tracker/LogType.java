@@ -16,6 +16,8 @@
 
 package com.jkoolcloud.tnt4j.tracker;
 
+import java.util.Objects;
+
 /**
  * Provides list of valid Log types.
  *
@@ -24,7 +26,10 @@ package com.jkoolcloud.tnt4j.tracker;
  * @version $Revision: 1 $
  */
 public enum LogType {
-	GENERAL, ERROR, QUERY, SUBSCRIBE, TRIGGER, //
+	GENERAL, ERROR, QUERY, //
+	@Deprecated
+	SUBSCRIBE, //
+	ALERT, //
 	@Deprecated
 	TRACE, //
 	AUDIT, ML, SCRIPT;
@@ -60,13 +65,17 @@ public enum LogType {
 	 *             if object cannot be matched to a member of the enumeration
 	 */
 	public static LogType valueOf(Object value) {
-		if (value == null) {
-			throw new NullPointerException("object must be non-null");
-		}
+		Objects.requireNonNull(value, "object must be non-null");
 		if (value instanceof Number) {
 			return valueOf(((Number) value).intValue());
 		} else if (value instanceof String) {
-			return valueOf(value.toString());
+			String nameValue = ((String) value).toUpperCase();
+			switch (nameValue) {
+			case "TRIGGER":
+				return ALERT;
+			default:
+				return valueOf(nameValue);
+			}
 		}
 		throw new IllegalArgumentException(
 				"Cannot convert object of type '" + value.getClass().getName() + "' to enum LogType");
