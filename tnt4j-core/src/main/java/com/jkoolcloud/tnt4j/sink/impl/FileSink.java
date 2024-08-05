@@ -120,14 +120,16 @@ public class FileSink implements Sink {
 
 	@Override
 	public synchronized void open() throws IOException {
-		if (file != null) {
-			File parent = file.getParentFile();
-			if (parent != null) {
-				try {
-					parent.mkdirs();
-				} catch (SecurityException exc) {
-					throw new IOException("Could not verify/create parent path for sink.file=" + file, exc);
-				}
+		if (file == null) {
+			throw new IllegalStateException("Sink file is not defined!");
+		}
+
+		File parent = file.getParentFile();
+		if (parent != null) {
+			try {
+				parent.mkdirs();
+			} catch (SecurityException exc) {
+				throw new IOException("Could not verify/create parent path for sink.file=" + file, exc);
 			}
 		}
 

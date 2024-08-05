@@ -154,6 +154,9 @@ public class AppenderTools implements AppenderConstants {
 			Map<String, String> attrs, OpLevel level, Throwable ex) {
 		Snapshot snapshot = null;
 		TrackingActivity activity = logger.getCurrentActivity();
+		if (activity == null) {
+			return activity;
+		}
 
 		for (Map.Entry<String, String> entry : attrs.entrySet()) {
 			String key = entry.getKey();

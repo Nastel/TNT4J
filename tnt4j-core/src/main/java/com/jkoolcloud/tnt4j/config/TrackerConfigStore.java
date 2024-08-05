@@ -712,7 +712,7 @@ public class TrackerConfigStore extends TrackerConfig {
 		try {
 			return getReaderFromResource(TNT4J_PROPERTIES);
 		} catch (IOException rese) {
-			throw urle == null ? urle : rese;
+			throw urle == null ? rese : urle;
 		}
 	}
 
